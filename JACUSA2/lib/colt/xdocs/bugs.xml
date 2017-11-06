@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!-- $Author: hoschek3 $, $Revision: 1.1 $, $Date: 2004/02/25 23:25:18 $ -->
+<document>
+	<properties>
+		<author email="whoschek.AT.lbl.DOT.gov">Wolfgang Hoschek</author>
+		<title>Bugs</title>
+	</properties>
+	<body>
+		<!-- ##################################################################################### -->
+		<section name="Bugs">
+			<p> This page will be updated once we start to do stable releases.</p>
+		</section>
+	</body>
+</document>

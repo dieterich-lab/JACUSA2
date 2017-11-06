@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!-- $Author: hoschek3 $, $Revision: 1.2 $, $Date: 2004/02/25 23:47:59 $ -->
+<document>
+	<properties>
+		<author email="whoschek.AT.lbl.DOT.gov">Wolfgang Hoschek</author>
+		<title>Installation Instructions</title>
+	</properties>
+	<body>
+		<!-- ##################################################################################### -->
+		<section name="Supported Platforms">
+			<ul>
+				<li> Colt should happily run on any Unix and any Windows with java-1.2.x or higher.
+					Currently, we know it runs at least on Linux, Solaris, MacOSX and Windows 2000 or higher.
+				</li>
+			</ul>
+		</section>
+		<!-- ##################################################################################### -->
+		<section name="Download and Decompress Files">
+			<ul>
+				<li> Download <code>colt-{version}.(tar.gz, zip)</code> from <a href="http://dsd.lbl.gov/~hoschek/colt-download">here</a>.
+				Releases can be installed via a tar.gz file (Unix) or zip file (Windows).
+				</li>
+				<blockquote>
+					<warning name="Warning">
+						<ul>
+							<li> Because of a bug in Solaris tar, Solaris users should use <a
+									href="http://www.mysql.com/downloads/os-solaris.html">gnu
+								tar</a> to unpack archives. </li>
+							<li> Due too an obscure bug, Winzip and possibly other Windows
+								decompression tools may miss empty directories. Consequently, use
+								the .zip download file on Windows, and DO NOT decompress tar[.gz]
+								files on Windows. </li>
+						</ul>
+					</warning>
+				</blockquote>
+				<li>Decompress the file into any convenient directory (the software is relocatable)</li>
+				<blockquote> In the examples below we assume as installation directory
+<pre class="source">
+/opt/colt                         (Unix)
+c:\colt                           (Windows) 
+</pre>
+					If you choose to install into an alternative location (e.g. <code>/usr/local,
+						$HOME, d:\apps</code>) then substitute the paths used in examples on this
+					website accordingly.
+<pre class="source">
+cd /opt	 
+tar -zxvf colt-{version}.tar.gz   (Unix)
+Winzip colt-{version}.zip         (Windows)
+</pre>
+					This will create the directory tree <code>/opt/colt/</code> (Unix) or
+					<code>c:\colt</code> (Windows).
+				</blockquote>
+
+				<li>Add colt.jar and concurrent.jar to your CLASSPATH</li>
+<blockquote>
+<pre class="source">
+export CLASSPATH=/opt/colt/lib/colt.jar:/opt/colt/lib/concurrent.jar:$CLASSPATH  (on Unix bash style)
+set CLASSPATH=c:\colt\lib\colt.jar;c:\colt\lib\concurrent.jar;%CLASSPATH%        (on Windows)
+</pre>
+</blockquote>
+			</ul>
+		</section>
+
+
+		<!-- ##################################################################################### -->
+		<section name="Deinstallation">
+			<ul>
+				<li>If you ever want to uninstall the software, type</li>
+<blockquote>
+<pre class="source">
+rm -fr /opt/colt                  (Unix)
+rmdir c:\colt /s/q                (Windows)
+</pre>
+</blockquote>
+			</ul>
+		</section>
+		
+	</body>
+</document>

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!-- $Author: hoschek3 $, $Revision: 1.1 $, $Date: 2004/02/25 23:25:18 $ -->
+<document>
+  <properties>
+    <author email="whoschek.AT.lbl.DOT.gov">Wolfgang Hoschek</author>
+    <title>Colt License Agreement</title>
+  </properties>
+<body>
+
+<!-- ##################################################################################### -->
+<section name="Colt License Agreement">
+<p>
+Packages cern.colt* , cern.jet*, cern.clhep
+<blockquote>
+	Copyright (c) 1999 CERN - European Organization for Nuclear Research. 
+<p>
+        Permission to use, copy, modify, distribute and sell this software and 
+        its documentation for any purpose is hereby granted without fee, provided 
+        that the above copyright notice appear in all copies and that both that 
+        copyright notice and this permission notice appear in supporting documentation. 
+        CERN makes no representations about the suitability of this software for 
+        any purpose. It is provided &quot;as is&quot; without expressed or implied 
+        warranty. 
+</p>
+</blockquote>
+</p>
+
+<p>
+Packages hep.aida.*
+<blockquote>
+    Written by Pavel Binko, Dino Ferrero Merlino, Wolfgang Hoschek, Tony Johnson, Andreas Pfeiffer, and others. Check the FreeHEP home page for more info.
+    Permission to use and/or redistribute this work is granted under the terms of the LGPL License, with the exception that any usage related to military applications is expressly forbidden. The software and documentation made available under the terms of this license are provided with no warranty.
+</blockquote>
+</p>
+</section>
+
+</body>
+</document>

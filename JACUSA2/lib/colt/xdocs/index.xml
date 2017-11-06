@@ -1,0 +1,208 @@
+<?xml version="1.0"?>
+<!-- $Author: hoschek3 $, $Revision: 1.1 $, $Date: 2004/02/25 23:25:18 $ -->
+<document>
+	<properties>
+		<author email="whoschek.AT.lbl.DOT.gov">Wolfgang Hoschek</author>
+		<title>Welcome</title>
+	</properties>
+	<body>
+		<!-- ##################################################################################### -->
+		<section name="Introduction">
+			<note name="Welcome to the Colt Project"> 
+				Welcome to the Colt Project. Colt provides a set of Open Source Libraries for
+				High Performance Scientific and Technical Computing in Java.
+				<p>
+				Scientific and technical computing, 
+				as, for example, carried out at CERN, is characterized by demanding problem sizes 
+				and a need for high performance at reasonably small memory footprint. There is 
+				a perception by many that the Java language is unsuited for such work. However, 
+				recent trends in its evolution suggest that it may soon be a major player in performance 
+				sensitive scientific and technical computing. For example, IBM Watson's <a href="http://www.research.ibm.com/ninja/">Ninja 
+				project</a> showed that Java can indeed perform BLAS matrix computations up to 
+				90% as fast as optimized Fortran. The <a href="http://math.nist.gov/javanumerics/">Java 
+				Grande Forum Numerics Working Group</a> provides a focal point for information 
+				on numerical computing in Java. With the performance gap steadily closing, Java 
+				has recently found increased adoption in the field. The reasons include ease of 
+				use, cross-platform nature, built-in support for multi-threading, network friendly 
+				APIs and a healthy pool of available developers. Still, these efforts are to a 
+				significant degree hindered by the lack of foundation toolkits broadly available 
+				and conveniently accessible in C and Fortran.
+				</p> 
+				<p> The latest stable Colt release breaks the <a href="ibm-1.4.1-2xpentium4-2.8GHz.txt"> 1.9 Gflop/s barrier</a>
+			      on JDK ibm-1.4.1, RedHat 9.0, 2x IntelXeon@2.8 GHz.
+      			</p>
+			</note>
+			<p/>
+			<!-- ##################################################################################### -->
+			<note name="Scope"> This distribution provides an infrastructure for scalable scientific 
+  and technical computing in Java. It is particularly useful in the domain of 
+  High Energy Physics at CERN: It contains, among others, efficient and usable 
+  data structures and algorithms for Off-line and On-line Data Analysis, Linear 
+  Algebra, Multi-dimensional arrays, Statistics, Histogramming, Monte Carlo Simulation, 
+  Parallel &amp; Concurrent Programming. It summons some of the best concepts, 
+  designs and implementations thought up over time by the community, ports or 
+  improves them and introduces new approaches where need arises. In overlapping 
+  areas, it is competitive or superior to toolkits such as <a href="http://www.sgi.com/Technology/STL/">STL</a>, 
+  <a href="http://root.cern.ch/">Root</a>, <a href="http://wwwinfo.cern.ch/asd/lhc++/HTL"> 
+  HTL</a>, <a href="http://wwwinfo.cern.ch/asd/lhc++/clhep">CLHEP</a>, <a href="http://math.nist.gov/tnt/">TNT</a>, 
+  <a href="http://www.cis.tu-graz.ac.at/stat/stadl/random.html"></a><a href="http://sourceware.cygnus.com/gsl/">GSL</a>, 
+  <a href="http://www.cis.tu-graz.ac.at/stat/stadl/random.html"></a><a href="http://www.cis.tu-graz.ac.at/stat/stadl/random.html">C-RAND 
+  / WIN-RAND</a>, (all C/C++) as well as <a href="http://math.nist.gov/javanumerics/array/"> 
+  IBM Array</a>, <a href="http://www.javasoft.com/products/jdk/1.2/docs/guide/collections/index.html"> 
+  JDK 1.2 Collections framework</a> (all Java), in terms of performance (!), functionality and (re)usability.
+			</note>
+			<p/>
+			<!-- ##################################################################################### -->
+			<note name="Content"> This distribution consists of several free Java libraries, 
+  for user convenience bundled under one single uniform umbrella. Namely the <i>Colt</i> 
+  library, the <i>Jet</i> library, the <i>CoreJava</i> library, and the <i>Concurrent</i> library. 
+  The Colt library provides fundamental general-purpose data 
+  structures optimized for numerical data, such as resizable arrays, dense and 
+  sparse matrices (multi-dimensional arrays), linear algebra, associative containers 
+  and buffer management. The Jet library contains mathematical and statistical 
+  tools for data analysis, powerful histogramming functionality, Random Number 
+  Generators and Distributions useful for (event) simulations, and more. The CoreJava 
+  library contains C-like print formatting. The Concurrent library contains standardized, 
+  efficient utility classes commonly encountered in parallel &amp; concurrent 
+  programming.
+			</note>
+			<p/>
+			<!-- ##################################################################################### -->
+			<note name="Download"> A distribution download includes HTML API documentation 
+  and source codes for all libraries, as well as one single cross-platform shared 
+  library file, <tt>colt.jar</tt>, containing the distribution compiled 
+  to immediately executable format. Thus, a user can start to work by setting 
+  one single environment variable. He/she never needs to bother about compilation/architecture/linker 
+  issues.
+			</note>
+		</section>
+
+
+
+		<!-- ##################################################################################### -->
+		<section name="Features">
+<table border="0" cellspacing="1" cellpadding="2" width="100%">
+<xtbody>
+ 	  <tr>
+		<xth>Feature</xth>
+		<xth>Description</xth>
+ 	  </tr>
+      <!-- ##################################################################################### -->
+      <tr>
+        <td>Templated Lists and Maps</td>
+        <td> Dynamically resizing lists 
+		      holding objects or primitive data types such as <code>int</code>, <code>double</code>, 
+		      etc. Operations on primitive arrays, algorithms on Colt lists and JAL algorithms 
+		      (see below) can freely be mixed at zero copy overhead. <a href="api/cern/colt/list/package-summary.html#Overview">More 
+		      details.</a> Automatically growing and shrinking maps holding objects or 
+		      primitive data types such as <tt>int</tt>, <tt>double</tt>, etc. <a href="api/cern/colt/map/package-summary.html#Overview">More 
+		      details</a>. Space efficient high performance BitVectors and BitMatrices. 
+ 		     <a href="api/cern/colt/bitvector/package-summary.html">More details</a> 
+        </td>
+      </tr>
+      <tr>
+        <td>Templated Multi-dimensional matrices</td>
+        <td> Dense and sparse fixed sized (non-resizable) 1,2, 3 and d-dimensional matrices 
+		      holding objects or primitive data types such as <tt>int</tt>, <tt>double</tt>, 
+		      etc; Also known as <i>multi-dimensional arrays</i> or<i> Data Cubes</i>. 
+		      <a href="api/cern/colt/matrix/package-summary.html#Overview">More details</a>. 
+	    </td>
+      </tr>
+      <tr>
+        <td>Linear Algebra</td>
+        <td> Standard matrix operations and decompositions. LU, QR, Cholesky, Eigenvalue, Singular value. 
+		      <a href="api/cern/colt/matrix/linalg/package-summary.html#Overview">More details</a>. 
+	    </td>
+      </tr>
+      <tr>
+        <td>Histogramming</td>
+        <td> Compact, extensible, modular 
+		      and performant histogramming functionality. AIDA offers the histogramming 
+		      features of HTL and HBOOK. More details <a href="api/hep/aida/package-summary.html#Overview">here</a> 
+		      and also <a href="api/hep/aida/bin/package-summary.html#Overview">there</a>. 
+	    </td>
+      </tr>
+      <tr>
+        <td>Mathematics</td>
+        <td> Tools for basic and advanced 
+      mathematics: Arithmetics and Algebra, Polynomials and Chebyshev series, 
+      Bessel and Airy functions, Constants and Units, Trigonometric functions, 
+      etc. <a href="api/cern/jet/math/package-summary.html">More details</a>. 
+	    </td>
+      </tr>
+      <tr>
+        <td>Statistics</td>
+        <td> Tools for basic and advanced 
+      statistics: Estimators, Gamma functions, Beta functions, Probabilities, 
+      Special integrals, etc. <a href="api/cern/jet/stat/package-summary.html">More 
+      details</a>. 
+	    </td>
+      </tr>
+      <tr>
+        <td>Random Numbers and Random Sampling</td>
+        <td> Strong 
+      yet quick. Partly a port of CLHEP. More details <a href="api/cern/jet/random/package-summary.html">here</a> 
+      and <a href="api/cern/jet/random/engine/package-summary.html">there</a> and 
+      also <a href="api/cern/jet/random/sampling/package-summary.html">there</a>.
+	    </td>
+      </tr>
+      <tr>
+        <td>util.concurrent</td>
+        <td> Efficient utility classes commonly encountered in parallel &amp; concurrent programming. 
+      <a href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html">More 
+      details</a>.
+	    </td>
+      </tr>
+</xtbody>
+</table>
+</section>
+
+      
+		<!-- ##################################################################################### -->
+		<section name="Design Goals">
+<table border="0" cellspacing="1" cellpadding="2" width="100%">
+<xtbody>
+ 	  <tr>
+		<xth>Goal</xth>
+		<xth>Description</xth>
+ 	  </tr>
+      <!-- ##################################################################################### -->
+      <tr>
+        <td>Efficiency</td>
+        <td> Routines are typically fast both 
+      due to the chosen algorithms and datastructures as well as due to careful 
+      implementation. For comparative benchmarks the latest stable JDK is recommended.
+        </td>
+      </tr>
+      <tr>
+        <td>User friendliness</td>
+        <td> To the casual user this 
+      is a high level object oriented toolkit, consisting of classes which directly 
+      provide most frequently needed functionality. Most users will never need 
+      to extend or modify any code. Classes are cleanly separated into several 
+      mostly self contained packages. 
+	    </td>
+      </tr>
+      <tr>
+        <td>Expert friendliness</td>
+        <td> In our view, implementations 
+      should not be hidden. Instead, a user, according to his or her likings, 
+      should be encouraged to look under the hood and even tinker with the code. 
+      Not only the public API is extensively documented, but also internal code. 
+      Users who wish to enrich, modify or customize functionality should be able 
+      to do so without much effort.
+	    </td>
+      </tr>
+      <tr>
+        <td>Safety</td>
+        <td> Most methods defensively check preconditions 
+      and throw appropriate exceptions. However, almost none of them are synchronized.
+	    </td>
+      </tr>
+</xtbody>
+</table>
+</section>
+
+
+</body>
+</document>

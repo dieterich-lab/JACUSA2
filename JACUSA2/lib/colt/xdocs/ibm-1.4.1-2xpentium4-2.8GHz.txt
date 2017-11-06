@@ -1,0 +1,61 @@
+Colt Matrix benchmark running on
+
+java.vm.vendor  IBM Corporation    
+java.vm.version 1.4.1              
+java.vm.name    Classic VM         
+os.name         Linux              
+os.version      2.4.20-28.9smp     
+os.arch         x86                
+java.version    1.4.1              
+java.vendor     IBM Corporation    
+java.vendor.url http://www.ibm.com/
+
+Colt Version is Version 1.1.0.0 (unknown)
+Please report problems to whoschek@lbl.gov
+
+
+
+Executing command = [dgemm, dense, 4, 2, 0.999, false, true, 5, 10, 25, 50, 100, 250, 500, 1000] ...
+
+@x.x.x.x.x.x.x.x.*
+Performance of Blas matrix-matrix mult dgemm(false, true, 1, A, B, 0, C)
+type=dense
+        | size
+        | 5       10      25      50      100        250        500        1000      
+-------------------------------------------------------------------------------------
+d 0.999 | 216.694 485.522 675.749 725.493 1.363E+003 1.775E+003 1.906E+003 1.915E+003
+Run took a total of Time=27.973 secs. End of run.
+
+
+Executing command = [dgemm, dense, 2, 2, 0.999, false, true, 5, 10, 25, 50, 100, 250, 500, 1000] ...
+
+@x.x.x.x.x.x.x.x.*
+Performance of Blas matrix-matrix mult dgemm(false, true, 1, A, B, 0, C)
+type=dense
+        | size
+        | 5       10      25      50      100        250        500       1000      
+------------------------------------------------------------------------------------
+d 0.999 | 214.921 483.585 653.833 880.794 1.416E+003 1.597E+003 1.75E+003 1.849E+003
+Run took a total of Time=27.708 secs. End of run.
+
+
+Executing command = [dgemm, dense, 1, 2, 0.999, false, true, 5, 10, 25, 50, 100, 250, 500, 1000] ...
+
+@x.x.x.x.x.x.x.x.*
+Performance of Blas matrix-matrix mult dgemm(false, true, 1, A, B, 0, C)
+type=dense
+        | size
+        | 5       10      25      50      100     250     500     1000   
+-------------------------------------------------------------------------
+d 0.999 | 215.949 486.479 645.372 797.843 904.523 891.071 907.853 921.659
+Run took a total of Time=28.222 secs. End of run.
+
+Command file name used: medium.conf
+To reproduce and compare results, here it's contents:
+// matrix-matrix mult with 1 and with 2 CPUs
+dgemm dense 4 2.0 0.999 false true 5 10 25 50 100 250 500 1000
+dgemm dense 2 2.0 0.999 false true 5 10 25 50 100 250 500 1000
+dgemm dense 1 2.0 0.999 false true 5 10 25 50 100 250 500 1000
+
+Program execution took a total of 1.4007334 minutes.
+Good bye.

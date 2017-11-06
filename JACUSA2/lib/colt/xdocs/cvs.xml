@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!-- $Author: hoschek3 $, $Revision: 1.2 $, $Date: 2004/02/25 23:47:59 $ -->
+<document>
+	<properties>
+		<author email="whoschek.AT.lbl.DOT.gov">Wolfgang Hoschek</author>
+		<title>CVS Repository</title>
+	</properties>
+	<body>
+		<!-- ##################################################################################### -->
+		<section name="CVS Repository with command line client">
+			From the command line checkout the colt module via ssh2:
+<pre class="source">
+export CVS_RSH=ssh 
+cvs -d:ext:`whoami`@portnoy.lbl.gov:/home/portnoy/u3/src checkout colt
+</pre>
+		</section>
+		<!-- ##################################################################################### -->
+		<section name="CVS Repository with GUI client">
+			<p> With a GUI client, use cvs with ssh2 to login into </p>
+			<pre class="source">portnoy.lbl.gov</pre>
+			<p> For eclipse users: The eclipse connection type is "extssh2". You will probably need
+				the <a href="http://www.jcraft.com/eclipse-cvsssh2/">eclipse extssh2 plugin</a>. </p>
+			<p> The repository is under </p>
+			<pre class="source">/home/portnoy/u3/src</pre>
+			<p> There, the module is called </p>
+			<pre class="source">colt</pre>
+			<fixme name="Fixme"> Should describe CVS access options in a more concise manner and
+				possibly refer to CVS tutorials. </fixme>
+		</section>
+	</body>
+</document>

@@ -1,0 +1,48 @@
+Colt Matrix benchmark running on
+
+java.vm.vendor  IBM Corporation    
+java.vm.version 1.4.1              
+java.vm.name    Classic VM         
+os.name         Linux              
+os.version      2.4.19             
+os.arch         x86                
+java.version    1.4.1              
+java.vendor     IBM Corporation    
+java.vendor.url http://www.ibm.com/
+
+Colt Version is Version 1.0.3.165 (Thu Nov 28 11:31:47 CET 2002)
+Please report problems to wolfgang.hoschek@cern.ch or http://nicewww.cern.ch/~hoschek/colt/index.htm
+
+
+
+Executing command = [dgemm, dense, 2, 2, 0.999, false, true, 5, 10, 25, 50, 100, 250, 500, 1000] ...
+
+@x.x.x.x.x.x.x.x.*
+Performance of Blas matrix-matrix mult dgemm(false, true, 1, A, B, 0, C)
+type=dense
+        | size
+        | 5       10     25      50      100        250        500        1000      
+------------------------------------------------------------------------------------
+d 0.999 | 163.148 383.67 527.194 880.116 1.266E+003 1.343E+003 1.353E+003 1.367E+003
+Run took a total of Time=28.796 secs. End of run.
+
+
+Executing command = [dgemm, dense, 1, 2, 0.999, false, true, 5, 10, 25, 50, 100, 250, 500, 1000] ...
+
+@x.x.x.x.x.x.x.x.*
+Performance of Blas matrix-matrix mult dgemm(false, true, 1, A, B, 0, C)
+type=dense
+        | size
+        | 5      10      25      50      100    250     500     1000   
+-----------------------------------------------------------------------
+d 0.999 | 55.385 116.691 243.576 372.608 596.79 567.903 668.151 703.235
+Run took a total of Time=29.41 secs. End of run.
+
+Command file name used: medium.conf
+To reproduce and compare results, here it's contents:
+// matrix-matrix mult with 1 and with 2 CPUs
+dgemm dense 2 2.0 0.999 false true 5 10 25 50 100 250 500 1000
+dgemm dense 1 2.0 0.999 false true 5 10 25 50 100 250 500 1000
+
+Program execution took a total of 0.97291666 minutes.
+Good bye.

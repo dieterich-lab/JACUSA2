@@ -1,0 +1,343 @@
+\documentclass[10pt, a4paper]{article}
+
+% include stuff
+\usepackage[utf8]{inputenc}
+\usepackage{todonotes}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{longtable}
+%\usepackage{multirow}
+\usepackage[T1]{fontenc}
+
+% document related
+\title{JACUSA manual \\ Version 1.2}
+\author{Michael Piechotta \\ michael.piechotta@age.mpg.de}
+\date{March 6, 2017} 
+
+% --------------------------------------------------------------------------------------------------
+\begin{document}
+% --------------------------------------------------------------------------------------------------
+\maketitle \tableofcontents
+% --------------------------------------------------------------------------------------------------
+\section{Introduction}
+JAVA framework for accurate SNV assessment (JACUSA) is a one-stop solution to detect single
+nucleotide variants (SNVs) from comparing matched sequencing samples. Robust identification has
+proven to be a daunting task due to artefacts specific for NGS-data and employed mapping
+strategies. We implement various feature filters that reduce the number of false positives. JACUSA
+employs a window-based approach to traverse provided BAM files featuring highly parallel processing.
+JACUSA has been extensively evaluated and optimized to identify RNA editing sites in RNA-DNA and
+RNA-RNA sequencing samples. JACUSA requires an operating JAVA environment and uses sorted and
+indexed BAM files as input.
+% --------------------------------------------------------------------------------------------------
+\section{Download}
+Download the latest version of JACUSA from \href{https://github.com/dieterich-lab/JACUSA/blob/master/build/JACUSA_v1.2.0.jar}. 
+Check the source in the repository on \href{https://github.com/dieterich-lab/JACUSA}{GiTHub}.
+% --------------------------------------------------------------------------------------------------
+\subsection{Installation and requirements}
+JACUSA does not need any configuration but needs a correctly configured Java environment.
+We developed and tested JACUSA with Java v1.7. If you encounter any Java related problems please
+consider to change to Java v1.7.
+% --------------------------------------------------------------------------------------------------
+\subsection{Sample \textit{in silico} data}
+Download sample data that we used for the development of JACUSA. You can choose between different
+setups and species where the later greatly influences the data size and running time to detect
+variants. The gDNA VS cDNA represents the typical data setup that is encountered in detection of RNA
+editing sites via comparing genomic and transcriptomic sequencing reads. In this setup, variants
+have been only imputed to the cDNA BAM file. The cDNA VS cDNA data setup can be interpreted as
+representing allele specific expression of single variants or differential RNA editing. In this
+setup, variants with pairwise different base frequency have been imputed into both cDNA BAM files.
+Additionally, to make the identification of variants more challenging SNPs with pairwise similar base
+frequencies have been included to both BAM files. This sites should not be identified as true
+positive sites.
+gDNA data has been simulate with
+art\footnote{\href{http://www.niehs.nih.gov/research/resources/software/biostatistics/art/}{art}}
+and cDNA reads have been simulated with
+flux\footnote{\href{http://sammeth.net/confluence/display/SIM/Home}{flux simulator}}. Read
+simulations have been restricted to the corresponding first chromosome of the respective species.
+Sample data is available for \textit{C. elegans} ce10 and \textit{Homo sapien} hg19. Each archive
+consists of:
+\begin{description}
+  \item[gDNA.bam, cDNA.bam] BAM files: gDNA.bam and cDNA OR cDNA\_1.bam and cDNA\_2.bam
+  \item[snps.txt] Only available for cDNA VS cDNA. Coordinates of imputed SNPs. In both
+  BAM files matching SNPs have the same target frequency but different effective or sampled
+  frequency. The shape parameter determines how much the sampled frequency will deviate from the
+  target frequency in each BAM file. The suffixes: \_cdna\_1 and \_cdna\_2 correspond to the
+  respective BAM file
+  \item[variants.txt] Coordinates of imputed variants and their target and sample
+  frequencies
+\end{description}
+Available sample data organized by data type and species:
+\begin{itemize}
+  \item
+  \href{http://www.age.mpg.com/software/jacusa/sample_data/hg19_chr1_gDNA_VS_cDNA.tar.gz}{hg19\_chr1\_gDNA\_VS\_cDNA.tar.gz}
+  \item
+  \href{http://www.age.mpg.com/software/jacusa/sample_data/hg19_chr1_cDNA_VS_cDNA.tar.gz}{hg19\_chr1\_cDNA\_VS\_cDNA.tar.gz}
+\end{itemize}
+%\todo{This data has to be generated}
+%\begin{itemize}
+%  \item 
+%  \href{http://www.age.mpg.com/software/jacusa/sample_data/ce10_chrI_gDNA_VS_cDNA.tar.gz}{ce10\_chrI\_gDNA\_VS\_cDNA.tar.gz}
+%  \item 
+%  \href{http://www.age.mpg.com/software/jacusa/sample_data/ce10_chrI_cDNA_VS_cDNA.tar.gz}{ce10\_chrI\_cDNA\_VS\_cDNA.tar.gz}
+%\end{itemize}
+%--------------------------------------------------------------------------------------------------
+\section{Input}
+\subsection{Alignment files}
+JACUSA needs sorted and indexed BAM files. BAM is a standardized file format for
+efficient storage of alignments. Check the manuals for
+\footnote{\href{http://samtools.sourceforge.net/}{SAMtools/BCFtools}} and/or
+\footnote{\href{http://broadinstitute.github.io/picard/}{picard tools}} for how to use the
+respective tool to convert your alignment files to valid JACUSA input BAM.
+
+In the following, commands for SAMtools are presented:
+\begin{description}
+\item[SAM $\rightarrow BAM$] \begin{verbatim} samtools view -Sb mapping.sam > mapping.bam \end{verbatim}
+\item[sort BAM] \begin{verbatim} samtools sort mapping.bam mapping.sorted \end{verbatim} 
+\item[index BAM] \begin{verbatim} samtools index mapping.sorted.bam \end{verbatim}
+\end{description}
+
+It is a recommended pre-processing step to remove duplicate reads when identifying variants.
+Duplicated reads occur mostly due to PCR-artefacts. 
+They are likely to harbour false variants and most statistical test require that reads are sampled independently.  
+In the following, commands for picarf tools are presented:
+\begin{verbatim} java -jar MarkDuplicates.jar \ 
+  I=mapping.sorted.bam O=dedup_mapping.sorted.bam \ 
+  M=duplication.info
+\end{verbatim}
+Invoke JACUSA with the additional command line option ``-F 1024'' to filter read that have been marked as duplicates.
+
+\subsubsection{Strand information}
+In v1.2, support for stranded paired end reads has been added to JACUSA. Depending on the employed sequencing library, 
+JACUSA can use the strand orientation to build pileups.
+
+\begin{center}
+\emph{WARNING} \\
+Since v1.2 the format of ``-P'' has changed!
+The format has been inspired by tophat's \href{http://ccb.jhu.edu/software/tophat/manual.shtml} library type parameter. 
+\end{center}
+
+With the command line parameter ``-P,--build-pileup <BUILD-PILEUP>'' the user can choose from combinations of:
+\begin{description} 
+\item[FR-FIRSTSTRAND] STRANDED library - first strand sequenced,
+\item[FR-SECONDSTRAND] STRANDED library - second strand sequenced, and
+\item[UNSTRANDED] UNSTRANDED library.
+\end{description}
+to define if strand information will be utilized to build pileups.
+
+In order to identify RNA editing sites by comparing gDNA and \emph{stranded} RNA-Seq (single or paired end) use:
+\begin{description} 
+\item[first strand sequenced] ``-P UNSTRANDED,FR-FIRSTSTRAND''
+\item[second strand sequenced] ``-P UNSTRANDED,FR-SECONDSTRAND''
+\end{description}.
+When your RNA-Seq is unstranded use: ``-P UNSTRANDED,UNSTRANDED'' and infer the correct orientation from annnotation.
+%--------------------------------------------------------------------------------------------------
+\subsection{Traverse BED-like file}
+Variant detection can be limited to specific regions of the genome or transcriptome.  Provide a
+minimalistic BED-like file to restrict the search to this region(s) or site(s). Remaining region(s)
+of the BAM files will not be considered.
+
+In the following traverse file, the search is confined to a 100nt region on contig 1
+staring at 1,000 and a single site on contig 2 at coordinates 10,000:
+\begin{table}
+\centering
+\caption{Example of BED-like traverse file}
+\label{tb:traverse_file}
+\begin{tabular}{lll}
+\textbf{contig} & \textbf{start} & \textbf{end} \\
+\hline
+1 & 1000 & 1100 \\
+2 & 10000 & 10000 \\
+\multicolumn{3}{c}{}
+\end{tabular}
+\end{table}
+HINT: Many individual sites will slow down JACUSA. If possible, try to merge nearby sites into
+contiguous regions and extract specific sites from JACUSA output with
+bedtools\footnote{\href{http://bedtools.readthedocs.org/en/latest/}{bedtools}} intersect:
+\begin{description}
+\item[merge sites] \begin{verbatim} 
+
+bedtools merge -d 500 singular_sites.bed > \ 
+  contigous_regions.bed
+\end{verbatim}
+\item[run JACUSA] \begin{verbatim} 
+
+java -jar JACUSA.jar call-2 -b contigous_regions.bed -r
+JACUSA.out mapping_1.sorted.bam mapping_2.sorted.bam
+\end{verbatim}
+\item[extract sites] \begin{verbatim}
+
+bedtools intersect -wa -a JACUSA.out -b singular_sites.bed
+\end{verbatim}
+\end{description}
+%--------------------------------------------------------------------------------------------------
+\section{Output}
+JACUSA writes its output to a user defined file or a pipe. When using multiple threads, JACUSA will
+create a gzipped temporary file for each allocated thread. Chosen command line parameters
+and current genomic position are printed to the command prompt. Furthermore, depending on
+the provided command line parameters, JACUSA will generate a file with sites that have been
+identified as potential artefacts when ``-s" is provided. Currently, JACUSA supports the following
+output formats, controlled by ``-f'':
+\begin{itemize}
+  \item Default (JACUSA output)
+  \item Variant Call Format
+  (VCF)\footnote{\href{http://samtools.github.io/hts-specs/VCFv4.1.pdf]}{VCF file format}}
+\end{itemize}
+The default output format is based on
+BED6\footnote{\href{http://genome.ucsc.edu/FAQ/FAQformat.html\#format1}{BED file format}} with
+additional JACUSA specific columns. The actual number of columns depends on number of provided BAM
+files.
+\begin{table}[ht]
+\caption{JACUSA default output format}
+{\small
+\begin{tabular}{lcccccc|cccc}
+%contig & start & end & name & score & strand & bases11 & bases22 & info & filter\_info \\
+Column: & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+\hline
+& 1 & 100 & 101 & variant & $8.07\ldots$ & - & 0,0,0,6 & 0,6,0,0 & * & * \\	
+& \multicolumn{6}{c|}{\ldots} & \multicolumn{4}{c}{\ldots}
+\end{tabular}}
+\end{table}
+\begin{description}
+\item[(1, 2, 3) contig + start + end] 0-based, genomic coordinates of potential variant site
+\item[(4) name] Currently, constant string: ``variant''. This dummy field is to ensure BED6
+compatibility
+\item[(5) score] Test-statistic $z \in \mathbb{R}$ that indicates the likelihood that this is a true
+variant. Higher number indicates a higher likelihood for a variant
+\item[(6) strand] Possible values are: ``.'', ``+'', and ``-'' which correspond to ``unstranded'',
+``positive strand'', and ``negative strand'' respectively. If strand is != ``.'', then the following base columns
+will be indicating base counts according to the strand - inverted base count if on the ``negative
+strand''
+\item[(7,8) basesIJ] The number of base columns depends on the number of BAM files. In basesIJ: $I$
+corresponds to sample and $J$ to the respective replicate. Numbers indicate the base count of the
+following base vector: $(A, C, G, T)$
+\item[(9) info] Additional info for this specific site. Currently, details about the parameter
+estimation of the Dirichlet-Multinomial can be shown. If nothing provided, the empty field is equal
+to ``*''
+\item[(10) filter\_info] Relevant, if feature filter(s) $X$ have been provided with ``-a X'' on the
+command line. The column will contain a comma-separated list of feature filters that predict this
+site to be a potential artefact. Possible values are: \\ 
+\begin{tabular}{lp{.8\textwidth}}
+\textbf{Value} & \textbf{Description of potential artefact} \\
+\hline
+D & Variant call in the vicinity of Read Start/End, Intron, and/or INDEL position \\
+B & Variant call in the vicinity of Read Start/End \\
+I & Variant call in the vicinity of INDEL position \\
+S & Variant call in the vicinity of Splice Site \\
+Y & Variant call in the vicinity of homopolymer \\
+M & Max allowed alleles exceeded \\ 
+H & ``Control" sample contains non-homozygous pileup \\
+d & Some pileup exceeds max depth
+\end{tabular}
+\end{description}
+%--------------------------------------------------------------------------------------------------
+\section{Usage}
+Calling JACUSA without any arguments will print the available tools which currently are:
+\begin{verbatim}
+java -jarJACUSA.jar
+	call-1  Call variants - one sample
+	call-2  Call variants - two samples
+  pileup  SAMtools like mpileup for two samples
+\end{verbatim}
+{\small
+\begin{verbatim}
+usage: jacusa.jar [OPTIONS] BAM1_1[,BAM1_2,BAM1_3,...] BAM2_1[,BAM2_2,BAM2_3,...]
+\end{verbatim}}
+\begin{center}
+{\small
+\begin{longtable}{p{.4\textwidth}p{.6\textwidth}}
+ -a,--pileup-filter <PILEUP-FILTER>             & chain of PILEUP-FILTER to apply to pileups: \\
+                                                & B | Filter distance to Read Start/End. Default: 6:0.5 (F:distance:min\_ratio) \\
+                                                & R | Rare event filter. Default: 1:2:0.1 (R:pool:reads:level) \\
+                                                & S | Filter distance to Splice Site. Default: 6:0.5 (S:distance:min\_ratio) \\
+                                                & D | Filter distance to Read Start/End, Intron, and INDEL position. Default: 5:0.5 (D:distance:min\_ratio) \\
+                                                & H | Filter non-homozygous pileup/BAM in sample 1 or 2 (MUST be set to H:1 or H:2). Default: none \\
+                                                & I | Filter distance to INDEL position. Default: 6:0.5 (I:distance:min\_ratio) \\
+                                                & Y | Filter wrong variant calls in the vicinity of homopolymers. Default: 7 (Y:length) \\
+                                                & L | Min difference filter. Default: 0:0:0.1 (R:pool:reads:level) \\
+                                                & M | Max allowed alleles per parallel pileup. Default: 2 \\
+                                                & Separate multiple PILEUP-FILTER with ',' (e.g.: D,I) \\
+ -b,--bed <BED>									                & BED file to scan for variants \\
+ -C,--base-config <BASE-CONFIG> 				        & Choose what bases should be considered for variant calling: TC or AG or ACGT or AT$\ldots$. Default: ACGT \\
+ -c,--min-coverage <MIN-COVERAGE>               & filter positions with coverage < MIN-COVERAGE. Default: 5 \\
+ -c1,--min-coverage1 <MIN-COVERAGE1>            & filter 1 positions with coverage < MIN-COVERAGE1. Default: 5 \\
+ -c2,--min-coverage2 <MIN-COVERAGE2>            & filter 2 positions with coverage < MIN-COVERAGE2. Default: 5 \\
+ %-D,--debug                                     Enable debug modus
+ -d,--max-depth <MAX-DEPTH>                     & max per-BAM depth. Default: -1 \\
+ -d1,--max-depth1 <MAX-DEPTH1>                  & max per-sample 1 depth. Default: -1 \\
+ -d2,--max-depth2 <MAX-DEPTH2>                  & max per-sample 2 depth. Default: -1 \\
+ -F,--filter-flags <FILTER-FLAGS>               & filter reads with flags FILTER-FLAGS. Default: 0 \\
+ -f,--output-format <OUTPUT-FORMAT>             & Choose output format: \\
+                                                & <*> D: Default JACUSA \\
+                                                & < > V: VCF Output format. Option -P will be ignored (VCF is unstranded) \\
+    --filterNH\_1 <NH-VALUE>                    & Max NH-VALUE for SAM tag NH \\
+    --filterNH\_2 <NH-VALUE>                    & Max NH-VALUE for SAM tag NH \\
+    --filterNM\_1 <NM-VALUE>                    & Max NM-VALUE for SAM tag NM \\
+    --filterNM\_2 <NM-VALUE>                    & Max NM-VALUE for SAM tag NM \\
+ -h,--help                                      & Print usage information \\
+ -i1,--invert-strand1                           & Invert strand of 1 sample. Default false \\
+ -i2,--invert-strand2                           & Invert strand of 2 sample. Default false \\
+ -m,--min-mapq <MIN-MAPQ>                       & filter positions with MAPQ < MIN-MAPQ. Default: 20 \\
+ -m1,--min-mapq1 <MIN-MAPQ1>                    & filter 1 positions with MAPQ < MIN-MAPQ1. Default: 20 \\
+ -m2,--min-mapq2 <MIN-MAPQ2>                    & filter 2 positions with MAPQ < MIN-MAPQ2. Default: 20 \\
+ -P,--build-pileup <BUILD-PILEUP>               & Choose the library types and how parallel pileups are build for sample1(s1) and sample2(s2). \\
+                                                & Format: s1,s2. \\
+                                                & Possible values for s1 and s2: \\
+                                                & FR-FIRSTSTRAND    STRANDED library - first strand sequenced \\
+                                                & FR-SECONDSTRAND   STRANDED library - second strand sequenced \\
+                                                & UNSTRANDED    UNSTRANDED library \\
+                                                & default: UNSTRANDED,UNSTRANDED \\
+ -p,--threads <THREADS>                         & use \# THREADS. Default: 1 \\
+ -q,--min-basq <MIN-BASQ>                       & filter positions with base quality < MIN-BASQ. Default: 20 \\
+ -q1,--min-basq1 <MIN-BASQ1>                    & filter 1 positions with base quality < MIN-BASQ1. Default: 20 \\
+ -q2,--min-basq2 <MIN-BASQ2>                    & filter 2 positions with base quality < MIN-BASQ2. Default: 20 \\
+ -R,--show-ref <SHOW-REF>                       & Add reference base to output. BAM file(s) must have MD field! \\
+ -r,--result-file <RESULT-FILE>                 & results are written to RESULT-FILE or STDOUT if empty \\
+ -s,--separate                                  & Put feature-filtered results in to a separate file (= RESULT-FILE.filtered)\\
+ -T,--threshold <THRESHOLD>                     & Filter positions depending on test-statistic THRESHOLD default: DO NOT FILTER \\
+ %-u,--modus <MODUS>                             & Choose between different modes: \\
+ %                                               & <*> DirMult-CE : Compound Err. (estimated err.{0.01} + phred score) \\
+ %                                               & < > DirMult-RCE : Robust Compound Err. \\
+ -v,--version                                   & Print version information. \\
+ -W,--thread-window-size <THREAD-WINDOW-SIZE>   & size of the window used per thread. Default: 100000 \\
+ -w,--window-size <WINDOW-SIZE>                 & size of the window used for caching. Make sure this is greater than the read size and smaller than THREAD-WINDOW-SIZE>. Default:
+ 10000
+\end{longtable}}
+\end{center}
+%--------------------------------------------------------------------------------------------------
+\subsection{Single sample mode}
+With the introduction of JACUSA v1.2, single sample support(call-1) has been added that allows calling variants against a reference. 
+Internally, an \textit{in silico} sample is created from information provided by the MD field in BAM files - see samtools manual for details on MD field.
+Single sample mode requires that BAM files contain the MD field. We strongly recommend to use ``samtools calmd'' to add or overwrite existing MD fields in BAM files:
+\begin{verbatim}
+samtools calmd mapping.sorted.bam reference.fasta > mapping.sorted.MD.bam
+\end{verbatim}
+After populating the MD field, variants against the reference can be called with:
+\begin{verbatim} 
+java -jar JACUSA.jar call-1 
+-r JACUSA.out mapping.sorted.MD.bam
+\end{verbatim}
+%--------------------------------------------------------------------------------------------------
+\subsection{SAMtools like mpileup for two samples}
+See ``Call variant - two samples'' for details.
+%--------------------------------------------------------------------------------------------------
+\section{Identification of RNA editing sites}
+Use the following command line to identify RNA-DNA differences in BAM files that might give rise to RNA editing sites:
+\begin{verbatim}
+java -jar call-2 -r JACUSA.out -s -a H:1 gDNA.bam cDNA.bam
+\end{verbatim}
+Option ``-a H:1'' ensures that potential polymorphisms in gDNA will be eliminated as artefacts. The number $x \in \{1, 2\}$
+determines which sample has to be homomorph - in this case: gDNA.bam.
+
+Use the following command line to identify RNA-DNA differences:
+\begin{verbatim}
+java -jar call-2 -r JACUSA.out -s cDNA1.bam cDNA2.bam
+\end{verbatim}
+WARNING: If you want to identify RNA-RNA differences make sure NOT to use the filter ``-a H:x''! Otherwise, potential valid variants will be filtered out. 
+
+%--------------------------------------------------------------------------------------------------
+\section{Used libraries}
+picard tools
+%\todo{complete list}
+%--------------------------------------------------------------------------------------------------
+\end{document}
+%--------------------------------------------------------------------------------------------------

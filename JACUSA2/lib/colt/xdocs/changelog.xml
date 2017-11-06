@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+<!-- $Author: hoschek3 $, $Revision: 1.1 $, $Date: 2004/02/25 23:25:18 $ -->
+<document>
+    <properties>
+        <author email="whoschek.AT.lbl.DOT.gov">Wolfgang Hoschek</author>
+        <title>Changelog</title>
+    </properties>
+    <body>
+
+<!-- ##################################################################################### -->
+<section name="Version 1.2.0 (Sep 10, 2004)">
+<ul>
+  <li>Removed com.isml.math.* package (If you need Complex numbers, download and use <a href="http://jakarta.apache.org/commons/math/userguide/complex.html"> Jakarta Commons Math</a> instead)</li>
+  <li>Documentation is now auto generated</li>
+  <li>Fixed Algebra.normInfinity(DoubleMatrix1D x) (T.J.Hunt@open.ac.uk)</li>
+  <li>Upgraded package util.concurrent from version 1.3.2 to 1.3.4 (package name edu.oswego... becomes EDU.oswego...)</li>
+</ul>
+</section>
+
+
+<!-- ##################################################################################### -->
+<section name="Version 1.1.0 (Oct 29, 2003)">
+<ul>
+  <li>This version breaks the <a href="ibm-1.4.1-2xpentium4-2.8GHz.txt"> 1.9 Gflop/s barrier</a>
+      on JDK ibm-1.4.1, RedHat 9.0, 2x IntelXeon@2.8 GHz.</li>
+  <li>Redesigned documentation and web site</li>
+  <li>Moved build system to ANT</li>
+  <li>Upgraded package util.concurrent from version 1.3.1 to 1.3.2, which is now a separate jar</li>
+  <li>Upgraded package corejava to corejava-2002-11-16, which is now licensed under LGPL.</li>
+  <li>Removed packages ViolinStrings, edu.cornell.lassp.houle.RngPack, jal.*</li>
+  <li>Colt now requires jdk 1.2.x</li>
+  <li>Fixed covariance bug in cern.jet.stat.Descriptive (scott white "scottw@eml.cc")</li>
+  <li>Fixed bug in cern.jet.random.Normal.nextDouble in combination with setState() (nick.collier@verizon.net)</li>
+  <li>Fixed bug in cern.jet.stat.quantile.EquiDepthHistogram (Brett Neumeier random@rnd.cx)</li>
+  <li>RCDoubleMatrix2D was unnecessarily restricted in shape (double)columns*rows 
+    &lt;= Integer.MAX_VALUE). Is now only limited by nonZeroes &lt;= Integer.MAX_VALUE</li>
+</ul>
+</section>
+
+
+<!-- ##################################################################################### -->
+<section name="Version 1.0.3 (Nov 22, 2002)">
+<ul>
+  <li>This version breaks the <a href="ibm-1.4.1-2xpentium4-2.2GHz.txt"> 1.3 Gflop barrier</a>
+      on JDK ibm-1.4.1, RedHat 8.0, 2x Pentium4@2.2 GHz.</li>
+  <li>Upgraded package util.concurrent from version 1.3.0 to 1.3.1</li>
+  <li>Fixed bug in cern.jet.random.Uniform.nextInt (jan.cheyns@intec.rug.ac.be)</li>
+  <li>Fixed small bug in cern.colt.Partitioning and cern.colt.matrix.doublealgo.Partitioning</li>
+  <li>Fixed Poisson.staticNextInt()</li>
+  <li>Fixed infinite loop in Logarithmic.nextDouble() for some parameter combinations</li>
+  <li>Fix for CholeskyDecomposition.solve (MG Ferreira "mgf@webmail.co.za")</li>
+  <li>cern.jet.stat.quantile.QuantileFinderFactory should ignore N if if known_N 
+    is false.</li>
+  <li>class PrintFormat is unreliable - do not use it. matrix print formatting 
+    is now reverted back to use corejava.Format instead.</li>
+  <li> MersenneTwister had a <a target="_top" href="http://www.math.keio.ac.jp/matumoto/emt.html">small 
+    problem</a>, which is now fixed with Matsumotos code from 2002/1/26. </li>
+  <li>cern.jet.stat.Probability.studentT and cern.jet.random.StudentT were only 
+    defined for values &gt;= 0</li>
+  <li>cern.colt.bitvector.BitVector.replaceFromToWith(int from, int to, boolean 
+    value) treated leading partial unit incorrectly (Olivier Janssens "oj@adhoc.be") 
+  </li>
+</ul>
+</section>
+
+
+<!-- ##################################################################################### -->
+<section name="Version 1.0.2 (Nov 08, 2001)">
+<ul>
+  <li>Added GenericSorting.mergeSort for &quot;stable&quot; in-place sorting of 
+    arbitrary shaped data</li>
+  <li>Upgraded the ViolinStrings package to V1.0. Michael Schmeling reports that 
+    two split methods which were contributed by Eric Jablow have been added and 
+    some minor documentation bugs have been fixed.</li>
+  <li>Upgraded package util.concurrent from version 1.2.5 to 1.3.0</li>
+  <li> Added 2d matrix versions of daxpy(), dcopy(), dscal(), dswap() to Blas, 
+    SeqBlas, SmpBlas (Martin.Schimschak@dresdner-bank.com)</li>
+  <li>MersenneTwister now also allows zero seed (Martin.Schimschak@dresdner-bank.com)</li>
+  <li>Fix for serious SparseDoubleMatrix2D and Open&lt;type&gt;Map performance degradation</li>
+  <li>RCDoubleMatrix2D.assign(otherMatrix) got faster</li>
+  <li>RCDoubleMatrix2D.assign(double) got faster</li>
+  <li>DenseDoubleMatrix{1,2,3}D.assign(double) got faster</li>
+  <li>DenseDoubleMatrix2D.zMult got a bit faster for very large problem sizes</li>
+  <li>Algebra.normInfinity(DoubleMatrix1D x) and Algebra.normInfinity(DoubleMatrix2D 
+    A) were incorrect (Martin.Schimschak@dresdner-bank.com)</li>
+  <li>SeqBlas.dger() and SeqBlas.dtrmv() were incorrect (Martin.Schimschak@dresdner-bank.com)</li>
+  <li>ObjectArrayList.toList() threw IndexOutOfBoundsException</li>
+  <li>RCDoubleMatrix2D was unnecessarily restricted in shape (double)columns*rows 
+    &lt;= Integer.MAX_VALUE). Is now only limited by nonZeroes &lt;= Integer.MAX_VALUE</li>
+  <li>cern.colt.matrix.linalg.Property.equals(..) gave wrong results when comparing 
+    exotic special cases NaN, inf, -inf.</li>
+  <li>cern.colt.matrix.doublealgo.Sorting was not NaN aware. In compliance with 
+    the JDK sorts, it now swaps NaNs to the end.</li>
+  <li>Property.isIdentity bug fix</li>
+  <li>Polynomial.p1evl javadoc was misleading</li>
+  <li>Added matrix mergesorts. Matrix quicksorts alone were not enough, because 
+    matrices are frequently sorted successively by multiple columns. In order 
+    to preserve the relative order of equal elements a so-called &quot;stable&quot; 
+    sort was needed. Mergesort is such a thing. 
+    <blockquote> 
+      <p>To enable this, some minor changes were necessary. Please update your 
+        source code as follows</p>
+      <table width="75%" border="1" cellspacing="0">
+        <tr valign="top"> 
+          <td><b>Old style</b></td>
+          <td><b>New style</b></td>
+        </tr>
+        <tr valign="top"> 
+          <td height="59"><tt>cern.colt.matrix.doublealgo.Sorting.quickSort(...)</tt></td>
+          <td height="59"> 
+            <p><tt>cern.colt.matrix.doublealgo.Sorting.quickSort.sort(...)</tt>
+              or 
+              <tt>cern.colt.matrix.doublealgo.Sorting.mergeSort.sort(...)</tt></p>
+          </td>
+        </tr>
+      </table>
+    </blockquote>
+  </li>
+  <li>matrix.viewSorted(...) methods now use mergesort instead of quicksort.</li>
+</ul>
+</section>
+
+
+<!-- ##################################################################################### -->
+<section name="Version 1.0.1 (May 15, 2000)">
+<ul>
+  <li>New blocked algorithm improved performance of out-of-cache matrix-matrix 
+    and matrix-vector mult (Blas.dgemm and dgemv).</li>
+  <li>Added parallel implementations of assign(function) to the BLAS (Basic Linear 
+    Algebra System). See <tt>cern.colt.matrix.linalg</tt>.</li>
+  <li>Fixed a bad bug in GenericPermuting. This one caused incorrect results to 
+    LU solving.</li>
+  <li>SmpBlas.dgemm and dgemv threw exceptions when asking for transpositions.</li>
+</ul>
+</section>
+
+
+<!-- ##################################################################################### -->
+<section name="Version 1.0.0">
+<ul>
+  <li>Powerful, extendible and performant histogram abstractions, improving ways 
+    for the statistical study of experimental data. </li>
+  <li>Matrix functionality and performance improvements</li>
+  <li>Sequential and parallel implementations of the BLAS (Basic Linear Algebra 
+    System). See <tt>cern.colt.matrix.linalg</tt>.</li>
+  <li>Sparse row compressed matrix implementation - <tt>RCDoubleMatrix2D</tt></li>
+  <li>Major performance improvements for many matrix operations, in particular 
+    optimizations detecting function objects for scaling (+,-,*,/, ...), delegating 
+    to optimized internal implementations</li>
+  <li>For performance added generalized matrix-matrix and matrix-vector mult: 
+    <tt>C = alpha*A*B + beta*C </tt>and <tt>z = alpha*A*y + beta*z</tt> with or 
+    without transpositions</li>
+  <li>Added the long awaited histogram packages <tt>hep.aida </tt>, <tt>hep.aida.ref</tt> 
+    and <tt>hep.aida.bin</tt>. The stable bins formerly found in cern.jet.histo 
+    have been moved to hep.aida.bin and cern.jet.histo has been dropped. </li>
+  <li>Added histogram and OLAP cube operators to <tt>cern.colt.matrix.doublealgo.Statistic</tt>.</li>
+  <li>Added sampling views to cern.colt.matrix.doublealgo.Statistic </li>
+  <li>Efficient matrix quicksort using precomputation; added to <tt>cern.colt.matrix.doublealgo.Sorting</tt></li>
+  <li>Stencil methods for finite difference operations in <tt>cern.colt.matrix.doublealgo.Stencil</tt></li>
+  <li>DoubleMatrix1D.getNonZeros(IntArrayList indexList, DoubleArrayList valueList, 
+    int maxCardinality) had a bug, hence Algebra.inverse sometimes produced wrong 
+    answers. </li>
+  <li>QRDecomposition</li>
+  <li>matrix.viewStrides() sometimes gave wrong shape</li>
+  <li>matrix.zMult(...) sometimes threw ArrayIndexOutOfBoundsExceptions</li>
+  <li>DynamicBin1D.max() sometimes gave wrong answer -infinity</li>
+  <li>Distance matrix in cern.colt.matrix.doublealgo.Statistic now works on user 
+    defined distance functions</li>
+  <li>Moved cern.colt.matrix.DoubleTransform to cern.colt.matrix.doublealgo.Transform 
+    (sorry) </li>
+</ul>
+</section>
+
+
+<!-- ##################################################################################### -->
+<section name="Version 1.0 Beta4">
+<ul>
+  <li>Renamed to lower case: EDU.oswego.cs.dl.util.concurrent --> edu.oswego.cs.dl.util.concurrent (resolves collisions of multiple edu packages)</li>
+  <li>cern.colt.matrix.linalg.Algebra.trace() now returns a double.</li>
+  <li>Improved build process (makefile)</li>
+  <li>package cern.colt.matrix - bug fixes and performance improvements</li>
+  <li>Stronger separation of matrix interfaces and matrix implementations: 
+    <ul>
+      <li>the implementations of matrix data structures moved from package cern.colt.matrix 
+        to package cern.colt.matrix.imp</li>
+      <li>matrix factories moved from cern.colt.matrix.algo to cern.colt.matrix</li>
+    </ul>
+  </li>
+  <li>Formatter objects - Matrix formatting much extended and now also possible 
+    using java.lang.Double.toString(double)</li>
+  <li>Moved cern.jet.math.Unit and cern.jet.math.PhysicalConstants to cern.clhep 
+  </li>
+  <li>Uniform.nextDouble() now returns a value between min and max, as specified 
+    upon instance construction</li>
+  <li> package cern.colt.matrix.linalg - Linear Algebra </li>
+  <li>Additional convenience methods in matrix factories</li>
+  <li>cern.colt.matrix.DoubleTransform: Additional convenience methods for element-by-element 
+    transformations</li>
+  <li>Introduced Object matrices</li>
+  <li>A few additional methods in DynamicBin1D related to sampling, bootstrapping, 
+    correlation</li>
+  <li>Performance log of compute intensive matrix computations</li>
+  <li>Now also redistributing <tt>util.concurrent</tt> framework - Standardized, 
+    efficient utility classes commonly encountered in concurrent programming</li>
+  <li>package cern.clhep - Starting to port CLHEP (C++)</li>
+</ul>
+</section>
+
+
+</body>
+</document>
