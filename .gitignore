@@ -1,9 +1,8 @@
 /bin
-/manual.aux
-/manual.dvi
-/manual.log
-/manual.out
-/manual.toc
+/manual/manual.aux
+/manual/manual.dvi
+/manual/manual.log
+/manual/manual.out
+/manual/manual.toc
 /build
 /test
-.Rproj.user
