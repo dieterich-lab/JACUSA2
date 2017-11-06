@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!-- $Author: hoschek3 $, $Revision: 1.2 $, $Date: 2004/02/25 23:47:59 $ -->
+<document>
+  <properties>
+    <author email="whoschek.AT.lbl.DOT.gov">Wolfgang Hoschek</author>
+    <title>Mailing List</title>
+  </properties>
+<body>
+
+<!-- ##################################################################################### -->
+<section name="Subscribing">
+Join the discussion mailing list. This list will also announce the availability 
+of new releases. To sign up for the list, please send an email to 
+<a href="mailto:ListServer@listbox.cern.ch">ListServer@listbox.cern.ch</a>. The email should have the body
+<pre class="source">
+subscribe colt
+</pre>
+
+The email's subject is irrelevant. 
+Your name and address will not be used for purposes other than this mailing list.
+</section>
+
+
+<!-- ##################################################################################### -->
+<section name="Posting">
+To post to the list, send mail to <a href="mailto:colt@listbox.cern.ch">colt@listbox.cern.ch</a>.
+</section>
+
+
+
+<!-- ##################################################################################### -->
+<section name="Unsubscribing">
+To unsubscribe from the list send an email to 
+<a href="mailto:ListServer@listbox.cern.ch">ListServer@listbox.cern.ch</a>. The email should have the body
+<pre class="source">
+unsubscribe colt
+</pre>
+
+The email's subject is irrelevant. 
+</section>
+
+
+</body>
+</document>

@@ -1,0 +1,35 @@
+Colt Matrix benchmark running on
+
+java.vm.vendor  IBM Corporation      
+java.vm.version 1.4.0                
+java.vm.name    Classic VM           
+os.name         Linux                
+os.version      2.4.18-18.7.x.cernsmp
+os.arch         x86                  
+java.version    1.4.0                
+java.vendor     IBM Corporation      
+java.vendor.url http://www.ibm.com/  
+
+Colt Version is Version 1.0.3.168 (Thu Nov 28 15:02:35 CET 2002)
+Please report problems to whoschek@lbl.gov or http://www-itg.lbl.gov/~hoschek/colt/index.htm
+
+
+
+Executing command = [dgemm, dense, 2, 2, 0.999, false, true, 5, 10, 25, 50, 100, 250, 500, 1000] ...
+
+@x.x.x.x.x.x.x.x.*
+Performance of Blas matrix-matrix mult dgemm(false, true, 1, A, B, 0, C)
+type=dense
+        | size
+        | 5      10      25      50      100     250     500     1000   
+------------------------------------------------------------------------
+d 0.999 | 72.488 151.112 204.153 290.586 419.665 202.517 175.685 198.452
+Run took a total of Time=34.893 secs. End of run.
+
+Command file name used: /afs/cern.ch/user/h/hoschek/java/share/opt/benchmark/colt-1.0.3/t1.conf
+To reproduce and compare results, here it's contents:
+dgemm dense 2 2.0 0.999 false true 5 10 25 50 100 250 500 1000
+#dgemm dense 1 2.0 0.999 false true 5 10 25 50 100 250 500 1000
+
+Program execution took a total of 0.5843833 minutes.
+Good bye.

@@ -1,0 +1,327 @@
+<!-- 
+ANT build script (ANT is a Java & XML based cross-platform build tool 
+and available at http://jakarta.apache.org/ant/). 
+
+author: whoschek@lbl.gov 
+
+See the target "usage" further below for instructions on how to build the software.
+-->
+
+
+<!-- ================================================================= -->
+<!-- NOTE: all directories are relative to colt/                       -->
+<!-- ================================================================= -->
+<project name="colt" default="help" basedir="." >
+
+
+<!-- Read system environment vars into properties prefixed with "env". -->
+<property environment="env"/>
+
+<property name="version" value="1.2.0"/>
+
+<property name="dist.download.dir" value="${user.home}/unix/www/${ant.project.name}-download"/>
+<!-- <property name="dist.download.dir" value="${user.home}/www/colt-download"/> -->
+<!-- <property name="dist.download.dir" value="${user.home}/backups/colt-download"/> -->
+
+<property name="dist.website" value="${user.home}/unix/www/${ant.project.name}"/>
+<!-- <property name="dist.website" value="${user.home}/www/colt"/> -->
+<!-- <property name="dist.website" value="/tmp/colt-www"/> -->
+
+<property name="proj.title" value="Colt"/>
+
+<!-- The directory where *.java files are stored. -->
+<property name="javac.src" value="src"/>
+
+<!-- Destination for *.class files -->
+<property name="javac.dest" value="build/classes"/>
+
+<!-- Source directory for xml docs -->
+<property name="xdocs.src" value="xdocs"/>
+
+<!-- Destination for documentation files -->
+<property name="doc.dest" value="doc"/>
+
+<!-- Destination for javadoc generated files -->
+<property name="javadoc.dest" value="${doc.dest}/api"/>
+
+<!-- Location of jar files -->
+<property name="jar.dir" value="lib"/>
+
+<!-- The jar file that the jar task will generate -->
+<property name="jar.filename" value="${ant.project.name}.jar"/>
+
+<!-- Directory for temporary files. -->
+<property name="dist.tmp" value="${java.io.tmpdir}/${ant.project.name}-tmp"/>
+
+<!-- file patterns to be excluded from tar in dist targets -->
+<property name="tar.excludes" value="**/CVS **/.* **/*~ **/*.bak **/*.BAK **/*.jpage"/>
+
+<!-- Construct classpath for compilation-->
+<path id="javac.classpath">
+	<fileset dir="${jar.dir}">
+		<include name="*.jar"/>
+		<exclude name="${jar.filename}"/>
+	</fileset>
+	<!-- <pathelement location="${build.home}/classes"/> -->
+</path>
+
+<!-- The base directory relative to which most targets are built (not needed actually)-->
+<!-- <property name="base" value="."/> -->
+
+
+
+<!-- ================================================================= -->
+<!-- Default target                                                    -->
+<!-- ================================================================= -->
+<target name="help">
+<echo>
+First cd into the dir this build file is placed in:
+
+	cd colt
+	 	
+Then type one of the following to build the software:
+
+	ant -help         - Print help on general ant usage		
+	ant help          - Print this help text		
+	ant build         - Compile, generate jars, [javadoc]	 	
+	ant doc           - Generate documentation
+	ant dist          - Build and generate distribution downloads
+	 	
+Further individual targets used internally by above targets:
+	
+	javac             - Compile all *.java files into .class files	
+	javadoc           - Generate javadoc files from *.java	
+	jar               - Generate jar file(s) from .class files	
+	style             - Generate website into doc/ directory
+</echo>
+</target>
+	
+
+<!-- ================================================================= -->
+<!-- Initialize variables                                              -->
+<!-- NOTE: all directories are relative to colt/                   -->
+<!-- ================================================================= -->
+<target name="init">
+	<tstamp />
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Remove all generated (compiled) class files.                      -->
+<!-- ================================================================= -->
+<target name="clean">
+	<!-- <delete dir="${javac.dest}" /> -->
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Clean all in preparation for a complete distribution.             -->
+<!-- ================================================================= -->
+<target name="cleanall">
+	<delete verbose="true">
+		<fileset dir=".">
+			<patternset>
+				<include name="**/*.bak"/>
+				<include name="**/*.BAK"/>
+				<include name="**/*~"/>
+			</patternset>
+		</fileset>
+	</delete>
+	
+	<delete dir="build" />
+	<delete dir="${dist.tmp}" />
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Build the software (without generating a distribution)            -->
+<!-- ================================================================= -->
+<target name="build" depends="javac, jar">
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Compile all *.java files                                          -->
+<!-- ================================================================= -->
+<target name="javac" depends="clean">
+
+	<mkdir dir="${javac.dest}" />
+	<javac srcdir="${javac.src}" destdir="${javac.dest}"
+		includes="**/*.java"
+		excludes="misc/*, **/UnitTest*.java"
+		deprecation="on"
+		debug="off">
+		
+		<classpath refid="javac.classpath"/>
+	</javac>
+	
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Generate jar file(s) from *.class files                           -->
+<!-- ================================================================= -->
+<target name="jar">
+
+	<delete file="${jar.dir}/${jar.filename}" />
+	
+	<jar jarfile="${jar.dir}/${jar.filename}" basedir="${javac.dest}"
+		excludes="**/*UnitTest.class"
+		index="yes"
+		compress="yes"
+	/>
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Generate javadoc files from *.java files                          -->
+<!-- ================================================================= -->
+<target name="javadoc" unless="env.NO_JAVADOC">
+
+	<delete dir="${javadoc.dest}" />
+	<mkdir dir="${javadoc.dest}" />
+	
+	<javadoc sourcepath="${javac.src}" destdir="${javadoc.dest}"
+		public="true"
+		author="false"
+		use="true"
+		splitIndex="true"
+		version="true"
+		doctitle="&lt;h2&gt;${proj.title}&lt;/h2&gt;&lt;h4&gt;Open Source Libraries for High Performance Scientific and Technical Computing in Java&lt;/h4&gt;&lt;hr&gt;"
+		windowtitle="${proj.title} ${version} - API Specification"
+		header="&lt;b&gt;${proj.title} ${version}&lt;/b&gt;"
+		bottom="&lt;font size=-1 &gt;Jump to the &lt;a target=_top href=http://dsd.lbl.gov/~hoschek/colt &gt;${proj.title} Homepage&lt;/a&gt;">
+	
+		<packageset dir="${javac.src}" 
+			excludes="gov/lbl/dsd/colt/trash/ gov/lbl/dsd/p2pio/jaxb/" 
+		/>
+		
+		<link href="http://java.sun.com/j2se/1.4/docs/api/"/>
+		<link href="http://dsd.lbl.gov/~hoschek/javatree/share/misc/concurrent-1.3.4/doc/"/>
+		
+		<classpath refid="javac.classpath"/>
+	</javadoc>
+</target>
+
+
+
+<!-- ================================================================= -->
+<!-- Build the documentation files using XSLT                          -->
+<!-- derived from http://jakarta.apache.org/site/jakarta-site2.html    -->
+<!-- ================================================================= -->                                                                          
+<target name="style">
+	<!-- copy images, stylesheets, etc to documentation output dir -->
+	<copy todir="${doc.dest}">
+		<fileset dir="${xdocs.src}"
+			includes="**" 
+			excludes="*.xml, *.xsl"/>		
+	</copy>
+
+	<!-- replace lastUpdated tag on web site with current date -->
+	<tstamp>
+		<format property="dateformat" pattern="MMM d, yyyy"/>
+	</tstamp>
+	<replaceregexp file="${xdocs.src}/navigation.xml"
+                         match="lastPublished=&quot;.*?&quot;"
+                         replace="lastPublished=&quot;${dateformat}&quot;"
+                         />
+	
+	<!-- replace version tag on web site navigation bar with current version -->
+	<replaceregexp file="${xdocs.src}/navigation.xml"
+                         match="currentVersion=&quot;.*?&quot;"
+                         replace="currentVersion=&quot;${version}&quot;"
+                         />
+	<!-- now generate documentation from xdocs via XSLT -->
+	<style basedir="${xdocs.src}" 
+			destdir="${doc.dest}"
+			extension=".html" 
+			style="${xdocs.src}/style.xsl"
+			force="true"
+			excludes="navigation.xml"
+			includes="*.xml">
+		<outputproperty name="doctype-public" value="-//W3C//DTD HTML 4.01 Transitional//EN"/>
+		<outputproperty name="doctype-system" value="http://www.w3.org/TR/html4/loose.dtd"/>
+	</style>
+
+</target>
+
+<!-- ================================================================= -->
+<!-- Generate documentation                                            -->
+<!-- ================================================================= -->
+<target name="doc" depends="style, javadoc, fixcrlf">
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Generate distribution downloads and copy to life website          -->
+<!-- ================================================================= -->
+<target name="dist" depends="dist-web, dist-release">
+	<!-- 
+	scp -r ~/unix/www/colt doggy.lbl.gov:www/
+	scp	~/unix/www/colt-download/releases/* doggy.lbl.gov:www/colt-download/releases/
+	-->
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Copy documentation to life website                                -->
+<!-- ================================================================= -->
+<target name="dist-web" depends="doc">
+
+	<!-- <delete dir="${dist.website}" /> -->
+	<mkdir dir="${dist.website}" />
+	<copy todir="${dist.website}">
+		<fileset dir="${doc.dest}"/>
+	</copy>
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Build a complete distribution. Results go to ${dist.download.dir} -->
+<!-- ================================================================= -->
+<target name="dist-release" depends="build, doc, cleanall">
+
+	<!--<delete dir="${dist.tmp}" />-->
+	<mkdir dir="${dist.tmp}" />
+
+	<tstamp>
+		<format property="dateformat" pattern="yyyy-MM-dd"/>
+	</tstamp>
+	
+	<!-- ============================================================= -->
+	<!-- Generate colt.tar.gz -->
+	<basename property="proj.basename" file="."/>
+	<tar tarfile="${dist.tmp}/${ant.project.name}-${version}.tar.gz" 
+		basedir=".." includes="${proj.basename}/" excludes="${tar.excludes}"
+		compression="gzip" longfile="gnu"
+	/>
+	
+	<!-- ============================================================= -->
+	<!-- Generate colt.zip -->
+	<zip zipfile="${dist.tmp}/${ant.project.name}-${version}.zip" 
+		basedir=".." includes="${proj.basename}/" excludes="${tar.excludes}"
+	/>
+		
+	<!-- ============================================================= -->
+	<mkdir dir="${dist.download.dir}/releases" />
+	<move todir="${dist.download.dir}/releases">
+		<fileset dir="${dist.tmp}"> <include name="*"/> </fileset>
+	</move>
+	
+	<delete dir="${dist.tmp}" />
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Fix carriage return / linefeed for unix and windows.              -->
+<!-- ================================================================= -->
+<target name="fixcrlf">
+	<!--
+	<fixcrlf srcdir="bin" eol="lf" includes="*" excludes="*.bat" />
+	<fixcrlf srcdir="bin" eol="crlf" includes="*.bat" />
+	<chmod dir="bin" perm="+x" includes="*" excludes="*.bat" />
+	-->
+</target>
+
+
+</project>

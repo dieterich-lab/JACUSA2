@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!-- $Author: hoschek3 $, $Revision: 1.1 $, $Date: 2004/02/25 23:25:18 $ -->
+<document>
+	<properties>
+		<author email="whoschek.AT.lbl.DOT.gov">Wolfgang Hoschek</author>
+		<title>Dependencies, Versions and their Homepages</title>
+	</properties>
+	<body>
+		<!-- ##################################################################################### -->
+		<section name="Dependencies, Versions and their Homepages">
+				<p>Colt contains all dependencies necessary to run the software
+				"out of the box" with zero installation and configuration effort.
+				A single download and untar step will get you operational. This gets
+				you up and running in 5 minutes with the least amount of hassle, on any box. </p>
+				<p>Developers and advanced users want to know the dependency set, and tinker
+					with it in interesting ways. The following dependencies exist (left component
+					depends on right component):</p>
+<table border="0" cellspacing="0" cellpadding="2" width="100%">
+<xtbody>
+ 	  <tr>
+		<xth>Product</xth>
+		<xth>Dependency and Homepage</xth>
+		<xth>Javadoc</xth>
+		<xth>License</xth>
+ 	  </tr>
+      <!-- ##################################################################################### -->
+      <tr>
+        <td>colt</td>
+        <td> </td>
+        <td> <a href="api/index.html">javadoc</a> </td>
+        <td> <a href="license.html">Apache style</a> </td>
+      </tr>
+      
+      <!--
+      <tr>
+        <td> </td>
+        <td> <a href="http://java.sun.com/j2se/1.4/download.html">jdk-1.2.x or higher</a> (we
+test with the sun-1.4.2 jdk on Linux) </td>
+        <td> <a href="http://java.sun.com/products/jdk/1.4/docs/api">javadoc</a> </td>
+        <td> n/a </td>
+      </tr>
+      -->
+      
+      <tr>
+        <td> </td>
+        <td> <a href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html">concurrent-1.3.4</a> </td>
+        <td> <a href="http://dsd.lbl.gov/%7Ehoschek/javatree/share/misc/concurrent-1.3.4/doc/EDU/oswego/cs/dl/util/concurrent/package-summary.html">javadoc</a> </td>
+        <td> <a href="licenses/concurrent.LICENSE.txt">Public Domain</a> </td>
+      </tr>
+      
+      <tr>
+        <td> </td>
+        <td> <a href="http://www.horstmann.com/">corejava-format-2002-11-16</a> </td>
+        <td> <a href="api/corejava/package-summary.html">javadoc</a> </td>
+        <td> <a href="licenses/corejava.LICENSE.txt">LGPL</a> </td>
+      </tr>
+      
+      <!--
+      <tr>
+        <td> </td>
+        <td> <a href="http://www.vni.com">com.imsl.math</a> </td>
+        <td> <a href="api/com/imsl/math/package-summary.html">javadoc</a> </td>
+        <td> <a href="licenses/imsl.LICENSE.txt">Apache Style</a> </td>
+      </tr>
+      -->
+      
+
+</xtbody>
+</table>
+<p>
+Chances are good that colt will also run with earlier or later
+versions of
+the above components - just drop them in.
+We can not guarantee that such other versions will work, of course.
+We are interested in feedback as to what does or does not work for you.
+</p>
+  <p>Before you submit bug reports, please check if the bug is
+reproducible with the versions listed above, and let us know. </p>
+
+
+</section>
+</body>
+</document>

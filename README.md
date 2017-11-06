@@ -1,4 +1,4 @@
-JACUSA
-======
+# JACUSA2
+New version of JACUSA -> 2.0
 
-JAVA framework for accurate SNV assessment
+Under construction!
