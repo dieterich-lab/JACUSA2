@@ -1,7 +1,7 @@
 package jacusa.filter.factory;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.data.BaseQualData;
+import lib.cli.parameters.AbstractParameters;
+import lib.data.BaseQualData;
 
 public abstract class AbstractDistanceFilterFactory<T extends BaseQualData>
 extends AbstractFilterFactory<T> {

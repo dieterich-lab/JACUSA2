@@ -1,6 +1,6 @@
 package jacusa.method.call.statistic.dirmult.initalpha;
 
-import jacusa.data.BaseCallConfig;
+import lib.data.BaseCallConfig;
 
 public class MeanAlphaInit extends AbstractAlphaInit {
 

@@ -1,11 +1,11 @@
 package jacusa.filter.storage;
 
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.AbstractData;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.AbstractData;
 
 public abstract class AbstractStorage<T extends AbstractData> {
 
-	private ConditionParameters<T> condition;
+	private JACUSAConditionParameters<T> condition;
 	
 	// corresponds to CLI option 
 	private final char c;
@@ -19,11 +19,11 @@ public abstract class AbstractStorage<T extends AbstractData> {
 		return c;
 	}
 
-	public void setCondition(final ConditionParameters<T> condition) {
+	public void setCondition(final JACUSAConditionParameters<T> condition) {
 		this.condition = condition;
 	}
 	
-	public ConditionParameters<T> getCondition() {
+	public JACUSAConditionParameters<T> getCondition() {
 		return condition;
 	}
 

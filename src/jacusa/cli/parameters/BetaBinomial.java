@@ -1,9 +1,9 @@
 package jacusa.cli.parameters;
 
-import jacusa.data.AbstractData;
-import jacusa.data.ParallelPileupData;
-import jacusa.data.Result;
 import jacusa.method.call.statistic.StatisticCalculator;
+import lib.data.AbstractData;
+import lib.data.ParallelData;
+import lib.data.Result;
 
 public class BetaBinomial<T extends AbstractData> implements StatisticCalculator<T> {
 
@@ -15,7 +15,7 @@ public class BetaBinomial<T extends AbstractData> implements StatisticCalculator
 	}
 
 	@Override
-	public double getStatistic(ParallelPileupData<T> parallelData) {
+	public double getStatistic(ParallelData<T> parallelData) {
 		// TODO
 		return Double.NaN;
 	}

@@ -1,16 +1,17 @@
 package jacusa.io.format;
 
-import jacusa.JACUSA;
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.BaseQualData;
-import jacusa.data.BaseCallConfig;
-import jacusa.data.ParallelPileupData;
-import jacusa.data.Result;
 import jacusa.filter.FilterConfig;
 import jacusa.filter.factory.AbstractFilterFactory;
 
 import java.util.Calendar;
 import java.util.List;
+
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.BaseCallConfig;
+import lib.data.BaseQualData;
+import lib.data.ParallelData;
+import lib.data.Result;
+import lib.util.AbstractTool;
 
 public class VCFcall extends AbstractOutputFormat<BaseQualData> {
 
@@ -26,7 +27,7 @@ public class VCFcall extends AbstractOutputFormat<BaseQualData> {
 	}
 	
 	@Override
-	public String getHeader(final List<ConditionParameters<BaseQualData>> conditions) {
+	public String getHeader(final List<JACUSAConditionParameters<BaseQualData>> conditionParameters) {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(getCOMMENT());
@@ -47,7 +48,7 @@ public class VCFcall extends AbstractOutputFormat<BaseQualData> {
 		sb.append('\n');
 
 		sb.append("##source=");
-		sb.append(JACUSA.NAME + "-" + JACUSA.VERSION);
+		sb.append(AbstractTool.getLogger().getTool().getName() + "-" + AbstractTool.getLogger().getTool().getVersion());
 		sb.append('\n');
 
 		// add filter descriptions to header
@@ -80,10 +81,10 @@ public class VCFcall extends AbstractOutputFormat<BaseQualData> {
 			sb.append(cols[i]);
 		}
 		
-		for (final ConditionParameters<BaseQualData> condition : conditions) {
-			for (String pathname : condition.getPathnames())  {
+		for (final JACUSAConditionParameters<BaseQualData> conditionParameter : conditionParameters) {
+			for (String recordFilename : conditionParameter.getRecordFilenames())  {
 				sb.append(getSEP());
-				sb.append(pathname);
+				sb.append(recordFilename);
 			}
 		}
 
@@ -93,7 +94,7 @@ public class VCFcall extends AbstractOutputFormat<BaseQualData> {
 	@Override
 	public String convert2String(Result<BaseQualData> result) {
 		final StringBuilder sb = new StringBuilder();
-		final ParallelPileupData<BaseQualData> parallelData = result.getParellelData();
+		final ParallelData<BaseQualData> parallelData = result.getParellelData();
 		String filterInfo = result.getFilterInfo().combine();
 		if (filterInfo == null || filterInfo.length() == 0) {
 			filterInfo = "PASS";

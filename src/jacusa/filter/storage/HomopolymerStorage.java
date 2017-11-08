@@ -3,11 +3,11 @@ package jacusa.filter.storage;
 import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.data.BaseCallConfig;
-import jacusa.data.BaseQualData;
+import lib.data.BaseCallConfig;
+import lib.data.BaseQualData;
 
-import net.sf.samtools.CigarElement;
-import net.sf.samtools.SAMRecord;
+import htsjdk.samtools.CigarElement;
+import htsjdk.samtools.SAMRecord;
 
 public class HomopolymerStorage<T extends BaseQualData> 
 extends AbstractWindowStorage<T> 

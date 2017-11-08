@@ -1,22 +1,21 @@
 package jacusa.method.call.statistic;
 
 import jacusa.cli.parameters.CallParameters;
-import jacusa.data.BaseQualData;
-import jacusa.data.ParallelPileupData;
-import jacusa.data.Result;
 import jacusa.estimate.MinkaEstimateParameters;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.dirmult.initalpha.AbstractAlphaInit;
 import jacusa.method.call.statistic.dirmult.initalpha.MinAlphaInit;
-import jacusa.phred2prob.Phred2Prob;
-import jacusa.util.Info;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-// import java.util.HashMap;
-// import java.util.Map;
 
-import umontreal.iro.lecuyer.probdist.ChiSquareDist;
+import lib.data.BaseQualData;
+import lib.data.ParallelData;
+import lib.data.Result;
+import lib.phred2prob.Phred2Prob;
+import lib.util.Info;
+
+// TODO import umontreal.iro.lecuyer.probdist.ChiSquareDist;
 
 public abstract class AbstractDirichletStatistic<T extends BaseQualData>
 implements StatisticCalculator<T> {
@@ -158,7 +157,7 @@ implements StatisticCalculator<T> {
 	}
 	
 	@Override
-	public double getStatistic(final ParallelPileupData<T> parallelData) {
+	public double getStatistic(final ParallelData<T> parallelData) {
 		// base index mask; can be ACGT or only observed bases in parallelPileup
 		final int baseIndexs[] = getBaseIndex(parallelData);
 		// number of globally considered bases, normally 4 : ACGT
@@ -252,8 +251,8 @@ implements StatisticCalculator<T> {
 			if (calcPValue) {
 				// FIXME HOW MANY DEGREES OF FREEDOM
 				stat = -2 * (logLikelihood[pooledIndex] - tmpLogLikelihood);
-				ChiSquareDist dist = new ChiSquareDist(baseIndexs.length - 1);
-				stat = 1 - dist.cdf(stat);
+				// FIXME use THIS with other implementation ChiSquareDist dist = new ChiSquareDist(baseIndexs.length - 1);
+				// FIXME stat = 1 - dist.cdf(stat);
 			} else { // just the log-likelihood ratio
 				stat = tmpLogLikelihood - logLikelihood[pooledIndex];
 			}
@@ -351,7 +350,7 @@ implements StatisticCalculator<T> {
 	 * @param parallelData
 	 * @return
 	 */
-	protected int[] getBaseIndex(final ParallelPileupData<T> parallelData) {
+	protected int[] getBaseIndex(final ParallelData<T> parallelData) {
 		if (onlyObservedBases) {
 			return parallelData.getCombinedPooledData().getBaseQualCount().getAlleles();
 		}

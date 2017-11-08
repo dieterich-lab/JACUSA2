@@ -1,11 +1,11 @@
 package jacusa.pileup.builder;
 
-import jacusa.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.AbstractData;
+import lib.util.WindowCoordinate;
 
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.AbstractData;
-import jacusa.util.WindowCoordinate;
-import net.sf.samtools.SAMFileReader;
+import htsjdk.samtools.SamReader;
 
 /**
  * 
@@ -31,8 +31,8 @@ implements hasLibraryType {
 	 */
 	public abstract DataBuilder<T> newInstance(
 			final WindowCoordinate windowCoordinates, 
-			final SAMFileReader reader, 
-			final ConditionParameters<T> condition,
+			final SamReader reader, 
+			final JACUSAConditionParameters<T> condition,
 			final AbstractParameters<T> parameters);
 
 	/**

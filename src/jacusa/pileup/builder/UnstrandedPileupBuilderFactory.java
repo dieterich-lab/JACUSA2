@@ -1,13 +1,12 @@
 package jacusa.pileup.builder;
 
-import jacusa.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.BaseQualData;
+import lib.util.WindowCoordinate;
+import lib.util.Coordinate.STRAND;
 
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.BaseQualData;
-
-import jacusa.util.WindowCoordinate;
-import jacusa.util.Coordinate.STRAND;
-import net.sf.samtools.SAMFileReader;
+import htsjdk.samtools.SamReader;
 
 /**
  * 
@@ -24,8 +23,8 @@ extends AbstractDataBuilderFactory<T> {
 	@Override
 	public UnstrandedPileupBuilder<T> newInstance(
 			final WindowCoordinate windowCoordinates,
-			final SAMFileReader reader, 
-			final ConditionParameters<T> condition, 
+			final SamReader reader, 
+			final JACUSAConditionParameters<T> condition, 
 			final AbstractParameters<T> parameters) {
 		return new UnstrandedPileupBuilder<T>(windowCoordinates, reader, 
 				STRAND.UNKNOWN, condition, parameters);

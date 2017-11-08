@@ -1,10 +1,10 @@
 package jacusa.method.call.statistic.dirmult;
 
 import jacusa.cli.parameters.CallParameters;
-import jacusa.data.BaseQualData;
 import jacusa.estimate.MinkaEstimateDirMultParameters;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.AbstractDirichletStatistic;
+import lib.data.BaseQualData;
 
 public class DirichletMultinomialCompoundError<T extends BaseQualData>
 extends AbstractDirichletStatistic<T> {

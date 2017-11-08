@@ -1,13 +1,14 @@
 package jacusa.pileup.dispatcher.rtarrest;
 
-import jacusa.cli.parameters.RTArrestParameters;
-import jacusa.data.BaseQualReadInfoData;
 
-import jacusa.pileup.dispatcher.AbstractWorkerDispatcher;
+import jacusa.cli.parameters.RTArrestParameters;
 import jacusa.pileup.worker.RTArrestWorker;
-import jacusa.util.coordinateprovider.CoordinateProvider;
 
 import java.io.IOException;
+
+import lib.data.BaseQualReadInfoData;
+import lib.util.coordinateprovider.CoordinateProvider;
+import lib.worker.AbstractWorkerDispatcher;
 
 public class RTArrestWorkerDispatcher<T extends BaseQualReadInfoData> 
 extends AbstractWorkerDispatcher<T> {

@@ -2,13 +2,13 @@ package jacusa.io.format;
 
 import java.util.List;
 
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.BaseCallConfig;
 
-import jacusa.data.BaseQualReadInfoData;
-import jacusa.data.ParallelPileupData;
-import jacusa.data.Result;
 import jacusa.filter.FilterConfig;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.BaseCallConfig;
+import lib.data.BaseQualReadInfoData;
+import lib.data.ParallelData;
+import lib.data.Result;
 
 public class RTArrestResultFormat 
 extends AbstractOutputFormat<BaseQualReadInfoData> {
@@ -49,7 +49,7 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 	}
 
 	@Override
-	public String getHeader(final List<ConditionParameters<BaseQualReadInfoData>> conditions) {
+	public String getHeader(final List<JACUSAConditionParameters<BaseQualReadInfoData>> conditionParameters) {
 		final StringBuilder sb = new StringBuilder();
 
 		sb.append(COMMENT);
@@ -72,8 +72,8 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 		sb.append("strand");
 		sb.append(getSEP());
 
-		for (int conditionIndex = 0; conditionIndex < conditions.size(); conditionIndex++) {
-			addConditionHeader(sb, conditionIndex, conditions.get(conditionIndex).getPathnames().length);
+		for (int conditionIndex = 0; conditionIndex < conditionParameters.size(); conditionIndex++) {
+			addConditionHeader(sb, conditionIndex, conditionParameters.get(conditionIndex).getRecordFilenames().length);
 			sb.append(getSEP());
 		}
 		
@@ -127,7 +127,7 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 	
 	@Override
 	public String convert2String(Result<BaseQualReadInfoData> result) {
-		final ParallelPileupData<BaseQualReadInfoData> parallelData = result.getParellelData();
+		final ParallelData<BaseQualReadInfoData> parallelData = result.getParellelData();
 		final double statistic = result.getStatistic();
 		final StringBuilder sb = new StringBuilder();
 

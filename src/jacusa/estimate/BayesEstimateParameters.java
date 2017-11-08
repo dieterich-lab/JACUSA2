@@ -1,9 +1,10 @@
 package jacusa.estimate;
 
-import jacusa.data.hasBaseQualCount;
-import jacusa.phred2prob.Phred2Prob;
 
 import java.util.Arrays;
+
+import lib.data.hasBaseQualCount;
+import lib.phred2prob.Phred2Prob;
 
 // posterior estimation
 // p(p|D) ~ D(n + alpha)

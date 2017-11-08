@@ -1,8 +1,8 @@
 package jacusa.filter;
 
-import jacusa.data.AbstractData;
-import jacusa.data.Result;
-import jacusa.pileup.iterator.WindowedIterator;
+import addvariants.data.WindowedIterator;
+import lib.data.AbstractData;
+import lib.data.Result;
 
 /**
  * 

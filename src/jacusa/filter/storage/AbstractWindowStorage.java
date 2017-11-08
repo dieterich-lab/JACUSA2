@@ -1,14 +1,13 @@
 package jacusa.filter.storage;
 
+import htsjdk.samtools.SAMRecord;
+
 import java.util.Arrays;
 
-import jacusa.data.AbstractData;
-import jacusa.data.BaseCallConfig;
-
 import jacusa.pileup.builder.WindowCache;
-import jacusa.util.WindowCoordinate;
-
-import net.sf.samtools.SAMRecord;
+import lib.data.AbstractData;
+import lib.data.BaseCallConfig;
+import lib.util.WindowCoordinate;
 
 public abstract class AbstractWindowStorage<T extends AbstractData> 
 extends AbstractStorage<T> {

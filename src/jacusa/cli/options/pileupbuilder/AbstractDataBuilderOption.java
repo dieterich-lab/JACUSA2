@@ -2,11 +2,11 @@ package jacusa.cli.options.pileupbuilder;
 
 import java.util.List;
 
-import jacusa.cli.options.condition.AbstractConditionACOption;
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.AbstractData;
 import jacusa.pileup.builder.AbstractDataBuilderFactory;
 import jacusa.pileup.builder.hasLibraryType.LIBRARY_TYPE;
+import lib.cli.options.condition.AbstractConditionACOption;
+import lib.cli.parameters.AbstractConditionParameter;
+import lib.data.AbstractData;
 
 public abstract class AbstractDataBuilderOption<T extends AbstractData>
 extends AbstractConditionACOption<T> {
@@ -14,12 +14,12 @@ extends AbstractConditionACOption<T> {
 	private static final String OPT = "P";
 	private static final String LONG_OPT = "build-pileup";
 
-	public AbstractDataBuilderOption(final List<ConditionParameters<T>> conditions) { 
-		super(OPT, LONG_OPT, conditions);
+	public AbstractDataBuilderOption(final List<AbstractConditionParameter<T>> conditionParameter) { 
+		super(OPT, LONG_OPT, conditionParameter);
 	}
 
-	public AbstractDataBuilderOption(final int conditionIndex, final ConditionParameters<T> condition) { 
-		super(OPT, LONG_OPT, conditionIndex, condition);
+	public AbstractDataBuilderOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameters) { 
+		super(OPT, LONG_OPT, conditionIndex, conditionParameters);
 	}
 	
 	protected abstract AbstractDataBuilderFactory<T> buildPileupBuilderFactory(

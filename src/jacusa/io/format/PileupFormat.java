@@ -1,12 +1,12 @@
 package jacusa.io.format;
 
-import jacusa.data.BaseCallConfig;
-import jacusa.data.BaseQualData;
-import jacusa.data.ParallelPileupData;
-import jacusa.data.Result;
-import jacusa.phred2prob.Phred2Prob;
+import lib.data.BaseCallConfig;
+import lib.data.BaseQualData;
+import lib.data.ParallelData;
+import lib.data.Result;
+import lib.phred2prob.Phred2Prob;
 
-import net.sf.samtools.SAMUtils;
+import htsjdk.samtools.SAMUtils;
 
 public class PileupFormat extends AbstractOutputFormat<BaseQualData> {
 
@@ -28,7 +28,7 @@ public class PileupFormat extends AbstractOutputFormat<BaseQualData> {
 	@Override
 	public String convert2String(final Result<BaseQualData> result) {
 		final StringBuilder sb = new StringBuilder();
-		final ParallelPileupData<BaseQualData> parallelPileupData = result.getParellelData();
+		final ParallelData<BaseQualData> parallelPileupData = result.getParellelData();
 
 		// coordinates
 		sb.append(parallelPileupData.getCoordinate().getContig());

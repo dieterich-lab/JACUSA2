@@ -1,20 +1,22 @@
 package jacusa.pileup.dispatcher.call;
 
 import jacusa.cli.parameters.CallParameters;
-import jacusa.data.BaseQualData;
-import jacusa.pileup.dispatcher.AbstractWorkerDispatcher;
+import jacusa.method.call.CallFactory;
 import jacusa.pileup.worker.CallWorker;
-import jacusa.util.coordinateprovider.CoordinateProvider;
 
 import java.io.IOException;
+
+import lib.data.BaseQualData;
+import lib.method.AbstractMethodFactory;
+import lib.util.coordinateprovider.CoordinateProvider;
+import lib.worker.AbstractWorkerDispatcher;
 
 public class CallWorkerDispatcher<T extends BaseQualData> 
 extends AbstractWorkerDispatcher<T> {
 
 	public CallWorkerDispatcher(
-			final CoordinateProvider coordinateProvider,
-			final CallParameters<T> parameters) throws IOException {
-		super(coordinateProvider, parameters);
+			final CallFactory callFactory) {
+		super(callFactory);
 	}
 
 	@Override
@@ -22,11 +24,6 @@ extends AbstractWorkerDispatcher<T> {
 		return new CallWorker<T>(this,
 				getWorkerContainer().size(),
 				getParameters());
-	}
-
-	@Override
-	public CallParameters<T> getParameters() {
-		return (CallParameters<T>)super.getParameters();
 	}
 	
 }

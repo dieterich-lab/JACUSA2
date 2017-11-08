@@ -1,11 +1,11 @@
 package jacusa.filter.factory;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.data.BaseQualData;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.FilterContainer;
 import jacusa.filter.HomopolymerFilter;
 import jacusa.filter.storage.HomopolymerStorage;
+import lib.cli.parameters.AbstractParameters;
+import lib.data.BaseQualData;
 
 public class HomopolymerFilterFactory<T extends BaseQualData> 
 extends AbstractFilterFactory<T> {

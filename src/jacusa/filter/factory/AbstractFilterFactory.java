@@ -1,8 +1,8 @@
 package jacusa.filter.factory;
 
-import jacusa.data.AbstractData;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.FilterContainer;
+import lib.data.AbstractData;
 
 public abstract class AbstractFilterFactory<T extends AbstractData> {
 

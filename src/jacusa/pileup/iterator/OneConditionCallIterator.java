@@ -2,13 +2,15 @@ package jacusa.pileup.iterator;
 
 import java.util.Arrays;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.data.BaseCallConfig;
-import jacusa.data.BaseQualData;
-import jacusa.data.ParallelPileupData;
+import addvariants.data.WindowedIterator;
+
 import jacusa.pileup.iterator.variant.Variant;
-import jacusa.util.Coordinate;
-import net.sf.samtools.SAMFileReader;
+import lib.cli.parameters.AbstractParameters;
+import lib.data.BaseCallConfig;
+import lib.data.BaseQualData;
+import lib.data.ParallelData;
+import lib.util.Coordinate;
+import htsjdk.samtools.SamReader;
 
 public class OneConditionCallIterator<T extends BaseQualData> 
 extends WindowedIterator<T> {
@@ -16,14 +18,14 @@ extends WindowedIterator<T> {
 	public OneConditionCallIterator(
 			final Coordinate coordinate,
 			final Variant<T> filter,
-			final SAMFileReader[][] readers, 
+			final SamReader[][] readers, 
 			final AbstractParameters<T> parameters) {
 		super(coordinate, filter, readers, parameters);
 	}
 
 	@Override
-	public ParallelPileupData<T> next() {
-		ParallelPileupData<T> parallelData = super.next();
+	public ParallelData<T> next() {
+		ParallelData<T> parallelData = super.next();
 		
 		T data = parallelData.getCombinedPooledData();
 		int[] allelesIndexs = data.getBaseQualCount().getAlleles();
@@ -72,7 +74,7 @@ extends WindowedIterator<T> {
 			}
 		}
 		
-		ParallelPileupData<T> newParallelPileupData = new ParallelPileupData<T>(parallelData);
+		ParallelData<T> newParallelPileupData = new ParallelData<T>(parallelData);
 		newParallelPileupData.setData(1, fakeCondition);
 
 		return newParallelPileupData;

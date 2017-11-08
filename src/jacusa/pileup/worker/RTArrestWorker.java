@@ -1,20 +1,21 @@
 package jacusa.pileup.worker;
 
+
+import addvariants.data.WindowedIterator;
 import jacusa.JACUSA;
 import jacusa.cli.parameters.RTArrestParameters;
-import jacusa.data.BaseQualReadInfoData;
-import jacusa.data.ParallelPileupData;
-import jacusa.data.Result;
-
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.StatisticCalculator;
 import jacusa.pileup.dispatcher.rtarrest.RTArrestWorkerDispatcher;
-import jacusa.pileup.iterator.WindowedIterator;
 import jacusa.pileup.iterator.variant.RTArrestDebugVariantParallelPileup;
 import jacusa.pileup.iterator.variant.RTArrestVariantParallelPileup;
 import jacusa.pileup.iterator.variant.Variant;
-import jacusa.util.Coordinate;
+import lib.data.BaseQualReadInfoData;
+import lib.data.ParallelData;
+import lib.data.Result;
+import lib.util.AbstractTool;
+import lib.util.Coordinate;
 
 public class RTArrestWorker<T extends BaseQualReadInfoData>
 extends AbstractWorker<T> {
@@ -36,7 +37,7 @@ extends AbstractWorker<T> {
 				.getStatisticCalculator().newInstance();
 
 		if (parameters.isDebug()) {
-			JACUSA.printDebug("Overwrite file format -> RTArrestDebugVariantParallelPileup");
+			AbstractTool.getLogger().addDebug("Overwrite file format -> RTArrestDebugVariantParallelPileup");
 			variant = new RTArrestDebugVariantParallelPileup<T>();
 		} else {
 			variant = new RTArrestVariantParallelPileup<T>();
@@ -44,12 +45,7 @@ extends AbstractWorker<T> {
 	}
 
 	@Override
-	protected WindowedIterator<T> buildIterator(final Coordinate coordinate) {
-		return new WindowedIterator<T>(coordinate, variant, getReaders(), parameters);
-	}
-	
-	@Override
-	protected Result<T> processParallelData(final ParallelPileupData<T> parallelData, 
+	protected Result<T> processParallelData(final ParallelData<T> parallelData, 
 			final WindowedIterator<T> parallelDataIterator) {
 		// result object
 		Result<T> result = new Result<T>();

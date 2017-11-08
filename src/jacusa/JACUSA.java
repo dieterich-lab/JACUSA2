@@ -19,53 +19,40 @@ nucleotide variants (SNVs) from comparing matched sequencing samples.
 
 package jacusa;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.cli.parameters.CLI;
-import jacusa.method.AbstractMethodFactory;
+
+import jacusa.method.call.CallFactory;
 import jacusa.method.call.OneConditionCallFactory;
 import jacusa.method.call.TwoConditionCallFactory;
-import jacusa.method.call.CallFactory;
 import jacusa.method.pileup.nConditionPileupFactory;
 import jacusa.method.rtarrest.RTArrestFactory;
-import jacusa.pileup.dispatcher.AbstractWorkerDispatcher;
-import jacusa.util.Logger;
-import jacusa.util.SimpleTimer;
-import jacusa.util.coordinateprovider.BedCoordinateProvider;
-import jacusa.util.coordinateprovider.CoordinateProvider;
-import jacusa.util.coordinateprovider.ThreadedCoordinateProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import lib.method.AbstractMethodFactory;
+import lib.util.AbstractTool;
+
 /**
  * @author Michael Piechotta
  */
-public class JACUSA {
+public class JACUSA extends AbstractTool {
 
-	// timer used for all time measurements
-	private static SimpleTimer timer;
-	public static final String NAME = "jacusa";	
-	public static final String JAR = NAME + ".jar";
-	public static final String VERSION = "2.0.0-BETA6";
-
-	// command line interface
-	private CLI cli;
-	private Logger logger;
+	private int comparisons;
 	
-	/**
-	 * 
-	 */
-	public JACUSA() {
-		cli = CLI.getSingleton();
+	public JACUSA(final String args[]) {
+		super("jacusa", "2.0.0-BETA6", args);
+		comparisons = 0;
+	}
 
+	@Override
+	protected Map<String, AbstractMethodFactory<?>> getMethodFactories() {
 		// container for available methods (e.g.: call, pileup)
-		Map<String, AbstractMethodFactory<?>> methodFactories = 
+		final Map<String, AbstractMethodFactory<?>> methodFactories = 
 				new TreeMap<String, AbstractMethodFactory<?>>();
 
-		List<AbstractMethodFactory<?>> factories = new ArrayList<AbstractMethodFactory<?>>(10);
-	
+		final List<AbstractMethodFactory<?>> factories = new ArrayList<AbstractMethodFactory<?>>(10);
 		// calling variants
 		factories.add(new OneConditionCallFactory());
 		factories.add(new TwoConditionCallFactory());
@@ -75,114 +62,40 @@ public class JACUSA {
 		// Read info
 		factories.add(new RTArrestFactory());
 
-		for (AbstractMethodFactory<?> factory : factories) {
+		for (final AbstractMethodFactory<?> factory : factories) {
 			methodFactories.put(factory.getName(), factory);
 		}
-
-		// add to cli 
-		cli.setMethodFactories(methodFactories);
+		return methodFactories;
 	}
 
-	/**
-	 * Singleton Pattern
-	 * @return a SimpleTimer instance
-	 */
-	public static SimpleTimer getSimpleTimer() {
-		if (timer == null) {
-			timer = new SimpleTimer();
-		}
+	@Override
+	protected String addEpilog() {
+		final StringBuilder sb = new StringBuilder();
 
-		return timer;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public CLI getCLI() {
-		return cli;
-	}
-	
-	/**
-	 * 
-	 * @param comparisons
-	 */
-	/*
-	private void printEpilog(int comparisons) {
 		// print statistics to STDERR
-		printLog("Screening done using " + cli.getMethodFactory().getParameters().getMaxThreads() + " thread(s)");
+		sb.append("Screening done using " + getCLI().getMethodFactory().getParameters().getMaxThreads() + " thread(s)");
+		sb.append('\n');
+		
+		sb.append("Results can be found in: " + getCLI().getMethodFactory().getParameters().getOutput().getInfo());
 
-		System.err.println("Results can be found in: " + cli.getMethodFactory().getParameters().getOutput().getInfo());
+		final String lineSep = "--------------------------------------------------------------------------------";
 
-		String lineSep = "--------------------------------------------------------------------------------";
+		sb.append(lineSep);
+		sb.append('\n');
+		sb.append("Analyzed Parallel Pileups:\t" + comparisons);
+		sb.append("Elapsed time:\t\t\t" + getLogger().getTimer().getTotalTimestring());
 
-		System.err.println(lineSep);
-		System.err.println("Analyzed Parallel Pileups:\t" + comparisons);
-		System.err.println("Elapsed time:\t\t\t" + getSimpleTimer().getTotalTimestring());
+		return sb.toString();
 	}
-	*/
 
-	/**
-	 * Application logic.
-	 * 
-	 * @param args
-	 * @throws Exception 
-	 */
-	private void run(final String[] args) throws Exception {
-		// prolog
-		printProlog(args);
-		
-		CLI cmd = getCLI();
-
-		// parse CLI
-		if (! cmd.processArgs(args)) {
-			System.exit(1);
-		}
-		
-		// instantiate chosen method
-		AbstractMethodFactory<?> methodFactory = cmd.getMethodFactory();
-		AbstractParameters<?> parameters = methodFactory.getParameters();
-	
-		// process coordinate provider
-		CoordinateProvider coordinateProvider = null;
-		if (parameters.getBedPathname().isEmpty()) {
-			methodFactory.initCoordinateProvider();
-			coordinateProvider = methodFactory.getCoordinateProvider();
-		} else {
-			coordinateProvider = new BedCoordinateProvider(parameters.getBedPathname());
-		}
-	
-		String[][] pathnames = new String[parameters.getConditionParameters().size()][]; 
-		for (int conditionIndex = 0; conditionIndex < parameters.getConditions(); conditionIndex++) {
-			pathnames[conditionIndex] = parameters.getConditionParameters(conditionIndex).getPathnames();
-		}
-	
-		// wrap chosen coordinate provider 
-		if (parameters.getMaxThreads() > 1) {
-			coordinateProvider = new ThreadedCoordinateProvider(coordinateProvider, 
-					pathnames, parameters.getThreadReservedWindowSize());
-		}
-	
-		// main
-		AbstractWorkerDispatcher<?> workerDispatcher = methodFactory.getInstance(coordinateProvider);
-		int comparisons = workerDispatcher.run();
-		
-		// epilog
-		printEpilog(comparisons);
-	
-		// cleaup
-		parameters.getOutput().close();
-	}
-	
 	/**
 	 * 
 	 * @param args
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		JACUSA jacusa = new JACUSA();
-		jacusa.run(args);
+		JACUSA jacusa = new JACUSA(args);
+		jacusa.run();
 	}
-		
-	
+
 }

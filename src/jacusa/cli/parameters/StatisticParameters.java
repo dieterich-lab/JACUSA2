@@ -1,7 +1,7 @@
 package jacusa.cli.parameters;
 
-import jacusa.data.AbstractData;
 import jacusa.method.call.statistic.StatisticCalculator;
+import lib.data.AbstractData;
 
 /**
  * 

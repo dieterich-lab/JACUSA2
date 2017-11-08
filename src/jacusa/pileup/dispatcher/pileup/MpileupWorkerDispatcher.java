@@ -1,19 +1,17 @@
 package jacusa.pileup.dispatcher.pileup;
 
 import jacusa.cli.parameters.PileupParameters;
-import jacusa.data.BaseQualData;
-
-import jacusa.pileup.dispatcher.AbstractWorkerDispatcher;
+import jacusa.method.pileup.nConditionPileupFactory;
 import jacusa.pileup.worker.MpileupWorker;
-import jacusa.util.coordinateprovider.CoordinateProvider;
+import lib.data.BaseQualData;
+import lib.util.coordinateprovider.CoordinateProvider;
+import lib.worker.AbstractWorkerDispatcher;
 
 public class MpileupWorkerDispatcher<T extends BaseQualData> 
 extends AbstractWorkerDispatcher<T> {
 	
-	public MpileupWorkerDispatcher(
-			final CoordinateProvider coordinateProvider, 
-			final PileupParameters<T> parameters) {
-		super(coordinateProvider, parameters);
+	public MpileupWorkerDispatcher(final nConditionPileupFactory pileupFactory) {
+		super(pileupFactory);
 	}
 
 	@Override
@@ -21,11 +19,6 @@ extends AbstractWorkerDispatcher<T> {
 		return new MpileupWorker<T>(this, 
 				this.getWorkerContainer().size(), 
 				getParameters());
-	}
-
-	@Override
-	public PileupParameters<T> getParameters() {
-		return (PileupParameters<T>) super.getParameters();
 	}
 	
 }

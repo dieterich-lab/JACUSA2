@@ -1,45 +1,19 @@
 package jacusa.method.rtarrest;
 
 import jacusa.JACUSA;
-import jacusa.cli.options.BaseConfigOption;
-import jacusa.cli.options.BedCoordinatesOption;
-import jacusa.cli.options.FilterModusOption;
-import jacusa.cli.options.FormatOption;
-import jacusa.cli.options.HelpOption;
-import jacusa.cli.options.MaxThreadOption;
-import jacusa.cli.options.ResultFileOption;
-import jacusa.cli.options.ShowReferenceOption;
 import jacusa.cli.options.StatisticFilterOption;
-import jacusa.cli.options.ThreadWindowSizeOption;
-import jacusa.cli.options.WindowSizeOption;
-import jacusa.cli.options.condition.MaxDepthConditionOption;
-import jacusa.cli.options.condition.MinBASQConditionOption;
-import jacusa.cli.options.condition.MinCoverageConditionOption;
-import jacusa.cli.options.condition.MinMAPQConditionOption;
-import jacusa.cli.options.condition.filter.FilterFlagConditionOption;
-import jacusa.cli.options.condition.filter.FilterNHsamTagOption;
-import jacusa.cli.options.condition.filter.FilterNMsamTagOption;
 import jacusa.cli.options.pileupbuilder.OneConditionBaseQualDataBuilderOption;
-
-import jacusa.cli.parameters.CLI;
 import jacusa.cli.parameters.RTArrestParameters;
-import jacusa.data.BaseQualReadInfoData;
-
 import jacusa.filter.factory.AbstractFilterFactory;
-
 import jacusa.io.format.AbstractOutputFormat;
 import jacusa.io.format.BED6call;
 import jacusa.io.format.RTArrestDebugResultFormat;
 import jacusa.io.format.RTArrestResultFormat;
-
-import jacusa.method.AbstractMethodFactory;
 import jacusa.method.call.statistic.StatisticCalculator;
-
 import jacusa.pileup.builder.UnstrandedPileupBuilderFactory;
 import jacusa.pileup.dispatcher.rtarrest.RTArrestWorkerDispatcher;
 
 
-import jacusa.util.coordinateprovider.CoordinateProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,6 +21,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.Map;
+
+import lib.cli.CLI;
+import lib.cli.options.BaseConfigOption;
+import lib.cli.options.BedCoordinatesOption;
+import lib.cli.options.FilterModusOption;
+import lib.cli.options.FormatOption;
+import lib.cli.options.HelpOption;
+import lib.cli.options.MaxThreadOption;
+import lib.cli.options.ResultFileOption;
+import lib.cli.options.ShowReferenceOption;
+import lib.cli.options.ThreadWindowSizeOption;
+import lib.cli.options.WindowSizeOption;
+import lib.cli.options.condition.MaxDepthConditionOption;
+import lib.cli.options.condition.MinBASQConditionOption;
+import lib.cli.options.condition.MinCoverageConditionOption;
+import lib.cli.options.condition.MinMAPQConditionOption;
+import lib.cli.options.condition.filter.FilterFlagConditionOption;
+import lib.cli.options.condition.filter.FilterNHsamTagOption;
+import lib.cli.options.condition.filter.FilterNMsamTagOption;
+import lib.data.BaseQualReadInfoData;
+import lib.method.AbstractMethodFactory;
+import lib.util.AbstractTool;
+import lib.util.coordinateprovider.CoordinateProvider;
 
 import org.apache.commons.cli.ParseException;
 
@@ -90,7 +87,7 @@ extends AbstractMethodFactory<BaseQualReadInfoData> {
 		addACOption(new StatisticFilterOption(getParameters().getStatisticParameters()));
 
 		addACOption(new ShowReferenceOption(getParameters()));
-		addACOption(new HelpOption(CLI.getSingleton()));
+		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 		
 		addACOption(new MaxThreadOption(getParameters()));
 		addACOption(new WindowSizeOption(getParameters()));
@@ -112,7 +109,7 @@ extends AbstractMethodFactory<BaseQualReadInfoData> {
 		addACOption(new FilterNMsamTagOption<BaseQualReadInfoData>(getParameters().getConditionParameters()));
 		
 		// condition specific
-		for (int conditionIndex = 0; conditionIndex < getParameters().getConditions(); ++conditionIndex) {
+		for (int conditionIndex = 0; conditionIndex < getParameters().getConditionsSize(); ++conditionIndex) {
 			addACOption(new MinMAPQConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
 			addACOption(new MinBASQConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
 			addACOption(new MinCoverageConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
@@ -174,10 +171,9 @@ extends AbstractMethodFactory<BaseQualReadInfoData> {
 	}
 
 	@Override
-	public RTArrestWorkerDispatcher<BaseQualReadInfoData> getInstance(
-			CoordinateProvider coordinateProvider) throws IOException {
+	public RTArrestWorkerDispatcher<BaseQualReadInfoData> getInstance() throws IOException {
 		if(instance == null) {
-			instance = new RTArrestWorkerDispatcher<BaseQualReadInfoData>(coordinateProvider, getParameters());
+			instance = new RTArrestWorkerDispatcher<BaseQualReadInfoData>(getCoordinateProvider(), getParameters());
 		}
 		return instance;
 	}
@@ -227,7 +223,7 @@ extends AbstractMethodFactory<BaseQualReadInfoData> {
 	@Override
 	public void debug() {
 		// set custom
-		JACUSA.printDebug("Overwrite file format -> RTArrestDebugResultFormat");
+		AbstractTool.getLogger().addDebug("Overwrite file format -> RTArrestDebugResultFormat");
 		getParameters().setFormat(new RTArrestDebugResultFormat(getParameters().getBaseConfig(), 
 				getParameters().getFilterConfig(), getParameters().showReferenceBase()));
 	}

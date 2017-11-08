@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.AbstractData;
 import jacusa.filter.storage.AbstractWindowStorage;
 import jacusa.filter.storage.ProcessAlignmentBlock;
 import jacusa.filter.storage.ProcessAlignmentOperator;
@@ -13,8 +11,10 @@ import jacusa.filter.storage.ProcessDeletionOperator;
 import jacusa.filter.storage.ProcessInsertionOperator;
 import jacusa.filter.storage.ProcessRecord;
 import jacusa.filter.storage.ProcessSkippedOperator;
-import jacusa.util.WindowCoordinate;
-import jacusa.util.Coordinate.STRAND;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.AbstractData;
+import lib.util.WindowCoordinate;
+import lib.util.Coordinate.STRAND;
 
 /**
  * 
@@ -26,7 +26,7 @@ public class FilterContainer<T extends AbstractData> {
 	private FilterConfig<T> filterConfig;
 	private STRAND strand;
 	private WindowCoordinate windowCoordinates;
-	private ConditionParameters<T> condition;
+	private JACUSAConditionParameters<T> condition;
 	
 	private Map<Character,AbstractFilter<T>> filters;
 	private Map<Character,AbstractWindowStorage<T>> windowStorage;
@@ -43,7 +43,7 @@ public class FilterContainer<T extends AbstractData> {
 	public FilterContainer(
 			final FilterConfig<T> filterConfig,
 			final STRAND strand, final WindowCoordinate windowCoordinates,
-			final ConditionParameters<T> condition) {
+			final JACUSAConditionParameters<T> condition) {
 		this.filterConfig 		= filterConfig;
 		this.strand				= strand;
 		this.windowCoordinates 	= windowCoordinates;
@@ -145,7 +145,7 @@ public class FilterContainer<T extends AbstractData> {
 		filters.put(filter.getC(), filter);
 	}
 	
-	public ConditionParameters<T> getCondition() {
+	public JACUSAConditionParameters<T> getCondition() {
 		return condition;
 	}
 

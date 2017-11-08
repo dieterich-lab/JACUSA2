@@ -2,44 +2,46 @@ package jacusa.cli.options.pileupbuilder;
 
 import java.util.ArrayList;
 
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.BaseQualData;
 import jacusa.pileup.builder.AbstractDataBuilderFactory;
 import jacusa.pileup.builder.FRPairedEnd1PileupBuilderFactory;
 import jacusa.pileup.builder.FRPairedEnd2PileupBuilderFactory;
 import jacusa.pileup.builder.UnstrandedPileupBuilderFactory;
 import jacusa.pileup.builder.hasLibraryType.LIBRARY_TYPE;
+import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.BaseQualData;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 
 public class TwoConditionBaseQualDataBuilderOption<T extends BaseQualData> 
 extends AbstractDataBuilderOption<T> {
 
 	private static final char SEP = ',';
 	
-	public TwoConditionBaseQualDataBuilderOption(final ConditionParameters<T> condition1, final ConditionParameters<T> condition2) {
-		super(new ArrayList<ConditionParameters<T>>() {
+	public TwoConditionBaseQualDataBuilderOption(
+			final AbstractConditionParameter<T> conditionParameter1, 
+			final AbstractConditionParameter<T> conditionParameter2) {
+		super(new ArrayList<AbstractConditionParameter<T>>() {
 			private static final long serialVersionUID = 1L;
 			{
-				add(condition1);
-				add(condition2);
+				add(conditionParameter1);
+				add(conditionParameter2);
 			}
 		});
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public Option getOption() {
-		return OptionBuilder.withLongOpt(getLongOpt())
-			.withArgName(getLongOpt().toUpperCase())
-			.hasArg(true)
-			.withDescription("Choose the library types and how parallel pileups are build for " +
+		return Option.builder(getOpt())
+				.longOpt(getLongOpt())
+				.argName(getLongOpt().toUpperCase())
+				.hasArg(true)
+				.desc("Choose the library types and how parallel pileups are build for " +
 					"condition1(cond1) and condition2(cond2).\nFormat: cond1,cond2. \n" +
 					"Possible values for cond1 and cond2:\n" + getPossibleValues() + "\n" +
 					"default: " + LIBRARY_TYPE.UNSTRANDED + SEP + LIBRARY_TYPE.UNSTRANDED)
-			.create(getOpt());
+				.build();
 	}
 
 	@Override
@@ -64,8 +66,8 @@ extends AbstractDataBuilderOption<T> {
 	    		throw new IllegalArgumentException(sb.toString());
 	    	}
 
-	    	getConditions().get(0).setPileupBuilderFactory(buildPileupBuilderFactory(l1));
-	    	getConditions().get(1).setPileupBuilderFactory(buildPileupBuilderFactory(l2));
+	    	getConditionParameters().get(0).setPileupBuilderFactory(buildPileupBuilderFactory(l1));
+	    	getConditionParameters().get(1).setPileupBuilderFactory(buildPileupBuilderFactory(l2));
 	    }
 	}
 

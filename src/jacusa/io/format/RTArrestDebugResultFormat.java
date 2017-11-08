@@ -1,9 +1,9 @@
 package jacusa.io.format;
 
-import jacusa.data.BaseCallConfig;
 
-import jacusa.data.BaseQualReadInfoData;
 import jacusa.filter.FilterConfig;
+import lib.data.BaseCallConfig;
+import lib.data.BaseQualReadInfoData;
 
 public class RTArrestDebugResultFormat 
 extends RTArrestResultFormat {

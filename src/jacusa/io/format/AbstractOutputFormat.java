@@ -2,9 +2,9 @@ package jacusa.io.format;
 
 import java.util.List;
 
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.AbstractData;
-import jacusa.data.Result;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.AbstractData;
+import lib.data.Result;
 
 /**
  * 
@@ -31,7 +31,7 @@ public abstract class AbstractOutputFormat<T extends AbstractData> {
 
 	// Header is empty by default
 	// override to change
-	public String getHeader(final List<ConditionParameters<T>> conditions) {
+	public String getHeader(final List<JACUSAConditionParameters<T>> conditions) {
 		return null;
 	}
 

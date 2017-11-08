@@ -1,7 +1,7 @@
 package jacusa.pileup.iterator.location;
 
-import jacusa.util.Coordinate;
-import jacusa.util.Coordinate.STRAND;
+import lib.util.Coordinate;
+import lib.util.Coordinate.STRAND;
 
 public interface CoordinateAdvancer {
 

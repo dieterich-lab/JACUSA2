@@ -1,12 +1,12 @@
 package jacusa.pileup.iterator.variant;
 
-import jacusa.data.AbstractData;
-import jacusa.data.ParallelPileupData;
+import lib.data.AbstractData;
+import lib.data.ParallelData;
 
 public class AllParallelPileup<T extends AbstractData> implements Variant<T> {
 
 	@Override
-	public boolean isValid(ParallelPileupData<T> parallelData) {
+	public boolean isValid(ParallelData<T> parallelData) {
 		return true;
 	}
 

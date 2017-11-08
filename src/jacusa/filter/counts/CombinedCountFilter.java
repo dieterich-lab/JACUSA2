@@ -1,8 +1,8 @@
 package jacusa.filter.counts;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.data.BaseQualData;
-import jacusa.data.ParallelPileupData;
+import lib.cli.parameters.AbstractParameters;
+import lib.data.BaseQualData;
+import lib.data.ParallelData;
 
 public class CombinedCountFilter<T extends BaseQualData> 
 extends AbstractCountFilter<T> {
@@ -21,7 +21,7 @@ extends AbstractCountFilter<T> {
 
 	@Override
 	protected boolean filter(final int variantBaseIndex, 
-			final ParallelPileupData<T> parallelData, 
+			final ParallelData<T> parallelData, 
 			final BaseQualData[][] baseQualData) {
 		return minCountFilter.filter(variantBaseIndex, parallelData, baseQualData) &&
 				minRatioFilter.filter(variantBaseIndex, parallelData, baseQualData);

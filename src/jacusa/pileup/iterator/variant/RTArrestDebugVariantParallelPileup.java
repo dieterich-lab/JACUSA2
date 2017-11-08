@@ -1,7 +1,7 @@
 package jacusa.pileup.iterator.variant;
 
-import jacusa.data.BaseQualReadInfoData;
-import jacusa.data.ParallelPileupData;
+import lib.data.BaseQualReadInfoData;
+import lib.data.ParallelData;
 
 public class RTArrestDebugVariantParallelPileup<T extends BaseQualReadInfoData> 
 implements Variant<T> {
@@ -9,7 +9,7 @@ implements Variant<T> {
 	public RTArrestDebugVariantParallelPileup() {}
 
 	@Override
-	public boolean isValid(final ParallelPileupData<T> parallelData) {
+	public boolean isValid(final ParallelData<T> parallelData) {
 		int i = 0;
 		if (parallelData.getCombinedPooledData().getReadInfoCount().getEnd() > 0) {
 			++i;

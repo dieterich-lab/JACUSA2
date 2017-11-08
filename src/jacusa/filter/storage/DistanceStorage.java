@@ -1,13 +1,14 @@
 package jacusa.filter.storage;
 
+
 import java.util.List;
 
-import jacusa.data.AbstractData;
-import jacusa.data.BaseCallConfig;
+import lib.data.AbstractData;
+import lib.data.BaseCallConfig;
 
-import net.sf.samtools.AlignmentBlock;
-import net.sf.samtools.CigarElement;
-import net.sf.samtools.SAMRecord;
+import htsjdk.samtools.AlignmentBlock;
+import htsjdk.samtools.CigarElement;
+import htsjdk.samtools.SAMRecord;
 
 public class DistanceStorage<T extends AbstractData> 
 extends AbstractWindowStorage<T> 

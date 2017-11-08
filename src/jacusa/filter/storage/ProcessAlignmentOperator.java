@@ -1,7 +1,7 @@
 package jacusa.filter.storage;
 
-import net.sf.samtools.CigarElement;
-import net.sf.samtools.SAMRecord;
+import htsjdk.samtools.CigarElement;
+import htsjdk.samtools.SAMRecord;
 
 public interface ProcessAlignmentOperator {
 

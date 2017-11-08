@@ -1,13 +1,13 @@
 package jacusa.method.call.statistic;
 
-import umontreal.iro.lecuyer.probdistmulti.DirichletDist;
+// TODO import umontreal.iro.lecuyer.probdistmulti.DirichletDist;
 import jacusa.cli.parameters.StatisticParameters;
-import jacusa.data.BaseCallConfig;
-import jacusa.data.BaseQualData;
-import jacusa.data.ParallelPileupData;
-import jacusa.data.Result;
 import jacusa.estimate.BayesEstimateParameters;
-import jacusa.phred2prob.Phred2Prob;
+import lib.data.BaseCallConfig;
+import lib.data.BaseQualData;
+import lib.data.ParallelData;
+import lib.data.Result;
+import lib.phred2prob.Phred2Prob;
 
 /**
  * 
@@ -17,6 +17,7 @@ import jacusa.phred2prob.Phred2Prob;
  * Tested if distributions are equal.
  * Same as in ACCUSA2 paper
  */
+@Deprecated
 public class ACCUSA2Statistic<T extends BaseQualData> 
 implements StatisticCalculator<T> {
 
@@ -46,7 +47,8 @@ implements StatisticCalculator<T> {
 	}
 	
 	@Override
-	public double getStatistic(final ParallelPileupData<T> parallelData) {
+	public double getStatistic(final ParallelData<T> parallelData) {
+		/* TODO
 		// use all bases for calculation
 		final int baseIndexs[] = baseConfig.getBaseIndex();
 
@@ -67,9 +69,11 @@ implements StatisticCalculator<T> {
 
 		// calculate statistic z = log 0_Model - log A_Model 
 		final double z = (density11 + density22) - (density12 + density21);
-
+		 */
+		int z = 0; // FIXME
 		// use only positive numbers
 		return Math.max(0, z);
+		
 	}
 
 	/**
@@ -78,6 +82,7 @@ implements StatisticCalculator<T> {
 	 * @param probs
 	 * @return
 	 */
+	/*
 	protected double getDensity(final int[] baseIs, final double[][] probs, final DirichletDist dirichlet) {
 		double density = 0.0;
 
@@ -88,11 +93,14 @@ implements StatisticCalculator<T> {
 
 		return density;
 	}
+	*/
 
+	/* TODO
 	protected DirichletDist getDirichlet(final int[] baseIndexs, final T[] pileupData) {
 		final double[] alpha = estimateParameters.estimateAlpha(baseIndexs, pileupData);
 		return new DirichletDist(alpha);
 	}
+	*/
 
 	@Override
 	public boolean filter(double value) {

@@ -1,9 +1,9 @@
 package jacusa.filter.counts;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.data.BaseCallConfig;
-import jacusa.data.BaseQualData;
-import jacusa.data.ParallelPileupData;
+import lib.cli.parameters.AbstractParameters;
+import lib.data.BaseCallConfig;
+import lib.data.BaseQualData;
+import lib.data.ParallelData;
 
 public abstract class AbstractCountFilter<T extends BaseQualData> {
 
@@ -14,7 +14,7 @@ public abstract class AbstractCountFilter<T extends BaseQualData> {
 	}
 
 	// ORDER RESULTS [0] SHOULD BE THE VARIANTs TO TEST
-	public int[] getVariantBaseIndexs(final ParallelPileupData<T> parallelData) {
+	public int[] getVariantBaseIndexs(final ParallelData<T> parallelData) {
 		final int conditions = parallelData.getConditions();
 		final char referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
 		final int[] alleles = parallelData.getCombinedPooledData().getBaseQualCount().getAlleles();
@@ -46,7 +46,7 @@ public abstract class AbstractCountFilter<T extends BaseQualData> {
 		// A | AG
 		if (alleles.length == 2 && 
 				observedAlleleCount[alleles[0]] + observedAlleleCount[alleles[1]] > conditions) {
-			return ParallelPileupData.getVariantBaseIndexs(parallelData);
+			return ParallelData.getVariantBaseIndexs(parallelData);
 		}
 
 		// condition1: AG | AG AND condition2: AGC |AGC
@@ -76,8 +76,8 @@ public abstract class AbstractCountFilter<T extends BaseQualData> {
 	/**
 	 * null if filter did not change anything
 	 */
-	protected ParallelPileupData<T> applyFilter(final int variantBaseIndex, 
-			final ParallelPileupData<T> parallelData, 
+	protected ParallelData<T> applyFilter(final int variantBaseIndex, 
+			final ParallelData<T> parallelData, 
 			final BaseQualData[][] baseQualData) {
 		
 		T[][] filteredData = parameters.getMethodFactory().createContainer(parallelData.getConditions());
@@ -97,8 +97,8 @@ public abstract class AbstractCountFilter<T extends BaseQualData> {
 			return null;
 		}
 
-		final ParallelPileupData<T> filteredParallelData =
-				new ParallelPileupData<T>(parameters.getMethodFactory(), parallelData.getCoordinate(), filteredData);
+		final ParallelData<T> filteredParallelData =
+				new ParallelData<T>(parameters.getMethodFactory(), parallelData.getCoordinate(), filteredData);
 
 		return filteredParallelData;
 	}
@@ -107,7 +107,7 @@ public abstract class AbstractCountFilter<T extends BaseQualData> {
 	 * Apply filter on each variant base
 	 */
 	public boolean filter(final int[] variantBaseIndexs, 
-			final ParallelPileupData<T> parallelData, 
+			final ParallelData<T> parallelData, 
 			final BaseQualData[][] baseQualData) {
 
 		for (int variantBaseIndex : variantBaseIndexs) {
@@ -120,7 +120,7 @@ public abstract class AbstractCountFilter<T extends BaseQualData> {
 	}
 
 	protected abstract boolean filter(final int variantBaseIndex, 
-			final ParallelPileupData<T> parallelData, 
+			final ParallelData<T> parallelData, 
 			BaseQualData[][] baseQualData);
 
 }

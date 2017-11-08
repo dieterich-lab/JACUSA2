@@ -1,11 +1,11 @@
 package jacusa.pileup.builder;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.BaseQualData;
-import jacusa.pileup.builder.inverted.FRPairedEnd1InvertedPileupBuilder;
-import jacusa.util.WindowCoordinate;
-import net.sf.samtools.SAMFileReader;
+import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.BaseQualData;
+import lib.util.WindowCoordinate;
+
+import htsjdk.samtools.SamReader;
 
 public class FRPairedEnd1PileupBuilderFactory<T extends BaseQualData>
 extends AbstractDataBuilderFactory<T> {
@@ -17,13 +17,9 @@ extends AbstractDataBuilderFactory<T> {
 	@Override
 	public DataBuilder<T> newInstance(
 			WindowCoordinate windowCoordinates, 
-			SAMFileReader reader, 
-			ConditionParameters<T> condition, 
+			SamReader reader, 
+			JACUSAConditionParameters<T> condition, 
 			AbstractParameters<T> parameters) {
-		if (condition.isInvertStrand()) {
-			return new FRPairedEnd1InvertedPileupBuilder<T>(
-					windowCoordinates, reader, condition, parameters);
-		}
 		return new FRPairedEnd1PileupBuilder<T>(
 				windowCoordinates, reader, condition, parameters);
 	}

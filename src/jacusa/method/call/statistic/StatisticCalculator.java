@@ -1,8 +1,8 @@
 package jacusa.method.call.statistic;
 
-import jacusa.data.AbstractData;
-import jacusa.data.ParallelPileupData;
-import jacusa.data.Result;
+import lib.data.AbstractData;
+import lib.data.ParallelData;
+import lib.data.Result;
 
 /**
  * 
@@ -24,7 +24,7 @@ public interface StatisticCalculator<T extends AbstractData> {
 	 * @param parallelData
 	 * @return
 	 */
-	public double getStatistic(final ParallelPileupData<T> parallelData);
+	public double getStatistic(final ParallelData<T> parallelData);
 
 	/**
 	 * Indicates if a value is valid.

@@ -2,8 +2,8 @@ package jacusa.estimate;
 
 import java.util.Arrays;
 
-import jacusa.util.Info;
-import jacusa.util.MathUtil;
+import lib.util.Info;
+import lib.util.MathUtil;
 
 import org.apache.commons.math3.special.Gamma;
 

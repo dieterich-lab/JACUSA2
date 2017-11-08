@@ -1,15 +1,16 @@
 package jacusa.cli.options;
 
 import jacusa.cli.parameters.StatisticParameters;
-import jacusa.data.AbstractData;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.StatisticCalculator;
 
 import java.util.Map;
 
+import lib.cli.options.AbstractACOption;
+import lib.data.AbstractData;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 
 public class StatisticCalculatorOption<T extends AbstractData> 
 extends AbstractACOption {
@@ -24,7 +25,6 @@ extends AbstractACOption {
 		this.statistics = statisticCalculator;
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public Option getOption() {
 		StringBuilder sb = new StringBuilder();
@@ -43,11 +43,12 @@ extends AbstractACOption {
 			sb.append("\n");
 		}
 
-		return OptionBuilder.withLongOpt(getLongOpt())
-			.withArgName(getLongOpt().toUpperCase())
-			.hasArg(true)
-			.withDescription("Choose between different modes:\n" + sb.toString())
-			.create(getOpt());
+		return Option.builder(getOpt())
+				.longOpt(getLongOpt())
+				.argName(getLongOpt().toUpperCase())
+				.hasArg(true)
+				.desc("Choose between different modes:\n" + sb.toString())
+				.build();
 	}
 
 	@Override

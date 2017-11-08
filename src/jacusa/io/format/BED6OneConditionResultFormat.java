@@ -1,7 +1,7 @@
 package jacusa.io.format;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.data.BaseQualData;
+import lib.cli.parameters.AbstractParameters;
+import lib.data.BaseQualData;
 
 public class BED6OneConditionResultFormat extends BED6call {
 

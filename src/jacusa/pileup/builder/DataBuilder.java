@@ -1,13 +1,14 @@
 package jacusa.pileup.builder;
 
-import jacusa.data.AbstractData;
 import jacusa.filter.FilterContainer;
 import jacusa.pileup.builder.hasLibraryType.LIBRARY_TYPE;
 import jacusa.pileup.iterator.location.CoordinateAdvancer;
-import jacusa.util.WindowCoordinate;
-import jacusa.util.Coordinate.STRAND;
-import net.sf.samtools.SAMRecord;
-import net.sf.samtools.SAMRecordIterator;
+import lib.data.AbstractData;
+import lib.util.WindowCoordinate;
+import lib.util.Coordinate.STRAND;
+
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SAMRecordIterator;
 
 public interface DataBuilder<T extends AbstractData> extends CoordinateAdvancer {
 

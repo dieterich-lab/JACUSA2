@@ -2,15 +2,16 @@ package jacusa.filter;
 
 import java.util.List;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.data.BaseQualData;
-import jacusa.data.ParallelPileupData;
-import jacusa.data.Result;
+import addvariants.data.WindowedIterator;
+
 import jacusa.filter.counts.AbstractCountFilter;
 import jacusa.filter.counts.MinCountFilter;
 import jacusa.filter.storage.AbstractWindowStorage;
-import jacusa.pileup.iterator.WindowedIterator;
-import jacusa.util.Coordinate;
+import lib.cli.parameters.AbstractParameters;
+import lib.data.BaseQualData;
+import lib.data.ParallelData;
+import lib.data.Result;
+import lib.util.Coordinate;
 
 public class HomopolymerFilter<T extends BaseQualData> 
 extends AbstractFilter<T> {
@@ -25,7 +26,7 @@ extends AbstractFilter<T> {
 
 	@Override
 	protected boolean filter(final Result<T> result, final WindowedIterator<T> windowIterator) {
-		final ParallelPileupData<T> parallelData = result.getParellelData();
+		final ParallelData<T> parallelData = result.getParellelData();
 
 		final int[] variantBaseIndexs = countFilter.getVariantBaseIndexs(parallelData);
 		if (variantBaseIndexs.length == 0) {

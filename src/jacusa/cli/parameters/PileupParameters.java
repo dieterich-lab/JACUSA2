@@ -1,7 +1,8 @@
 package jacusa.cli.parameters;
 
-import jacusa.data.BaseQualData;
 import jacusa.pileup.builder.AbstractDataBuilderFactory;
+import lib.cli.parameters.AbstractParameters;
+import lib.data.BaseQualData;
 
 /**
  * 

@@ -1,10 +1,10 @@
 package jacusa.cli.options;
 
 import jacusa.cli.parameters.StatisticParameters;
+import lib.cli.options.AbstractACOption;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 
 public class StatisticFilterOption  extends AbstractACOption {
 
@@ -15,23 +15,23 @@ public class StatisticFilterOption  extends AbstractACOption {
 		this.parameters = parameters;
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public Option getOption() {
-		return OptionBuilder.withLongOpt(getLongOpt())
-			.withArgName(getLongOpt().toUpperCase())
-			.hasArg(true)
-	        .withDescription("Filter positions based on test-statistic " + getLongOpt().toUpperCase() + "\n default: DO NOT FILTER")
-	        .create(getOpt());
+		return Option.builder(getOpt())
+				.longOpt(getLongOpt())
+				.argName(getLongOpt().toUpperCase())
+				.hasArg(true)
+				.desc("Filter positions based on test-statistic " + getLongOpt().toUpperCase() + "\n default: DO NOT FILTER")
+				.build();
 	}
 
 	@Override
-	public void process(CommandLine line) throws Exception {
+	public void process(final CommandLine line) throws IllegalArgumentException {
 		if (line.hasOption(getOpt())) {
-		    String value = line.getOptionValue(getOpt());
-	    	double stat = Double.parseDouble(value);
+		    final String value = line.getOptionValue(getOpt());
+	    	final double stat = Double.parseDouble(value);
 	    	if (stat < 0) {
-	    		throw new Exception("Invalid value for " + getLongOpt().toUpperCase() + 
+	    		throw new IllegalArgumentException("Invalid value for " + getLongOpt().toUpperCase() + 
 	    				". Allowed values are 0 <= " + getLongOpt().toUpperCase());
 	    	}
 	    	parameters.setThreshold(stat);

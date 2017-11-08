@@ -2,15 +2,16 @@ package jacusa.pileup.builder;
 
 import java.util.Arrays;
 
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.BaseQualReadInfoData;
 import jacusa.filter.FilterContainer;
 import jacusa.pileup.builder.hasLibraryType.LIBRARY_TYPE;
-import jacusa.util.Coordinate;
-import jacusa.util.Coordinate.STRAND;
-import jacusa.util.WindowCoordinate;
-import net.sf.samtools.SAMRecord;
-import net.sf.samtools.SAMRecordIterator;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.BaseQualReadInfoData;
+import lib.util.Coordinate;
+import lib.util.WindowCoordinate;
+import lib.util.Coordinate.STRAND;
+
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SAMRecordIterator;
 
 /**
  * @author Michael Piechotta
@@ -19,7 +20,7 @@ import net.sf.samtools.SAMRecordIterator;
 public class RTArrestPileupBuilder<T extends BaseQualReadInfoData>
 implements DataBuilder<T> {
 
-	private ConditionParameters<T> condition;
+	private JACUSAConditionParameters<T> condition;
 	private final DataBuilder<T> dataBuilder;
 	
 	private final int[] readStartCount;
@@ -27,7 +28,7 @@ implements DataBuilder<T> {
 
 	private CACHE_STATUS cacheStatus;
 	
-	public RTArrestPileupBuilder(final ConditionParameters<T> condition,
+	public RTArrestPileupBuilder(final JACUSAConditionParameters<T> condition,
 			final DataBuilder<T> dataBuilder) {
 		this.condition = condition;
 		this.dataBuilder = dataBuilder;

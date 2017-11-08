@@ -1,6 +1,6 @@
 package jacusa.pileup.iterator.location;
 
-import jacusa.util.Coordinate;
+import lib.util.Coordinate;
 
 public class CoordinateContainer {
 

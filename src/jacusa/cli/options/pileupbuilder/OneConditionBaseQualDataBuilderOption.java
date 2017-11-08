@@ -2,38 +2,38 @@ package jacusa.cli.options.pileupbuilder;
 
 import java.util.List;
 
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.BaseQualData;
 import jacusa.pileup.builder.AbstractDataBuilderFactory;
 import jacusa.pileup.builder.FRPairedEnd1PileupBuilderFactory;
 import jacusa.pileup.builder.FRPairedEnd2PileupBuilderFactory;
 import jacusa.pileup.builder.UnstrandedPileupBuilderFactory;
 import jacusa.pileup.builder.hasLibraryType.LIBRARY_TYPE;
+import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.BaseQualData;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 
 public class OneConditionBaseQualDataBuilderOption<T extends BaseQualData>
 extends AbstractDataBuilderOption<T> {
 
-	public OneConditionBaseQualDataBuilderOption(final int conditionIndex, final ConditionParameters<T> condition) {
-		super(conditionIndex, condition);
+	public OneConditionBaseQualDataBuilderOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameter) {
+		super(conditionIndex, conditionParameter);
 	}
 	
-	public OneConditionBaseQualDataBuilderOption(final List<ConditionParameters<T>> conditions) {
-		super(conditions);
+	public OneConditionBaseQualDataBuilderOption(final List<AbstractConditionParameter<T>> conditionParameters) {
+		super(conditionParameters);
 	}
 	
-	@SuppressWarnings("static-access")
 	@Override
 	public Option getOption() {
-		return OptionBuilder.withLongOpt(getLongOpt())
-			.withArgName(getLongOpt().toUpperCase())
-			.hasArg(true)
-	        .withDescription("Choose the library type and how parallel pileups are build:\n" + getPossibleValues() + 
+		return Option.builder(getOpt())
+				.longOpt(getLongOpt())
+				.argName(getLongOpt().toUpperCase())
+				.hasArg(true)
+				.desc("Choose the library type and how parallel pileups are build:\n" + getPossibleValues() + 
 	        		"\n default: " + LIBRARY_TYPE.UNSTRANDED)
-	        .create(getOpt());
+	        	.build();
 	}
 
 	@Override
@@ -45,8 +45,8 @@ extends AbstractDataBuilderOption<T> {
 	    		throw new IllegalArgumentException("Possible values for " + getLongOpt().toUpperCase() + ":\n" + getPossibleValues());
 	    	}
 	    	
-	    	for (final ConditionParameters<T> condition : getConditions()) {
-	    		condition.setPileupBuilderFactory(buildPileupBuilderFactory(l));
+	    	for (final AbstractConditionParameter<T> conditionParameter : getConditionParameters()) {
+	    		conditionParameter.setPileupBuilderFactory(buildPileupBuilderFactory(l));
 	    	}
 	    }
 	}

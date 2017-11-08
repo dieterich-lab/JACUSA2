@@ -1,7 +1,8 @@
 package jacusa.cli.parameters;
 
-import jacusa.data.BaseQualReadInfoData;
 import jacusa.pileup.builder.AbstractDataBuilderFactory;
+import lib.cli.parameters.AbstractParameters;
+import lib.data.BaseQualReadInfoData;
 
 public class RTArrestParameters<T extends BaseQualReadInfoData>
 extends AbstractParameters<T> 

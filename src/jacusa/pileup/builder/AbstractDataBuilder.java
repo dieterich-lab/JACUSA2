@@ -1,27 +1,28 @@
 package jacusa.pileup.builder;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.AbstractData;
 import jacusa.filter.FilterContainer;
+import jacusa.filter.storage.ProcessAlignmentBlock;
+import jacusa.filter.storage.ProcessAlignmentOperator;
 import jacusa.filter.storage.ProcessDeletionOperator;
 import jacusa.filter.storage.ProcessInsertionOperator;
 import jacusa.filter.storage.ProcessRecord;
 import jacusa.filter.storage.ProcessSkippedOperator;
-import jacusa.filter.storage.ProcessAlignmentOperator;
-import jacusa.filter.storage.ProcessAlignmentBlock;
 import jacusa.pileup.iterator.location.CoordinateAdvancer;
 import jacusa.pileup.iterator.location.UnstrandedCoordinateAdvancer;
-import jacusa.util.Coordinate;
-import jacusa.util.WindowCoordinate;
-import jacusa.util.Coordinate.STRAND;
 
 import java.util.Arrays;
 
-import net.sf.samtools.CigarElement;
-import net.sf.samtools.SAMFileReader;
-import net.sf.samtools.SAMRecord;
-import net.sf.samtools.SAMRecordIterator;
+import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.AbstractData;
+import lib.util.Coordinate;
+import lib.util.WindowCoordinate;
+import lib.util.Coordinate.STRAND;
+
+import htsjdk.samtools.CigarElement;
+import htsjdk.samtools.SamReader;
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SAMRecordIterator;
 
 /**
  * 
@@ -37,12 +38,12 @@ implements DataBuilder<T>, hasLibraryType {
 
 	// true if a valid read is found within genomicWindowStart and genomicWindowStart + windowSize
 	protected SAMRecord[] SAMRecordsBuffer;
-	protected SAMFileReader reader;
+	protected SamReader reader;
 
 	protected int filteredSAMRecords;
 	protected int SAMRecords;
 
-	protected ConditionParameters<T> condition;
+	protected JACUSAConditionParameters<T> condition;
 	protected AbstractParameters<T> parameters;
 
 	protected WindowCache windowCache;
@@ -58,8 +59,8 @@ implements DataBuilder<T>, hasLibraryType {
 	
 	public AbstractDataBuilder (
 			final WindowCoordinate windowCoordinates,
-			final SAMFileReader SAMFileReader, 
-			final ConditionParameters<T> condition,
+			final SamReader samReader, 
+			final JACUSAConditionParameters<T> condition,
 			final AbstractParameters<T> parameters,
 			final STRAND strand,
 			final LIBRARY_TYPE libraryType) {
@@ -67,7 +68,7 @@ implements DataBuilder<T>, hasLibraryType {
 		this.windowCoordinates	= windowCoordinates;
 		
 		SAMRecordsBuffer		= new SAMRecord[20000];
-		reader					= SAMFileReader;
+		reader					= samReader;
 
 		filteredSAMRecords		= 0;
 		SAMRecords				= 0;
@@ -444,8 +445,6 @@ implements DataBuilder<T>, hasLibraryType {
 									cigarElement, record, 
 									baseIndex, qualIndex);
 						}
-					} else if (parameters.collectLowQualityBaseCalls()) { 
-						addLowQualityBaseCall(windowPosition, baseIndex, qualIndex);
 					}
 					// process MD on demand
 					if (record.getAttribute("MD") != null && windowCache.getReferenceBase(windowPosition) == (byte)'N') {
@@ -544,7 +543,7 @@ implements DataBuilder<T>, hasLibraryType {
 	// Helper prevent code duplication
 	public static <S extends AbstractData> int processIterator(
 			final DataBuilder<S> builder, 
-			final ConditionParameters<S> condition,
+			final JACUSAConditionParameters<S> condition,
 			final SAMRecord[] SAMRecordsBuffer,
 			final SAMRecordIterator iterator) {
 		int SAMReocordsInBuffer = 0;
@@ -570,7 +569,7 @@ implements DataBuilder<T>, hasLibraryType {
 	
 	public static <S extends AbstractData> boolean fillWindow(
 			final DataBuilder<S> builder, 
-			final ConditionParameters<S> condition,
+			final JACUSAConditionParameters<S> condition,
 			final SAMRecord[] SAMRecordBuffer,
 			final int genomicPosition) {
 		builder.clearCache();

@@ -1,6 +1,6 @@
 package jacusa.cli.parameters;
 
-import jacusa.data.AbstractData;
+import lib.data.AbstractData;
 
 /**
  * 

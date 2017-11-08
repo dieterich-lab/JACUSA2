@@ -1,9 +1,9 @@
 package jacusa.filter.factory;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.data.BaseQualData;
 import jacusa.filter.FilterContainer;
 import jacusa.filter.storage.DistanceStorage;
+import lib.cli.parameters.AbstractParameters;
+import lib.data.BaseQualData;
 
 public class CombinedDistanceFilterFactory<T extends BaseQualData> 
 extends AbstractDistanceFilterFactory<T> {

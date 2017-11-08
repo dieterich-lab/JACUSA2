@@ -2,7 +2,7 @@ package jacusa.estimate;
 
 import jacusa.method.call.statistic.dirmult.initalpha.AbstractAlphaInit;
 import jacusa.method.call.statistic.dirmult.initalpha.MeanAlphaInit;
-import jacusa.util.Info;
+import lib.util.Info;
 
 import org.apache.commons.math3.special.Gamma;
 

@@ -1,19 +1,19 @@
 package jacusa.pileup.builder;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.BaseQualData;
 import jacusa.filter.FilterContainer;
 import jacusa.pileup.builder.hasLibraryType.LIBRARY_TYPE;
 import jacusa.pileup.iterator.location.CoordinateAdvancer;
 import jacusa.pileup.iterator.location.StrandedCoordinateAdvancer;
-import jacusa.util.Coordinate;
-import jacusa.util.Coordinate.STRAND;
-import jacusa.util.WindowCoordinate;
+import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.BaseQualData;
+import lib.util.Coordinate;
+import lib.util.WindowCoordinate;
+import lib.util.Coordinate.STRAND;
 
-import net.sf.samtools.SAMFileReader;
-import net.sf.samtools.SAMRecord;
-import net.sf.samtools.SAMRecordIterator;
+import htsjdk.samtools.SamReader;
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SAMRecordIterator;
 
 /**
  * @author Michael Piechotta
@@ -23,7 +23,7 @@ public abstract class AbstractStrandedPileupBuilder<T extends BaseQualData>
 implements DataBuilder<T> {
 
 	private CoordinateAdvancer advancer;
-	private ConditionParameters<T> condition;
+	private JACUSAConditionParameters<T> condition;
 	
 	private WindowCoordinate windowCoordinates;
 	private AbstractParameters<T> parameters;
@@ -35,8 +35,8 @@ implements DataBuilder<T> {
 	private CACHE_STATUS cacheStatus;
 	
 	public AbstractStrandedPileupBuilder(final WindowCoordinate windowCoordinates,
-			final SAMFileReader reader, 
-			final ConditionParameters<T> condition,
+			final SamReader reader, 
+			final JACUSAConditionParameters<T> condition,
 			final AbstractParameters<T> parameters,
 			final LIBRARY_TYPE libraryType) {
 		this.condition = condition;

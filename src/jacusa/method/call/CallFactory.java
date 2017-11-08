@@ -1,30 +1,9 @@
 package jacusa.method.call;
 
-import jacusa.cli.options.BaseConfigOption;
-import jacusa.cli.options.BedCoordinatesOption;
-import jacusa.cli.options.FilterConfigOption;
-import jacusa.cli.options.FilterModusOption;
-import jacusa.cli.options.FormatOption;
-import jacusa.cli.options.HelpOption;
-import jacusa.cli.options.MaxThreadOption;
-import jacusa.cli.options.ResultFileOption;
-import jacusa.cli.options.ShowReferenceOption;
 import jacusa.cli.options.StatisticCalculatorOption;
 import jacusa.cli.options.StatisticFilterOption;
-import jacusa.cli.options.ThreadWindowSizeOption;
-import jacusa.cli.options.WindowSizeOption;
-import jacusa.cli.options.condition.InvertStrandOption;
-import jacusa.cli.options.condition.MaxDepthConditionOption;
-import jacusa.cli.options.condition.MinBASQConditionOption;
-import jacusa.cli.options.condition.MinCoverageConditionOption;
-import jacusa.cli.options.condition.MinMAPQConditionOption;
-import jacusa.cli.options.condition.filter.FilterFlagConditionOption;
-import jacusa.cli.options.condition.filter.FilterNHsamTagOption;
-import jacusa.cli.options.condition.filter.FilterNMsamTagOption;
 import jacusa.cli.options.pileupbuilder.OneConditionBaseQualDataBuilderOption;
-import jacusa.cli.parameters.CLI;
 import jacusa.cli.parameters.CallParameters;
-import jacusa.data.BaseQualData;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.CombinedDistanceFilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
@@ -36,13 +15,10 @@ import jacusa.filter.factory.SpliceSiteDistanceFilterFactory;
 import jacusa.io.format.AbstractOutputFormat;
 import jacusa.io.format.BED6call;
 import jacusa.io.format.VCFcall;
-import jacusa.method.AbstractMethodFactory;
 import jacusa.method.call.statistic.StatisticCalculator;
 import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundError;
 import jacusa.pileup.builder.UnstrandedPileupBuilderFactory;
-import jacusa.pileup.dispatcher.AbstractWorkerDispatcher;
 import jacusa.pileup.dispatcher.call.CallWorkerDispatcher;
-import jacusa.util.coordinateprovider.CoordinateProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,10 +27,34 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.Map;
 
+import lib.cli.CLI;
+import lib.cli.options.BaseConfigOption;
+import lib.cli.options.BedCoordinatesOption;
+import lib.cli.options.FilterConfigOption;
+import lib.cli.options.FilterModusOption;
+import lib.cli.options.FormatOption;
+import lib.cli.options.HelpOption;
+import lib.cli.options.MaxThreadOption;
+import lib.cli.options.ResultFileOption;
+import lib.cli.options.ShowReferenceOption;
+import lib.cli.options.ThreadWindowSizeOption;
+import lib.cli.options.WindowSizeOption;
+import lib.cli.options.condition.MaxDepthConditionOption;
+import lib.cli.options.condition.MinBASQConditionOption;
+import lib.cli.options.condition.MinCoverageConditionOption;
+import lib.cli.options.condition.MinMAPQConditionOption;
+import lib.cli.options.condition.filter.FilterFlagConditionOption;
+import lib.cli.options.condition.filter.FilterNHsamTagOption;
+import lib.cli.options.condition.filter.FilterNMsamTagOption;
+import lib.data.BaseQualData;
+import lib.method.AbstractMethodFactory;
+import lib.util.AbstractTool;
+import lib.util.coordinateprovider.CoordinateProvider;
+import lib.worker.AbstractWorkerDispatcher;
+
 import org.apache.commons.cli.ParseException;
 
-public class CallFactory
-extends AbstractMethodFactory<BaseQualData> {
+public class CallFactory extends AbstractMethodFactory<BaseQualData> {
 
 	protected static CallWorkerDispatcher<BaseQualData> instance;
 	
@@ -74,7 +74,7 @@ extends AbstractMethodFactory<BaseQualData> {
 		addACOption(new StatisticFilterOption(getParameters().getStatisticParameters()));
 
 		addACOption(new ShowReferenceOption(getParameters()));
-		addACOption(new HelpOption(CLI.getSingleton()));
+		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 		
 		addACOption(new MaxThreadOption(getParameters()));
 		addACOption(new WindowSizeOption(getParameters()));
@@ -94,13 +94,12 @@ extends AbstractMethodFactory<BaseQualData> {
 		
 		addACOption(new FilterNHsamTagOption<BaseQualData>(getParameters().getConditionParameters()));
 		addACOption(new FilterNMsamTagOption<BaseQualData>(getParameters().getConditionParameters()));
-		addACOption(new InvertStrandOption<BaseQualData>(getParameters().getConditionParameters()));
 		
 		addACOption(new OneConditionBaseQualDataBuilderOption<BaseQualData>(getParameters().getConditionParameters()));
 		
 		// only add contions specific options when there are more than 1 conditions
-		if (getParameters().getConditions() > 1) {
-			for (int conditionIndex = 0; conditionIndex < getParameters().getConditions(); ++conditionIndex) {
+		if (getParameters().getConditionsSize() > 1) {
+			for (int conditionIndex = 0; conditionIndex < getParameters().getConditionsSize(); ++conditionIndex) {
 				addACOption(new MinMAPQConditionOption<BaseQualData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
 				addACOption(new MinBASQConditionOption<BaseQualData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
 				addACOption(new MinCoverageConditionOption<BaseQualData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
@@ -109,7 +108,6 @@ extends AbstractMethodFactory<BaseQualData> {
 				
 				addACOption(new FilterNHsamTagOption<BaseQualData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
 				addACOption(new FilterNMsamTagOption<BaseQualData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
-				addACOption(new InvertStrandOption<BaseQualData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
 				
 				addACOption(new OneConditionBaseQualDataBuilderOption<BaseQualData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
 			}
@@ -142,10 +140,9 @@ extends AbstractMethodFactory<BaseQualData> {
 	}
 
 	@Override
-	public AbstractWorkerDispatcher<BaseQualData> getInstance(
-			final CoordinateProvider coordinateProvider) throws IOException {
+	public AbstractWorkerDispatcher<BaseQualData> getWorkerDispatcher() throws IOException {
 		if(instance == null) {
-			instance = new CallWorkerDispatcher<BaseQualData>(coordinateProvider, getParameters());
+			instance = new CallWorkerDispatcher<BaseQualData>(this);
 		}
 
 		return instance;
@@ -175,7 +172,7 @@ extends AbstractMethodFactory<BaseQualData> {
 		filterFactories.add(new ReadPositionDistanceFilterFactory<BaseQualData>(getParameters()));
 		filterFactories.add(new SpliceSiteDistanceFilterFactory<BaseQualData>(getParameters()));
 		filterFactories.add(new HomozygousFilterFactory<BaseQualData>(getParameters()));
-		filterFactories.add(new MaxAlleleCountFilterFactory<BaseQualData>(getParameters()));
+		filterFactories.add(new MaxAlleleCountFilterFactory<BaseQualData>());
 		filterFactories.add(new HomopolymerFilterFactory<BaseQualData>(getParameters()));
 
 		for (final AbstractFilterFactory<BaseQualData> filterFactory : filterFactories) {

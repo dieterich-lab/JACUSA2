@@ -1,13 +1,13 @@
 package jacusa.pileup.builder;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.BaseQualData;
 import jacusa.pileup.builder.hasLibraryType.LIBRARY_TYPE;
-import jacusa.util.WindowCoordinate;
+import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.BaseQualData;
+import lib.util.WindowCoordinate;
 
-import net.sf.samtools.SAMFileReader;
-import net.sf.samtools.SAMRecord;
+import htsjdk.samtools.SamReader;
+import htsjdk.samtools.SAMRecord;
 
 /**
  * @author Michael Piechotta
@@ -17,8 +17,8 @@ public class FRPairedEnd1PileupBuilder<T extends BaseQualData>
 extends AbstractStrandedPileupBuilder<T> {
 
 	public FRPairedEnd1PileupBuilder(final WindowCoordinate windowCoordinates, 
-			final SAMFileReader reader, 
-			final ConditionParameters<T> condition,
+			final SamReader reader, 
+			final JACUSAConditionParameters<T> condition,
 			final AbstractParameters<T> parameters) {
 		super(windowCoordinates, reader, condition, parameters, LIBRARY_TYPE.FR_FIRSTSTRAND);
 	}

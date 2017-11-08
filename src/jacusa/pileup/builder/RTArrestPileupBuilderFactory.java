@@ -1,10 +1,11 @@
 package jacusa.pileup.builder;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.BaseQualReadInfoData;
-import jacusa.util.WindowCoordinate;
-import net.sf.samtools.SAMFileReader;
+import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.BaseQualReadInfoData;
+import lib.util.WindowCoordinate;
+
+import htsjdk.samtools.SamReader;
 
 /**
  * 
@@ -24,8 +25,8 @@ extends AbstractDataBuilderFactory<T> {
 	@Override
 	public DataBuilder<T> newInstance(
 			final WindowCoordinate windowCoordinates,
-			final SAMFileReader reader, 
-			final ConditionParameters<T> condition, 
+			final SamReader reader, 
+			final JACUSAConditionParameters<T> condition, 
 			final AbstractParameters<T> parameters) {
 		return new RTArrestPileupBuilder<T>(condition, pbf.newInstance(windowCoordinates, reader, condition, parameters));
 	}

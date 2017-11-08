@@ -1,8 +1,8 @@
 package jacusa.filter.counts;
 
-import jacusa.cli.parameters.AbstractParameters;
-import jacusa.data.BaseQualData;
-import jacusa.data.ParallelPileupData;
+import lib.cli.parameters.AbstractParameters;
+import lib.data.BaseQualData;
+import lib.data.ParallelData;
 
 public class RatioCountFilter<T extends BaseQualData> 
 extends AbstractCountFilter<T> {
@@ -16,13 +16,13 @@ extends AbstractCountFilter<T> {
 
 	@Override
 	protected boolean filter(final int variantBaseIndex, 
-			final ParallelPileupData<T> parallelData, 
+			final ParallelData<T> parallelData, 
 			final BaseQualData[][] baseQualCounts) {
 		int count = parallelData
 				.getCombinedPooledData()
 				.getBaseQualCount()
 				.getBaseCount(variantBaseIndex);
-		ParallelPileupData<T> filteredParallelData = 
+		ParallelData<T> filteredParallelData = 
 				applyFilter(variantBaseIndex, parallelData, baseQualCounts);
 		int filteredCount = filteredParallelData
 				.getCombinedPooledData()

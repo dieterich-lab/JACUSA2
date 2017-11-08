@@ -1,16 +1,16 @@
 package jacusa.filter;
 
-import jacusa.cli.parameters.ConditionParameters;
-import jacusa.data.AbstractData;
-
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.util.Coordinate.STRAND;
-import jacusa.util.WindowCoordinate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.AbstractData;
+import lib.util.WindowCoordinate;
+import lib.util.Coordinate.STRAND;
 
 /**
  * 
@@ -47,7 +47,7 @@ public class FilterConfig<T extends AbstractData> implements Cloneable {
 	 * @return
 	 */
 	public FilterContainer<T> createFilterContainer(final WindowCoordinate windowCoordinates, 
-			final STRAND strand, final ConditionParameters<T> condition) {
+			final STRAND strand, final JACUSAConditionParameters<T> condition) {
 		
 		FilterContainer<T> filterContainer = new FilterContainer<T>(
 				this, strand, windowCoordinates, condition);
