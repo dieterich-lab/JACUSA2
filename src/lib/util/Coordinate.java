@@ -65,6 +65,7 @@ public class Coordinate {
 		return start;
 	}
 
+	// TODO
 	public void setPosition(final int position) {
 		start = position;
 		end = position;

@@ -9,9 +9,9 @@ import jacusa.filter.FilterConfig;
 import jacusa.io.Output;
 import jacusa.io.OutputPrinter;
 import jacusa.io.format.AbstractOutputFormat;
-import jacusa.pileup.builder.AbstractDataBuilderFactory;
 import lib.data.AbstractData;
 import lib.data.BaseCallConfig;
+import lib.data.builder.AbstractDataBuilderFactory;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
@@ -119,7 +119,7 @@ implements hasDefaultConditions<T> {
 	}
 	
 	@Override
-	public AbstractConditionParameter<T> getConditionParameters(int conditionIndex) {
+	public AbstractConditionParameter<T> getConditionParameter(int conditionIndex) {
 		return conditionParameters.get(conditionIndex);
 	}
 	
@@ -130,7 +130,7 @@ implements hasDefaultConditions<T> {
 	
 	@Override
 	public int getReplicates(int conditionIndex) {
-		return getConditionParameters(conditionIndex).getRecordFilenames().length;
+		return getConditionParameter(conditionIndex).getRecordFilenames().length;
 	}
 	
 	/**

@@ -1,17 +1,10 @@
 package lib.worker;
 
-
-import java.util.ArrayList;
 import java.util.List;
-
-import addvariants.data.WindowedIterator;
 
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameters;
 import lib.data.AbstractData;
-import lib.data.ParallelData;
-import lib.data.Result;
-import lib.data.builder.SAMRecordWrapperProvider;
 import lib.io.copytmp.CopyTmp;
 import lib.tmp.CoordinateController;
 import lib.util.Coordinate;
@@ -21,19 +14,17 @@ extends Thread {
 
 	public static enum STATUS {INIT, READY, FINISHED, BUSY, WAITING};
 
-	private final AbstractWorkerDispatcher<T> workerDispatcher;
+	private final WorkerDispatcher<T> workerDispatcher;
 	private final ThreadIdContainer threadIdContainer;
 	
 	private final List<CopyTmp> copyTmps;
 	private STATUS status;
-	
-	private final List<SAMRecordWrapperProvider> recordProviders;
 
 	private CoordinateController coordinateController;
 	
 	// TODO private final List<OverlappingRecordWrapperContainer> windowContainers;
 	
-	public AbstractWorker(final AbstractWorkerDispatcher<T> workerDispatcher,
+	public AbstractWorker(final WorkerDispatcher<T> workerDispatcher,
 			final int threadId, List<CopyTmp> copyTmps, 
 			final AbstractParameters<T> parameters) {
 		this.workerDispatcher = workerDispatcher;
@@ -41,14 +32,12 @@ extends Thread {
 
 		this.copyTmps = copyTmps;
 		status = STATUS.INIT;
-
-		recordProviders = createRecordProviders(threadId, parameters.getConditionParameters());
 	}
 
 	protected abstract void doWork();
 	
 	protected void processWaiting() {
-		// TODo
+		// TODO
 	}
 	
 	public void updateReservedWindowCoordinate(final Coordinate reservedWindowCoordinate) {
@@ -59,11 +48,6 @@ extends Thread {
 		Coordinate reserverdWindowCoordinate = null;
 		synchronized (workerDispatcher) {
 			if (workerDispatcher.hasNext()) {
-				if (workerDispatcher.getThreadIds().size() > 0) {
-					int n = workerDispatcher.getThreadIds().size();
-					final int previous = workerDispatcher.getThreadIds().get(n - 1);
-					// TODO
-				}
 				workerDispatcher.getThreadIds().add(threadIdContainer.getThreadId());
 				reserverdWindowCoordinate = workerDispatcher.next();
 			}
@@ -132,10 +116,6 @@ extends Thread {
 		return workerDispatcher.getMethodFactory().getParameters().getActiveWindowSize();
 	}
 
-	protected abstract Result<T> processParallelData(final ParallelData<T> parallelData, 
-			final WindowedIterator<T> parallelPileupIterator);
-	
-
 	/* TODO
 	protected synchronized void processParallelDataIterator(final WindowedIterator<T> parallelDataIterator) {
 		// print informative log
@@ -188,20 +168,5 @@ extends Thread {
 	public List<CopyTmp> getCopyTmps() {
 		return copyTmps;
 	}
-	
-	// TODO take care of replicates
-	private List<SAMRecordWrapperProvider> createRecordProviders(final int threadId, 
-			final List<AbstractConditionParameter<T>> conditions) {
-		List<SAMRecordWrapperProvider> recordProvider = new ArrayList<SAMRecordWrapperProvider>(getConditionParamterers().size());
-		for (final AbstractConditionParameter<T> conditionParameters : getConditionParamterers()) {
-			
-			// final SAMFileReader reader = conditionParameters.createSAMFileReader(conditionParameters.getRecordFilenames());
-			// replicate container
-			// TODO final SAMRecordWrapperProvider provider = new SAMRecordWrapperProvider(reader, conditionParameters);
-			// TODO recordProvider.add(provider);
-		}
-		return recordProvider;
-	}
-	
 
 }

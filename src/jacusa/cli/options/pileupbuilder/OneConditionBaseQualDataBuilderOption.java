@@ -2,14 +2,13 @@ package jacusa.cli.options.pileupbuilder;
 
 import java.util.List;
 
-import jacusa.pileup.builder.AbstractDataBuilderFactory;
-import jacusa.pileup.builder.FRPairedEnd1PileupBuilderFactory;
-import jacusa.pileup.builder.FRPairedEnd2PileupBuilderFactory;
-import jacusa.pileup.builder.UnstrandedPileupBuilderFactory;
-import jacusa.pileup.builder.hasLibraryType.LIBRARY_TYPE;
 import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.JACUSAConditionParameters;
 import lib.data.BaseQualData;
+import lib.data.builder.AbstractDataBuilderFactory;
+import lib.data.builder.FRPairedEnd1PileupBuilderFactory;
+import lib.data.builder.FRPairedEnd2PileupBuilderFactory;
+import lib.data.builder.UnstrandedPileupBuilderFactory;
+import lib.data.builder.hasLibraryType.LIBRARY_TYPE;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -46,7 +45,7 @@ extends AbstractDataBuilderOption<T> {
 	    	}
 	    	
 	    	for (final AbstractConditionParameter<T> conditionParameter : getConditionParameters()) {
-	    		conditionParameter.setPileupBuilderFactory(buildPileupBuilderFactory(l));
+	    		conditionParameter.setDataBuilderFactory(buildPileupBuilderFactory(l));
 	    	}
 	    }
 	}

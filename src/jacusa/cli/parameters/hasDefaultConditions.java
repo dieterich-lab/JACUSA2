@@ -8,7 +8,7 @@ import lib.data.AbstractData;
 public interface hasDefaultConditions<T extends AbstractData> {
 
 	List<AbstractConditionParameter<T>> getConditionParameters();
-	AbstractConditionParameter<T> getConditionParameters(int conditionIndex);
+	AbstractConditionParameter<T> getConditionParameter(int conditionIndex);
 	void setConditionParameters(final List<AbstractConditionParameter<T>> conditionParameters);
 	
 	int getConditionsSize();

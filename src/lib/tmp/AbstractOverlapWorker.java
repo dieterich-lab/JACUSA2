@@ -1,7 +1,5 @@
 package lib.tmp;
 
-import jacusa.pileup.worker.AbstractWorker;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,7 +12,8 @@ import lib.data.builder.SAMRecordWrapperIterator;
 import lib.io.variant.AbstractVariantFormat;
 import lib.util.Coordinate;
 import lib.variant.Variant;
-import lib.worker.AbstractWorkerDispatcher;
+import lib.worker.AbstractWorker;
+import lib.worker.WorkerDispatcher;
 import lib.worker.ThreadIdContainer;
 
 /**
@@ -36,7 +35,7 @@ extends AbstractWorker<T> {
 	private CoordinateController coordinateController;
 	private final List<OverlappingRecordWrapperContainer> windowContainers;
 	
-	public AbstractOverlapWorker(final AbstractWorkerDispatcher<T> workerDispatcher, 
+	public AbstractOverlapWorker(final WorkerDispatcher<T> workerDispatcher, 
 			final int threadId) throws IOException {
 		super(workerDispatcher, threadId, parameters);
 

@@ -1,15 +1,15 @@
 package jacusa.pileup.worker;
 
-import addvariants.data.WindowedIterator;
 import jacusa.cli.parameters.CallParameters;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.StatisticCalculator;
-import jacusa.pileup.dispatcher.call.CallWorkerDispatcher;
+
 import lib.data.BaseQualData;
 import lib.data.ParallelData;
 import lib.data.Result;
 import lib.worker.AbstractWorker;
+import lib.worker.WorkerDispatcher;
 
 public class CallWorker<T extends BaseQualData> 
 extends AbstractWorker<T> {
@@ -18,7 +18,7 @@ extends AbstractWorker<T> {
 	final private StatisticCalculator<T> statisticCalculator;
 	
 	public CallWorker(
-			final CallWorkerDispatcher<T> workerDispatcher,
+			final WorkerDispatcher<T> workerDispatcher,
 			final int threadId, final CallParameters<T> parameters) {
 		super(workerDispatcher, threadId, parameters);
 		this.statisticCalculator = parameters.getStatisticParameters().getStatisticCalculator();
@@ -28,7 +28,6 @@ extends AbstractWorker<T> {
 	@Override
 	protected void doWork() {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override

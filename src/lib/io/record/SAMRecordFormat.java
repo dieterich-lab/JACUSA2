@@ -15,8 +15,9 @@ public class SAMRecordFormat extends AbstractRecordFormat {
 	public SAMRecordWriter createWriterInstance(final AbstractConditionParameter<?> conditionParameter) {
 		// TODO final String filename = conditionParameter.getRecordFilename();
 		final String filename = ""; // TODO
-		final SAMFileHeader header = conditionParameter.getSAMFileReader().get(0).getFileHeader();
-		return new SAMRecordWriter(filename, this, header);
+		// TODOfinal SAMFileHeader header = conditionParameter.getSAMFileReader().get(0).getFileHeader();
+		// return new SAMRecordWriter(filename, this, header);
+		return null;
 	}
 
 	@Override

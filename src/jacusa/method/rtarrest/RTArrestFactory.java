@@ -1,6 +1,5 @@
 package jacusa.method.rtarrest;
 
-import jacusa.JACUSA;
 import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.pileupbuilder.OneConditionBaseQualDataBuilderOption;
 import jacusa.cli.parameters.RTArrestParameters;
@@ -10,19 +9,13 @@ import jacusa.io.format.BED6call;
 import jacusa.io.format.RTArrestDebugResultFormat;
 import jacusa.io.format.RTArrestResultFormat;
 import jacusa.method.call.statistic.StatisticCalculator;
-import jacusa.pileup.builder.UnstrandedPileupBuilderFactory;
-import jacusa.pileup.dispatcher.rtarrest.RTArrestWorkerDispatcher;
 
-
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.Map;
 
-import lib.cli.CLI;
 import lib.cli.options.BaseConfigOption;
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.FilterModusOption;
@@ -41,22 +34,24 @@ import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.BaseQualReadInfoData;
+import lib.data.builder.UnstrandedPileupBuilderFactory;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
-import lib.util.coordinateprovider.CoordinateProvider;
+import lib.worker.AbstractWorker;
+import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.ParseException;
 
-public class RTArrestFactory 
-extends AbstractMethodFactory<BaseQualReadInfoData> {
+public class RTArrestFactory extends AbstractMethodFactory<BaseQualReadInfoData> {
 
 	public final static String NAME = "rt-arrest";
 
-	private static RTArrestWorkerDispatcher<BaseQualReadInfoData> instance;
+	private static WorkerDispatcher<BaseQualReadInfoData> instance;
 
 	public RTArrestFactory() {
 		super(NAME, "Reverse Transcription Arrest - 2 conditions", 
-				new RTArrestParameters<BaseQualReadInfoData>(2, new UnstrandedPileupBuilderFactory<BaseQualReadInfoData>()));
+				new RTArrestParameters<BaseQualReadInfoData>(
+						2, new UnstrandedPileupBuilderFactory<BaseQualReadInfoData>()));
 	}
 
 	/*
@@ -171,13 +166,19 @@ extends AbstractMethodFactory<BaseQualReadInfoData> {
 	}
 
 	@Override
-	public RTArrestWorkerDispatcher<BaseQualReadInfoData> getInstance() throws IOException {
+	public WorkerDispatcher<BaseQualReadInfoData> getWorkerDispatcher() {
 		if(instance == null) {
-			instance = new RTArrestWorkerDispatcher<BaseQualReadInfoData>(getCoordinateProvider(), getParameters());
+			instance = new WorkerDispatcher<BaseQualReadInfoData>(this);
 		}
 		return instance;
 	}
 
+	@Override
+	public AbstractWorker<BaseQualReadInfoData> createWorker() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public BaseQualReadInfoData createData() {
 		return new BaseQualReadInfoData();

@@ -4,9 +4,9 @@ import htsjdk.samtools.SAMRecord;
 
 import java.util.Arrays;
 
-import jacusa.pileup.builder.WindowCache;
 import lib.data.AbstractData;
 import lib.data.BaseCallConfig;
+import lib.data.builder.WindowCache;
 import lib.util.WindowCoordinate;
 
 public abstract class AbstractWindowStorage<T extends AbstractData> 

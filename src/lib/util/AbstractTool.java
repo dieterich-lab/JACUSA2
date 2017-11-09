@@ -6,7 +6,7 @@ import java.util.Map;
 
 import lib.cli.CLI;
 import lib.method.AbstractMethodFactory;
-import lib.worker.AbstractWorkerDispatcher;
+import lib.worker.WorkerDispatcher;
 
 public abstract class AbstractTool {
 
@@ -17,7 +17,7 @@ public abstract class AbstractTool {
 	
 	// command line interface
 	private final CLI cli;
-	private AbstractWorkerDispatcher<?> workerDispatcher;
+	private WorkerDispatcher<?> workerDispatcher;
 	
 	private static Logger logger;
 
@@ -44,9 +44,9 @@ public abstract class AbstractTool {
 		final AbstractMethodFactory<?> methodFactory = cli.getMethodFactory();
 		
 		// run the method...
-		workerDispatcher = methodFactory.getInstance();
+		workerDispatcher = methodFactory.getWorkerDispatcher();
 		workerDispatcher.run();
-		
+
 		// TODO close
 	}
 

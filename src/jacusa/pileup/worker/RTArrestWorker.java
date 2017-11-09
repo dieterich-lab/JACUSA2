@@ -1,13 +1,10 @@
 package jacusa.pileup.worker;
 
-
-import addvariants.data.WindowedIterator;
 import jacusa.JACUSA;
 import jacusa.cli.parameters.RTArrestParameters;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.StatisticCalculator;
-import jacusa.pileup.dispatcher.rtarrest.RTArrestWorkerDispatcher;
 import jacusa.pileup.iterator.variant.RTArrestDebugVariantParallelPileup;
 import jacusa.pileup.iterator.variant.RTArrestVariantParallelPileup;
 import jacusa.pileup.iterator.variant.Variant;
@@ -16,6 +13,8 @@ import lib.data.ParallelData;
 import lib.data.Result;
 import lib.util.AbstractTool;
 import lib.util.Coordinate;
+import lib.worker.AbstractWorker;
+import lib.worker.WorkerDispatcher;
 
 public class RTArrestWorker<T extends BaseQualReadInfoData>
 extends AbstractWorker<T> {
@@ -26,7 +25,7 @@ extends AbstractWorker<T> {
 	private final Variant<T> variant;
 	
 	public RTArrestWorker(
-			final RTArrestWorkerDispatcher<T> workerDispatcher,
+			final WorkerDispatcher<T> workerDispatcher,
 			final int threadId,
 			final RTArrestParameters<T> parameters) {
 		super(workerDispatcher, 

@@ -10,7 +10,7 @@ import htsjdk.samtools.SAMRecordIterator;
 
 public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 
-	private SAMRecordWrapperProvider provider;
+	private SAMRecordWrapperIteratorProvider provider;
 	private Coordinate activeWindowCoordinate;
 	private SAMRecordIterator iterator;
 	
@@ -18,7 +18,7 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 	private int bufferPosition;
 	private final SAMRecordWrapper[] buffer;
 	
-	public SAMRecordWrapperIterator(final SAMRecordWrapperProvider provider, 
+	public SAMRecordWrapperIterator(final SAMRecordWrapperIteratorProvider provider, 
 			final Coordinate activeWindowCoordinate,
 			final SAMRecordIterator iterator) {
 		this.provider = provider;
@@ -93,9 +93,9 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 			}
 
 			boolean isValid = false; 
-			if(provider.getCondition().isValid(record)) {
+			if(provider.getConditionParameter().isValid(record)) {
 				isValid = true;
-				provider.incrementSAMRecords();
+				provider.incrementAcceptedSAMRecords();
 			} else {
 				provider.incrementFilteredSAMRecords();
 			}

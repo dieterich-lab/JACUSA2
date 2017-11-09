@@ -2,7 +2,7 @@ package lib.cli.parameters;
 
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMValidationError;
-import htsjdk.samtools.SamReader; // TODO
+import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.SamReaderFactory.Option;
 import htsjdk.samtools.ValidationStringency;
@@ -13,6 +13,7 @@ import java.util.List;
 
 import lib.cli.options.condition.filter.samtag.SamTagFilter;
 import lib.data.AbstractData;
+import lib.data.builder.AbstractDataBuilderFactory;
 import lib.util.AbstractTool;
 
 public abstract class AbstractConditionParameter<T extends AbstractData> {
@@ -35,7 +36,7 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 	// path to BAM files
 	private String[] recordFilenames;
 	
-	private List<SamReader> readers;
+	private AbstractDataBuilderFactory<T> dataBuilderFactory;
 	
 	public AbstractConditionParameter() {
 		maxDepth 		= -1;
@@ -51,8 +52,6 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 		samTagFilters 	= new ArrayList<SamTagFilter>();
 		
 		recordFilenames = new String[0];
-		
-		readers = new ArrayList<SamReader>(10);
 	}
 	
 	/**
@@ -168,7 +167,7 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 		this.recordFilenames = recordFilenames;
 	}
 	
-	public int getReplicates() {
+	public int getReplicateSize() {
 		return recordFilenames.length;
 	}
 	
@@ -209,12 +208,15 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 		// something went wrong
 		return false;
 	}
-
-	public List<SamReader> getSAMFileReader() {
-		return readers;
+	
+	public AbstractDataBuilderFactory<T> getDataBuilderFactory() {
+		return dataBuilderFactory;
 	}
 	
-	// TODO use ?Map instead of List
+	public void setDataBuilderFactory(final AbstractDataBuilderFactory<T> dataBuilderFactory) {
+		this.dataBuilderFactory = dataBuilderFactory;
+	}
+	
 	public SamReader createSamReader(final String inputFilename) {
 		final File file = new File(inputFilename);
 		final SamReader reader = SamReaderFactory
@@ -223,7 +225,6 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 				.setOption(Option.DONT_MEMORY_MAP_INDEX, false) // disable memory mapping
 				.validationStringency(ValidationStringency.LENIENT)
 				.open(file);
-		readers.add(reader);
 		return reader;
 	}
 	

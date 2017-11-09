@@ -6,15 +6,14 @@ import jacusa.filter.factory.INDEL_DistanceFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.ReadPositionDistanceFilterFactory;
 import jacusa.filter.factory.SpliceSiteDistanceFilterFactory;
-import jacusa.pileup.dispatcher.call.CallWorkerDispatcher;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import lib.data.BaseQualData;
+import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.ParseException;
 
@@ -26,9 +25,9 @@ extends CallFactory {
 	}
 	
 	@Override
-	public CallWorkerDispatcher<BaseQualData> getInstance() throws IOException {
-		if(instance == null) {
-			instance = new CallWorkerDispatcher<BaseQualData>(getCoordinateProvider(), getParameters());
+	public WorkerDispatcher<BaseQualData> getWorkerDispatcher() {
+		if (instance == null) {
+			instance = new WorkerDispatcher<BaseQualData>(this);
 		}
 
 		return instance;

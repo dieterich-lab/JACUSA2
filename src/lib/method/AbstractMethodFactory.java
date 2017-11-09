@@ -16,7 +16,7 @@ import lib.util.coordinateprovider.CoordinateProvider;
 import lib.util.coordinateprovider.SAMCoordinateProvider;
 import lib.util.coordinateprovider.WindowedCoordinateProvider;
 import lib.worker.AbstractWorker;
-import lib.worker.AbstractWorkerDispatcher;
+import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
@@ -62,7 +62,7 @@ public abstract class AbstractMethodFactory<T extends AbstractData> {
 		return parameters;
 	}
 
-	public abstract AbstractWorkerDispatcher<T> getWorkerDispatcher();
+	public abstract WorkerDispatcher<T> getWorkerDispatcher();
 	public abstract AbstractWorker<T> createWorker();
 
 	public abstract void initACOptions();
@@ -100,15 +100,6 @@ public abstract class AbstractMethodFactory<T extends AbstractData> {
 
 		return true;
 	}
-
-	/**
-	 * 
-	 * @param pathnames
-	 * @param coordinateProvider
-	 * @return
-	 * @throws IOException
-	 */
-	public abstract AbstractWorkerDispatcher<T> getInstance() throws IOException; 
 
 	/**
 	 * 
@@ -183,7 +174,7 @@ public abstract class AbstractMethodFactory<T extends AbstractData> {
 		final String[][] recordFilenames = new String[conditionSize][];
 
 		for (int conditionIndex = 0; conditionIndex < conditionSize; conditionIndex++) {
-			recordFilenames[conditionIndex] = parameters.getConditionParameters(conditionIndex).getRecordFilenames();
+			recordFilenames[conditionIndex] = parameters.getConditionParameter(conditionIndex).getRecordFilenames();
 		}
 		
 		final List<SAMSequenceRecord> sequenceRecords = getSAMSequenceRecords(recordFilenames);
@@ -208,7 +199,7 @@ public abstract class AbstractMethodFactory<T extends AbstractData> {
 	 */
 	public boolean parseArgs(final String[] args) throws Exception {
 		for (int conditionIndex = 0; conditionIndex < args.length; conditionIndex++) {
-			SAMPathnameArg pa = new SAMPathnameArg(conditionIndex + 1, parameters.getConditionParameters(conditionIndex));
+			SAMPathnameArg pa = new SAMPathnameArg(conditionIndex + 1, parameters.getConditionParameter(conditionIndex));
 			pa.processArg(args[conditionIndex]);
 		}
 		

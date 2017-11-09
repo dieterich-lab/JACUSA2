@@ -1,6 +1,6 @@
 package lib.data;
 
-import jacusa.pileup.builder.hasLibraryType;
+import lib.data.builder.hasLibraryType;
 import lib.util.Coordinate;
 import lib.util.Coordinate.STRAND;
 

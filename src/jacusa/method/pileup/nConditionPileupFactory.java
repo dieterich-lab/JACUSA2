@@ -13,15 +13,12 @@ import jacusa.filter.factory.SpliceSiteDistanceFilterFactory;
 import jacusa.io.format.AbstractOutputFormat;
 import jacusa.io.format.BED6call;
 import jacusa.io.format.PileupFormat;
-import jacusa.pileup.builder.UnstrandedPileupBuilderFactory;
-import jacusa.pileup.dispatcher.pileup.MpileupWorkerDispatcher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lib.cli.CLI;
 import lib.cli.options.BaseConfigOption;
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.FilterConfigOption;
@@ -41,15 +38,17 @@ import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.BaseQualData;
+import lib.data.builder.UnstrandedPileupBuilderFactory;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
-import lib.util.coordinateprovider.CoordinateProvider;
+import lib.worker.AbstractWorker;
+import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.ParseException;
 
 public class nConditionPileupFactory extends AbstractMethodFactory<BaseQualData> {
 
-	private static MpileupWorkerDispatcher<BaseQualData> instance;
+	private static WorkerDispatcher<BaseQualData> instance;
 	
 	public nConditionPileupFactory(int conditions) {
 		super("pileup", "SAMtools like mpileup", 
@@ -157,9 +156,9 @@ public class nConditionPileupFactory extends AbstractMethodFactory<BaseQualData>
 	}
 	
 	@Override
-	public MpileupWorkerDispatcher<BaseQualData> getWorkerDispatcher() {
-		if(instance == null) {
-			instance = new MpileupWorkerDispatcher<BaseQualData>(getCoordinateProvider(), getParameters());
+	public WorkerDispatcher<BaseQualData> getWorkerDispatcher() {
+		if (instance == null) {
+			instance = new WorkerDispatcher<BaseQualData>(this);
 		}
 
 		return instance;
@@ -221,5 +220,11 @@ public class nConditionPileupFactory extends AbstractMethodFactory<BaseQualData>
 		}
 		
 		return ret;
+	}
+
+	@Override
+	public AbstractWorker<BaseQualData> createWorker() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -17,17 +17,14 @@ import jacusa.io.format.BED6call;
 import jacusa.io.format.VCFcall;
 import jacusa.method.call.statistic.StatisticCalculator;
 import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundError;
-import jacusa.pileup.builder.UnstrandedPileupBuilderFactory;
 import jacusa.pileup.dispatcher.call.CallWorkerDispatcher;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.Map;
 
-import lib.cli.CLI;
 import lib.cli.options.BaseConfigOption;
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.FilterConfigOption;
@@ -47,16 +44,17 @@ import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.BaseQualData;
+import lib.data.builder.UnstrandedPileupBuilderFactory;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
-import lib.util.coordinateprovider.CoordinateProvider;
-import lib.worker.AbstractWorkerDispatcher;
+import lib.worker.AbstractWorker;
+import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.ParseException;
 
 public class CallFactory extends AbstractMethodFactory<BaseQualData> {
 
-	protected static CallWorkerDispatcher<BaseQualData> instance;
+	protected static WorkerDispatcher<BaseQualData> instance;
 	
 	public CallFactory(final int conditions) {
 		super("call-" + (conditions == -1 ? "n" : conditions), 
@@ -140,7 +138,7 @@ public class CallFactory extends AbstractMethodFactory<BaseQualData> {
 	}
 
 	@Override
-	public AbstractWorkerDispatcher<BaseQualData> getWorkerDispatcher() throws IOException {
+	public WorkerDispatcher<BaseQualData> getWorkerDispatcher() {
 		if(instance == null) {
 			instance = new CallWorkerDispatcher<BaseQualData>(this);
 		}
@@ -214,6 +212,12 @@ public class CallFactory extends AbstractMethodFactory<BaseQualData> {
 		return super.parseArgs(args);
 	}
 
+	@Override
+	public AbstractWorker<BaseQualData> createWorker() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public BaseQualData createData() {
 		return new BaseQualData();

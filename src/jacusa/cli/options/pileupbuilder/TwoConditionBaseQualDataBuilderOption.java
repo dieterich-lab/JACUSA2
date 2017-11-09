@@ -2,14 +2,13 @@ package jacusa.cli.options.pileupbuilder;
 
 import java.util.ArrayList;
 
-import jacusa.pileup.builder.AbstractDataBuilderFactory;
-import jacusa.pileup.builder.FRPairedEnd1PileupBuilderFactory;
-import jacusa.pileup.builder.FRPairedEnd2PileupBuilderFactory;
-import jacusa.pileup.builder.UnstrandedPileupBuilderFactory;
-import jacusa.pileup.builder.hasLibraryType.LIBRARY_TYPE;
 import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.JACUSAConditionParameters;
 import lib.data.BaseQualData;
+import lib.data.builder.AbstractDataBuilderFactory;
+import lib.data.builder.FRPairedEnd1PileupBuilderFactory;
+import lib.data.builder.FRPairedEnd2PileupBuilderFactory;
+import lib.data.builder.UnstrandedPileupBuilderFactory;
+import lib.data.builder.hasLibraryType.LIBRARY_TYPE;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -66,8 +65,8 @@ extends AbstractDataBuilderOption<T> {
 	    		throw new IllegalArgumentException(sb.toString());
 	    	}
 
-	    	getConditionParameters().get(0).setPileupBuilderFactory(buildPileupBuilderFactory(l1));
-	    	getConditionParameters().get(1).setPileupBuilderFactory(buildPileupBuilderFactory(l2));
+	    	getConditionParameters().get(0).setDataBuilderFactory(buildPileupBuilderFactory(l1));
+	    	getConditionParameters().get(1).setDataBuilderFactory(buildPileupBuilderFactory(l2));
 	    }
 	}
 

@@ -17,8 +17,9 @@ extends AbstractRecordFormat {
 	public BAMRecordWriter createWriterInstance(final AbstractConditionParameter<?> conditionParameter) {
 		// TODO final String filename = conditionParameter.getRecordFilename();
 		final String filename = null; // TODO
-		final SAMFileHeader header = conditionParameter.getSAMFileReader().get(0).getFileHeader();
-		return new BAMRecordWriter(filename, this, header);
+		// TODO final SAMFileHeader header = conditionParameter.getSAMFileReader().get(0).getFileHeader();
+		// return new BAMRecordWriter(filename, this, header);
+		return null;
 	}
 	
 	@Override
