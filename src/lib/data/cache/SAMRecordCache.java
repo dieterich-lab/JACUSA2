@@ -8,7 +8,8 @@ import lib.util.Coordinate;
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 
-import lib.data.BaseCallConfig;
+import lib.cli.options.BaseCallConfig;
+import lib.data.AbstractData;
 import lib.data.builder.SAMRecordWrapper;
 
 public class SAMRecordCache extends AbstractCache {
@@ -61,6 +62,12 @@ public class SAMRecordCache extends AbstractCache {
 			}
 			incrementBaseCalls(windowPosition, readPosition, length, recordWrapper);
 		}
+	}
+	
+	@Override
+	public AbstractData getData(Coordinate coordinate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	protected void incrementBaseCalls(final int windowPosition, 

@@ -2,13 +2,13 @@ package jacusa.filter.factory;
 
 import jacusa.filter.FilterContainer;
 import jacusa.filter.storage.DistanceStorage;
-import lib.cli.parameters.AbstractParameters;
-import lib.data.BaseQualData;
+import lib.cli.parameters.AbstractParameter;
+import lib.data.basecall.PileupData;
 
-public class CombinedDistanceFilterFactory<T extends BaseQualData> 
+public class CombinedDistanceFilterFactory<T extends PileupData> 
 extends AbstractDistanceFilterFactory<T> {
 
-	public CombinedDistanceFilterFactory(final AbstractParameters<T> parameters) {
+	public CombinedDistanceFilterFactory(final AbstractParameter<T> parameters) {
 		super('I', "Filter distance to TODO position.", 5, 0.5, 1, parameters);
 	}
 

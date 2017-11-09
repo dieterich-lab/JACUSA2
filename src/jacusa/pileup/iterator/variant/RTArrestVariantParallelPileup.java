@@ -4,7 +4,7 @@ import lib.data.BaseQualReadInfoData;
 import lib.data.ParallelData;
 
 public class RTArrestVariantParallelPileup<T extends BaseQualReadInfoData> 
-implements Variant<T> {
+implements ParallelDataValidator<T> {
 	
 	public RTArrestVariantParallelPileup() {}
 

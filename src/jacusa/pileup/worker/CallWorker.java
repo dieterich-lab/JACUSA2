@@ -1,38 +1,40 @@
 package jacusa.pileup.worker;
 
+import java.util.List;
+
 import jacusa.cli.parameters.CallParameters;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.StatisticCalculator;
+import jacusa.pileup.iterator.variant.ParallelDataValidator;
 
-import lib.data.BaseQualData;
 import lib.data.ParallelData;
 import lib.data.Result;
+import lib.data.basecall.PileupData;
+import lib.io.copytmp.CopyTmp;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
-public class CallWorker<T extends BaseQualData> 
+public class CallWorker<T extends PileupData> 
 extends AbstractWorker<T> {
 
-	final private CallParameters<T> parameters;
+	final private CallParameters<T> callParameter;
 	final private StatisticCalculator<T> statisticCalculator;
 	
 	public CallWorker(
 			final WorkerDispatcher<T> workerDispatcher,
-			final int threadId, final CallParameters<T> parameters) {
-		super(workerDispatcher, threadId, parameters);
-		this.statisticCalculator = parameters.getStatisticParameters().getStatisticCalculator();
-		this.parameters = parameters;
+			final int threadId, final List<CopyTmp> copyTmps, 
+			final ParallelDataValidator<T> parallelDataValidator,
+			final CallParameters<T> callParameter) {
+
+		super(workerDispatcher, threadId, copyTmps, parallelDataValidator, callParameter);
+		this.statisticCalculator = callParameter.getStatisticParameters().getStatisticCalculator();
+		this.callParameter = callParameter;
 	}
 
 	@Override
-	protected void doWork() {
-		// TODO Auto-generated method stub
-	}
-	
-	@Override
-	protected Result<T> processParallelData(final ParallelData<T> parallelData, 
-			final WindowedIterator<T> parallelDataIterator) {
+	protected void doWork(ParallelData<T> parallelData) {
+		/* TODO
 		// result object
 		Result<T> result = new Result<T>();
 		result.setParallelData(parallelData);
@@ -42,15 +44,14 @@ extends AbstractWorker<T> {
 			return null;
 		}
 
-		if (parameters.getFilterConfig().hasFiters()) {
+		if (callParameter.getFilterConfig().hasFiters()) {
 			// apply each filter
-			for (final AbstractFilterFactory<T> filterFactory : parameters.getFilterConfig().getFactories()) {
+			for (final AbstractFilterFactory<T> filterFactory : callParameter.getFilterConfig().getFactories()) {
 				AbstractFilter<T> filter = filterFactory.getFilter();
 				filter.applyFilter(result, parallelDataIterator);
 			}
 		}
-
-		return result;
+		*/
 	}
 
 }

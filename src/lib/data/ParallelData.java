@@ -1,5 +1,9 @@
 package lib.data;
 
+import lib.cli.options.BaseCallConfig;
+import lib.data.basecall.PileupData;
+import lib.data.has.hasCoordinate;
+import lib.data.has.hasPileupCount;
 import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
 
@@ -93,7 +97,7 @@ implements hasCoordinate {
 		if (data != null) {
 			data = methodFactory.createContainer(data.length);
 		} else {
-			final int conditions = methodFactory.getParameters().getConditionsSize();
+			final int conditions = methodFactory.getParameter().getConditionsSize();
 			data = methodFactory.createContainer(conditions); 
 		}
 			
@@ -199,7 +203,7 @@ implements hasCoordinate {
 		return new ParallelData<T>(this);
 	}
 
-	public static <S extends BaseQualData> int[] getNonReferenceBaseIndexs(ParallelData<S> parallelData) {
+	public static <S extends PileupData> int[] getNonReferenceBaseIndexs(ParallelData<S> parallelData) {
 		final char referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
 		if (referenceBase == 'N') {
 			return new int[0];
@@ -207,7 +211,7 @@ implements hasCoordinate {
 	
 		final int[] allelesIndexs = parallelData
 				.getCombinedPooledData()
-				.getBaseQualCount()
+				.getPileupCount()
 				.getAlleles();
 		
 		final int referenceBaseIndex = BaseCallConfig.getInstance().getBaseIndex((byte)referenceBase);
@@ -227,13 +231,13 @@ implements hasCoordinate {
 	}
 
 	// suffices that one replicate contains replicate
-	public static <S extends BaseQualData> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
+	public static <S extends AbstractData & hasPileupCount> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
 		int n = 0;
-		int[] alleles = parallelData.getCombinedPooledData().getBaseQualCount().getAlleles();
+		int[] alleles = parallelData.getCombinedPooledData().getPileupCount().getAlleles();
 		
 		for (int baseIndex : alleles) {
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
-				if (parallelData.getPooledData(conditionIndex).getBaseQualCount().getBaseCount(baseIndex) > 0) {
+				if (parallelData.getPooledData(conditionIndex).getPileupCount().getBaseCount(baseIndex) > 0) {
 					alleles[baseIndex]++;
 				}
 			}
@@ -254,15 +258,15 @@ implements hasCoordinate {
 		return variantBaseIs;
 	}
 	
-	public static <S extends BaseQualData> S[] flat(final S[] data, 
+	public static <S extends AbstractData & hasPileupCount> S[] flat(final S[] data, 
 			final S[]ret, 
 			final int[] variantBaseIndexs, final int commonBaseIndex) {
 		for (int i = 0; i < data.length; ++i) {
 			ret[i] = data[i];
 
 			for (int variantBaseIndex : variantBaseIndexs) {
-				ret[i].getBaseQualCount().add(commonBaseIndex, variantBaseIndex, data[i].getBaseQualCount());
-				ret[i].getBaseQualCount().substract(variantBaseIndex, variantBaseIndex, data[i].getBaseQualCount());
+				ret[i].getPileupCount().add(commonBaseIndex, variantBaseIndex, data[i].getPileupCount());
+				ret[i].getPileupCount().substract(variantBaseIndex, variantBaseIndex, data[i].getPileupCount());
 			}
 			
 		}

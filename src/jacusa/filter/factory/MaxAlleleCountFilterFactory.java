@@ -1,18 +1,17 @@
 package jacusa.filter.factory;
 
-import addvariants.data.WindowedIterator;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.FilterContainer;
-import lib.data.BaseQualData;
 import lib.data.ParallelData;
 import lib.data.Result;
+import lib.data.basecall.PileupData;
 
 /**
  * 
  * @author Michael Piechotta
  *
  */
-public class MaxAlleleCountFilterFactory<T extends BaseQualData> 
+public class MaxAlleleCountFilterFactory<T extends PileupData> 
 extends AbstractFilterFactory<T> {
 
 	//

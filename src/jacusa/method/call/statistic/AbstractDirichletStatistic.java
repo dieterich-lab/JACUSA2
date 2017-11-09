@@ -9,15 +9,16 @@ import jacusa.method.call.statistic.dirmult.initalpha.MinAlphaInit;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import lib.data.BaseQualData;
+import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.Result;
+import lib.data.has.hasPileupCount;
 import lib.phred2prob.Phred2Prob;
 import lib.util.Info;
 
 // TODO import umontreal.iro.lecuyer.probdist.ChiSquareDist;
 
-public abstract class AbstractDirichletStatistic<T extends BaseQualData>
+public abstract class AbstractDirichletStatistic<T extends AbstractData & hasPileupCount>
 implements StatisticCalculator<T> {
 
 	protected final CallParameters<T> parameters;
@@ -352,7 +353,7 @@ implements StatisticCalculator<T> {
 	 */
 	protected int[] getBaseIndex(final ParallelData<T> parallelData) {
 		if (onlyObservedBases) {
-			return parallelData.getCombinedPooledData().getBaseQualCount().getAlleles();
+			return parallelData.getCombinedPooledData().getPileupCount().getAlleles();
 		}
 
 		return parameters.getBaseConfig().getBaseIndex();

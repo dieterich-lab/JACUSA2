@@ -3,16 +3,16 @@ package lib.cli.options;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 public class BedCoordinatesOption extends AbstractACOption {
 
-	final private AbstractParameters<?> parameters;
+	final private AbstractParameter<?> parameters;
 	
-	public BedCoordinatesOption(AbstractParameters<?> parameters) {
+	public BedCoordinatesOption(AbstractParameter<?> parameters) {
 		super("b", "bed");
 		this.parameters = parameters;
 	}

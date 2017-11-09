@@ -1,34 +1,20 @@
 package lib.data.cache;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import lib.util.Coordinate;
 import lib.util.Coordinate.STRAND;
 
-import htsjdk.samtools.SAMRecord;
+import lib.cli.options.BaseCallConfig;
+import lib.data.AbstractData;
 
-import lib.data.BaseCallConfig;
-import lib.data.builder.SAMRecordWrapper;
-
-public class StrandedBaseCallCache extends AbstractCache {
+public abstract class AbstractStrandedBaseCallCache extends AbstractCache {
 
 	private BaseCallCache forward; 
 	private BaseCallCache reverse;
-		
-	public StrandedBaseCallCache(final BaseCallConfig baseCallConfig, final int activeWindowSize) {
+
+	public AbstractStrandedBaseCallCache(final BaseCallConfig baseCallConfig, final int activeWindowSize) {
 		super(activeWindowSize);
 		forward = new BaseCallCache(baseCallConfig, activeWindowSize);
 		reverse = new BaseCallCache(baseCallConfig, activeWindowSize);
-	}
-
-	@Override
-	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
-		final SAMRecord record = recordWrapper.getSAMRecord();
-		if (record.getReadNegativeStrandFlag()) {
-			reverse.addRecordWrapper(recordWrapper);
-		} else {
-			forward.addRecordWrapper(recordWrapper);
-		}
 	}
 	
 	@Override
@@ -68,6 +54,7 @@ public class StrandedBaseCallCache extends AbstractCache {
 
 	public int getBaseCallQualities(final int baseIndex, final int baseQualIndex, 
 			final int windowPosition, final STRAND strand) {
+
 		switch (strand) {
 		case FORWARD:
 			return forward.getBaseCallQualities(baseIndex, baseQualIndex, 
@@ -81,24 +68,32 @@ public class StrandedBaseCallCache extends AbstractCache {
 			return forward.getBaseCallQualities(baseIndex, baseQualIndex, windowPosition) + 
 					reverse.getBaseCallQualities(baseIndex, baseQualIndex, windowPosition); 
 		}
+
 		return 0;		
 	}
 
-	public List<SAMRecordWrapper> getRecordWrapper(final int windowPosition, final STRAND strand) {
-		switch (strand) {
+	@Override
+	public AbstractData getData(Coordinate coordinate) {
+		switch (coordinate.getStrand()) {
 		case FORWARD:
-			return forward.getRecordWrapper(windowPosition);
+			return forward.getData(coordinate);
 
 		case REVERSE:
-			return reverse.getRecordWrapper(windowPosition);
-			
+			return reverse.getData(coordinate);
+
 		case UNKNOWN:
-			List<SAMRecordWrapper> combinedList = 
-				new ArrayList<SAMRecordWrapper>(forward.getRecordWrapper(windowPosition));
-			combinedList.addAll(reverse.getRecordWrapper(windowPosition));
-			return combinedList; 
+			return null; // TODO
 		}
-		return new ArrayList<SAMRecordWrapper>(0);
+		
+		return null;
+	}
+	
+	protected BaseCallCache getForward() {
+		return forward;
 	}
 
+	protected BaseCallCache getReverse() {
+		return reverse;
+	}
+	
 }

@@ -23,9 +23,11 @@ public class StrandedCoordinateAdvancer implements CoordinateAdvancer {
 	}
 
 	@Override
-	public void adjustPosition(final int position, final STRAND strand) {
-		coordinate.setPosition(position);
-		coordinate.setStrand(strand);
+	public void adjust(final Coordinate coordinate) {
+		// TODO what about contig
+		coordinate.setStart(coordinate.getStart());
+		coordinate.setEnd(coordinate.getEnd());
+		coordinate.setStrand(coordinate.getStrand());
 	}
 
 	public Coordinate getCurrentCoordinate() {

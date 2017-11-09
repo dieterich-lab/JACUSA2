@@ -1,6 +1,6 @@
 package jacusa.estimate;
 
-import lib.data.hasBaseQualCount;
+import lib.data.basecall.PileupCount;
 import lib.phred2prob.Phred2Prob;
 
 public abstract class AbstractEstimateParameters {
@@ -27,7 +27,7 @@ public abstract class AbstractEstimateParameters {
 		return phred2Prob;
 	}
 
-	public abstract double[] estimateAlpha(int[] baseIs, hasBaseQualCount[] pileups);
-	public abstract double[][] probabilityMatrix(int[] baseIs, hasBaseQualCount[] pileups);
+	public abstract double[] estimateAlpha(int[] baseIndexs, PileupCount[] pileupCounts);
+	public abstract double[][] probabilityMatrix(int[] baseIndexs, PileupCount[] pileupCounts);
 
 }

@@ -1,50 +1,112 @@
 package lib.worker;
 
+import jacusa.pileup.iterator.variant.ParallelDataValidator;
+
+import java.util.Iterator;
 import java.util.List;
 
 import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.ParallelData;
+import lib.data.builder.ConditionContainer;
 import lib.io.copytmp.CopyTmp;
+import lib.location.CoordinateAdvancer;
+import lib.location.StrandedCoordinateAdvancer;
+import lib.location.UnstrandedCoordinateAdvancer;
 import lib.tmp.CoordinateController;
+import lib.util.AbstractTool;
 import lib.util.Coordinate;
+import lib.util.Coordinate.STRAND;
 
-public abstract class AbstractWorker<T extends AbstractData> 
-extends Thread {
+public abstract class AbstractWorker<T extends AbstractData>
+extends Thread
+implements Iterator<ParallelData<T>> {
 
 	public static enum STATUS {INIT, READY, FINISHED, BUSY, WAITING};
 
 	private final WorkerDispatcher<T> workerDispatcher;
 	private final ThreadIdContainer threadIdContainer;
 	
-	private final List<CopyTmp> copyTmps;
-	private STATUS status;
-
+	private final ConditionContainer<T> conditionContainer;
 	private CoordinateController coordinateController;
 	
-	// TODO private final List<OverlappingRecordWrapperContainer> windowContainers;
+	private final List<CopyTmp> copyTmps;
+	private final ParallelDataValidator<T> parallelDataValidator;
+
+	private STATUS status;
 	
 	public AbstractWorker(final WorkerDispatcher<T> workerDispatcher,
 			final int threadId, List<CopyTmp> copyTmps, 
-			final AbstractParameters<T> parameters) {
+			final ParallelDataValidator<T> parallelDataValidator,
+			final AbstractParameter<T> generalParameter) {
 		this.workerDispatcher = workerDispatcher;
 		threadIdContainer = new ThreadIdContainer(threadId);
 
+		conditionContainer = new ConditionContainer<T>(generalParameter);
+		coordinateController = new CoordinateController(generalParameter.getActiveWindowSize(), 
+				createReferenceAdvancer(generalParameter.getConditionParameters()));
+
 		this.copyTmps = copyTmps;
+		this.parallelDataValidator = parallelDataValidator;
 		status = STATUS.INIT;
 	}
 
-	protected abstract void doWork();
+	@Override
+	public boolean hasNext() {
+		/* TODO
+		while () {
+			// init 
+			
+			// build
+			
+			// TODO
+		}
+		*/
+		return false;
+	}
 	
+	
+	@Override
+	public ParallelData<T> next() {
+		if (! hasNext()) {
+			return null;
+		}
+
+		final Coordinate coordinate = new Coordinate(
+				coordinateController.getReferenceAdvance().getCurrentCoordinate());
+		coordinateController.advance();
+		
+		final ParallelData<T> parallelData = new ParallelData<T>(workerDispatcher.getMethodFactory());
+		parallelData.setData(conditionContainer.getData(coordinate));
+		parallelData.setCoordinate(coordinate);
+		return parallelData;
+	}
+	
+	protected abstract void doWork(final ParallelData<T> parallelData);
+
 	protected void processWaiting() {
 		// TODO
 	}
 	
 	public void updateReservedWindowCoordinate(final Coordinate reservedWindowCoordinate) {
-		coordinateController = new CoordinateController(reservedWindowCoordinate, getActiveWindowSize());
+		AbstractTool.getLogger().addInfo("Thread " + (threadIdContainer.getThreadId() + 1) + ": " +
+				"Working on contig " + 
+				reservedWindowCoordinate.getContig() + ":" + 
+				reservedWindowCoordinate.getStart() + "-" + 
+				reservedWindowCoordinate.getEnd());
+		
+		coordinateController.updateReserved(reservedWindowCoordinate);
+		
+		final Coordinate activeWindowCoordinate = coordinateController.getActive();
+		final int conditionSize = 0;
+		
+		conditionContainer.update(activeWindowCoordinate, reservedWindowCoordinate);
+	
 	}
 
 	protected void processInit() {
+		// try to get a new reservedWindoCoordinate
 		Coordinate reserverdWindowCoordinate = null;
 		synchronized (workerDispatcher) {
 			if (workerDispatcher.hasNext()) {
@@ -64,8 +126,10 @@ extends Thread {
 	
 	protected void processReady() {
 		status = STATUS.BUSY;
-		doWork();
-		 // TODO what status
+		while (hasNext()) {
+			ParallelData<T> parallelData = next();
+			doWork(parallelData);	
+		}
 		status = STATUS.INIT;
 	}
 
@@ -108,13 +172,15 @@ extends Thread {
 
 	}
 
+	/* TODo
 	protected List<AbstractConditionParameter<T>> getConditionParamterers() {
-		return workerDispatcher.getMethodFactory().getParameters().getConditionParameters();
+		return workerDispatcher.getMethodFactory().getGeneralParameter().getConditionParameters();
 	}
 	
 	protected int getActiveWindowSize() {
-		return workerDispatcher.getMethodFactory().getParameters().getActiveWindowSize();
+		return workerDispatcher.getMethodFactory().getGeneralParameter().getActiveWindowSize();
 	}
+	*/
 
 	/* TODO
 	protected synchronized void processParallelDataIterator(final WindowedIterator<T> parallelDataIterator) {
@@ -157,8 +223,16 @@ extends Thread {
 		return status;
 	}
 
-	protected void setStatus(STATUS status) {
+	protected void setStatus(final STATUS status) {
 		this.status = status;
+	}
+
+	protected CoordinateController getCoordinateController() {
+		return coordinateController;
+	}
+	
+	protected List<AbstractConditionParameter<T>> getConditionParameter() {
+		return workerDispatcher.getMethodFactory().getParameter().getConditionParameters();
 	}
 	
 	public ThreadIdContainer getThreadIdContainer() {
@@ -168,5 +242,17 @@ extends Thread {
 	public List<CopyTmp> getCopyTmps() {
 		return copyTmps;
 	}
+	
+	private CoordinateAdvancer createReferenceAdvancer(final List<AbstractConditionParameter<T>> conditionParameters) {
+		final Coordinate coordinate = new Coordinate();
+		for (final AbstractConditionParameter<T> conditionParameter : conditionParameters) {
+			if (conditionParameter.getDataBuilderFactory().isStranded()) {
+				coordinate.setStrand(STRAND.FORWARD);
+				return new StrandedCoordinateAdvancer(coordinate);
+			}
+		}
 
+		return new UnstrandedCoordinateAdvancer(coordinate);
+	}
+	
 }

@@ -1,6 +1,6 @@
 package lib.variant;
 
-import lib.data.hasCoordinate;
+import lib.data.has.hasCoordinate;
 import lib.util.Coordinate;
 
 public class Variant implements hasCoordinate {

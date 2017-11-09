@@ -1,32 +1,35 @@
 package jacusa.cli.parameters;
 
 import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundError;
-import lib.cli.parameters.AbstractParameters;
-import lib.data.BaseQualData;
-import lib.data.builder.AbstractDataBuilderFactory;
+import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameters.AbstractParameter;
+import lib.data.AbstractData;
+import lib.data.builder.factory.AbstractDataBuilderFactory;
+import lib.data.has.hasPileupCount;
 
-/**
- * 
- * @author Michael Piechotta
- *
- */
-public class CallParameters<T extends BaseQualData> 
-extends AbstractParameters<T> 
-implements hasStatisticCalculator<T> {
+public class CallParameters<T extends AbstractData & hasPileupCount> 
+extends AbstractParameter<T> implements hasStatisticCalculator<T> {
 
-	private StatisticParameters<T> statisticParameters;
+	private StatisticParameters<T> statisticParameter;
 	
-	public CallParameters(final int conditions, final AbstractDataBuilderFactory<T> dataBuilderFactory) {
-		super(conditions, dataBuilderFactory);
+	public CallParameters(final int conditionSize, final AbstractDataBuilderFactory<T> dataBuilderFactory) {
+		super(conditionSize, dataBuilderFactory);
 		
-		statisticParameters = new StatisticParameters<T>();
-		statisticParameters.setStatisticCalculator(
+		statisticParameter = new StatisticParameters<T>();
+		statisticParameter.setStatisticCalculator(
 				new DirichletMultinomialRobustCompoundError<T>(this));
 	}
-
+	
+	@Override
+	public AbstractConditionParameter<T> createConditionParameter(
+			final AbstractDataBuilderFactory<T> dataBuilderFactory) {
+		// TODO 
+		return null;
+	}
+	
 	@Override
 	public StatisticParameters<T> getStatisticParameters() {
-		return statisticParameters;
+		return statisticParameter;
 	}
 
 }

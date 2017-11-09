@@ -1,9 +1,8 @@
 package jacusa.estimate;
 
-
 import java.util.Arrays;
 
-import lib.data.hasBaseQualCount;
+import lib.data.basecall.PileupCount;
 import lib.phred2prob.Phred2Prob;
 
 // posterior estimation
@@ -19,7 +18,7 @@ public class BayesEstimateParameters extends AbstractEstimateParameters {
 	}
 
 	@Override
-	public double[] estimateAlpha(int[] baseIs, hasBaseQualCount[] pileups) {
+	public double[] estimateAlpha(int[] baseIs, PileupCount[] pileupCounts) {
 		// use initial alpha to init
 		final double[] alpha = new double[baseIs.length];
 		if (initialAlphaNull > 0.0) {
@@ -28,8 +27,8 @@ public class BayesEstimateParameters extends AbstractEstimateParameters {
 			Arrays.fill(alpha, 0.0);
 		}
 
-		for (final hasBaseQualCount pileup : pileups) {
-			double[] v = phred2Prob.colSumProb(baseIs, pileup.getBaseQualCount());
+		for (final PileupCount pileupCount : pileupCounts) {
+			double[] v = phred2Prob.colSumProb(baseIs, pileupCount);
 			for (int baseI : baseIs) {
 				alpha[baseI] += v[baseI];
 			}
@@ -39,12 +38,12 @@ public class BayesEstimateParameters extends AbstractEstimateParameters {
 	}
 
 	@Override
-	public double[][] probabilityMatrix(int[] baseIs, hasBaseQualCount[] pileups) {
-		final double[][] probs = new double[pileups.length][baseIs.length];
+	public double[][] probabilityMatrix(int[] baseIs, PileupCount[] pileupCount) {
+		final double[][] probs = new double[pileupCount.length][baseIs.length];
 
-		for (int pileupIndex = 0; pileupIndex < pileups.length; ++pileupIndex) {
+		for (int pileupIndex = 0; pileupIndex < pileupCount.length; ++pileupIndex) {
 			// sum the probabilities giving alpha 
-			probs[pileupIndex] = phred2Prob.colMeanProb(baseIs, pileups[pileupIndex].getBaseQualCount());
+			probs[pileupIndex] = phred2Prob.colMeanProb(baseIs, pileupCount[pileupIndex]);
 		}
 
 		return probs;

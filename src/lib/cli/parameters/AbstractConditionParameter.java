@@ -13,7 +13,7 @@ import java.util.List;
 
 import lib.cli.options.condition.filter.samtag.SamTagFilter;
 import lib.data.AbstractData;
-import lib.data.builder.AbstractDataBuilderFactory;
+import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.util.AbstractTool;
 
 public abstract class AbstractConditionParameter<T extends AbstractData> {

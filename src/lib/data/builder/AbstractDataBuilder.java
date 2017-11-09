@@ -14,10 +14,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameter;
 import lib.cli.parameters.JACUSAConditionParameters;
 import lib.data.AbstractData;
 import lib.data.cache.AbstractCache;
+import lib.data.has.hasLibraryType;
 import lib.location.CoordinateAdvancer;
 import lib.location.UnstrandedCoordinateAdvancer;
 import lib.util.Coordinate;
@@ -32,13 +33,13 @@ public abstract class AbstractDataBuilder<T extends AbstractData>
 implements hasLibraryType {
 
 	private final AbstractConditionParameter<T> conditionParameter;
-	private final AbstractParameters<T> parameters;
+	private final AbstractParameter<T> parameters;
 	private final FilterContainer<T> filterContainer;
 
 	private final LIBRARY_TYPE libraryType;
 	
 	private final AbstractCache cache; 
-	private Coordinate activewindowCoordinate;
+	private Coordinate activeWindowCoordinate;
 	private CACHE_STATUS cacheStatus;
 	
 	// OLD
@@ -50,7 +51,7 @@ implements hasLibraryType {
 	
 	public AbstractDataBuilder(
 			final AbstractConditionParameter<T> conditionParameter,
-			final AbstractParameters<T> parameters,
+			final AbstractParameter<T> parameters,
 			final LIBRARY_TYPE libraryType,
 			final AbstractCache cache) {
 		this.conditionParameter	= conditionParameter;
@@ -67,7 +68,7 @@ implements hasLibraryType {
 	public List<SAMRecordWrapper> buildCache(final Coordinate activeWindowCoordinate,
 			Iterator<SAMRecordWrapper> iterator) {
 		
-		this.activewindowCoordinate = activeWindowCoordinate;
+		this.activeWindowCoordinate = activeWindowCoordinate;
 		final List<SAMRecordWrapper> recordWrappers = new ArrayList<SAMRecordWrapper>();
 		
 		while (iterator.hasNext()) {
@@ -418,14 +419,14 @@ implements hasLibraryType {
 	}
 
 	public Coordinate getActiveWindowCoordinate() {
-		return activewindowCoordinate;
+		return activeWindowCoordinate;
 	}
 	
 	public int getActiveWindowSize() {
 		return parameters.getActiveWindowSize();
 	}
 	
-	public AbstractParameters<T> getParameters() {
+	public AbstractParameter<T> getParameters() {
 		return parameters;
 	}
 

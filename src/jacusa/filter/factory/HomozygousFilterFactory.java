@@ -1,27 +1,26 @@
 package jacusa.filter.factory;
 
-import addvariants.data.WindowedIterator;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.FilterContainer;
-import lib.cli.parameters.AbstractParameters;
-import lib.data.BaseQualData;
+import lib.cli.parameters.AbstractParameter;
 import lib.data.ParallelData;
 import lib.data.Result;
+import lib.data.basecall.PileupData;
 
 /**
  * 
  * @author Michael Piechotta
  *
  */
-public class HomozygousFilterFactory<T extends BaseQualData> 
+public class HomozygousFilterFactory<T extends PileupData> 
 extends AbstractFilterFactory<T> {
 
 	// 
 	private int homozygousConditionIndex;
 	//
-	private AbstractParameters<T> parameters;
+	private AbstractParameter<T> parameters;
 	
-	public HomozygousFilterFactory(AbstractParameters<T> parameters) {
+	public HomozygousFilterFactory(AbstractParameter<T> parameters) {
 		super('H', "Filter non-homozygous pileup/BAM in condition 1 or 2 " +
 				"(MUST be set to H:1 or H:2). Default: none");
 		homozygousConditionIndex 	= 0;

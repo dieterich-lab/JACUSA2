@@ -2,7 +2,7 @@ package lib.cli.options;
 
 import jacusa.io.Output;
 import jacusa.io.OutputWriter;
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -14,9 +14,9 @@ import org.apache.commons.cli.Option;
  */
 public class ResultFileOption extends AbstractACOption {
 
-	final private AbstractParameters<?> parameters;
+	final private AbstractParameter<?> parameters;
 	
-	public ResultFileOption(AbstractParameters<?> parameters) {
+	public ResultFileOption(AbstractParameter<?> parameters) {
 		super("r", "result-file");
 		this.parameters = parameters;
 	}

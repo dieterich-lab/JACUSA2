@@ -36,7 +36,7 @@ public class WorkerDispatcher<T extends AbstractData> {
 		this.methodFactory = methodFactory;
 		this.coordinateProvider = methodFactory.getCoordinateProvider();
 		
-		final int maxThreads = methodFactory.getParameters().getMaxThreads();
+		final int maxThreads = methodFactory.getParameter().getMaxThreads();
 		workerContainer = new ArrayList<AbstractWorker<T>>(maxThreads);
 		runningWorkers = new ArrayList<AbstractWorker<T>>(maxThreads);
 
@@ -85,7 +85,7 @@ public class WorkerDispatcher<T extends AbstractData> {
 
 			synchronized (this) {
 				// fill thread container
-				while (runningWorkers.size() < methodFactory.getParameters().getMaxThreads() && hasNext()) {
+				while (runningWorkers.size() < methodFactory.getParameter().getMaxThreads() && hasNext()) {
 					final AbstractWorker<T> worker = createWorker();
 
 					workerContainer.add(worker);

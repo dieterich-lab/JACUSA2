@@ -1,16 +1,17 @@
 package jacusa.pileup.iterator.variant;
 
-import lib.data.BaseCallConfig;
-import lib.data.BaseQualData;
+import lib.cli.options.BaseCallConfig;
+import lib.data.AbstractData;
 import lib.data.ParallelData;
+import lib.data.has.hasPileupCount;
 
-public class OneConditionVariantParallelPileup<T extends BaseQualData> 
-implements Variant<T> {
+public class VariantSiteValidator<T extends AbstractData & hasPileupCount> 
+implements ParallelDataValidator<T> {
 	
 	@Override
 	public boolean isValid(ParallelData<T> parallelData) {
 		T data = parallelData.getCombinedPooledData();
-		int[] allelesIndexs = data.getBaseQualCount().getAlleles();
+		final int[] allelesIndexs = data.getPileupCount().getAlleles();
 		// more than one non-reference allele
 		if (allelesIndexs.length > 1) {
 			return true;
@@ -24,7 +25,7 @@ implements Variant<T> {
 			refBaseIndex = BaseCallConfig.BASES[(byte)refBase];
 
 			// there has to be at least one non-reference base call in the data
-			return data.getBaseQualCount().getCoverage() - data.getBaseQualCount().getBaseCount(refBaseIndex) > 0;
+			return data.getPileupCount().getCoverage() - data.getPileupCount().getBaseCount(refBaseIndex) > 0;
 		}
 
 		return false;

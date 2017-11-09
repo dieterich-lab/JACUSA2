@@ -4,7 +4,7 @@ import jacusa.io.format.AbstractOutputFormat;
 
 import java.util.Map;
 
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 
 import org.apache.commons.cli.CommandLine;
@@ -13,10 +13,10 @@ import org.apache.commons.cli.Option;
 public class FormatOption<T extends AbstractData> 
 extends AbstractACOption {
 
-	private AbstractParameters<T> parameters;
+	private AbstractParameter<T> parameters;
 	private Map<Character, AbstractOutputFormat<T>> formats;
 
-	public FormatOption(final AbstractParameters<T> parameters, final Map<Character, AbstractOutputFormat<T>> formats) {
+	public FormatOption(final AbstractParameter<T> parameters, final Map<Character, AbstractOutputFormat<T>> formats) {
 		super("f", "output-format");
 		this.parameters = parameters;
 		this.formats = formats;

@@ -1,39 +1,31 @@
 package jacusa.pileup.worker;
 
-import jacusa.cli.parameters.PileupParameters;
-import jacusa.filter.AbstractFilter;
-import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.pileup.iterator.variant.AllParallelPileup;
-import jacusa.pileup.iterator.variant.Variant;
+import java.util.List;
 
-import lib.data.BaseQualData;
+import jacusa.cli.parameters.PileupParameters;
+
 import lib.data.ParallelData;
-import lib.data.Result;
-import lib.util.Coordinate;
+import lib.data.basecall.PileupData;
+import lib.io.copytmp.CopyTmp;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
-public class MpileupWorker<T extends BaseQualData> 
+public class MpileupWorker<T extends PileupData> 
 extends AbstractWorker<T> {
 
-	private final Variant<T> variant;
+	public MpileupWorker(final WorkerDispatcher<T> workerDispatcher,
+			final int threadId, List<CopyTmp> copyTmps, PileupParameters<T> parameter) {
 
-	public MpileupWorker(WorkerDispatcher<T> workerDispatcher,
-			int threadId, PileupParameters<T> parameters) {
-		super(workerDispatcher, 
-				threadId,
-				parameters);
-		variant = new AllParallelPileup<T>();
+		super(workerDispatcher, threadId, copyTmps, null, parameter);
 	}
-	
+
 	@Override
-	protected Result<T> processParallelData(
-			final ParallelData<T> parallelPileup, 
-			final WindowedIterator<T> parallelDataIterator) {
+	protected void doWork(ParallelData<T> parallelData) {
+		// TODO
+		/*
 		Result<T> result = new Result<T>();
 		result.setParallelData(parallelPileup);
-
-		/*
+		
 		if (getParameters().getFilterConfig().hasFiters()) {
 			// apply each filter
 			for (final AbstractFilterFactory<T> filterFactory : getParameters().getFilterConfig().getFactories()) {
@@ -42,14 +34,6 @@ extends AbstractWorker<T> {
 			}
 		}
 		*/
-
-		return result;
 	}
 
-	@Override
-	protected void doWork() {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

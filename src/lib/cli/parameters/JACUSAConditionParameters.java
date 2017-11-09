@@ -1,8 +1,8 @@
 package lib.cli.parameters;
 
 import lib.data.AbstractData;
-import lib.data.builder.AbstractDataBuilderFactory;
-import lib.data.builder.hasLibraryType;
+import lib.data.builder.factory.AbstractDataBuilderFactory;
+import lib.data.has.hasLibraryType;
 
 public class JACUSAConditionParameters<T extends AbstractData>
 extends AbstractConditionParameter<T>

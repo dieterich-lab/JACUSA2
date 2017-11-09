@@ -3,13 +3,13 @@ package jacusa.filter.storage;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.data.BaseCallConfig;
-import lib.data.BaseQualData;
+import lib.cli.options.BaseCallConfig;
+import lib.data.basecall.PileupData;
 
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.SAMRecord;
 
-public class HomopolymerStorage<T extends BaseQualData> 
+public class HomopolymerStorage<T extends PileupData> 
 extends AbstractWindowStorage<T> 
 implements ProcessAlignmentOperator {
 	

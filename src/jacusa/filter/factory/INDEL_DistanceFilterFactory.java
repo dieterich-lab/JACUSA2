@@ -2,13 +2,13 @@ package jacusa.filter.factory;
 
 import jacusa.filter.FilterContainer;
 import jacusa.filter.storage.DistanceStorage;
-import lib.cli.parameters.AbstractParameters;
-import lib.data.BaseQualData;
+import lib.cli.parameters.AbstractParameter;
+import lib.data.basecall.PileupData;
 
-public class INDEL_DistanceFilterFactory<T extends BaseQualData> 
+public class INDEL_DistanceFilterFactory<T extends PileupData> 
 extends AbstractDistanceFilterFactory<T> {
 
-	public INDEL_DistanceFilterFactory(final AbstractParameters<T> parameters) {
+	public INDEL_DistanceFilterFactory(final AbstractParameter<T> parameters) {
 		super('I', "Filter distance to INDEL position.", 6, 0.2, 2, parameters);
 	}
 

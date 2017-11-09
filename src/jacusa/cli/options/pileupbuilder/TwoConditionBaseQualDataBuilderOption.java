@@ -3,31 +3,29 @@ package jacusa.cli.options.pileupbuilder;
 import java.util.ArrayList;
 
 import lib.cli.parameters.AbstractConditionParameter;
-import lib.data.BaseQualData;
-import lib.data.builder.AbstractDataBuilderFactory;
-import lib.data.builder.FRPairedEnd1PileupBuilderFactory;
-import lib.data.builder.FRPairedEnd2PileupBuilderFactory;
-import lib.data.builder.UnstrandedPileupBuilderFactory;
-import lib.data.builder.hasLibraryType.LIBRARY_TYPE;
+import lib.cli.parameters.AbstractParameter;
+import lib.data.basecall.PileupData;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class TwoConditionBaseQualDataBuilderOption<T extends BaseQualData> 
-extends AbstractDataBuilderOption<T> {
+public class TwoConditionBaseQualDataBuilderOption<T extends PileupData> 
+extends OneConditionBaseQualDataBuilderOption<T> {
 
 	private static final char SEP = ',';
 	
 	public TwoConditionBaseQualDataBuilderOption(
 			final AbstractConditionParameter<T> conditionParameter1, 
-			final AbstractConditionParameter<T> conditionParameter2) {
+			final AbstractConditionParameter<T> conditionParameter2,
+			final AbstractParameter<T> generalParameter) {
 		super(new ArrayList<AbstractConditionParameter<T>>() {
 			private static final long serialVersionUID = 1L;
 			{
 				add(conditionParameter1);
 				add(conditionParameter2);
 			}
-		});
+		}, generalParameter);
 	}
 
 	@Override
@@ -69,22 +67,5 @@ extends AbstractDataBuilderOption<T> {
 	    	getConditionParameters().get(1).setDataBuilderFactory(buildPileupBuilderFactory(l2));
 	    }
 	}
-
-	@Override
-	protected AbstractDataBuilderFactory<T> buildPileupBuilderFactory(
-			final LIBRARY_TYPE libraryType) {
-		switch(libraryType) {
-		
-		case UNSTRANDED:
-			return new UnstrandedPileupBuilderFactory<T>();
-		
-		case FR_FIRSTSTRAND:
-			return new FRPairedEnd1PileupBuilderFactory<T>();
-		
-		case FR_SECONDSTRAND:
-			return new FRPairedEnd2PileupBuilderFactory<T>();
-		}
-		
-		return null;
-	}
+	
 }

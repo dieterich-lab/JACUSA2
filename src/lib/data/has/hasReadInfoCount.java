@@ -1,4 +1,6 @@
-package lib.data;
+package lib.data.has;
+
+import lib.data.ReadInfoCount;
 
 /**
  * 

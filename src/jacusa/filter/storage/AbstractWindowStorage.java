@@ -4,10 +4,8 @@ import htsjdk.samtools.SAMRecord;
 
 import java.util.Arrays;
 
+import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.BaseCallConfig;
-import lib.data.builder.WindowCache;
-import lib.util.WindowCoordinate;
 
 public abstract class AbstractWindowStorage<T extends AbstractData> 
 extends AbstractStorage<T> {
@@ -63,7 +61,7 @@ extends AbstractStorage<T> {
 				}
 
 				byte qual = record.getBaseQualities()[readPosition + i];
-				if (qual >= getCondition().getMinBASQ()) {
+				if (qual >= getConditionParameter().getMinBASQ()) {
 					windowCache.addHighQualityBaseCall(windowPosition + i, baseIndex, qual);
 					visited[windowPosition + i] = true;
 				}

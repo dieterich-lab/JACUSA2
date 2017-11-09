@@ -4,8 +4,8 @@ import java.util.List;
 
 
 import jacusa.filter.FilterConfig;
+import lib.cli.options.BaseCallConfig;
 import lib.cli.parameters.JACUSAConditionParameters;
-import lib.data.BaseCallConfig;
 import lib.data.BaseQualReadInfoData;
 import lib.data.ParallelData;
 import lib.data.Result;
@@ -185,7 +185,7 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 			int baseIndex = baseConfig.getBaseIndex((byte)b);
 			int count = 0;
 			if (baseIndex >= 0) {
-				count = d.getBaseQualCount().getBaseCount(baseIndex);
+				count = d.getPileupCount().getBaseCount(baseIndex);
 			}
 			sb.append(count);
 			++i;
@@ -194,7 +194,7 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 				baseIndex = baseConfig.getBaseIndex((byte)b);
 				count = 0;
 				if (baseIndex >= 0) {
-					count = d.getBaseQualCount().getBaseCount(baseIndex);
+					count = d.getPileupCount().getBaseCount(baseIndex);
 				}
 				sb.append(SEP2);
 				sb.append(count);

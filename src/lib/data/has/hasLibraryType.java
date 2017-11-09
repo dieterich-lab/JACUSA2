@@ -1,4 +1,4 @@
-package lib.data.builder;
+package lib.data.has;
 
 public interface hasLibraryType {
 

@@ -34,7 +34,7 @@ import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.BaseQualReadInfoData;
-import lib.data.builder.UnstrandedPileupBuilderFactory;
+import lib.data.builder.factory.UnstrandedPileupBuilderFactory;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 import lib.worker.AbstractWorker;
@@ -67,54 +67,57 @@ public class RTArrestFactory extends AbstractMethodFactory<BaseQualReadInfoData>
 		// result format
 		if (getResultFormats().size() == 1 ) {
 			Character[] a = getResultFormats().keySet().toArray(new Character[1]);
-			getParameters().setFormat(getResultFormats().get(a[0]));
+			getParameter().setFormat(getResultFormats().get(a[0]));
 		} else {
-			getParameters().setFormat(getResultFormats().get(BED6call.CHAR));
+			getParameter().setFormat(getResultFormats().get(BED6call.CHAR));
 			addACOption(new FormatOption<BaseQualReadInfoData>(
-					getParameters(), getResultFormats()));
+					getParameter(), getResultFormats()));
 		}
 	}
 
 	protected void initGlobalACOptions() {
-		addACOption(new FilterModusOption(getParameters()));
-		addACOption(new BaseConfigOption(getParameters()));
+		addACOption(new FilterModusOption(getParameter()));
+		addACOption(new BaseConfigOption(getParameter()));
 		
-		addACOption(new StatisticFilterOption(getParameters().getStatisticParameters()));
+		addACOption(new StatisticFilterOption(getParameter().getStatisticParameters()));
 
-		addACOption(new ShowReferenceOption(getParameters()));
+		addACOption(new ShowReferenceOption(getParameter()));
 		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 		
-		addACOption(new MaxThreadOption(getParameters()));
-		addACOption(new WindowSizeOption(getParameters()));
-		addACOption(new ThreadWindowSizeOption(getParameters()));
+		addACOption(new MaxThreadOption(getParameter()));
+		addACOption(new WindowSizeOption(getParameter()));
+		addACOption(new ThreadWindowSizeOption(getParameter()));
 		
-		addACOption(new BedCoordinatesOption(getParameters()));
-		addACOption(new ResultFileOption(getParameters()));
+		addACOption(new BedCoordinatesOption(getParameter()));
+		addACOption(new ResultFileOption(getParameter()));
 	}
 
 	protected void initConditionACOptions() {
 		// for all conditions
-		addACOption(new MinMAPQConditionOption<BaseQualReadInfoData>(getParameters().getConditionParameters()));
-		addACOption(new MinBASQConditionOption<BaseQualReadInfoData>(getParameters().getConditionParameters()));
-		addACOption(new MinCoverageConditionOption<BaseQualReadInfoData>(getParameters().getConditionParameters()));
-		addACOption(new MaxDepthConditionOption<BaseQualReadInfoData>(getParameters().getConditionParameters()));
-		addACOption(new FilterFlagConditionOption<BaseQualReadInfoData>(getParameters().getConditionParameters()));
+		addACOption(new MinMAPQConditionOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
+		addACOption(new MinBASQConditionOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
+		addACOption(new MinCoverageConditionOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
+		addACOption(new MaxDepthConditionOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
+		addACOption(new FilterFlagConditionOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
 		
-		addACOption(new FilterNHsamTagOption<BaseQualReadInfoData>(getParameters().getConditionParameters()));
-		addACOption(new FilterNMsamTagOption<BaseQualReadInfoData>(getParameters().getConditionParameters()));
+		addACOption(new FilterNHsamTagOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
+		addACOption(new FilterNMsamTagOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
 		
 		// condition specific
-		for (int conditionIndex = 0; conditionIndex < getParameters().getConditionsSize(); ++conditionIndex) {
-			addACOption(new MinMAPQConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinBASQConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinCoverageConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
-			addACOption(new MaxDepthConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterFlagConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
+		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
+			addACOption(new MinMAPQConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinBASQConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinCoverageConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MaxDepthConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterFlagConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new FilterNHsamTagOption<BaseQualReadInfoData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterNMsamTagOption<BaseQualReadInfoData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNHsamTagOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNMsamTagOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new OneConditionBaseQualDataBuilderOption<BaseQualReadInfoData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
+			addACOption(new OneConditionBaseQualDataBuilderOption<BaseQualReadInfoData>(
+					conditionIndex + 1, 
+					getParameter().getConditionParameters().get(conditionIndex),
+					getParameter()));
 		}
 	}
 	
@@ -144,16 +147,16 @@ public class RTArrestFactory extends AbstractMethodFactory<BaseQualReadInfoData>
 
 		AbstractOutputFormat<BaseQualReadInfoData> resultFormat = null;
 
-		resultFormat = new RTArrestResultFormat(getParameters().getBaseConfig(), 
-				getParameters().getFilterConfig(), getParameters().showReferenceBase());
+		resultFormat = new RTArrestResultFormat(getParameter().getBaseConfig(), 
+				getParameter().getFilterConfig(), getParameter().showReferenceBase());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 		
 		return resultFormats;
 	}
 
 	@Override
-	public RTArrestParameters<BaseQualReadInfoData> getParameters() {
-		return (RTArrestParameters<BaseQualReadInfoData>) super.getParameters();
+	public RTArrestParameters<BaseQualReadInfoData> getParameter() {
+		return (RTArrestParameters<BaseQualReadInfoData>) super.getParameter();
 	}
 
 	@Override
@@ -225,8 +228,8 @@ public class RTArrestFactory extends AbstractMethodFactory<BaseQualReadInfoData>
 	public void debug() {
 		// set custom
 		AbstractTool.getLogger().addDebug("Overwrite file format -> RTArrestDebugResultFormat");
-		getParameters().setFormat(new RTArrestDebugResultFormat(getParameters().getBaseConfig(), 
-				getParameters().getFilterConfig(), getParameters().showReferenceBase()));
+		getParameter().setFormat(new RTArrestDebugResultFormat(getParameter().getBaseConfig(), 
+				getParameter().getFilterConfig(), getParameter().showReferenceBase()));
 	}
 	
 }

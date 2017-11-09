@@ -7,7 +7,8 @@ import lib.cli.options.AbstractACOption;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
 
-public abstract class AbstractConditionACOption<T extends AbstractData> extends AbstractACOption {
+public abstract class AbstractConditionACOption<T extends AbstractData> 
+extends AbstractACOption {
 
 	private int conditionIndex;
 	private final List<AbstractConditionParameter<T>> conditionParameters;

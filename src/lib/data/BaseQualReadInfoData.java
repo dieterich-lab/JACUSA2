@@ -1,9 +1,11 @@
 package lib.data;
 
+import lib.data.basecall.PileupData;
+import lib.data.has.hasReadInfoCount;
 import lib.util.Coordinate;
 
 public class BaseQualReadInfoData
-extends BaseQualData
+extends PileupData
 implements hasReadInfoCount {
 
 	private ReadInfoCount readInfoCount;

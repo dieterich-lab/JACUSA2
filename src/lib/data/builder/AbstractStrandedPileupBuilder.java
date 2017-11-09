@@ -1,47 +1,38 @@
 package lib.data.builder;
 
-import com.sun.corba.se.spi.protocol.ForwardException;
 
 import jacusa.filter.FilterContainer;
 import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameters;
-import lib.cli.parameters.JACUSAConditionParameters;
-import lib.data.BaseQualData;
-import lib.data.builder.hasLibraryType.LIBRARY_TYPE;
-import lib.data.cache.StrandedBaseCallCache;
-import lib.location.CoordinateAdvancer;
-import lib.location.StrandedCoordinateAdvancer;
+import lib.cli.parameters.AbstractParameter;
+import lib.data.AbstractData;
+import lib.data.cache.AbstractStrandedBaseCallCache;
+import lib.data.has.hasPileupCount;
 import lib.util.Coordinate;
 import lib.util.Coordinate.STRAND;
 
-import htsjdk.samtools.SamReader;
-import htsjdk.samtools.SAMRecord;
-import htsjdk.samtools.SAMRecordIterator;
-
-/**
- * @author Michael Piechotta
- *
- */
-public abstract class AbstractStrandedPileupBuilder<T extends BaseQualData> 
+public class AbstractStrandedPileupBuilder<T extends AbstractData & hasPileupCount> 
 extends AbstractDataBuilder<T> {
 
-	private final StrandedBaseCallCache strandedCache;
+	private final AbstractStrandedBaseCallCache strandedCache;
 
 	public AbstractStrandedPileupBuilder(
 			final AbstractConditionParameter<T> conditionParameter,
-			final AbstractParameters<T> parameters,
+			final AbstractParameter<T> parameters,
 			final LIBRARY_TYPE libraryType,
-			final StrandedBaseCallCache strandedCache) {
+			final AbstractStrandedBaseCallCache strandedCache) {
 		super(conditionParameter, parameters, libraryType, strandedCache);
 		this.strandedCache = strandedCache;
 	}
-	
+
+	@Override
 	public void clearCache() {
 		// TODO FilterContainer
 		super.clearCache();
 	}
 
-	public FilterContainer<T> getFilterContainer(int windowPosition, STRAND strand) {
+	@Override
+	public FilterContainer<T> getFilterContainer(final Coordinate coordinate) {
+		/*
 		if (strand == STRAND.FORWARD) {
 			return forward.getFilterContainer(windowPosition, strand);
 		} else if (strand == STRAND.REVERSE) {
@@ -49,13 +40,15 @@ extends AbstractDataBuilder<T> {
 		} else {
 			return null;
 		}
+		*/
+		return null;
 	}
 
-	// TODO
-	public T getData(final int windowPosition, final STRAND strand) {
+	@Override
+	public T getData(final Coordinate coordinate) {
 		final T data = null;
 
-		switch (strand) {
+		switch (coordinate.getStrand()) {
 		case FORWARD:
 			break;
 
@@ -66,8 +59,8 @@ extends AbstractDataBuilder<T> {
 			break;
 		}
 
-		if (strand == STRAND.REVERSE) {
-			data.getBaseQualCount().invert();
+		if (coordinate.getStrand() == STRAND.REVERSE) {
+			data.getPileupCount().invert();
 		}
 
 		// for "Stranded"PileupBuilder the basesCounts in the pileup are already inverted (when on the reverse strand) 

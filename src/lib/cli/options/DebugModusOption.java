@@ -1,15 +1,15 @@
 package lib.cli.options;
 
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 public class DebugModusOption extends AbstractACOption {
 
-	final private AbstractParameters<?> parameters;
+	final private AbstractParameter<?> parameters;
 	
-	public DebugModusOption(final AbstractParameters<?> parameters) {
+	public DebugModusOption(final AbstractParameter<?> parameters) {
 		super("x", "debug");
 		this.parameters = parameters;
 	}

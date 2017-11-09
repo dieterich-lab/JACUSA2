@@ -2,14 +2,14 @@ package jacusa.io.format;
 
 import java.util.List;
 
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.options.BaseCallConfig;
+import lib.cli.parameters.AbstractParameter;
 import lib.cli.parameters.JACUSAConditionParameters;
-import lib.data.BaseCallConfig;
-import lib.data.BaseQualData;
 import lib.data.ParallelData;
 import lib.data.Result;
+import lib.data.basecall.PileupData;
 
-public class BED6call extends AbstractOutputFormat<BaseQualData> {
+public class BED6call extends AbstractOutputFormat<PileupData> {
 
 	public static final char CHAR = 'B';
 	
@@ -18,23 +18,23 @@ public class BED6call extends AbstractOutputFormat<BaseQualData> {
 	public static final char SEP 	= '\t';
 	public static final char SEP2 	= ',';
 
-	private AbstractParameters<BaseQualData> parameters;
+	private AbstractParameter<PileupData> parameters;
 	
 	public BED6call(
 			final char c,
 			final String desc,
-			final AbstractParameters<BaseQualData> parameters) {
+			final AbstractParameter<PileupData> parameters) {
 		super(c, desc);
 		
 		this.parameters = parameters;
 	}
 
-	public BED6call(final AbstractParameters<BaseQualData> parameters) {
+	public BED6call(final AbstractParameter<PileupData> parameters) {
 		this(CHAR, "Default", parameters);
 	}
 
 	@Override
-	public String getHeader(final List<JACUSAConditionParameters<BaseQualData>> conditionParameters) {
+	public String getHeader(final List<JACUSAConditionParameters<PileupData>> conditionParameters) {
 		final StringBuilder sb = new StringBuilder();
 
 		sb.append(COMMENT);
@@ -84,7 +84,7 @@ public class BED6call extends AbstractOutputFormat<BaseQualData> {
 		return sb.toString();
 	}
 
-	protected void addConditionLibraryTypeHeader(final StringBuilder sb, final List<JACUSAConditionParameters<BaseQualData>> conditions) {
+	protected void addConditionLibraryTypeHeader(final StringBuilder sb, final List<JACUSAConditionParameters<PileupData>> conditions) {
 		sb.append(COMMENT);
 
 		sb.append(EMPTY);
@@ -104,7 +104,7 @@ public class BED6call extends AbstractOutputFormat<BaseQualData> {
 		sb.append("TODO");
 		sb.append(getSEP());
 		
-		for (final JACUSAConditionParameters<BaseQualData> condition : conditions) {
+		for (final JACUSAConditionParameters<PileupData> condition : conditions) {
 			sb.append(condition.getLibraryType());
 			sb.append(getSEP());
 		}
@@ -123,7 +123,7 @@ public class BED6call extends AbstractOutputFormat<BaseQualData> {
 		}
 	}
 	
-	protected void addConditionPathnamesHeader(final StringBuilder sb, final List<JACUSAConditionParameters<BaseQualData>> conditionParameters) {
+	protected void addConditionPathnamesHeader(final StringBuilder sb, final List<JACUSAConditionParameters<PileupData>> conditionParameters) {
 		sb.append(COMMENT);
 
 		sb.append(EMPTY);
@@ -142,7 +142,7 @@ public class BED6call extends AbstractOutputFormat<BaseQualData> {
 		sb.append(EMPTY);
 		sb.append(getSEP());
 		
-		for (final JACUSAConditionParameters<BaseQualData> conditionParameter : conditionParameters) {
+		for (final JACUSAConditionParameters<PileupData> conditionParameter : conditionParameters) {
 			final String[] pathnames = conditionParameter.getRecordFilenames();
 			sb.append(pathnames[0]);
 			for (int replicateIndex = 1; replicateIndex < pathnames.length; replicateIndex++) {
@@ -182,8 +182,8 @@ public class BED6call extends AbstractOutputFormat<BaseQualData> {
 		}
 	}
 
-	public String convert2String(Result<BaseQualData> result) {
-		final ParallelData<BaseQualData> parallelData = result.getParellelData();
+	public String convert2String(Result<PileupData> result) {
+		final ParallelData<PileupData> parallelData = result.getParellelData();
 		final double statistic = result.getStatistic();
 		final StringBuilder sb = new StringBuilder();
 
@@ -231,9 +231,9 @@ public class BED6call extends AbstractOutputFormat<BaseQualData> {
 	/*
 	 * Helper function
 	 */
-	protected void addData(final StringBuilder sb, final BaseQualData[] data) {
+	protected void addData(final StringBuilder sb, final PileupData[] data) {
 		// output condition: Ax,Cx,Gx,Tx
-		for (final BaseQualData d : data) {
+		for (final PileupData d : data) {
 			sb.append(SEP);
 
 			int i = 0;
@@ -241,7 +241,7 @@ public class BED6call extends AbstractOutputFormat<BaseQualData> {
 			int baseI = parameters.getBaseConfig().getBaseIndex((byte)b);
 			int count = 0;
 			if (baseI >= 0) {
-				count = d.getBaseQualCount().getBaseCount(baseI);
+				count = d.getPileupCount().getBaseCount(baseI);
 			}
 			sb.append(count);
 			++i;
@@ -250,7 +250,7 @@ public class BED6call extends AbstractOutputFormat<BaseQualData> {
 				baseI = parameters.getBaseConfig().getBaseIndex((byte)b);
 				count = 0;
 				if (baseI >= 0) {
-					count = d.getBaseQualCount().getBaseCount(baseI);
+					count = d.getPileupCount().getBaseCount(baseI);
 				}
 				sb.append(SEP2);
 				sb.append(count);

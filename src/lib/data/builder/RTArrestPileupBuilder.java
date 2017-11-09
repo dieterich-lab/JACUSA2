@@ -1,7 +1,7 @@
 package lib.data.builder;
 
 import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameter;
 import lib.data.BaseQualReadInfoData;
 import lib.data.cache.AlignmentCache;
 import lib.util.Coordinate;
@@ -19,9 +19,9 @@ extends AbstractDataBuilder<T> {
 	private AlignmentCache cache;
 	
 	public RTArrestPileupBuilder(final AbstractConditionParameter<T> conditionParameter,
-			final AbstractParameters<T> parameters, final AbstractDataBuilder<T> dataBuilder, 
-			AlignmentCache cache) {
-		super(conditionParameter, parameters, dataBuilder.getLibraryType(), cache);
+			final AbstractParameter<T> generalParameter, final AbstractDataBuilder<T> dataBuilder, 
+			final AlignmentCache cache) {
+		super(conditionParameter, generalParameter, dataBuilder.getLibraryType(), cache);
 		this.dataBuilder = dataBuilder;
 	}
 		

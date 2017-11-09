@@ -27,7 +27,7 @@ public class SAMRecordWrapperIteratorProvider {
 	}
 
 	// get iterator to fill the window
-	public SAMRecordWrapperIterator getIterator(final Coordinate activeWindowCoordinate, final Coordinate reservedWindowCoordinate) {
+	public SAMRecordWrapperIterator createIterator(final Coordinate activeWindowCoordinate, final Coordinate reservedWindowCoordinate) {
 		final SAMRecordIterator iterator = createSAMRecordIterator(reservedWindowCoordinate);
 		return new SAMRecordWrapperIterator(this, activeWindowCoordinate, iterator);
 	}

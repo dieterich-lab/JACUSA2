@@ -4,7 +4,7 @@ import jacusa.filter.factory.AbstractFilterFactory;
 
 import java.util.Map;
 
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 
 import org.apache.commons.cli.CommandLine;
@@ -12,14 +12,14 @@ import org.apache.commons.cli.Option;
 
 public class FilterConfigOption<T extends AbstractData> extends AbstractACOption {
 
-	final private AbstractParameters<T> parameters;
+	final private AbstractParameter<T> parameters;
 
 	private static final char OR = ',';
 	//private static char AND = '&'; // Future Feature add logic
 
 	final private Map<Character, AbstractFilterFactory<T>> filterFactories;
 
-	public FilterConfigOption(final AbstractParameters<T> parameters, 
+	public FilterConfigOption(final AbstractParameter<T> parameters, 
 			final Map<Character, AbstractFilterFactory<T>> filterFactories) {
 		super("a", "pileup-filter");
 		this.parameters = parameters;

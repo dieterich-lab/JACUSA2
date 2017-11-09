@@ -17,7 +17,7 @@ public class Logger {
 	}
 
 	public boolean isDebug() {
-		return tool.getCLI().getMethodFactory().getParameters().isDebug();
+		return tool.getCLI().getMethodFactory().getParameter().isDebug();
 	}
 	
 	public AbstractTool getTool() {

@@ -2,7 +2,7 @@ package jacusa.io.format;
 
 
 import jacusa.filter.FilterConfig;
-import lib.data.BaseCallConfig;
+import lib.cli.options.BaseCallConfig;
 import lib.data.BaseQualReadInfoData;
 
 public class RTArrestDebugResultFormat 
@@ -30,7 +30,7 @@ extends RTArrestResultFormat {
 			int baseIndex = baseConfig.getBaseIndex((byte)b);
 			int count = 0;
 			if (baseIndex >= 0) {
-				count = d.getBaseQualCount().getBaseCount(baseIndex);
+				count = d.getPileupCount().getBaseCount(baseIndex);
 			}
 			sb.append(count);
 			++i;
@@ -39,7 +39,7 @@ extends RTArrestResultFormat {
 				baseIndex = baseConfig.getBaseIndex((byte)b);
 				count = 0;
 				if (baseIndex >= 0) {
-					count = d.getBaseQualCount().getBaseCount(baseIndex);
+					count = d.getPileupCount().getBaseCount(baseIndex);
 				}
 				sb.append(SEP2);
 				sb.append(count);

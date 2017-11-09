@@ -3,25 +3,25 @@ package jacusa.cli.options.pileupbuilder;
 import java.util.List;
 
 import lib.cli.parameters.AbstractConditionParameter;
-import lib.data.BaseQualData;
-import lib.data.builder.AbstractDataBuilderFactory;
-import lib.data.builder.FRPairedEnd1PileupBuilderFactory;
-import lib.data.builder.FRPairedEnd2PileupBuilderFactory;
-import lib.data.builder.UnstrandedPileupBuilderFactory;
-import lib.data.builder.hasLibraryType.LIBRARY_TYPE;
+import lib.cli.parameters.AbstractParameter;
+import lib.data.basecall.PileupData;
+import lib.data.builder.factory.AbstractDataBuilderFactory;
+import lib.data.builder.factory.StrandedPileupBuilderFactory;
+import lib.data.builder.factory.UnstrandedPileupBuilderFactory;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class OneConditionBaseQualDataBuilderOption<T extends BaseQualData>
+public class OneConditionBaseQualDataBuilderOption<T extends PileupData>
 extends AbstractDataBuilderOption<T> {
 
-	public OneConditionBaseQualDataBuilderOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameter) {
-		super(conditionIndex, conditionParameter);
+	public OneConditionBaseQualDataBuilderOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameter, final AbstractParameter<T> generalParameter) {
+		super(conditionIndex, conditionParameter, generalParameter);
 	}
 	
-	public OneConditionBaseQualDataBuilderOption(final List<AbstractConditionParameter<T>> conditionParameters) {
-		super(conditionParameters);
+	public OneConditionBaseQualDataBuilderOption(final List<AbstractConditionParameter<T>> conditionParameters, final AbstractParameter<T> generalParameter) {
+		super(conditionParameters, generalParameter);
 	}
 	
 	@Override
@@ -50,21 +50,19 @@ extends AbstractDataBuilderOption<T> {
 	    }
 	}
 
-	protected AbstractDataBuilderFactory<T> buildPileupBuilderFactory(final LIBRARY_TYPE libraryType) {
-		
+	@Override
+	protected AbstractDataBuilderFactory<T> buildPileupBuilderFactory(
+			final LIBRARY_TYPE libraryType) {
 		switch(libraryType) {
 		
 		case UNSTRANDED:
-			return new UnstrandedPileupBuilderFactory<T>();
+			return new UnstrandedPileupBuilderFactory<T>(getGeneralParameter());
 		
 		case FR_FIRSTSTRAND:
-			return new FRPairedEnd1PileupBuilderFactory<T>();
-		
 		case FR_SECONDSTRAND:
-			return new FRPairedEnd2PileupBuilderFactory<T>();
+			return new StrandedPileupBuilderFactory<T>(libraryType, getGeneralParameter());
 		}
-
+		
 		return null;
 	}
-	
 }

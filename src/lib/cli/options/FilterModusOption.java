@@ -1,15 +1,15 @@
 package lib.cli.options;
 
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 public class FilterModusOption extends AbstractACOption {
 
-	final private AbstractParameters<?> parameters;
+	final private AbstractParameter<?> parameters;
 	
-	public FilterModusOption(final AbstractParameters<?> parameters) {
+	public FilterModusOption(final AbstractParameter<?> parameters) {
 		super("s", "separate");
 		this.parameters = parameters;
 	}

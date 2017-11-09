@@ -3,8 +3,8 @@ package jacusa.filter.storage;
 
 import java.util.List;
 
+import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.BaseCallConfig;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.CigarElement;

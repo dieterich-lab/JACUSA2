@@ -8,7 +8,7 @@ import java.util.Set;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.SAMPathnameArg;
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 import lib.util.AbstractTool;
 import lib.util.coordinateprovider.BedCoordinateProvider;
@@ -34,14 +34,14 @@ public abstract class AbstractMethodFactory<T extends AbstractData> {
 	private final String name;
 	private final String desc;
 
-	private AbstractParameters<T> parameters;
+	private AbstractParameter<T> parameters;
 
 	private final Set<AbstractACOption> ACOptions;
 
 	private CoordinateProvider coordinateProvider;
 	
 	public AbstractMethodFactory(final String name, final String desc, 
-			final AbstractParameters<T> parameters) {
+			final AbstractParameter<T> parameters) {
 		this.name = name;
 		this.desc = desc;
 
@@ -50,15 +50,15 @@ public abstract class AbstractMethodFactory<T extends AbstractData> {
 	}
 	
 	// needed for Methods where the number of conditions is unknown... 
-	public void initParameters(final int conditions) { }
+	public void initGeneralParameter(final int conditions) { }
 	
-	protected void setParameters(final AbstractParameters<T> parameters) {
+	protected void setParameters(final AbstractParameter<T> parameters) {
 		parameters.setMethodFactory(this);
 		this.parameters = parameters;
 		
 	}
 	
-	public AbstractParameters<T> getParameters() {
+	public AbstractParameter<T> getParameter() {
 		return parameters;
 	}
 
@@ -143,7 +143,7 @@ public abstract class AbstractMethodFactory<T extends AbstractData> {
 	}
 	
 	protected String getFiles() {
-		switch (getParameters().getConditionsSize()) {
+		switch (getParameter().getConditionsSize()) {
 		case 1:
 			return "[OPTIONS] BAM1_1[,BAM1_2,BAM1_3,...]";
 

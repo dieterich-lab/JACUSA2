@@ -56,7 +56,7 @@ public class CLI {
 			methodFactory.printUsage();
 			System.exit(0);
 		}
-		methodFactory.initParameters(getFilenames(args).length);
+		methodFactory.initGeneralParameter(getFilenames(args).length);
 		// init method factory (populate: parameters)
 		methodFactory.initACOptions();
 		
@@ -76,7 +76,7 @@ public class CLI {
 		final CommandLineParser parser = new DefaultParser();
 		try {
 			// create hidden debug option
-			AbstractACOption debugACOption = new DebugModusOption(methodFactory.getParameters());
+			AbstractACOption debugACOption = new DebugModusOption(methodFactory.getParameter());
 			options.addOption(debugACOption.getOption());
 
 			final CommandLine line = parser.parse(options, processedArgs);

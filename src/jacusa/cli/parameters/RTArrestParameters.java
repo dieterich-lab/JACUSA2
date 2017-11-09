@@ -1,12 +1,12 @@
 package jacusa.cli.parameters;
 
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameters.AbstractParameter;
 import lib.data.BaseQualReadInfoData;
-import lib.data.builder.AbstractDataBuilderFactory;
+import lib.data.builder.factory.AbstractDataBuilderFactory;
 
 public class RTArrestParameters<T extends BaseQualReadInfoData>
-extends AbstractParameters<T> 
-implements hasStatisticCalculator<T> {
+extends AbstractParameter<T> implements hasStatisticCalculator<T> {
 
 	private StatisticParameters<T> statisticParameters;
 
@@ -15,6 +15,13 @@ implements hasStatisticCalculator<T> {
 		
 		statisticParameters = new StatisticParameters<T>();
 		statisticParameters.setStatisticCalculator(new BetaBinomial<T>());
+	}
+
+	@Override
+	public AbstractConditionParameter<T> createConditionParameter(
+			AbstractDataBuilderFactory<T> dataBuilderFactory) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	@Override

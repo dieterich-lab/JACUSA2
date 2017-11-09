@@ -1,14 +1,18 @@
 package lib.tmp;
 
+import jacusa.pileup.iterator.variant.ParallelDataValidator;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.SAMRecordWrapper;
 import lib.data.builder.SAMRecordWrapperIterator;
+import lib.io.copytmp.CopyTmp;
 import lib.io.variant.AbstractVariantFormat;
 import lib.util.Coordinate;
 import lib.variant.Variant;
@@ -16,32 +20,22 @@ import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 import lib.worker.ThreadIdContainer;
 
-/**
- * 
- * @author Michael Piechotta
- *
- * 
- */
-public class AbstractOverlapWorker<T extends AbstractData> 
+public abstract class AbstractOverlapWorker<T extends AbstractData> 
 extends AbstractWorker<T> {
 
-	/*
-	private final TmpWorkerWriter<T> tmpWriter;
-	private TmpWorkerReader<T> tmpReader;
-	*/
-
-	private final SAMRecordModifier recordModifier;
-	
-	private CoordinateController coordinateController;
 	private final List<OverlappingRecordWrapperContainer> windowContainers;
 	
 	public AbstractOverlapWorker(final WorkerDispatcher<T> workerDispatcher, 
-			final int threadId) throws IOException {
-		super(workerDispatcher, threadId, parameters);
+			final int threadId, final List<CopyTmp> copyTmps, 
+			final ParallelDataValidator<T> parallelDataValidator, 
+			final AbstractParameter<T> generalParameter) throws IOException {
+		super(workerDispatcher, threadId, copyTmps, parallelDataValidator, generalParameter);
 
-		windowContainers = createOverlappingContainers(getConditionParamterers().size());
+		windowContainers = createOverlappingContainers(generalParameter.getConditionsSize());
 	}
 
+	
+	
 	private List<OverlappingRecordWrapperContainer> createOverlappingContainers(final int conditions) {
 		final List<OverlappingRecordWrapperContainer> container = new ArrayList<OverlappingRecordWrapperContainer>(conditions);
 		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
@@ -57,17 +51,11 @@ extends AbstractWorker<T> {
 	}
 	
 	private void processRecordModifier() {
-		AddVariants.getLogger().addInfo("Thread " + (threadIdContainer.getThreadId() + 1) + ": " +
-				"Implanting variants to contig " + 
-				coordinateController.getReserved().getContig() + ":" + 
-				coordinateController.getReserved().getStart() + "-" + 
-				coordinateController.getReserved().getEnd());
-		
+		/*
 		// counter to reconstruct order from tmp writers
 		final int[] recordCount = new int[getConditionParamterers().size()];
 		int variantCount = 0;
 					
-		while (coordinateController.hasNext()) {
 			// get next active window within reserved
 			final Coordinate active = coordinateController.next();
 			// get iterator for SAMRecords within active window 
@@ -84,9 +72,11 @@ extends AbstractWorker<T> {
 			clear();
 		}		
 		
-		tmpWriter.updateCounts(variantCount, recordCount);
+		// TODO tmpWriter.updateCounts(variantCount, recordCount);
+	*/
 	}
 
+	/* TODO
 	private int createAndWriteVariants() {
 		int variantCount = 0;
 		while (recordModifier.hasNext()) {
@@ -100,7 +90,9 @@ extends AbstractWorker<T> {
 		}
 		return variantCount;
 	}
+	*/
 
+	/* TODO
 	private void writeRecords(final List<List<SAMRecordWrapper>> readRecords, final int[] recordCount) {
 		for (int conditionIndex = 0; conditionIndex < getConditionParamterers().size(); conditionIndex++) {
 			final SAMFileWriter tmpRecordWriter = tmpWriter.getRecordWriter(conditionIndex);
@@ -113,6 +105,7 @@ extends AbstractWorker<T> {
 			}
 		}
 	}
+	*/
 	
 	private void clear() {
 		/*
@@ -121,17 +114,19 @@ extends AbstractWorker<T> {
 		}
 		*/
 
-		if (coordinateController.isInner()) {
-			for (int conditionIndex = 0; conditionIndex < getConditionParamterers().size(); conditionIndex++) {
+		/*
+		if (getCoordinateController().isInner()) {
+			for (int conditionIndex = 0; conditionIndex < getConditionParamterer().size(); conditionIndex++) {
 				windowContainers.get(conditionIndex).getLeft().clear();
 			}		
 		}
 		
-		if (coordinateController.isRight()) {
-			for (int conditionIndex = 0; conditionIndex < getConditionParamterers().size(); conditionIndex++) {
+		if (getCoordinateController().isRight()) {
+			for (int conditionIndex = 0; conditionIndex < getConditionParamterer().size(); conditionIndex++) {
 				windowContainers.get(conditionIndex).clear();
 			}
 		}
+		*/
 	}
 	
 	private boolean hasLeft() {
@@ -154,25 +149,26 @@ extends AbstractWorker<T> {
 		return false;
 	}
 	
+	/*
 	// TODO keep track of closeable iterator
 	private List<Iterator<SAMRecordWrapper>> createIterators(final Coordinate activeWindowCoordinate, final Coordinate reserverdWindowCoordinate) {
 		final List<Iterator<SAMRecordWrapper>> iterators = 
-				new ArrayList<Iterator<SAMRecordWrapper>>(getConditionParamterers().size());
-		if (coordinateController.isLeft()) {
+				new ArrayList<Iterator<SAMRecordWrapper>>(getConditionParamterer().size());
+		if (getCoordinateController().isLeft()) {
 			// TODO left outer already computed
-			for (int conditionIndex = 0; conditionIndex < getConditionParamterers().size(); conditionIndex++) {
-				final SAMRecordWrapperIterator iterator = recordProviders.get(conditionIndex).getIterator(activeWindowCoordinate, reserverdWindowCoordinate);
+			for (int conditionIndex = 0; conditionIndex < getConditionParamterer().size(); conditionIndex++) {
+				final SAMRecordWrapperIterator iterator = recordProviders.get(conditionIndex).createIterator(activeWindowCoordinate, reserverdWindowCoordinate);
 				iterators.add(iterator);
 			}
 		}
 
-		if (coordinateController.isInner()) {
-			for (int conditionIndex = 0; conditionIndex < getConditionParamterers().size(); conditionIndex++) {
+		if (getCoordinateController().isInner()) {
+			for (int conditionIndex = 0; conditionIndex < getConditionParamterer().size(); conditionIndex++) {
 				final List<Iterator<SAMRecordWrapper>> tmpIterators = new ArrayList<Iterator<SAMRecordWrapper>>(2);
 				// get it to reads that overlap active window on left site
 				tmpIterators.add(getWindowContainer().get(conditionIndex).getLeft().iterator());
 				// get it to reads that are within this active window ( ] - overlapping right side of window
-				tmpIterators.add(recordProviders.get(conditionIndex).getIterator(activeWindowCoordinate, reserverdWindowCoordinate));
+				tmpIterators.add(recordProviders.get(conditionIndex).createIterator(activeWindowCoordinate, reserverdWindowCoordinate));
 
 				final Iterator<SAMRecordWrapper> iterator = new CombinedSAMRecordWrapperIterator(tmpIterators);
 				iterators.add(iterator);
@@ -180,12 +176,12 @@ extends AbstractWorker<T> {
 		}
 		
 		if (coordinateController.isRight()) {
-			for (int conditionIndex = 0; conditionIndex < getConditionParamterers().size(); conditionIndex++) {
+			for (int conditionIndex = 0; conditionIndex < getConditionParamterer().size(); conditionIndex++) {
 				final List<Iterator<SAMRecordWrapper>> tmpIterators = new ArrayList<Iterator<SAMRecordWrapper>>(2);
 				// get it to reads that overlap active window on left site
 				tmpIterators.add(getWindowContainer().get(conditionIndex).getLeft().iterator());
 				// get it to reads that are within this active window ( ] - overlapping right side of window
-				tmpIterators.add(recordProviders.get(conditionIndex).getIterator(activeWindowCoordinate, reserverdWindowCoordinate));
+				tmpIterators.add(recordProviders.get(conditionIndex).createIterator(activeWindowCoordinate, reserverdWindowCoordinate));
 				// get it to reads that overlap active window on right site
 				tmpIterators.add(getWindowContainer().get(conditionIndex).getLeft().iterator());
 
@@ -196,6 +192,7 @@ extends AbstractWorker<T> {
 
 		return iterators;
 	}
+	*/
 
 	/* TODO
 	public TmpWorkerReader<T> getTmpReader() {

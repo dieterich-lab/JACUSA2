@@ -1,20 +1,20 @@
 package jacusa.filter.factory;
 
-import lib.cli.parameters.AbstractParameters;
-import lib.data.BaseQualData;
+import lib.cli.parameters.AbstractParameter;
+import lib.data.basecall.PileupData;
 
-public abstract class AbstractDistanceFilterFactory<T extends BaseQualData>
+public abstract class AbstractDistanceFilterFactory<T extends PileupData>
 extends AbstractFilterFactory<T> {
 
 	private int filterDistance;
 	private double filterMinRatio;
 	private int filterMinCount;
 	
-	private AbstractParameters<T> parameters;
+	private AbstractParameter<T> parameters;
 		
 	public AbstractDistanceFilterFactory(final char c, final String desc, 
 			final int defaultFilterDistance, final double defaultFilterMinRatio, final int defaultFilterMinCount, 
-			final AbstractParameters<T> parameters) {
+			final AbstractParameter<T> parameters) {
 		super(c, desc + " Default: " + 
 			defaultFilterDistance + ":" + defaultFilterMinRatio + ":" + defaultFilterMinCount + 
 			" (" + c+ ":distance:min_ratio:min_count)");
@@ -77,7 +77,7 @@ extends AbstractFilterFactory<T> {
 		return filterMinCount;
 	}
 
-	public AbstractParameters<T> getParameters() {
+	public AbstractParameter<T> getParameters() {
 		return parameters;
 	}
 

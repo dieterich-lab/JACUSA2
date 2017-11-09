@@ -1,15 +1,14 @@
 package lib.data.cache;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import lib.util.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 
-import lib.data.BaseCallConfig;
+import lib.cli.options.BaseCallConfig;
+import lib.data.AbstractData;
 import lib.data.builder.SAMRecordWrapper;
 
 public class BaseCallCache extends AbstractCache {
@@ -20,9 +19,6 @@ public class BaseCallCache extends AbstractCache {
 	private int[] coverage;
 	private int[][] baseCalls;
 	private int[][][] baseCallQualities;
-
-	private List<List<SAMRecordWrapper>> records;
-
 	public BaseCallCache(final BaseCallConfig baseCallConfig, final int activeWindowSize) {
 		super(activeWindowSize);
 		this.baseCallConfig = baseCallConfig;
@@ -36,12 +32,6 @@ public class BaseCallCache extends AbstractCache {
 		coverage = new int[activeWindowSize];
 		baseCalls = new int[bases][activeWindowSize];
 		baseCallQualities = new int[bases][maxBQ - minBQ + 1][activeWindowSize];
-		
-		records = new ArrayList<List<SAMRecordWrapper>>(activeWindowSize);
-		for (int i = 0; i < activeWindowSize; ++i) {
-			records.add(new ArrayList<SAMRecordWrapper>(50));
-		}
-		
 	}
 
 	@Override
@@ -79,6 +69,14 @@ public class BaseCallCache extends AbstractCache {
 			incrementBaseCalls(windowPosition, readPosition, length, recordWrapper);
 		}
 	}
+
+	// TODO
+	@Override
+	public AbstractData getData(final Coordinate coordinate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	protected void incrementBaseCalls(final int windowPosition, 
 			final int readPosition, final int length, final SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
@@ -109,25 +107,14 @@ public class BaseCallCache extends AbstractCache {
 		}
 		baseCalls[baseIndex][windowPosition] += 1;
 		baseCallQualities[baseIndex][baseCallQuality - baseCallConfig.getMinBQ()][windowPosition] += 1;
-		// and store recordWrapper reference
-		records.get(windowPosition).add(recordWrapper);
 	}
 	
 	protected boolean isValid(final int windowPosition) {
 		return coverage[windowPosition] > 0;
 	}
-
-	private void init(final int activeWindowSize) {
-
-	}
 	
 	@Override
 	public void clear() {
-		if (coverage == null || coverage.length != getActiveWindowSize()) {
-			init(getActiveWindowSize());
-			return;
-		}
-		
 		Arrays.fill(coverage, 0);
 		for (int[] b : baseCalls) {
 			Arrays.fill(b, 0);	
@@ -140,12 +127,8 @@ public class BaseCallCache extends AbstractCache {
 				Arrays.fill(b, 0);	
 			}
 		}
-
-		for (int i = 0; i < getActiveWindowSize(); ++i) {
-			records.get(i).clear();
-		}
 	}
-
+	
 	public int getCoverage(final int windowPosition) {
 		return coverage[windowPosition];
 	}
@@ -156,10 +139,6 @@ public class BaseCallCache extends AbstractCache {
 	
 	public int getBaseCallQualities(final int baseIndex, final int baseQualIndex, final int windowPosition) {
 		return baseCallQualities[baseIndex][baseQualIndex][windowPosition];
-	}
-
-	public List<SAMRecordWrapper> getRecordWrapper(final int windowPosition) {
-		return records.get(windowPosition);
 	}
 
 }

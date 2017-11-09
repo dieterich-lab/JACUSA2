@@ -1,10 +1,11 @@
 package lib.data.cache;
 
+import lib.data.AbstractData;
 import lib.data.builder.SAMRecordWrapper;
 
 import lib.util.Coordinate;
 
-public abstract class AbstractCache {
+public abstract class AbstractCache<T extends AbstractData> {
 
 	private final int activeWindowSize;
 	private Coordinate activeWindowCoordinate;
@@ -15,10 +16,13 @@ public abstract class AbstractCache {
 	
 	public abstract void addRecordWrapper(final SAMRecordWrapper recordWrapper);
 	public abstract void clear();
+
+	public abstract T getData(final Coordinate coordinate);
 	
 	/*
 	protected abstract boolean isValid(final int windowPosition);
 	
+	// TODO
 	public int getNext(int windowPosition) {
 		while (isContainedInWindow(windowPosition)) {
 			if (isValid(windowPosition)) {
@@ -31,19 +35,11 @@ public abstract class AbstractCache {
 	}
 	*/
 
-	// TODO
-	private boolean isContainedInWindow(final int windowPosition) {
-		return windowPosition < activeWindowSize;
-	}
-
 	public Coordinate getActiveWindowCoordinates() {
 		return activeWindowCoordinate;
 	}
 	
 	public void setWindowCoordinates(final Coordinate activeWindowCoordinate) {
-		if (activeWindowCoordinate.getEnd() - activeWindowCoordinate.getStart() + 1 != getActiveWindowSize()) {
-			throw new IllegalArgumentException();
-		}
 		this.activeWindowCoordinate = activeWindowCoordinate;
 		clear();
 	}

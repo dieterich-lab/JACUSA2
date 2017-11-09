@@ -1,7 +1,6 @@
 package lib.location;
 
 import lib.util.Coordinate;
-import lib.util.Coordinate.STRAND;
 
 public class UnstrandedCoordinateAdvancer implements CoordinateAdvancer {
 
@@ -30,8 +29,10 @@ public class UnstrandedCoordinateAdvancer implements CoordinateAdvancer {
 	}
 
 	@Override
-	public void adjustPosition(final int position, STRAND strand) {
-		coordinate.setPosition(position);
+	public void adjust(final Coordinate coordinate) {
+		coordinate.setStart(coordinate.getStart());
+		coordinate.setEnd(coordinate.getEnd());
+		coordinate.setStrand(coordinate.getStrand());
 	}
 	
 }

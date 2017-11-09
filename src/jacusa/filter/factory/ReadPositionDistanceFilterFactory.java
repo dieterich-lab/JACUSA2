@@ -2,13 +2,13 @@ package jacusa.filter.factory;
 
 import jacusa.filter.FilterContainer;
 import jacusa.filter.storage.DistanceStorage;
-import lib.cli.parameters.AbstractParameters;
-import lib.data.BaseQualData;
+import lib.cli.parameters.AbstractParameter;
+import lib.data.basecall.PileupData;
 
-public class ReadPositionDistanceFilterFactory<T extends BaseQualData> 
+public class ReadPositionDistanceFilterFactory<T extends PileupData> 
 extends AbstractDistanceFilterFactory<T> {
 
-	public ReadPositionDistanceFilterFactory(final AbstractParameters<T> parameters) {
+	public ReadPositionDistanceFilterFactory(final AbstractParameter<T> parameters) {
 		super('B', "Filter distance to Read Start/End.", 6, 0.5, 2, parameters);
 	}
 

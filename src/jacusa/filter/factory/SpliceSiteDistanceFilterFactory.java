@@ -2,18 +2,18 @@ package jacusa.filter.factory;
 
 import jacusa.filter.FilterContainer;
 import jacusa.filter.storage.DistanceStorage;
-import lib.cli.parameters.AbstractParameters;
-import lib.data.BaseQualData;
+import lib.cli.parameters.AbstractParameter;
+import lib.data.basecall.PileupData;
 
 /**
  * 
  * @author Michael Piechotta
  *
  */
-public class SpliceSiteDistanceFilterFactory<T extends BaseQualData>
+public class SpliceSiteDistanceFilterFactory<T extends PileupData>
 extends AbstractDistanceFilterFactory<T> {
 
-	public SpliceSiteDistanceFilterFactory(final AbstractParameters<T> parameters) {
+	public SpliceSiteDistanceFilterFactory(final AbstractParameter<T> parameters) {
 		super('S', "Filter distance to Splice Site.", 6, 0.5, 2, parameters);
 	}
 

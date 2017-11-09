@@ -4,9 +4,10 @@ import java.util.List;
 
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.builder.AbstractDataBuilderFactory;
-import lib.data.builder.hasLibraryType.LIBRARY_TYPE;
+import lib.data.builder.factory.AbstractDataBuilderFactory;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
 public abstract class AbstractDataBuilderOption<T extends AbstractData>
 extends AbstractConditionACOption<T> {
@@ -14,12 +15,16 @@ extends AbstractConditionACOption<T> {
 	private static final String OPT = "P";
 	private static final String LONG_OPT = "build-pileup";
 
-	public AbstractDataBuilderOption(final List<AbstractConditionParameter<T>> conditionParameter) { 
+	private AbstractParameter<T> generalParameter;
+	
+	public AbstractDataBuilderOption(final List<AbstractConditionParameter<T>> conditionParameter, final AbstractParameter<T> generalParameter) { 
 		super(OPT, LONG_OPT, conditionParameter);
+		this.generalParameter = generalParameter;
 	}
 
-	public AbstractDataBuilderOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameters) { 
+	public AbstractDataBuilderOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameters, final AbstractParameter<T> generalParameter) { 
 		super(OPT, LONG_OPT, conditionIndex, conditionParameters);
+		this.generalParameter = generalParameter;
 	}
 	
 	protected abstract AbstractDataBuilderFactory<T> buildPileupBuilderFactory(
@@ -74,6 +79,10 @@ extends AbstractConditionACOption<T> {
 		}
 		
 		return sb.toString();
+	}
+	
+	public AbstractParameter<T> getGeneralParameter() {
+		return generalParameter;
 	}
 	
 }

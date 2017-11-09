@@ -1,16 +1,15 @@
 package lib.cli.options;
 
-import lib.cli.parameters.AbstractParameters;
-import lib.data.BaseCallConfig;
+import lib.cli.parameters.AbstractParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 public class BaseConfigOption extends AbstractACOption {
 
-	final private AbstractParameters<?> parameters;
+	final private AbstractParameter<?> parameters;
 
-	public BaseConfigOption(final AbstractParameters<?> parameters) {
+	public BaseConfigOption(final AbstractParameter<?> parameters) {
 		super("C", "base-config");
 		this.parameters = parameters;
 	}

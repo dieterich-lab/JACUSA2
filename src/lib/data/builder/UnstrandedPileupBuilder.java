@@ -1,19 +1,19 @@
 package lib.data.builder;
 
 import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameters;
-import lib.data.BaseQualData;
+import lib.cli.parameters.AbstractParameter;
+import lib.data.basecall.PileupData;
 import lib.data.cache.BaseCallCache;
 import lib.util.Coordinate;
 
-public class UnstrandedPileupBuilder<T extends BaseQualData> 
+public class UnstrandedPileupBuilder<T extends PileupData> 
 extends AbstractDataBuilder<T> {
 	
 	private BaseCallCache cache;
 
 	public UnstrandedPileupBuilder(
 			final AbstractConditionParameter<T> conditionParameter,
-			final AbstractParameters<T> parameters,
+			final AbstractParameter<T> parameters,
 			final BaseCallCache cache) {
 		super(conditionParameter, parameters, LIBRARY_TYPE.UNSTRANDED, cache);
 		this.cache = cache;

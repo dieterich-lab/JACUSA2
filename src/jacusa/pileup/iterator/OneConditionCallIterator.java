@@ -1,29 +1,11 @@
 package jacusa.pileup.iterator;
 
-import java.util.Arrays;
+import lib.data.basecall.PileupData;
 
-import addvariants.data.WindowedIterator;
+public class OneConditionCallIterator<T extends PileupData> { 
 
-import jacusa.pileup.iterator.variant.Variant;
-import lib.cli.parameters.AbstractParameters;
-import lib.data.BaseCallConfig;
-import lib.data.BaseQualData;
-import lib.data.ParallelData;
-import lib.util.Coordinate;
-import htsjdk.samtools.SamReader;
-
-public class OneConditionCallIterator<T extends BaseQualData> 
-extends WindowedIterator<T> {
-
-	public OneConditionCallIterator(
-			final Coordinate coordinate,
-			final Variant<T> filter,
-			final SamReader[][] readers, 
-			final AbstractParameters<T> parameters) {
-		super(coordinate, filter, readers, parameters);
-	}
-
-	@Override
+	// FIXME
+	/*
 	public ParallelData<T> next() {
 		ParallelData<T> parallelData = super.next();
 		
@@ -60,9 +42,9 @@ extends WindowedIterator<T> {
 		int[] variantBasesIndexs = Arrays.copyOf(tmpVariantBasesIndexs, i);
 		
 		// create fake condition by replacing non-reference base calls with reference BCs 
-		T[] fakeCondition = getParameters().getMethodFactory().createReplicateData(parallelData.getReplicates(0));
+		T[] fakeCondition = getGeneralParameter().getMethodFactory().createReplicateData(parallelData.getReplicates(0));
 		for (int replicateIndex = 0; replicateIndex < fakeCondition.length; ++replicateIndex) {
-			fakeCondition[replicateIndex] = getParameters().getMethodFactory().createData();
+			fakeCondition[replicateIndex] = getGeneralParameter().getMethodFactory().createData();
 			fakeCondition[replicateIndex].setCoordinate(new Coordinate(data.getCoordinate()));
 			fakeCondition[replicateIndex].setReferenceBase(data.getReferenceBase());
 
@@ -79,6 +61,6 @@ extends WindowedIterator<T> {
 
 		return newParallelPileupData;
 	}
-
+	*/
 
 }

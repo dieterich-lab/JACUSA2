@@ -1,4 +1,4 @@
-package lib.data;
+package lib.data.has;
 
 import lib.util.Coordinate;
 

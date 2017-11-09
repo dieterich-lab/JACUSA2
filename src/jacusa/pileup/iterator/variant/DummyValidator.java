@@ -3,7 +3,8 @@ package jacusa.pileup.iterator.variant;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 
-public class AllParallelPileup<T extends AbstractData> implements Variant<T> {
+public class DummyValidator<T extends AbstractData> 
+implements ParallelDataValidator<T> {
 
 	@Override
 	public boolean isValid(ParallelData<T> parallelData) {

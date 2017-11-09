@@ -1,5 +1,6 @@
 package lib.data;
 
+import lib.data.has.hasCoordinate;
 import lib.util.Coordinate;
 
 public abstract class AbstractData

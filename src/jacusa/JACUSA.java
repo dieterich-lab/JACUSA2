@@ -73,10 +73,10 @@ public class JACUSA extends AbstractTool {
 		final StringBuilder sb = new StringBuilder();
 
 		// print statistics to STDERR
-		sb.append("Screening done using " + getCLI().getMethodFactory().getParameters().getMaxThreads() + " thread(s)");
+		sb.append("Screening done using " + getCLI().getMethodFactory().getParameter().getMaxThreads() + " thread(s)");
 		sb.append('\n');
 		
-		sb.append("Results can be found in: " + getCLI().getMethodFactory().getParameters().getOutput().getInfo());
+		sb.append("Results can be found in: " + getCLI().getMethodFactory().getParameter().getOutput().getInfo());
 
 		final String lineSep = "--------------------------------------------------------------------------------";
 

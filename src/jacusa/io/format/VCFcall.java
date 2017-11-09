@@ -6,28 +6,28 @@ import jacusa.filter.factory.AbstractFilterFactory;
 import java.util.Calendar;
 import java.util.List;
 
+import lib.cli.options.BaseCallConfig;
 import lib.cli.parameters.JACUSAConditionParameters;
-import lib.data.BaseCallConfig;
-import lib.data.BaseQualData;
 import lib.data.ParallelData;
 import lib.data.Result;
+import lib.data.basecall.PileupData;
 import lib.util.AbstractTool;
 
-public class VCFcall extends AbstractOutputFormat<BaseQualData> {
+public class VCFcall extends AbstractOutputFormat<PileupData> {
 
 	public static final char CHAR = 'V';
 	
 	private BaseCallConfig baseConfig;
-	private FilterConfig<BaseQualData> filterConfig;
+	private FilterConfig<PileupData> filterConfig;
 	
-	public VCFcall(final BaseCallConfig baseConfig, final FilterConfig<BaseQualData> filterConfig) {
+	public VCFcall(final BaseCallConfig baseConfig, final FilterConfig<PileupData> filterConfig) {
 		super(CHAR, "VCF Output format. Option -P will be ignored (VCF is unstranded)");
 		this.baseConfig = baseConfig;
 		this.filterConfig = filterConfig;
 	}
 	
 	@Override
-	public String getHeader(final List<JACUSAConditionParameters<BaseQualData>> conditionParameters) {
+	public String getHeader(final List<JACUSAConditionParameters<PileupData>> conditionParameters) {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(getCOMMENT());
@@ -52,7 +52,7 @@ public class VCFcall extends AbstractOutputFormat<BaseQualData> {
 		sb.append('\n');
 
 		// add filter descriptions to header
-		for (final AbstractFilterFactory<BaseQualData> filterFactory : filterConfig.getFactories()) {
+		for (final AbstractFilterFactory<PileupData> filterFactory : filterConfig.getFactories()) {
 			sb.append("##FILTER=<ID=");
 			sb.append(filterFactory.getC());
 			sb.append(",Description=");
@@ -81,7 +81,7 @@ public class VCFcall extends AbstractOutputFormat<BaseQualData> {
 			sb.append(cols[i]);
 		}
 		
-		for (final JACUSAConditionParameters<BaseQualData> conditionParameter : conditionParameters) {
+		for (final JACUSAConditionParameters<PileupData> conditionParameter : conditionParameters) {
 			for (String recordFilename : conditionParameter.getRecordFilenames())  {
 				sb.append(getSEP());
 				sb.append(recordFilename);
@@ -92,9 +92,9 @@ public class VCFcall extends AbstractOutputFormat<BaseQualData> {
 	}
 
 	@Override
-	public String convert2String(Result<BaseQualData> result) {
+	public String convert2String(Result<PileupData> result) {
 		final StringBuilder sb = new StringBuilder();
-		final ParallelData<BaseQualData> parallelData = result.getParellelData();
+		final ParallelData<PileupData> parallelData = result.getParellelData();
 		String filterInfo = result.getFilterInfo().combine();
 		if (filterInfo == null || filterInfo.length() == 0) {
 			filterInfo = "PASS";
@@ -102,7 +102,7 @@ public class VCFcall extends AbstractOutputFormat<BaseQualData> {
 
 		StringBuilder sb2 = new StringBuilder();
 		boolean first = true;
-		for (int allelIndex : parallelData.getCombinedPooledData().getBaseQualCount().getAlleles()) {
+		for (int allelIndex : parallelData.getCombinedPooledData().getPileupCount().getAlleles()) {
 			if (parallelData.getCombinedPooledData().getReferenceBase() != baseConfig.getBases()[allelIndex]) {
 				if (! first) {
 					sb2.append(',');
@@ -147,11 +147,11 @@ public class VCFcall extends AbstractOutputFormat<BaseQualData> {
 		return sb.toString();
 	}
 
-	private void addParallelPileup(final StringBuilder sb, final BaseQualData data[]) {
+	private void addParallelPileup(final StringBuilder sb, final PileupData data[]) {
 		for (int i = 0; i < data.length; ++i) {
 			// add DP
 			sb.append(getSEP());
-			sb.append(data[i].getBaseQualCount().getCoverage());
+			sb.append(data[i].getPileupCount().getCoverage());
 			
 			sb.append(getSEP3());
 			
@@ -161,7 +161,7 @@ public class VCFcall extends AbstractOutputFormat<BaseQualData> {
 			int baseIndex = baseConfig.getBaseIndex((byte)b);
 			int count = 0;
 			if (baseIndex >= 0) {
-				count = data[i].getBaseQualCount().getBaseCount(baseIndex);
+				count = data[i].getPileupCount().getBaseCount(baseIndex);
 			}
 			sb.append(count);
 			++j;
@@ -170,7 +170,7 @@ public class VCFcall extends AbstractOutputFormat<BaseQualData> {
 				baseIndex = baseConfig.getBaseIndex((byte)b);
 				count = 0;
 				if (baseIndex >= 0) {
-					count = data[i].getBaseQualCount().getBaseCount(baseIndex);
+					count = data[i].getPileupCount().getBaseCount(baseIndex);
 				}
 				sb.append(',');
 				sb.append(count);

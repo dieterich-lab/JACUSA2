@@ -13,7 +13,6 @@ import jacusa.filter.storage.ProcessRecord;
 import jacusa.filter.storage.ProcessSkippedOperator;
 import lib.cli.parameters.JACUSAConditionParameters;
 import lib.data.AbstractData;
-import lib.util.WindowCoordinate;
 import lib.util.Coordinate.STRAND;
 
 /**

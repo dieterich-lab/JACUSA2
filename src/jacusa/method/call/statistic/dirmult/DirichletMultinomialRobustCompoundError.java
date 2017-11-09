@@ -1,10 +1,11 @@
 package jacusa.method.call.statistic.dirmult;
 
 import jacusa.cli.parameters.CallParameters;
-import lib.data.BaseQualData;
+import lib.data.AbstractData;
 import lib.data.ParallelData;
+import lib.data.has.hasPileupCount;
 
-public class DirichletMultinomialRobustCompoundError<T extends BaseQualData>
+public class DirichletMultinomialRobustCompoundError<T extends AbstractData & hasPileupCount>
 extends DirichletMultinomialCompoundError<T> {
 
 	public DirichletMultinomialRobustCompoundError(final CallParameters<T> parameters) {
@@ -29,10 +30,10 @@ extends DirichletMultinomialCompoundError<T> {
 		 */
 		
 		// determine the number of alleles per sample: 1, 2, and P 
-		int a1 = parallelData.getPooledData(0).getBaseQualCount().getAlleles().length;
-		int a2 = parallelData.getPooledData(1).getBaseQualCount().getAlleles().length;
+		int a1 = parallelData.getPooledData(0).getPileupCount().getAlleles().length;
+		int a2 = parallelData.getPooledData(1).getPileupCount().getAlleles().length;
 		// all observed alleles
-		int[] alleles = parallelData.getCombinedPooledData().getBaseQualCount().getAlleles();
+		int[] alleles = parallelData.getCombinedPooledData().getPileupCount().getAlleles();
 		int aP = alleles.length;
 
 		// get bases that are different between the samples
@@ -46,8 +47,8 @@ extends DirichletMultinomialCompoundError<T> {
 		// determine common base (shared by both conditions)
 		int commonBaseIndex = -1;
 		for (int baseIndex : alleles) {
-			int count1 = parallelData.getPooledData(0).getBaseQualCount().getBaseCount(baseIndex);
-			int count2 = parallelData.getPooledData(1).getBaseQualCount().getBaseCount(baseIndex);
+			int count1 = parallelData.getPooledData(0).getPileupCount().getBaseCount(baseIndex);
+			int count2 = parallelData.getPooledData(1).getPileupCount().getBaseCount(baseIndex);
 			if (count1 > 0 && count2  > 0) {
 				commonBaseIndex = baseIndex;
 				break;

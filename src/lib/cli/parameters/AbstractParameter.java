@@ -9,13 +9,13 @@ import jacusa.filter.FilterConfig;
 import jacusa.io.Output;
 import jacusa.io.OutputPrinter;
 import jacusa.io.format.AbstractOutputFormat;
+import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.BaseCallConfig;
-import lib.data.builder.AbstractDataBuilderFactory;
+import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
-public abstract class AbstractParameters<T extends AbstractData>
+public abstract class AbstractParameter<T extends AbstractData>
 implements hasDefaultConditions<T> {
 	
 	// cache related
@@ -27,8 +27,6 @@ implements hasDefaultConditions<T> {
 	private BaseCallConfig baseConfig;
 		private char[] bases;
 		private boolean showReferenceBase;
-
-	
 
 	// bed file to scan for variants
 	private String inputBedFilename;
@@ -47,7 +45,7 @@ implements hasDefaultConditions<T> {
 	// debug flag
 	private boolean debug;
 	
-	protected AbstractParameters() {
+	protected AbstractParameter() {
 		activeWindowSize 			= 10000;
 		reservedWindowSize	= 10 * activeWindowSize;
 		
@@ -68,15 +66,16 @@ implements hasDefaultConditions<T> {
 		debug				= false;
 	}
 
-	public AbstractParameters(final int conditions, final AbstractDataBuilderFactory<T> dataBuilderFactory) {
+	public AbstractParameter(final int conditionSize, final AbstractDataBuilderFactory<T> dataBuilderFactory) {
 		this();
 		
-		/* TODO
-		for (int i = 0; i < conditions; i++) {
-			conditionParameters.add(new JConditionParameters<T>(dataBuilderFactory));
+		dataBuilderFactory.setGeneralParameter(this);
+		for (int i = 0; i < conditionSize; i++) {
+			conditionParameters.add(createConditionParameter(dataBuilderFactory));
 		}
-		*/
 	}
+	
+	public abstract AbstractConditionParameter<T> createConditionParameter(final AbstractDataBuilderFactory<T> dataBuilderFactory);
 	
 	public AbstractOutputFormat<T> getFormat() {
 		return format;

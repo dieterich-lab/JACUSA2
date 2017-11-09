@@ -4,17 +4,17 @@ import jacusa.filter.AbstractFilter;
 import jacusa.filter.FilterContainer;
 import jacusa.filter.HomopolymerFilter;
 import jacusa.filter.storage.HomopolymerStorage;
-import lib.cli.parameters.AbstractParameters;
-import lib.data.BaseQualData;
+import lib.cli.parameters.AbstractParameter;
+import lib.data.basecall.PileupData;
 
-public class HomopolymerFilterFactory<T extends BaseQualData> 
+public class HomopolymerFilterFactory<T extends PileupData> 
 extends AbstractFilterFactory<T> {
 
 	private static final int LENGTH = 7;
 	private int length;
-	private AbstractParameters<T> parameters;
+	private AbstractParameter<T> parameters;
 		
-	public HomopolymerFilterFactory(final AbstractParameters<T> parameters) {
+	public HomopolymerFilterFactory(final AbstractParameter<T> parameters) {
 		super('Y', "Filter wrong variant calls within homopolymers. Default: " + LENGTH + " (Y:length)");
 		this.parameters = parameters;
 		length = LENGTH;

@@ -1,4 +1,4 @@
-package lib.data;
+package lib.cli.options;
 
 
 import java.util.Arrays;

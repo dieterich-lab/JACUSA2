@@ -2,7 +2,7 @@ package jacusa.method.call;
 
 import jacusa.cli.options.pileupbuilder.TwoConditionBaseQualDataBuilderOption;
 import lib.cli.options.AbstractACOption;
-import lib.data.BaseQualData;
+import lib.data.basecall.PileupData;
 
 import org.apache.commons.cli.ParseException;
 
@@ -28,9 +28,10 @@ public class TwoConditionCallFactory extends CallFactory {
 			getACOptions().remove(removeACOption);
 		}
 
-		addACOption(new TwoConditionBaseQualDataBuilderOption<BaseQualData>(
-				getParameters().getConditionParameters().get(0),
-				getParameters().getConditionParameters().get(1)));
+		addACOption(new TwoConditionBaseQualDataBuilderOption<PileupData>(
+				getParameter().getConditionParameters().get(0),
+				getParameter().getConditionParameters().get(1),
+				getParameter()));
 	}
 
 	@Override

@@ -7,44 +7,77 @@ import htsjdk.samtools.SamReader;
 
 import jacusa.filter.FilterContainer;
 import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameters;
+import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.builder.hasLibraryType.LIBRARY_TYPE;
-import lib.location.CoordinateAdvancer;
-import lib.location.CoordinateContainer;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.util.Coordinate;
 
 public class ReplicateContainer<T extends AbstractData> {
 
 	private final AbstractConditionParameter<T> conditionParameter;
-	private final AbstractParameters<T> parameters;
+	private final AbstractParameter<T> generalParameters;
 
-	private final List<SAMRecordWrapperIteratorProvider> recordIteratorProviders;
+	private final List<SAMRecordWrapperIteratorProvider> iteratorProviders;
 	private final List<AbstractDataBuilder<T>> dataBuilders;
-	
-	private CoordinateContainer coordinateContainer;
 
+	private List<SAMRecordWrapperIterator> iterators;
 	
-	public ReplicateContainer(final Coordinate window, 
+	public ReplicateContainer( 
 			final AbstractConditionParameter<T> conditionParameter,
-			final AbstractParameters<T> generalParameters) {
+			final AbstractParameter<T> generalParameters) {
+
 		this.conditionParameter = conditionParameter;
-		this.parameters = generalParameters;
+		this.generalParameters = generalParameters;
 
-		recordIteratorProviders = createRecordIteratorProviders(conditionParameter);
+		iteratorProviders = createRecordIteratorProviders(conditionParameter);
 		dataBuilders = createDataBuilders(conditionParameter, generalParameters);
-
-		coordinateContainer = new CoordinateContainer(dataBuilders.toArray(new CoordinateAdvancer[dataBuilders.size()]));
 	}
 
-	public CoordinateContainer getCoordinateContainer() {
-		return coordinateContainer;
+	public List<SAMRecordWrapperIteratorProvider> getIteratorProviders() {
+		return iteratorProviders;
+	}
+	
+	public List<List<SAMRecordWrapper>> createIterators(final Coordinate activeWindowCoordinate,
+			final Coordinate reservedWindowCoordinate) {
+
+		final List<List<SAMRecordWrapper>> recordWrappers = 
+				new ArrayList<List<SAMRecordWrapper>>(conditionParameter.getReplicateSize());
+		
+		iterators = new ArrayList<SAMRecordWrapperIterator>(conditionParameter.getReplicateSize());
+		
+		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); replicateIndex++) {
+			final SAMRecordWrapperIteratorProvider iteratorProvider = iteratorProviders.get(replicateIndex);
+			final SAMRecordWrapperIterator iterator = 
+					iteratorProvider.createIterator(activeWindowCoordinate, reservedWindowCoordinate);
+			iterators.add(iterator);
+			final AbstractDataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
+			// TODO test performance
+			recordWrappers.add(dataBuilder.buildCache(activeWindowCoordinate, iterator));
+		}
+
+		return recordWrappers; 
 	}
 
+	public List<List<SAMRecordWrapper>> updateIterators(final Coordinate activeWindowCoordinate) {
+		final List<List<SAMRecordWrapper>> recordWrappers = 
+				new ArrayList<List<SAMRecordWrapper>>(conditionParameter.getReplicateSize());
+		
+		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); replicateIndex++) {
+			final SAMRecordWrapperIterator iterator = iterators.get(replicateIndex);
+			iterator.updateActiveWindowCoordinate(activeWindowCoordinate);
+			
+			final AbstractDataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
+			// TODO test performance
+			recordWrappers.add(dataBuilder.buildCache(activeWindowCoordinate, iterator));
+		}
+
+		return recordWrappers; 
+	}
+	
 	public T[] getData(final Coordinate coordinate) {
 		int replicateSize = conditionParameter.getReplicateSize();
 		// create new container array
-		T[] data = parameters.getMethodFactory().createReplicateData(replicateSize);
+		T[] data = generalParameters.getMethodFactory().createReplicateData(replicateSize);
 
 		for (int replicateIndex = 0; replicateIndex < replicateSize; ++replicateIndex) {
 			final AbstractDataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
@@ -55,9 +88,8 @@ public class ReplicateContainer<T extends AbstractData> {
 	}
 
 	public List<FilterContainer<T>> getFilterContainers(final Coordinate coordinate) {
-		int replicateSize = conditionParameter.getReplicateSize();
-
-		List<FilterContainer<T>> filterContainers = new ArrayList<FilterContainer<T>>(replicateSize);
+		final int replicateSize = conditionParameter.getReplicateSize();
+		final List<FilterContainer<T>> filterContainers = new ArrayList<FilterContainer<T>>(replicateSize);
 		
 		for (final AbstractDataBuilder<T> dataBuilder : dataBuilders) {
 			filterContainers.add(dataBuilder.getFilterContainer(coordinate));
@@ -68,11 +100,12 @@ public class ReplicateContainer<T extends AbstractData> {
 	
 	private List<AbstractDataBuilder<T>> createDataBuilders(
 			final AbstractConditionParameter<T> conditionParameter,
-			final AbstractParameters<T> generalParameter) {
+			final AbstractParameter<T> generalParameter) {
+		
+		final List<AbstractDataBuilder<T>> dataBuilders = new ArrayList<AbstractDataBuilder<T>>(conditionParameter.getReplicateSize());
 
 		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); ++replicateIndex) {
-			final AbstractDataBuilder<T> builder = conditionParameter.getDataBuilderFactory()
-					.newInstance(conditionParameter, generalParameter);
+			final AbstractDataBuilder<T> builder = conditionParameter.getDataBuilderFactory().newInstance(conditionParameter);
 			dataBuilders.add(builder);
 		}
 
@@ -88,6 +121,23 @@ public class ReplicateContainer<T extends AbstractData> {
 
 		return false;
 	}
+	
+	private List<SAMRecordWrapperIteratorProvider> createRecordIteratorProviders(
+			final AbstractConditionParameter<T> conditionParameter) {
+		
+		final List<SAMRecordWrapperIteratorProvider> recordProvider = 
+				new ArrayList<SAMRecordWrapperIteratorProvider>(conditionParameter.getReplicateSize());
+		
+		for (final String recordFilename : conditionParameter.getRecordFilenames()) {
+			final SamReader samReader = conditionParameter.createSamReader(recordFilename);
+			final SAMRecordWrapperIteratorProvider iteratorProvider = 
+					new SAMRecordWrapperIteratorProvider(conditionParameter, samReader);
+			recordProvider.add(iteratorProvider);
+		}
+
+		return recordProvider;
+	}
+
 	
 	/* TODO
 	public Set<Integer> getAlleles(final Coordinate coordinate) {
@@ -149,20 +199,5 @@ public class ReplicateContainer<T extends AbstractData> {
 	}
 	*/
 	
-	private List<SAMRecordWrapperIteratorProvider> createRecordIteratorProviders(
-			final AbstractConditionParameter<T> conditionParameter) {
-		
-		final List<SAMRecordWrapperIteratorProvider> recordProvider = 
-				new ArrayList<SAMRecordWrapperIteratorProvider>(conditionParameter.getReplicateSize());
-		
-		for (final String recordFilename : conditionParameter.getRecordFilenames()) {
-			final SamReader samReader = conditionParameter.createSamReader(recordFilename);
-			final SAMRecordWrapperIteratorProvider iteratorProvider = 
-					new SAMRecordWrapperIteratorProvider(conditionParameter, samReader);
-			recordProvider.add(iteratorProvider);
-		}
-
-		return recordProvider;
-	}
 	
 }

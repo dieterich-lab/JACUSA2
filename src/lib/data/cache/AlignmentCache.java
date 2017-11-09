@@ -6,6 +6,7 @@ import lib.util.Coordinate;
 
 import htsjdk.samtools.SAMRecord;
 
+import lib.data.AbstractData;
 import lib.data.builder.SAMRecordWrapper;
 
 // TODO do we consider read end by quality or by alignment
@@ -39,17 +40,25 @@ public class AlignmentCache extends AbstractCache {
 	}
 	
 	@Override
+	public AbstractData getData(final Coordinate coordinate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
 	public void clear() {
 		Arrays.fill(readStartCount, 0);
 		Arrays.fill(readEndCount, 0);
 	}
 
 	public int getReadStartCount(final Coordinate coordinate) {
-		return readStartCount[0]; // TODO
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinates(), coordinate.getPosition());
+		return readStartCount[windowPosition];
 	}
 
 	public int getReadEndCount(final Coordinate coordinate) {
-		return readEndCount[0]; // TODO
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinates(), coordinate.getPosition());
+		return readEndCount[windowPosition];
 	}
 	
 }

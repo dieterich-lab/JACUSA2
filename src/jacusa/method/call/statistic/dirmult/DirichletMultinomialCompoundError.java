@@ -4,9 +4,10 @@ import jacusa.cli.parameters.CallParameters;
 import jacusa.estimate.MinkaEstimateDirMultParameters;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.AbstractDirichletStatistic;
-import lib.data.BaseQualData;
+import lib.data.AbstractData;
+import lib.data.has.hasPileupCount;
 
-public class DirichletMultinomialCompoundError<T extends BaseQualData>
+public class DirichletMultinomialCompoundError<T extends AbstractData & hasPileupCount>
 extends AbstractDirichletStatistic<T> {
 
 	protected double estimatedError = 0.01;
@@ -28,9 +29,9 @@ extends AbstractDirichletStatistic<T> {
 	}
 
 	@Override
-	protected void populate(final T pileup, final int[] baseIndexs, double[] pileupMatrix) {
-		double[] pileupCount = phred2Prob.colSumCount(baseIndexs, pileup);
-		double[] pileupError = phred2Prob.colMeanErrorProb(baseIndexs, pileup);
+	protected void populate(final T data, final int[] baseIndexs, double[] pileupMatrix) {
+		double[] pileupCount = phred2Prob.colSumCount(baseIndexs, data);
+		double[] pileupError = phred2Prob.colMeanErrorProb(baseIndexs, data.getPileupCount());
 
 		for (int baseI : baseIndexs) {
 			pileupMatrix[baseI] += priorError;
