@@ -1,7 +1,7 @@
 package jacusa.filter.factory;
 
 import jacusa.filter.AbstractFilter;
-import jacusa.filter.FilterContainer;
+import jacusa.filter.UnstrandedFilterContainer;
 import lib.data.AbstractData;
 
 public abstract class AbstractFilterFactory<T extends AbstractData> {
@@ -28,7 +28,7 @@ public abstract class AbstractFilterFactory<T extends AbstractData> {
 		// implement to change behavior via CLI
 	}
 
-	public abstract void registerFilter(final FilterContainer<T> filterContainer);
+	public abstract void registerFilter(final UnstrandedFilterContainer<T> filterContainer);
 	public abstract AbstractFilter<T> getFilter();
 
 } 

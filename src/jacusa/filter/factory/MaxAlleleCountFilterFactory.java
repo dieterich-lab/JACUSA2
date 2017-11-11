@@ -1,10 +1,11 @@
 package jacusa.filter.factory;
 
 import jacusa.filter.AbstractFilter;
-import jacusa.filter.FilterContainer;
+import jacusa.filter.UnstrandedFilterContainer;
 import lib.data.ParallelData;
 import lib.data.Result;
 import lib.data.basecall.PileupData;
+import lib.data.builder.ConditionContainer;
 
 /**
  * 
@@ -30,7 +31,7 @@ extends AbstractFilterFactory<T> {
 	}
 
 	@Override
-	public void registerFilter(FilterContainer<T> filterContainer) {
+	public void registerFilter(UnstrandedFilterContainer<T> filterContainer) {
 		filterContainer.add(getFilter());
 	}
 	
@@ -65,7 +66,7 @@ extends AbstractFilterFactory<T> {
 		}
 		
 		@Override
-		public boolean filter(final Result<T> result, final WindowedIterator<T> windowIterator) {
+		public boolean filter(final Result<T> result, final ConditionContainer<T> conditionContainer) {
 			final ParallelData<T> parallelData = result.getParellelData();
 			return parallelData.getCombinedPooledData()
 					.getBaseQualCount().getAlleles().length > alleles;

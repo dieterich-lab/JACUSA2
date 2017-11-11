@@ -7,17 +7,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.JACUSAConditionParameters;
 import lib.data.AbstractData;
-import lib.util.WindowCoordinate;
-import lib.util.Coordinate.STRAND;
+import lib.data.builder.ConditionContainer;
+import lib.data.has.hasBaseCallCount;
 
 /**
  * 
  * @author Michael Piechotta
  *
  */
-public class FilterConfig<T extends AbstractData> implements Cloneable {
+public class FilterConfig<T extends AbstractData & hasBaseCallCount> implements Cloneable {
 
 	private final Map<Character, AbstractFilterFactory<T>> c2factory;
 	
@@ -46,12 +47,15 @@ public class FilterConfig<T extends AbstractData> implements Cloneable {
 	 * 
 	 * @return
 	 */
-	public FilterContainer<T> createFilterContainer(final WindowCoordinate windowCoordinates, 
-			final STRAND strand, final JACUSAConditionParameters<T> condition) {
+	public FilterContainer<T> createFilterContainer(final AbstractConditionParameter<T> conditionParameter) {
 		
-		FilterContainer<T> filterContainer = new FilterContainer<T>(
-				this, strand, windowCoordinates, condition);
-		
+		final FilterContainer<T> filterContainer;
+		if (conditionParameter.getDataBuilderFactory().isStranded()) {
+			filterContainer = new StrandedFilterContainer<T>(this, conditionParameter);
+		} else {
+			filterContainer = new UnstrandedFilterContainer<T>(this, conditionParameter);
+		}
+	
 		for (final AbstractFilterFactory<T> filterFactory : c2factory.values()) {
 			filterFactory.registerFilter(filterContainer);
 		}

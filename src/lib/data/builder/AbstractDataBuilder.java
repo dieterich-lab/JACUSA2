@@ -1,11 +1,8 @@
 package lib.data.builder;
 
 import jacusa.filter.FilterContainer;
-import jacusa.filter.storage.ProcessAlignmentBlock;
-import jacusa.filter.storage.ProcessAlignmentOperator;
 import jacusa.filter.storage.ProcessDeletionOperator;
 import jacusa.filter.storage.ProcessInsertionOperator;
-import jacusa.filter.storage.ProcessRecord;
 import jacusa.filter.storage.ProcessSkippedOperator;
 
 import java.util.ArrayList;
@@ -15,21 +12,17 @@ import java.util.List;
 
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
-import lib.cli.parameters.JACUSAConditionParameters;
 import lib.data.AbstractData;
-import lib.data.cache.AbstractCache;
+import lib.data.cache.Cache;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasLibraryType;
-import lib.location.CoordinateAdvancer;
-import lib.location.UnstrandedCoordinateAdvancer;
 import lib.util.Coordinate;
-import lib.util.Coordinate.STRAND;
 
 import htsjdk.samtools.CigarElement;
-import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SAMRecord;
-import htsjdk.samtools.SAMRecordIterator;
+import htsjdk.samtools.SAMTag;
 
-public abstract class AbstractDataBuilder<T extends AbstractData>
+public abstract class AbstractDataBuilder<T extends AbstractData & hasBaseCallCount>
 implements hasLibraryType {
 
 	private final AbstractConditionParameter<T> conditionParameter;
@@ -38,7 +31,7 @@ implements hasLibraryType {
 
 	private final LIBRARY_TYPE libraryType;
 	
-	private final AbstractCache cache; 
+	private final Cache<T> cache; 
 	private Coordinate activeWindowCoordinate;
 	private CACHE_STATUS cacheStatus;
 	
@@ -53,11 +46,10 @@ implements hasLibraryType {
 			final AbstractConditionParameter<T> conditionParameter,
 			final AbstractParameter<T> parameters,
 			final LIBRARY_TYPE libraryType,
-			final AbstractCache cache) {
+			final Cache<T> cache) {
 		this.conditionParameter	= conditionParameter;
 		this.parameters = parameters;
-		this.filterContainer = null;
-		// TODO filterContainer			= parameters.getFilterConfig().createFilterContainer(windowCoordinates, strand, condition);
+		this.filterContainer = parameters.getFilterConfig().createFilterContainer(this, conditionParameter);
 
 		this.libraryType = libraryType;
 		
@@ -66,7 +58,7 @@ implements hasLibraryType {
 	}
 
 	public List<SAMRecordWrapper> buildCache(final Coordinate activeWindowCoordinate,
-			Iterator<SAMRecordWrapper> iterator) {
+			final Iterator<SAMRecordWrapper> iterator) {
 		
 		this.activeWindowCoordinate = activeWindowCoordinate;
 		final List<SAMRecordWrapper> recordWrappers = new ArrayList<SAMRecordWrapper>();
@@ -89,7 +81,7 @@ implements hasLibraryType {
 	public abstract T getData(final Coordinate coordinate);
 	
 	public FilterContainer<T> getFilterContainer(final Coordinate coordinate) {
-		return filterContainer; // TODO
+		return filterContainer;
 	}
 	
 	/*
@@ -116,13 +108,14 @@ implements hasLibraryType {
 	}
 
 	protected byte[] parseMDField(final SAMRecord record) {
-		String tag = "MD";
-		Object o = record.getAttribute(tag);
-		if (o == null) {
+		if (! record.hasAttribute(SAMTag.MD.name())) {
 			return new byte[0]; // no MD field :-(
 		}
-
+		// potential missing number(s)
+		final String MD = "0" + record.getStringAttribute(SAMTag.MD.name()).toUpperCase();
+		
 		// init container size with read length
+		
 		final byte[] referenceBases = new byte[record.getReadLength()];
 		int destPos = 0;
 		// copy read sequence to reference container / concatenate mapped segements ignor DELs
@@ -139,11 +132,6 @@ implements hasLibraryType {
 				destPos += length;
 			}
 		}
-
-		// get MD string
-		String MD = (String)o;
-		// add potential missing number(s)
-		MD = "0" + MD.toUpperCase();
 
 		int position = 0;
 		boolean nextInteger = true;
@@ -391,6 +379,7 @@ implements hasLibraryType {
 	protected void processInsertion(int windowPosition, int readPosition, int genomicPosition,
 			int upstreamMatch, int downstreamMatch,
 			final CigarElement cigarElement, final SAMRecord record) {
+		
 		for (final ProcessInsertionOperator storage : filterContainer.getProcessInsertion()) {
 			storage.processInsertionOperator(windowPosition, readPosition, genomicPosition, 
 					upstreamMatch, downstreamMatch, 
@@ -401,6 +390,7 @@ implements hasLibraryType {
 	protected void processDeletion(int windowPosition, int readPosition, int genomicPosition, 
 			int upstreamMatch, int downstreamMatch,
 			final CigarElement cigarElement, final SAMRecord record) {
+		
 		for (final ProcessDeletionOperator storage : filterContainer.getProcessDeletion()) {
 			storage.processDeletionOperator(windowPosition, readPosition, genomicPosition, 
 					upstreamMatch, downstreamMatch,
@@ -411,6 +401,7 @@ implements hasLibraryType {
 	protected void processSkipped(int windowPosition, int readPosition, int genomicPosition,
 			int upstreamMatch, int downstreamMatch,
 			final CigarElement cigarElement, final SAMRecord record) {
+		
 		for (final ProcessSkippedOperator storage : filterContainer.getProcessSkipped()) {
 			storage.processSkippedOperator(windowPosition, readPosition, genomicPosition,
 					upstreamMatch, downstreamMatch,
@@ -440,5 +431,4 @@ implements hasLibraryType {
 
 	public enum CACHE_STATUS {NOT_CACHED,CACHED,NOT_FOUND};
 
-	
 }

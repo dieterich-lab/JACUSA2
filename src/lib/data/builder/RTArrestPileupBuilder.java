@@ -2,25 +2,20 @@ package lib.data.builder;
 
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
-import lib.data.BaseQualReadInfoData;
-import lib.data.cache.AlignmentCache;
+import lib.data.AbstractData;
+import lib.data.cache.Cache;
+import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasReadInfoCount;
 import lib.util.Coordinate;
 
-/**
- * @author Michael Piechotta
- *
- */
-public class RTArrestPileupBuilder<T extends BaseQualReadInfoData>
+public class RTArrestPileupBuilder<T extends AbstractData & hasBaseCallCount & hasReadInfoCount>
 extends AbstractDataBuilder<T> {
 
 	private final AbstractDataBuilder<T> dataBuilder;
-	
-	// TODO use cache from dataBuilder
-	private AlignmentCache cache;
-	
+
 	public RTArrestPileupBuilder(final AbstractConditionParameter<T> conditionParameter,
 			final AbstractParameter<T> generalParameter, final AbstractDataBuilder<T> dataBuilder, 
-			final AlignmentCache cache) {
+			final Cache<T> cache) {
 		super(conditionParameter, generalParameter, dataBuilder.getLibraryType(), cache);
 		this.dataBuilder = dataBuilder;
 	}
@@ -29,11 +24,17 @@ extends AbstractDataBuilder<T> {
 	public T getData(final Coordinate coordinate) {
 		T data = dataBuilder.getData(coordinate);
 
+		/*
+		// TODO should bed
 		data.getReadInfoCount().setStart(cache.getReadStartCount(coordinate));
 		data.getReadInfoCount().setEnd(cache.getReadEndCount(coordinate));
-		// TODO data.getReadInfoCount().setInner(cache.getCoverage(windowPosition, strand) - 
-		//		readStartCount[windowPosition] - 
-		//		readEndCount[windowPosition]);
+		
+		final int inner = cache.getCoverage(windowPosition, strand) - 
+				//		readStartCount[windowPosition] - 
+				//		readEndCount[windowPosition]
+		// TODO data.getReadInfoCount().setInner();
+		 * 
+		 */
 
 		int arrest = 0;
 		int through = 0;
@@ -59,7 +60,7 @@ extends AbstractDataBuilder<T> {
 
 		data.getReadInfoCount().setArrest(arrest);
 		data.getReadInfoCount().setThrough(through);
-		
+
 		return data;
 	}
 

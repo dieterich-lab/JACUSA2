@@ -1,36 +1,34 @@
 package lib.data.cache;
 
 import htsjdk.samtools.SAMRecord;
-import lib.cli.options.BaseCallConfig;
+import lib.data.AbstractData;
 import lib.data.builder.SAMRecordWrapper;
 
-public class FRPairedEnd2BaseCallCache extends AbstractStrandedBaseCallCache {
+public class FRPairedEnd2BaseCallCache<T extends AbstractData> 
+extends AbstractStrandedCache<T> {
 
-	public FRPairedEnd2BaseCallCache(final BaseCallConfig baseCallConfig, final int activeWindowSize) {
-		super(baseCallConfig, activeWindowSize);
+	public FRPairedEnd2BaseCallCache(final Cache<T> forward, final Cache<T> reverse) {
+		super(forward, reverse);
 	}
 	
 	@Override
-	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
+	protected Cache<T> getCache(SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
-		final BaseCallCache tmp;
 		
-		if (record.getReadPairedFlag()) { // paired end
+		// paired end
+		if (record.getReadPairedFlag()) { 
 			if (record.getFirstOfPairFlag() && record.getReadNegativeStrandFlag() || 
 					record.getSecondOfPairFlag() && ! record.getReadNegativeStrandFlag() ) {
-				tmp = getReverse();
-			} else {
-				tmp = getForward();
+				return getReverse();
 			}
-		} else { // single end
-			if (record.getReadNegativeStrandFlag()) {
-				tmp = getReverse();
-			} else {
-				tmp = getForward();
-			}
+			return getForward();
+		} 
+		
+		// single end
+		if (record.getReadNegativeStrandFlag()) {
+			return getReverse();
 		}
-
-		tmp.addRecordWrapper(recordWrapper);
+		return getForward();
 	}
 
 }

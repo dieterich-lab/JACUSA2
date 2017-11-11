@@ -1,6 +1,6 @@
 package jacusa.filter.factory;
 
-import jacusa.filter.FilterContainer;
+import jacusa.filter.UnstrandedFilterContainer;
 import jacusa.filter.storage.DistanceStorage;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.basecall.PileupData;
@@ -19,11 +19,11 @@ extends AbstractDistanceFilterFactory<T> {
 	}
 
 	@Override
-	public void registerFilter(FilterContainer<T> filterContainer) {
+	public void registerFilter(UnstrandedFilterContainer<T> filterContainer) {
 		filterContainer.add(getFilter());
 		
 		DistanceStorage<T> storage = new DistanceStorage<T>(getC(), getFilterDistance(), getParameters().getBaseConfig());
-		filterContainer.registerWindowStorage(storage);
+		filterContainer.registerStorage(storage);
 		filterContainer.registerProcessInsertion(storage);
 		filterContainer.registerProcessDeletion(storage);
 	}

@@ -1,8 +1,8 @@
 package jacusa.filter;
 
-import addvariants.data.WindowedIterator;
 import lib.data.AbstractData;
 import lib.data.Result;
+import lib.data.builder.ConditionContainer;
 
 /**
  * 
@@ -32,7 +32,7 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	 * @param windowIterator
 	 * @return
 	 */
-	protected abstract boolean filter(final Result<T> result, final WindowedIterator<T> windowIterator);
+	protected abstract boolean filter(final Result<T> result, final ConditionContainer<T> conditionContainer);
 	
 	/**
 	 * 
@@ -41,8 +41,8 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	 * @param windowIterator
 	 * @return
 	 */
-	public boolean applyFilter(final Result<T> result, final WindowedIterator<T> windowIterator) {
-		if (filter(result, windowIterator)) {
+	public boolean applyFilter(final Result<T> result, final ConditionContainer<T> conditonContainer) {
+		if (filter(result, conditonContainer)) {
 			addFilterInfo(result);
 			return true;
 		}

@@ -46,6 +46,11 @@ implements hasBaseCallCount, hasLibraryType {
 		return baseCallCount;
 	}
 
+	@Override
+	public int getCoverage() {
+		return baseCallCount.getCoverage();
+	}
+	
 	public void add(AbstractData abstractData) {
 		BaseCallData pileupData = (BaseCallData) abstractData;
 		this.baseCallCount.add(pileupData.getBaseCallCount());

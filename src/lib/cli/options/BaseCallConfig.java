@@ -22,9 +22,6 @@ public class BaseCallConfig {
 
 	private static BaseCallConfig instance;
 	
-	
-	private byte minBQ;
-	
 	// this bases are the one that are used for computation
 	public static final char[] BASES = { 'A', 'C', 'G', 'T' };
 	public static final char[] BASES_COMPLEMENT = { 'T', 'G', 'C', 'A' };
@@ -139,15 +136,8 @@ public class BaseCallConfig {
 		return baseIndex;
 	}
 
-	public byte getMaxBQ() {
+	public byte getMaxBaseCallQuality() {
 		return Phred2Prob.MAX_Q;
 	}
-	
-	public byte getMinBQ() {
-		return minBQ;
-	}
-	
-	public void setMinBQ(final byte minBQ) {
-		this.minBQ = minBQ;
-	}
+
 }

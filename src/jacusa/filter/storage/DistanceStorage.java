@@ -5,19 +5,20 @@ import java.util.List;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
+import lib.data.has.hasBaseCallCount;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.SAMRecord;
 
-public class DistanceStorage<T extends AbstractData> 
-extends AbstractWindowStorage<T> 
+public class DistanceStorage<T extends AbstractData & hasBaseCallCount> 
+extends AbstractCacheStorage<T> 
 implements ProcessRecord, ProcessInsertionOperator, ProcessDeletionOperator, ProcessSkippedOperator {
 
 	private int distance;
 
-	public DistanceStorage(final char c, final int distance, final BaseCallConfig baseConfig) {
-		super(c, baseConfig);
+	public DistanceStorage(final char c, final int distance, final BaseCallConfig baseConfig, final int activeWindowSize) {
+		super(c, baseConfig, activeWindowSize);
 		this.distance = distance;
 	}
 
@@ -31,12 +32,12 @@ implements ProcessRecord, ProcessInsertionOperator, ProcessDeletionOperator, Pro
 
 		// read start
 		alignmentBlock = alignmentBlocks.get(0);
-		windowPosition = getWindowCache().getWindowCoordinates().convert2WindowPosition(alignmentBlock.getReferenceStart());
+		windowPosition = getBaseCallCache().getWindowCoordinates().convert2WindowPosition(alignmentBlock.getReferenceStart());
 		addRegion(windowPosition, distance + 1, alignmentBlock.getReadStart() - 1, record);
 	
 		// read end
 		alignmentBlock = alignmentBlocks.get(alignmentBlocks.size() - 1); // get last alignment
-		windowPosition = getWindowCache().getWindowCoordinates().convert2WindowPosition(alignmentBlock.getReferenceStart() + alignmentBlock.getLength() - 1 - distance);
+		windowPosition = getBaseCallCache().getWindowCoordinates().convert2WindowPosition(alignmentBlock.getReferenceStart() + alignmentBlock.getLength() - 1 - distance);
 		// note: alignmentBlock.getReadStart() is 1-indexed
 		addRegion(windowPosition, distance + 1, alignmentBlock.getReadStart() - 1 + alignmentBlock.getLength() - 1 - distance, record);
 	}
@@ -57,7 +58,7 @@ implements ProcessRecord, ProcessInsertionOperator, ProcessDeletionOperator, Pro
 		int upstreamD = Math.min(distance, upstreamMatch);
 		addRegion(windowPosition - upstreamD, upstreamD + 1, readPosition - upstreamD, record);
 
-		windowPosition = getWindowCache().getWindowCoordinates().convert2WindowPosition(genomicPosition + cigarElement.getLength());
+		windowPosition = getBaseCallCache().getWindowCoordinates().convert2WindowPosition(genomicPosition + cigarElement.getLength());
 		int downStreamD = Math.min(distance, downstreamMatch);
 		addRegion(windowPosition, downStreamD + 1, readPosition, record);
 	}

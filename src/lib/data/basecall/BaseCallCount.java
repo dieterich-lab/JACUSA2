@@ -3,8 +3,10 @@ package lib.data.basecall;
 import java.util.Arrays;
 
 import lib.cli.options.BaseCallConfig;
+import lib.data.has.hasCoverage;
 
-public class BaseCallCount {
+public class BaseCallCount 
+implements hasCoverage {
 
 	// container
 	private int[] baseCallCount;
@@ -54,6 +56,10 @@ public class BaseCallCount {
 		}
 	}
 
+	public void set(final int baseIndex, final int count) {
+		baseCallCount[baseIndex] = count;
+	}
+	
 	public void add(final int baseIndex, final BaseCallCount baseQualCount) {
 		baseCallCount[baseIndex] += baseQualCount.baseCallCount[baseIndex];
 	}

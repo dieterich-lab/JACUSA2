@@ -3,32 +3,39 @@ package lib.data.cache;
 import java.util.ArrayList;
 import java.util.List;
 
+import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 
-import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.builder.SAMRecordWrapper;
+import lib.data.has.hasRecordWrapper;
 
-public class SAMRecordCache extends AbstractCache {
+public class SAMRecordCache<T extends AbstractData & hasRecordWrapper> 
+extends AbstractCache<T> {
 
-	private BaseCallConfig baseCallConfig;
-	private List<List<SAMRecordWrapper>> records;
+	private List<List<SAMRecordWrapper>> recordWrappers;
 
-	public SAMRecordCache(final BaseCallConfig baseCallConfig, final int activeWindowSize) {
-		super(activeWindowSize);
-		this.baseCallConfig = baseCallConfig;
+	public SAMRecordCache(final AbstractMethodFactory<T> methodFactory) {
+		super(methodFactory);
 
-		records = new ArrayList<List<SAMRecordWrapper>>(activeWindowSize);
-		for (int i = 0; i < activeWindowSize; ++i) {
-			records.add(new ArrayList<SAMRecordWrapper>(50));
+		recordWrappers = new ArrayList<List<SAMRecordWrapper>>(getActiveWindowSize());
+		for (int i = 0; i < getActiveWindowSize(); ++i) {
+			recordWrappers.add(new ArrayList<SAMRecordWrapper>(50));
 		}
 	}
 
-	// TODO
 	@Override
+	public void addRecordWrapperPosition(final int readPosition, final SAMRecordWrapper recordWrapper) {
+		final SAMRecord record = recordWrapper.getSAMRecord();
+		final int referencePosition = record.getReferencePositionAtReadPosition(readPosition);
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinates(), referencePosition);
+		recordWrappers.get(windowPosition).add(recordWrapper);
+	}
+
+	// TODO
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
 
@@ -63,47 +70,40 @@ public class SAMRecordCache extends AbstractCache {
 			incrementBaseCalls(windowPosition, readPosition, length, recordWrapper);
 		}
 	}
-	
+		
 	@Override
-	public AbstractData getData(Coordinate coordinate) {
-		// TODO Auto-generated method stub
-		return null;
+	public T getData(final Coordinate coordinate) {
+		final T data = getMethodFactory().createData();
+		final int windowPosition = getWindowPosition(coordinate); 
+		data.getRecordWrapper().addAll(recordWrappers.get(windowPosition));
+		return data;
 	}
 	
-	protected void incrementBaseCalls(final int windowPosition, 
-			final int readPosition, final int length, final SAMRecordWrapper recordWrapper) {
-		final SAMRecord record = recordWrapper.getSAMRecord();
-		for (int i = 0; i < length; ++i) {
-			// ensure minimal base call quality score
-			final byte baseCallQuality = record.getBaseQualities()[readPosition + i];
-			if (baseCallQuality < baseCallConfig.getMinBQ()) {
-				continue;
-			}
-			
-			// consider only chosen bases
-			final int baseIndex = baseCallConfig.getBaseIndex(record.getReadBases()[readPosition + i]);
-			if (baseIndex < 0) {
-				continue;
-			}
-
-			_incrementBaseCalls(windowPosition + i, baseIndex, baseCallQuality, recordWrapper);
-		}
-	}
-
-	protected void _incrementBaseCalls(final int windowPosition, final int baseIndex, final byte baseCallQuality, 
+	protected void incrementBaseCalls(final int windowPosition, final int readPosition, final int length, 
 			final SAMRecordWrapper recordWrapper) {
-		records.get(windowPosition).add(recordWrapper);
+
+		for (int i = 0; i < length; ++i) {
+			recordWrappers.get(windowPosition + i).add(recordWrapper);
+		}
 	}
 
 	@Override
 	public void clear() {
-		for (int i = 0; i < getActiveWindowSize(); ++i) {
-			records.get(i).clear();
+		for (final List<SAMRecordWrapper> r : recordWrappers) {
+			r.clear();
 		}
 	}
 
 	public List<SAMRecordWrapper> getRecordWrapper(final int windowPosition) {
-		return records.get(windowPosition);
+		return recordWrappers.get(windowPosition);
+	}
+
+	@Override
+	public void addRecordWrapperRegion(int readPosition, int length, SAMRecordWrapper recordWrapper) {
+		final SAMRecord record = recordWrapper.getSAMRecord();
+		final int referencePosition = record.getReferencePositionAtReadPosition(readPosition);
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinates(), referencePosition);
+		incrementBaseCalls(windowPosition, readPosition, length, recordWrapper);
 	}
 
 }

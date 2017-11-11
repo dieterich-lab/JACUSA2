@@ -3,19 +3,19 @@ package lib.data.builder;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.basecall.PileupData;
-import lib.data.cache.AbstractStrandedBaseCallCache;
+import lib.data.cache.AbstractStrandedCache;
 import lib.util.Coordinate;
 
 public class StrandedPileupBuilder<T extends PileupData> 
 extends AbstractDataBuilder<T> {
 	
-	private AbstractStrandedBaseCallCache cache;
+	private AbstractStrandedCache<T> cache;
 
 	public StrandedPileupBuilder(
 			final AbstractConditionParameter<T> conditionParameter,
 			final AbstractParameter<T> parameters,
 			final LIBRARY_TYPE libraryType,
-			final AbstractStrandedBaseCallCache cache) {
+			final AbstractStrandedCache cache) {
 		super(conditionParameter, parameters, libraryType, cache);
 		this.cache = cache;
 	}

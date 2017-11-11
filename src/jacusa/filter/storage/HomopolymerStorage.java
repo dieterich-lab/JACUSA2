@@ -10,7 +10,7 @@ import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.SAMRecord;
 
 public class HomopolymerStorage<T extends PileupData> 
-extends AbstractWindowStorage<T> 
+extends AbstractCacheStorage<T> 
 implements ProcessAlignmentOperator {
 	
 	private int minLength;
@@ -26,8 +26,8 @@ implements ProcessAlignmentOperator {
 	 * @param c
 	 * @param distance
 	 */
-	public HomopolymerStorage(final char c, final int length, final BaseCallConfig baseConfig) {
-		super(c, baseConfig);
+	public HomopolymerStorage(final char c, final int length, final BaseCallConfig baseConfig, final int activeWindowSize) {
+		super(c, baseConfig, activeWindowSize);
 		this.minLength = length;
 
 		int n = minLength + 5;
@@ -39,12 +39,12 @@ implements ProcessAlignmentOperator {
 	public void processAlignmentOperator(int windowPosition, int readPosition, int genomicPosition, 
 			CigarElement cigarElement, SAMRecord record, int base, int qual) {
 		// check if record changed		
-		if (this.record != record) {
+		if (this.recordwrapper != record) {
 			checkAndAdd2WindowCache();
 			resetAndAdd(windowPosition, base, qual);
 			readPositionStart = readPosition;
 			readPositionLast = readPosition;
-			this.record = record;
+			this.recordwrapper = record;
 		// check if discontinued
 		} else if(readPositionLast + 1 != readPosition) {
 			checkAndAdd2WindowCache();
@@ -78,8 +78,8 @@ implements ProcessAlignmentOperator {
 		int coveredReadLength = bases.size();
 		if (coveredReadLength >= minLength) {
 			for (int i = 0; i < bases.size(); ++i) {
-				if (windowPositionStart + i >= 0 && windowPositionStart + i < getWindowCache().getWindowSize()) {
-					getWindowCache().addHighQualityBaseCall(windowPositionStart + i, bases.get(i), quals.get(i));
+				if (windowPositionStart + i >= 0 && windowPositionStart + i < getBaseCallCache().getWindowSize()) {
+					getBaseCallCache().addHighQualityBaseCall(windowPositionStart + i, bases.get(i), quals.get(i));
 				} else {
 					return;
 				}

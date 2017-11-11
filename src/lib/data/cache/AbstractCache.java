@@ -1,51 +1,53 @@
 package lib.data.cache;
 
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
+
+import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
 
+import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
+import lib.util.Coordinate.STRAND;
 
-public abstract class AbstractCache<T extends AbstractData> {
+public abstract class AbstractCache<T extends AbstractData> 
+implements Cache<T> {
 
-	private final int activeWindowSize;
+	private final AbstractMethodFactory<T> methodFactory;
 	private Coordinate activeWindowCoordinate;
 	
-	public AbstractCache(final int activeWindowSize) {
-		this.activeWindowSize = activeWindowSize;
+	public AbstractCache(final AbstractMethodFactory<T> methodFactory) {
+		this.methodFactory = methodFactory;
 	}
 	
-	public abstract void addRecordWrapper(final SAMRecordWrapper recordWrapper);
-	public abstract void clear();
+	public AbstractMethodFactory<T> getMethodFactory() {
+		return methodFactory;
+	}
 
-	public abstract T getData(final Coordinate coordinate);
-	
-	/*
-	protected abstract boolean isValid(final int windowPosition);
-	
-	// TODO
-	public int getNext(int windowPosition) {
-		while (isContainedInWindow(windowPosition)) {
-			if (isValid(windowPosition)) {
-				return windowPosition;
-			}
-			windowPosition++;
-		}
-		
-		return -1;
-	}
-	*/
-
-	public Coordinate getActiveWindowCoordinates() {
-		return activeWindowCoordinate;
-	}
-	
 	public void setWindowCoordinates(final Coordinate activeWindowCoordinate) {
 		this.activeWindowCoordinate = activeWindowCoordinate;
 		clear();
 	}
-
-	public int getActiveWindowSize() {
-		return activeWindowSize;
+	
+	public Coordinate getActiveWindowCoordinates() {
+		return activeWindowCoordinate;
+	}
+	
+	protected int getWindowPosition(final Coordinate coordinate) {
+		return Coordinate.makeRelativePosition(activeWindowCoordinate, coordinate.getPosition());
 	}
 
+	protected Entry<Integer, STRAND> getStrandedWindowPosition(final Coordinate coordinate) {
+		final int windowPosition = Coordinate.makeRelativePosition(activeWindowCoordinate, coordinate.getPosition());
+		return new SimpleEntry<Integer, STRAND>(windowPosition, coordinate.getStrand());
+	}
+
+	protected BaseCallConfig getBaseCallConfig() {
+		return methodFactory.getParameter().getBaseConfig();
+	}
+	
+	protected int getActiveWindowSize() {
+		return methodFactory.getParameter().getActiveWindowSize();
+	}
+	
 }

@@ -18,8 +18,8 @@ public abstract class AbstractStorage<T extends AbstractData> {
 		return c;
 	}
 
-	public void setCondition(final AbstractConditionParameter<T> condition) {
-		this.conditionParameter = condition;
+	public void setCondition(final AbstractConditionParameter<T> conditionParameter) {
+		this.conditionParameter = conditionParameter;
 	}
 	
 	public AbstractConditionParameter<T> getConditionParameter() {

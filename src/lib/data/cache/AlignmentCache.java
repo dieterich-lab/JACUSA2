@@ -2,26 +2,39 @@ package lib.data.cache;
 
 import java.util.Arrays;
 
+import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
 
 import htsjdk.samtools.SAMRecord;
 
 import lib.data.AbstractData;
 import lib.data.builder.SAMRecordWrapper;
+import lib.data.has.hasReadInfoCount;
 
 // TODO do we consider read end by quality or by alignment
-public class AlignmentCache extends AbstractCache {
+public class AlignmentCache<T extends AbstractData & hasReadInfoCount> 
+extends AbstractCache<T> {
 
 	private final int[] readStartCount;
 	private final int[] readEndCount;
 
-	public AlignmentCache(final int activeWindowSize) {
-		super(activeWindowSize);
+	public AlignmentCache(final AbstractMethodFactory<T> methodFactory) {
+		super(methodFactory);
 
-		readStartCount = new int[activeWindowSize];
-		readEndCount = new int[activeWindowSize];
+		readStartCount = new int[getActiveWindowSize()];
+		readEndCount = new int[getActiveWindowSize()];
 	}
 
+	@Override
+	public void addRecordWrapperPosition(int readPosition, SAMRecordWrapper recordWrapper) {
+		// nothing to be done here
+	}
+	
+	@Override
+	public void addRecordWrapperRegion(int readPosition, int length, SAMRecordWrapper recordWrapper) {
+		// nothing to be done here
+	}
+	
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
@@ -40,9 +53,15 @@ public class AlignmentCache extends AbstractCache {
 	}
 	
 	@Override
-	public AbstractData getData(final Coordinate coordinate) {
-		// TODO Auto-generated method stub
-		return null;
+	public T getData(final Coordinate coordinate) {
+		final T data = getMethodFactory().createData();
+
+		final int windowPosition = getWindowPosition(coordinate);
+		data.getReadInfoCount().setStart(readStartCount[windowPosition]);
+		data.getReadInfoCount().setEnd(readEndCount[windowPosition]);
+
+		return data;
+
 	}
 	
 	@Override
