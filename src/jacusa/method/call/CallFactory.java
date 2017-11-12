@@ -200,9 +200,11 @@ extends AbstractMethodFactory<T> {
 		resultFormats.put(resultFormat.getC(), resultFormat);
 
 		// VCF output
+		/*
 		resultFormat = new VCFcall<T>(getParameter().getBaseConfig(), 
 				getParameter().getFilterConfig());
 		resultFormats.put(resultFormat.getC(), resultFormat);
+		*/
 
 		return resultFormats;
 	}

@@ -1,5 +1,6 @@
-package lib.io.copytmp;
+package jacusa.io.copytmp;
 
+import jacusa.io.OutputWriter;
 import jacusa.io.format.BED6call;
 
 import java.io.BufferedReader;
@@ -14,30 +15,28 @@ import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.Result;
 import lib.data.has.hasPileupCount;
-import lib.io.variant.AbstractVariantWriter;
+import lib.io.copytmp.CopyTmp;
 import lib.util.AbstractTool;
-import lib.variant.Variant;
 
-public class CopyTmpBED6call<T extends AbstractData & hasPileupCount> implements CopyTmp {
+public class CopyTmpResult<T extends AbstractData & hasPileupCount> implements CopyTmp {
 
 	private BED6call<T> format;
+	private final OutputWriter resultWriter;
 	
-	private final AbstractResultWriter resultWriter;
-	
-	private final AbstractResultWriter tmpResultWriter;
+	private final OutputWriter tmpResultWriter;
 	private final BufferedReader tmpCallReader;
 	
 	private List<Integer> iteration2storedCalls;
 	
-	public CopyTmpBED6call(final int threadId, 
+	public CopyTmpResult(final int threadId, 
 			final AbstractParameter<T> parameters, 
-			final AbstractResultWriter resultWriter) throws IOException {
-		this.resultWriter = resultWriter;
+			final OutputWriter resultWriter) throws IOException {
 	
 		format = new BED6call<T>(parameters);
+		this.resultWriter = resultWriter;
 		
 		final String tmpResultFilename = createTmpResultFilename(threadId);
-		tmpResultWriter = resultWriter.getFormat().createWriterInstance(tmpResultFilename);
+		tmpResultWriter = new OutputWriter(new File(tmpResultFilename));
 		tmpCallReader = new BufferedReader(new FileReader(new File(tmpResultFilename)));
 		
 		iteration2storedCalls = new ArrayList<Integer>();
@@ -62,7 +61,8 @@ public class CopyTmpBED6call<T extends AbstractData & hasPileupCount> implements
 	}
 
 	public void addCall(Result<T> result, List<AbstractConditionParameter<?>> conditionParameters) throws Exception {
-		tmpResultWriter.addCall(variants, conditionParameters);
+		final String s = format.convert2String(result);
+		tmpResultWriter.write(s);
 		final int iteration = iteration2storedCalls.size() - 1;
 		final int storedVariants = iteration2storedCalls.get(iteration) + 1;
 		iteration2storedCalls.set(iteration, storedVariants);
@@ -75,7 +75,7 @@ public class CopyTmpBED6call<T extends AbstractData & hasPileupCount> implements
 
 		String line;
 		while (storedVariants >= copiedVariants && (line = tmpCallReader.readLine()) != null) {
-			resultWriter.addLine(line);
+			resultWriter.write(line);
 			copiedVariants++;
 		}
 	}

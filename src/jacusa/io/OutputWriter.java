@@ -32,7 +32,7 @@ public class OutputWriter implements Output {
 
 	@Override
 	public void write(String line) throws IOException {
-		bw.write(line + "\n");
+		bw.write(line + '\n');
 	}
 
 	@Override
