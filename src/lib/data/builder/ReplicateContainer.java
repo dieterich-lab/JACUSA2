@@ -51,6 +51,7 @@ public class ReplicateContainer<T extends AbstractData> {
 					iteratorProvider.createIterator(activeWindowCoordinate, reservedWindowCoordinate);
 			iterators.add(iterator);
 			final AbstractDataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
+
 			// TODO test performance
 			recordWrappers.add(dataBuilder.buildCache(activeWindowCoordinate, iterator));
 		}
@@ -67,6 +68,7 @@ public class ReplicateContainer<T extends AbstractData> {
 			iterator.updateActiveWindowCoordinate(activeWindowCoordinate);
 			
 			final AbstractDataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
+
 			// TODO test performance
 			recordWrappers.add(dataBuilder.buildCache(activeWindowCoordinate, iterator));
 		}
@@ -87,7 +89,7 @@ public class ReplicateContainer<T extends AbstractData> {
 		return data;
 	}
 
-	public List<FilterContainer<T>> getFilterContainers(final Coordinate coordinate) {
+	public List<FilterContainer<T>> getFilterContainers() {
 		final int replicateSize = conditionParameter.getReplicateSize();
 		final List<FilterContainer<T>> filterContainers = new ArrayList<FilterContainer<T>>(replicateSize);
 		

@@ -22,7 +22,7 @@ extends AbstractOutputFormat<T> {
 
 	private AbstractParameter<T> parameters;
 	
-	public BED6call(
+	protected BED6call(
 			final char c,
 			final String desc,
 			final AbstractParameter<T> parameters) {

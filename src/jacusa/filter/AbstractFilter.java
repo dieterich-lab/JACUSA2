@@ -1,6 +1,7 @@
 package jacusa.filter;
 
 import lib.data.AbstractData;
+import lib.data.ParallelData;
 import lib.data.Result;
 import lib.data.builder.ConditionContainer;
 
@@ -32,8 +33,7 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	 * @param windowIterator
 	 * @return
 	 */
-	// TODO replace conditionContainer with ParallelData
-	protected abstract boolean filter(final Result<T> result, final ConditionContainer<T> conditionContainer);
+	protected abstract boolean filter(final ParallelData<T> parallelData, final ConditionContainer<T> conditionContainer);
 	
 	/**
 	 * 
@@ -43,7 +43,8 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	 * @return
 	 */
 	public boolean applyFilter(final Result<T> result, final ConditionContainer<T> conditonContainer) {
-		if (filter(result, conditonContainer)) {
+		final ParallelData<T> parallelData = result.getParellelData();
+		if (filter(parallelData, conditonContainer)) {
 			addFilterInfo(result);
 			return true;
 		}

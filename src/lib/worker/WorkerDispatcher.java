@@ -48,7 +48,7 @@ public class WorkerDispatcher<T extends AbstractData> {
 	}
 
 	protected AbstractWorker<T> createWorker() {
-		return methodFactory.createWorker();
+		return methodFactory.createWorker(this);
 	}
 	
 	public synchronized Coordinate next() {

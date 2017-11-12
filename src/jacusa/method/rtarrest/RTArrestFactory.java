@@ -10,6 +10,7 @@ import jacusa.io.format.BED6call;
 import jacusa.io.format.RTArrestDebugResultFormat;
 import jacusa.io.format.RTArrestResultFormat;
 import jacusa.method.call.statistic.StatisticCalculator;
+import jacusa.pileup.worker.RTArrestWorker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,11 +56,10 @@ extends AbstractMethodFactory<T> {
 				dataGenerator);
 	}
 
-	/*
-	public void initParameters(final int conditions) {
-		setParameters(new RTArrestParameters<BaseQualReadInfoData>(conditions));
+	@Override
+	public boolean checkState() {
+		return true;
 	}
-	*/
 
 	public void initACOptions() {
 		initGlobalACOptions();
@@ -170,9 +170,9 @@ extends AbstractMethodFactory<T> {
 	}
 
 	@Override
-	public AbstractWorker<T> createWorker() {
-		// TODO Auto-generated method stub
-		return null;
+	public RTArrestWorker<T> createWorker() {
+		
+		return new RTArrestWorker<T>(workerDispatcher, copyTmps, rtArrestParameter);
 	}
 	
 	

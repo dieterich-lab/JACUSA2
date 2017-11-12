@@ -1,6 +1,6 @@
 package jacusa.method.call.statistic.dirmult;
 
-import jacusa.cli.parameters.CallParameters;
+import jacusa.cli.parameters.CallParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.hasPileupCount;
@@ -8,7 +8,7 @@ import lib.data.has.hasPileupCount;
 public class DirichletMultinomialRobustCompoundError<T extends AbstractData & hasPileupCount>
 extends DirichletMultinomialCompoundError<T> {
 
-	public DirichletMultinomialRobustCompoundError(final CallParameters<T> parameters) {
+	public DirichletMultinomialRobustCompoundError(final CallParameter<T> parameters) {
 		super(parameters);
 	}
 

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
 
+import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 
 import lib.data.AbstractData;
@@ -25,20 +26,22 @@ extends AbstractCache<T> {
 	}
 
 	@Override
-	public void addRecordWrapper(SAMRecordWrapper recordWrapper) {
-		// TODO Auto-generated method stub
-		
+	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
+		for (final AlignmentBlock alignmentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
+			addRecordWrapperRegion(alignmentBlock.getReadStart() - 1, alignmentBlock.getLength(), recordWrapper);
+		}
 	}
 	
 	@Override
 	public void addRecordWrapperPosition(final int readPosition, final SAMRecordWrapper recordWrapper) {
-		
+		addRecordWrapperRegion(readPosition, 1, recordWrapper);
 	}
 	
 	@Override
 	public void addRecordWrapperRegion(final int readPosition, final int length, final SAMRecordWrapper recordWrapper) {
-		// TODO Auto-generated method stub
-		
+		final int referencePosition = recordWrapper.getSAMRecord().getReferencePositionAtReadPosition(readPosition);
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinates(), referencePosition);
+		incrementBaseCalls(windowPosition, readPosition, length, recordWrapper);
 	}
 
 	@Override

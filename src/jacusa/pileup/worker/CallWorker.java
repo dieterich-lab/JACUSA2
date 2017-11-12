@@ -2,53 +2,54 @@ package jacusa.pileup.worker;
 
 import java.util.List;
 
-import jacusa.cli.parameters.CallParameters;
+import jacusa.cli.parameters.CallParameter;
+import jacusa.filter.AbstractFilter;
+import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.StatisticCalculator;
 import jacusa.pileup.iterator.variant.ParallelDataValidator;
 
+import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.basecall.PileupData;
+import lib.data.Result;
+import lib.data.has.hasPileupCount;
 import lib.io.copytmp.CopyTmp;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
-public class CallWorker<T extends PileupData> 
+public class CallWorker<T extends AbstractData & hasPileupCount>
 extends AbstractWorker<T> {
 
-	final private CallParameters<T> callParameter;
-	final private StatisticCalculator<T> statisticCalculator;
+	private final CallParameter<T> callParameter;
+	private final StatisticCalculator<T> statisticCalculator;
 	
 	public CallWorker(
 			final WorkerDispatcher<T> workerDispatcher,
-			final int threadId, final List<CopyTmp> copyTmps, 
+			final List<CopyTmp> copyTmps, 
 			final ParallelDataValidator<T> parallelDataValidator,
-			final CallParameters<T> callParameter) {
+			final CallParameter<T> callParameter) {
 
-		super(workerDispatcher, threadId, copyTmps, parallelDataValidator, callParameter);
+		super(workerDispatcher, copyTmps, parallelDataValidator, callParameter);
 		this.statisticCalculator = callParameter.getStatisticParameters().getStatisticCalculator();
 		this.callParameter = callParameter;
 	}
 
 	@Override
-	protected void doWork(ParallelData<T> parallelData) {
-		/* TODO
-		// result object
+	protected void doWork(final ParallelData<T> parallelData) {
 		Result<T> result = new Result<T>();
 		result.setParallelData(parallelData);
 		statisticCalculator.addStatistic(result);
-		
+
 		if (statisticCalculator.filter(result.getStatistic())) {
-			return null;
+			return;
 		}
 
 		if (callParameter.getFilterConfig().hasFiters()) {
 			// apply each filter
-			for (final AbstractFilterFactory<T> filterFactory : callParameter.getFilterConfig().getFactories()) {
+			for (final AbstractFilterFactory<T, ?> filterFactory : callParameter.getFilterConfig().getFilterFactories()) {
 				AbstractFilter<T> filter = filterFactory.getFilter();
-				filter.applyFilter(result, parallelDataIterator);
+				filter.applyFilter(result, getConditionContainer());
 			}
 		}
-		*/
 	}
 
 }

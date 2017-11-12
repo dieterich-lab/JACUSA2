@@ -39,11 +39,11 @@ implements Iterator<ParallelData<T>> {
 	private STATUS status;
 	
 	public AbstractWorker(final WorkerDispatcher<T> workerDispatcher,
-			final int threadId, List<CopyTmp> copyTmps, 
+			final List<CopyTmp> copyTmps, 
 			final ParallelDataValidator<T> parallelDataValidator,
 			final AbstractParameter<T> generalParameter) {
 		this.workerDispatcher = workerDispatcher;
-		threadIdContainer = new ThreadIdContainer(threadId);
+		threadIdContainer = new ThreadIdContainer(workerDispatcher.getWorkerContainer().size());
 
 		conditionContainer = new ConditionContainer<T>(generalParameter);
 		coordinateController = new CoordinateController(generalParameter.getActiveWindowSize(), 
@@ -54,24 +54,24 @@ implements Iterator<ParallelData<T>> {
 		status = STATUS.INIT;
 	}
 
+	// TODO make faster if replicates are not valid 
 	@Override
 	public boolean hasNext() {
-		while (parallelData == null) {
-			if (parallelDataValidator.isValid(parallelData)) {
-				return true;
+		while (coordinateController.checkReferenceAdvancerWithinActiveWindow()) {
+			final Coordinate coordinate = new Coordinate(coordinateController.getReferenceAdvance().getCurrentCoordinate());
+			final T[][] data = conditionContainer.getData(coordinate);
+			parallelData = new ParallelData<T>(workerDispatcher.getMethodFactory(), coordinate, data);
+			do {
+				if (parallelData != null && parallelDataValidator.isValid(parallelData)) {
+					return true;
+				}
+			} while (coordinateController.advance());
+			if (coordinateController.hasNext()) {
+				final Coordinate activeWindowCoordinate = coordinateController.next();
+				conditionContainer.updateActiveWindowCoordinates(activeWindowCoordinate);
 			}
 		}
-		/* TODO
-		while () {
-			// init 
-			
-			
-			
-			// build
-			
-			// TODO
-		}
-		*/
+
 		return false;
 	}
 	
@@ -105,11 +105,8 @@ implements Iterator<ParallelData<T>> {
 				reservedWindowCoordinate.getEnd());
 		
 		coordinateController.updateReserved(reservedWindowCoordinate);
-		
 		final Coordinate activeWindowCoordinate = coordinateController.getActive();
-		
-		conditionContainer.update(activeWindowCoordinate, reservedWindowCoordinate);
-	
+		conditionContainer.updateWindowCoordinates(activeWindowCoordinate, reservedWindowCoordinate);
 	}
 
 	protected void processInit() {
@@ -179,53 +176,6 @@ implements Iterator<ParallelData<T>> {
 
 	}
 
-	/* TODo
-	protected List<AbstractConditionParameter<T>> getConditionParamterers() {
-		return workerDispatcher.getMethodFactory().getGeneralParameter().getConditionParameters();
-	}
-	
-	protected int getActiveWindowSize() {
-		return workerDispatcher.getMethodFactory().getGeneralParameter().getActiveWindowSize();
-	}
-	*/
-
-	/* TODO
-	protected synchronized void processParallelDataIterator(final WindowedIterator<T> parallelDataIterator) {
-		// print informative log
-		AbstractTool.getLogger().addInfo("Started screening contig " + 
-				parallelDataIterator.getWindow().getContig() + 
-				":" + 
-				parallelDataIterator.getWindow().getStart() + 
-				"-" + 
-				parallelDataIterator.getWindow().getEnd());
-		
-		// iterate over parallel pileups
-		while (parallelDataIterator.hasNext()) {
-			final ParallelPileupData<T> parallelPileup = parallelDataIterator.next();
-			final Result<T> result = processParallelData(parallelPileup, parallelDataIterator);
-
-			// considered comparisons
-
-			if (result == null) {
-				continue;
-			}
-
-			/* TODO
-			final String line = parameters.getFormat().convert2String(result);
-			try {
-				char c = 'F';
-				if (! result.getFilterInfo().isEmpty()) {
-					c = 'T';
-				}
-				final String s = new String(line + c + "\n"); 
-				zip.write(s.getBytes());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	*/
-
 	public STATUS getStatus() {
 		return status;
 	}
@@ -240,6 +190,10 @@ implements Iterator<ParallelData<T>> {
 	
 	protected List<AbstractConditionParameter<T>> getConditionParameter() {
 		return workerDispatcher.getMethodFactory().getParameter().getConditionParameters();
+	}
+
+	protected ConditionContainer<T> getConditionContainer() {
+		return conditionContainer;
 	}
 	
 	public ThreadIdContainer getThreadIdContainer() {

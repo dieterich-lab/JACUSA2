@@ -22,8 +22,26 @@ public class ConditionContainer<T extends AbstractData> {
 		replicateContainers = initReplicateContainer(generalParameter);
 	}
 
-	public void update(final Coordinate activeWindowCoordinate, final Coordinate reservedWindowCoordinate) {
-		// TODO
+	public List<List<List<SAMRecordWrapper>>> updateWindowCoordinates(final Coordinate activeWindowCoordinate, final Coordinate reservedWindowCoordinate) {
+		final List<List<List<SAMRecordWrapper>>> recordWrappers = 
+				new ArrayList<List<List<SAMRecordWrapper>>>(generalParameter.getConditionsSize());
+		
+		for (ReplicateContainer<T> replicateContainer : replicateContainers) {
+			replicateContainer.createIterators(activeWindowCoordinate, reservedWindowCoordinate);
+		}
+		
+		return recordWrappers;
+	}
+	
+	public List<List<List<SAMRecordWrapper>>> updateActiveWindowCoordinates(final Coordinate activeWindowCoordinate) {
+		final List<List<List<SAMRecordWrapper>>> recordWrappers = 
+				new ArrayList<List<List<SAMRecordWrapper>>>(generalParameter.getConditionsSize());
+
+		for (ReplicateContainer<T> replicateContainer : replicateContainers) {
+			recordWrappers.add(replicateContainer.updateIterators(activeWindowCoordinate));
+		}
+
+		return recordWrappers;
 	}
 	
 	public ReplicateContainer<T> getReplicatContainer(final int conditionIndex) {
@@ -41,9 +59,14 @@ public class ConditionContainer<T extends AbstractData> {
 		return data;
 	}
 
-	public FilterContainer<T> getFilterContainer(final Coordinate coordinate) {
-		// TODO
-		return null;
+	public List<List<FilterContainer<T>>> getFilterContainer() {
+		final List<List<FilterContainer<T>>> filterContainers 
+			= new ArrayList<List<FilterContainer<T>>>(generalParameter.getConditionsSize());
+
+		for (ReplicateContainer<T> replicateContainer : replicateContainers) {
+			filterContainers.add(replicateContainer.getFilterContainers());
+		}
+		return filterContainers;
 	}
 	
 	/*
@@ -131,53 +154,4 @@ public class ConditionContainer<T extends AbstractData> {
 		return replicateContainers;
 	}
 
-	/*
-	 * 			// check that all conditions have some coverage position
-			for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
-				if (! hasNext(conditionIndex)) {
-					return false;
-				}
-			}
-
-			int check = 0;
-			for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
-				final int refPos = coordinateContainer.getCoordinate(CONDITON_INDEX).getStart();
-				final int condPos = coordinateContainer.getCoordinate(conditionIndex).getStart();
-	
-				int compare = 0;
-				if (refPos < condPos) {
-					compare = -1;
-				} else if (refPos > condPos) {
-					compare = 1;
-				}
-
-				switch (compare) {
-
-				case -1:
-					// adjust actualPosition; instead of iterating jump to specific position
-					if (! adjustCurrentGenomicPosition(CONDITON_INDEX, condPos)) {
-						return false;
-					}
-					
-					break;
-	
-				case 0:
-					if (isCovered(coordinateContainer.getCoordinate(conditionIndex), conditionDataBuilders.get(conditionIndex))) {
-						check++;
-					}
-					
-					break;
-	
-				case 1:
-					// adjust actualPosition; instead of iterating jump to specific position
-					if (! adjustCurrentGenomicPosition(conditionIndex, refPos)) {
-						return false;					
-					}
-
-					break;
-				}
-			}
-			
-			*/
-	
 }

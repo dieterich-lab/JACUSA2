@@ -18,10 +18,10 @@ extends AbstractWorker<T> {
 	private final List<OverlappingRecordWrapperContainer> windowContainers;
 	
 	public AbstractOverlapWorker(final WorkerDispatcher<T> workerDispatcher, 
-			final int threadId, final List<CopyTmp> copyTmps, 
+			final List<CopyTmp> copyTmps, 
 			final ParallelDataValidator<T> parallelDataValidator, 
 			final AbstractParameter<T> generalParameter) throws IOException {
-		super(workerDispatcher, threadId, copyTmps, parallelDataValidator, generalParameter);
+		super(workerDispatcher, copyTmps, parallelDataValidator, generalParameter);
 
 		windowContainers = createOverlappingContainers(generalParameter.getConditionsSize());
 	}

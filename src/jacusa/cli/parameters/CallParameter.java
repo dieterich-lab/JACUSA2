@@ -7,12 +7,12 @@ import lib.data.AbstractData;
 import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.data.has.hasPileupCount;
 
-public class CallParameters<T extends AbstractData & hasPileupCount> 
+public class CallParameter<T extends AbstractData & hasPileupCount> 
 extends AbstractParameter<T> implements hasStatisticCalculator<T> {
 
 	private StatisticParameters<T> statisticParameter;
 	
-	public CallParameters(final int conditionSize, final AbstractDataBuilderFactory<T> dataBuilderFactory) {
+	public CallParameter(final int conditionSize, final AbstractDataBuilderFactory<T> dataBuilderFactory) {
 		super(conditionSize, dataBuilderFactory);
 		
 		statisticParameter = new StatisticParameters<T>();

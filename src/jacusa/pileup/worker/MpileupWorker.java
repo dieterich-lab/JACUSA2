@@ -14,9 +14,9 @@ public class MpileupWorker<T extends PileupData>
 extends AbstractWorker<T> {
 
 	public MpileupWorker(final WorkerDispatcher<T> workerDispatcher,
-			final int threadId, List<CopyTmp> copyTmps, PileupParameters<T> parameter) {
+			final List<CopyTmp> copyTmps, final PileupParameters<T> parameter) {
 
-		super(workerDispatcher, threadId, copyTmps, null, parameter);
+		super(workerDispatcher, copyTmps, null, parameter);
 	}
 
 	@Override

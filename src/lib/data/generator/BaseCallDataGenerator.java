@@ -2,43 +2,27 @@ package lib.data.generator;
 
 import lib.data.basecall.BaseCallData;
 
-public class BaseCallDataGenerator implements DataGenerator<BaseCallData>{
+public class BaseCallDataGenerator
+extends AbstractDataGenerator<BaseCallData> {
 
-	@Override
-	public BaseCallData[][] copyContainerData(final BaseCallData[][] containerData) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	@Override
 	public BaseCallData copyData(final BaseCallData data) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		return new BaseCallData(data);
+	}	
 	
 	@Override
-	public BaseCallData[] copyReplicateData(final BaseCallData[] replicateData) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public BaseCallData[][] createContainerData(final int n) {
-		// TODO Auto-generated method stub
-		return null;
+	public BaseCallData[][] createContainerData(int n) {
+		return new BaseCallData[n][];
 	}
 	
 	@Override
 	public BaseCallData createData() {
-		// TODO Auto-generated method stub
-		return null;
+		return new BaseCallData();
 	}
 	
 	@Override
-	public BaseCallData[] createReplicateData(final int n) {
-		// TODO Auto-generated method stub
-		return null;
+	public BaseCallData[] createReplicateData(int n) {
+		return new BaseCallData[n];
 	}
-	
 	
 }

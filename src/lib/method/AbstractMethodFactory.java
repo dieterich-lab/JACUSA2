@@ -42,6 +42,7 @@ implements DataGenerator<T> {
 	private final Set<AbstractACOption> ACOptions;
 
 	private CoordinateProvider coordinateProvider;
+	private WorkerDispatcher<T> workerDispatcher;
 	
 	public AbstractMethodFactory(final String name, final String desc, 
 			final AbstractParameter<T> parameters, final DataGenerator<T> dataGenerator) {
@@ -51,6 +52,7 @@ implements DataGenerator<T> {
 
 		setParameters(parameters);
 		ACOptions 		= new HashSet<AbstractACOption>(10);
+		workerDispatcher = new WorkerDispatcher<T>(this);
 	}
 	
 	// needed for Methods where the number of conditions is unknown... 
@@ -66,17 +68,18 @@ implements DataGenerator<T> {
 		return parameters;
 	}
 
-	public abstract WorkerDispatcher<T> getWorkerDispatcher();
-	public abstract AbstractWorker<T> createWorker();
+	public WorkerDispatcher<T> getWorkerDispatcher() {
+		return workerDispatcher;
+	}
+
+	public abstract AbstractWorker<T> createWorker(final WorkerDispatcher<T> workerDispatcher);
 
 	public abstract void initACOptions();
 	protected abstract void initConditionACOptions();
 	protected abstract void initGlobalACOptions();
 	
-	// TODO ???
-	public boolean check() {
-		return true;
-	}
+	// check state after parameters have been set
+	public abstract boolean checkState();
 
 	public DataGenerator<T> getDataGenerator() {
 		return dataGenerator;

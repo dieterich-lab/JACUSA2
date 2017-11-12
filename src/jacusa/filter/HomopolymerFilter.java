@@ -5,7 +5,6 @@ import jacusa.filter.counts.MinCountFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.Result;
 import lib.data.builder.ConditionContainer;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
@@ -22,9 +21,7 @@ extends AbstractFilter<T> {
 	}
 
 	@Override
-	protected boolean filter(final Result<T> result, final ConditionContainer<T> conditionContainer) {
-		final ParallelData<T> parallelData = result.getParellelData();
-
+	protected boolean filter(final ParallelData<T> parallelData, final ConditionContainer<T> conditionContainer) {
 		final int[] variantBaseIndexs = countFilter.getVariantBaseIndexs(parallelData);
 		if (variantBaseIndexs.length == 0) {
 			return false;

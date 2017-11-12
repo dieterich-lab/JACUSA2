@@ -90,7 +90,12 @@ extends AbstractMethodFactory<T> {
 		addACOption(new BedCoordinatesOption(getParameter()));
 		addACOption(new ResultFileOption(getParameter()));
 	}
-		
+	
+	@Override
+	public boolean checkState() {
+		return true;
+	}
+	
 	protected void initConditionACOptions() {
 		// for all conditions
 		addACOption(new MinMAPQConditionOption<T>(getParameter().getConditionParameters()));
@@ -181,8 +186,7 @@ extends AbstractMethodFactory<T> {
 	}
 
 	@Override
-	public AbstractWorker<T> createWorker() {
-		// TODO Auto-generated method stub
-		return null;
+	public Pileup<T> createWorker() {
+		return new nConditionPileupFactory<T>(conditions, dataGenerator)
 	}
 }

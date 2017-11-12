@@ -4,7 +4,6 @@ import jacusa.filter.AbstractFilter;
 import jacusa.filter.FilterContainer;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.Result;
 import lib.data.builder.ConditionContainer;
 import lib.data.has.hasBaseCallCount;
 
@@ -68,8 +67,7 @@ extends AbstractFilterFactory<T, T> { // TODO <T, T> ??? <T> is enough
 		}
 		
 		@Override
-		public boolean filter(final Result<T> result, final ConditionContainer<T> conditionContainer) {
-			final ParallelData<T> parallelData = result.getParellelData();
+		public boolean filter(final ParallelData<T> parallelData, final ConditionContainer<T> conditionContainer) {
 			return parallelData.getCombinedPooledData()
 					.getBaseCallCount().getAlleles().length > alleles;
 		}

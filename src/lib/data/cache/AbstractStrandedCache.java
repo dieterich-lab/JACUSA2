@@ -57,7 +57,7 @@ implements Cache<T> {
 			return reverse.getData(coordinate);
 
 		case UNKNOWN:
-			return null; // TODO
+			throw new IllegalArgumentException("Unstranded coordinates not supported!");
 		}
 		
 		return null;

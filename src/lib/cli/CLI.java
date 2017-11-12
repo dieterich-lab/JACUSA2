@@ -93,7 +93,7 @@ public class CLI {
 			return false;
 		}
 
-		if (! methodFactory.check() ) {
+		if (! methodFactory.checkState() ) {
 			System.exit(0);
 		}
 		

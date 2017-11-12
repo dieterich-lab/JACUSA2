@@ -1,6 +1,6 @@
 package jacusa.method.call.statistic.dirmult;
 
-import jacusa.cli.parameters.CallParameters;
+import jacusa.cli.parameters.CallParameter;
 import jacusa.estimate.MinkaEstimateDirMultParameters;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.AbstractDirichletStatistic;
@@ -13,7 +13,7 @@ extends AbstractDirichletStatistic<T> {
 	protected double estimatedError = 0.01;
 	protected double priorError = 0d;
 
-	public DirichletMultinomialCompoundError(final CallParameters<T> parameters) {
+	public DirichletMultinomialCompoundError(final CallParameter<T> parameters) {
 		// sorry for ugly, code call to super constructor must be first call
 		super(new MinkaEstimateDirMultParameters(), parameters);
 	}

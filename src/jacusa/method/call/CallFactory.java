@@ -1,10 +1,9 @@
 package jacusa.method.call;
 
-
 import jacusa.cli.options.StatisticCalculatorOption;
 import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
-import jacusa.cli.parameters.CallParameters;
+import jacusa.cli.parameters.CallParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.CombinedDistanceFilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
@@ -18,6 +17,9 @@ import jacusa.io.format.BED6call;
 import jacusa.io.format.VCFcall;
 import jacusa.method.call.statistic.StatisticCalculator;
 import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundError;
+import jacusa.pileup.iterator.variant.ParallelDataValidator;
+import jacusa.pileup.iterator.variant.VariantSiteValidator;
+import jacusa.pileup.worker.CallWorker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,9 +48,9 @@ import lib.data.builder.factory.UnstrandedPileupBuilderFactory;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasPileupCount;
+import lib.io.copytmp.CopyTmp;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
-import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.ParseException;
@@ -61,7 +63,7 @@ extends AbstractMethodFactory<T> {
 				"Call variants - " + 
 						(conditions == -1 ? "n" : conditions) + 
 						(conditions == -1 || conditions == 2 ? " conditions" : " condition"), 
-				new CallParameters<T>(conditions, new UnstrandedPileupBuilderFactory<T>()),
+				new CallParameter<T>(conditions, new UnstrandedPileupBuilderFactory<T>()),
 				dataGenerator);
 	}
 
@@ -83,7 +85,12 @@ extends AbstractMethodFactory<T> {
 		addACOption(new BedCoordinatesOption(getParameter()));
 		addACOption(new ResultFileOption(getParameter()));
 	}
-		
+	
+	@Override
+	public boolean checkState() {
+		return true;
+	}
+	
 	protected void initConditionACOptions() {
 		// for all conditions
 		addACOption(new MinMAPQConditionOption<T>(getParameter().getConditionParameters()));
@@ -201,8 +208,8 @@ extends AbstractMethodFactory<T> {
 	}
 
 	@Override
-	public CallParameters<T> getParameter() {
-		return (CallParameters<T>) super.getParameter();
+	public CallParameter<T> getParameter() {
+		return (CallParameter<T>) super.getParameter();
 	}
 
 	@Override
@@ -215,9 +222,13 @@ extends AbstractMethodFactory<T> {
 	}
 
 	@Override
-	public AbstractWorker<T> createWorker() {
-		// TODO Auto-generated method stub
-		return null;
+	public CallWorker<T> createWorker(final WorkerDispatcher<T> workerDispatcher) {
+		final ParallelDataValidator<T> parallelDataValidator = new VariantSiteValidator<T>();
+		final List<CopyTmp> copyTmps = new ArrayList<CopyTmp>();
+		// TODO copyTmps
+				
+		return new CallWorker<T>(workerDispatcher, copyTmps, 
+				parallelDataValidator, (CallParameter<T>)getParameter());
 	}
 	
 }

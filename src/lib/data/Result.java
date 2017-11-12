@@ -7,6 +7,8 @@ import lib.util.Info;
  * @author Michael Piechotta
  *
  */
+
+// TODO make this general
 public class Result<T extends AbstractData> {
 
 	private ParallelData<T> parallelData;

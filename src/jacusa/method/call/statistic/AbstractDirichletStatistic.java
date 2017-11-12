@@ -1,6 +1,6 @@
 package jacusa.method.call.statistic;
 
-import jacusa.cli.parameters.CallParameters;
+import jacusa.cli.parameters.CallParameter;
 import jacusa.estimate.MinkaEstimateParameters;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.dirmult.initalpha.AbstractAlphaInit;
@@ -16,12 +16,10 @@ import lib.data.has.hasPileupCount;
 import lib.phred2prob.Phred2Prob;
 import lib.util.Info;
 
-// TODO import umontreal.iro.lecuyer.probdist.ChiSquareDist;
-
 public abstract class AbstractDirichletStatistic<T extends AbstractData & hasPileupCount>
 implements StatisticCalculator<T> {
 
-	protected final CallParameters<T> parameters;
+	protected final CallParameter<T> parameters;
 	
 	protected Phred2Prob phred2Prob;
 
@@ -46,7 +44,7 @@ implements StatisticCalculator<T> {
 	protected DecimalFormat decimalFormat;
 	
 	public AbstractDirichletStatistic(final MinkaEstimateParameters estimateAlpha, 
-			final CallParameters<T> parameters) {
+			final CallParameter<T> parameters) {
 		this.parameters 	= parameters;
 		final int n 		= parameters.getBaseConfig().getBases().length;
 

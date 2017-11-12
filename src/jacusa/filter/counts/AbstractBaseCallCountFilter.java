@@ -62,7 +62,7 @@ public abstract class AbstractBaseCallCountFilter<T extends AbstractData & hasRe
 		boolean processed = false;
 		
 		for (int replicateIndex = 0; replicateIndex < data.length; ++replicateIndex) {
-			filteredData[replicateIndex].add(data[replicateIndex]); // TODO check
+			filteredData[replicateIndex].add(data[replicateIndex]);
 			
 			if (storageFilterData[replicateIndex] != null) { 
 				filteredData[replicateIndex].getBaseCallCount()

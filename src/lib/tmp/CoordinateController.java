@@ -24,9 +24,9 @@ public class CoordinateController {
 		provider = new WindowedCoordinateProvider(reservedWindowCoordinate, activeWindowSize);
 
 		if (hasNext()) {
-			updateReferenceAdvance(next());
+			updateReferenceAdvancer(next());
 		} else {
-			updateReferenceAdvance(new Coordinate());
+			updateReferenceAdvancer(new Coordinate());
 		}
 	}
 	
@@ -36,7 +36,7 @@ public class CoordinateController {
 	
 	public Coordinate next() {
 		active = provider.next();
-		updateReferenceAdvance(active);
+		updateReferenceAdvancer(active);
 		return active;
 	}
 	
@@ -78,7 +78,7 @@ public class CoordinateController {
 		return position >= active.getStart() && position <= active.getEnd(); 		
 	}
 	
-	private void updateReferenceAdvance(final Coordinate coordinate) {
+	private void updateReferenceAdvancer(final Coordinate coordinate) {
 		referenceAdvancer.adjust(coordinate);
 	}
 	
