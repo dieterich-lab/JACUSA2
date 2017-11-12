@@ -1,5 +1,6 @@
 package jacusa.method.call;
 
+
 import jacusa.cli.options.StatisticCalculatorOption;
 import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
@@ -24,10 +25,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.Map;
 
-import lib.cli.options.BaseConfigOption;
 import lib.cli.options.BedCoordinatesOption;
-import lib.cli.options.FilterConfigOption;
-import lib.cli.options.FilterModusOption;
 import lib.cli.options.FormatOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
@@ -68,9 +66,10 @@ extends AbstractMethodFactory<T> {
 	}
 
 	protected void initGlobalACOptions() {
-		addACOption(new FilterModusOption(getParameter()));
-		addACOption(new BaseConfigOption(getParameter()));
-		addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
+		
+		// addACOption(new FilterModusOption(getParameter()));
+		// addACOption(new BaseConfigOption(getParameter()));
+		// addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
 		
 		addACOption(new StatisticFilterOption(getParameter().getStatisticParameters()));
 

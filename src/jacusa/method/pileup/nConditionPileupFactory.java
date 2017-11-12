@@ -19,10 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lib.cli.options.BaseConfigOption;
 import lib.cli.options.BedCoordinatesOption;
-import lib.cli.options.FilterConfigOption;
-import lib.cli.options.FilterModusOption;
 import lib.cli.options.FormatOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
@@ -79,9 +76,9 @@ extends AbstractMethodFactory<T> {
 	}
 	
 	protected void initGlobalACOptions() {
-		addACOption(new FilterModusOption(getParameter()));
-		addACOption(new BaseConfigOption(getParameter()));
-		addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
+		// addACOption(new FilterModusOption(getParameter()));
+		// addACOption(new BaseConfigOption(getParameter()));
+		// addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
 		
 		addACOption(new ShowReferenceOption(getParameter()));
 		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
