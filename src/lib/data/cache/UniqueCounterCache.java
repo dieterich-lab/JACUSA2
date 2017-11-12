@@ -16,10 +16,9 @@ implements Cache<T> {
 	private boolean[] visited;
 	private SAMRecordWrapper recordWrapper;
 	
-	public UniqueCounterCache(final Cache<T> cache) {
+	public UniqueCounterCache(final int activeWindowSize, final Cache<T> cache) {
 		this.cache = cache;
-		
-		visited = new boolean[cache.getMethodFactory().getParameter().getActiveWindowSize()];
+		visited = new boolean[activeWindowSize];
 	}
 	
 	@Override
@@ -106,10 +105,9 @@ implements Cache<T> {
 	
 	@Override
 	public T getData(final Coordinate coordinate) {
-		// TODO Auto-generated method stub
-		return null;
+		return cache.getData(coordinate);
 	}
-	
+
 	public boolean[] getVisited() {
 		return visited;
 	}

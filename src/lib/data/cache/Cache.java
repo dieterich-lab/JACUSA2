@@ -2,10 +2,10 @@ package lib.data.cache;
 
 import lib.data.AbstractData;
 import lib.data.builder.SAMRecordWrapper;
-import lib.method.AbstractMethodFactory;
+import lib.data.generator.DataGenerator;
 import lib.util.Coordinate;
 
-public interface Cache<T extends AbstractData> {
+public interface Cache<X extends AbstractData> {
 
 	void addRecordWrapper(final SAMRecordWrapper recordWrapper);
 	void addRecordWrapperPosition(final int readPosition, final SAMRecordWrapper recordWrapper);
@@ -13,7 +13,7 @@ public interface Cache<T extends AbstractData> {
 	
 	void clear();
 
-	AbstractMethodFactory<T> getMethodFactory();
-	T getData(final Coordinate coordinate);
+	DataGenerator<X> getDataGenerator();
+	X getData(final Coordinate coordinate);
 
 }

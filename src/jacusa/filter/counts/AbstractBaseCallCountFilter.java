@@ -1,27 +1,30 @@
 package jacusa.filter.counts;
 
+import jacusa.filter.factory.AbstractFilterFactory;
 import lib.cli.options.BaseCallConfig;
-import lib.cli.parameters.AbstractParameter;
+import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.basecall.PileupData;
+import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasReferenceBase;
 
-public abstract class AbstractCountFilter<T extends PileupData> {
+public abstract class AbstractBaseCallCountFilter<T extends AbstractData & hasReferenceBase & hasBaseCallCount, F extends AbstractData & hasBaseCallCount> {
 
-	private AbstractParameter<T> parameters;
+	private final AbstractFilterFactory<T, F> filterFactory;
 
-	public AbstractCountFilter(final AbstractParameter<T> parameters) {
-		this.parameters	= parameters;
+	public AbstractBaseCallCountFilter(final AbstractFilterFactory<T, F> filterFactory) {
+		
+		this.filterFactory = filterFactory;
 	}
 
 	// ORDER RESULTS [0] SHOULD BE THE VARIANTs TO TEST
 	public int[] getVariantBaseIndexs(final ParallelData<T> parallelData) {
 		final int conditions = parallelData.getConditions();
-		final char referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
-		final int[] alleles = parallelData.getCombinedPooledData().getPileupCount().getAlleles();
+		final byte referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
+		final int[] alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
 
 		int[] observedAlleleCount = new int[BaseCallConfig.BASES.length];
 		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
-			for (int baseIndex : parallelData.getPooledData(conditionIndex).getPileupCount().getAlleles()) {
+			for (int baseIndex : parallelData.getPooledData(conditionIndex).getBaseCallCount().getAlleles()) {
 				observedAlleleCount[baseIndex]++;
 			}
 		}
@@ -54,42 +57,43 @@ public abstract class AbstractCountFilter<T extends PileupData> {
 		return new int[0];
 	}
 
-	protected T[] applyFilter(final int variantBaseIndex, final T[] data, final PileupData[] baseQualData) {
-		final T[] filtered = parameters.getMethodFactory().createReplicateData(data.length);
-
+	protected boolean applyFilter(final int variantBaseIndex, final T[] data, final F[] storageFilterData, final F[] filteredData) {
 		// indicates if something has been filtered
 		boolean processed = false;
 		
 		for (int replicateIndex = 0; replicateIndex < data.length; ++replicateIndex) {
-			filtered[replicateIndex].add(data[replicateIndex]); // TODO check
+			filteredData[replicateIndex].add(data[replicateIndex]); // TODO check
 			
-			if (baseQualData[replicateIndex] != null) { 
-				filtered[replicateIndex].getPileupCount()
-					.substract(variantBaseIndex, baseQualData[replicateIndex].getPileupCount());
+			if (storageFilterData[replicateIndex] != null) { 
+				filteredData[replicateIndex].getBaseCallCount()
+					.substract(variantBaseIndex, storageFilterData[replicateIndex].getBaseCallCount());
 				processed = true;
 			}
 		}
 
-		return processed ? filtered : null;
+		return processed;
 	}
 	
 	/**
 	 * null if filter did not change anything
 	 */
-	protected ParallelData<T> applyFilter(final int variantBaseIndex, 
+	protected ParallelData<F> applyFilter(final int variantBaseIndex, 
 			final ParallelData<T> parallelData, 
-			final PileupData[][] baseQualData) {
-		
-		T[][] filteredData = parameters.getMethodFactory().createContainer(parallelData.getConditions());
+			final ParallelData<F> parallelStorageFilterData) {
+
+		final F[][] filteredParallelArray = filterFactory.createContainerData(parallelData.getConditions());
 		int filtered = 0;
 		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
-			filteredData[conditionIndex] = 
-					applyFilter(variantBaseIndex, parallelData.getData(conditionIndex), baseQualData[conditionIndex]);
-			if (filteredData[conditionIndex] == null) {
-				filteredData[conditionIndex] = parallelData.getData(conditionIndex);
-			} else {
+			final F[] filteredData = filterFactory.createReplicateData(parallelData.getReplicates(conditionIndex));
+					
+			if (applyFilter(variantBaseIndex, 
+					parallelData.getData(conditionIndex), 
+					parallelStorageFilterData.getData(conditionIndex),
+					filteredData)) {
+				
 				filtered++;
 			}
+			filteredParallelArray[conditionIndex] = filteredData;
 		}
 
 		if (filtered == 0) {
@@ -97,21 +101,18 @@ public abstract class AbstractCountFilter<T extends PileupData> {
 			return null;
 		}
 
-		final ParallelData<T> filteredParallelData =
-				new ParallelData<T>(parameters.getMethodFactory(), parallelData.getCoordinate(), filteredData);
-
-		return filteredParallelData;
+		return new ParallelData<F>(filterFactory, parallelData.getCoordinate(), filteredParallelArray);
 	}
-
+	
 	/**
 	 * Apply filter on each variant base
 	 */
 	public boolean filter(final int[] variantBaseIndexs, 
 			final ParallelData<T> parallelData, 
-			final PileupData[][] baseQualData) {
+			final ParallelData<F> parallelStorageFilterData) {
 
 		for (int variantBaseIndex : variantBaseIndexs) {
-			if (filter(variantBaseIndex, parallelData, baseQualData)) {
+			if (filter(variantBaseIndex, parallelData, parallelStorageFilterData)) {
 				return true;
 			}
 		}
@@ -121,6 +122,6 @@ public abstract class AbstractCountFilter<T extends PileupData> {
 
 	protected abstract boolean filter(final int variantBaseIndex, 
 			final ParallelData<T> parallelData, 
-			PileupData[][] baseQualData);
+			final ParallelData<F> filteredParallelData);
 
 }

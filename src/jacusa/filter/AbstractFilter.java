@@ -32,6 +32,7 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	 * @param windowIterator
 	 * @return
 	 */
+	// TODO replace conditionContainer with ParallelData
 	protected abstract boolean filter(final Result<T> result, final ConditionContainer<T> conditionContainer);
 	
 	/**

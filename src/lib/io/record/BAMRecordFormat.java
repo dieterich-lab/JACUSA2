@@ -1,7 +1,6 @@
 package lib.io.record;
 
 import lib.cli.parameters.AbstractConditionParameter;
-import htsjdk.samtools.SAMFileHeader;
 
 public class BAMRecordFormat 
 extends AbstractRecordFormat {
@@ -16,7 +15,7 @@ extends AbstractRecordFormat {
 	@Override
 	public BAMRecordWriter createWriterInstance(final AbstractConditionParameter<?> conditionParameter) {
 		// TODO final String filename = conditionParameter.getRecordFilename();
-		final String filename = null; // TODO
+		// final String filename = null; // TODO
 		// TODO final SAMFileHeader header = conditionParameter.getSAMFileReader().get(0).getFileHeader();
 		// return new BAMRecordWriter(filename, this, header);
 		return null;

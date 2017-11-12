@@ -1,52 +1,26 @@
 package lib.data.builder;
 
+import jacusa.filter.FilterContainer;
 import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
-import lib.data.basecall.PileupData;
-import lib.data.cache.AbstractStrandedCache;
+import lib.data.AbstractData;
+import lib.data.cache.Cache;
+import lib.data.has.hasPileupCount;
 import lib.util.Coordinate;
 
-public class StrandedPileupBuilder<T extends PileupData> 
+public class StrandedPileupBuilder<T extends AbstractData & hasPileupCount> 
 extends AbstractDataBuilder<T> {
 	
-	private AbstractStrandedCache<T> cache;
-
 	public StrandedPileupBuilder(
 			final AbstractConditionParameter<T> conditionParameter,
-			final AbstractParameter<T> parameters,
 			final LIBRARY_TYPE libraryType,
-			final AbstractStrandedCache cache) {
-		super(conditionParameter, parameters, libraryType, cache);
-		this.cache = cache;
+			final Cache<T> cache,
+			FilterContainer<T> filterContainer) {
+		super(conditionParameter, libraryType, cache, filterContainer);
 	}
 	
-	/* TODO
-	@Override
-	public FilterContainer<T> getFilterContainer(int windowPosition, STRAND strand) {
-		return filterContainer;
-	}
-	*/
-	
-	// TODO do check outside
 	@Override
 	public T getData(final Coordinate coordinate) {
-		T data = getParameters().getMethodFactory().createData();
-
-		Coordinate newCoordinate = new Coordinate(coordinate);
-		newCoordinate.setPosition(newCoordinate.getStart());
-		data.setCoordinate(newCoordinate); 
-		
-		// copy base and qual info from cache
-		// TODO dataContainer.setBaseQualCount(Cache.getBaseCount(windowPosition));
-
-		/* TODO
-		byte referenceBaseByte = windowCache.getReferenceBase(windowPosition);
-		if (referenceBaseByte != (byte)'N') {
-			dataContainer.setReferenceBase((char)referenceBaseByte);
-		}
-		*/
-
-		return data;
+		return getCache().getData(coordinate);
 	}
 	
 }

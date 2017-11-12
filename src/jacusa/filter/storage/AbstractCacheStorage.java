@@ -3,9 +3,8 @@ package jacusa.filter.storage;
 import lib.data.AbstractData;
 import lib.data.builder.SAMRecordWrapper;
 import lib.data.cache.Cache;
-import lib.data.has.hasBaseCallCount;
 
-public abstract class AbstractCacheStorage<T extends AbstractData & hasBaseCallCount> 
+public abstract class AbstractCacheStorage<T extends AbstractData> 
 extends AbstractStorage<T> {
 
 	private Cache<T> cache;

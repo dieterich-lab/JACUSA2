@@ -2,25 +2,15 @@ package jacusa.pileup.worker;
 
 import java.util.List;
 
-import jacusa.JACUSA;
-import jacusa.cli.parameters.PileupParameters;
 import jacusa.cli.parameters.RTArrestParameters;
-import jacusa.filter.AbstractFilter;
-import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.StatisticCalculator;
-import jacusa.pileup.iterator.variant.RTArrestDebugVariantParallelPileup;
-import jacusa.pileup.iterator.variant.RTArrestVariantParallelPileup;
-import jacusa.pileup.iterator.variant.ParallelDataValidator;
-import lib.data.BaseQualReadInfoData;
+import lib.data.PileupReadInfoData;
 import lib.data.ParallelData;
-import lib.data.Result;
 import lib.io.copytmp.CopyTmp;
-import lib.util.AbstractTool;
-import lib.util.Coordinate;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
-public class RTArrestWorker<T extends BaseQualReadInfoData>
+public class RTArrestWorker<T extends PileupReadInfoData>
 extends AbstractWorker<T> {
 
 	private StatisticCalculator<T> statisticCalculator;

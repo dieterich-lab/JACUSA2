@@ -1,15 +1,18 @@
 package jacusa.method.call;
 
-import jacusa.cli.options.pileupbuilder.TwoConditionBaseQualDataBuilderOption;
+import jacusa.cli.options.pileupbuilder.TwoConditionPileupDataBuilderOption;
 import lib.cli.options.AbstractACOption;
-import lib.data.basecall.PileupData;
+import lib.data.AbstractData;
+import lib.data.generator.DataGenerator;
+import lib.data.has.hasPileupCount;
 
 import org.apache.commons.cli.ParseException;
 
-public class TwoConditionCallFactory extends CallFactory {
+public class TwoConditionCallFactory<T extends AbstractData & hasPileupCount> 
+extends CallFactory<T> {
 
-	public TwoConditionCallFactory() {
-		super(2);
+	public TwoConditionCallFactory(final DataGenerator<T> dataGenerator) {
+		super(2, dataGenerator);
 	}
 
 	@Override
@@ -28,7 +31,7 @@ public class TwoConditionCallFactory extends CallFactory {
 			getACOptions().remove(removeACOption);
 		}
 
-		addACOption(new TwoConditionBaseQualDataBuilderOption<PileupData>(
+		addACOption(new TwoConditionPileupDataBuilderOption<T>(
 				getParameter().getConditionParameters().get(0),
 				getParameter().getConditionParameters().get(1),
 				getParameter()));

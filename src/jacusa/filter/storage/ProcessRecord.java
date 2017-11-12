@@ -1,10 +1,11 @@
 package jacusa.filter.storage;
 
-import htsjdk.samtools.SAMRecord;
+import lib.data.builder.SAMRecordWrapper;
 
 public interface ProcessRecord {
 
-	public abstract void processRecord(int genomicWindowStart, SAMRecord record);
+	// TODO remove public abstract void processRecord(int genomicWindowStart, SAMRecordWrapper recordWrapper);
+	public abstract void processRecord(final SAMRecordWrapper recordWrapper);
 	public abstract char getC();
 	
 }

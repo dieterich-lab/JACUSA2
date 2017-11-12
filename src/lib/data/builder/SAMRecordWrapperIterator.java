@@ -100,7 +100,8 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 				provider.incrementFilteredSAMRecords();
 			}
 
-			final SAMRecordWrapper recordWrapper = new SAMRecordWrapper(isValid, windowCoordinates, record);
+			// TODO overlapping windows
+			final SAMRecordWrapper recordWrapper = new SAMRecordWrapper(isValid, record);
 			buffer[bufferSize++] = recordWrapper;
 		}
 		

@@ -73,9 +73,11 @@ public class VCFVariantWriter extends AbstractVariantFileWriter {
 			sb.append(cols[i]);
 		}
 		
+		/*
 		for (final AbstractConditionParameter<?> conditionParameter : conditionParameters) {
 			// FIXME sb.append(conditionParameter.getRecordFilename());
 		}
+		*/
 		addLine(sb.toString());
 	}
 	

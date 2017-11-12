@@ -1,13 +1,15 @@
 package lib.data.builder.factory;
 
-
+import jacusa.filter.FilterContainer;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
-import lib.data.basecall.PileupData;
+import lib.data.AbstractData;
 import lib.data.builder.UnstrandedPileupBuilder;
-import lib.data.cache.PileupCallCache;
+import lib.data.cache.Cache;
+import lib.data.cache.PileupCountCache;
+import lib.data.has.hasPileupCount;
 
-public class UnstrandedPileupBuilderFactory<T extends PileupData> 
+public class UnstrandedPileupBuilderFactory<T extends AbstractData & hasPileupCount> 
 extends AbstractDataBuilderFactory<T> {
 
 	public UnstrandedPileupBuilderFactory() {
@@ -20,8 +22,10 @@ extends AbstractDataBuilderFactory<T> {
 
 	@Override
 	public UnstrandedPileupBuilder<T> newInstance(final AbstractConditionParameter<T> conditionParameter) {
-		return new UnstrandedPileupBuilder<T>(conditionParameter, getGeneralParameter(), 
-				new PileupCallCache<T>(conditionParameter, getGeneralParameter().getMethodFactory()));
+		final Cache<T> cache =  new PileupCountCache<T>(conditionParameter, getGeneralParameter().getMethodFactory());
+		final FilterContainer<T> filterContainer = null; // TODO
+
+		return new UnstrandedPileupBuilder<T>(conditionParameter, cache, filterContainer);
 	}
 
 }

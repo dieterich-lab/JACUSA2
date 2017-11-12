@@ -1,9 +1,9 @@
 package jacusa.pileup.iterator.variant;
 
-import lib.data.BaseQualReadInfoData;
+import lib.data.PileupReadInfoData;
 import lib.data.ParallelData;
 
-public class RTArrestVariantParallelPileup<T extends BaseQualReadInfoData> 
+public class RTArrestVariantParallelPileup<T extends PileupReadInfoData> 
 implements ParallelDataValidator<T> {
 	
 	public RTArrestVariantParallelPileup() {}

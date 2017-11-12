@@ -1,40 +1,44 @@
 package jacusa.filter.storage;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import lib.cli.options.BaseCallConfig;
-import lib.data.basecall.PileupData;
+import lib.data.AbstractData;
+import lib.data.cache.Cache;
+import lib.data.has.hasBaseCallCount;
 
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.SAMRecord;
 
-public class HomopolymerStorage<T extends PileupData> 
-extends AbstractCacheStorage<T> 
+public class HomopolymerStorage<F extends AbstractData & hasBaseCallCount> 
+extends AbstractCacheStorage<F> 
 implements ProcessAlignmentOperator {
 	
 	private int minLength;
 
+	/* TODO
 	private List<Integer> bases;
 	private List<Integer> quals;
 	private int windowPositionStart;
 	private int readPositionStart;
 	private int readPositionLast;
+	*/
 	
 	/**
 	 * 
 	 * @param c
 	 * @param distance
 	 */
-	public HomopolymerStorage(final char c, final int length, final BaseCallConfig baseConfig, final int activeWindowSize) {
-		super(c, baseConfig, activeWindowSize);
+	public HomopolymerStorage(final char c, final int length, Cache<F> cache) {
+		super(c, cache);
 		this.minLength = length;
 
+		/* TODO
 		int n = minLength + 5;
+		
 		bases = new ArrayList<Integer>(n);
 		quals = new ArrayList<Integer>(n);
+		*/
 	}
 
+	/* TODO
 	@Override
 	public void processAlignmentOperator(int windowPosition, int readPosition, int genomicPosition, 
 			CigarElement cigarElement, SAMRecord record, int base, int qual) {
@@ -124,6 +128,14 @@ implements ProcessAlignmentOperator {
 
 	public int getOverhang() {
 		return minLength;
+	}
+
+	@Override
+	public void processAlignmentOperator(int windowPosition, int readPosition,
+			int genomicPosition, CigarElement cigarElement, SAMRecord record,
+			int baseI, int qual) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

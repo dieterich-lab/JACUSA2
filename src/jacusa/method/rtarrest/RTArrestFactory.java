@@ -1,7 +1,8 @@
 package jacusa.method.rtarrest;
 
+
 import jacusa.cli.options.StatisticFilterOption;
-import jacusa.cli.options.pileupbuilder.OneConditionBaseQualDataBuilderOption;
+import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
 import jacusa.cli.parameters.RTArrestParameters;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.io.format.AbstractOutputFormat;
@@ -33,8 +34,11 @@ import lib.cli.options.condition.MinMAPQConditionOption;
 import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
-import lib.data.BaseQualReadInfoData;
+import lib.data.AbstractData;
 import lib.data.builder.factory.UnstrandedPileupBuilderFactory;
+import lib.data.generator.DataGenerator;
+import lib.data.has.hasPileupCount;
+import lib.data.has.hasReadInfoCount;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 import lib.worker.AbstractWorker;
@@ -42,16 +46,15 @@ import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.ParseException;
 
-public class RTArrestFactory extends AbstractMethodFactory<BaseQualReadInfoData> {
+public class RTArrestFactory<T extends AbstractData & hasPileupCount & hasReadInfoCount> 
+extends AbstractMethodFactory<T> {
 
 	public final static String NAME = "rt-arrest";
 
-	private static WorkerDispatcher<BaseQualReadInfoData> instance;
-
-	public RTArrestFactory() {
+	public RTArrestFactory(final DataGenerator<T> dataGenerator) {
 		super(NAME, "Reverse Transcription Arrest - 2 conditions", 
-				new RTArrestParameters<BaseQualReadInfoData>(
-						2, new UnstrandedPileupBuilderFactory<BaseQualReadInfoData>()));
+				new RTArrestParameters<T>(2, new UnstrandedPileupBuilderFactory<T>()),
+				dataGenerator);
 	}
 
 	/*
@@ -70,7 +73,7 @@ public class RTArrestFactory extends AbstractMethodFactory<BaseQualReadInfoData>
 			getParameter().setFormat(getResultFormats().get(a[0]));
 		} else {
 			getParameter().setFormat(getResultFormats().get(BED6call.CHAR));
-			addACOption(new FormatOption<BaseQualReadInfoData>(
+			addACOption(new FormatOption<T>(
 					getParameter(), getResultFormats()));
 		}
 	}
@@ -94,60 +97,60 @@ public class RTArrestFactory extends AbstractMethodFactory<BaseQualReadInfoData>
 
 	protected void initConditionACOptions() {
 		// for all conditions
-		addACOption(new MinMAPQConditionOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
-		addACOption(new MinBASQConditionOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
-		addACOption(new MinCoverageConditionOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
-		addACOption(new MaxDepthConditionOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
-		addACOption(new FilterFlagConditionOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
+		addACOption(new MinMAPQConditionOption<T>(getParameter().getConditionParameters()));
+		addACOption(new MinBASQConditionOption<T>(getParameter().getConditionParameters()));
+		addACOption(new MinCoverageConditionOption<T>(getParameter().getConditionParameters()));
+		addACOption(new MaxDepthConditionOption<T>(getParameter().getConditionParameters()));
+		addACOption(new FilterFlagConditionOption<T>(getParameter().getConditionParameters()));
 		
-		addACOption(new FilterNHsamTagOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
-		addACOption(new FilterNMsamTagOption<BaseQualReadInfoData>(getParameter().getConditionParameters()));
+		addACOption(new FilterNHsamTagOption<T>(getParameter().getConditionParameters()));
+		addACOption(new FilterNMsamTagOption<T>(getParameter().getConditionParameters()));
 		
 		// condition specific
 		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-			addACOption(new MinMAPQConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinBASQConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinCoverageConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MaxDepthConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterFlagConditionOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinMAPQConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinBASQConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinCoverageConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MaxDepthConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterFlagConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new FilterNHsamTagOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterNMsamTagOption<BaseQualReadInfoData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNHsamTagOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNMsamTagOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new OneConditionBaseQualDataBuilderOption<BaseQualReadInfoData>(
+			addACOption(new OneConditionPileupDataBuilderOption<T>(
 					conditionIndex + 1, 
 					getParameter().getConditionParameters().get(conditionIndex),
 					getParameter()));
 		}
 	}
 	
-	public Map<String, StatisticCalculator<BaseQualReadInfoData>> getStatistics() {
-		Map<String, StatisticCalculator<BaseQualReadInfoData>> statistics = 
-				new TreeMap<String, StatisticCalculator<BaseQualReadInfoData>>();
+	public Map<String, StatisticCalculator<T>> getStatistics() {
+		Map<String, StatisticCalculator<T>> statistics = 
+				new TreeMap<String, StatisticCalculator<T>>();
 		return statistics;
 	}
 
-	public Map<Character, AbstractFilterFactory<BaseQualReadInfoData>> getFilterFactories() {
-		final Map<Character, AbstractFilterFactory<BaseQualReadInfoData>> abstractPileupFilters = 
-				new HashMap<Character, AbstractFilterFactory<BaseQualReadInfoData>>();
+	public Map<Character, AbstractFilterFactory<T, ?>> getFilterFactories() {
+		final Map<Character, AbstractFilterFactory<T, ?>> abstractPileupFilters = 
+				new HashMap<Character, AbstractFilterFactory<T, ?>>();
 
-		List<AbstractFilterFactory<BaseQualReadInfoData>> filterFactories = 
-				new ArrayList<AbstractFilterFactory<BaseQualReadInfoData>>(5);
+		List<AbstractFilterFactory<T, ?>> filterFactories = 
+				new ArrayList<AbstractFilterFactory<T, ?>>(5);
 
-		for (final AbstractFilterFactory<BaseQualReadInfoData> filterFactory : filterFactories) {
+		for (final AbstractFilterFactory<T, ?> filterFactory : filterFactories) {
 			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
 		}
 
 		return abstractPileupFilters;
 	}
 
-	public Map<Character, AbstractOutputFormat<BaseQualReadInfoData>> getResultFormats() {
-		Map<Character, AbstractOutputFormat<BaseQualReadInfoData>> resultFormats = 
-				new HashMap<Character, AbstractOutputFormat<BaseQualReadInfoData>>();
+	public Map<Character, AbstractOutputFormat<T>> getResultFormats() {
+		Map<Character, AbstractOutputFormat<T>> resultFormats = 
+				new HashMap<Character, AbstractOutputFormat<T>>();
 
-		AbstractOutputFormat<BaseQualReadInfoData> resultFormat = null;
+		AbstractOutputFormat<T> resultFormat = null;
 
-		resultFormat = new RTArrestResultFormat(getParameter().getBaseConfig(), 
+		resultFormat = new RTArrestResultFormat<T>(getParameter().getBaseConfig(), 
 				getParameter().getFilterConfig(), getParameter().showReferenceBase());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 		
@@ -155,8 +158,8 @@ public class RTArrestFactory extends AbstractMethodFactory<BaseQualReadInfoData>
 	}
 
 	@Override
-	public RTArrestParameters<BaseQualReadInfoData> getParameter() {
-		return (RTArrestParameters<BaseQualReadInfoData>) super.getParameter();
+	public RTArrestParameters<T> getParameter() {
+		return (RTArrestParameters<T>) super.getParameter();
 	}
 
 	@Override
@@ -169,67 +172,23 @@ public class RTArrestFactory extends AbstractMethodFactory<BaseQualReadInfoData>
 	}
 
 	@Override
-	public WorkerDispatcher<BaseQualReadInfoData> getWorkerDispatcher() {
-		if(instance == null) {
-			instance = new WorkerDispatcher<BaseQualReadInfoData>(this);
-		}
-		return instance;
-	}
-
-	@Override
-	public AbstractWorker<BaseQualReadInfoData> createWorker() {
+	public AbstractWorker<T> createWorker() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	@Override
-	public BaseQualReadInfoData createData() {
-		return new BaseQualReadInfoData();
-	}
 	
-	@Override
-	public BaseQualReadInfoData[] createReplicateData(final int n) {
-		return new BaseQualReadInfoData[n];
-	}
-	
-	@Override
-	public BaseQualReadInfoData[][] createContainer(final int n) {
-		return new BaseQualReadInfoData[n][];
-	}
-
-	@Override
-	public BaseQualReadInfoData copyData(final BaseQualReadInfoData dataContainer) {
-		return new BaseQualReadInfoData(dataContainer);
-	}
-	
-	@Override
-	public BaseQualReadInfoData[] copyReplicateData(final BaseQualReadInfoData[] dataContainer) {
-		BaseQualReadInfoData[] ret = createReplicateData(dataContainer.length);
-		for (int i = 0; i < dataContainer.length; ++i) {
-			ret[i] = new BaseQualReadInfoData(dataContainer[i]);
-		}
-		return ret;
-	}
-	
-	@Override
-	public BaseQualReadInfoData[][] copyContainer(final BaseQualReadInfoData[][] dataContainer) {
-		BaseQualReadInfoData[][] ret = createContainer(dataContainer.length);
-		for (int i = 0; i < dataContainer.length; ++i) {
-			ret[i] = new BaseQualReadInfoData[dataContainer[i].length];
-			for (int j = 0; j < dataContainer[i].length; ++j) {
-				ret[i][j] = new BaseQualReadInfoData(dataContainer[i][j]);
-			}	
-		}
-
-		return ret;
-	}
-
 	@Override
 	public void debug() {
 		// set custom
 		AbstractTool.getLogger().addDebug("Overwrite file format -> RTArrestDebugResultFormat");
-		getParameter().setFormat(new RTArrestDebugResultFormat(getParameter().getBaseConfig(), 
+		getParameter().setFormat(new RTArrestDebugResultFormat<T>(getParameter().getBaseConfig(), 
 				getParameter().getFilterConfig(), getParameter().showReferenceBase()));
+	}
+
+	@Override
+	public WorkerDispatcher<T> getWorkerDispatcher() {
+		return new WorkerDispatcher<T>(this);
 	}
 	
 }

@@ -55,7 +55,7 @@ extends DirichletMultinomialCompoundError<T> {
 			}
 		}
 
-		T[][] data = parameters.getMethodFactory().createContainer(2);
+		T[][] data = parameters.getMethodFactory().createContainerData(2);
 		
 		// container for adjusted parallelPileup
 		ParallelData<T> adjustedParallelPileup = null;

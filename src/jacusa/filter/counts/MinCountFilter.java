@@ -1,38 +1,42 @@
 package jacusa.filter.counts;
 
-import lib.cli.parameters.AbstractParameter;
+import jacusa.filter.factory.AbstractFilterFactory;
+import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.basecall.PileupData;
 
-public class MinCountFilter<T extends PileupData> 
-extends AbstractCountFilter<T> {
+import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasReferenceBase;
+
+public class MinCountFilter<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
+extends AbstractBaseCallCountFilter<T, F> {
 
 	private double minCount;
 	
 	public MinCountFilter( 
 			final double minCount, 
-			final AbstractParameter<T> parameters) {
-		super(parameters);
+			final AbstractFilterFactory<T, F> filterFactory) {
+
+		super(filterFactory);
 		this.minCount = minCount;
 	}
 
 	@Override
 	protected boolean filter(final int variantBaseIndex, 
 			final ParallelData<T> parallelData, 
-			final PileupData[][] baseQualData) {
+			final ParallelData<F> parallelFilterData) {
 		int count = parallelData
 				.getCombinedPooledData()
-				.getPileupCount()
-				.getBaseCount(variantBaseIndex);
+				.getBaseCallCount()
+				.getBaseCallCount(variantBaseIndex);
 		if (count == 0) {
 			return false;
 		}
 
-		ParallelData<T> filteredParallelData = applyFilter(variantBaseIndex, parallelData, baseQualData);
+		ParallelData<F> filteredParallelData = applyFilter(variantBaseIndex, parallelData, parallelFilterData);
 		int filteredCount = filteredParallelData
 				.getCombinedPooledData()
-				.getPileupCount()
-				.getBaseCount(variantBaseIndex);
+				.getBaseCallCount()
+				.getBaseCallCount(variantBaseIndex);
 
 		return count - filteredCount >= minCount;
 	}

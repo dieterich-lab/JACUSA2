@@ -1,26 +1,21 @@
 package lib.data.basecall;
 
 import lib.data.AbstractData;
-import lib.data.has.hasLibraryType;
 import lib.data.has.hasPileupCount;
 import lib.util.Coordinate;
 import lib.util.Coordinate.STRAND;
 
 public class PileupData
 extends AbstractData
-implements hasPileupCount, hasLibraryType {
+implements hasPileupCount {
 
 	private PileupCount pileupCount;
-
-	private LIBRARY_TYPE libraryType;
 	private STRAND effectiveStrand;
 	
 	public PileupData() {
 		super();
 
 		pileupCount = new PileupCount();
-		
-		libraryType		= LIBRARY_TYPE.UNSTRANDED;
 		effectiveStrand	= STRAND.UNKNOWN;
 	}
 
@@ -28,18 +23,16 @@ implements hasPileupCount, hasLibraryType {
 		super(pileupData);
 		this.pileupCount = pileupData.pileupCount .copy();
 		
-		this.libraryType = pileupData.getLibraryType();
 		this.effectiveStrand= pileupData.effectiveStrand;
 	}
 	
-	public PileupData(final Coordinate coordinate, final char referenceBase,
+	public PileupData(final Coordinate coordinate, final byte referenceBase,
 			final LIBRARY_TYPE libraryType) {
-		super(coordinate);
+		super(libraryType, coordinate);
 
 		pileupCount = new PileupCount();
 		pileupCount.setReferenceBase(referenceBase);
 		
-		this.libraryType	= libraryType;
 		this.effectiveStrand= STRAND.UNKNOWN;
 	}
 		
@@ -56,11 +49,6 @@ implements hasPileupCount, hasLibraryType {
 	public void add(AbstractData abstractData) {
 		PileupData pileupData = (PileupData) abstractData;
 		this.pileupCount.add(pileupData.getPileupCount());
-	}
-	
-	@Override
-	public LIBRARY_TYPE getLibraryType() {
-		return libraryType;
 	}
 
 	public PileupData getEffective() {
@@ -121,12 +109,12 @@ implements hasPileupCount, hasLibraryType {
 	}
 
 	@Override
-	public char getReferenceBase() {
+	public byte getReferenceBase() {
 		return pileupCount.getReferenceBase();
 	}
 
 	@Override
-	public void setReferenceBase(char referenceBase) {
+	public void setReferenceBase(byte referenceBase) {
 		pileupCount.setReferenceBase(referenceBase);
 	}
 	

@@ -1,7 +1,10 @@
 package lib.data.builder;
 
+import java.util.Iterator;
+import java.util.List;
+
+import jacusa.filter.FilterContainer;
 import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.cache.Cache;
 import lib.data.has.hasBaseCallCount;
@@ -14,33 +17,33 @@ extends AbstractDataBuilder<T> {
 	private final AbstractDataBuilder<T> dataBuilder;
 
 	public RTArrestPileupBuilder(final AbstractConditionParameter<T> conditionParameter,
-			final AbstractParameter<T> generalParameter, final AbstractDataBuilder<T> dataBuilder, 
-			final Cache<T> cache) {
-		super(conditionParameter, generalParameter, dataBuilder.getLibraryType(), cache);
+			final AbstractDataBuilder<T> dataBuilder,
+			final Cache<T> cache,
+			final FilterContainer<T> filterContainer) {
+		super(conditionParameter, dataBuilder.getLibraryType(), cache, filterContainer);
 		this.dataBuilder = dataBuilder;
 	}
-		
+
+	@Override
+	public List<SAMRecordWrapper> buildCache(Coordinate activeWindowCoordinate,
+			Iterator<SAMRecordWrapper> iterator) {
+		// TODO Auto-generated method stub
+		return super.buildCache(activeWindowCoordinate, iterator);
+	}
+	
 	@Override
 	public T getData(final Coordinate coordinate) {
-		T data = dataBuilder.getData(coordinate);
+		final T data = getCache().getData(coordinate);
 
-		/*
-		// TODO should bed
-		data.getReadInfoCount().setStart(cache.getReadStartCount(coordinate));
-		data.getReadInfoCount().setEnd(cache.getReadEndCount(coordinate));
-		
-		final int inner = cache.getCoverage(windowPosition, strand) - 
-				//		readStartCount[windowPosition] - 
-				//		readEndCount[windowPosition]
-		// TODO data.getReadInfoCount().setInner();
-		 * 
-		 */
+		final int inner = data.getCoverage() -
+				(data.getReadInfoCount().getStart() + data.getReadInfoCount().getEnd());
+		data.getReadInfoCount().setInner(inner);
 
 		int arrest = 0;
 		int through = 0;
 
 		switch (getLibraryType()) {
-		
+
 		case UNSTRANDED:
 			arrest 	+= data.getReadInfoCount().getStart();
 			arrest 	+= data.getReadInfoCount().getEnd();

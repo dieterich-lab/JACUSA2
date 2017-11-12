@@ -1,27 +1,29 @@
 package jacusa.filter.factory;
 
-import jacusa.filter.UnstrandedFilterContainer;
-import jacusa.filter.storage.DistanceStorage;
-import lib.cli.parameters.AbstractParameter;
-import lib.data.basecall.PileupData;
+import jacusa.filter.FilterContainer;
+import lib.data.AbstractData;
+import lib.data.generator.DataGenerator;
+import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasReferenceBase;
 
-public class CombinedDistanceFilterFactory<T extends PileupData> 
-extends AbstractDistanceFilterFactory<T> {
+public class CombinedDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
+extends AbstractDistanceFilterFactory<T, F> {
 
-	public CombinedDistanceFilterFactory(final AbstractParameter<T> parameters) {
-		super('I', "Filter distance to TODO position.", 5, 0.5, 1, parameters);
+	public CombinedDistanceFilterFactory(final DataGenerator<F> dataGenerator) {
+		super('I', "Filter distance to TODO position.", 5, 0.5, 1, dataGenerator);
 	}
-
-	public CombinedDistanceFilter<T> getFilter() {
-		return new CombinedDistanceFilter<T>(getC(), 
+	
+	public CombinedDistanceFilter<T, F> getFilter() {
+		return new CombinedDistanceFilter<T, F>(getC(), 
 				getFilterDistance(),getFilterMinRatio(), getFilterDistance(), 
-				getParameters());
+				this);
 	}
 
 	@Override
-	public void registerFilter(UnstrandedFilterContainer<T> filterContainer) {
+	public void registerFilter(FilterContainer<T> filterContainer) {
 		filterContainer.add(getFilter());
 		
+		/*
 		DistanceStorage<T> storage = new DistanceStorage<T>(getC(), getFilterDistance(), getParameters().getBaseConfig());
 		
 		filterContainer.registerStorage(storage);
@@ -31,6 +33,6 @@ extends AbstractDistanceFilterFactory<T> {
 		// INDEL
 		filterContainer.registerProcessInsertion(storage); 
 		filterContainer.registerProcessDeletion(storage);
-
+		 */
 	}
 }

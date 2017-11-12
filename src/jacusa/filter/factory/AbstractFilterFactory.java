@@ -1,19 +1,23 @@
 package jacusa.filter.factory;
 
 import jacusa.filter.AbstractFilter;
-import jacusa.filter.UnstrandedFilterContainer;
+import jacusa.filter.FilterContainer;
 import lib.data.AbstractData;
+import lib.data.generator.DataGenerator;
 
-public abstract class AbstractFilterFactory<T extends AbstractData> {
+public abstract class AbstractFilterFactory<T extends AbstractData, F extends AbstractData> 
+implements DataGenerator<F> {
 
 	public final static char SEP = ':';
 
-	private char c;
+	private final char c;
 	protected String desc;
+	private final DataGenerator<F> dataGenerator;
 
-	public AbstractFilterFactory(final char c, final String desc) {
+	public AbstractFilterFactory(final char c, final String desc, final DataGenerator<F> dataGenerator) {
 		this.c 				= c;
 		this.desc 			= desc;
+		this.dataGenerator 	= dataGenerator;
 	}
 
 	public char getC() {
@@ -28,7 +32,37 @@ public abstract class AbstractFilterFactory<T extends AbstractData> {
 		// implement to change behavior via CLI
 	}
 
-	public abstract void registerFilter(final UnstrandedFilterContainer<T> filterContainer);
+	public abstract void registerFilter(final FilterContainer<T> filterContainer);
 	public abstract AbstractFilter<T> getFilter();
 
+	@Override
+	public F[][] copyContainerData(final F[][] containerData) {
+		return dataGenerator.copyContainerData(containerData);
+	}
+	
+	@Override
+	public F copyData(final F data) {
+		return dataGenerator.copyData(data);
+	}
+	
+	@Override
+	public F[] copyReplicateData(final F[] replicateData) {
+		return dataGenerator.copyReplicateData(replicateData);
+	}
+	
+	@Override
+	public F[][] createContainerData(final int n) {
+		return dataGenerator.createContainerData(n);
+	}
+	
+	@Override
+	public F createData() {
+		return dataGenerator.createData();
+	}
+	
+	@Override
+	public F[] createReplicateData(final int n) {
+		return dataGenerator.createReplicateData(n);
+	}
+	
 } 

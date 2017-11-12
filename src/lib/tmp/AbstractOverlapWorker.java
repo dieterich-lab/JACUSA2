@@ -4,21 +4,13 @@ import jacusa.pileup.iterator.variant.ParallelDataValidator;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
-import lib.data.builder.SAMRecordWrapperIterator;
 import lib.io.copytmp.CopyTmp;
-import lib.io.variant.AbstractVariantFormat;
-import lib.util.Coordinate;
-import lib.variant.Variant;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
-import lib.worker.ThreadIdContainer;
 
 public abstract class AbstractOverlapWorker<T extends AbstractData> 
 extends AbstractWorker<T> {
@@ -44,12 +36,15 @@ extends AbstractWorker<T> {
 		return container;
 	}
 
+	/* TODO
 	private int processLeft(final int[] recordCount) {
 		int variantCount = 0;
 		
 		return variantCount;
 	}
+	*/
 	
+	/* TODO
 	private void processRecordModifier() {
 		/*
 		// counter to reconstruct order from tmp writers
@@ -73,8 +68,9 @@ extends AbstractWorker<T> {
 		}		
 		
 		// TODO tmpWriter.updateCounts(variantCount, recordCount);
-	*/
+
 	}
+	*/
 
 	/* TODO
 	private int createAndWriteVariants() {
@@ -107,8 +103,9 @@ extends AbstractWorker<T> {
 	}
 	*/
 	
+	/* TODO
 	private void clear() {
-		/*
+		
 		if (coordinateController.isLeft()) {
 
 		}
@@ -126,8 +123,8 @@ extends AbstractWorker<T> {
 				windowContainers.get(conditionIndex).clear();
 			}
 		}
-		*/
 	}
+	
 	
 	private boolean hasLeft() {
 		for (final OverlappingRecordWrapperContainer container : windowContainers) {
@@ -148,6 +145,7 @@ extends AbstractWorker<T> {
 
 		return false;
 	}
+	*/
 	
 	/*
 	// TODO keep track of closeable iterator

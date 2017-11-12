@@ -7,36 +7,31 @@ import lib.phred2prob.Phred2Prob;
 
 public class PileupCount {
 
-	private char referenceBase;
+	private byte referenceBase;
 	
 	// container
 	private int[] baseCount;
-	private int[][] base2qual;
-	private int[] minQual;
+	private byte[][] base2qual;
+	private byte[] minQual;
 
 	public PileupCount() {
 		referenceBase = 'N';
 		
 		baseCount 	= new int[BaseCallConfig.BASES.length];
-		base2qual	= new int[BaseCallConfig.BASES.length][Phred2Prob.MAX_Q];
-		minQual		= new int[BaseCallConfig.BASES.length];
+		base2qual	= new byte[BaseCallConfig.BASES.length][Phred2Prob.MAX_Q];
+		minQual		= new byte[BaseCallConfig.BASES.length];
 		Arrays.fill(minQual, Phred2Prob.MAX_Q);
 	}
 
-	public PileupCount(final char referenceBase, final int[] baseCount, final int[][] base2qual, int[] minMapq) {
+	public PileupCount(final byte referenceBase, final int[] baseCount, final byte[][] base2qual, byte[] minMapq) {
 		this();
 		this.referenceBase = referenceBase;
-
-		System.arraycopy(baseCount, 0, this.baseCount, 0, baseCount.length);
-		for (int baseI = 0; baseI < baseCount.length; ++baseI) {
-			if (baseCount[baseI] > 0) {
-				System.arraycopy(base2qual[baseI], 0, this.base2qual[baseI], 0, base2qual[baseI].length);
-			}
-		}
-		System.arraycopy(minMapq, 0, this.minQual, 0, minMapq.length);
+		this.baseCount = baseCount;
+		this.base2qual = base2qual;
+		this.minQual = minMapq;
 	}
 	
-	public PileupCount(PileupCount pileupCount) {
+	public PileupCount(final PileupCount pileupCount) {
 		this();
 
 		this.referenceBase = pileupCount.referenceBase;
@@ -71,10 +66,12 @@ public class PileupCount {
 		return baseCount[baseIndex];
 	}
 	
-	public void add(final int baseIndex, final int qualIndex) {
+	public void add(final int baseIndex, final byte qual) {
 		baseCount[baseIndex]++;
-		base2qual[baseIndex][qualIndex]++;
-		minQual[baseIndex] = Math.max(qualIndex, minQual[baseIndex]);
+		base2qual[baseIndex][qual]++;
+		if (minQual[baseIndex] > qual) {
+			minQual[baseIndex] = qual;
+		}
 	}
 		
 	public void add(final PileupCount pileupCount) {
@@ -135,7 +132,7 @@ public class PileupCount {
 
 	public void invert() {
 		int[] tmpBaseCount = new int[BaseCallConfig.BASES.length];
-		int[][] tmpQualCount = new int[BaseCallConfig.BASES.length][Phred2Prob.MAX_Q];
+		byte[][] tmpQualCount = new byte[BaseCallConfig.BASES.length][Phred2Prob.MAX_Q];
 		
 		for (int baseIndex : getAlleles()) {
 			int complementaryBaseIndex = baseCount.length - baseIndex - 1;  
@@ -164,11 +161,11 @@ public class PileupCount {
 		return Arrays.copyOf(alleles, n);
 	}
 
-	public char getReferenceBase() {
+	public byte getReferenceBase() {
 		return referenceBase;
 	}
 	
-	public void setReferenceBase(final char referenceBase) {
+	public void setReferenceBase(final byte referenceBase) {
 		this.referenceBase = referenceBase;
 	}
 	

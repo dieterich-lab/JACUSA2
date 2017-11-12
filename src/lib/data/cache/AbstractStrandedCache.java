@@ -1,10 +1,10 @@
 package lib.data.cache;
 
-import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
 
 import lib.data.AbstractData;
 import lib.data.builder.SAMRecordWrapper;
+import lib.data.generator.DataGenerator;
 
 public abstract class AbstractStrandedCache<T extends AbstractData> 
 implements Cache<T> {
@@ -13,7 +13,7 @@ implements Cache<T> {
 	private Cache<T> reverse;
 
 	public AbstractStrandedCache(final Cache<T> forward, final Cache<T> reverse) {
-		if (forward.getMethodFactory() != reverse.getMethodFactory()) {
+		if (forward.getDataGenerator() != reverse.getDataGenerator()) {
 			throw new IllegalStateException("Forward and reverse Cache have different AbstractMethodFactory");
 		}
 
@@ -74,11 +74,11 @@ implements Cache<T> {
 	}
 	
 	@Override
-	public AbstractMethodFactory<T> getMethodFactory() {
-		if (forward.getMethodFactory() != reverse.getMethodFactory()) {
+	public DataGenerator<T> getDataGenerator() {
+		if (forward.getDataGenerator() != reverse.getDataGenerator()) {
 			throw new IllegalStateException("Forward and reverse Cache have different AbstractMethodFactory");
 		}
-		return forward.getMethodFactory();
+		return forward.getDataGenerator();
 	}
 	
 }

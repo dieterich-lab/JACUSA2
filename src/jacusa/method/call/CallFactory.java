@@ -2,7 +2,7 @@ package jacusa.method.call;
 
 import jacusa.cli.options.StatisticCalculatorOption;
 import jacusa.cli.options.StatisticFilterOption;
-import jacusa.cli.options.pileupbuilder.OneConditionBaseQualDataBuilderOption;
+import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
 import jacusa.cli.parameters.CallParameters;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.CombinedDistanceFilterFactory;
@@ -42,8 +42,12 @@ import lib.cli.options.condition.MinMAPQConditionOption;
 import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
-import lib.data.basecall.PileupData;
+import lib.data.AbstractData;
+import lib.data.basecall.BaseCallData;
 import lib.data.builder.factory.UnstrandedPileupBuilderFactory;
+import lib.data.generator.BaseCallDataGenerator;
+import lib.data.generator.DataGenerator;
+import lib.data.has.hasPileupCount;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 import lib.worker.AbstractWorker;
@@ -51,22 +55,22 @@ import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.ParseException;
 
-public class CallFactory extends AbstractMethodFactory<PileupData> {
+public class CallFactory<T extends AbstractData & hasPileupCount> 
+extends AbstractMethodFactory<T> {
 
-	protected static WorkerDispatcher<PileupData> instance;
-	
-	public CallFactory(final int conditions) {
+	public CallFactory(final int conditions, final DataGenerator<T> dataGenerator) {
 		super("call-" + (conditions == -1 ? "n" : conditions), 
 				"Call variants - " + 
 						(conditions == -1 ? "n" : conditions) + 
 						(conditions == -1 || conditions == 2 ? " conditions" : " condition"), 
-				new CallParameters<PileupData>(conditions, new UnstrandedPileupBuilderFactory<PileupData>())); // FIXME
+				new CallParameters<T>(conditions, new UnstrandedPileupBuilderFactory<T>()),
+				dataGenerator);
 	}
 
 	protected void initGlobalACOptions() {
 		addACOption(new FilterModusOption(getParameter()));
 		addACOption(new BaseConfigOption(getParameter()));
-		addACOption(new FilterConfigOption<PileupData>(getParameter(), getFilterFactories()));
+		addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
 		
 		addACOption(new StatisticFilterOption(getParameter().getStatisticParameters()));
 
@@ -83,30 +87,30 @@ public class CallFactory extends AbstractMethodFactory<PileupData> {
 		
 	protected void initConditionACOptions() {
 		// for all conditions
-		addACOption(new MinMAPQConditionOption<PileupData>(getParameter().getConditionParameters()));
-		addACOption(new MinBASQConditionOption<PileupData>(getParameter().getConditionParameters()));
-		addACOption(new MinCoverageConditionOption<PileupData>(getParameter().getConditionParameters()));
-		addACOption(new MaxDepthConditionOption<PileupData>(getParameter().getConditionParameters()));
-		addACOption(new FilterFlagConditionOption<PileupData>(getParameter().getConditionParameters()));
+		addACOption(new MinMAPQConditionOption<T>(getParameter().getConditionParameters()));
+		addACOption(new MinBASQConditionOption<T>(getParameter().getConditionParameters()));
+		addACOption(new MinCoverageConditionOption<T>(getParameter().getConditionParameters()));
+		addACOption(new MaxDepthConditionOption<T>(getParameter().getConditionParameters()));
+		addACOption(new FilterFlagConditionOption<T>(getParameter().getConditionParameters()));
 		
-		addACOption(new FilterNHsamTagOption<PileupData>(getParameter().getConditionParameters()));
-		addACOption(new FilterNMsamTagOption<PileupData>(getParameter().getConditionParameters()));
+		addACOption(new FilterNHsamTagOption<T>(getParameter().getConditionParameters()));
+		addACOption(new FilterNMsamTagOption<T>(getParameter().getConditionParameters()));
 		
-		addACOption(new OneConditionBaseQualDataBuilderOption<PileupData>(getParameter().getConditionParameters(), getParameter()));
+		addACOption(new OneConditionPileupDataBuilderOption<T>(getParameter().getConditionParameters(), getParameter()));
 		
 		// only add contions specific options when there are more than 1 conditions
 		if (getParameter().getConditionsSize() > 1) {
 			for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-				addACOption(new MinMAPQConditionOption<PileupData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MinBASQConditionOption<PileupData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MinCoverageConditionOption<PileupData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MaxDepthConditionOption<PileupData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new FilterFlagConditionOption<PileupData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinMAPQConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinBASQConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinCoverageConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MaxDepthConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterFlagConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
 				
-				addACOption(new FilterNHsamTagOption<PileupData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new FilterNMsamTagOption<PileupData>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterNHsamTagOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterNMsamTagOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
 				
-				addACOption(new OneConditionBaseQualDataBuilderOption<PileupData>(
+				addACOption(new OneConditionPileupDataBuilderOption<T>(
 						conditionIndex + 1, 
 						getParameter().getConditionParameters().get(conditionIndex),
 						getParameter()));
@@ -124,7 +128,7 @@ public class CallFactory extends AbstractMethodFactory<PileupData> {
 			getParameter().getStatisticParameters().setStatisticCalculator(
 					getStatistics().get(a[0]));
 		} else {
-			addACOption(new StatisticCalculatorOption<PileupData>(
+			addACOption(new StatisticCalculatorOption<T>(
 					getParameter().getStatisticParameters(), getStatistics()));
 		}
 		
@@ -134,66 +138,63 @@ public class CallFactory extends AbstractMethodFactory<PileupData> {
 			getParameter().setFormat(getResultFormats().get(a[0]));
 		} else {
 			getParameter().setFormat(getResultFormats().get(BED6call.CHAR));
-			addACOption(new FormatOption<PileupData>(
+			addACOption(new FormatOption<T>(
 					getParameter(), getResultFormats()));
 		}
 	}
 
 	@Override
-	public WorkerDispatcher<PileupData> getWorkerDispatcher() {
-		if(instance == null) {
-			instance = new WorkerDispatcher<PileupData>(this);
-		}
-
-		return instance;
+	public WorkerDispatcher<T> getWorkerDispatcher() {
+		return new WorkerDispatcher<T>(this);
 	}
 	
-	public Map<String, StatisticCalculator<PileupData>> getStatistics() {
-		final Map<String, StatisticCalculator<PileupData>> statistics = 
-				new TreeMap<String, StatisticCalculator<PileupData>>();
+	public Map<String, StatisticCalculator<T>> getStatistics() {
+		final Map<String, StatisticCalculator<T>> statistics = 
+				new TreeMap<String, StatisticCalculator<T>>();
 
-		StatisticCalculator<PileupData> statistic = null;
+		StatisticCalculator<T> statistic = null;
 
-		statistic = new DirichletMultinomialRobustCompoundError<PileupData>(getParameter());
+		statistic = new DirichletMultinomialRobustCompoundError<T>(getParameter());
 		statistics.put("DirMult", statistic);
 
 		return statistics;
 	}
 
-	public Map<Character, AbstractFilterFactory<PileupData>> getFilterFactories() {
-		final Map<Character, AbstractFilterFactory<PileupData>> abstractPileupFilters = 
-				new HashMap<Character, AbstractFilterFactory<PileupData>>();
+	public Map<Character, AbstractFilterFactory<T, ?>> getFilterFactories() {
+		final Map<Character, AbstractFilterFactory<T, ?>> abstractPileupFilters = 
+				new HashMap<Character, AbstractFilterFactory<T, ?>>();
 
-		final List<AbstractFilterFactory<PileupData>> filterFactories = 
-				new ArrayList<AbstractFilterFactory<PileupData>>(10);
+		final List<AbstractFilterFactory<T, ?>> filterFactories = 
+				new ArrayList<AbstractFilterFactory<T, ?>>(10);
 		
-		filterFactories.add(new CombinedDistanceFilterFactory<PileupData>(getParameter()));
-		filterFactories.add(new INDEL_DistanceFilterFactory<PileupData>(getParameter()));
-		filterFactories.add(new ReadPositionDistanceFilterFactory<PileupData>(getParameter()));
-		filterFactories.add(new SpliceSiteDistanceFilterFactory<PileupData>(getParameter()));
-		filterFactories.add(new HomozygousFilterFactory<PileupData>(getParameter()));
-		filterFactories.add(new MaxAlleleCountFilterFactory<PileupData>());
-		filterFactories.add(new HomopolymerFilterFactory<PileupData>(getParameter()));
+		final DataGenerator<BaseCallData> dataGenerator = new BaseCallDataGenerator();
+		filterFactories.add(new CombinedDistanceFilterFactory<T, BaseCallData>(dataGenerator));
+		filterFactories.add(new INDEL_DistanceFilterFactory<T, BaseCallData>(dataGenerator));
+		filterFactories.add(new ReadPositionDistanceFilterFactory<T, BaseCallData>(dataGenerator));
+		filterFactories.add(new SpliceSiteDistanceFilterFactory<T, BaseCallData>(dataGenerator));
+		filterFactories.add(new HomozygousFilterFactory<T>(getParameter()));
+		filterFactories.add(new MaxAlleleCountFilterFactory<T>());
+		filterFactories.add(new HomopolymerFilterFactory<T, BaseCallData>(dataGenerator));
 
-		for (final AbstractFilterFactory<PileupData> filterFactory : filterFactories) {
+		for (final AbstractFilterFactory<T,?> filterFactory : filterFactories) {
 			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
 		}
 
 		return abstractPileupFilters;
 	}
 
-	public Map<Character, AbstractOutputFormat<PileupData>> getResultFormats() {
-		final Map<Character, AbstractOutputFormat<PileupData>> resultFormats = 
-				new HashMap<Character, AbstractOutputFormat<PileupData>>();
+	public Map<Character, AbstractOutputFormat<T>> getResultFormats() {
+		final Map<Character, AbstractOutputFormat<T>> resultFormats = 
+				new HashMap<Character, AbstractOutputFormat<T>>();
 
-		AbstractOutputFormat<PileupData> resultFormat = null;
+		AbstractOutputFormat<T> resultFormat = null;
 
 		// BED like output
-		resultFormat = new BED6call(getParameter());
+		resultFormat = new BED6call<T>(getParameter());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 
 		// VCF output
-		resultFormat = new VCFcall(getParameter().getBaseConfig(), 
+		resultFormat = new VCFcall<T>(getParameter().getBaseConfig(), 
 				getParameter().getFilterConfig());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 
@@ -201,8 +202,8 @@ public class CallFactory extends AbstractMethodFactory<PileupData> {
 	}
 
 	@Override
-	public CallParameters<PileupData> getParameter() {
-		return (CallParameters<PileupData>) super.getParameter();
+	public CallParameters<T> getParameter() {
+		return (CallParameters<T>) super.getParameter();
 	}
 
 	@Override
@@ -215,52 +216,9 @@ public class CallFactory extends AbstractMethodFactory<PileupData> {
 	}
 
 	@Override
-	public AbstractWorker<PileupData> createWorker() {
+	public AbstractWorker<T> createWorker() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-	
-	@Override
-	public PileupData createData() {
-		return new PileupData();
-	}
-
-	@Override
-	public PileupData[] createReplicateData(final int n) {
-		return new PileupData[n];
-	}
-
-	@Override
-	public PileupData[][] createContainer(final int n) {
-		return new PileupData[n][];
-	}
-
-	@Override
-	public PileupData copyData(final PileupData dataContainer) {
-		return new PileupData(dataContainer);
-	}
-	
-	@Override
-	public PileupData[] copyReplicateData(final PileupData[] dataContainer) {
-		PileupData[] ret = createReplicateData(dataContainer.length);
-		for (int i = 0; i < dataContainer.length; ++i) {
-			ret[i] = new PileupData(dataContainer[i]);
-		}
-		return ret;
-	}
-	
-	@Override
-	public PileupData[][] copyContainer(final PileupData[][] dataContainer) {
-		PileupData[][] ret = createContainer(dataContainer.length);
-		
-		for (int i = 0; i < dataContainer.length; ++i) {
-			ret[i] = new PileupData[dataContainer[i].length];
-			for (int j = 0; j < dataContainer[i].length; ++j) {
-				ret[i][j] = new PileupData(dataContainer[i][j]);
-			}	
-		}
-		
-		return ret;
 	}
 	
 }

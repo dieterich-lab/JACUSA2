@@ -1,22 +1,24 @@
 package jacusa.filter.factory;
 
 import jacusa.filter.AbstractFilter;
-import jacusa.filter.UnstrandedFilterContainer;
+import jacusa.filter.FilterContainer;
 import jacusa.filter.HomopolymerFilter;
 import jacusa.filter.storage.HomopolymerStorage;
-import lib.cli.parameters.AbstractParameter;
-import lib.data.basecall.PileupData;
+import lib.data.AbstractData;
+import lib.data.generator.DataGenerator;
+import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasReferenceBase;
 
-public class HomopolymerFilterFactory<T extends PileupData> 
-extends AbstractFilterFactory<T> {
+public class HomopolymerFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
+extends AbstractFilterFactory<T, F> {
 
 	private static final int LENGTH = 7;
 	private int length;
-	private AbstractParameter<T> parameters;
 		
-	public HomopolymerFilterFactory(final AbstractParameter<T> parameters) {
-		super('Y', "Filter wrong variant calls within homopolymers. Default: " + LENGTH + " (Y:length)");
-		this.parameters = parameters;
+	public HomopolymerFilterFactory(final DataGenerator<F> dataGenerator) {
+		super('Y', 
+				"Filter wrong variant calls within homopolymers. Default: " + LENGTH + " (Y:length)", 
+				dataGenerator);
 		length = LENGTH;
 	}
 	
@@ -43,11 +45,11 @@ extends AbstractFilterFactory<T> {
 	}
 
 	@Override
-	public void registerFilter(final UnstrandedFilterContainer<T> filterContainer) {
+	public void registerFilter(final FilterContainer<T> filterContainer) {
 		filterContainer.add(getFilter());
 
-		HomopolymerStorage<T> storage = 
-					new HomopolymerStorage<T>(getC(), length, parameters.getBaseConfig());
+		// TODO
+		HomopolymerStorage<F> storage = new HomopolymerStorage<F>(getC(), length, null);
 		
 		filterContainer.registerStorage(storage);
 		filterContainer.registerProcessAlignment(storage);
@@ -55,7 +57,7 @@ extends AbstractFilterFactory<T> {
 
 	@Override
 	public AbstractFilter<T> getFilter() {
-		return new HomopolymerFilter<T>(getC(), length, parameters);
+		return new HomopolymerFilter<T, F>(getC(), length, this);
 	}
 	
 	public final void setLength(int length) {

@@ -73,7 +73,7 @@ extends AbstractCache<T> {
 		
 	@Override
 	public T getData(final Coordinate coordinate) {
-		final T data = getMethodFactory().createData();
+		final T data = getDataGenerator().createData();
 		final int windowPosition = getWindowPosition(coordinate); 
 		data.getRecordWrapper().addAll(recordWrappers.get(windowPosition));
 		return data;

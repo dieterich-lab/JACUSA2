@@ -4,18 +4,19 @@ import java.util.ArrayList;
 
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
-import lib.data.basecall.PileupData;
+import lib.data.AbstractData;
+import lib.data.has.hasPileupCount;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class TwoConditionBaseQualDataBuilderOption<T extends PileupData> 
-extends OneConditionBaseQualDataBuilderOption<T> {
+public class TwoConditionPileupDataBuilderOption<T extends AbstractData & hasPileupCount> 
+extends OneConditionPileupDataBuilderOption<T> {
 
 	private static final char SEP = ',';
 	
-	public TwoConditionBaseQualDataBuilderOption(
+	public TwoConditionPileupDataBuilderOption(
 			final AbstractConditionParameter<T> conditionParameter1, 
 			final AbstractConditionParameter<T> conditionParameter2,
 			final AbstractParameter<T> generalParameter) {

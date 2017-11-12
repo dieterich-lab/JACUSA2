@@ -1,26 +1,24 @@
 package jacusa.filter;
 
-import java.util.List;
-
-import jacusa.filter.counts.AbstractCountFilter;
+import jacusa.filter.counts.AbstractBaseCallCountFilter;
 import jacusa.filter.counts.MinCountFilter;
-import jacusa.filter.storage.AbstractCacheStorage;
-import lib.cli.parameters.AbstractParameter;
+import jacusa.filter.factory.AbstractFilterFactory;
+import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.Result;
-import lib.data.basecall.PileupData;
 import lib.data.builder.ConditionContainer;
-import lib.util.Coordinate;
+import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasReferenceBase;
 
-public class HomopolymerFilter<T extends PileupData> 
+public class HomopolymerFilter<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
 extends AbstractFilter<T> {
 
-	private AbstractCountFilter<T> countFilter;
+	private AbstractBaseCallCountFilter<T, F> countFilter;
 
-	public HomopolymerFilter(final char c, final int length, final AbstractParameter<T> parameters) {
+	public HomopolymerFilter(final char c, final int length, final AbstractFilterFactory<T, F> filterFactory) {
 		super(c);
 
-		countFilter = new MinCountFilter<T>(1, parameters);
+		countFilter = new MinCountFilter<T, F>(1, filterFactory);
 	}
 
 	@Override
@@ -32,11 +30,16 @@ extends AbstractFilter<T> {
 			return false;
 		}
 
+		/* TODO
 		// get position from result
 		final Coordinate coordinate = parallelData.getCoordinate();
 		final int genomicPosition = coordinate.getStart();
-		final char referenceBase = result.getParellelData().getCombinedPooledData().getReferenceBase();
-		
+		final byte referenceBase = result.getParellelData().getCombinedPooledData().getReferenceBase();
+		*/
+
+		final ParallelData<F> parallelFilteredData = null;
+		/* TODO
+		 * 
 		// create container [condition][replicates]
 		final PileupData[][] baseQualData = new PileupData[parallelData.getConditions()][];
 		
@@ -67,8 +70,9 @@ extends AbstractFilter<T> {
 				replicatesData[replicateIndex] = replicateData;
 			}
 		}
+		*/
 		
-		return countFilter.filter(variantBaseIndexs, parallelData, baseQualData);
+		return countFilter.filter(variantBaseIndexs, parallelData, parallelFilteredData);
 	}
 
 	@Override

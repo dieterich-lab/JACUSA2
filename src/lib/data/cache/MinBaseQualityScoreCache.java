@@ -3,8 +3,8 @@ package lib.data.cache;
 import htsjdk.samtools.AlignmentBlock;
 import lib.data.AbstractData;
 import lib.data.builder.SAMRecordWrapper;
+import lib.data.generator.DataGenerator;
 
-import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
 
 public class MinBaseQualityScoreCache<T extends AbstractData> 
@@ -47,8 +47,8 @@ implements Cache<T> {
 	}
 
 	@Override
-	public AbstractMethodFactory<T> getMethodFactory() {
-		return cache.getMethodFactory();
+	public DataGenerator<T> getDataGenerator() {
+		return cache.getDataGenerator();
 	}
 	
 }

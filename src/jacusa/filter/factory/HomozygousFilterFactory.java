@@ -1,29 +1,30 @@
 package jacusa.filter.factory;
 
 import jacusa.filter.AbstractFilter;
-import jacusa.filter.UnstrandedFilterContainer;
+import jacusa.filter.FilterContainer;
 import lib.cli.parameters.AbstractParameter;
+import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.Result;
-import lib.data.basecall.PileupData;
 import lib.data.builder.ConditionContainer;
+import lib.data.has.hasPileupCount;
 
 /**
  * 
  * @author Michael Piechotta
  *
  */
-public class HomozygousFilterFactory<T extends PileupData> 
-extends AbstractFilterFactory<T> {
+public class HomozygousFilterFactory<T extends AbstractData & hasPileupCount> 
+extends AbstractFilterFactory<T, T> {
 
 	// 
 	private int homozygousConditionIndex;
 	//
 	private AbstractParameter<T> parameters;
 	
-	public HomozygousFilterFactory(AbstractParameter<T> parameters) {
+	public HomozygousFilterFactory(final AbstractParameter<T> parameters) {
 		super('H', "Filter non-homozygous pileup/BAM in condition 1 or 2 " +
-				"(MUST be set to H:1 or H:2). Default: none");
+				"(MUST be set to H:1 or H:2). Default: none", null);
 		homozygousConditionIndex 	= 0;
 		this.parameters 			= parameters;
 	}
@@ -71,7 +72,7 @@ extends AbstractFilterFactory<T> {
 	}
 
 	@Override
-	public void registerFilter(UnstrandedFilterContainer<T> filterContainer) {
+	public void registerFilter(final FilterContainer<T> filterContainer) {
 		filterContainer.add(getFilter());
 	}
 	
@@ -86,7 +87,7 @@ extends AbstractFilterFactory<T> {
 		public boolean filter(final Result<T> result, final ConditionContainer<T> conditionContainer) {
 			final ParallelData<T> parallelData = result.getParellelData();
 			final int alleles = parallelData.getPooledData(homozygousConditionIndex)
-					.getBaseQualCount().getAlleles().length;
+					.getBaseCallCount().getAlleles().length;
 
 			return alleles > 1;
 		}

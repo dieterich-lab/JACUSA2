@@ -1,14 +1,12 @@
 package jacusa.filter.storage;
 
-import htsjdk.samtools.CigarElement;
-import htsjdk.samtools.SAMRecord;
+import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.SAMRecordWrapper.Position;
 
 public interface ProcessDeletionOperator {
 
-	public abstract void processDeletionOperator(int windowPosition, int readPosition,
-			int genomicPosition, int upstreamMatch, int downstreamMatch,
-			CigarElement cigarElement, SAMRecord record);
-	
+	public abstract void processDeletionOperator(final Position position, final SAMRecordWrapper recordWrapper);
+
 	public abstract char getC();
 
 }

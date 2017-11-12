@@ -20,7 +20,7 @@ implements Cache<T> {
 		this.methodFactory = methodFactory;
 	}
 	
-	public AbstractMethodFactory<T> getMethodFactory() {
+	public AbstractMethodFactory<T> getDataGenerator() {
 		return methodFactory;
 	}
 

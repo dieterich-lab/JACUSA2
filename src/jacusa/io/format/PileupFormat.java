@@ -1,14 +1,16 @@
 package jacusa.io.format;
 
 import lib.cli.options.BaseCallConfig;
+import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.Result;
-import lib.data.basecall.PileupData;
+import lib.data.has.hasPileupCount;
 import lib.phred2prob.Phred2Prob;
 
 import htsjdk.samtools.SAMUtils;
 
-public class PileupFormat extends AbstractOutputFormat<PileupData> {
+public class PileupFormat<T extends AbstractData & hasPileupCount> 
+extends AbstractOutputFormat<T> {
 
 	public final static char CHAR = 'M';
 	public static char EMPTY 	= '*';
@@ -26,34 +28,34 @@ public class PileupFormat extends AbstractOutputFormat<PileupData> {
 	}
 
 	@Override
-	public String convert2String(final Result<PileupData> result) {
+	public String convert2String(final Result<T> result) {
 		final StringBuilder sb = new StringBuilder();
-		final ParallelData<PileupData> parallelPileupData = result.getParellelData();
+		final ParallelData<T> parallelData = result.getParellelData();
 
 		// coordinates
-		sb.append(parallelPileupData.getCoordinate().getContig());
+		sb.append(parallelData.getCoordinate().getContig());
 		sb.append(SEP);
-		sb.append(parallelPileupData.getCoordinate().getEnd());
+		sb.append(parallelData.getCoordinate().getEnd());
 
 		sb.append(getSEP());
 		if (showReferenceBase) {
-			sb.append(parallelPileupData.getCombinedPooledData().getReferenceBase());
+			sb.append(parallelData.getCombinedPooledData().getReferenceBase());
 		} else {
 			sb.append("N");
 		}
 
 		sb.append(SEP);
-		sb.append(parallelPileupData.getCoordinate().getStrand());
+		sb.append(parallelData.getCoordinate().getStrand());
 		
-		for (int conditionIndex = 0; conditionIndex < parallelPileupData.getConditions(); conditionIndex++) {
-			addPileupData(sb, parallelPileupData.getData(conditionIndex));
+		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
+			addPileupData(sb, parallelData.getData(conditionIndex));
 		}
 
 		return sb.toString();		
 	}
 	
-	protected void addPileupData(final StringBuilder sb, final PileupData[] datas) {
-		for (final PileupData data : datas) {
+	protected void addPileupData(final StringBuilder sb, final T[] dataArray) {
+		for (final T data : dataArray) {
 			sb.append(SEP);
 			sb.append(data.getPileupCount().getCoverage());
 			sb.append(SEP);

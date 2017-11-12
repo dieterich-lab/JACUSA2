@@ -3,13 +3,15 @@ package jacusa.io.format;
 import java.util.List;
 
 import lib.cli.options.BaseCallConfig;
+import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
-import lib.cli.parameters.JACUSAConditionParameters;
+import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.Result;
-import lib.data.basecall.PileupData;
+import lib.data.has.hasPileupCount;
 
-public class BED6call extends AbstractOutputFormat<PileupData> {
+public class BED6call<T extends AbstractData & hasPileupCount> 
+extends AbstractOutputFormat<T> {
 
 	public static final char CHAR = 'B';
 	
@@ -18,23 +20,23 @@ public class BED6call extends AbstractOutputFormat<PileupData> {
 	public static final char SEP 	= '\t';
 	public static final char SEP2 	= ',';
 
-	private AbstractParameter<PileupData> parameters;
+	private AbstractParameter<T> parameters;
 	
 	public BED6call(
 			final char c,
 			final String desc,
-			final AbstractParameter<PileupData> parameters) {
+			final AbstractParameter<T> parameters) {
 		super(c, desc);
 		
 		this.parameters = parameters;
 	}
 
-	public BED6call(final AbstractParameter<PileupData> parameters) {
+	public BED6call(final AbstractParameter<T> parameters) {
 		this(CHAR, "Default", parameters);
 	}
 
 	@Override
-	public String getHeader(final List<JACUSAConditionParameters<PileupData>> conditionParameters) {
+	public String getHeader(final List<AbstractConditionParameter<T>> conditionParameters) {
 		final StringBuilder sb = new StringBuilder();
 
 		sb.append(COMMENT);
@@ -84,7 +86,7 @@ public class BED6call extends AbstractOutputFormat<PileupData> {
 		return sb.toString();
 	}
 
-	protected void addConditionLibraryTypeHeader(final StringBuilder sb, final List<JACUSAConditionParameters<PileupData>> conditions) {
+	protected void addConditionLibraryTypeHeader(final StringBuilder sb, final List<AbstractConditionParameter<T>> conditionParameters) {
 		sb.append(COMMENT);
 
 		sb.append(EMPTY);
@@ -104,8 +106,8 @@ public class BED6call extends AbstractOutputFormat<PileupData> {
 		sb.append("TODO");
 		sb.append(getSEP());
 		
-		for (final JACUSAConditionParameters<PileupData> condition : conditions) {
-			sb.append(condition.getLibraryType());
+		for (final AbstractConditionParameter<T> conditionParameter : conditionParameters) {
+			sb.append(conditionParameter.getDataBuilderFactory().getLibraryType());
 			sb.append(getSEP());
 		}
 		
@@ -123,7 +125,7 @@ public class BED6call extends AbstractOutputFormat<PileupData> {
 		}
 	}
 	
-	protected void addConditionPathnamesHeader(final StringBuilder sb, final List<JACUSAConditionParameters<PileupData>> conditionParameters) {
+	protected void addConditionPathnamesHeader(final StringBuilder sb, final List<AbstractConditionParameter<T>> conditionParameters) {
 		sb.append(COMMENT);
 
 		sb.append(EMPTY);
@@ -142,7 +144,7 @@ public class BED6call extends AbstractOutputFormat<PileupData> {
 		sb.append(EMPTY);
 		sb.append(getSEP());
 		
-		for (final JACUSAConditionParameters<PileupData> conditionParameter : conditionParameters) {
+		for (final AbstractConditionParameter<T> conditionParameter : conditionParameters) {
 			final String[] pathnames = conditionParameter.getRecordFilenames();
 			sb.append(pathnames[0]);
 			for (int replicateIndex = 1; replicateIndex < pathnames.length; replicateIndex++) {
@@ -182,8 +184,8 @@ public class BED6call extends AbstractOutputFormat<PileupData> {
 		}
 	}
 
-	public String convert2String(Result<PileupData> result) {
-		final ParallelData<PileupData> parallelData = result.getParellelData();
+	public String convert2String(Result<T> result) {
+		final ParallelData<T> parallelData = result.getParellelData();
 		final double statistic = result.getStatistic();
 		final StringBuilder sb = new StringBuilder();
 
@@ -231,9 +233,9 @@ public class BED6call extends AbstractOutputFormat<PileupData> {
 	/*
 	 * Helper function
 	 */
-	protected void addData(final StringBuilder sb, final PileupData[] data) {
+	protected void addData(final StringBuilder sb, final T[] data) {
 		// output condition: Ax,Cx,Gx,Tx
-		for (final PileupData d : data) {
+		for (final T d : data) {
 			sb.append(SEP);
 
 			int i = 0;

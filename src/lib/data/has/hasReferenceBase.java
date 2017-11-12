@@ -7,7 +7,7 @@ package lib.data.has;
  */
 public interface hasReferenceBase {
 
-	char getReferenceBase();
-	void setReferenceBase(final char referenceBase);
+	byte getReferenceBase();
+	void setReferenceBase(final byte referenceBase);
 
 }

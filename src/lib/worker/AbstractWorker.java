@@ -32,8 +32,10 @@ implements Iterator<ParallelData<T>> {
 	private CoordinateController coordinateController;
 	
 	private final List<CopyTmp> copyTmps;
+	
 	private final ParallelDataValidator<T> parallelDataValidator;
-
+	private ParallelData<T> parallelData;
+	
 	private STATUS status;
 	
 	public AbstractWorker(final WorkerDispatcher<T> workerDispatcher,
@@ -54,9 +56,16 @@ implements Iterator<ParallelData<T>> {
 
 	@Override
 	public boolean hasNext() {
+		while (parallelData == null) {
+			if (parallelDataValidator.isValid(parallelData)) {
+				return true;
+			}
+		}
 		/* TODO
 		while () {
 			// init 
+			
+			
 			
 			// build
 			
@@ -65,7 +74,6 @@ implements Iterator<ParallelData<T>> {
 		*/
 		return false;
 	}
-	
 	
 	@Override
 	public ParallelData<T> next() {
@@ -85,8 +93,8 @@ implements Iterator<ParallelData<T>> {
 	
 	protected abstract void doWork(final ParallelData<T> parallelData);
 
-	protected void processWaiting() {
-		// TODO
+	protected void processWaiting() { 
+		// overwrite
 	}
 	
 	public void updateReservedWindowCoordinate(final Coordinate reservedWindowCoordinate) {
@@ -99,7 +107,6 @@ implements Iterator<ParallelData<T>> {
 		coordinateController.updateReserved(reservedWindowCoordinate);
 		
 		final Coordinate activeWindowCoordinate = coordinateController.getActive();
-		final int conditionSize = 0;
 		
 		conditionContainer.update(activeWindowCoordinate, reservedWindowCoordinate);
 	

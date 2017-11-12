@@ -2,16 +2,18 @@ package jacusa.io.format;
 
 import java.util.List;
 
-
 import jacusa.filter.FilterConfig;
 import lib.cli.options.BaseCallConfig;
-import lib.cli.parameters.JACUSAConditionParameters;
-import lib.data.BaseQualReadInfoData;
+import lib.cli.parameters.AbstractConditionParameter;
+import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.Result;
+import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasReadInfoCount;
+import lib.data.has.hasReferenceBase;
 
-public class RTArrestResultFormat 
-extends AbstractOutputFormat<BaseQualReadInfoData> {
+public class RTArrestResultFormat<T extends AbstractData & hasBaseCallCount & hasReadInfoCount & hasReferenceBase> 
+extends AbstractOutputFormat<T> {
 
 	public static final char CHAR = 'B';
 	
@@ -23,7 +25,7 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 	// read start, trough, and end	
 	private static final String RTinfo = "reads";
 	
-	protected FilterConfig<BaseQualReadInfoData> filterConfig;
+	protected FilterConfig<T> filterConfig;
 	protected BaseCallConfig baseConfig;
 	private boolean showReferenceBase;
 
@@ -31,7 +33,7 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 			final char c,
 			final String desc,
 			final BaseCallConfig baseConfig, 
-			final FilterConfig<BaseQualReadInfoData> filterConfig,
+			final FilterConfig<T> filterConfig,
 			final boolean showReferenceBase) {
 		super(c, desc);
 		
@@ -43,13 +45,13 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 
 	public RTArrestResultFormat(
 			final BaseCallConfig baseConfig, 
-			final FilterConfig<BaseQualReadInfoData> filterConfig,
+			final FilterConfig<T> filterConfig,
 			final boolean showReferenceBase) {
 		this(CHAR, "Default", baseConfig, filterConfig, showReferenceBase);
 	}
 
 	@Override
-	public String getHeader(final List<JACUSAConditionParameters<BaseQualReadInfoData>> conditionParameters) {
+	public String getHeader(final List<AbstractConditionParameter<T>> conditionParameters) {
 		final StringBuilder sb = new StringBuilder();
 
 		sb.append(COMMENT);
@@ -126,8 +128,8 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 	}
 	
 	@Override
-	public String convert2String(Result<BaseQualReadInfoData> result) {
-		final ParallelData<BaseQualReadInfoData> parallelData = result.getParellelData();
+	public String convert2String(Result<T> result) {
+		final ParallelData<T> parallelData = result.getParellelData();
 		final double statistic = result.getStatistic();
 		final StringBuilder sb = new StringBuilder();
 
@@ -166,7 +168,7 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 		
 		if (showReferenceBase) {
 			sb.append(getSEP());
-			sb.append(parallelData.getCombinedPooledData().getReferenceBase());
+			sb.append(Byte.toString(parallelData.getCombinedPooledData().getReferenceBase()));
 		}
 
 		return sb.toString();		
@@ -175,9 +177,9 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 	/*
 	 * Helper function
 	 */
-	protected void addPileups(StringBuilder sb, BaseQualReadInfoData[] data) {
+	protected void addPileups(StringBuilder sb, T[] dataArray) {
 		// output condition: Ax,Cx,Gx,Tx
-		for (BaseQualReadInfoData d : data) {
+		for (T data : dataArray) {
 			sb.append(SEP);
 
 			int i = 0;
@@ -185,7 +187,7 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 			int baseIndex = baseConfig.getBaseIndex((byte)b);
 			int count = 0;
 			if (baseIndex >= 0) {
-				count = d.getPileupCount().getBaseCount(baseIndex);
+				count = data.getBaseCallCount().getBaseCallCount(baseIndex);
 			}
 			sb.append(count);
 			++i;
@@ -194,15 +196,15 @@ extends AbstractOutputFormat<BaseQualReadInfoData> {
 				baseIndex = baseConfig.getBaseIndex((byte)b);
 				count = 0;
 				if (baseIndex >= 0) {
-					count = d.getPileupCount().getBaseCount(baseIndex);
+					count = data.getBaseCallCount().getBaseCallCount(baseIndex);
 				}
 				sb.append(SEP2);
 				sb.append(count);
 			}
 			sb.append(SEP);
-			sb.append(d.getReadInfoCount().getArrest());
+			sb.append(data.getReadInfoCount().getArrest());
 			sb.append(SEP2);
-			sb.append(d.getReadInfoCount().getThrough());
+			sb.append(data.getReadInfoCount().getThrough());
 		}
 	}
 

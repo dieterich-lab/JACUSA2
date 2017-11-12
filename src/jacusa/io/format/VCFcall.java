@@ -7,27 +7,29 @@ import java.util.Calendar;
 import java.util.List;
 
 import lib.cli.options.BaseCallConfig;
-import lib.cli.parameters.JACUSAConditionParameters;
+import lib.cli.parameters.AbstractConditionParameter;
+import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.Result;
-import lib.data.basecall.PileupData;
+import lib.data.has.hasPileupCount;
 import lib.util.AbstractTool;
 
-public class VCFcall extends AbstractOutputFormat<PileupData> {
+public class VCFcall<T extends AbstractData & hasPileupCount> 
+extends AbstractOutputFormat<T> {
 
 	public static final char CHAR = 'V';
 	
 	private BaseCallConfig baseConfig;
-	private FilterConfig<PileupData> filterConfig;
+	private FilterConfig<T> filterConfig;
 	
-	public VCFcall(final BaseCallConfig baseConfig, final FilterConfig<PileupData> filterConfig) {
+	public VCFcall(final BaseCallConfig baseConfig, final FilterConfig<T> filterConfig) {
 		super(CHAR, "VCF Output format. Option -P will be ignored (VCF is unstranded)");
 		this.baseConfig = baseConfig;
 		this.filterConfig = filterConfig;
 	}
 	
 	@Override
-	public String getHeader(final List<JACUSAConditionParameters<PileupData>> conditionParameters) {
+	public String getHeader(final List<AbstractConditionParameter<T>> conditionParameters) {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(getCOMMENT());
@@ -52,7 +54,7 @@ public class VCFcall extends AbstractOutputFormat<PileupData> {
 		sb.append('\n');
 
 		// add filter descriptions to header
-		for (final AbstractFilterFactory<PileupData> filterFactory : filterConfig.getFactories()) {
+		for (final AbstractFilterFactory<T, ?> filterFactory : filterConfig.getFilterFactories()) {
 			sb.append("##FILTER=<ID=");
 			sb.append(filterFactory.getC());
 			sb.append(",Description=");
@@ -81,7 +83,7 @@ public class VCFcall extends AbstractOutputFormat<PileupData> {
 			sb.append(cols[i]);
 		}
 		
-		for (final JACUSAConditionParameters<PileupData> conditionParameter : conditionParameters) {
+		for (final AbstractConditionParameter<T> conditionParameter : conditionParameters) {
 			for (String recordFilename : conditionParameter.getRecordFilenames())  {
 				sb.append(getSEP());
 				sb.append(recordFilename);
@@ -92,9 +94,9 @@ public class VCFcall extends AbstractOutputFormat<PileupData> {
 	}
 
 	@Override
-	public String convert2String(Result<PileupData> result) {
+	public String convert2String(Result<T> result) {
 		final StringBuilder sb = new StringBuilder();
-		final ParallelData<PileupData> parallelData = result.getParellelData();
+		final ParallelData<T> parallelData = result.getParellelData();
 		String filterInfo = result.getFilterInfo().combine();
 		if (filterInfo == null || filterInfo.length() == 0) {
 			filterInfo = "PASS";
@@ -121,7 +123,7 @@ public class VCFcall extends AbstractOutputFormat<PileupData> {
 				// ID
 				Character.toString(getEMPTY()),
 				// REF
-				Character.toString(parallelData.getCombinedPooledData().getReferenceBase()),
+				Byte.toString(parallelData.getCombinedPooledData().getReferenceBase()),
 				// ALT
 				sb2.toString(),
 				// QUAL
@@ -147,7 +149,7 @@ public class VCFcall extends AbstractOutputFormat<PileupData> {
 		return sb.toString();
 	}
 
-	private void addParallelPileup(final StringBuilder sb, final PileupData data[]) {
+	private void addParallelPileup(final StringBuilder sb, final T data[]) {
 		for (int i = 0; i < data.length; ++i) {
 			// add DP
 			sb.append(getSEP());

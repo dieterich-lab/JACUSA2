@@ -10,7 +10,7 @@ public interface hasDefaultConditions<T extends AbstractData> {
 	List<AbstractConditionParameter<T>> getConditionParameters();
 	AbstractConditionParameter<T> getConditionParameter(int conditionIndex);
 	void setConditionParameters(final List<AbstractConditionParameter<T>> conditionParameters);
-	
+
 	int getConditionsSize();
 	int getReplicates(int conditionIndex);
 

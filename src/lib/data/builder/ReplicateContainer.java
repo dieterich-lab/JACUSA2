@@ -5,8 +5,7 @@ import java.util.List;
 
 import htsjdk.samtools.SamReader;
 
-import jacusa.filter.AbstractFilterContainer;
-import jacusa.filter.UnstrandedFilterContainer;
+import jacusa.filter.FilterContainer;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
@@ -88,12 +87,12 @@ public class ReplicateContainer<T extends AbstractData> {
 		return data;
 	}
 
-	public List<AbstractFilterContainer<T>> getFilterContainers(final Coordinate coordinate) {
+	public List<FilterContainer<T>> getFilterContainers(final Coordinate coordinate) {
 		final int replicateSize = conditionParameter.getReplicateSize();
-		final List<AbstractFilterContainer<T>> filterContainers = new ArrayList<AbstractFilterContainer<T>>(replicateSize);
+		final List<FilterContainer<T>> filterContainers = new ArrayList<FilterContainer<T>>(replicateSize);
 		
 		for (final AbstractDataBuilder<T> dataBuilder : dataBuilders) {
-			filterContainers.add(dataBuilder.getFilterContainer(coordinate));
+			filterContainers.add(dataBuilder.getFilterContainer());
 		}
 
 		return filterContainers;

@@ -2,9 +2,10 @@ package lib.data;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.basecall.PileupData;
+import lib.data.generator.DataGenerator;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoordinate;
 import lib.data.has.hasPileupCount;
-import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
 
 /**
@@ -12,29 +13,29 @@ import lib.util.Coordinate;
  * @author Michael Piechotta
  *
  */
-public class ParallelData<T extends AbstractData> 
+public class ParallelData<X extends AbstractData> 
 implements hasCoordinate {
 	
-	private AbstractMethodFactory<T> methodFactory;
+	private DataGenerator<X> dataGenerator;
 	
 	private Coordinate coordinate;
 
-	private T[][] data;
-	private T[] cachedCombinedData;
+	private X[][] data;
+	private X[] cachedCombinedData;
 	
-	private T[] cachedPooledData;
-	private T cachedCombinedPooledData;
+	private X[] cachedPooledData;
+	private X cachedCombinedPooledData;
 
 	private int cachedTotalReplicates;
 	
-	public ParallelData(final AbstractMethodFactory<T> methodFactory) {
-		this.methodFactory 		= methodFactory;
+	public ParallelData(final DataGenerator<X> dataGenerator) {
+		this.dataGenerator = dataGenerator;
 		reset();
 	}
 
-	public ParallelData(final AbstractMethodFactory<T> methodFactory, 
-			final Coordinate coordinate, final T[][] data) {
-		this.methodFactory 	= methodFactory;
+	public ParallelData(final DataGenerator<X> dataGenerator, 
+			final Coordinate coordinate, final X[][] data) {
+		this.dataGenerator 	= dataGenerator;
 		this.coordinate 	= new Coordinate(coordinate);
 		
 		int conditions 		= data.length;
@@ -51,13 +52,13 @@ implements hasCoordinate {
 	 * 
 	 * @param parallelData
 	 */
-	public ParallelData(final ParallelData<T> parallelData) {
-		methodFactory = parallelData.methodFactory;
+	public ParallelData(final ParallelData<X> parallelData) {
+		dataGenerator = parallelData.dataGenerator;
 		coordinate = new Coordinate(parallelData.getCoordinate());
 
 		// copy data
-		data = methodFactory.copyContainer(parallelData.data);
-		cachedCombinedData = methodFactory.copyReplicateData(parallelData.cachedCombinedData);
+		data = dataGenerator.copyContainerData(parallelData.data);
+		cachedCombinedData = dataGenerator.copyReplicateData(parallelData.cachedCombinedData);
 		cachedTotalReplicates = parallelData.cachedTotalReplicates;
 	}
 	
@@ -69,13 +70,13 @@ implements hasCoordinate {
 		this.coordinate = coordinate;
 	}
 	
-	public void setData(T[][] data) {
+	public void setData(X[][] data) {
 		this.data = data;
 		resetCache();
 	}
 
 	// make this faster remove data and add new
-	public void setData(int conditionIndex, T[] data) {
+	public void setData(int conditionIndex, X[] data) {
 		this.data[conditionIndex] = data;
 
 		if (cachedCombinedData != null) {
@@ -95,11 +96,14 @@ implements hasCoordinate {
 		coordinate 	= new Coordinate();
 		
 		if (data != null) {
-			data = methodFactory.createContainer(data.length);
-		} else {
-			final int conditions = methodFactory.getParameter().getConditionsSize();
-			data = methodFactory.createContainer(conditions); 
+			data = dataGenerator.createContainerData(data.length);
 		}
+		/*
+		else {
+			final int conditions = dataGenerator.getParameter().getConditionsSize();
+			data = dataGenerator.createContainerData(conditions); 
+		}
+		*/
 			
 		resetCache();
 	}
@@ -136,15 +140,15 @@ implements hasCoordinate {
 		return true;
 	}
 
-	public T getPooledData(int conditionIndex) {
+	public X getPooledData(int conditionIndex) {
 		if (cachedPooledData == null) {
-			cachedPooledData = methodFactory.createReplicateData(getConditions());
+			cachedPooledData = dataGenerator.createReplicateData(getConditions());
 		}
 		
 		if (cachedPooledData[conditionIndex] == null && 
 				getReplicates(conditionIndex) > 0) {
 			
-			T tmpData = methodFactory.createData();
+			X tmpData = dataGenerator.createData();
 			tmpData.setCoordinate(getCoordinate()); // TODO check
 			
 			for (int replicateIndex = 0; replicateIndex < getReplicates(conditionIndex); replicateIndex++) {
@@ -156,10 +160,10 @@ implements hasCoordinate {
 		return cachedPooledData[conditionIndex];
 	}
 
-	public T getCombinedPooledData() {
+	public X getCombinedPooledData() {
 		if (cachedCombinedPooledData == null && getPooledData(0) != null) {
 
-			cachedCombinedPooledData = methodFactory.createData();
+			cachedCombinedPooledData = dataGenerator.createData();
 			for (int conditionIndex = 0; conditionIndex < getConditions(); conditionIndex++) {
 				cachedCombinedPooledData.add(getPooledData(conditionIndex));
 			}
@@ -168,9 +172,9 @@ implements hasCoordinate {
 		return cachedCombinedPooledData;
 	}
 	
-	public T[] getCombinedData() {
+	public X[] getCombinedData() {
 		if (cachedCombinedData == null) {
-			cachedCombinedData = methodFactory.createReplicateData(cachedTotalReplicates);
+			cachedCombinedData = dataGenerator.createReplicateData(cachedTotalReplicates);
 
 			int dest = 0;;
 			for (int conditionIndex = 0; conditionIndex < getConditions(); conditionIndex++) {
@@ -187,7 +191,7 @@ implements hasCoordinate {
 		return cachedCombinedData;
 	}
 
-	public T getData(int conditionIndex, int replicateIndex) {
+	public X getData(int conditionIndex, int replicateIndex) {
 		return data[conditionIndex][replicateIndex];
 	}
 
@@ -195,16 +199,16 @@ implements hasCoordinate {
 		return data.length;
 	}
 
-	public T[] getData(int conditionIndex) {
+	public X[] getData(int conditionIndex) {
 		return data[conditionIndex];
 	}
 
-	public ParallelData<T> copy() {
-		return new ParallelData<T>(this);
+	public ParallelData<X> copy() {
+		return new ParallelData<X>(this);
 	}
 
 	public static <S extends PileupData> int[] getNonReferenceBaseIndexs(ParallelData<S> parallelData) {
-		final char referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
+		final byte referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
 		if (referenceBase == 'N') {
 			return new int[0];
 		}
@@ -231,13 +235,13 @@ implements hasCoordinate {
 	}
 
 	// suffices that one replicate contains replicate
-	public static <S extends AbstractData & hasPileupCount> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
+	public static <S extends AbstractData & hasBaseCallCount> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
 		int n = 0;
-		int[] alleles = parallelData.getCombinedPooledData().getPileupCount().getAlleles();
+		int[] alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
 		
 		for (int baseIndex : alleles) {
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
-				if (parallelData.getPooledData(conditionIndex).getPileupCount().getBaseCount(baseIndex) > 0) {
+				if (parallelData.getPooledData(conditionIndex).getBaseCallCount().getBaseCallCount(baseIndex) > 0) {
 					alleles[baseIndex]++;
 				}
 			}

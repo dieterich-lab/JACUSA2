@@ -19,7 +19,6 @@ nucleotide variants (SNVs) from comparing matched sequencing samples.
 
 package jacusa;
 
-
 import jacusa.method.call.CallFactory;
 import jacusa.method.call.OneConditionCallFactory;
 import jacusa.method.call.TwoConditionCallFactory;
@@ -31,6 +30,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import lib.data.PileupReadInfoData;
+import lib.data.basecall.PileupData;
+import lib.data.generator.DataGenerator;
+import lib.data.generator.PileupDataGenerator;
+import lib.data.generator.PileupReadInfoDataGenerator;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
@@ -54,13 +58,16 @@ public class JACUSA extends AbstractTool {
 
 		final List<AbstractMethodFactory<?>> factories = new ArrayList<AbstractMethodFactory<?>>(10);
 		// calling variants
-		factories.add(new OneConditionCallFactory());
-		factories.add(new TwoConditionCallFactory());
-		factories.add(new CallFactory(2)); // TODO make it general
+		DataGenerator<PileupData> dataGenerator = new PileupDataGenerator();
+		factories.add(new OneConditionCallFactory<PileupData>(dataGenerator));
+		factories.add(new TwoConditionCallFactory<PileupData>(dataGenerator));
+		factories.add(new CallFactory<PileupData>(2, dataGenerator)); // TODO make it general
 		// pileup information
-		factories.add(new nConditionPileupFactory(0));
+		factories.add(new nConditionPileupFactory<PileupData>(0, dataGenerator));
 		// Read info
-		factories.add(new RTArrestFactory());
+		
+		DataGenerator<PileupReadInfoData> dataGenerator2 = new PileupReadInfoDataGenerator();
+		factories.add(new RTArrestFactory<PileupReadInfoData>(dataGenerator2));
 
 		for (final AbstractMethodFactory<?> factory : factories) {
 			methodFactories.put(factory.getName(), factory);

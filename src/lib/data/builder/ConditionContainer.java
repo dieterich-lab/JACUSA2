@@ -1,5 +1,7 @@
 package lib.data.builder;
 
+import jacusa.filter.FilterContainer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +33,54 @@ public class ConditionContainer<T extends AbstractData> {
 	public T[][] getData(final Coordinate coordinate) {
 		final int conditions = generalParameter.getConditionsSize();
 
-		final T[][] data = generalParameter.getMethodFactory().createContainer(conditions);
+		final T[][] data = generalParameter.getMethodFactory().createContainerData(conditions);
 		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
 			data[conditionIndex] = getReplicatContainer(conditionIndex).getData(coordinate);
 		}
 
 		return data;
 	}
+
+	public FilterContainer<T> getFilterContainer(final Coordinate coordinate) {
+		// TODO
+		return null;
+	}
+	
+	/*
+	public F[][] getFilteredData(final Coordinate coordinate) {
+		// final int genomicPosition = coordinate.getStart();
+		// final char referenceBase = result.getParellelData().getCombinedPooledData().getReferenceBase();
+		
+		// create container [condition][replicates]
+		final F[][] baseQualData = new PileupData[parallelData.getConditions()][];
+
+		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
+			// filter container per condition
+			final List<FilterContainer<T>> filterContainers = conditionContainer
+					.getReplicatContainer(conditionIndex).getFilterContainers(coordinate);
+
+			// replicates for condition
+			int replicates = filterContainers.size();
+			
+			// container for replicates of a condition
+			PileupData[] replicatesData = new PileupData[replicates];
+
+			// collect data from each replicate
+			for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
+				// replicate specific filter container
+				final FilterContainer<T> filterContainer = filterContainers.get(replicateIndex);
+				// filter storage associated with filter and replicate
+				final AbstractCacheStorage<T> storage = filterContainer.getStorage(getC());
+				// convert genomic to window/storage speficic coordinates
+				final int windowPosition = storage.getBaseCallCache().getWindowCoordinates().convert2WindowPosition(genomicPosition);
+
+				PileupData replicateData = new PileupData(coordinate, referenceBase, filterContainer.getCondition().getLibraryType());
+				replicateData.setBaseQualCount(storage.getBaseCallCache().getBaseCallCount(windowPosition).copy());
+				replicatesData[replicateIndex] = replicateData;
+			}
+		}
+	}
+	*/
 
 	/* TODO
 	public int getAlleleCount(final Coordinate coordinate) {

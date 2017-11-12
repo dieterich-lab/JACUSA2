@@ -4,27 +4,27 @@ import lib.data.basecall.PileupData;
 import lib.data.has.hasReadInfoCount;
 import lib.util.Coordinate;
 
-public class BaseQualReadInfoData
+public class PileupReadInfoData
 extends PileupData
 implements hasReadInfoCount {
 
 	private ReadInfoCount readInfoCount;
 	
-	public BaseQualReadInfoData() {
+	public PileupReadInfoData() {
 		super();
 		
 		readInfoCount = new ReadInfoCount();
 	}
 
-	public BaseQualReadInfoData(final BaseQualReadInfoData pileupData) {
-		super(pileupData);
-		
-		this.readInfoCount = pileupData.readInfoCount.copy();
+	public PileupReadInfoData(final PileupReadInfoData data) {
+		super(data);
+
+		this.readInfoCount = data.readInfoCount.copy();
 	}
 	
-	public BaseQualReadInfoData(final Coordinate coordinate, final char referenceBase, final LIBRARY_TYPE libraryType) {
+	public PileupReadInfoData(final Coordinate coordinate, final byte referenceBase, final LIBRARY_TYPE libraryType) {
 		super(coordinate, referenceBase, libraryType);
-		
+
 		readInfoCount = new ReadInfoCount();
 	}
 		
@@ -37,13 +37,13 @@ implements hasReadInfoCount {
 	public void add(AbstractData abstractData) {
 		super.add(abstractData);
 
-		BaseQualReadInfoData baseQualReadInfoData = (BaseQualReadInfoData) abstractData;
+		PileupReadInfoData baseQualReadInfoData = (PileupReadInfoData) abstractData;
 		readInfoCount.add(baseQualReadInfoData.readInfoCount);
 	}
 	
 	@Override
-	public BaseQualReadInfoData copy() {
-		return new BaseQualReadInfoData(this);
+	public PileupReadInfoData copy() {
+		return new PileupReadInfoData(this);
 	}
 	
 	public String toString() {

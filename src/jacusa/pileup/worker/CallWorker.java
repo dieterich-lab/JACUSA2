@@ -3,13 +3,10 @@ package jacusa.pileup.worker;
 import java.util.List;
 
 import jacusa.cli.parameters.CallParameters;
-import jacusa.filter.AbstractFilter;
-import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.StatisticCalculator;
 import jacusa.pileup.iterator.variant.ParallelDataValidator;
 
 import lib.data.ParallelData;
-import lib.data.Result;
 import lib.data.basecall.PileupData;
 import lib.io.copytmp.CopyTmp;
 import lib.worker.AbstractWorker;

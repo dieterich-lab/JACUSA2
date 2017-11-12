@@ -3,28 +3,33 @@ package lib.data.cache;
 import java.util.Arrays;
 
 import lib.method.AbstractMethodFactory;
+import lib.phred2prob.Phred2Prob;
 import lib.util.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 
+import lib.cli.options.BaseCallConfig;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
+import lib.data.basecall.PileupCount;
 import lib.data.builder.SAMRecordWrapper;
 import lib.data.has.hasPileupCount;
 
-public class PileupCallCache<T extends AbstractData & hasPileupCount> 
+public class PileupCountCache<T extends AbstractData & hasPileupCount> 
 extends AbstractCache<T> {
 
 	private final AbstractConditionParameter<T> conditionParameter;
 	
 	private final int[] coverage;
+
+	private final byte[] referenceBases;
 	private final int[][] baseCalls;
-	
+
 	private final int[][][] baseCallQualities;
 	private final int baseCallQualityRange;
 	
-	public PileupCallCache(final AbstractConditionParameter<T> conditionParamter, final AbstractMethodFactory<T> methodFactory) {
+	public PileupCountCache(final AbstractConditionParameter<T> conditionParamter, final AbstractMethodFactory<T> methodFactory) {
 		super(methodFactory);
 		this.conditionParameter = conditionParamter;
 	
@@ -37,8 +42,13 @@ extends AbstractCache<T> {
 		baseCallQualityRange = maxBaseCallQuality - minBaseCallQuality + 1;
 
 		coverage = new int[getActiveWindowSize()];
-		baseCalls = new int[baseSize][getActiveWindowSize()];
-		baseCallQualities = new int[baseSize][baseCallQualityRange][getActiveWindowSize()];
+		
+		referenceBases = new byte[getActiveWindowSize()];
+		// TODO remove and make this from read using MD string
+		Arrays.fill(referenceBases, (byte)'N');
+		
+		baseCalls = new int[getActiveWindowSize()][baseSize];
+		baseCallQualities = new int[getActiveWindowSize()][baseSize][baseCallQualityRange];
 	}
 
 	@Override
@@ -63,9 +73,31 @@ extends AbstractCache<T> {
 	
 	@Override
 	public T getData(final Coordinate coordinate) {
-		final T data = getMethodFactory().createData();
+		final T data = getDataGenerator().createData();
 		final int windowPosition = getWindowPosition(coordinate);
-		// TODO copy content from cache to data
+		data.setCoordinate(new Coordinate(coordinate));
+		
+		int[] baseCount = new int[BaseCallConfig.BASES.length];
+		byte[][] base2qual = new byte[BaseCallConfig.BASES.length][Phred2Prob.MAX_Q];
+		byte[] minMapq = new byte[BaseCallConfig.BASES.length];		
+
+		if (coverage[windowPosition] > 0) {
+			System.arraycopy(baseCount, 0, baseCalls[windowPosition], 0, baseCount.length);
+			for (int baseIndex = 0; baseIndex < baseCount.length; ++baseIndex) {
+				if (baseCount[baseIndex] > 0) {
+					System.arraycopy(
+							base2qual[baseIndex], conditionParameter.getMinBASQ(), 
+							baseCallQualities[baseIndex][windowPosition], 0, base2qual[baseIndex].length);
+					minMapq[baseIndex] = conditionParameter.getMinBASQ();
+				} else {
+					minMapq[baseIndex] = Phred2Prob.MAX_Q;
+				}
+			}
+		}
+		
+		final PileupCount pileupCount = new PileupCount(referenceBases[windowPosition], baseCount, base2qual, minMapq);
+		data.setPileupCount(pileupCount);
+
 		return data;
 	}
 
@@ -85,6 +117,8 @@ extends AbstractCache<T> {
 	@Override
 	public void clear() {
 		Arrays.fill(coverage, 0);
+		Arrays.fill(referenceBases, (byte)'N');
+
 		for (int[] b : baseCalls) {
 			Arrays.fill(b, 0);	
 		}

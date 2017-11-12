@@ -10,6 +10,7 @@ import lib.cli.options.AbstractACOption;
 import lib.cli.options.SAMPathnameArg;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.generator.DataGenerator;
 import lib.util.AbstractTool;
 import lib.util.coordinateprovider.BedCoordinateProvider;
 import lib.util.coordinateprovider.CoordinateProvider;
@@ -29,10 +30,12 @@ import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.ValidationStringency;
 import htsjdk.samtools.SamReaderFactory.Option;
 
-public abstract class AbstractMethodFactory<T extends AbstractData> {
+public abstract class AbstractMethodFactory<T extends AbstractData> 
+implements DataGenerator<T> {
 
 	private final String name;
 	private final String desc;
+	private final DataGenerator<T> dataGenerator;
 
 	private AbstractParameter<T> parameters;
 
@@ -41,9 +44,10 @@ public abstract class AbstractMethodFactory<T extends AbstractData> {
 	private CoordinateProvider coordinateProvider;
 	
 	public AbstractMethodFactory(final String name, final String desc, 
-			final AbstractParameter<T> parameters) {
+			final AbstractParameter<T> parameters, final DataGenerator<T> dataGenerator) {
 		this.name = name;
 		this.desc = desc;
+		this.dataGenerator = dataGenerator;
 
 		setParameters(parameters);
 		ACOptions 		= new HashSet<AbstractACOption>(10);
@@ -69,10 +73,45 @@ public abstract class AbstractMethodFactory<T extends AbstractData> {
 	protected abstract void initConditionACOptions();
 	protected abstract void initGlobalACOptions();
 	
+	// TODO ???
 	public boolean check() {
 		return true;
 	}
 
+	public DataGenerator<T> getDataGenerator() {
+		return dataGenerator;
+	}
+	
+	@Override
+	public T createData() {
+		return getDataGenerator().createData();
+	}
+
+	@Override
+	public T[] createReplicateData(final int n) {
+		return dataGenerator.createReplicateData(n);
+	}
+
+	@Override
+	public T[][] createContainerData(final int n) {
+		return dataGenerator.createContainerData(n);
+	}
+
+	@Override
+	public T copyData(final T data) {
+		return dataGenerator.copyData(data);
+	}
+	
+	@Override
+	public T[] copyReplicateData(final T[] replicateData) {
+		return dataGenerator.copyReplicateData(replicateData);
+	}
+	
+	@Override
+	public T[][] copyContainerData(final T[][] containerData) {
+		return dataGenerator.copyContainerData(containerData);
+	}
+	
 	protected void addACOption(AbstractACOption newACOption) {
 		if (checkDuplicate(newACOption)) {
 			ACOptions.add(newACOption);
@@ -267,13 +306,5 @@ public abstract class AbstractMethodFactory<T extends AbstractData> {
 	}
 
 	public void debug() {};
-	
-	public abstract T createData();
-	public abstract T[] createReplicateData(final int n);
-	public abstract T[][] createContainer(final int n);
-
-	public abstract T copyData(final T data);
-	public abstract T[] copyReplicateData(final T[] replicateData);
-	public abstract T[][] copyContainer(final T[][] container);
 	
 }
