@@ -2,8 +2,7 @@ package lib.cli.options.condition.filter;
 
 import java.util.List;
 
-import lib.cli.options.condition.filter.samtag.SamTagFilter;
-import lib.cli.options.condition.filter.samtag.SamTagNHFilter;
+import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
 
@@ -20,8 +19,8 @@ public class FilterNHsamTagOption<T extends AbstractData> extends FilterSamTagCo
 	}
 	
 	@Override
-	protected SamTagFilter createSamTagFilter(int value) {
-		return new SamTagNHFilter(value);
+	protected MaxValueSamTagFilter createSamTagFilter(int value) {
+		return new MaxValueSamTagFilter(TAG, value);
 	}
 
 }

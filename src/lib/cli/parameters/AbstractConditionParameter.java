@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.cli.options.condition.filter.samtag.SamTagFilter;
+import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
 import lib.data.AbstractData;
 import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.util.AbstractTool;
@@ -31,7 +31,7 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 	private int retainFlags;
 
 	// filter based on SAM tags
-	private List<SamTagFilter> samTagFilters;
+	private List<MaxValueSamTagFilter> samTagFilters;
 	
 	// path to BAM files
 	private String[] recordFilenames;
@@ -49,7 +49,7 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 		filterFlags 	= 0;
 		retainFlags	 	= 0;
 		
-		samTagFilters 	= new ArrayList<SamTagFilter>();
+		samTagFilters 	= new ArrayList<MaxValueSamTagFilter>();
 		
 		recordFilenames = new String[0];
 	}
@@ -141,14 +141,14 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 	/**
 	 * @return the samTagFilters
 	 */
-	public List<SamTagFilter> getSamTagFilters() {
+	public List<MaxValueSamTagFilter> getSamTagFilters() {
 		return samTagFilters;
 	}
 
 	/**
 	 * @param samTagFilters the samTagFilters to set
 	 */
-	public void setSamTagFilters(final List<SamTagFilter> samTagFilters) {
+	public void setSamTagFilters(final List<MaxValueSamTagFilter> samTagFilters) {
 		this.samTagFilters = samTagFilters;
 	}
 
@@ -188,7 +188,7 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 				&& errors == null // isValid is expensive
 				) { // only store valid records that contain mapped reads
 			// custom filter 
-			for (final SamTagFilter samTagFilter : getSamTagFilters()) {
+			for (final MaxValueSamTagFilter samTagFilter : getSamTagFilters()) {
 				if (samTagFilter.filter(samRecord)) {
 					return false;
 				}

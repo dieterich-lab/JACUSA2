@@ -3,7 +3,7 @@ package lib.cli.options.condition.filter;
 import java.util.List;
 
 import lib.cli.options.condition.AbstractConditionACOption;
-import lib.cli.options.condition.filter.samtag.SamTagFilter;
+import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
 
@@ -16,27 +16,25 @@ public abstract class FilterSamTagConditionOption<T extends AbstractData> extend
 	private String tag;
 
 	public FilterSamTagConditionOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameter, final String tag) {
-		super(new String(), LONG_OPT + tag, conditionIndex, conditionParameter);
+		super(null, LONG_OPT + tag, conditionIndex, conditionParameter);
 		this.tag = tag;
 	}
 
 	public FilterSamTagConditionOption(final List<AbstractConditionParameter<T>> conditionParameters, final String tag) {
-		super(new String(), LONG_OPT + tag, conditionParameters);
+		super(null, LONG_OPT + tag, conditionParameters);
 		this.tag = tag;
 	}
 
 	@Override
 	public Option getOption() {
-		String s = new String();
 
+		String s = "Max " + tag + "-VALUE for SAM tag " + tag;
 		if (getConditionIndex() >= 0) {
-			s = " for condition " + getConditionIndex();
-		} else if (getConditionParameters().size() > 1) {
-			s = " for all conditions";
+			s += " for condition " + getConditionIndex();
+		} else {
+			s += " for all conditions";
 		}
-		// TODO
-		s = "TODO Max " + tag + "-VALUE for SAM tag " + tag;
-
+		
 		return Option.builder(getOpt())
 				.longOpt(getLongOpt())
 				.argName(tag + "-VALUE")
@@ -55,6 +53,6 @@ public abstract class FilterSamTagConditionOption<T extends AbstractData> extend
 	    }
 	}
 
-	protected abstract SamTagFilter createSamTagFilter(int value);  
+	protected abstract MaxValueSamTagFilter createSamTagFilter(int value);  
 
 }

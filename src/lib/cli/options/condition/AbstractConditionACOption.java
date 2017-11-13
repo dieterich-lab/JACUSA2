@@ -20,8 +20,8 @@ extends AbstractACOption {
 	}
 	
 	public AbstractConditionACOption(final String opt, final String longOpt, final int conditionIndex, final AbstractConditionParameter<T> conditionParameter) {
-		super(! opt.isEmpty() ? opt + (conditionIndex + 1): new String(),
-				! longOpt.isEmpty() ? longOpt + (conditionIndex + 1): new String());
+		super(opt != null ? opt + (conditionIndex + 1) : null,
+				longOpt != null ? longOpt + (conditionIndex + 1) : null);
 
 		this.conditionIndex = conditionIndex;
 		conditionParameters = new ArrayList<AbstractConditionParameter<T>>(1);
@@ -36,8 +36,9 @@ extends AbstractACOption {
 		return conditionParameters.get(0);
 	}
 
+	// FIXME ugly
 	public int getConditionIndex() {
-		return conditionIndex;
+		return conditionIndex == -1 ? -1 : conditionIndex + 1;
 	}
 
 }
