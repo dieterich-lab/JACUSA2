@@ -15,12 +15,18 @@ import lib.data.has.hasBaseCallCount;
 public class BaseCallCache<T extends AbstractData & hasBaseCallCount> 
 extends AbstractCache<T> {
 
+	private final int maxDepth;
+	private final byte minBASQ;
+	
 	private final int[] coverage;
 	private final int[][] baseCalls;
 
-	public BaseCallCache(final AbstractMethodFactory<T> methodFactory) {
+	public BaseCallCache(final int maxDepth, final byte minBASQ, final AbstractMethodFactory<T> methodFactory) {
 		super(methodFactory);
 
+		this.maxDepth = maxDepth;
+		this.minBASQ = minBASQ;
+		
 		coverage = new int[getActiveWindowSize()];
 		baseCalls = new int[getBaseSize()][getActiveWindowSize()];
 	}
@@ -67,10 +73,18 @@ extends AbstractCache<T> {
 		
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		for (int j = 0; j < windowPosition.getLength(); ++j) {
+			if (maxDepth > 0 && coverage[windowPosition.getWindowPosition() + j] > maxDepth) {
+				continue;
+			}
 			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[windowPosition.getRead() + j]);
 			if (baseIndex < 0) {
 				continue;
 			}
+			final byte bq = record.getBaseQualities()[windowPosition.getRead() + j];
+			if (bq < minBASQ) {
+				continue;
+			}
+			
 			coverage[windowPosition.getWindowPosition() + j] += 1;
 			baseCalls[windowPosition.getWindowPosition() + j][baseIndex] += 1;
 		}

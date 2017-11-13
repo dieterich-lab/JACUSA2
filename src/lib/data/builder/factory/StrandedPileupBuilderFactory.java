@@ -7,8 +7,8 @@ import lib.data.AbstractData;
 import lib.data.builder.AbstractDataBuilder;
 import lib.data.builder.StrandedPileupBuilder;
 import lib.data.cache.Cache;
-import lib.data.cache.FRPairedEnd1BaseCallCache;
-import lib.data.cache.FRPairedEnd2BaseCallCache;
+import lib.data.cache.FRPairedEnd1Cache;
+import lib.data.cache.FRPairedEnd2Cache;
 import lib.data.cache.PileupCountCache;
 import lib.data.has.hasPileupCount;
 
@@ -24,19 +24,19 @@ extends AbstractDataBuilderFactory<T> {
 
 	@Override
 	public AbstractDataBuilder<T> newInstance(final AbstractConditionParameter<T> conditionParameter) throws IllegalArgumentException {
-		final Cache<T> forward = new PileupCountCache<T>(conditionParameter, getGeneralParameter().getMethodFactory());
-		final Cache<T> reverse = new PileupCountCache<T>(conditionParameter, getGeneralParameter().getMethodFactory());
+		final Cache<T> forward = new PileupCountCache<T>(conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), getGeneralParameter().getMethodFactory());
+		final Cache<T> reverse = new PileupCountCache<T>(conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), getGeneralParameter().getMethodFactory());
 		
 		final FilterContainer<T> filterContainer = null; // TODO
 		
 		switch (getLibraryType()) {
 		case FR_FIRSTSTRAND:
 			return new StrandedPileupBuilder<T>(conditionParameter, LIBRARY_TYPE.FR_FIRSTSTRAND,
-					new FRPairedEnd1BaseCallCache<T>(forward, reverse), filterContainer);
+					new FRPairedEnd1Cache<T>(forward, reverse), filterContainer);
 		
 		case FR_SECONDSTRAND:
 			return new StrandedPileupBuilder<T>(conditionParameter, LIBRARY_TYPE.FR_SECONDSTRAND,
-					new FRPairedEnd2BaseCallCache<T>(forward, reverse), filterContainer);
+					new FRPairedEnd2Cache<T>(forward, reverse), filterContainer);
 
 		default:
 			throw new IllegalArgumentException();

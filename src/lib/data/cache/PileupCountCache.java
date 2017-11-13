@@ -9,7 +9,6 @@ import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 
 import lib.cli.options.BaseCallConfig;
-import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.basecall.PileupCount;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
@@ -18,8 +17,9 @@ import lib.data.has.hasPileupCount;
 public class PileupCountCache<T extends AbstractData & hasPileupCount> 
 extends AbstractCache<T> {
 
-	private final AbstractConditionParameter<T> conditionParameter;
-	
+	private final int maxDepth;
+	private final byte minBASQ;
+
 	private final int[] coverage;
 
 	private final byte[] referenceBases;
@@ -28,10 +28,12 @@ extends AbstractCache<T> {
 	private final byte[][][] baseCallQualities;
 	private final int baseCallQualityRange;
 	
-	public PileupCountCache(final AbstractConditionParameter<T> conditionParamter, final AbstractMethodFactory<T> methodFactory) {
+	public PileupCountCache(final int maxDepth, final byte minBASQ, final AbstractMethodFactory<T> methodFactory) {
 		super(methodFactory);
-		this.conditionParameter = conditionParamter;
 	
+		this.maxDepth = maxDepth;
+		this.minBASQ = minBASQ;
+		
 		// how many bases will be considered
 		final int baseSize = getBaseSize();
 		
@@ -111,22 +113,21 @@ extends AbstractCache<T> {
 		
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		
-		/*
-		if (windowPosition.getWindowPosition() + windowPosition.getLength() >= 10000) {
-			System.out.println(">" + (referencePosition - getActiveWindowCoordinate().getStart()) + " " + readPosition + " " + length);
-			System.out.println("=" + windowPosition.getWindowPosition() + " " + windowPosition.getLength());
-			return;
-		}
-		*/
 		for (int j = 0; j < windowPosition.getLength(); ++j) {
-			final byte baseCallQuality = record.getBaseQualities()[windowPosition.getRead() + j];
+			if (maxDepth > 0 && coverage[windowPosition.getWindowPosition() + j] > maxDepth) {
+				continue;
+			}
 			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[windowPosition.getRead() + j]);
 			if (baseIndex < 0) {
 				continue;
 			}
+			final byte bq = record.getBaseQualities()[windowPosition.getRead() + j];
+			if (bq < minBASQ) {
+				continue;
+			}
 			coverage[windowPosition.getWindowPosition() + j] += 1;
 			baseCalls[windowPosition.getWindowPosition() + j][baseIndex] += 1;
-			baseCallQualities[windowPosition.getWindowPosition() + j][baseIndex][baseCallQuality - conditionParameter.getMinBASQ()] += 1;
+			baseCallQualities[windowPosition.getWindowPosition() + j][baseIndex][bq - getMinBaseCallQuality()] += 1;
 		}
 		
 		
@@ -168,7 +169,7 @@ extends AbstractCache<T> {
 	}
 
 	private byte getMinBaseCallQuality() {
-		return conditionParameter.getMinBASQ();
+		return minBASQ;
 	}
 	
 }

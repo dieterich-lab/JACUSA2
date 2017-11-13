@@ -27,7 +27,7 @@ implements hasLibraryType {
 	public AbstractDataBuilder(
 			final AbstractConditionParameter<T> conditionParameter,
 			final LIBRARY_TYPE libraryType,
-			final Cache<T> cache,
+			Cache<T> cache,
 			FilterContainer<T> filterContainer) {
 		this.conditionParameter	= conditionParameter;
 		this.filterContainer = filterContainer;
@@ -35,6 +35,7 @@ implements hasLibraryType {
 		this.libraryType = libraryType;
 		
 		this.cache = cache;
+
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
 	}
 

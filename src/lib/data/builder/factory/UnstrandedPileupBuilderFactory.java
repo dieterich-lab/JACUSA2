@@ -22,7 +22,7 @@ extends AbstractDataBuilderFactory<T> {
 
 	@Override
 	public UnstrandedPileupBuilder<T> newInstance(final AbstractConditionParameter<T> conditionParameter) {
-		final Cache<T> cache =  new PileupCountCache<T>(conditionParameter, getGeneralParameter().getMethodFactory());
+		final Cache<T> cache =  new PileupCountCache<T>(conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), getGeneralParameter().getMethodFactory());
 		final FilterContainer<T> filterContainer = null; // TODO
 
 		return new UnstrandedPileupBuilder<T>(conditionParameter, cache, filterContainer);
