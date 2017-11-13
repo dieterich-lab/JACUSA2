@@ -1,7 +1,10 @@
 package lib.method;
 
+import jacusa.data.validator.ParallelDataValidator;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,7 +55,6 @@ implements DataGenerator<T> {
 
 		setParameters(parameters);
 		ACOptions 		= new HashSet<AbstractACOption>(10);
-		workerDispatcher = new WorkerDispatcher<T>(this);
 	}
 	
 	// needed for Methods where the number of conditions is unknown... 
@@ -68,11 +70,15 @@ implements DataGenerator<T> {
 		return parameters;
 	}
 
-	public WorkerDispatcher<T> getWorkerDispatcher() {
+	public final WorkerDispatcher<T> getWorkerDispatcher() {
+		if (workerDispatcher == null) {
+			workerDispatcher = new WorkerDispatcher<T>(this);
+		}
+		
 		return workerDispatcher;
 	}
 
-	public abstract AbstractWorker<T> createWorker();
+	public abstract AbstractWorker<T> createWorker(final int threadId);
 
 	public abstract void initACOptions();
 	protected abstract void initConditionACOptions();
@@ -276,6 +282,11 @@ implements DataGenerator<T> {
 	 */
 	public CoordinateProvider getCoordinateProvider() {
 		return coordinateProvider;
+	}
+
+	public List<ParallelDataValidator<T>> getParallelDataValidators() {
+		final List<ParallelDataValidator<T>> parallelDataValidators = new ArrayList<ParallelDataValidator<T>>(5);
+		return parallelDataValidators;
 	}
 	
 	/**

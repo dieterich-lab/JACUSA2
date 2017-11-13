@@ -47,13 +47,15 @@ public class WorkerDispatcher<T extends AbstractData> {
 		currentCoordinateIndex = 0;
 	}
 
-	protected AbstractWorker<T> createWorker() {
-		return methodFactory.createWorker();
+	protected synchronized AbstractWorker<T> createWorker() {
+		return methodFactory.createWorker(workerContainer.size());
 	}
 	
 	public synchronized Coordinate next() {
 		currentCoordinateIndex++;
-		return coordinateProvider.next();
+		
+		Coordinate c = coordinateProvider.next();
+		return c;
 	}
 
 	public synchronized boolean hasNext() {
@@ -62,7 +64,7 @@ public class WorkerDispatcher<T extends AbstractData> {
 
 	public int run() throws IOException {
 	    final long startTime = System.currentTimeMillis();
-	    progressIndicator.print("Implanting variants:");
+	    progressIndicator.print("Working:");
 
 		while (hasNext() || ! runningWorkers.isEmpty()) {
 			for (int i = 0; i < runningWorkers.size(); ++i) {

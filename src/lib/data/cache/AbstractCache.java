@@ -24,22 +24,39 @@ implements Cache<T> {
 		return methodFactory;
 	}
 
-	public void setWindowCoordinates(final Coordinate activeWindowCoordinate) {
+	public void setActiveWindowCoordinate(final Coordinate activeWindowCoordinate) {
 		this.activeWindowCoordinate = activeWindowCoordinate;
 		clear();
 	}
 	
-	public Coordinate getActiveWindowCoordinates() {
+	public Coordinate getActiveWindowCoordinate() {
 		return activeWindowCoordinate;
 	}
 	
-	protected int getWindowPosition(final Coordinate coordinate) {
-		return Coordinate.makeRelativePosition(activeWindowCoordinate, coordinate.getPosition());
+	protected WindowPosition getWindowPosition(final Coordinate coordinate) {
+		return getWindowPosition(coordinate.getPosition());
 	}
 
-	protected Entry<Integer, STRAND> getStrandedWindowPosition(final Coordinate coordinate) {
-		final int windowPosition = Coordinate.makeRelativePosition(activeWindowCoordinate, coordinate.getPosition());
-		return new SimpleEntry<Integer, STRAND>(windowPosition, coordinate.getStrand());
+	protected WindowPosition getWindowPosition(final int referencePosition) {
+		final WindowPosition windowPosition = new WindowPosition();
+		final Coordinate coordinate = getActiveWindowCoordinate();
+		
+		windowPosition.leftOffset = coordinate.getStart() - referencePosition;
+		windowPosition.rightOffset = referencePosition - coordinate.getEnd();
+		if (windowPosition.leftOffset < 0) {
+			windowPosition.i = -1;
+		} else if (windowPosition.rightOffset > 0) {
+			windowPosition.i = -1;
+		} else {
+			windowPosition.i = windowPosition.leftOffset;
+		}
+		
+		return windowPosition;
+	}
+	
+	protected Entry<WindowPosition, STRAND> getStrandedWindowPosition(final Coordinate coordinate) {
+		final WindowPosition windowPosition = getWindowPosition(coordinate);
+		return new SimpleEntry<WindowPosition, STRAND>(windowPosition, coordinate.getStrand());
 	}
 
 	protected BaseCallConfig getBaseCallConfig() {

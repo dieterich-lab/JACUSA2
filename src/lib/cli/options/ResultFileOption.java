@@ -23,7 +23,8 @@ public class ResultFileOption extends AbstractACOption {
 
 	@Override
 	public Option getOption() {
-		return Option.builder().longOpt(getLongOpt())
+		return Option.builder(getOpt())
+			.longOpt(getLongOpt())
 			.argName(getLongOpt().toUpperCase())
 			.hasArg(true)
 	        .desc("results are written to " + getLongOpt().toUpperCase() + " or STDOUT if empty")

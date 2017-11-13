@@ -1,5 +1,6 @@
 package lib.worker;
 
+import jacusa.data.validator.CompositeParallelDataValidator;
 import jacusa.data.validator.ParallelDataValidator;
 
 import java.util.Iterator;
@@ -37,16 +38,17 @@ implements Iterator<ParallelData<T>> {
 	private STATUS status;
 	
 	public AbstractWorker(final WorkerDispatcher<T> workerDispatcher,
-			final ParallelDataValidator<T> parallelDataValidator,
+			final int threadId,
+			final List<ParallelDataValidator<T>> parallelDataValidators,
 			final AbstractParameter<T> generalParameter) {
 		this.workerDispatcher = workerDispatcher;
-		threadIdContainer = new ThreadIdContainer(workerDispatcher.getWorkerContainer().size());
+		threadIdContainer = new ThreadIdContainer(threadId);
 
 		conditionContainer = new ConditionContainer<T>(generalParameter);
 		coordinateController = new CoordinateController(generalParameter.getActiveWindowSize(), 
 				createReferenceAdvancer(generalParameter.getConditionParameters()));
 
-		this.parallelDataValidator = parallelDataValidator;
+		this.parallelDataValidator = new CompositeParallelDataValidator<T>(parallelDataValidators);
 		status = STATUS.INIT;
 	}
 
@@ -77,13 +79,9 @@ implements Iterator<ParallelData<T>> {
 			return null;
 		}
 
-		final Coordinate coordinate = new Coordinate(
-				coordinateController.getReferenceAdvance().getCurrentCoordinate());
+		final ParallelData<T> parallelData = new ParallelData<T>(this.parallelData);
 		coordinateController.advance();
 		
-		final ParallelData<T> parallelData = new ParallelData<T>(workerDispatcher.getMethodFactory());
-		parallelData.setData(conditionContainer.getData(coordinate));
-		parallelData.setCoordinate(coordinate);
 		return parallelData;
 	}
 	
@@ -101,8 +99,7 @@ implements Iterator<ParallelData<T>> {
 				reservedWindowCoordinate.getEnd());
 		
 		coordinateController.updateReserved(reservedWindowCoordinate);
-		final Coordinate activeWindowCoordinate = coordinateController.getActive();
-		conditionContainer.updateWindowCoordinates(activeWindowCoordinate, reservedWindowCoordinate);
+		conditionContainer.updateWindowCoordinates(coordinateController.next(), reservedWindowCoordinate);
 	}
 
 	protected void processInit() {
@@ -126,8 +123,11 @@ implements Iterator<ParallelData<T>> {
 	
 	protected void processReady() {
 		status = STATUS.BUSY;
+		for (final CopyTmp copyTmp : getCopyTmps()) {
+			copyTmp.nextIteration();
+		}
 		while (hasNext()) {
-			ParallelData<T> parallelData = next();
+			final ParallelData<T> parallelData = next();
 			doWork(parallelData);	
 		}
 		status = STATUS.INIT;
@@ -200,6 +200,7 @@ implements Iterator<ParallelData<T>> {
 	
 	private CoordinateAdvancer createReferenceAdvancer(final List<AbstractConditionParameter<T>> conditionParameters) {
 		final Coordinate coordinate = new Coordinate();
+
 		for (final AbstractConditionParameter<T> conditionParameter : conditionParameters) {
 			if (conditionParameter.getDataBuilderFactory().isStranded()) {
 				coordinate.setStrand(STRAND.FORWARD);

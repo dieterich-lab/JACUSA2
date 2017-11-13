@@ -22,27 +22,29 @@ public class CoordinateController {
 		active = null;
 		reserved = reservedWindowCoordinate;
 		provider = new WindowedCoordinateProvider(reservedWindowCoordinate, activeWindowSize);
-
-		if (hasNext()) {
-			updateReferenceAdvancer(next());
-		} else {
-			updateReferenceAdvancer(new Coordinate());
-		}
+		updateReferenceAdvancer(new Coordinate());
+		referenceAdvancer.getCurrentCoordinate().setContig(reservedWindowCoordinate.getContig());
 	}
-	
+
 	public boolean hasNext() {
 		return provider.hasNext();
 	}
 	
 	public Coordinate next() {
+		if (! hasNext()) {
+			return null;
+		}
+
 		active = provider.next();
 		updateReferenceAdvancer(active);
 		return active;
 	}
-	
+
+	/*
 	public Coordinate getActive() {
 		return active;
 	}
+	*/
 	
 	public Coordinate getReserved() {
 		return reserved;

@@ -104,11 +104,11 @@ public class Coordinate {
 	}
 	
 	public static int makeRelativePosition(final Coordinate coordinate, final int position) {
-		if(position > coordinate.getEnd()){
+		if(position > coordinate.getEnd() || position < coordinate.getStart()){
 			return -1;
 		}
 		int windowPosition = position - coordinate.getStart();
-		return windowPosition >= 0 ? windowPosition : -1;
+		return windowPosition;
 	}
 	
 	public static STRAND invertStrand(final STRAND strand) {

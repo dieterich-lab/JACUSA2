@@ -23,7 +23,7 @@ extends AbstractParameter<T> {
 	public AbstractConditionParameter<T> createConditionParameter(
 			AbstractDataBuilderFactory<T> dataBuilderFactory) {
 		
-		return new JACUSAConditionParameter<>(dataBuilderFactory);
+		return new JACUSAConditionParameter<T>(dataBuilderFactory);
 	}
 	
 }

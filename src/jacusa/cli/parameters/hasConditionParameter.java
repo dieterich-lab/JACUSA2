@@ -5,7 +5,7 @@ import java.util.List;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
 
-public interface hasDefaultConditions<T extends AbstractData> {
+public interface hasConditionParameter<T extends AbstractData> {
 
 	List<AbstractConditionParameter<T>> getConditionParameters();
 	AbstractConditionParameter<T> getConditionParameter(int conditionIndex);

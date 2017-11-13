@@ -76,7 +76,7 @@ public class JACUSA extends AbstractTool {
 	}
 
 	@Override
-	protected String addEpilog() {
+	protected String getEpilog() {
 		final StringBuilder sb = new StringBuilder();
 
 		// print statistics to STDERR
@@ -100,9 +100,13 @@ public class JACUSA extends AbstractTool {
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		JACUSA jacusa = new JACUSA(args);
-		jacusa.run();
+		try {
+			jacusa.run();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

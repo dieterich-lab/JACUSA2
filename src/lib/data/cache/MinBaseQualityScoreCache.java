@@ -51,4 +51,14 @@ implements Cache<T> {
 		return cache.getDataGenerator();
 	}
 	
+	@Override
+	public Coordinate getActiveWindowCoordinate() {
+		return cache.getActiveWindowCoordinate();
+	}
+	
+	@Override
+	public void setActiveWindowCoordinate(Coordinate coordinate) {
+		cache.setActiveWindowCoordinate(coordinate);
+	}
+	
 }

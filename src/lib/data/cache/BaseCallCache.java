@@ -40,15 +40,14 @@ extends AbstractCache<T> {
 	@Override
 	public void addRecordWrapperRegion(final int readPosition, final int length, final SAMRecordWrapper recordWrapper) {
 		final int referencePosition = recordWrapper.getSAMRecord().getReferencePositionAtReadPosition(readPosition);
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinates(), referencePosition);
-		incrementBaseCalls(windowPosition, readPosition, length, recordWrapper);
+		incrementBaseCalls(referencePosition, readPosition, length, recordWrapper);
 	}
 
 	@Override
 	public T getData(final Coordinate coordinate) {
 		final T data = getDataGenerator().createData();
 
-		final int windowPosition = getWindowPosition(coordinate);
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
 		if (coverage[windowPosition] == 0) {
 			return data;
 		}
@@ -60,17 +59,33 @@ extends AbstractCache<T> {
 		return data;
 	}
 
-	protected void incrementBaseCalls(final int windowPosition, final int readPosition, final int length, final SAMRecordWrapper recordWrapper) {
+	protected void incrementBaseCalls(final int referencePosition, int readPosition, int length, final SAMRecordWrapper recordWrapper) {
+		final WindowPosition windowPosition = getWindowPosition(referencePosition);
+
+		if (windowPosition.leftOffset < 0) {
+			windowPosition.i += -windowPosition.leftOffset;
+			windowPosition.rightOffset += windowPosition.leftOffset;
+			windowPosition.leftOffset += windowPosition.leftOffset;
+			
+			readPosition += -windowPosition.leftOffset;
+			length += windowPosition.leftOffset;
+		}
+
+		if (windowPosition.rightOffset > 0) {
+			length -= windowPosition.rightOffset;
+			windowPosition.rightOffset -= windowPosition.rightOffset;
+		}
+		
 		final SAMRecord record = recordWrapper.getSAMRecord();
-		for (int i = 0; i < length; ++i) {
+		for (int j = 0; j < length; ++j) {
 			// consider only chosen bases
-			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[readPosition + i]);
+			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[readPosition + j]);
 			if (baseIndex < 0) {
 				continue;
 			}
 
-			coverage[windowPosition] += 1;
-			baseCalls[baseIndex][windowPosition] += 1;
+			coverage[windowPosition.i + j] += 1;
+			baseCalls[baseIndex][windowPosition.i + j] += 1;
 		}
 	}
 	

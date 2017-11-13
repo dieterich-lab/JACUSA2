@@ -54,8 +54,9 @@ extends AbstractCache<T> {
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		for (final AlignmentBlock block : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
-			int readPosition = block.getReadStart() - 1;
-			addRecordWrapperRegion(readPosition, block.getLength(), recordWrapper);
+			final int referencePosition = block.getReferenceStart() - 1; 
+			final int readPosition = block.getReadStart() - 1;
+			incrementBaseCalls(referencePosition, readPosition, block.getLength(), recordWrapper);
 		}
 	}
 	
@@ -67,14 +68,13 @@ extends AbstractCache<T> {
 	@Override
 	public void addRecordWrapperRegion(final int readPosition, final int length, final SAMRecordWrapper recordWrapper) {
 		final int referencePosition = recordWrapper.getSAMRecord().getReferencePositionAtReadPosition(readPosition);
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinates(), referencePosition);
-		incrementBaseCalls(windowPosition, readPosition, length, recordWrapper);
+		incrementBaseCalls(referencePosition, readPosition, length, recordWrapper);
 	}
 	
 	@Override
 	public T getData(final Coordinate coordinate) {
 		final T data = getDataGenerator().createData();
-		final int windowPosition = getWindowPosition(coordinate);
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
 		data.setCoordinate(new Coordinate(coordinate));
 		
 		int[] baseCount = new int[BaseCallConfig.BASES.length];
@@ -101,16 +101,35 @@ extends AbstractCache<T> {
 		return data;
 	}
 
-	protected void incrementBaseCalls(final int windowPosition, final int readPosition, final int length, 
+	protected void incrementBaseCalls(final int referencePosition, int readPosition, int length, 
 			final SAMRecordWrapper recordWrapper) {
 
+		final WindowPosition windowPosition = getWindowPosition(referencePosition);
+
+		if (windowPosition.leftOffset < 0) {
+			windowPosition.i += -windowPosition.leftOffset;
+			windowPosition.rightOffset += windowPosition.leftOffset;
+			windowPosition.leftOffset += windowPosition.leftOffset;
+			if (windowPosition.leftOffset < 0) {
+				return;
+			}
+			
+			readPosition += -windowPosition.leftOffset;
+			length += windowPosition.leftOffset;
+		}
+
+		if (windowPosition.rightOffset > 0) {
+			length -= windowPosition.rightOffset;
+			windowPosition.rightOffset -= windowPosition.rightOffset;
+		}
+		
 		final SAMRecord record = recordWrapper.getSAMRecord();
-		for (int i = 0; i < length; ++i) {
-			final byte baseCallQuality = record.getBaseQualities()[readPosition + i];
-			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[readPosition + i]);
-			coverage[windowPosition] += 1;
-			baseCalls[baseIndex][windowPosition] += 1;
-			baseCallQualities[baseIndex][baseCallQuality - conditionParameter.getMinBASQ()][windowPosition] += 1;
+		for (int j = 0; j < length; ++j) {
+			final byte baseCallQuality = record.getBaseQualities()[readPosition + j];
+			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[readPosition + j]);
+			coverage[windowPosition.i + j] += 1;
+			baseCalls[windowPosition.i + j][baseIndex] += 1;
+			baseCallQualities[windowPosition.i + j][baseIndex][baseCallQuality - conditionParameter.getMinBASQ()] += 1;
 		}
 	}
 	

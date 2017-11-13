@@ -26,15 +26,15 @@ extends AbstractWorker<T> {
 	private List<CopyTmp> copyTmps;
 	
 	public PileupWorker(final WorkerDispatcher<T> workerDispatcher, 
-			final ParallelDataValidator<T> parallelDataValidator, 
+			final int threadId,
+			final List<ParallelDataValidator<T>> parallelDataValidators, 
 			final PileupParameters<T> pileupParameter) {
 
-		super(workerDispatcher, parallelDataValidator, pileupParameter);
+		super(workerDispatcher, threadId, parallelDataValidators, pileupParameter);
 		this.pileupParameter = pileupParameter;
 		try {
-			copyTmpResult = new CopyTmpResult<T>(getThreadIdContainer().getThreadId(), pileupParameter);
+			copyTmpResult = new CopyTmpResult<T>(threadId, pileupParameter);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -43,7 +43,7 @@ extends AbstractWorker<T> {
 	}
 
 	@Override
-	protected void doWork(ParallelData<T> parallelData) {
+	protected void doWork(final ParallelData<T> parallelData) {
 		Result<T> result = new Result<T>();
 		result.setParallelData(parallelData);
 		

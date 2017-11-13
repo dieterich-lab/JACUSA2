@@ -30,15 +30,16 @@ extends AbstractWorker<T> {
 	
 	public CallWorker(
 			final WorkerDispatcher<T> workerDispatcher,
-			final ParallelDataValidator<T> parallelDataValidator,
+			final int threadId, 
+			final List<ParallelDataValidator<T>> parallelDataValidators,
 			final CallParameter<T> callParameter) {
 
-		super(workerDispatcher, parallelDataValidator, callParameter);
+		super(workerDispatcher, threadId, parallelDataValidators, callParameter);
 		this.statisticCalculator = callParameter.getStatisticParameters().getStatisticCalculator();
 		this.callParameter = callParameter;
 		
 		try {
-			copyTmpResult = new CopyTmpResult<T>(getThreadIdContainer().getThreadId(), callParameter);
+			copyTmpResult = new CopyTmpResult<T>(threadId, callParameter);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

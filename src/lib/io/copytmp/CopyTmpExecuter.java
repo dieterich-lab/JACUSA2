@@ -19,14 +19,13 @@ public class CopyTmpExecuter<T extends AbstractData> {
 	}
 
 	public void copy() throws IOException {
-		int iteration = 0;
-		for (int threadId : threadIds) {
+		for (int iteration = 0; iteration < threadIds.size(); iteration++) {
+			final int threadId = threadIds.get(iteration);
 			// current worker
 			final AbstractWorker<T> worker = workerContainer.get(threadId);
 			for (final CopyTmp copyTmp : worker.getCopyTmps()) {
 				copyTmp.copy(iteration);
 			}
-			++iteration;
 		}
 	}
 

@@ -29,16 +29,17 @@ extends AbstractWorker<T> {
 	private List<CopyTmp> copyTmps;
 	
 	public RTArrestWorker(final WorkerDispatcher<T> workerDispatcher,
-			final ParallelDataValidator<T> parallelDataValidator, 
+			final int threadId,
+			final List<ParallelDataValidator<T>> parallelDataValidators, 
 			final RTArrestParameters<T> rtArrestParameter) {
 
-		super(workerDispatcher,parallelDataValidator, rtArrestParameter);
+		super(workerDispatcher, threadId, parallelDataValidators, rtArrestParameter);
 		this.rtArrestParameter = rtArrestParameter;
 		statisticCalculator = rtArrestParameter
 				.getStatisticParameters().getStatisticCalculator().newInstance();
 		
 		try {
-			copyTmpResult = new CopyTmpResult<>(getThreadIdContainer().getThreadId(), rtArrestParameter);
+			copyTmpResult = new CopyTmpResult<T>(threadId, rtArrestParameter);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

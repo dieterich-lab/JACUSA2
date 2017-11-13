@@ -40,13 +40,13 @@ extends AbstractCache<T> {
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		
 		int windowPosition1 = Coordinate.makeRelativePosition(
-				getActiveWindowCoordinates(), record.getAlignmentStart());
+				getActiveWindowCoordinate(), record.getAlignmentStart());
 		if (windowPosition1 != -1) {
 			readStartCount[windowPosition1]++;
 		}
 		
 		int windowPosition2 = Coordinate.makeRelativePosition(
-				getActiveWindowCoordinates(), record.getAlignmentEnd());
+				getActiveWindowCoordinate(), record.getAlignmentEnd());
 		if (windowPosition2 != -1) {
 			readStartCount[windowPosition2]++;
 		}
@@ -56,7 +56,7 @@ extends AbstractCache<T> {
 	public T getData(final Coordinate coordinate) {
 		final T data = getDataGenerator().createData();
 
-		final int windowPosition = getWindowPosition(coordinate);
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
 		data.getReadInfoCount().setStart(readStartCount[windowPosition]);
 		data.getReadInfoCount().setEnd(readEndCount[windowPosition]);
 
@@ -71,12 +71,12 @@ extends AbstractCache<T> {
 	}
 
 	public int getReadStartCount(final Coordinate coordinate) {
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinates(), coordinate.getPosition());
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
 		return readStartCount[windowPosition];
 	}
 
 	public int getReadEndCount(final Coordinate coordinate) {
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinates(), coordinate.getPosition());
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
 		return readEndCount[windowPosition];
 	}
 	

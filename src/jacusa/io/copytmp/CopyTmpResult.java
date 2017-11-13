@@ -39,7 +39,7 @@ public class CopyTmpResult<T extends AbstractData & hasPileupCount> implements C
 		tmpResultWriter = new OutputWriter(new File(tmpResultFilename));
 		tmpCallReader = new BufferedReader(new FileReader(new File(tmpResultFilename)));
 		
-		iteration2storedCalls = new ArrayList<Integer>();
+		iteration2storedCalls = new ArrayList<Integer>(1000);
 	}
 	
 	private String createTmpResultFilename(final int threadId) throws IOException {
@@ -57,7 +57,7 @@ public class CopyTmpResult<T extends AbstractData & hasPileupCount> implements C
 
 	@Override
 	public void nextIteration() {
-		iteration2storedCalls.add(0);		
+		iteration2storedCalls.add(0);
 	}
 
 	public void addResult(Result<T> result, List<AbstractConditionParameter<T>> conditionParameters) throws Exception {
@@ -70,6 +70,10 @@ public class CopyTmpResult<T extends AbstractData & hasPileupCount> implements C
 	
 	@Override
 	public void copy(int iteration) throws IOException {
+		if (! iteration2storedCalls.contains(iteration)) {
+			return ;
+		}
+		
 		int copiedVariants = 0;
 		final int storedVariants = iteration2storedCalls.get(iteration);
 

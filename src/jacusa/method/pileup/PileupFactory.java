@@ -2,7 +2,7 @@ package jacusa.method.pileup;
 
 import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
 import jacusa.cli.parameters.PileupParameters;
-import jacusa.data.validator.DummyValidator;
+import jacusa.data.validator.MinCoverageValidator;
 import jacusa.data.validator.ParallelDataValidator;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.CombinedDistanceFilterFactory;
@@ -45,7 +45,6 @@ import lib.data.generator.DataGenerator;
 import lib.data.has.hasPileupCount;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
-import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.ParseException;
 
@@ -168,11 +167,6 @@ extends AbstractMethodFactory<T> {
 
 		return abstractPileupFilters;
 	}
-	
-	@Override
-	public WorkerDispatcher<T> getWorkerDispatcher() {
-		return new WorkerDispatcher<T>(this);
-	}
 
 	@Override
 	public PileupParameters<T> getParameter() {
@@ -190,9 +184,16 @@ extends AbstractMethodFactory<T> {
 	}
 
 	@Override
-	public PileupWorker<T> createWorker() {
-		final ParallelDataValidator<T> parallelDataValidator = new DummyValidator<T>();
-		return new PileupWorker<T>(getWorkerDispatcher(), parallelDataValidator, getParameter());
+	public List<ParallelDataValidator<T>> getParallelDataValidators() {
+		final List<ParallelDataValidator<T>> validators = super.getParallelDataValidators();
+		validators.add(new MinCoverageValidator<T>(getParameter().getConditionParameters()));
+		return validators;
+	}
+	
+	@Override
+	public PileupWorker<T> createWorker(final int threadId) {
+		return new PileupWorker<T>(getWorkerDispatcher(), threadId, 
+				getParallelDataValidators(), getParameter());
 	}
 
 }

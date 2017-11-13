@@ -60,7 +60,7 @@ public class WindowedCoordinateProvider implements CoordinateProvider {
 		
 		int start = coordinate.getStart();
 		while (start < coordinate.getEnd()) {
-			final int end = Math.max(start + windowSize - 1, coordinate.getEnd());
+			final int end = Math.min(start + windowSize - 1, coordinate.getEnd());
 			coordinates.add(new Coordinate(coordinate.getContig(), start, end));
 			start += windowSize;
 		}

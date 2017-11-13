@@ -3,6 +3,7 @@ package jacusa.method.rtarrest;
 import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
 import jacusa.cli.parameters.RTArrestParameters;
+import jacusa.data.validator.MinCoverageValidator;
 import jacusa.data.validator.ParallelDataValidator;
 import jacusa.data.validator.RTArrestVariantParallelPileup;
 import jacusa.filter.factory.AbstractFilterFactory;
@@ -41,7 +42,6 @@ import lib.data.has.hasPileupCount;
 import lib.data.has.hasReadInfoCount;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
-import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.ParseException;
 
@@ -170,9 +170,17 @@ extends AbstractMethodFactory<T> {
 	}
 
 	@Override
-	public RTArrestWorker<T> createWorker() {
-		final ParallelDataValidator<T> parallelDataValidator = new RTArrestVariantParallelPileup<T>();
-		return new RTArrestWorker<T>(getWorkerDispatcher(), parallelDataValidator, getParameter());
+	public List<ParallelDataValidator<T>> getParallelDataValidators() {
+		final List<ParallelDataValidator<T>> validators = super.getParallelDataValidators();
+		validators.add(new MinCoverageValidator<T>(getParameter().getConditionParameters()));
+		validators.add(new RTArrestVariantParallelPileup<T>());
+		return validators;
+	}
+	
+	@Override
+	public RTArrestWorker<T> createWorker(final int threadId) {
+		return new RTArrestWorker<T>(getWorkerDispatcher(), threadId, 
+				getParallelDataValidators(), getParameter());
 	}
 	
 	
@@ -182,11 +190,6 @@ extends AbstractMethodFactory<T> {
 		AbstractTool.getLogger().addDebug("Overwrite file format -> RTArrestDebugResultFormat");
 		getParameter().setFormat(new RTArrestDebugResultFormat<T>(getParameter().getBaseConfig(), 
 				getParameter().getFilterConfig(), getParameter().showReferenceBase()));
-	}
-
-	@Override
-	public WorkerDispatcher<T> getWorkerDispatcher() {
-		return new WorkerDispatcher<T>(this);
 	}
 	
 }

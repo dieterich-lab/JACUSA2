@@ -37,6 +37,8 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 				return false;
 			}	
 			
+			reset();
+			
 			// try to fill it
 			try {
 				bufferSize = processIterator(activeWindowCoordinate);
@@ -54,6 +56,7 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 	@Override
 	public SAMRecordWrapper next() {
 		if (hasNext()) {
+// System.out.println(bufferPosition + " " + bufferSize);
 			return buffer[bufferPosition++];
 		}
 

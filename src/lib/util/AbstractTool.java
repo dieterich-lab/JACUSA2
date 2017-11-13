@@ -1,6 +1,7 @@
 package lib.util;
 
-
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Map;
 
@@ -28,13 +29,21 @@ public abstract class AbstractTool {
 
 		cli = new CLI(getMethodFactories());
 		
-		final PrintStream ps = System.err;
-		logger = new Logger(ps, this);
+		//final PrintStream ps = System.err;
+		try {
+			PrintStream ps = new PrintStream(new File("JACAUSA2.log"));
+			logger = new Logger(ps, this);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public void run() throws Exception {
 		// prolog printed in logger
 
+		getLogger().addProlog(getProlog());
+		
 		// parse CLI
 		if (! cli.processArgs(args)) {
 			System.exit(1);
@@ -42,16 +51,18 @@ public abstract class AbstractTool {
 		
 		// instantiate chosen method
 		final AbstractMethodFactory<?> methodFactory = cli.getMethodFactory();
-		
+				
 		// run the method...
 		workerDispatcher = methodFactory.getWorkerDispatcher();
 		workerDispatcher.run();
 
+		getLogger().addEpilog(getEpilog());
+		
 		// TODO close
 	}
 
 	protected abstract Map<String, lib.method.AbstractMethodFactory<?>> getMethodFactories();
-	protected abstract String addEpilog();
+	protected abstract String getEpilog();
 
 	protected String getProlog() {
 		final StringBuilder sb = new StringBuilder();

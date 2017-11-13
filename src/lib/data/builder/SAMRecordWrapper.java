@@ -115,7 +115,7 @@ public class SAMRecordWrapper {
 				break;
 
 			default:
-				throw new RuntimeException("Unsupported Cigar Operator: " + cigarElement.getOperator().toString());
+				break;
 			}
 
 			cigarElementWrappers.add(new CigarElementWrapper(position.clone(), cigarElement));

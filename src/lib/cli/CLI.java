@@ -97,6 +97,12 @@ public class CLI {
 			System.exit(0);
 		}
 		
+		try {
+			methodFactory.initCoordinateProvider();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		/*
 		// check stranded and VCF chosen
 		if (methodFactory.getParameters().getFormat().getC() == VCFcall.CHAR) {

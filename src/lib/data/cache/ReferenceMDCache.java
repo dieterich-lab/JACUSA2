@@ -41,7 +41,7 @@ extends AbstractCache<T> {
 	@Override
 	public T getData(final Coordinate coordinate) {
 		final T data = getDataGenerator().createData();
-		final int windowPosition = getWindowPosition(coordinate);
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
 		data.setReferenceBase(referenceBases[windowPosition]);
 		return data;
 	}

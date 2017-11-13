@@ -30,9 +30,8 @@ public class UnstrandedCoordinateAdvancer implements CoordinateAdvancer {
 
 	@Override
 	public void adjust(final Coordinate coordinate) {
-		coordinate.setStart(coordinate.getStart());
-		coordinate.setEnd(coordinate.getEnd());
-		coordinate.setStrand(coordinate.getStrand());
+		this.coordinate.setPosition(coordinate.getPosition());
+		this.coordinate.setStrand(coordinate.getStrand());
 	}
 	
 }

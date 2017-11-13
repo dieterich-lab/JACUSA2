@@ -23,8 +23,6 @@ implements hasLibraryType {
 	private final Cache<T> cache; 
 	private CACHE_STATUS cacheStatus;
 
-	private Coordinate activeWindowCoordinate;
-
 	public AbstractDataBuilder(
 			final AbstractConditionParameter<T> conditionParameter,
 			final LIBRARY_TYPE libraryType,
@@ -42,9 +40,11 @@ implements hasLibraryType {
 	public List<SAMRecordWrapper> buildCache(final Coordinate activeWindowCoordinate,
 			final Iterator<SAMRecordWrapper> iterator) {
 		
+		cache.clear();
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
 
-		this.activeWindowCoordinate = activeWindowCoordinate;
+		cache.setActiveWindowCoordinate(activeWindowCoordinate);
+		
 		final List<SAMRecordWrapper> recordWrappers = new ArrayList<SAMRecordWrapper>();
 		
 		while (iterator.hasNext()) {
@@ -52,7 +52,9 @@ implements hasLibraryType {
 			// process filters and decode
 			recordWrapper.process();
 			cache.addRecordWrapper(recordWrapper);
-			filterContainer.addRecordWrapper(recordWrapper);
+			if (filterContainer != null) { // FIXME
+				filterContainer.addRecordWrapper(recordWrapper);
+			}
 			
 			recordWrappers.add(recordWrapper);
 		}
@@ -78,7 +80,7 @@ implements hasLibraryType {
 	}
 
 	public Coordinate getActiveWindowCoordinate() {
-		return activeWindowCoordinate;
+		return cache.getActiveWindowCoordinate();
 	}
 
 	public AbstractConditionParameter<T> getConditionParameter() {

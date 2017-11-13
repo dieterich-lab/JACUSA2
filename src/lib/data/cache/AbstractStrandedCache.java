@@ -11,7 +11,7 @@ implements Cache<T> {
 
 	private Cache<T> forward; 
 	private Cache<T> reverse;
-
+	
 	public AbstractStrandedCache(final Cache<T> forward, final Cache<T> reverse) {
 		if (forward.getDataGenerator() != reverse.getDataGenerator()) {
 			throw new IllegalStateException("Forward and reverse Cache have different AbstractMethodFactory");
@@ -42,9 +42,7 @@ implements Cache<T> {
 			final SAMRecordWrapper recordWrapper) {
 
 		final Cache<T> cache = getCache(recordWrapper);
-		for (int i = 0; i < length; ++i) {
-			cache.addRecordWrapperRegion(readPosition, length, recordWrapper);
-		}
+		cache.addRecordWrapperRegion(readPosition, length, recordWrapper);
 	}
 	
 	@Override
@@ -79,6 +77,17 @@ implements Cache<T> {
 			throw new IllegalStateException("Forward and reverse Cache have different AbstractMethodFactory");
 		}
 		return forward.getDataGenerator();
+	}
+	
+	@Override
+	public Coordinate getActiveWindowCoordinate() {
+		return forward.getActiveWindowCoordinate();
+	}
+
+	@Override
+	public void setActiveWindowCoordinate(final Coordinate coordinate) {
+		forward.setActiveWindowCoordinate(coordinate);
+		reverse.setActiveWindowCoordinate(coordinate);
 	}
 	
 }

@@ -31,7 +31,7 @@ extends AbstractCache<T> {
 	public void addRecordWrapperPosition(final int readPosition, final SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		final int referencePosition = record.getReferencePositionAtReadPosition(readPosition);
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinates(), referencePosition);
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), referencePosition);
 		recordWrappers.get(windowPosition).add(recordWrapper);
 	}
 
@@ -41,14 +41,14 @@ extends AbstractCache<T> {
 
 		for (final AlignmentBlock block : record.getAlignmentBlocks()) {
 			int referencePosition = block.getReferenceStart();
-			int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinates(), referencePosition);
+			int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), referencePosition);
 			int readPosition = block.getReadStart() - 1;
 
 			// alignment length
 			int length = block.getLength();
 			
 			if (windowPosition == -1) {
-				windowPosition = referencePosition - getActiveWindowCoordinates().getStart();
+				windowPosition = referencePosition - getActiveWindowCoordinate().getStart();
 				if (windowPosition > getActiveWindowSize()) { // downtstream of window -> ignore TODO distance
 					continue;
 				}
@@ -74,7 +74,7 @@ extends AbstractCache<T> {
 	@Override
 	public T getData(final Coordinate coordinate) {
 		final T data = getDataGenerator().createData();
-		final int windowPosition = getWindowPosition(coordinate); 
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition()); 
 		data.getRecordWrapper().addAll(recordWrappers.get(windowPosition));
 		return data;
 	}
@@ -102,7 +102,7 @@ extends AbstractCache<T> {
 	public void addRecordWrapperRegion(int readPosition, int length, SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		final int referencePosition = record.getReferencePositionAtReadPosition(readPosition);
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinates(), referencePosition);
+		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), referencePosition);
 		incrementBaseCalls(windowPosition, readPosition, length, recordWrapper);
 	}
 

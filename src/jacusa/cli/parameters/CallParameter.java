@@ -25,7 +25,7 @@ extends AbstractParameter<T> implements hasStatisticCalculator<T> {
 	public AbstractConditionParameter<T> createConditionParameter(
 			final AbstractDataBuilderFactory<T> dataBuilderFactory) {
 		
-		return new JACUSAConditionParameter<>(dataBuilderFactory);
+		return new JACUSAConditionParameter<T>(dataBuilderFactory);
 	}
 	
 	@Override

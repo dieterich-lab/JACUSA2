@@ -5,6 +5,7 @@ import jacusa.cli.options.StatisticCalculatorOption;
 import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
 import jacusa.cli.parameters.CallParameter;
+import jacusa.data.validator.MinCoverageValidator;
 import jacusa.data.validator.ParallelDataValidator;
 import jacusa.data.validator.VariantSiteValidator;
 import jacusa.filter.factory.AbstractFilterFactory;
@@ -50,7 +51,6 @@ import lib.data.generator.DataGenerator;
 import lib.data.has.hasPileupCount;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
-import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.ParseException;
 
@@ -147,11 +147,6 @@ extends AbstractMethodFactory<T> {
 					getParameter(), getResultFormats()));
 		}
 	}
-
-	@Override
-	public WorkerDispatcher<T> getWorkerDispatcher() {
-		return new WorkerDispatcher<T>(this);
-	}
 	
 	public Map<String, StatisticCalculator<T>> getStatistics() {
 		final Map<String, StatisticCalculator<T>> statistics = 
@@ -221,11 +216,19 @@ extends AbstractMethodFactory<T> {
 
 		return super.parseArgs(args);
 	}
+	
+	@Override
+	public List<ParallelDataValidator<T>> getParallelDataValidators() {
+		final List<ParallelDataValidator<T>> validators = super.getParallelDataValidators();
+		validators.add(new MinCoverageValidator<T>(getParameter().getConditionParameters()));
+		validators.add(new VariantSiteValidator<T>());
+		return validators;
+	}
 
 	@Override
-	public CallWorker<T> createWorker() {
-		final ParallelDataValidator<T> parallelDataValidator = new VariantSiteValidator<T>();
-		return new CallWorker<T>(getWorkerDispatcher(), parallelDataValidator, 
+	public CallWorker<T> createWorker(final int threadId) {
+		return new CallWorker<T>(getWorkerDispatcher(), threadId, 
+				getParallelDataValidators(), 
 				(CallParameter<T>)getParameter());
 	}
 	

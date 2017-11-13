@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import java.util.List;
 
-import jacusa.cli.parameters.hasDefaultConditions;
+import jacusa.cli.parameters.hasConditionParameter;
 import jacusa.filter.FilterConfig;
 import jacusa.io.Output;
 import jacusa.io.OutputPrinter;
@@ -16,7 +16,7 @@ import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
 public abstract class AbstractParameter<T extends AbstractData>
-implements hasDefaultConditions<T> {
+implements hasConditionParameter<T> {
 	
 	// cache related
 	private int activeWindowSize;
