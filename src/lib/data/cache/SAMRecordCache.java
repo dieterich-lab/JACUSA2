@@ -10,7 +10,7 @@ import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.has.hasRecordWrapper;
 
 public class SAMRecordCache<T extends AbstractData & hasRecordWrapper> 

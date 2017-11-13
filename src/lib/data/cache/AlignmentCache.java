@@ -8,7 +8,7 @@ import lib.util.Coordinate;
 import htsjdk.samtools.SAMRecord;
 
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.has.hasReadInfoCount;
 
 // TODO do we consider read end by quality or by alignment

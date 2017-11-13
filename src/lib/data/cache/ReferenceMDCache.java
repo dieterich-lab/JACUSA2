@@ -8,7 +8,7 @@ import lib.util.Coordinate;
 import htsjdk.samtools.util.SequenceUtil;
 
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.has.hasReferenceBase;
 
 public class ReferenceMDCache<T extends AbstractData & hasReferenceBase> 

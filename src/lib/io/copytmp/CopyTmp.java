@@ -1,11 +1,13 @@
 package lib.io.copytmp;
 
-import java.io.Closeable;
 import java.io.IOException;
 
-public interface CopyTmp extends Closeable {
+public interface CopyTmp {
 
-	public void nextIteration();
-	public void copy(final int iteration) throws IOException;
+	void nextIteration();
+	void copy(final int iteration) throws IOException;
 
+	void closeTmpReader() throws IOException;
+	void closeTmpWriter() throws IOException;
+	
 }

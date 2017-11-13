@@ -33,30 +33,13 @@ implements Cache<T> {
 		return activeWindowCoordinate;
 	}
 	
-	protected WindowPosition getWindowPosition(final Coordinate coordinate) {
-		return getWindowPosition(coordinate.getPosition());
-	}
-
-	protected WindowPosition getWindowPosition(final int referencePosition) {
-		final WindowPosition windowPosition = new WindowPosition();
-		final Coordinate coordinate = getActiveWindowCoordinate();
-		
-		windowPosition.leftOffset = coordinate.getStart() - referencePosition;
-		windowPosition.rightOffset = referencePosition - coordinate.getEnd();
-		if (windowPosition.leftOffset < 0) {
-			windowPosition.i = -1;
-		} else if (windowPosition.rightOffset > 0) {
-			windowPosition.i = -1;
-		} else {
-			windowPosition.i = windowPosition.leftOffset;
-		}
-		
-		return windowPosition;
+	protected int getWindowPosition(final Coordinate coordinate) {
+		return Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
 	}
 	
-	protected Entry<WindowPosition, STRAND> getStrandedWindowPosition(final Coordinate coordinate) {
-		final WindowPosition windowPosition = getWindowPosition(coordinate);
-		return new SimpleEntry<WindowPosition, STRAND>(windowPosition, coordinate.getStrand());
+	protected Entry<Integer, STRAND> getStrandedWindowPosition(final Coordinate coordinate) {
+		final int windowPosition = getWindowPosition(coordinate);
+		return new SimpleEntry<Integer, STRAND>(windowPosition, coordinate.getStrand());
 	}
 
 	protected BaseCallConfig getBaseCallConfig() {

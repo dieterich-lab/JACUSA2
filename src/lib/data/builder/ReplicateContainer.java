@@ -9,6 +9,9 @@ import jacusa.filter.FilterContainer;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapperIterator;
+import lib.data.builder.recordwrapper.SAMRecordWrapperIteratorProvider;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.util.Coordinate;
 
@@ -19,8 +22,6 @@ public class ReplicateContainer<T extends AbstractData> {
 
 	private final List<SAMRecordWrapperIteratorProvider> iteratorProviders;
 	private final List<AbstractDataBuilder<T>> dataBuilders;
-
-	private List<SAMRecordWrapperIterator> iterators;
 	
 	public ReplicateContainer( 
 			final AbstractConditionParameter<T> conditionParameter,
@@ -43,37 +44,23 @@ public class ReplicateContainer<T extends AbstractData> {
 		final List<List<SAMRecordWrapper>> recordWrappers = 
 				new ArrayList<List<SAMRecordWrapper>>(conditionParameter.getReplicateSize());
 		
-		iterators = new ArrayList<SAMRecordWrapperIterator>(conditionParameter.getReplicateSize());
-		
 		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); replicateIndex++) {
 			final SAMRecordWrapperIteratorProvider iteratorProvider = iteratorProviders.get(replicateIndex);
 			final SAMRecordWrapperIterator iterator = 
-					iteratorProvider.createIterator(activeWindowCoordinate, reservedWindowCoordinate);
-			iterators.add(iterator);
+					iteratorProvider.createIterator(activeWindowCoordinate);
 			final AbstractDataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
 
 			// TODO test performance
 			recordWrappers.add(dataBuilder.buildCache(activeWindowCoordinate, iterator));
+			iterator.close();
 		}
 
 		return recordWrappers; 
 	}
 
+	// FIXME
 	public List<List<SAMRecordWrapper>> updateIterators(final Coordinate activeWindowCoordinate) {
-		final List<List<SAMRecordWrapper>> recordWrappers = 
-				new ArrayList<List<SAMRecordWrapper>>(conditionParameter.getReplicateSize());
-		
-		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); replicateIndex++) {
-			final SAMRecordWrapperIterator iterator = iterators.get(replicateIndex);
-			iterator.updateActiveWindowCoordinate(activeWindowCoordinate);
-			
-			final AbstractDataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
-
-			// TODO test performance
-			recordWrappers.add(dataBuilder.buildCache(activeWindowCoordinate, iterator));
-		}
-
-		return recordWrappers; 
+		return createIterators(activeWindowCoordinate, null);
 	}
 	
 	public T[] getData(final Coordinate coordinate) {

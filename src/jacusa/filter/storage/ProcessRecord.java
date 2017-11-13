@@ -1,6 +1,6 @@
 package jacusa.filter.storage;
 
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 
 public interface ProcessRecord {
 

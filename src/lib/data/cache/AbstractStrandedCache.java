@@ -3,7 +3,7 @@ package lib.data.cache;
 import lib.util.Coordinate;
 
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.generator.DataGenerator;
 
 public abstract class AbstractStrandedCache<T extends AbstractData> 

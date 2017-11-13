@@ -1,4 +1,4 @@
-package lib.data.builder;
+package lib.data.builder.recordwrapper;
 
 import java.util.ArrayList;
 import java.util.List;

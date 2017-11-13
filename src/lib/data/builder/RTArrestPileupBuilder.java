@@ -6,6 +6,7 @@ import java.util.List;
 import jacusa.filter.FilterContainer;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.Cache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;

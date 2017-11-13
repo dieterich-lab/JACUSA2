@@ -7,6 +7,8 @@ import org.apache.commons.cli.Option;
 
 public class ThreadWindowSizeOption extends AbstractACOption {
 
+	public final static int NO_WINDOWS= -1;
+	
 	final private AbstractParameter<?> parameters; 
 	
 	public ThreadWindowSizeOption(AbstractParameter<?> parameters) {
@@ -29,7 +31,7 @@ public class ThreadWindowSizeOption extends AbstractACOption {
 		if (line.hasOption(getOpt())) {
 	    	String value = line.getOptionValue(getOpt());
 	    	int windowSize = Integer.parseInt(value);
-	    	if (windowSize < 1) {
+	    	if (windowSize != NO_WINDOWS && windowSize < 100) { // TODO make check when variables set ensure windowSize << threadWindowSize
 	    		throw new IllegalArgumentException("THREAD-WINDOW-SIZE too small: " + windowSize);
 	    	}
 

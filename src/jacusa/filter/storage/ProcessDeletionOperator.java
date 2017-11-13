@@ -1,7 +1,7 @@
 package jacusa.filter.storage;
 
-import lib.data.builder.SAMRecordWrapper;
-import lib.data.builder.SAMRecordWrapper.Position;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper.Position;
 
 public interface ProcessDeletionOperator {
 

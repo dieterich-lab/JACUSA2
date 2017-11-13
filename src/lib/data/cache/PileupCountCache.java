@@ -3,7 +3,6 @@ package lib.data.cache;
 import java.util.Arrays;
 
 import lib.method.AbstractMethodFactory;
-import lib.phred2prob.Phred2Prob;
 import lib.util.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;
@@ -13,7 +12,7 @@ import lib.cli.options.BaseCallConfig;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.basecall.PileupCount;
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.has.hasPileupCount;
 
 public class PileupCountCache<T extends AbstractData & hasPileupCount> 
@@ -26,7 +25,7 @@ extends AbstractCache<T> {
 	private final byte[] referenceBases;
 	private final int[][] baseCalls;
 
-	private final int[][][] baseCallQualities;
+	private final byte[][][] baseCallQualities;
 	private final int baseCallQualityRange;
 	
 	public PileupCountCache(final AbstractConditionParameter<T> conditionParamter, final AbstractMethodFactory<T> methodFactory) {
@@ -37,9 +36,7 @@ extends AbstractCache<T> {
 		final int baseSize = getBaseSize();
 		
 		// range of base call quality score 
-		final byte maxBaseCallQuality = getMaxBaseCallQuality();
-		final byte minBaseCallQuality = conditionParamter.getMinBASQ();
-		baseCallQualityRange = maxBaseCallQuality - minBaseCallQuality + 1;
+		baseCallQualityRange = getMaxBaseCallQuality() - getMinBaseCallQuality();
 
 		coverage = new int[getActiveWindowSize()];
 		
@@ -48,14 +45,17 @@ extends AbstractCache<T> {
 		Arrays.fill(referenceBases, (byte)'N');
 		
 		baseCalls = new int[getActiveWindowSize()][baseSize];
-		baseCallQualities = new int[getActiveWindowSize()][baseSize][baseCallQualityRange];
+		baseCallQualities = new byte[getActiveWindowSize()][baseSize][baseCallQualityRange];
 	}
 
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		for (final AlignmentBlock block : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
-			final int referencePosition = block.getReferenceStart() - 1; 
+			final int referencePosition = block.getReferenceStart(); 
 			final int readPosition = block.getReadStart() - 1;
+			
+			// TODO quit when possible
+			
 			incrementBaseCalls(referencePosition, readPosition, block.getLength(), recordWrapper);
 		}
 	}
@@ -78,19 +78,21 @@ extends AbstractCache<T> {
 		data.setCoordinate(new Coordinate(coordinate));
 		
 		int[] baseCount = new int[BaseCallConfig.BASES.length];
-		byte[][] base2qual = new byte[BaseCallConfig.BASES.length][Phred2Prob.MAX_Q];
+		byte[][] base2qual = new byte[BaseCallConfig.BASES.length][getMaxBaseCallQuality()];
 		byte[] minMapq = new byte[BaseCallConfig.BASES.length];		
 
 		if (coverage[windowPosition] > 0) {
-			System.arraycopy(baseCount, 0, baseCalls[windowPosition], 0, baseCount.length);
+			System.arraycopy(baseCalls[windowPosition], 0, baseCount, 0, baseCount.length);
 			for (int baseIndex = 0; baseIndex < baseCount.length; ++baseIndex) {
 				if (baseCount[baseIndex] > 0) {
 					System.arraycopy(
-							base2qual[baseIndex], conditionParameter.getMinBASQ(), 
-							baseCallQualities[baseIndex][windowPosition], 0, base2qual[baseIndex].length);
-					minMapq[baseIndex] = conditionParameter.getMinBASQ();
+							baseCallQualities[windowPosition][baseIndex], 0, 
+							base2qual[baseIndex], getMinBaseCallQuality(), baseCallQualities[windowPosition][baseIndex].length);
+					minMapq[baseIndex] = getMinBaseCallQuality();
+
 				} else {
-					minMapq[baseIndex] = Phred2Prob.MAX_Q;
+					Arrays.fill(base2qual[baseIndex], (byte)0);
+					minMapq[baseIndex] = getMaxBaseCallQuality();
 				}
 			}
 		}
@@ -101,36 +103,33 @@ extends AbstractCache<T> {
 		return data;
 	}
 
-	protected void incrementBaseCalls(final int referencePosition, int readPosition, int length, 
+	protected void incrementBaseCalls(final int referencePosition, final int readPosition, int length, 
 			final SAMRecordWrapper recordWrapper) {
 
-		final WindowPosition windowPosition = getWindowPosition(referencePosition);
-
-		if (windowPosition.leftOffset < 0) {
-			windowPosition.i += -windowPosition.leftOffset;
-			windowPosition.rightOffset += windowPosition.leftOffset;
-			windowPosition.leftOffset += windowPosition.leftOffset;
-			if (windowPosition.leftOffset < 0) {
-				return;
-			}
-			
-			readPosition += -windowPosition.leftOffset;
-			length += windowPosition.leftOffset;
-		}
-
-		if (windowPosition.rightOffset > 0) {
-			length -= windowPosition.rightOffset;
-			windowPosition.rightOffset -= windowPosition.rightOffset;
-		}
+		final WindowPosition windowPosition = WindowPosition.convert(
+				getActiveWindowCoordinate(), referencePosition, readPosition, length);
 		
 		final SAMRecord record = recordWrapper.getSAMRecord();
-		for (int j = 0; j < length; ++j) {
-			final byte baseCallQuality = record.getBaseQualities()[readPosition + j];
-			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[readPosition + j]);
-			coverage[windowPosition.i + j] += 1;
-			baseCalls[windowPosition.i + j][baseIndex] += 1;
-			baseCallQualities[windowPosition.i + j][baseIndex][baseCallQuality - conditionParameter.getMinBASQ()] += 1;
+		
+		/*
+		if (windowPosition.getWindowPosition() + windowPosition.getLength() >= 10000) {
+			System.out.println(">" + (referencePosition - getActiveWindowCoordinate().getStart()) + " " + readPosition + " " + length);
+			System.out.println("=" + windowPosition.getWindowPosition() + " " + windowPosition.getLength());
+			return;
 		}
+		*/
+		for (int j = 0; j < windowPosition.getLength(); ++j) {
+			final byte baseCallQuality = record.getBaseQualities()[windowPosition.getRead() + j];
+			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[windowPosition.getRead() + j]);
+			if (baseIndex < 0) {
+				continue;
+			}
+			coverage[windowPosition.getWindowPosition() + j] += 1;
+			baseCalls[windowPosition.getWindowPosition() + j][baseIndex] += 1;
+			baseCallQualities[windowPosition.getWindowPosition() + j][baseIndex][baseCallQuality - conditionParameter.getMinBASQ()] += 1;
+		}
+		
+		
 	}
 	
 	@Override
@@ -141,9 +140,9 @@ extends AbstractCache<T> {
 		for (int[] b : baseCalls) {
 			Arrays.fill(b, 0);	
 		}
-		for (int[][] bcs : baseCallQualities) {
-			for (int[] b : bcs) {
-				Arrays.fill(b, 0);	
+		for (byte[][] bcs : baseCallQualities) {
+			for (byte[] b : bcs) {
+				Arrays.fill(b, (byte)0);	
 			}
 		}
 	}
@@ -166,6 +165,10 @@ extends AbstractCache<T> {
 	
 	private byte getMaxBaseCallQuality() {
 		return getBaseCallConfig().getMaxBaseCallQuality();
+	}
+
+	private byte getMinBaseCallQuality() {
+		return conditionParameter.getMinBASQ();
 	}
 	
 }

@@ -128,12 +128,21 @@ public class WorkerDispatcher<T extends AbstractData> {
 	}
 	
 	protected void writeOutput() throws IOException {
+		// FIXME make this independent from the number of arguments
+		final String header = getMethodFactory()
+				.getParameter().getFormat()
+				.getHeader(getMethodFactory().getParameter().getConditionParameters());
+		getMethodFactory().getParameter().getOutput().write(header);
+		
 		progressIndicator.print("Merging tmp files:");
 		AbstractTool.getLogger().addInfo("Started merging tmp files...");
 		final CopyTmpExecuter<T> copyTmpExecuter = new CopyTmpExecuter<T>(threadIds, workerContainer);
 		copyTmpExecuter.copy();
 		progressIndicator.print("\nDone!");
 		AbstractTool.getLogger().addInfo("Finished merging tmp files!");
+
+		// close output
+		getMethodFactory().getParameter().getOutput().close();
 	}
 
 }

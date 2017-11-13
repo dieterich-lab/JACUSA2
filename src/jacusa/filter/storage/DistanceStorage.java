@@ -1,8 +1,8 @@
 package jacusa.filter.storage;
 
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
-import lib.data.builder.SAMRecordWrapper.Position;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper.Position;
 import lib.data.cache.Cache;
 import lib.data.has.hasBaseCallCount;
 

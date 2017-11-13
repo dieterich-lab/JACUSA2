@@ -40,8 +40,14 @@ public class CopyTmpVariants implements CopyTmp {
 		return file.getCanonicalPath();
 	}
 	
-	public void close() throws IOException {
-		tmpVariantWriter.close();
+	@Override
+	public void closeTmpReader() throws IOException {
+		// FIXME	
+	}
+	
+	@Override
+	public void closeTmpWriter() throws IOException {
+		// FIXME
 	}
 
 	@Override

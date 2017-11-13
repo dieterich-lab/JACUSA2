@@ -46,7 +46,7 @@ public class JACUSA extends AbstractTool {
 	private int comparisons;
 	
 	public JACUSA(final String args[]) {
-		super("jacusa", "2.0.0-BETA7", args);
+		super("JACUSA", "2.0.0-BETA7", args);
 		comparisons = 0;
 	}
 
@@ -84,12 +84,14 @@ public class JACUSA extends AbstractTool {
 		sb.append('\n');
 		
 		sb.append("Results can be found in: " + getCLI().getMethodFactory().getParameter().getOutput().getInfo());
-
+		sb.append('\n');
+		
 		final String lineSep = "--------------------------------------------------------------------------------";
 
 		sb.append(lineSep);
 		sb.append('\n');
 		sb.append("Analyzed Parallel Pileups:\t" + comparisons);
+		sb.append('\n');
 		sb.append("Elapsed time:\t\t\t" + getLogger().getTimer().getTotalTimestring());
 
 		return sb.toString();

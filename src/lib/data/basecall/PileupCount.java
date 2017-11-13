@@ -174,9 +174,7 @@ public class PileupCount {
 		
 		int i = 0;
 		final int n = BaseCallConfig.BASES.length;
-		sb.append("ref.: ");
-		sb.append(Byte.toString(referenceBase));
-		sb.append(" (");
+		sb.append("(");
 		sb.append(BaseCallConfig.BASES[i]);
 		++i;
 		for (; i < n; ++i) {
@@ -193,6 +191,8 @@ public class PileupCount {
 			sb.append(baseCount[i]);
 		}
 		sb.append(")");
+		sb.append(" Ref.: ");
+		sb.append((char)referenceBase);
 		
 		return sb.toString();
 	}

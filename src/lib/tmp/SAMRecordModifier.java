@@ -6,7 +6,7 @@ import java.util.List;
 import lib.util.Coordinate;
 import lib.variant.Variant;
 
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 
 public interface SAMRecordModifier extends Iterator<Variant[]> {
 

@@ -59,16 +59,18 @@ implements Iterator<ParallelData<T>> {
 			final Coordinate coordinate = new Coordinate(coordinateController.getReferenceAdvance().getCurrentCoordinate());
 			final T[][] data = conditionContainer.getData(coordinate);
 			parallelData = new ParallelData<T>(workerDispatcher.getMethodFactory(), coordinate, data);
-			do {
-				if (parallelData != null && parallelDataValidator.isValid(parallelData)) {
-					return true;
-				}
-			} while (coordinateController.advance());
-			if (coordinateController.hasNext()) {
-				final Coordinate activeWindowCoordinate = coordinateController.next();
-				conditionContainer.updateActiveWindowCoordinates(activeWindowCoordinate);
+
+			if (parallelData != null && parallelDataValidator.isValid(parallelData)) {
+				return true;
 			}
+			coordinateController.advance();
 		}
+		
+		if (coordinateController.hasNext()) {
+			final Coordinate activeWindowCoordinate = coordinateController.next();
+			conditionContainer.updateActiveWindowCoordinates(activeWindowCoordinate);
+			return hasNext();
+		} 
 
 		return false;
 	}

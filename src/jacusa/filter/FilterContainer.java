@@ -16,7 +16,7 @@ import jacusa.filter.storage.ProcessRecord;
 import jacusa.filter.storage.ProcessSkippedOperator;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 
 /**
  * 

@@ -2,7 +2,7 @@ package lib.data.cache;
 
 import htsjdk.samtools.AlignmentBlock;
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.generator.DataGenerator;
 
 import lib.util.Coordinate;

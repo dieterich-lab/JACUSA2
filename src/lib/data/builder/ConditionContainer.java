@@ -8,6 +8,7 @@ import java.util.List;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.util.Coordinate;
 
 public class ConditionContainer<T extends AbstractData> {

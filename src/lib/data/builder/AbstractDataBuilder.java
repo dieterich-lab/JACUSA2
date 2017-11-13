@@ -8,6 +8,7 @@ import java.util.List;
 
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.Cache;
 import lib.data.has.hasLibraryType;
 import lib.util.Coordinate;
@@ -44,18 +45,17 @@ implements hasLibraryType {
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
 
 		cache.setActiveWindowCoordinate(activeWindowCoordinate);
-		
 		final List<SAMRecordWrapper> recordWrappers = new ArrayList<SAMRecordWrapper>();
 		
 		while (iterator.hasNext()) {
 			final SAMRecordWrapper recordWrapper = iterator.next();
 			// process filters and decode
 			recordWrapper.process();
+			
 			cache.addRecordWrapper(recordWrapper);
 			if (filterContainer != null) { // FIXME
 				filterContainer.addRecordWrapper(recordWrapper);
 			}
-			
 			recordWrappers.add(recordWrapper);
 		}
 

@@ -1,7 +1,7 @@
 package jacusa.filter.storage;
 
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.Cache;
 
 public abstract class AbstractCacheStorage<T extends AbstractData> 

@@ -25,9 +25,9 @@ public class CopyTmpResult<T extends AbstractData & hasPileupCount> implements C
 	private final Output resultWriter;
 	
 	private final Output tmpResultWriter;
-	private final BufferedReader tmpCallReader;
+	private final BufferedReader tmpResultReader;
 	
-	private List<Integer> iteration2storedCalls;
+	private List<Integer> iteration2storedResults;
 	
 	public CopyTmpResult(final int threadId, 
 			final AbstractParameter<T> parameter) throws IOException {
@@ -37,9 +37,9 @@ public class CopyTmpResult<T extends AbstractData & hasPileupCount> implements C
 		
 		final String tmpResultFilename = createTmpResultFilename(threadId);
 		tmpResultWriter = new OutputWriter(new File(tmpResultFilename));
-		tmpCallReader = new BufferedReader(new FileReader(new File(tmpResultFilename)));
+		tmpResultReader = new BufferedReader(new FileReader(new File(tmpResultFilename)));
 		
-		iteration2storedCalls = new ArrayList<Integer>(1000);
+		iteration2storedResults = new ArrayList<Integer>(1000);
 	}
 	
 	private String createTmpResultFilename(final int threadId) throws IOException {
@@ -51,34 +51,37 @@ public class CopyTmpResult<T extends AbstractData & hasPileupCount> implements C
 		return file.getCanonicalPath();
 	}
 	
-	public void close() throws IOException {
+	@Override
+	public void closeTmpReader() throws IOException {
+		tmpResultReader.close();
+	}
+	
+	@Override
+	public void closeTmpWriter() throws IOException {
 		tmpResultWriter.close();
 	}
 
 	@Override
 	public void nextIteration() {
-		iteration2storedCalls.add(0);
+		iteration2storedResults.add(0);
 	}
 
 	public void addResult(Result<T> result, List<AbstractConditionParameter<T>> conditionParameters) throws Exception {
 		final String s = format.convert2String(result);
 		tmpResultWriter.write(s);
-		final int iteration = iteration2storedCalls.size() - 1;
-		final int storedVariants = iteration2storedCalls.get(iteration) + 1;
-		iteration2storedCalls.set(iteration, storedVariants);
+		
+		final int iteration = iteration2storedResults.size() - 1;
+		int storedResults = iteration2storedResults.get(iteration) + 1;
+		iteration2storedResults.set(iteration, storedResults);
 	}
 	
 	@Override
 	public void copy(int iteration) throws IOException {
-		if (! iteration2storedCalls.contains(iteration)) {
-			return ;
-		}
-		
 		int copiedVariants = 0;
-		final int storedVariants = iteration2storedCalls.get(iteration);
+		final int storedVariants = iteration2storedResults.get(iteration);
 
 		String line;
-		while (storedVariants >= copiedVariants && (line = tmpCallReader.readLine()) != null) {
+		while (storedVariants >= copiedVariants && (line = tmpResultReader.readLine()) != null) {
 			resultWriter.write(line);
 			copiedVariants++;
 		}

@@ -58,7 +58,9 @@ implements hasCoordinate {
 
 		// copy data
 		data = dataGenerator.copyContainerData(parallelData.data);
-		cachedCombinedData = dataGenerator.copyReplicateData(parallelData.cachedCombinedData);
+		if (parallelData.cachedCombinedData != null) {
+			cachedCombinedData = dataGenerator.copyReplicateData(parallelData.cachedCombinedData);
+		}
 		cachedTotalReplicates = parallelData.cachedTotalReplicates;
 	}
 	

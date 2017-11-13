@@ -2,7 +2,7 @@ package lib.data.cache;
 
 import htsjdk.samtools.SAMRecord;
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 
 public class FRPairedEnd2BaseCallCache<T extends AbstractData> 
 extends AbstractStrandedCache<T> {

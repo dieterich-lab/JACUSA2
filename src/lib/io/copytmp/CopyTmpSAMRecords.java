@@ -73,6 +73,16 @@ implements CopyTmp {
 	}
 
 	@Override
+	public void closeTmpReader() throws IOException {
+		// FIXME	
+	}
+	
+	@Override
+	public void closeTmpWriter() throws IOException {
+		// FIXME
+	}
+	
+	@Override
 	public void nextIteration() {
 		iteration2storedRecords.add(createRecordCount());
 	}

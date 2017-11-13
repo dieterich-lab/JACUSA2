@@ -9,7 +9,7 @@ import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.has.hasBaseCallCount;
 
 public class BaseCallCache<T extends AbstractData & hasBaseCallCount> 
@@ -59,33 +59,20 @@ extends AbstractCache<T> {
 		return data;
 	}
 
-	protected void incrementBaseCalls(final int referencePosition, int readPosition, int length, final SAMRecordWrapper recordWrapper) {
-		final WindowPosition windowPosition = getWindowPosition(referencePosition);
+	protected void incrementBaseCalls(final int referencePosition, final int readPosition, int length, 
+			final SAMRecordWrapper recordWrapper) {
 
-		if (windowPosition.leftOffset < 0) {
-			windowPosition.i += -windowPosition.leftOffset;
-			windowPosition.rightOffset += windowPosition.leftOffset;
-			windowPosition.leftOffset += windowPosition.leftOffset;
-			
-			readPosition += -windowPosition.leftOffset;
-			length += windowPosition.leftOffset;
-		}
-
-		if (windowPosition.rightOffset > 0) {
-			length -= windowPosition.rightOffset;
-			windowPosition.rightOffset -= windowPosition.rightOffset;
-		}
+		final WindowPosition windowPosition = WindowPosition.convert(
+				getActiveWindowCoordinate(), referencePosition, readPosition, length);
 		
 		final SAMRecord record = recordWrapper.getSAMRecord();
-		for (int j = 0; j < length; ++j) {
-			// consider only chosen bases
-			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[readPosition + j]);
+		for (int j = 0; j < windowPosition.getLength(); ++j) {
+			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[windowPosition.getRead() + j]);
 			if (baseIndex < 0) {
 				continue;
 			}
-
-			coverage[windowPosition.i + j] += 1;
-			baseCalls[baseIndex][windowPosition.i + j] += 1;
+			coverage[windowPosition.getWindowPosition() + j] += 1;
+			baseCalls[windowPosition.getWindowPosition() + j][baseIndex] += 1;
 		}
 	}
 	

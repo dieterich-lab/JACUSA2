@@ -1,33 +1,29 @@
-package lib.data.builder;
+package lib.data.builder.recordwrapper;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
-import lib.util.Coordinate;
-
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
 
+// FIXME
 public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 
 	private SAMRecordWrapperIteratorProvider provider;
-	private Coordinate activeWindowCoordinate;
-	private SAMRecordIterator iterator;
-	
+
 	private int bufferSize;
 	private int bufferPosition;
 	private final SAMRecordWrapper[] buffer;
+	private SAMRecordIterator iterator; 
 	
 	public SAMRecordWrapperIterator(final SAMRecordWrapperIteratorProvider provider, 
-			final Coordinate activeWindowCoordinate,
 			final SAMRecordIterator iterator) {
 		this.provider = provider;
-		this.activeWindowCoordinate = activeWindowCoordinate;
-		this.iterator	= iterator;
 
 		bufferSize		= 0;
 		bufferPosition	= 0;
 		buffer			= new SAMRecordWrapper[40000];
+		this.iterator   = iterator;
 	}
 
 	@Override
@@ -35,13 +31,13 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 		if (bufferSize == 0 || bufferPosition >= bufferSize) { // if buffer empty or exhausted
 			if (iterator == null) {
 				return false;
-			}	
-			
+			}
 			reset();
-			
+
 			// try to fill it
 			try {
-				bufferSize = processIterator(activeWindowCoordinate);
+				bufferSize = processIterator();
+				bufferPosition = 0;
 			}
 			catch  (Exception e) {
 				e.printStackTrace();
@@ -50,13 +46,12 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 			return bufferSize > 0;
 		}
 
-		return true;
+		return buffer[bufferPosition] != null;
 	}
 	
 	@Override
 	public SAMRecordWrapper next() {
 		if (hasNext()) {
-// System.out.println(bufferPosition + " " + bufferSize);
 			return buffer[bufferPosition++];
 		}
 
@@ -71,14 +66,13 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 		return null;
 	}
 
+	/* FIXME
 	public void updateActiveWindowCoordinate(final Coordinate activeWindowCoordinate) {
 		this.activeWindowCoordinate = activeWindowCoordinate;
 		reset();
 	}
+	*/
 
-	public Coordinate getActiveWindowCoordinate() {
-		return activeWindowCoordinate;
-	}
 	
 	// clear buffer
 	private void reset() {
@@ -87,13 +81,19 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 		Arrays.fill(buffer, null);
 	}
 
-	private int processIterator(final Coordinate windowCoordinates) {
+	// TODO overlapping windows
+	// TODO ignore left overlapping records they will be taken from left thread
+	// ignore left overlapping records they will be taken from left thread
+	/*
+	if (record.getAlignmentStart() > windowCoordinates.getEnd()) {
+		return bufferSize;
+	}
+	*/
+	
+	// FIXME
+	private int processIterator() {
 		while (iterator.hasNext() && bufferSize < buffer.length) {
 			final SAMRecord record = iterator.next();
-			// ignore left overlapping records they will be taken from left thread 
-			if (record.getAlignmentStart() < windowCoordinates.getStart()) {
-				continue;
-			}
 
 			boolean isValid = false; 
 			if(provider.getConditionParameter().isValid(record)) {
@@ -103,14 +103,15 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 				provider.incrementFilteredSAMRecords();
 			}
 
-			// TODO overlapping windows
-			final SAMRecordWrapper recordWrapper = new SAMRecordWrapper(isValid, record);
-			buffer[bufferSize++] = recordWrapper;
+			// FIXME
+			if (isValid) {
+				final SAMRecordWrapper recordWrapper = new SAMRecordWrapper(isValid, record);
+				buffer[bufferSize++] = recordWrapper;
+			}
 		}
 		
 		if (! iterator.hasNext()) {
-			iterator.close();
-			iterator = null;
+			close();
 		}
 
 		return bufferSize;
@@ -122,5 +123,5 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 			iterator = null;
 		}
 	}
-
+	
 }

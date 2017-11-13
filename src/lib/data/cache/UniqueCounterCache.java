@@ -5,7 +5,7 @@ import htsjdk.samtools.AlignmentBlock;
 import java.util.Arrays;
 
 import lib.data.AbstractData;
-import lib.data.builder.SAMRecordWrapper;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.util.Coordinate;
 
 public abstract class UniqueCounterCache<T extends AbstractData> 
