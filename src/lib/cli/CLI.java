@@ -42,13 +42,13 @@ public class CLI {
 			System.exit(0);
 		}
 		methodFactory = methodFactories.get(args[0].toLowerCase());
-
+		
 		if (args.length == 1) {
 			// init method factory (populate: parameters)
 			methodFactory.initACOptions();
 			
-			Set<AbstractACOption> acOptions = methodFactory.getACOptions();
-			Options options = new Options();
+			final Set<AbstractACOption> acOptions = methodFactory.getACOptions();
+			final Options options = new Options();
 			for (AbstractACOption acoption : acOptions) {
 				options.addOption(acoption.getOption());
 			}
@@ -57,6 +57,7 @@ public class CLI {
 			System.exit(0);
 		}
 		methodFactory.initGeneralParameter(getFilenames(args).length);
+				
 		// init method factory (populate: parameters)
 		methodFactory.initACOptions();
 		
@@ -66,8 +67,7 @@ public class CLI {
 		for (AbstractACOption acoption : acOptions) {
 			options.addOption(acoption.getOption());
 		}
-		
-		
+	
 		// copy arguments while ignoring the first array element
 		String[] processedArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, processedArgs, 0, args.length - 1);
@@ -118,6 +118,7 @@ public class CLI {
 		return true;
 	}
 
+	// FIXME
 	private String[] getFilenames(final String[] args) {
 		for (int i = args.length - 1; i >= 0; --i) {
 			if (args[i].startsWith("-")) {

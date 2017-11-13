@@ -13,15 +13,15 @@ extends AbstractACOption {
 	private int conditionIndex;
 	private final List<AbstractConditionParameter<T>> conditionParameters;
 		
-	public AbstractConditionACOption(final String opt, final String longOpt, List<AbstractConditionParameter<T>> conditionParameters) {
+	public AbstractConditionACOption(final String opt, final String longOpt, final List<AbstractConditionParameter<T>> conditionParameters) {
 		super(opt, longOpt);
 		conditionIndex 	= -1;
 		this.conditionParameters = conditionParameters;
 	}
 	
 	public AbstractConditionACOption(final String opt, final String longOpt, final int conditionIndex, final AbstractConditionParameter<T> conditionParameter) {
-		super(! opt.isEmpty() ? opt + conditionIndex: new String(),
-				! longOpt.isEmpty() ? longOpt + conditionIndex : new String());
+		super(! opt.isEmpty() ? opt + (conditionIndex + 1): new String(),
+				! longOpt.isEmpty() ? longOpt + (conditionIndex + 1): new String());
 
 		this.conditionIndex = conditionIndex;
 		conditionParameters = new ArrayList<AbstractConditionParameter<T>>(1);
@@ -30,6 +30,10 @@ extends AbstractACOption {
 
 	public List<AbstractConditionParameter<T>> getConditionParameters() {
 		return conditionParameters;
+	}
+	
+	public AbstractConditionParameter<T> getConditionParameter() {
+		return conditionParameters.get(0);
 	}
 
 	public int getConditionIndex() {

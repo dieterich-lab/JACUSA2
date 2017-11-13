@@ -1,6 +1,6 @@
 package lib.worker;
 
-import jacusa.pileup.iterator.variant.ParallelDataValidator;
+import jacusa.data.validator.ParallelDataValidator;
 
 import java.util.Iterator;
 import java.util.List;
@@ -31,15 +31,12 @@ implements Iterator<ParallelData<T>> {
 	private final ConditionContainer<T> conditionContainer;
 	private CoordinateController coordinateController;
 	
-	private final List<CopyTmp> copyTmps;
-	
 	private final ParallelDataValidator<T> parallelDataValidator;
 	private ParallelData<T> parallelData;
 	
 	private STATUS status;
 	
 	public AbstractWorker(final WorkerDispatcher<T> workerDispatcher,
-			final List<CopyTmp> copyTmps, 
 			final ParallelDataValidator<T> parallelDataValidator,
 			final AbstractParameter<T> generalParameter) {
 		this.workerDispatcher = workerDispatcher;
@@ -49,7 +46,6 @@ implements Iterator<ParallelData<T>> {
 		coordinateController = new CoordinateController(generalParameter.getActiveWindowSize(), 
 				createReferenceAdvancer(generalParameter.getConditionParameters()));
 
-		this.copyTmps = copyTmps;
 		this.parallelDataValidator = parallelDataValidator;
 		status = STATUS.INIT;
 	}
@@ -200,9 +196,7 @@ implements Iterator<ParallelData<T>> {
 		return threadIdContainer;
 	}
 
-	public List<CopyTmp> getCopyTmps() {
-		return copyTmps;
-	}
+	public abstract List<CopyTmp> getCopyTmps();
 	
 	private CoordinateAdvancer createReferenceAdvancer(final List<AbstractConditionParameter<T>> conditionParameters) {
 		final Coordinate coordinate = new Coordinate();

@@ -28,7 +28,7 @@ public class MinMAPQConditionOption<T extends AbstractData> extends AbstractCond
 		int minMapq = -1;
 		if (getConditionIndex() >= 0) {
 			s = " for condition " + getConditionIndex();
-			minMapq = getConditionParameters().get(getConditionIndex()).getMinMAPQ();
+			minMapq = getConditionParameter().getMinMAPQ();
 		} else if (getConditionParameters().size() > 1) {
 			s = " for all conditions";
 			minMapq = getConditionParameters().get(0).getMinMAPQ();

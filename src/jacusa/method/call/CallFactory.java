@@ -1,9 +1,12 @@
 package jacusa.method.call;
 
+
 import jacusa.cli.options.StatisticCalculatorOption;
 import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
 import jacusa.cli.parameters.CallParameter;
+import jacusa.data.validator.ParallelDataValidator;
+import jacusa.data.validator.VariantSiteValidator;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.CombinedDistanceFilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
@@ -14,12 +17,9 @@ import jacusa.filter.factory.ReadPositionDistanceFilterFactory;
 import jacusa.filter.factory.SpliceSiteDistanceFilterFactory;
 import jacusa.io.format.AbstractOutputFormat;
 import jacusa.io.format.BED6call;
-import jacusa.io.format.VCFcall;
 import jacusa.method.call.statistic.StatisticCalculator;
 import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundError;
-import jacusa.pileup.iterator.variant.ParallelDataValidator;
-import jacusa.pileup.iterator.variant.VariantSiteValidator;
-import jacusa.pileup.worker.CallWorker;
+import jacusa.worker.CallWorker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +48,6 @@ import lib.data.builder.factory.UnstrandedPileupBuilderFactory;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasPileupCount;
-import lib.io.copytmp.CopyTmp;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 import lib.worker.WorkerDispatcher;
@@ -107,17 +106,17 @@ extends AbstractMethodFactory<T> {
 		// only add contions specific options when there are more than 1 conditions
 		if (getParameter().getConditionsSize() > 1) {
 			for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-				addACOption(new MinMAPQConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MinBASQConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MinCoverageConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MaxDepthConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new FilterFlagConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinMAPQConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinBASQConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinCoverageConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MaxDepthConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterFlagConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 				
-				addACOption(new FilterNHsamTagOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new FilterNMsamTagOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterNHsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterNMsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 				
 				addACOption(new OneConditionPileupDataBuilderOption<T>(
-						conditionIndex + 1, 
+						conditionIndex, 
 						getParameter().getConditionParameters().get(conditionIndex),
 						getParameter()));
 			}
@@ -224,13 +223,10 @@ extends AbstractMethodFactory<T> {
 	}
 
 	@Override
-	public CallWorker<T> createWorker(final WorkerDispatcher<T> workerDispatcher) {
+	public CallWorker<T> createWorker() {
 		final ParallelDataValidator<T> parallelDataValidator = new VariantSiteValidator<T>();
-		final List<CopyTmp> copyTmps = new ArrayList<CopyTmp>();
-		// TODO copyTmps
-				
-		return new CallWorker<T>(workerDispatcher, copyTmps, 
-				parallelDataValidator, (CallParameter<T>)getParameter());
+		return new CallWorker<T>(getWorkerDispatcher(), parallelDataValidator, 
+				(CallParameter<T>)getParameter());
 	}
 	
 }

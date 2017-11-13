@@ -72,7 +72,7 @@ implements DataGenerator<T> {
 		return workerDispatcher;
 	}
 
-	public abstract AbstractWorker<T> createWorker(final WorkerDispatcher<T> workerDispatcher);
+	public abstract AbstractWorker<T> createWorker();
 
 	public abstract void initACOptions();
 	protected abstract void initConditionACOptions();

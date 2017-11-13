@@ -25,13 +25,11 @@ public class MinBASQConditionOption<T extends AbstractData> extends AbstractCond
 	public Option getOption() {
 		String s = new String();
 		
-		byte minBasq = -1;
+		byte minBasq = getConditionParameter().getMinBASQ();
 		if (getConditionIndex() >= 0) {
 			s = " for condition " + getConditionIndex();
-			minBasq = getConditionParameters().get(getConditionIndex()).getMinBASQ();
 		} else if (getConditionParameters().size() > 1) {
 			s = " for all conditions";
-			minBasq = getConditionParameters().get(0).getMinBASQ();
 		}
 		s = "filter positions with base quality < " + getLongOpt().toUpperCase() +
 				s + "\n default: " + minBasq;

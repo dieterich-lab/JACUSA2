@@ -3,6 +3,7 @@ package jacusa.cli.parameters;
 import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundError;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameters.JACUSAConditionParameter;
 import lib.data.AbstractData;
 import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.data.has.hasPileupCount;
@@ -23,8 +24,8 @@ extends AbstractParameter<T> implements hasStatisticCalculator<T> {
 	@Override
 	public AbstractConditionParameter<T> createConditionParameter(
 			final AbstractDataBuilderFactory<T> dataBuilderFactory) {
-		// TODO 
-		return null;
+		
+		return new JACUSAConditionParameter<>(dataBuilderFactory);
 	}
 	
 	@Override

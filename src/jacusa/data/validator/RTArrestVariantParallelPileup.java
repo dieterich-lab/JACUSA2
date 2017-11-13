@@ -1,9 +1,11 @@
-package jacusa.pileup.iterator.variant;
+package jacusa.data.validator;
 
-import lib.data.PileupReadInfoData;
+import lib.data.AbstractData;
 import lib.data.ParallelData;
+import lib.data.has.hasPileupCount;
+import lib.data.has.hasReadInfoCount;
 
-public class RTArrestVariantParallelPileup<T extends PileupReadInfoData> 
+public class RTArrestVariantParallelPileup<T extends AbstractData & hasPileupCount & hasReadInfoCount>
 implements ParallelDataValidator<T> {
 	
 	public RTArrestVariantParallelPileup() {}

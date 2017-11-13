@@ -1,12 +1,15 @@
-package jacusa.pileup.worker;
+package jacusa.worker;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import jacusa.cli.parameters.CallParameter;
+import jacusa.data.validator.ParallelDataValidator;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.io.copytmp.CopyTmpResult;
 import jacusa.method.call.statistic.StatisticCalculator;
-import jacusa.pileup.iterator.variant.ParallelDataValidator;
 
 import lib.data.AbstractData;
 import lib.data.ParallelData;
@@ -21,16 +24,26 @@ extends AbstractWorker<T> {
 
 	private final CallParameter<T> callParameter;
 	private final StatisticCalculator<T> statisticCalculator;
+
+	private CopyTmpResult<T> copyTmpResult;
+	private List<CopyTmp> copyTmps;
 	
 	public CallWorker(
 			final WorkerDispatcher<T> workerDispatcher,
-			final List<CopyTmp> copyTmps, 
 			final ParallelDataValidator<T> parallelDataValidator,
 			final CallParameter<T> callParameter) {
 
-		super(workerDispatcher, copyTmps, parallelDataValidator, callParameter);
+		super(workerDispatcher, parallelDataValidator, callParameter);
 		this.statisticCalculator = callParameter.getStatisticParameters().getStatisticCalculator();
 		this.callParameter = callParameter;
+		
+		try {
+			copyTmpResult = new CopyTmpResult<T>(getThreadIdContainer().getThreadId(), callParameter);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		copyTmps = new ArrayList<CopyTmp>(1);
+		copyTmps.add(copyTmpResult);
 	}
 
 	@Override
@@ -50,6 +63,18 @@ extends AbstractWorker<T> {
 				filter.applyFilter(result, getConditionContainer());
 			}
 		}
+		
+		try {
+			copyTmpResult.addResult(result, callParameter.getConditionParameters());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
+	@Override
+	public List<CopyTmp> getCopyTmps() {
+		return copyTmps;
+	}
+	
 }

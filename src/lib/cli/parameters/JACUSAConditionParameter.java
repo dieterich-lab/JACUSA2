@@ -4,24 +4,20 @@ import lib.data.AbstractData;
 import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.data.has.hasLibraryType;
 
-public class JACUSAConditionParameters<T extends AbstractData>
+public class JACUSAConditionParameter<T extends AbstractData>
 extends AbstractConditionParameter<T>
 implements hasLibraryType {
 	
 	private AbstractDataBuilderFactory<T> dataBuilderFactory;
 	
-	private JACUSAConditionParameters() {
+	private JACUSAConditionParameter() {
 		super();
 	}
 
-	// TODO
-	public JACUSAConditionParameters(
-			final AbstractDataBuilderFactory<T> dataBuilderFactory) {
+	public JACUSAConditionParameter(final AbstractDataBuilderFactory<T> dataBuilderFactory) {
 		this();
 		this.dataBuilderFactory = dataBuilderFactory;
 	}
-	
-	
 
 	/**
 	 * @return the pileupBuilderFactory
@@ -33,7 +29,7 @@ implements hasLibraryType {
 	/**
 	 * @param pileupBuilderFactory the pileupBuilderFactory to set
 	 */
-	public void setPileupBuilderFactory(AbstractDataBuilderFactory<T> pileupBuilderFactory) {
+	public void setPileupBuilderFactory(final AbstractDataBuilderFactory<T> pileupBuilderFactory) {
 		this.dataBuilderFactory = pileupBuilderFactory;
 	}
 

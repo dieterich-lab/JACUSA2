@@ -1,5 +1,6 @@
 package jacusa.io.copytmp;
 
+import jacusa.io.Output;
 import jacusa.io.OutputWriter;
 import jacusa.io.format.BED6call;
 
@@ -21,19 +22,18 @@ import lib.util.AbstractTool;
 public class CopyTmpResult<T extends AbstractData & hasPileupCount> implements CopyTmp {
 
 	private BED6call<T> format;
-	private final OutputWriter resultWriter;
+	private final Output resultWriter;
 	
-	private final OutputWriter tmpResultWriter;
+	private final Output tmpResultWriter;
 	private final BufferedReader tmpCallReader;
 	
 	private List<Integer> iteration2storedCalls;
 	
 	public CopyTmpResult(final int threadId, 
-			final AbstractParameter<T> parameters, 
-			final OutputWriter resultWriter) throws IOException {
+			final AbstractParameter<T> parameter) throws IOException {
 	
-		format = new BED6call<T>(parameters);
-		this.resultWriter = resultWriter;
+		format = new BED6call<T>(parameter);
+		this.resultWriter = parameter.getOutput();
 		
 		final String tmpResultFilename = createTmpResultFilename(threadId);
 		tmpResultWriter = new OutputWriter(new File(tmpResultFilename));
@@ -60,7 +60,7 @@ public class CopyTmpResult<T extends AbstractData & hasPileupCount> implements C
 		iteration2storedCalls.add(0);		
 	}
 
-	public void addCall(Result<T> result, List<AbstractConditionParameter<?>> conditionParameters) throws Exception {
+	public void addResult(Result<T> result, List<AbstractConditionParameter<T>> conditionParameters) throws Exception {
 		final String s = format.convert2String(result);
 		tmpResultWriter.write(s);
 		final int iteration = iteration2storedCalls.size() - 1;

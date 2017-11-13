@@ -2,6 +2,7 @@ package jacusa.cli.parameters;
 
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameters.JACUSAConditionParameter;
 import lib.data.AbstractData;
 import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.data.has.hasBaseCallCount;
@@ -22,8 +23,8 @@ extends AbstractParameter<T> implements hasStatisticCalculator<T> {
 	@Override
 	public AbstractConditionParameter<T> createConditionParameter(
 			AbstractDataBuilderFactory<T> dataBuilderFactory) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return new JACUSAConditionParameter<T>(dataBuilderFactory);
 	}
 	
 	@Override

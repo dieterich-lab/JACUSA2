@@ -22,7 +22,7 @@ package jacusa;
 import jacusa.method.call.CallFactory;
 import jacusa.method.call.OneConditionCallFactory;
 import jacusa.method.call.TwoConditionCallFactory;
-import jacusa.method.pileup.nConditionPileupFactory;
+import jacusa.method.pileup.PileupFactory;
 import jacusa.method.rtarrest.RTArrestFactory;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class JACUSA extends AbstractTool {
 	private int comparisons;
 	
 	public JACUSA(final String args[]) {
-		super("jacusa", "2.0.0-BETA6", args);
+		super("jacusa", "2.0.0-BETA7", args);
 		comparisons = 0;
 	}
 
@@ -61,9 +61,9 @@ public class JACUSA extends AbstractTool {
 		DataGenerator<PileupData> dataGenerator = new PileupDataGenerator();
 		factories.add(new OneConditionCallFactory<PileupData>(dataGenerator));
 		factories.add(new TwoConditionCallFactory<PileupData>(dataGenerator));
-		factories.add(new CallFactory<PileupData>(2, dataGenerator)); // TODO make it general
+		factories.add(new CallFactory<PileupData>(2, dataGenerator)); // TODO make conditions general
 		// pileup information
-		factories.add(new nConditionPileupFactory<PileupData>(0, dataGenerator));
+		factories.add(new PileupFactory<PileupData>(1, dataGenerator));
 		// Read info
 		
 		DataGenerator<PileupReadInfoData> dataGenerator2 = new PileupReadInfoDataGenerator();

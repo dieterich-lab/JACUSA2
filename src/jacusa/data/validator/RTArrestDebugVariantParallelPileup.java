@@ -1,4 +1,4 @@
-package jacusa.pileup.iterator.variant;
+package jacusa.data.validator;
 
 import lib.data.PileupReadInfoData;
 import lib.data.ParallelData;

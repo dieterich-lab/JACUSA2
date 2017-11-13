@@ -1,16 +1,17 @@
 package jacusa.method.rtarrest;
 
-
 import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
 import jacusa.cli.parameters.RTArrestParameters;
+import jacusa.data.validator.ParallelDataValidator;
+import jacusa.data.validator.RTArrestVariantParallelPileup;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.io.format.AbstractOutputFormat;
 import jacusa.io.format.BED6call;
 import jacusa.io.format.RTArrestDebugResultFormat;
 import jacusa.io.format.RTArrestResultFormat;
 import jacusa.method.call.statistic.StatisticCalculator;
-import jacusa.pileup.worker.RTArrestWorker;
+import jacusa.worker.RTArrestWorker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +41,6 @@ import lib.data.has.hasPileupCount;
 import lib.data.has.hasReadInfoCount;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
-import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.ParseException;
@@ -106,17 +106,17 @@ extends AbstractMethodFactory<T> {
 		
 		// condition specific
 		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-			addACOption(new MinMAPQConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinBASQConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinCoverageConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MaxDepthConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterFlagConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinMAPQConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinBASQConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinCoverageConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MaxDepthConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterFlagConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new FilterNHsamTagOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterNMsamTagOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNHsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNMsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			
 			addACOption(new OneConditionPileupDataBuilderOption<T>(
-					conditionIndex + 1, 
+					conditionIndex, 
 					getParameter().getConditionParameters().get(conditionIndex),
 					getParameter()));
 		}
@@ -171,8 +171,8 @@ extends AbstractMethodFactory<T> {
 
 	@Override
 	public RTArrestWorker<T> createWorker() {
-		
-		return new RTArrestWorker<T>(workerDispatcher, copyTmps, rtArrestParameter);
+		final ParallelDataValidator<T> parallelDataValidator = new RTArrestVariantParallelPileup<T>();
+		return new RTArrestWorker<T>(getWorkerDispatcher(), parallelDataValidator, getParameter());
 	}
 	
 	

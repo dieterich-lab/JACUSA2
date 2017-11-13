@@ -2,6 +2,8 @@ package jacusa.method.pileup;
 
 import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
 import jacusa.cli.parameters.PileupParameters;
+import jacusa.data.validator.DummyValidator;
+import jacusa.data.validator.ParallelDataValidator;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.CombinedDistanceFilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
@@ -13,6 +15,7 @@ import jacusa.filter.factory.SpliceSiteDistanceFilterFactory;
 import jacusa.io.format.AbstractOutputFormat;
 import jacusa.io.format.BED6call;
 import jacusa.io.format.PileupFormat;
+import jacusa.worker.PileupWorker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,21 +45,23 @@ import lib.data.generator.DataGenerator;
 import lib.data.has.hasPileupCount;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
-import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.ParseException;
 
-public class nConditionPileupFactory<T extends AbstractData & hasPileupCount> 
+public class PileupFactory<T extends AbstractData & hasPileupCount> 
 extends AbstractMethodFactory<T> {
 	
-	public nConditionPileupFactory(final int conditions, final DataGenerator<T> dataGenerator) {
+	public PileupFactory(final int conditions, final DataGenerator<T> dataGenerator) {
 		super("pileup", "SAMtools like mpileup", 
 				new PileupParameters<T>(conditions, new UnstrandedPileupBuilderFactory<T>()),
 				dataGenerator);
 	}
 
-	public void initGeneralParameter(final int conditionSize) {
+	public void initGeneralParameter(int conditionSize) {
+		if (conditionSize == 0) {
+			conditionSize = 3;
+		}
 		setParameters(new PileupParameters<T>(conditionSize, new UnstrandedPileupBuilderFactory<T>()));
 	}
 
@@ -111,18 +116,17 @@ extends AbstractMethodFactory<T> {
 		
 		// condition specific
 		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-			addACOption(new MinMAPQConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinBASQConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinCoverageConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MaxDepthConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterFlagConditionOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinMAPQConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinBASQConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinCoverageConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MaxDepthConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterFlagConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new FilterNHsamTagOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterNMsamTagOption<T>(conditionIndex + 1, getParameter().getConditionParameters().get(conditionIndex)));
-			// TODO addACOption(new InvertStrandOption<BaseQualData>(conditionIndex + 1, getParameters().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNHsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNMsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			
 			addACOption(new OneConditionPileupDataBuilderOption<T>(
-					conditionIndex + 1, 
+					conditionIndex, 
 					getParameter().getConditionParameters().get(conditionIndex),
 					getParameter()));
 		}
@@ -186,7 +190,9 @@ extends AbstractMethodFactory<T> {
 	}
 
 	@Override
-	public Pileup<T> createWorker() {
-		return new nConditionPileupFactory<T>(conditions, dataGenerator)
+	public PileupWorker<T> createWorker() {
+		final ParallelDataValidator<T> parallelDataValidator = new DummyValidator<T>();
+		return new PileupWorker<T>(getWorkerDispatcher(), parallelDataValidator, getParameter());
 	}
+
 }

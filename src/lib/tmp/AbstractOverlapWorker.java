@@ -1,6 +1,6 @@
 package lib.tmp;
 
-import jacusa.pileup.iterator.variant.ParallelDataValidator;
+import jacusa.data.validator.ParallelDataValidator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,12 +21,10 @@ extends AbstractWorker<T> {
 			final List<CopyTmp> copyTmps, 
 			final ParallelDataValidator<T> parallelDataValidator, 
 			final AbstractParameter<T> generalParameter) throws IOException {
-		super(workerDispatcher, copyTmps, parallelDataValidator, generalParameter);
+		super(workerDispatcher, parallelDataValidator, generalParameter);
 
 		windowContainers = createOverlappingContainers(generalParameter.getConditionsSize());
 	}
-
-	
 	
 	private List<OverlappingRecordWrapperContainer> createOverlappingContainers(final int conditions) {
 		final List<OverlappingRecordWrapperContainer> container = new ArrayList<OverlappingRecordWrapperContainer>(conditions);

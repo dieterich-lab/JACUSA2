@@ -25,13 +25,11 @@ public class MaxDepthConditionOption<T extends AbstractData> extends AbstractCon
 	public Option getOption() {
 		String s = new String();
 
-		int maxDepth = -1;
+		int maxDepth = getConditionParameter().getMaxDepth();
 		if (getConditionIndex() >= 0) {
 			s = " for condition " + getConditionIndex();
-			maxDepth = getConditionParameters().get(getConditionIndex()).getMaxDepth();
 		} else if (getConditionParameters().size() > 1) {
 			s = " for all conditions";
-			maxDepth = getConditionParameters().get(0).getMaxDepth();
 		}
 		s = "max read depth" + s + "\ndefault: " + maxDepth;
 				

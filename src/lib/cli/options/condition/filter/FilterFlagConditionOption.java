@@ -26,13 +26,11 @@ public class FilterFlagConditionOption<T extends AbstractData> extends AbstractC
 	public Option getOption() {
 		String s = new String();
 		
-		int filterFlags = -1;
+		int filterFlags = getConditionParameter().getFilterFlags();
 		if (getConditionIndex() >= 0) {
 			s = " for condition " + getConditionIndex();
-			filterFlags = getConditionParameters().get(getConditionIndex()).getFilterFlags();
 		} else if (getConditionParameters().size() > 1) {
 			s = " for all conditions";
-			filterFlags = getConditionParameters().get(0).getFilterFlags();
 		}
 		s = "filter reads with flags " + getLongOpt().toUpperCase() + 
 				s + "\ndefault: " + filterFlags;

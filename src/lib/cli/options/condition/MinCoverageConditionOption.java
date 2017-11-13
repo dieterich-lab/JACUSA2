@@ -25,13 +25,11 @@ public class MinCoverageConditionOption<T extends AbstractData> extends Abstract
 	public Option getOption() {
 		String s = new String();
 		
-		int minCoverage = -1;
+		int minCoverage = getConditionParameter().getMinCoverage();
 		if (getConditionIndex() >= 0) {
 			s = " for condition " + getConditionIndex();
-			minCoverage = getConditionParameters().get(getConditionIndex()).getMinCoverage();
 		} else if (getConditionParameters().size() > 1) {
 			s = " for all conditions";
-			minCoverage = getConditionParameters().get(0).getMinCoverage();
 		}
 		s = "filter positions with coverage < " + getLongOpt().toUpperCase() + 
 				s + "\ndefault: " + minCoverage;
