@@ -11,11 +11,14 @@ import java.util.Set;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.SAMPathnameArg;
+import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.data.generator.DataGenerator;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.util.AbstractTool;
+import lib.util.Coordinate;
 import lib.util.coordinateprovider.BedCoordinateProvider;
 import lib.util.coordinateprovider.CoordinateProvider;
 import lib.util.coordinateprovider.SAMCoordinateProvider;
@@ -97,8 +100,8 @@ implements DataGenerator<T> {
 	}
 	
 	@Override
-	public T createData() {
-		return getDataGenerator().createData();
+	public T createData(LIBRARY_TYPE libraryType, Coordinate coordinate) {
+		return getDataGenerator().createData(libraryType, coordinate);
 	}
 
 	@Override
@@ -230,16 +233,25 @@ implements DataGenerator<T> {
 			recordFilenames[conditionIndex] = parameters.getConditionParameter(conditionIndex).getRecordFilenames();
 		}
 		
+		boolean isStranded = false;
+		for (final AbstractConditionParameter<T> conditionParameter : parameters.getConditionParameters()) {
+			if (conditionParameter.getLibraryType() != LIBRARY_TYPE.UNSTRANDED) {
+				isStranded = true;
+				break;
+			}
+		}
+		
 		final List<SAMSequenceRecord> sequenceRecords = getSAMSequenceRecords(recordFilenames);
 		if (parameters.getInputBedFilename().isEmpty()) {
-			coordinateProvider = new SAMCoordinateProvider(sequenceRecords);
+			coordinateProvider = new SAMCoordinateProvider(isStranded, sequenceRecords);
 		} else {
-			coordinateProvider = new BedCoordinateProvider(parameters.getInputBedFilename());
+			// FIXME what if bed is stranded
+			coordinateProvider = new BedCoordinateProvider(isStranded, parameters.getInputBedFilename());
 		}
-	
+
 		// wrap chosen coordinate provider 
 		if (parameters.getMaxThreads() > 1) {
-			coordinateProvider = new WindowedCoordinateProvider(
+			coordinateProvider = new WindowedCoordinateProvider(isStranded,
 					coordinateProvider, parameters.getReservedWindowSize());
 		}
 	}

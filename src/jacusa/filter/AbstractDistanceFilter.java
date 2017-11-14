@@ -9,7 +9,7 @@ import lib.data.builder.ConditionContainer;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
 
-public abstract class AbstractDistanceFilter<T extends AbstractData & hasReferenceBase & hasBaseCallCount, F extends AbstractData & hasBaseCallCount> 
+public abstract class AbstractDistanceFilter<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
 extends AbstractFilter<T> {
 
 	private final int filterDistance;

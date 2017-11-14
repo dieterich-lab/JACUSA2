@@ -1,4 +1,4 @@
-package jacusa.cli.options.pileupbuilder;
+package jacusa.cli.options.librarytype;
 
 import java.util.List;
 

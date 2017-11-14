@@ -1,13 +1,15 @@
 package lib.data.generator;
 
 import lib.data.BaseCallReadInfoData;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.util.Coordinate;
 
 public class BaseCallReadInfoDataGenerator implements
 		DataGenerator<BaseCallReadInfoData> {
 
 	@Override
-	public BaseCallReadInfoData createData() {
-		return new BaseCallReadInfoData();
+	public BaseCallReadInfoData createData(LIBRARY_TYPE libraryType, Coordinate coordinate) {
+		return new BaseCallReadInfoData(libraryType, coordinate);
 	}
 	
 	@Override

@@ -8,12 +8,12 @@ import htsjdk.samtools.SAMRecord;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.has.hasCoverage;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
 // TODO do we consider read end by quality or by alignment
-public class AlignmentCache<T extends AbstractData & hasCoverage & hasReadInfoCount> 
+public class AlignmentCache<T extends AbstractData & hasBaseCallCount & hasReadInfoCount> 
 extends AbstractCache<T> {
 
 	private final LIBRARY_TYPE libraryType;
@@ -62,7 +62,7 @@ extends AbstractCache<T> {
 		data.getReadInfoCount().setStart(readStartCount[windowPosition]);
 		data.getReadInfoCount().setEnd(readEndCount[windowPosition]);
 
-		final int inner = data.getCoverage() - (data.getReadInfoCount().getStart() + data.getReadInfoCount().getEnd());
+		final int inner = data.getBaseCallCount().getCoverage() - (data.getReadInfoCount().getStart() + data.getReadInfoCount().getEnd());
 		data.getReadInfoCount().setInner(inner);
 
 		int arrest = 0;
@@ -84,7 +84,10 @@ extends AbstractCache<T> {
 		case FR_SECONDSTRAND:
 			arrest 	+= data.getReadInfoCount().getStart();
 			through += data.getReadInfoCount().getInner();
-			break;				
+			break;
+			
+		case MIXED:
+			throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
 		}
 
 		data.getReadInfoCount().setArrest(arrest);

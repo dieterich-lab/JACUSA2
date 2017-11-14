@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import lib.util.Coordinate;
+import lib.util.Coordinate.STRAND;
 
 /**
  * @author mpiechotta
@@ -18,12 +19,15 @@ import lib.util.Coordinate;
  */
 public class BedCoordinateProvider implements CoordinateProvider {
 
+	private boolean isStranded;
+	
 	private String filename;
 	private BufferedReader br;
 
 	private int total;
 	
-	public BedCoordinateProvider(String filename) {
+	public BedCoordinateProvider(final boolean isStranded, String filename) {
+		this.isStranded = isStranded;
 		this.filename = filename;
 
 		total = 0;
@@ -82,6 +86,11 @@ public class BedCoordinateProvider implements CoordinateProvider {
 			coordinate.setContig(cols[0]);
 			coordinate.setStart(Integer.parseInt(cols[1]) + 1);
 			coordinate.setEnd(Integer.parseInt(cols[2]));
+			
+			// FIXME read from bed STRAND
+			if (isStranded) {
+				coordinate.setStrand(STRAND.FORWARD);
+			}
 
 			return coordinate;
 		}

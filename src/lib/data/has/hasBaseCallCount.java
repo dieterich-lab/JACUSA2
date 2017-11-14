@@ -7,7 +7,7 @@ import lib.data.BaseCallCount;
  * @author Michael Piechotta
  *
  */
-public interface hasBaseCallCount extends hasCoverage, hasLibraryType {
+public interface hasBaseCallCount extends hasCoverage {
 	
 	BaseCallCount getBaseCallCount();
 

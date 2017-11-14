@@ -7,7 +7,8 @@ public interface hasLibraryType {
 	public enum LIBRARY_TYPE {
 		FR_FIRSTSTRAND, 
 		FR_SECONDSTRAND,
-		UNSTRANDED
+		UNSTRANDED,
+		MIXED
 	}
 
 }

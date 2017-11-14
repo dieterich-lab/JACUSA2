@@ -23,6 +23,7 @@ implements hasCoverage {
 	public BaseCallCount(final BaseCallCount baseCallCount) {
 		this();
 		
+		this.baseCallCount = new int[baseCallCount.baseCallCount.length];
 		System.arraycopy(baseCallCount.baseCallCount, 0, this.baseCallCount, 0, baseCallCount.baseCallCount.length);
 	}
 

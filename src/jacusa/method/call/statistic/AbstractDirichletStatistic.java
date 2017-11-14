@@ -351,7 +351,7 @@ implements StatisticCalculator<T> {
 	 */
 	protected int[] getBaseIndex(final ParallelData<T> parallelData) {
 		if (onlyObservedBases) {
-			return parallelData.getCombinedPooledData().getPileupCount().getAlleles();
+			return parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount().getAlleles();
 		}
 
 		return parameters.getBaseConfig().getBaseIndex();

@@ -83,11 +83,10 @@ implements hasLibraryType {
 	}
 
 	public T getData(final Coordinate coordinate) {
-		T data = dataGenerator.createData();
+		T data = dataGenerator.createData(getLibraryType(), coordinate);
 		for (final Cache<T> cache : caches) {
 			cache.addData(data, coordinate);
 		}
-		data.setCoordinate(new Coordinate(coordinate));
 		return data;
 	}
 	

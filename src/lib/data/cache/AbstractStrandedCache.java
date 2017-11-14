@@ -45,9 +45,11 @@ implements Cache<T> {
 		switch (coordinate.getStrand()) {
 		case FORWARD:
 			forward.addData(data, coordinate);
+			break;
 
 		case REVERSE:
 			reverse.addData(data, coordinate);
+			break;
 
 		case UNKNOWN:
 			throw new IllegalArgumentException("Unstranded coordinates not supported!");

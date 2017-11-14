@@ -1,13 +1,15 @@
 package lib.data.generator;
 
 import lib.data.PileupData;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.util.Coordinate;
 
 public class PileupDataGenerator 
 extends AbstractDataGenerator<PileupData> {
 
 	@Override
-	public PileupData createData() {
-		return new PileupData();
+	public PileupData createData(LIBRARY_TYPE libraryType, final Coordinate coordinate) {
+		return new PileupData(libraryType, coordinate);
 	}
 
 	@Override

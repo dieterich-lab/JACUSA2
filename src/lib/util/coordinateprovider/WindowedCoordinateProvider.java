@@ -7,20 +7,21 @@ import java.util.List;
 
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.util.Coordinate;
+import lib.util.Coordinate.STRAND;
 
 public class WindowedCoordinateProvider implements CoordinateProvider {
 
 	private Iterator<Coordinate> it;
 	private int total;
 	
-	public WindowedCoordinateProvider(final Coordinate coordinate, final int windowSize) {
-		final List<Coordinate> coordinates = makeWindows(coordinate, windowSize);
+	public WindowedCoordinateProvider(final boolean stranded, final Coordinate coordinate, final int windowSize) {
+		final List<Coordinate> coordinates = makeWindows(stranded, coordinate, windowSize);
 		total = coordinates.size();
 		it = coordinates.iterator();
 	}
 	
-	public WindowedCoordinateProvider(final CoordinateProvider cp, final int windowSize) {
-		final List<Coordinate> coordinates = create(cp, windowSize);
+	public WindowedCoordinateProvider(final boolean stranded, final CoordinateProvider cp, final int windowSize) {
+		final List<Coordinate> coordinates = makeWindows(stranded, cp, windowSize);
 		total = coordinates.size();
 		it = coordinates.iterator();
 	}
@@ -42,11 +43,11 @@ public class WindowedCoordinateProvider implements CoordinateProvider {
 		return total;
 	}
 
-	private List<Coordinate> create(final CoordinateProvider cp, final int windowSize) {
+	private List<Coordinate> makeWindows(final boolean stranded, final CoordinateProvider cp, final int windowSize) {
 		final List<Coordinate> coordinates = new ArrayList<Coordinate>(cp.getTotal());
 		while (cp.hasNext()) {
 			final Coordinate coordinate = cp.next();
-			final List<Coordinate> windowedCoordinates = makeWindows(coordinate, windowSize);
+			final List<Coordinate> windowedCoordinates = makeWindows(stranded, coordinate, windowSize);
 			if (! windowedCoordinates.isEmpty()) {
 				coordinates.addAll(windowedCoordinates);
 			}
@@ -54,10 +55,14 @@ public class WindowedCoordinateProvider implements CoordinateProvider {
 		return coordinates;
 	}
 	
-	private List<Coordinate> makeWindows(final Coordinate coordinate, final int windowSize) {
+	private List<Coordinate> makeWindows(final boolean stranded, final Coordinate coordinate, final int windowSize) {
 		if (windowSize == ThreadWindowSizeOption.NO_WINDOWS) {
 			final List<Coordinate> coordinates = new ArrayList<Coordinate>(1);
-			coordinates.add(new Coordinate(coordinate));
+			final Coordinate tmp = new Coordinate(coordinate);
+			if (stranded && coordinate.getStrand() == STRAND.UNKNOWN) {
+				tmp.setStrand(STRAND.FORWARD);
+			}
+			coordinates.add(tmp);
 			return coordinates;
 		}
 		
@@ -68,7 +73,11 @@ public class WindowedCoordinateProvider implements CoordinateProvider {
 		int start = coordinate.getStart();
 		while (start < coordinate.getEnd()) {
 			final int end = Math.min(start + windowSize - 1, coordinate.getEnd());
-			coordinates.add(new Coordinate(coordinate.getContig(), start, end));
+			final Coordinate tmp = new Coordinate(coordinate.getContig(), start, end, coordinate.getStrand());
+			if (stranded && coordinate.getStrand() == STRAND.UNKNOWN) {
+				tmp.setStrand(STRAND.FORWARD);
+			}
+			coordinates.add(tmp);
 			start += windowSize;
 		}
 

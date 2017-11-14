@@ -4,6 +4,8 @@ import jacusa.filter.AbstractFilter;
 import jacusa.filter.FilterContainer;
 import lib.data.AbstractData;
 import lib.data.generator.DataGenerator;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.util.Coordinate;
 
 public abstract class AbstractFilterFactory<T extends AbstractData, F extends AbstractData> 
 implements DataGenerator<F> {
@@ -56,8 +58,8 @@ implements DataGenerator<F> {
 	}
 	
 	@Override
-	public F createData() {
-		return dataGenerator.createData();
+	public F createData(LIBRARY_TYPE libraryType, Coordinate coordinate) {
+		return dataGenerator.createData(null, null);
 	}
 	
 	@Override

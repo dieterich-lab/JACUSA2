@@ -7,7 +7,7 @@ import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
 
-public class INDEL_DistanceFilterFactory<T extends AbstractData & hasReferenceBase & hasBaseCallCount, F extends AbstractData & hasBaseCallCount> 
+public class INDEL_DistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
 extends AbstractDistanceFilterFactory<T, F> {
 
 	public INDEL_DistanceFilterFactory(final DataGenerator<F> dataGenerator) {

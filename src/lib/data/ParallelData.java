@@ -4,6 +4,7 @@ import lib.cli.options.BaseCallConfig;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoordinate;
+import lib.data.has.hasLibraryType;
 import lib.data.has.hasPileupCount;
 import lib.util.Coordinate;
 
@@ -12,30 +13,34 @@ import lib.util.Coordinate;
  * @author Michael Piechotta
  *
  */
-public class ParallelData<X extends AbstractData> 
-implements hasCoordinate {
+public class ParallelData<S extends AbstractData> 
+implements hasCoordinate, hasLibraryType {
 	
-	private DataGenerator<X> dataGenerator;
+	private DataGenerator<S> dataGenerator;
 	
+	// TODO both need not to be the same for all elements
+	private LIBRARY_TYPE libraryType;
 	private Coordinate coordinate;
 
-	private X[][] data;
-	private X[] cachedCombinedData;
+	private S[][] data;
+	private S[] cachedCombinedData;
 	
-	private X[] cachedPooledData;
-	private X cachedCombinedPooledData;
+	private S[] cachedPooledData;
+	private S cachedCombinedPooledData;
 
 	private int cachedTotalReplicates;
 	
-	public ParallelData(final DataGenerator<X> dataGenerator) {
+	public ParallelData(final DataGenerator<S> dataGenerator) {
 		this.dataGenerator = dataGenerator;
 		reset();
 	}
 
-	public ParallelData(final DataGenerator<X> dataGenerator, 
-			final Coordinate coordinate, final X[][] data) {
+	public ParallelData(final DataGenerator<S> dataGenerator, 
+			final Coordinate coordinate, final S[][] data) {
 		this.dataGenerator 	= dataGenerator;
 		this.coordinate 	= new Coordinate(coordinate);
+		
+		this.libraryType	= getCommonLibraryType(data);
 		
 		int conditions 		= data.length;
 
@@ -51,7 +56,7 @@ implements hasCoordinate {
 	 * 
 	 * @param parallelData
 	 */
-	public ParallelData(final ParallelData<X> parallelData) {
+	public ParallelData(final ParallelData<S> parallelData) {
 		dataGenerator = parallelData.dataGenerator;
 		coordinate = new Coordinate(parallelData.getCoordinate());
 
@@ -67,17 +72,27 @@ implements hasCoordinate {
 		return coordinate;
 	}
 
+	public LIBRARY_TYPE getLibraryType() {
+		return libraryType;
+	}
+	
+	/* FIXME
+	public void setLibraryType(final LIBRARY_TYPE libraryType) {
+		this.libraryType = libraryType;
+	}
+	
 	public void setCoordinate(final Coordinate coordinate) {
 		this.coordinate = coordinate;
 	}
+	*/
 	
-	public void setData(X[][] data) {
+	public void setData(S[][] data) {
 		this.data = data;
 		resetCache();
 	}
 
 	// make this faster remove data and add new
-	public void setData(int conditionIndex, X[] data) {
+	public void setData(int conditionIndex, S[] data) {
 		this.data[conditionIndex] = data;
 
 		if (cachedCombinedData != null) {
@@ -99,7 +114,7 @@ implements hasCoordinate {
 		if (data != null) {
 			data = dataGenerator.createContainerData(data.length);
 		}
-		/*
+		/* FIXME
 		else {
 			final int conditions = dataGenerator.getParameter().getConditionsSize();
 			data = dataGenerator.createContainerData(conditions); 
@@ -141,7 +156,7 @@ implements hasCoordinate {
 		return true;
 	}
 
-	public X getPooledData(int conditionIndex) {
+	public S getPooledData(int conditionIndex) {
 		if (cachedPooledData == null) {
 			cachedPooledData = dataGenerator.createReplicateData(getConditions());
 		}
@@ -149,8 +164,7 @@ implements hasCoordinate {
 		if (cachedPooledData[conditionIndex] == null && 
 				getReplicates(conditionIndex) > 0) {
 			
-			X tmpData = dataGenerator.createData();
-			tmpData.setCoordinate(getCoordinate()); // TODO check
+			S tmpData = dataGenerator.createData(null, getCoordinate());
 			
 			for (int replicateIndex = 0; replicateIndex < getReplicates(conditionIndex); replicateIndex++) {
 				tmpData.add(getData(conditionIndex, replicateIndex));
@@ -161,10 +175,10 @@ implements hasCoordinate {
 		return cachedPooledData[conditionIndex];
 	}
 
-	public X getCombinedPooledData() {
+	public S getCombinedPooledData() {
 		if (cachedCombinedPooledData == null && getPooledData(0) != null) {
 
-			cachedCombinedPooledData = dataGenerator.createData();
+			cachedCombinedPooledData = dataGenerator.createData(getLibraryType(), getCoordinate());
 			for (int conditionIndex = 0; conditionIndex < getConditions(); conditionIndex++) {
 				cachedCombinedPooledData.add(getPooledData(conditionIndex));
 			}
@@ -173,7 +187,7 @@ implements hasCoordinate {
 		return cachedCombinedPooledData;
 	}
 	
-	public X[] getCombinedData() {
+	public S[] getCombinedData() {
 		if (cachedCombinedData == null) {
 			cachedCombinedData = dataGenerator.createReplicateData(cachedTotalReplicates);
 
@@ -192,7 +206,7 @@ implements hasCoordinate {
 		return cachedCombinedData;
 	}
 
-	public X getData(int conditionIndex, int replicateIndex) {
+	public S getData(int conditionIndex, int replicateIndex) {
 		return data[conditionIndex][replicateIndex];
 	}
 
@@ -200,16 +214,16 @@ implements hasCoordinate {
 		return data.length;
 	}
 
-	public X[] getData(int conditionIndex) {
+	public S[] getData(int conditionIndex) {
 		return data[conditionIndex];
 	}
 
-	public ParallelData<X> copy() {
-		return new ParallelData<X>(this);
+	public ParallelData<S> copy() {
+		return new ParallelData<S>(this);
 	}
 
 	public static <S extends PileupData> int[] getNonReferenceBaseIndexs(ParallelData<S> parallelData) {
-		final byte referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
+		final byte referenceBase = parallelData.getCombinedPooledData().getPileupCount().getReferenceBase();
 		if (referenceBase == 'N') {
 			return new int[0];
 		}
@@ -217,6 +231,7 @@ implements hasCoordinate {
 		final int[] allelesIndexs = parallelData
 				.getCombinedPooledData()
 				.getPileupCount()
+				.getBaseCallCount()
 				.getAlleles();
 		
 		final int referenceBaseIndex = BaseCallConfig.getInstance().getBaseIndex((byte)referenceBase);
@@ -278,6 +293,22 @@ implements hasCoordinate {
 		return ret;
 	}
 
+	public static <S extends AbstractData> LIBRARY_TYPE getCommonLibraryType(final S[][] data) {
+		LIBRARY_TYPE tmp = null;
+		for (final S[] conditionData : data) {
+			for (final S replicateData : conditionData) {
+				if (tmp == null) {
+					tmp = replicateData.getLibraryType();
+				} else if (tmp != replicateData.getLibraryType()) {
+					return LIBRARY_TYPE.MIXED;
+				}
+			}
+		}
+		
+		
+		return tmp;
+	}
+	
 	public static <S extends AbstractData> void prettyPrint(final ParallelData<S> parallelPileupData) {
 		final StringBuilder sb = new StringBuilder();
 

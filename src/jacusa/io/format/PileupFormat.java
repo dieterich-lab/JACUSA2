@@ -39,7 +39,7 @@ extends AbstractOutputFormat<T> {
 
 		sb.append(getSEP());
 		if (showReferenceBase) {
-			sb.append(parallelData.getCombinedPooledData().getReferenceBase());
+			sb.append(parallelData.getCombinedPooledData().getPileupCount().getReferenceBase());
 		} else {
 			sb.append("N");
 		}
@@ -60,9 +60,10 @@ extends AbstractOutputFormat<T> {
 			sb.append(data.getPileupCount().getCoverage());
 			sb.append(SEP);
 			
-			for (int baseIndex : data.getPileupCount().getAlleles()) {
+			final int[] alleles = data.getPileupCount().getBaseCallCount().getAlleles();
+			for (int baseIndex : alleles) {
 				// print bases 
-				for (int i = 0; i < data.getPileupCount().getBaseCount(baseIndex); ++i) {
+				for (int i = 0; i < data.getPileupCount().getBaseCallCount().getBaseCallCount(baseIndex); ++i) {
 					sb.append(baseConfig.getBases()[baseIndex]);
 				}
 			}
@@ -70,7 +71,7 @@ extends AbstractOutputFormat<T> {
 			sb.append(SEP);
 
 			// print quals
-			for (int base : data.getPileupCount().getAlleles()) {
+			for (int base : alleles) {
 				for (byte qual = 0; qual < Phred2Prob.MAX_Q; ++qual) {
 
 					int count = data.getPileupCount().getQualCount(base, qual);

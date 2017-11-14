@@ -5,9 +5,10 @@ import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
 import lib.cli.parameters.JACUSAConditionParameter;
 import lib.data.AbstractData;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasPileupCount;
 
-public class CallParameter<T extends AbstractData & hasPileupCount> 
+public class CallParameter<T extends AbstractData & hasBaseCallCount & hasPileupCount> 
 extends AbstractParameter<T> implements hasStatisticCalculator<T> {
 
 	private StatisticParameters<T> statisticParameter;

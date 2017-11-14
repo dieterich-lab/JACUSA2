@@ -10,19 +10,17 @@ implements hasPileupCount {
 
 	private PileupCount pileupCount;
 	private STRAND effectiveStrand;
-	
-	public PileupData() {
-		super();
 
+	public PileupData(final LIBRARY_TYPE libraryType, final Coordinate coordinate) {
+		super(libraryType, coordinate);
 		pileupCount = new PileupCount();
 		effectiveStrand	= STRAND.UNKNOWN;
 	}
-
+	
 	public PileupData(final PileupData pileupData) {
 		super(pileupData);
 		this.pileupCount = pileupData.pileupCount .copy();
-		
-		this.effectiveStrand= pileupData.effectiveStrand;
+		this.effectiveStrand = pileupData.effectiveStrand;
 	}
 	
 	public PileupData(final Coordinate coordinate, final byte referenceBase,
@@ -40,45 +38,16 @@ implements hasPileupCount {
 		return pileupCount;
 	}
 
+	/*
 	@Override
 	public void setPileupCount(final PileupCount pileupCount) {
 		this.pileupCount = pileupCount;
 	}
+	*/
 
 	public void add(AbstractData abstractData) {
 		PileupData pileupData = (PileupData) abstractData;
 		this.pileupCount.add(pileupData.getPileupCount());
-	}
-
-	public PileupData getEffective() {
-		PileupData ret = copy();
-		if (ret.effectiveStrand != STRAND.UNKNOWN) {
-			return ret;
-		}
-
-		switch (getLibraryType()) {
-
-		case UNSTRANDED:
-			ret.effectiveStrand = STRAND.FORWARD;
-			break;
-
-		case FR_SECONDSTRAND:
-			ret.effectiveStrand = getCoordinate().getStrand();
-			if (ret.effectiveStrand == STRAND.REVERSE) {
-				ret.getPileupCount().invert();
-			}
-			break;
-			
-		case FR_FIRSTSTRAND:
-			ret.effectiveStrand = Coordinate.invertStrand(getCoordinate().getStrand());
-			if (ret.effectiveStrand == STRAND.REVERSE) {
-				ret.getPileupCount().invert();
-			}
-			break;
-
-		}
-
-		return ret;
 	}
 
 	public STRAND getEffectiveStrand() {
@@ -103,24 +72,23 @@ implements hasPileupCount {
 	}
 
 	@Override
+	public BaseCallCount getBaseCallCount() {
+		return getPileupCount().getBaseCallCount();
+	}
+
+	@Override
 	public int getCoverage() {
-		return pileupCount.getCoverage();
+		return getPileupCount().getCoverage();
 	}
 
 	@Override
 	public byte getReferenceBase() {
-		return pileupCount.getReferenceBase();
+		return getPileupCount().getReferenceBase();
 	}
 
 	@Override
-	public void setReferenceBase(byte referenceBase) {
-		pileupCount.setReferenceBase(referenceBase);
+	public void setReferenceBase(final byte referenceBase) {
+		getPileupCount().setReferenceBase(referenceBase);
 	}
-	
-	@Override
-	public BaseCallCount getBaseCallCount() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+
 }

@@ -224,7 +224,7 @@ extends AbstractOutputFormat<T> {
 		
 		if (parameters.showReferenceBase()) {
 			sb.append(getSEP());
-			sb.append(parallelData.getCombinedPooledData().getReferenceBase());
+			sb.append(parallelData.getCombinedPooledData().getPileupCount().getReferenceBase());
 		}
 
 		return sb.toString();		
@@ -233,26 +233,26 @@ extends AbstractOutputFormat<T> {
 	/*
 	 * Helper function
 	 */
-	protected void addData(final StringBuilder sb, final T[] data) {
+	protected void addData(final StringBuilder sb, final T[] replicateData) {
 		// output condition: Ax,Cx,Gx,Tx
-		for (final T d : data) {
+		for (final T data : replicateData) {
 			sb.append(SEP);
 
 			int i = 0;
-			char b = BaseCallConfig.BASES[i];
-			int baseI = parameters.getBaseConfig().getBaseIndex((byte)b);
+			byte baseByte = (byte)BaseCallConfig.BASES[i];
+			int baseIndex = parameters.getBaseConfig().getBaseIndex(baseByte);
 			int count = 0;
-			if (baseI >= 0) {
-				count = d.getPileupCount().getBaseCount(baseI);
+			if (baseIndex >= 0) {
+				count = data.getPileupCount().getBaseCallCount().getBaseCallCount(baseIndex);
 			}
 			sb.append(count);
 			++i;
 			for (; i < BaseCallConfig.BASES.length; ++i) {
-				b = BaseCallConfig.BASES[i];
-				baseI = parameters.getBaseConfig().getBaseIndex((byte)b);
+				baseByte = (byte)BaseCallConfig.BASES[i];
+				baseIndex = parameters.getBaseConfig().getBaseIndex(baseByte);
 				count = 0;
-				if (baseI >= 0) {
-					count = d.getPileupCount().getBaseCount(baseI);
+				if (baseIndex >= 0) {
+					count = data.getPileupCount().getBaseCallCount().getBaseCallCount(baseIndex);
 				}
 				sb.append(SEP2);
 				sb.append(count);

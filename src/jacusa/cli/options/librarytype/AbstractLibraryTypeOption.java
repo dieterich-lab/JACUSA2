@@ -1,4 +1,4 @@
-package jacusa.cli.options.pileupbuilder;
+package jacusa.cli.options.librarytype;
 
 import java.util.List;
 
@@ -40,9 +40,11 @@ extends AbstractConditionACOption<T> {
 		
 		case FR_SECONDSTRAND:
 			return LIBRARY_TYPE.FR_SECONDSTRAND;
+			
+		default:
+			return null;
+			
 		}
-
-		return null;
 	}
 	
 	public String getPossibleValues() {
@@ -66,6 +68,9 @@ extends AbstractConditionACOption<T> {
 				desc = "UNSTRANDED library";
 				break;
 
+			case MIXED:
+				continue;
+				
 			}
 
 			sb.append(option);

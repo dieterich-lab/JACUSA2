@@ -5,7 +5,7 @@ import lib.data.AbstractData;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
 
-public class CombinedDistanceFilter<T extends AbstractData & hasReferenceBase & hasBaseCallCount, F extends AbstractData & hasBaseCallCount> 
+public class CombinedDistanceFilter<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
 extends AbstractDistanceFilter<T, F> {
 
 	public CombinedDistanceFilter(final char c, 

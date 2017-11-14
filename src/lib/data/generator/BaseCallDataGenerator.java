@@ -1,6 +1,8 @@
 package lib.data.generator;
 
 import lib.data.BaseCallData;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.util.Coordinate;
 
 public class BaseCallDataGenerator
 extends AbstractDataGenerator<BaseCallData> {
@@ -16,8 +18,8 @@ extends AbstractDataGenerator<BaseCallData> {
 	}
 	
 	@Override
-	public BaseCallData createData() {
-		return new BaseCallData();
+	public BaseCallData createData(LIBRARY_TYPE libraryType, Coordinate coordinate) {
+		return new BaseCallData(libraryType, coordinate);
 	}
 	
 	@Override

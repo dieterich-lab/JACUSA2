@@ -104,8 +104,8 @@ extends AbstractOutputFormat<T> {
 
 		StringBuilder sb2 = new StringBuilder();
 		boolean first = true;
-		for (int allelIndex : parallelData.getCombinedPooledData().getPileupCount().getAlleles()) {
-			if (parallelData.getCombinedPooledData().getReferenceBase() != baseConfig.getBases()[allelIndex]) {
+		for (int allelIndex : parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount().getAlleles()) {
+			if (parallelData.getCombinedPooledData().getPileupCount().getReferenceBase() != baseConfig.getBases()[allelIndex]) {
 				if (! first) {
 					sb2.append(',');
 				} else {
@@ -123,7 +123,7 @@ extends AbstractOutputFormat<T> {
 				// ID
 				Character.toString(getEMPTY()),
 				// REF
-				Byte.toString(parallelData.getCombinedPooledData().getReferenceBase()),
+				Byte.toString(parallelData.getCombinedPooledData().getPileupCount().getReferenceBase()),
 				// ALT
 				sb2.toString(),
 				// QUAL
@@ -163,7 +163,7 @@ extends AbstractOutputFormat<T> {
 			int baseIndex = baseConfig.getBaseIndex((byte)b);
 			int count = 0;
 			if (baseIndex >= 0) {
-				count = data[i].getPileupCount().getBaseCount(baseIndex);
+				count = data[i].getPileupCount().getBaseCallCount().getBaseCallCount(baseIndex);
 			}
 			sb.append(count);
 			++j;
@@ -172,7 +172,7 @@ extends AbstractOutputFormat<T> {
 				baseIndex = baseConfig.getBaseIndex((byte)b);
 				count = 0;
 				if (baseIndex >= 0) {
-					count = data[i].getPileupCount().getBaseCount(baseIndex);
+					count = data[i].getPileupCount().getBaseCallCount().getBaseCallCount(baseIndex);
 				}
 				sb.append(',');
 				sb.append(count);

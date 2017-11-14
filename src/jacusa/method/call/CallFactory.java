@@ -2,7 +2,7 @@ package jacusa.method.call;
 
 import jacusa.cli.options.StatisticCalculatorOption;
 import jacusa.cli.options.StatisticFilterOption;
-import jacusa.cli.options.pileupbuilder.OneConditionLibraryTypeOption;
+import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.CallParameter;
 import jacusa.data.validator.MinCoverageValidator;
 import jacusa.data.validator.ParallelDataValidator;
@@ -47,13 +47,15 @@ import lib.data.BaseCallData;
 import lib.data.builder.factory.PileupDataBuilderFactory;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasPileupCount;
+import lib.data.has.hasReferenceBase;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
 import org.apache.commons.cli.ParseException;
 
-public class CallFactory<T extends AbstractData & hasPileupCount> 
+public class CallFactory<T extends AbstractData & hasPileupCount & hasBaseCallCount & hasReferenceBase> 
 extends AbstractMethodFactory<T> {
 
 	public CallFactory(final CallParameter<T> callParameter, final DataGenerator<T> dataGenerator) {

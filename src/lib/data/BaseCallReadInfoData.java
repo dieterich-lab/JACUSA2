@@ -9,20 +9,14 @@ implements hasReadInfoCount {
 
 	private ReadInfoCount readInfoCount;
 	
-	public BaseCallReadInfoData() {
-		super();
-		
-		readInfoCount = new ReadInfoCount();
-	}
-
 	public BaseCallReadInfoData(final BaseCallReadInfoData data) {
 		super(data);
 
 		this.readInfoCount = data.readInfoCount.copy();
 	}
 	
-	public BaseCallReadInfoData(final Coordinate coordinate, final LIBRARY_TYPE libraryType) {
-		super(coordinate, libraryType);
+	public BaseCallReadInfoData(final LIBRARY_TYPE libraryType, final Coordinate coordinate) {
+		super(libraryType, coordinate);
 
 		readInfoCount = new ReadInfoCount();
 	}

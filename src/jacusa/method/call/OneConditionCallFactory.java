@@ -17,11 +17,13 @@ import lib.data.AbstractData;
 import lib.data.BaseCallData;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasPileupCount;
+import lib.data.has.hasReferenceBase;
 
 import org.apache.commons.cli.ParseException;
 
-public class OneConditionCallFactory<T extends AbstractData & hasPileupCount> 
+public class OneConditionCallFactory<T extends AbstractData & hasPileupCount & hasBaseCallCount & hasReferenceBase> 
 extends CallFactory<T> {
 
 	public OneConditionCallFactory(final DataGenerator<T> dataGenerator) {

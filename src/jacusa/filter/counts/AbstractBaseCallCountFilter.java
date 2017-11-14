@@ -7,7 +7,7 @@ import lib.data.ParallelData;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
 
-public abstract class AbstractBaseCallCountFilter<T extends AbstractData & hasReferenceBase & hasBaseCallCount, F extends AbstractData & hasBaseCallCount> {
+public abstract class AbstractBaseCallCountFilter<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> {
 
 	private final AbstractFilterFactory<T, F> filterFactory;
 

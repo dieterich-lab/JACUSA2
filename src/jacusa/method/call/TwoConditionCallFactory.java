@@ -1,15 +1,17 @@
 package jacusa.method.call;
 
-import jacusa.cli.options.pileupbuilder.TwoConditionLibraryTypeOption;
+import jacusa.cli.options.librarytype.TwoConditionLibraryTypeOption;
 import jacusa.cli.parameters.CallParameter;
 import lib.cli.options.AbstractACOption;
 import lib.data.AbstractData;
 import lib.data.generator.DataGenerator;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasPileupCount;
+import lib.data.has.hasReferenceBase;
 
 import org.apache.commons.cli.ParseException;
 
-public class TwoConditionCallFactory<T extends AbstractData & hasPileupCount> 
+public class TwoConditionCallFactory<T extends AbstractData & hasPileupCount & hasBaseCallCount & hasReferenceBase> 
 extends CallFactory<T> {
 
 	public TwoConditionCallFactory(final DataGenerator<T> dataGenerator) {

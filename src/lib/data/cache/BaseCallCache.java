@@ -3,6 +3,7 @@ package lib.data.cache;
 import java.util.Arrays;
 
 import lib.util.Coordinate;
+import lib.util.Coordinate.STRAND;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
@@ -61,6 +62,10 @@ extends AbstractCache<T> {
 
 		for (int baseIndex = 0; baseIndex < getBaseSize(); baseIndex++) {
 			data.getBaseCallCount().set(baseIndex, baseCalls[windowPosition][baseIndex]);
+		}
+
+		if (coordinate.getStrand() == STRAND.REVERSE) {
+			data.getBaseCallCount().invert();
 		}
 	}
 

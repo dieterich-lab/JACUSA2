@@ -10,6 +10,6 @@ import lib.util.Coordinate;
 public interface hasCoordinate {
 
 	Coordinate getCoordinate();
-	void setCoordinate(final Coordinate coordinate);
+	// void setCoordinate(final Coordinate coordinate);
 	
 }

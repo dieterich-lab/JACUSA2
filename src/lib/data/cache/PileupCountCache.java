@@ -3,6 +3,7 @@ package lib.data.cache;
 import java.util.Arrays;
 
 import lib.util.Coordinate;
+import lib.util.Coordinate.STRAND;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
@@ -78,30 +79,36 @@ extends AbstractCache<T> {
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
 		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
-		data.setCoordinate(new Coordinate(coordinate));
+		data.getPileupCount().setReferenceBase(referenceBases[windowPosition]);
+
+		if (coverage[windowPosition] == 0) {
+			return;
+		}
 		
 		int[] baseCount = new int[BaseCallConfig.BASES.length];
 		byte[][] base2qual = new byte[BaseCallConfig.BASES.length][getMaxBaseCallQuality()];
 		byte[] minMapq = new byte[BaseCallConfig.BASES.length];		
 
-		if (coverage[windowPosition] > 0) {
-			System.arraycopy(baseCalls[windowPosition], 0, baseCount, 0, baseCount.length);
-			for (int baseIndex = 0; baseIndex < baseCount.length; ++baseIndex) {
-				if (baseCount[baseIndex] > 0) {
-					System.arraycopy(
-							baseCallQualities[windowPosition][baseIndex], 0, 
-							base2qual[baseIndex], getMinBaseCallQuality(), baseCallQualities[windowPosition][baseIndex].length);
-					minMapq[baseIndex] = getMinBaseCallQuality();
+		System.arraycopy(baseCalls[windowPosition], 0, baseCount, 0, baseCount.length);
+		for (int baseIndex = 0; baseIndex < baseCount.length; ++baseIndex) {
+			if (baseCount[baseIndex] > 0) {
+				System.arraycopy(
+						baseCallQualities[windowPosition][baseIndex], 0, 
+						base2qual[baseIndex], getMinBaseCallQuality(), baseCallQualities[windowPosition][baseIndex].length);
+				minMapq[baseIndex] = getMinBaseCallQuality();
 
-				} else {
-					Arrays.fill(base2qual[baseIndex], (byte)0);
-					minMapq[baseIndex] = getMaxBaseCallQuality();
-				}
+			} else {
+				Arrays.fill(base2qual[baseIndex], (byte)0);
+				minMapq[baseIndex] = getMaxBaseCallQuality();
 			}
 		}
 		
 		final PileupCount pileupCount = new PileupCount(referenceBases[windowPosition], baseCount, base2qual, minMapq);
-		data.setPileupCount(pileupCount);
+		data.getPileupCount().add(pileupCount);
+		
+		if (coordinate.getStrand() == STRAND.REVERSE) {
+			data.getPileupCount().invert();
+		}
 	}
 
 	protected void incrementBaseCalls(final int referencePosition, final int readPosition, int length, 

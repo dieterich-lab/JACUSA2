@@ -12,7 +12,7 @@ extends AbstractStrandedCache<T> {
 	}
 	
 	@Override
-	protected Cache<T> getCache(SAMRecordWrapper recordWrapper) {
+	protected Cache<T> getCache(final SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
 	
 		// paired end

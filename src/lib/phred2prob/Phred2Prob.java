@@ -1,11 +1,10 @@
 package lib.phred2prob;
 
-
 import java.util.Arrays;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.PileupCount;
-import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasPileupCount;
 import lib.util.MathUtil;
 
 public final class Phred2Prob {
@@ -42,12 +41,12 @@ public final class Phred2Prob {
 		return phred2baseP[qual];
 	}
 
-	public double[] colSumCount(final int[] baseIndexs, final hasBaseCallCount o) {
+	public double[] colSumCount(final int[] baseIndexs, final hasPileupCount o) {
 		// container for accumulated probabilities 
 		final double[] c = new double[BaseCallConfig.BASES.length];
 
 		for (int baseIndex : baseIndexs) {
-			final int count = o.getBaseCallCount().getBaseCallCount(baseIndex);
+			final int count = o.getPileupCount().getBaseCallCount().getBaseCallCount(baseIndex);
 			c[baseIndex] = count;
 		}
 		return c;		
@@ -113,7 +112,7 @@ public final class Phred2Prob {
 		final double[] p = colSumErrorProb(baseIndexs, pileupCount);
 		
 		for (int baseI : baseIndexs) {
-			p[baseI] /= (double)pileupCount.getCoverage();
+			p[baseI] /= (double)pileupCount.getBaseCallCount().getCoverage();
 		}
 		
 		return p;

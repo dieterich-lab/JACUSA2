@@ -1,7 +1,7 @@
 package jacusa.method.rtarrest;
 
 import jacusa.cli.options.StatisticFilterOption;
-import jacusa.cli.options.pileupbuilder.OneConditionLibraryTypeOption;
+import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.RTArrestParameter;
 import jacusa.data.validator.MinCoverageValidator;
 import jacusa.data.validator.ParallelDataValidator;

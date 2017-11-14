@@ -2,6 +2,7 @@ package lib.tmp;
 
 import lib.location.CoordinateAdvancer;
 import lib.util.Coordinate;
+import lib.util.Coordinate.STRAND;
 import lib.util.coordinateprovider.WindowedCoordinateProvider;
 
 public class CoordinateController {
@@ -17,13 +18,16 @@ public class CoordinateController {
 		this.activeWindowSize = windowActiveSite;
 		this.referenceAdvancer = referenceAdvancer;
 	}
-	
+
 	public void updateReserved(final Coordinate reservedWindowCoordinate) {
 		active = null;
 		reserved = reservedWindowCoordinate;
-		provider = new WindowedCoordinateProvider(reservedWindowCoordinate, activeWindowSize);
-		updateReferenceAdvancer(new Coordinate());
+		provider = new WindowedCoordinateProvider(reservedWindowCoordinate.getStrand() != STRAND.UNKNOWN, 
+				reservedWindowCoordinate, activeWindowSize);
+
 		referenceAdvancer.getCurrentCoordinate().setContig(reservedWindowCoordinate.getContig());
+		referenceAdvancer.getCurrentCoordinate().setPosition(-1);
+		referenceAdvancer.getCurrentCoordinate().setStrand(reservedWindowCoordinate.getStrand());
 	}
 
 	public boolean hasNext() {

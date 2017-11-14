@@ -6,14 +6,14 @@ import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
-import lib.data.has.hasPileupCount;
+import lib.data.has.hasBaseCallCount;
 
 /**
  * 
  * @author Michael Piechotta
  *
  */
-public class HomozygousFilterFactory<T extends AbstractData & hasPileupCount> 
+public class HomozygousFilterFactory<T extends AbstractData & hasBaseCallCount> 
 extends AbstractFilterFactory<T, T> {
 
 	// 

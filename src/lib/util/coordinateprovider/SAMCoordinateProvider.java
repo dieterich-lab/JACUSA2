@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import lib.util.Coordinate;
+import lib.util.Coordinate.STRAND;
 
 import htsjdk.samtools.SAMSequenceRecord;
 
@@ -18,14 +19,15 @@ import htsjdk.samtools.SAMSequenceRecord;
  */
 public class SAMCoordinateProvider implements CoordinateProvider {
 
+	final boolean isStranded;
 	private Iterator<SAMSequenceRecord> it;
-
 	private int total;
 	
 	/**
 	 * 
 	 */
-	public SAMCoordinateProvider(final List<SAMSequenceRecord> records) {
+	public SAMCoordinateProvider(final boolean isStranded, final List<SAMSequenceRecord> records) {
+		this.isStranded = isStranded;
 		it = records.iterator();
 		total = records.size();
 	}
@@ -39,7 +41,7 @@ public class SAMCoordinateProvider implements CoordinateProvider {
 	public Coordinate next() {
 		if (hasNext()) {
 			final SAMSequenceRecord record = it.next();
-			return new Coordinate(record.getSequenceName(), 1, record.getSequenceLength());
+			return new Coordinate(record.getSequenceName(), 1, record.getSequenceLength(), isStranded ? STRAND.FORWARD : STRAND.UNKNOWN);
 		}
 
 		return null;
