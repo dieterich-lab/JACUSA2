@@ -1,6 +1,6 @@
 package lib.data.generator;
 
-import lib.data.basecall.PileupData;
+import lib.data.PileupData;
 
 public class PileupDataGenerator 
 extends AbstractDataGenerator<PileupData> {

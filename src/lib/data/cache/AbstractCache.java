@@ -11,7 +11,12 @@ import lib.util.Coordinate.STRAND;
 public abstract class AbstractCache<T extends AbstractData> 
 implements Cache<T> {
 
+	private int activeWindowSize;
 	private Coordinate activeWindowCoordinate;
+	
+	public AbstractCache(final int activeWindowSize) {
+		this.activeWindowSize = activeWindowSize;
+	}
 	
 	public void setActiveWindowCoordinate(final Coordinate activeWindowCoordinate) {
 		this.activeWindowCoordinate = activeWindowCoordinate;
@@ -31,13 +36,8 @@ implements Cache<T> {
 		return new SimpleEntry<Integer, STRAND>(windowPosition, coordinate.getStrand());
 	}
 
-	/*
-	protected BaseCallConfig getBaseCallConfig() {
-		return methodFactory.getParameter().getBaseConfig();
-	}*/
-	
 	protected int getActiveWindowSize() {
-		return activeWindowCoordinate.getEnd() - activeWindowCoordinate.getStart() + 1;
+		return activeWindowSize;
 	}
 	
 }

@@ -1,6 +1,6 @@
 package jacusa.pileup.iterator;
 
-import lib.data.basecall.PileupData;
+import lib.data.PileupData;
 
 public class OneConditionCallIterator<T extends PileupData> { 
 

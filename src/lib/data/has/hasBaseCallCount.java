@@ -1,6 +1,6 @@
 package lib.data.has;
 
-import lib.data.basecall.BaseCallCount;
+import lib.data.BaseCallCount;
 
 /**
  * 

@@ -21,7 +21,8 @@ extends AbstractCache<T> {
 	private final int[] readStartCount;
 	private final int[] readEndCount;
 
-	public AlignmentCache(final LIBRARY_TYPE libraryType) {
+	public AlignmentCache(final LIBRARY_TYPE libraryType, final int activeWindowSize) {
+		super(activeWindowSize);
 		this.libraryType = libraryType;
 
 		readStartCount = new int[getActiveWindowSize()];

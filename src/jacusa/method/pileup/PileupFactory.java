@@ -27,6 +27,7 @@ import lib.cli.options.FormatOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ResultFileOption;
+import lib.cli.options.ShowReferenceOption;
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.cli.options.WindowSizeOption;
 import lib.cli.options.condition.MaxDepthConditionOption;
@@ -37,8 +38,8 @@ import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.AbstractData;
-import lib.data.basecall.BaseCallData;
-import lib.data.builder.factory.BaseCallDataBuilderFactory;
+import lib.data.BaseCallData;
+import lib.data.builder.factory.PileupDataBuilderFactory;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasPileupCount;
@@ -52,7 +53,7 @@ extends AbstractMethodFactory<T> {
 	
 	public PileupFactory(PileupParameter<T> pileupParameter, final DataGenerator<T> dataGenerator) {
 		super("pileup", "SAMtools like mpileup",
-				pileupParameter, new BaseCallDataBuilderFactory<T>(pileupParameter), dataGenerator);
+				pileupParameter, new PileupDataBuilderFactory<T>(pileupParameter), dataGenerator);
 	}
 
 	public void initGeneralParameter(int conditionSize) {
@@ -82,7 +83,7 @@ extends AbstractMethodFactory<T> {
 		// addACOption(new BaseConfigOption(getParameter()));
 		// addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
 		
-		// addACOption(new ShowReferenceOption(getParameter()));
+		addACOption(new ShowReferenceOption(getParameter()));
 		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 		
 		addACOption(new MaxThreadOption(getParameter()));

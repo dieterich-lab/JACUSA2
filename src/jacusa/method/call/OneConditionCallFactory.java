@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import lib.data.AbstractData;
-import lib.data.basecall.BaseCallData;
+import lib.data.BaseCallData;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasPileupCount;

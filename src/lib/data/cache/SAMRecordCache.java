@@ -17,7 +17,8 @@ extends AbstractCache<T> {
 
 	private List<List<SAMRecordWrapper>> recordWrappers;
 
-	public SAMRecordCache() {
+	public SAMRecordCache(final int activeWindowSize) {
+		super(activeWindowSize);
 		recordWrappers = new ArrayList<List<SAMRecordWrapper>>(getActiveWindowSize());
 		for (int i = 0; i < getActiveWindowSize(); ++i) {
 			recordWrappers.add(new ArrayList<SAMRecordWrapper>(50));

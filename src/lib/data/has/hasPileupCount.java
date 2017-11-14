@@ -1,6 +1,6 @@
 package lib.data.has;
 
-import lib.data.basecall.PileupCount;
+import lib.data.PileupCount;
 
 /**
  * 

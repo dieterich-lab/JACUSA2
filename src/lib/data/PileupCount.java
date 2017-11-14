@@ -1,4 +1,4 @@
-package lib.data.basecall;
+package lib.data;
 
 import java.util.Arrays;
 

@@ -1,6 +1,5 @@
 package lib.data;
 
-import lib.data.basecall.BaseCallData;
 import lib.data.has.hasReadInfoCount;
 import lib.util.Coordinate;
 

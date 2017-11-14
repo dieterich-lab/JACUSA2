@@ -4,7 +4,7 @@ package lib.phred2prob;
 import java.util.Arrays;
 
 import lib.cli.options.BaseCallConfig;
-import lib.data.basecall.PileupCount;
+import lib.data.PileupCount;
 import lib.data.has.hasBaseCallCount;
 import lib.util.MathUtil;
 

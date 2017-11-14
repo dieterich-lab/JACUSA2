@@ -1,7 +1,6 @@
 package lib.data;
 
 import lib.cli.options.BaseCallConfig;
-import lib.data.basecall.PileupData;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoordinate;

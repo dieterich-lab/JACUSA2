@@ -1,6 +1,6 @@
 package lib.data.generator;
 
-import lib.data.basecall.BaseCallData;
+import lib.data.BaseCallData;
 
 public class BaseCallDataGenerator
 extends AbstractDataGenerator<BaseCallData> {

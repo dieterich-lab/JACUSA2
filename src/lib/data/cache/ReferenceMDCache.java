@@ -14,7 +14,8 @@ extends AbstractCache<T> {
 
 	private byte[] referenceBases;
 
-	public ReferenceMDCache() {
+	public ReferenceMDCache(final int activeWindowSize) {
+		super(activeWindowSize);
 		referenceBases = new byte[getActiveWindowSize()];
 	}
 

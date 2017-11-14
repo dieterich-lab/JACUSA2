@@ -40,7 +40,8 @@ extends AbstractDataBuilderFactory<T> {
 	}
 	
 	private Cache<T> createCache(final AbstractConditionParameter<T> conditionParameter) {
-		return new BaseCallCache<T>(conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), getGeneralParameter().getBaseConfig());
+		return new BaseCallCache<T>(conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), 
+				getGeneralParameter().getBaseConfig(), getGeneralParameter().getActiveWindowSize());
 	}
 	
 }

@@ -32,6 +32,7 @@ import lib.cli.options.FormatOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ResultFileOption;
+import lib.cli.options.ShowReferenceOption;
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.cli.options.WindowSizeOption;
 import lib.cli.options.condition.MaxDepthConditionOption;
@@ -42,7 +43,7 @@ import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.AbstractData;
-import lib.data.basecall.BaseCallData;
+import lib.data.BaseCallData;
 import lib.data.builder.factory.PileupDataBuilderFactory;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
@@ -73,7 +74,7 @@ extends AbstractMethodFactory<T> {
 		
 		addACOption(new StatisticFilterOption(getParameter().getStatisticParameters()));
 
-		// addACOption(new ShowReferenceOption(getParameter()));
+		addACOption(new ShowReferenceOption(getParameter()));
 		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 		
 		addACOption(new MaxThreadOption(getParameter()));

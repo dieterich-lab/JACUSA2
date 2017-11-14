@@ -1,6 +1,5 @@
-package lib.data.basecall;
+package lib.data;
 
-import lib.data.AbstractData;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasLibraryType;
 import lib.util.Coordinate;

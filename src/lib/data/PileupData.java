@@ -1,6 +1,5 @@
-package lib.data.basecall;
+package lib.data;
 
-import lib.data.AbstractData;
 import lib.data.has.hasPileupCount;
 import lib.util.Coordinate;
 import lib.util.Coordinate.STRAND;

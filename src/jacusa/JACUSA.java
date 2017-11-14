@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import lib.data.BaseCallReadInfoData;
-import lib.data.basecall.PileupData;
+import lib.data.PileupData;
 import lib.data.generator.DataGenerator;
 import lib.data.generator.PileupDataGenerator;
 import lib.data.generator.BaseCallReadInfoDataGenerator;
@@ -59,16 +59,18 @@ public class JACUSA extends AbstractTool {
 
 		final List<AbstractMethodFactory<?>> factories = new ArrayList<AbstractMethodFactory<?>>(10);
 		// calling variants
-		DataGenerator<PileupData> dataGenerator = new PileupDataGenerator();
-		factories.add(new OneConditionCallFactory<PileupData>(dataGenerator));
-		factories.add(new TwoConditionCallFactory<PileupData>(dataGenerator));
+		DataGenerator<PileupData> pileupDataGenerator = new PileupDataGenerator();
+		factories.add(new OneConditionCallFactory<PileupData>(pileupDataGenerator));
+		factories.add(new TwoConditionCallFactory<PileupData>(pileupDataGenerator));
 		// factories.add(new CallFactory<PileupData>(new CallParameter<T>(3), dataGenerator)); // TODO make conditions general
 		// pileup information
-		factories.add(new PileupFactory<PileupData>(new PileupParameter<PileupData>(1), dataGenerator));
+
+		factories.add(new PileupFactory<PileupData>(new PileupParameter<PileupData>(1), pileupDataGenerator));
+
 		// Read info
-		
-		DataGenerator<BaseCallReadInfoData> dataGenerator2 = new BaseCallReadInfoDataGenerator();
-		factories.add(new RTArrestFactory<BaseCallReadInfoData>(new RTArrestParameter<BaseCallReadInfoData>(2), dataGenerator2));
+		DataGenerator<BaseCallReadInfoData> baseCallReadInfoGenerator = new BaseCallReadInfoDataGenerator();
+		factories.add(new RTArrestFactory<BaseCallReadInfoData>(new RTArrestParameter<BaseCallReadInfoData>(2), 
+				baseCallReadInfoGenerator));
 
 		for (final AbstractMethodFactory<?> factory : factories) {
 			methodFactories.put(factory.getName(), factory);

@@ -24,7 +24,7 @@ extends AbstractDataBuilderFactory<T> {
 	@Override
 	public List<Cache<T>> createCaches(final AbstractConditionParameter<T> conditionParameter) {
 		final List<Cache<T>> caches = dataBuilderFactory.createCaches(conditionParameter);
-		caches.add(new AlignmentCache<T>(conditionParameter.getLibraryType()));
+		caches.add(new AlignmentCache<T>(conditionParameter.getLibraryType(), getGeneralParameter().getActiveWindowSize()));
 		return caches;
 	}
 

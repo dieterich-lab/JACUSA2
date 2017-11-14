@@ -9,7 +9,7 @@ import htsjdk.samtools.SAMRecord;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.basecall.PileupCount;
+import lib.data.PileupCount;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.has.hasPileupCount;
 
@@ -29,8 +29,8 @@ extends AbstractCache<T> {
 	private final byte[][][] baseCallQualities;
 	private final int baseCallQualityRange;
 	
-	public PileupCountCache(final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig) {
-		super();
+	public PileupCountCache(final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig, final int activeWindowSize) {
+		super(activeWindowSize);
 		this.baseCallConfig = baseCallConfig;
 		
 		this.maxDepth = maxDepth;

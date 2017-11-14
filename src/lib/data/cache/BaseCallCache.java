@@ -23,14 +23,15 @@ extends AbstractCache<T> {
 	private final int[] coverage;
 	private final int[][] baseCalls;
 
-	public BaseCallCache(final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig) {
+	public BaseCallCache(final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig, final int activeWindowSize) {
+		super(activeWindowSize);
 		this.baseCallConfig = baseCallConfig;
 
 		this.maxDepth = maxDepth;
 		this.minBASQ = minBASQ;
 		
 		coverage = new int[getActiveWindowSize()];
-		baseCalls = new int[getBaseSize()][getActiveWindowSize()];
+		baseCalls = new int[getActiveWindowSize()][getBaseSize()];
 	}
 
 	@Override
