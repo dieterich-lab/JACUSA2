@@ -2,7 +2,6 @@ package lib.data.cache;
 
 import java.util.Arrays;
 
-import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;
@@ -17,6 +16,8 @@ import lib.data.has.hasPileupCount;
 public class PileupCountCache<T extends AbstractData & hasPileupCount> 
 extends AbstractCache<T> {
 
+	private final BaseCallConfig baseCallConfig;
+	
 	private final int maxDepth;
 	private final byte minBASQ;
 
@@ -28,9 +29,10 @@ extends AbstractCache<T> {
 	private final byte[][][] baseCallQualities;
 	private final int baseCallQualityRange;
 	
-	public PileupCountCache(final int maxDepth, final byte minBASQ, final AbstractMethodFactory<T> methodFactory) {
-		super(methodFactory);
-	
+	public PileupCountCache(final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig) {
+		super();
+		this.baseCallConfig = baseCallConfig;
+		
 		this.maxDepth = maxDepth;
 		this.minBASQ = minBASQ;
 		
@@ -74,8 +76,7 @@ extends AbstractCache<T> {
 	}
 	
 	@Override
-	public T getData(final Coordinate coordinate) {
-		final T data = getDataGenerator().createData();
+	public void addData(final T data, final Coordinate coordinate) {
 		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
 		data.setCoordinate(new Coordinate(coordinate));
 		
@@ -101,8 +102,6 @@ extends AbstractCache<T> {
 		
 		final PileupCount pileupCount = new PileupCount(referenceBases[windowPosition], baseCount, base2qual, minMapq);
 		data.setPileupCount(pileupCount);
-
-		return data;
 	}
 
 	protected void incrementBaseCalls(final int referencePosition, final int readPosition, int length, 
@@ -117,7 +116,7 @@ extends AbstractCache<T> {
 			if (maxDepth > 0 && coverage[windowPosition.getWindowPosition() + j] >= maxDepth) {
 				continue;
 			}
-			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[windowPosition.getRead() + j]);
+			final int baseIndex = baseCallConfig.getBaseIndex(record.getReadBases()[windowPosition.getRead() + j]);
 			if (baseIndex < 0) {
 				continue;
 			}
@@ -161,11 +160,11 @@ extends AbstractCache<T> {
 	}
 	
 	private int getBaseSize() {
-		return getBaseCallConfig().getBases().length; 
+		return baseCallConfig.getBases().length; 
 	}
 	
 	private byte getMaxBaseCallQuality() {
-		return getBaseCallConfig().getMaxBaseCallQuality();
+		return baseCallConfig.getMaxBaseCallQuality();
 	}
 
 	private byte getMinBaseCallQuality() {

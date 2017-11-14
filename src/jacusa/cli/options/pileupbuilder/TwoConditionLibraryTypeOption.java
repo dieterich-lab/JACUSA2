@@ -11,12 +11,12 @@ import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class TwoConditionPileupDataBuilderOption<T extends AbstractData & hasPileupCount> 
-extends OneConditionPileupDataBuilderOption<T> {
+public class TwoConditionLibraryTypeOption<T extends AbstractData & hasPileupCount> 
+extends OneConditionLibraryTypeOption<T> {
 
 	private static final char SEP = ',';
 	
-	public TwoConditionPileupDataBuilderOption(
+	public TwoConditionLibraryTypeOption(
 			final AbstractConditionParameter<T> conditionParameter1, 
 			final AbstractConditionParameter<T> conditionParameter2,
 			final AbstractParameter<T> generalParameter) {
@@ -35,7 +35,7 @@ extends OneConditionPileupDataBuilderOption<T> {
 				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
-				.desc("Choose the library types and how parallel pileups are build for " +
+				.desc("Choose the library types for " +
 					"condition1(cond1) and condition2(cond2).\nFormat: cond1,cond2. \n" +
 					"Possible values for cond1 and cond2:\n" + getPossibleValues() + "\n" +
 					"default: " + LIBRARY_TYPE.UNSTRANDED + SEP + LIBRARY_TYPE.UNSTRANDED)
@@ -57,15 +57,15 @@ extends OneConditionPileupDataBuilderOption<T> {
 	    		throw new IllegalArgumentException(sb.toString());
 	    	}
 
-	    	LIBRARY_TYPE l1 = parse(ss[0]);
-	    	LIBRARY_TYPE l2 = parse(ss[1]);
+	    	LIBRARY_TYPE libraryType1 = parse(ss[0]);
+	    	LIBRARY_TYPE libraryType2 = parse(ss[1]);
 
-	    	if (l1 == null || l2 == null) {
+	    	if (libraryType1 == null || libraryType2 == null) {
 	    		throw new IllegalArgumentException(sb.toString());
 	    	}
 
-	    	getConditionParameters().get(0).setDataBuilderFactory(buildPileupBuilderFactory(l1));
-	    	getConditionParameters().get(1).setDataBuilderFactory(buildPileupBuilderFactory(l2));
+	    	getConditionParameters().get(0).setLibraryType(libraryType1);
+	    	getConditionParameters().get(1).setLibraryType(libraryType2);
 	    }
 	}
 	

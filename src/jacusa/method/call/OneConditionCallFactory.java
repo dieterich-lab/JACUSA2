@@ -1,5 +1,6 @@
 package jacusa.method.call;
 
+import jacusa.cli.parameters.CallParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.CombinedDistanceFilterFactory;
 import jacusa.filter.factory.INDEL_DistanceFilterFactory;
@@ -24,7 +25,7 @@ public class OneConditionCallFactory<T extends AbstractData & hasPileupCount>
 extends CallFactory<T> {
 
 	public OneConditionCallFactory(final DataGenerator<T> dataGenerator) {
-		super(1, dataGenerator);
+		super(new CallParameter<T>(1), dataGenerator);
 	}
 
 	@Override

@@ -1,9 +1,9 @@
 package jacusa.data.validator;
 
-import lib.data.PileupReadInfoData;
+import lib.data.BaseCallReadInfoData;
 import lib.data.ParallelData;
 
-public class RTArrestDebugVariantParallelPileup<T extends PileupReadInfoData> 
+public class RTArrestDebugVariantParallelPileup<T extends BaseCallReadInfoData> 
 implements ParallelDataValidator<T> {
 	
 	public RTArrestDebugVariantParallelPileup() {}

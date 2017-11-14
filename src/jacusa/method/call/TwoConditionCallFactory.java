@@ -1,6 +1,7 @@
 package jacusa.method.call;
 
-import jacusa.cli.options.pileupbuilder.TwoConditionPileupDataBuilderOption;
+import jacusa.cli.options.pileupbuilder.TwoConditionLibraryTypeOption;
+import jacusa.cli.parameters.CallParameter;
 import lib.cli.options.AbstractACOption;
 import lib.data.AbstractData;
 import lib.data.generator.DataGenerator;
@@ -12,7 +13,7 @@ public class TwoConditionCallFactory<T extends AbstractData & hasPileupCount>
 extends CallFactory<T> {
 
 	public TwoConditionCallFactory(final DataGenerator<T> dataGenerator) {
-		super(2, dataGenerator);
+		super(new CallParameter<T>(2), dataGenerator);
 	}
 
 	@Override
@@ -31,7 +32,7 @@ extends CallFactory<T> {
 			getACOptions().remove(removeACOption);
 		}
 
-		addACOption(new TwoConditionPileupDataBuilderOption<T>(
+		addACOption(new TwoConditionLibraryTypeOption<T>(
 				getParameter().getConditionParameters().get(0),
 				getParameter().getConditionParameters().get(1),
 				getParameter()));

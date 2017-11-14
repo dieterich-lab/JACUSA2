@@ -2,24 +2,27 @@ package lib.data.cache;
 
 import java.util.Arrays;
 
-import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
 
 import htsjdk.samtools.SAMRecord;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.has.hasCoverage;
 import lib.data.has.hasReadInfoCount;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
 // TODO do we consider read end by quality or by alignment
-public class AlignmentCache<T extends AbstractData & hasReadInfoCount> 
+public class AlignmentCache<T extends AbstractData & hasCoverage & hasReadInfoCount> 
 extends AbstractCache<T> {
+
+	private final LIBRARY_TYPE libraryType;
 
 	private final int[] readStartCount;
 	private final int[] readEndCount;
 
-	public AlignmentCache(final AbstractMethodFactory<T> methodFactory) {
-		super(methodFactory);
+	public AlignmentCache(final LIBRARY_TYPE libraryType) {
+		this.libraryType = libraryType;
 
 		readStartCount = new int[getActiveWindowSize()];
 		readEndCount = new int[getActiveWindowSize()];
@@ -53,15 +56,39 @@ extends AbstractCache<T> {
 	}
 	
 	@Override
-	public T getData(final Coordinate coordinate) {
-		final T data = getDataGenerator().createData();
-
+	public void addData(final T data, final Coordinate coordinate) {
 		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
 		data.getReadInfoCount().setStart(readStartCount[windowPosition]);
 		data.getReadInfoCount().setEnd(readEndCount[windowPosition]);
 
-		return data;
+		final int inner = data.getCoverage() - (data.getReadInfoCount().getStart() + data.getReadInfoCount().getEnd());
+		data.getReadInfoCount().setInner(inner);
 
+		int arrest = 0;
+		int through = 0;
+
+		switch (libraryType) {
+
+		case UNSTRANDED:
+			arrest 	+= data.getReadInfoCount().getStart();
+			arrest 	+= data.getReadInfoCount().getEnd();
+			through += data.getReadInfoCount().getInner();
+			break;
+
+		case FR_FIRSTSTRAND:
+			arrest 	+= data.getReadInfoCount().getEnd();
+			through += data.getReadInfoCount().getInner();
+			break;
+
+		case FR_SECONDSTRAND:
+			arrest 	+= data.getReadInfoCount().getStart();
+			through += data.getReadInfoCount().getInner();
+			break;				
+		}
+
+		data.getReadInfoCount().setArrest(arrest);
+		data.getReadInfoCount().setThrough(through);
+		
 	}
 	
 	@Override

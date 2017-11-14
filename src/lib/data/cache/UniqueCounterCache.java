@@ -104,8 +104,8 @@ implements Cache<T> {
 	}
 	
 	@Override
-	public T getData(final Coordinate coordinate) {
-		return cache.getData(coordinate);
+	public void addData(final T data, final Coordinate coordinate) {
+		// TODO 
 	}
 
 	public boolean[] getVisited() {

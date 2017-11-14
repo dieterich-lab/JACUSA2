@@ -3,7 +3,6 @@ package lib.data.cache;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;
@@ -18,9 +17,7 @@ extends AbstractCache<T> {
 
 	private List<List<SAMRecordWrapper>> recordWrappers;
 
-	public SAMRecordCache(final AbstractMethodFactory<T> methodFactory) {
-		super(methodFactory);
-
+	public SAMRecordCache() {
 		recordWrappers = new ArrayList<List<SAMRecordWrapper>>(getActiveWindowSize());
 		for (int i = 0; i < getActiveWindowSize(); ++i) {
 			recordWrappers.add(new ArrayList<SAMRecordWrapper>(50));
@@ -72,11 +69,9 @@ extends AbstractCache<T> {
 	}
 		
 	@Override
-	public T getData(final Coordinate coordinate) {
-		final T data = getDataGenerator().createData();
+	public void addData(final T data, final Coordinate coordinate) {
 		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition()); 
 		data.getRecordWrapper().addAll(recordWrappers.get(windowPosition));
-		return data;
 	}
 	
 	protected void incrementBaseCalls(final int windowPosition, final int readPosition, final int length, 

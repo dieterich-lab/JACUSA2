@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.cli.parameters.PileupParameters;
+import jacusa.cli.parameters.PileupParameter;
 import jacusa.data.validator.ParallelDataValidator;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
@@ -21,14 +21,14 @@ import lib.worker.WorkerDispatcher;
 public class PileupWorker<T extends AbstractData & hasPileupCount> 
 extends AbstractWorker<T> {
 
-	private PileupParameters<T> pileupParameter;
+	private PileupParameter<T> pileupParameter;
 	private CopyTmpResult<T> copyTmpResult;
 	private List<CopyTmp> copyTmps;
 	
 	public PileupWorker(final WorkerDispatcher<T> workerDispatcher, 
 			final int threadId,
 			final List<ParallelDataValidator<T>> parallelDataValidators, 
-			final PileupParameters<T> pileupParameter) {
+			final PileupParameter<T> pileupParameter) {
 
 		super(workerDispatcher, threadId, parallelDataValidators, pileupParameter);
 		this.pileupParameter = pileupParameter;

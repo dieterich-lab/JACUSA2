@@ -1,9 +1,8 @@
 package jacusa.method.call;
 
-
 import jacusa.cli.options.StatisticCalculatorOption;
 import jacusa.cli.options.StatisticFilterOption;
-import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
+import jacusa.cli.options.pileupbuilder.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.CallParameter;
 import jacusa.data.validator.MinCoverageValidator;
 import jacusa.data.validator.ParallelDataValidator;
@@ -33,7 +32,6 @@ import lib.cli.options.FormatOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ResultFileOption;
-import lib.cli.options.ShowReferenceOption;
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.cli.options.WindowSizeOption;
 import lib.cli.options.condition.MaxDepthConditionOption;
@@ -45,7 +43,7 @@ import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.AbstractData;
 import lib.data.basecall.BaseCallData;
-import lib.data.builder.factory.UnstrandedPileupBuilderFactory;
+import lib.data.builder.factory.PileupDataBuilderFactory;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasPileupCount;
@@ -57,12 +55,13 @@ import org.apache.commons.cli.ParseException;
 public class CallFactory<T extends AbstractData & hasPileupCount> 
 extends AbstractMethodFactory<T> {
 
-	public CallFactory(final int conditions, final DataGenerator<T> dataGenerator) {
-		super("call-" + (conditions == -1 ? "n" : conditions), 
+	public CallFactory(final CallParameter<T> callParameter, final DataGenerator<T> dataGenerator) {
+		super("call-" + (callParameter.getConditionsSize() == -1 ? "n" : callParameter.getConditionsSize()), 
 				"Call variants - " + 
-						(conditions == -1 ? "n" : conditions) + 
-						(conditions == -1 || conditions == 2 ? " conditions" : " condition"), 
-				new CallParameter<T>(conditions, new UnstrandedPileupBuilderFactory<T>()),
+						(callParameter.getConditionsSize() == -1 ? "n" : callParameter.getConditionsSize()) + 
+						(callParameter.getConditionsSize() == -1 || callParameter.getConditionsSize() == 2 ? " conditions" : " condition"), 
+				callParameter,
+				new PileupDataBuilderFactory<T>(callParameter),
 				dataGenerator);
 	}
 
@@ -74,7 +73,7 @@ extends AbstractMethodFactory<T> {
 		
 		addACOption(new StatisticFilterOption(getParameter().getStatisticParameters()));
 
-		addACOption(new ShowReferenceOption(getParameter()));
+		// addACOption(new ShowReferenceOption(getParameter()));
 		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 		
 		addACOption(new MaxThreadOption(getParameter()));
@@ -101,7 +100,7 @@ extends AbstractMethodFactory<T> {
 		addACOption(new FilterNHsamTagOption<T>(getParameter().getConditionParameters()));
 		addACOption(new FilterNMsamTagOption<T>(getParameter().getConditionParameters()));
 		
-		addACOption(new OneConditionPileupDataBuilderOption<T>(getParameter().getConditionParameters(), getParameter()));
+		addACOption(new OneConditionLibraryTypeOption<T>(getParameter().getConditionParameters(), getParameter()));
 		
 		// only add contions specific options when there are more than 1 conditions
 		if (getParameter().getConditionsSize() > 1) {
@@ -115,7 +114,7 @@ extends AbstractMethodFactory<T> {
 				addACOption(new FilterNHsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 				addACOption(new FilterNMsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 				
-				addACOption(new OneConditionPileupDataBuilderOption<T>(
+				addACOption(new OneConditionLibraryTypeOption<T>(
 						conditionIndex, 
 						getParameter().getConditionParameters().get(conditionIndex),
 						getParameter()));

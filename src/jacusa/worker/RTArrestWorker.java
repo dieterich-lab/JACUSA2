@@ -4,34 +4,34 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.cli.parameters.RTArrestParameters;
+import jacusa.cli.parameters.RTArrestParameter;
 import jacusa.data.validator.ParallelDataValidator;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.io.copytmp.CopyTmpResult;
+import jacusa.io.copytmp.CopyTmpRTArrestResult;
 import jacusa.method.call.statistic.StatisticCalculator;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.Result;
-import lib.data.has.hasPileupCount;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
 import lib.io.copytmp.CopyTmp;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
-public class RTArrestWorker<T extends AbstractData & hasPileupCount & hasReadInfoCount>
+public class RTArrestWorker<T extends AbstractData & hasBaseCallCount & hasReadInfoCount>
 extends AbstractWorker<T> {
 
-	private final RTArrestParameters<T> rtArrestParameter;
+	private final RTArrestParameter<T> rtArrestParameter;
 	private final StatisticCalculator<T> statisticCalculator;
 
-	private CopyTmpResult<T> copyTmpResult;
+	private CopyTmpRTArrestResult<T> copyTmpResult;
 	private List<CopyTmp> copyTmps;
 	
 	public RTArrestWorker(final WorkerDispatcher<T> workerDispatcher,
 			final int threadId,
 			final List<ParallelDataValidator<T>> parallelDataValidators, 
-			final RTArrestParameters<T> rtArrestParameter) {
+			final RTArrestParameter<T> rtArrestParameter) {
 
 		super(workerDispatcher, threadId, parallelDataValidators, rtArrestParameter);
 		this.rtArrestParameter = rtArrestParameter;
@@ -39,7 +39,7 @@ extends AbstractWorker<T> {
 				.getStatisticParameters().getStatisticCalculator().newInstance();
 		
 		try {
-			copyTmpResult = new CopyTmpResult<T>(threadId, rtArrestParameter);
+			copyTmpResult = new CopyTmpRTArrestResult<T>(threadId, rtArrestParameter);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

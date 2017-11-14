@@ -107,7 +107,7 @@ extends AbstractOutputFormat<T> {
 		sb.append(getSEP());
 		
 		for (final AbstractConditionParameter<T> conditionParameter : conditionParameters) {
-			sb.append(conditionParameter.getDataBuilderFactory().getLibraryType());
+			sb.append(conditionParameter.getLibraryType());
 			sb.append(getSEP());
 		}
 		

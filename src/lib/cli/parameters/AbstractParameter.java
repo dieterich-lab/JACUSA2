@@ -11,7 +11,6 @@ import jacusa.io.OutputPrinter;
 import jacusa.io.format.AbstractOutputFormat;
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
@@ -66,16 +65,15 @@ implements hasConditionParameter<T> {
 		debug				= false;
 	}
 
-	public AbstractParameter(final int conditionSize, final AbstractDataBuilderFactory<T> dataBuilderFactory) {
+	public AbstractParameter(final int conditionSize) {
 		this();
 		
-		dataBuilderFactory.setGeneralParameter(this);
 		for (int i = 0; i < conditionSize; i++) {
-			conditionParameters.add(createConditionParameter(dataBuilderFactory));
+			conditionParameters.add(createConditionParameter());
 		}
 	}
 	
-	public abstract AbstractConditionParameter<T> createConditionParameter(final AbstractDataBuilderFactory<T> dataBuilderFactory);
+	public abstract AbstractConditionParameter<T> createConditionParameter();
 	
 	public AbstractOutputFormat<T> getFormat() {
 		return format;

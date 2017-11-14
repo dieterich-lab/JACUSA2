@@ -6,10 +6,9 @@ import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
-public abstract class AbstractDataBuilderOption<T extends AbstractData>
+public abstract class AbstractLibraryTypeOption<T extends AbstractData>
 extends AbstractConditionACOption<T> {
 
 	private static final String OPT = "P";
@@ -17,18 +16,15 @@ extends AbstractConditionACOption<T> {
 
 	private AbstractParameter<T> generalParameter;
 	
-	public AbstractDataBuilderOption(final List<AbstractConditionParameter<T>> conditionParameter, final AbstractParameter<T> generalParameter) { 
+	public AbstractLibraryTypeOption(final List<AbstractConditionParameter<T>> conditionParameter, final AbstractParameter<T> generalParameter) { 
 		super(OPT, LONG_OPT, conditionParameter);
 		this.generalParameter = generalParameter;
 	}
 
-	public AbstractDataBuilderOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameters, final AbstractParameter<T> generalParameter) { 
+	public AbstractLibraryTypeOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameters, final AbstractParameter<T> generalParameter) { 
 		super(OPT, LONG_OPT, conditionIndex, conditionParameters);
 		this.generalParameter = generalParameter;
 	}
-	
-	protected abstract AbstractDataBuilderFactory<T> buildPileupBuilderFactory(
-			final LIBRARY_TYPE libraryType);
 
 	public LIBRARY_TYPE parse(String s) {
 		s = s.toUpperCase();

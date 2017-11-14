@@ -1,37 +1,33 @@
 package jacusa.io.format;
 
-
-import jacusa.filter.FilterConfig;
+import jacusa.cli.parameters.RTArrestParameter;
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.PileupReadInfoData;
+import lib.data.BaseCallReadInfoData;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
-import lib.data.has.hasReferenceBase;
 
-public class RTArrestDebugResultFormat<T extends AbstractData & hasBaseCallCount & hasReadInfoCount & hasReferenceBase> 
+public class RTArrestDebugResultFormat<T extends AbstractData & hasBaseCallCount & hasReadInfoCount> 
 extends RTArrestResultFormat<T> {
 
 	public static final char CHAR = 'D';
 
 	public RTArrestDebugResultFormat(
-			final BaseCallConfig baseConfig, 
-			final FilterConfig<T> filterConfig,
-			final boolean showReferenceBase) {
-		super(CHAR, "Debug", baseConfig, filterConfig, showReferenceBase);
+			final RTArrestParameter<T> rtArrestParameter) {
+		super(CHAR, "Debug", rtArrestParameter);
 	}
 	
 	/*
 	 * Helper function
 	 */
-	protected void addPileups(StringBuilder sb, PileupReadInfoData[] data) {
+	protected void addPileups(StringBuilder sb, BaseCallReadInfoData[] data) {
 		// output condition: Ax,Cx,Gx,Tx
-		for (PileupReadInfoData d : data) {
+		for (BaseCallReadInfoData d : data) {
 			sb.append(SEP);
 
 			int i = 0;
 			char b = BaseCallConfig.BASES[i];
-			int baseIndex = baseConfig.getBaseIndex((byte)b);
+			int baseIndex = getParameter().getBaseConfig().getBaseIndex((byte)b);
 			int count = 0;
 			if (baseIndex >= 0) {
 				count = d.getBaseCallCount().getBaseCallCount(baseIndex);
@@ -40,7 +36,7 @@ extends RTArrestResultFormat<T> {
 			++i;
 			for (; i < BaseCallConfig.BASES.length; ++i) {
 				b = BaseCallConfig.BASES[i];
-				baseIndex = baseConfig.getBaseIndex((byte)b);
+				baseIndex = getParameter().getBaseConfig().getBaseIndex((byte)b);
 				count = 0;
 				if (baseIndex >= 0) {
 					count = d.getBaseCallCount().getBaseCallCount(baseIndex);

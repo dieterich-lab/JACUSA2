@@ -13,6 +13,7 @@ import lib.cli.options.AbstractACOption;
 import lib.cli.options.SAMPathnameArg;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.data.generator.DataGenerator;
 import lib.util.AbstractTool;
 import lib.util.coordinateprovider.BedCoordinateProvider;
@@ -38,6 +39,7 @@ implements DataGenerator<T> {
 
 	private final String name;
 	private final String desc;
+	private final AbstractDataBuilderFactory<T> dataBuilderFactory;
 	private final DataGenerator<T> dataGenerator;
 
 	private AbstractParameter<T> parameters;
@@ -48,19 +50,22 @@ implements DataGenerator<T> {
 	private WorkerDispatcher<T> workerDispatcher;
 	
 	public AbstractMethodFactory(final String name, final String desc, 
-			final AbstractParameter<T> parameters, final DataGenerator<T> dataGenerator) {
+			final AbstractParameter<T> parameters,
+			final AbstractDataBuilderFactory<T> dataBuilderFactory,
+			final DataGenerator<T> dataGenerator) {
 		this.name = name;
 		this.desc = desc;
+		this.dataBuilderFactory = dataBuilderFactory;
 		this.dataGenerator = dataGenerator;
 
-		setParameters(parameters);
+		setParameter(parameters);
 		ACOptions 		= new HashSet<AbstractACOption>(10);
 	}
 	
 	// needed for Methods where the number of conditions is unknown... 
 	public void initGeneralParameter(final int conditions) { }
 	
-	protected void setParameters(final AbstractParameter<T> parameters) {
+	protected void setParameter(final AbstractParameter<T> parameters) {
 		parameters.setMethodFactory(this);
 		this.parameters = parameters;
 		
@@ -320,5 +325,9 @@ implements DataGenerator<T> {
 	}
 
 	public void debug() {};
+
+	public AbstractDataBuilderFactory<T> getDataBuilderFactory() {
+		return dataBuilderFactory;
+	}
 	
 }

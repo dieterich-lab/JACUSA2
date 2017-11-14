@@ -2,12 +2,12 @@ package lib.data.cache;
 
 import java.util.Arrays;
 
-import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 
+import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.has.hasBaseCallCount;
@@ -15,14 +15,16 @@ import lib.data.has.hasBaseCallCount;
 public class BaseCallCache<T extends AbstractData & hasBaseCallCount> 
 extends AbstractCache<T> {
 
+	private final BaseCallConfig baseCallConfig;
+	
 	private final int maxDepth;
 	private final byte minBASQ;
 	
 	private final int[] coverage;
 	private final int[][] baseCalls;
 
-	public BaseCallCache(final int maxDepth, final byte minBASQ, final AbstractMethodFactory<T> methodFactory) {
-		super(methodFactory);
+	public BaseCallCache(final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig) {
+		this.baseCallConfig = baseCallConfig;
 
 		this.maxDepth = maxDepth;
 		this.minBASQ = minBASQ;
@@ -50,19 +52,15 @@ extends AbstractCache<T> {
 	}
 
 	@Override
-	public T getData(final Coordinate coordinate) {
-		final T data = getDataGenerator().createData();
-
+	public void addData(T data, final Coordinate coordinate) {
 		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
 		if (coverage[windowPosition] == 0) {
-			return data;
+			return;
 		}
 
 		for (int baseIndex = 0; baseIndex < getBaseSize(); baseIndex++) {
 			data.getBaseCallCount().set(baseIndex, baseCalls[windowPosition][baseIndex]);
 		}
-		
-		return data;
 	}
 
 	protected void incrementBaseCalls(final int referencePosition, final int readPosition, int length, 
@@ -76,7 +74,7 @@ extends AbstractCache<T> {
 			if (maxDepth > 0 && coverage[windowPosition.getWindowPosition() + j] > maxDepth) {
 				continue;
 			}
-			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[windowPosition.getRead() + j]);
+			final int baseIndex = baseCallConfig.getBaseIndex(record.getReadBases()[windowPosition.getRead() + j]);
 			if (baseIndex < 0) {
 				continue;
 			}
@@ -107,7 +105,7 @@ extends AbstractCache<T> {
 	}
 
 	private int getBaseSize() {
-		return getBaseCallConfig().getBases().length; 
+		return baseCallConfig.getBases().length; 
 	}
 	
 }

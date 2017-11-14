@@ -13,11 +13,13 @@ import java.util.List;
 
 import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
 import lib.data.AbstractData;
-import lib.data.builder.factory.AbstractDataBuilderFactory;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.util.AbstractTool;
 
 public abstract class AbstractConditionParameter<T extends AbstractData> {
 
+	private LIBRARY_TYPE libraryType;
+	
 	// cache related
 	private int maxDepth;
 	
@@ -36,9 +38,9 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 	// path to BAM files
 	private String[] recordFilenames;
 	
-	private AbstractDataBuilderFactory<T> dataBuilderFactory;
-	
 	public AbstractConditionParameter() {
+		libraryType = LIBRARY_TYPE.UNSTRANDED;
+
 		maxDepth 		= -1;
 		
 		minBASQ			= Byte.parseByte("20");
@@ -208,15 +210,15 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 		// something went wrong
 		return false;
 	}
-	
-	public AbstractDataBuilderFactory<T> getDataBuilderFactory() {
-		return dataBuilderFactory;
+
+	public LIBRARY_TYPE getLibraryType() {
+		return libraryType;
 	}
-	
-	public void setDataBuilderFactory(final AbstractDataBuilderFactory<T> dataBuilderFactory) {
-		this.dataBuilderFactory = dataBuilderFactory;
+
+	public void setLibraryType(final LIBRARY_TYPE libraryType) {
+		this.libraryType = libraryType;
 	}
-	
+
 	public SamReader createSamReader(final String inputFilename) {
 		final File file = new File(inputFilename);
 		final SamReader reader = SamReaderFactory

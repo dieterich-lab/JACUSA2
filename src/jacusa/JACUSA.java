@@ -19,7 +19,8 @@ nucleotide variants (SNVs) from comparing matched sequencing samples.
 
 package jacusa;
 
-import jacusa.method.call.CallFactory;
+import jacusa.cli.parameters.PileupParameter;
+import jacusa.cli.parameters.RTArrestParameter;
 import jacusa.method.call.OneConditionCallFactory;
 import jacusa.method.call.TwoConditionCallFactory;
 import jacusa.method.pileup.PileupFactory;
@@ -30,11 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import lib.data.PileupReadInfoData;
+import lib.data.BaseCallReadInfoData;
 import lib.data.basecall.PileupData;
 import lib.data.generator.DataGenerator;
 import lib.data.generator.PileupDataGenerator;
-import lib.data.generator.PileupReadInfoDataGenerator;
+import lib.data.generator.BaseCallReadInfoDataGenerator;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
@@ -61,13 +62,13 @@ public class JACUSA extends AbstractTool {
 		DataGenerator<PileupData> dataGenerator = new PileupDataGenerator();
 		factories.add(new OneConditionCallFactory<PileupData>(dataGenerator));
 		factories.add(new TwoConditionCallFactory<PileupData>(dataGenerator));
-		factories.add(new CallFactory<PileupData>(2, dataGenerator)); // TODO make conditions general
+		// factories.add(new CallFactory<PileupData>(new CallParameter<T>(3), dataGenerator)); // TODO make conditions general
 		// pileup information
-		factories.add(new PileupFactory<PileupData>(1, dataGenerator));
+		factories.add(new PileupFactory<PileupData>(new PileupParameter<PileupData>(1), dataGenerator));
 		// Read info
 		
-		DataGenerator<PileupReadInfoData> dataGenerator2 = new PileupReadInfoDataGenerator();
-		factories.add(new RTArrestFactory<PileupReadInfoData>(dataGenerator2));
+		DataGenerator<BaseCallReadInfoData> dataGenerator2 = new BaseCallReadInfoDataGenerator();
+		factories.add(new RTArrestFactory<BaseCallReadInfoData>(new RTArrestParameter<BaseCallReadInfoData>(2), dataGenerator2));
 
 		for (final AbstractMethodFactory<?> factory : factories) {
 			methodFactories.put(factory.getName(), factory);

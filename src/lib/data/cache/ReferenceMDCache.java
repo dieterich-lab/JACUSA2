@@ -2,9 +2,7 @@ package lib.data.cache;
 
 import java.util.Arrays;
 
-import lib.method.AbstractMethodFactory;
 import lib.util.Coordinate;
-
 import htsjdk.samtools.util.SequenceUtil;
 
 import lib.data.AbstractData;
@@ -16,34 +14,29 @@ extends AbstractCache<T> {
 
 	private byte[] referenceBases;
 
-	public ReferenceMDCache(final AbstractMethodFactory<T> methodFactory) {
-		super(methodFactory);
-
+	public ReferenceMDCache() {
 		referenceBases = new byte[getActiveWindowSize()];
 	}
 
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
-		// TODO Auto-generated method stub
-		
+		/*
+		for (final AlignmentBlock block : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
+			// FIXME
+		}
+		*/
 	}
 	
 	@Override
-	public void addRecordWrapperPosition(final int readPosition, final SAMRecordWrapper recordWrapper) {
-		// TODO
-	}
+	public void addRecordWrapperPosition(final int readPosition, final SAMRecordWrapper recordWrapper) {}
 	
 	@Override
-	public void addRecordWrapperRegion(final int readPosition, final int length, final SAMRecordWrapper recordWrapper) {
-		// TODO Auto-generated method stub
-	}
+	public void addRecordWrapperRegion(final int readPosition, final int length, final SAMRecordWrapper recordWrapper) {}
 
 	@Override
-	public T getData(final Coordinate coordinate) {
-		final T data = getDataGenerator().createData();
+	public void addData(final T data, final Coordinate coordinate) {
 		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
 		data.setReferenceBase(referenceBases[windowPosition]);
-		return data;
 	}
 
 	/* TODO

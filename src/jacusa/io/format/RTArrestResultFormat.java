@@ -2,17 +2,16 @@ package jacusa.io.format;
 
 import java.util.List;
 
-import jacusa.filter.FilterConfig;
 import lib.cli.options.BaseCallConfig;
 import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.Result;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
-import lib.data.has.hasReferenceBase;
 
-public class RTArrestResultFormat<T extends AbstractData & hasBaseCallCount & hasReadInfoCount & hasReferenceBase> 
+public class RTArrestResultFormat<T extends AbstractData & hasBaseCallCount & hasReadInfoCount> 
 extends AbstractOutputFormat<T> {
 
 	public static final char CHAR = 'B';
@@ -24,30 +23,20 @@ extends AbstractOutputFormat<T> {
 	
 	// read start, trough, and end	
 	private static final String RTinfo = "reads";
-	
-	protected FilterConfig<T> filterConfig;
-	protected BaseCallConfig baseConfig;
-	private boolean showReferenceBase;
 
-	public RTArrestResultFormat(
+	private AbstractParameter<T> parameter;
+	
+	protected RTArrestResultFormat(
 			final char c,
 			final String desc,
-			final BaseCallConfig baseConfig, 
-			final FilterConfig<T> filterConfig,
-			final boolean showReferenceBase) {
+			final AbstractParameter<T> parameters) {
 		super(c, desc);
 		
-		this.baseConfig = baseConfig;
-		this.filterConfig = filterConfig;
-
-		this.showReferenceBase = showReferenceBase;
+		this.parameter = parameters;
 	}
 
-	public RTArrestResultFormat(
-			final BaseCallConfig baseConfig, 
-			final FilterConfig<T> filterConfig,
-			final boolean showReferenceBase) {
-		this(CHAR, "Default", baseConfig, filterConfig, showReferenceBase);
+	public RTArrestResultFormat(final AbstractParameter<T> parameters) {
+		this(CHAR, "Default", parameters);
 	}
 
 	@Override
@@ -83,12 +72,12 @@ extends AbstractOutputFormat<T> {
 		sb.append("info");
 		
 		// add filtering info
-		if (filterConfig.hasFiters()) {
+		if (parameter.getFilterConfig().hasFiters()) {
 			sb.append(getSEP());
 			sb.append("filter_info");
 		}
 
-		if (showReferenceBase) {
+		if (parameter.showReferenceBase()) {
 			sb.append(getSEP());
 			sb.append("refBase");
 		}
@@ -161,15 +150,17 @@ extends AbstractOutputFormat<T> {
 		sb.append(result.getResultInfo().combine());
 		
 		// add filtering info
-		if (filterConfig.hasFiters()) {
+		if (parameter.getFilterConfig().hasFiters()) {
 			sb.append(getSEP());
 			sb.append(result.getFilterInfo().combine());
 		}
 		
+		/* FIXME
 		if (showReferenceBase) {
 			sb.append(getSEP());
 			sb.append(Byte.toString(parallelData.getCombinedPooledData().getReferenceBase()));
 		}
+		*/
 
 		return sb.toString();		
 	}
@@ -184,7 +175,7 @@ extends AbstractOutputFormat<T> {
 
 			int i = 0;
 			char b = BaseCallConfig.BASES[i];
-			int baseIndex = baseConfig.getBaseIndex((byte)b);
+			int baseIndex = parameter.getBaseConfig().getBaseIndex((byte)b);
 			int count = 0;
 			if (baseIndex >= 0) {
 				count = data.getBaseCallCount().getBaseCallCount(baseIndex);
@@ -193,7 +184,7 @@ extends AbstractOutputFormat<T> {
 			++i;
 			for (; i < BaseCallConfig.BASES.length; ++i) {
 				b = BaseCallConfig.BASES[i];
-				baseIndex = baseConfig.getBaseIndex((byte)b);
+				baseIndex = parameter.getBaseConfig().getBaseIndex((byte)b);
 				count = 0;
 				if (baseIndex >= 0) {
 					count = data.getBaseCallCount().getBaseCallCount(baseIndex);
@@ -208,6 +199,10 @@ extends AbstractOutputFormat<T> {
 		}
 	}
 
+	public AbstractParameter<T> getParameter() {
+		return parameter;
+	}
+	
 	public char getCOMMENT() {
 		return COMMENT;
 	}

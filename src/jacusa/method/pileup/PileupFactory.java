@@ -1,7 +1,7 @@
 package jacusa.method.pileup;
 
-import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
-import jacusa.cli.parameters.PileupParameters;
+import jacusa.cli.options.pileupbuilder.OneConditionLibraryTypeOption;
+import jacusa.cli.parameters.PileupParameter;
 import jacusa.data.validator.MinCoverageValidator;
 import jacusa.data.validator.ParallelDataValidator;
 import jacusa.filter.factory.AbstractFilterFactory;
@@ -27,7 +27,6 @@ import lib.cli.options.FormatOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ResultFileOption;
-import lib.cli.options.ShowReferenceOption;
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.cli.options.WindowSizeOption;
 import lib.cli.options.condition.MaxDepthConditionOption;
@@ -39,7 +38,7 @@ import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.AbstractData;
 import lib.data.basecall.BaseCallData;
-import lib.data.builder.factory.UnstrandedPileupBuilderFactory;
+import lib.data.builder.factory.BaseCallDataBuilderFactory;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasPileupCount;
@@ -51,17 +50,16 @@ import org.apache.commons.cli.ParseException;
 public class PileupFactory<T extends AbstractData & hasPileupCount> 
 extends AbstractMethodFactory<T> {
 	
-	public PileupFactory(final int conditions, final DataGenerator<T> dataGenerator) {
-		super("pileup", "SAMtools like mpileup", 
-				new PileupParameters<T>(conditions, new UnstrandedPileupBuilderFactory<T>()),
-				dataGenerator);
+	public PileupFactory(PileupParameter<T> pileupParameter, final DataGenerator<T> dataGenerator) {
+		super("pileup", "SAMtools like mpileup",
+				pileupParameter, new BaseCallDataBuilderFactory<T>(pileupParameter), dataGenerator);
 	}
 
 	public void initGeneralParameter(int conditionSize) {
 		if (conditionSize == 0) {
 			conditionSize = 3;
 		}
-		setParameters(new PileupParameters<T>(conditionSize, new UnstrandedPileupBuilderFactory<T>()));
+		setParameter(new PileupParameter<T>(conditionSize));
 	}
 
 	public void initACOptions() {
@@ -84,7 +82,7 @@ extends AbstractMethodFactory<T> {
 		// addACOption(new BaseConfigOption(getParameter()));
 		// addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
 		
-		addACOption(new ShowReferenceOption(getParameter()));
+		// addACOption(new ShowReferenceOption(getParameter()));
 		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 		
 		addACOption(new MaxThreadOption(getParameter()));
@@ -111,7 +109,7 @@ extends AbstractMethodFactory<T> {
 		addACOption(new FilterNHsamTagOption<T>(getParameter().getConditionParameters()));
 		addACOption(new FilterNMsamTagOption<T>(getParameter().getConditionParameters()));
 		
-		addACOption(new OneConditionPileupDataBuilderOption<T>(getParameter().getConditionParameters(), getParameter()));
+		addACOption(new OneConditionLibraryTypeOption<T>(getParameter().getConditionParameters(), getParameter()));
 		
 		// condition specific
 		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
@@ -124,7 +122,7 @@ extends AbstractMethodFactory<T> {
 			addACOption(new FilterNHsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			addACOption(new FilterNMsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new OneConditionPileupDataBuilderOption<T>(
+			addACOption(new OneConditionLibraryTypeOption<T>(
 					conditionIndex, 
 					getParameter().getConditionParameters().get(conditionIndex),
 					getParameter()));
@@ -169,8 +167,8 @@ extends AbstractMethodFactory<T> {
 	}
 
 	@Override
-	public PileupParameters<T> getParameter() {
-		return (PileupParameters<T>) super.getParameter();
+	public PileupParameter<T> getParameter() {
+		return (PileupParameter<T>) super.getParameter();
 	}
 	
 

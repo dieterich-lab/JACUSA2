@@ -11,6 +11,7 @@ import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.io.copytmp.CopyTmp;
 import lib.location.CoordinateAdvancer;
 import lib.location.StrandedCoordinateAdvancer;
@@ -204,7 +205,7 @@ implements Iterator<ParallelData<T>> {
 		final Coordinate coordinate = new Coordinate();
 
 		for (final AbstractConditionParameter<T> conditionParameter : conditionParameters) {
-			if (conditionParameter.getDataBuilderFactory().isStranded()) {
+			if (conditionParameter.getLibraryType() != LIBRARY_TYPE.UNSTRANDED) {
 				coordinate.setStrand(STRAND.FORWARD);
 				return new StrandedCoordinateAdvancer(coordinate);
 			}

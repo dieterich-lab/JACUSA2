@@ -4,7 +4,6 @@ import lib.util.Coordinate;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.generator.DataGenerator;
 
 public abstract class AbstractStrandedCache<T extends AbstractData> 
 implements Cache<T> {
@@ -13,10 +12,6 @@ implements Cache<T> {
 	private Cache<T> reverse;
 	
 	public AbstractStrandedCache(final Cache<T> forward, final Cache<T> reverse) {
-		if (forward.getDataGenerator() != reverse.getDataGenerator()) {
-			throw new IllegalStateException("Forward and reverse Cache have different AbstractMethodFactory");
-		}
-
 		this.forward = forward;
 		this.reverse = reverse;
 	}
@@ -46,19 +41,17 @@ implements Cache<T> {
 	}
 	
 	@Override
-	public T getData(Coordinate coordinate) {
+	public void addData(final T data, final Coordinate coordinate) {
 		switch (coordinate.getStrand()) {
 		case FORWARD:
-			return forward.getData(coordinate);
+			forward.addData(data, coordinate);
 
 		case REVERSE:
-			return reverse.getData(coordinate);
+			reverse.addData(data, coordinate);
 
 		case UNKNOWN:
 			throw new IllegalArgumentException("Unstranded coordinates not supported!");
 		}
-		
-		return null;
 	}
 	
 	protected abstract Cache<T> getCache(final SAMRecordWrapper recordWrapper);
@@ -69,14 +62,6 @@ implements Cache<T> {
 
 	public Cache<T> getReverse() {
 		return reverse;
-	}
-	
-	@Override
-	public DataGenerator<T> getDataGenerator() {
-		if (forward.getDataGenerator() != reverse.getDataGenerator()) {
-			throw new IllegalStateException("Forward and reverse Cache have different AbstractMethodFactory");
-		}
-		return forward.getDataGenerator();
 	}
 	
 	@Override

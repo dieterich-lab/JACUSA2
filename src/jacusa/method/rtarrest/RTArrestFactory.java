@@ -1,8 +1,8 @@
 package jacusa.method.rtarrest;
 
 import jacusa.cli.options.StatisticFilterOption;
-import jacusa.cli.options.pileupbuilder.OneConditionPileupDataBuilderOption;
-import jacusa.cli.parameters.RTArrestParameters;
+import jacusa.cli.options.pileupbuilder.OneConditionLibraryTypeOption;
+import jacusa.cli.parameters.RTArrestParameter;
 import jacusa.data.validator.MinCoverageValidator;
 import jacusa.data.validator.ParallelDataValidator;
 import jacusa.data.validator.RTArrestVariantParallelPileup;
@@ -25,7 +25,7 @@ import lib.cli.options.FormatOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ResultFileOption;
-import lib.cli.options.ShowReferenceOption;
+// import lib.cli.options.ShowReferenceOption;
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.cli.options.WindowSizeOption;
 import lib.cli.options.condition.MaxDepthConditionOption;
@@ -36,24 +36,23 @@ import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.AbstractData;
-import lib.data.builder.factory.UnstrandedPileupBuilderFactory;
+import lib.data.builder.factory.BaseCallReadInfoDataBuilderFactory;
 import lib.data.generator.DataGenerator;
-import lib.data.has.hasPileupCount;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
 import org.apache.commons.cli.ParseException;
 
-public class RTArrestFactory<T extends AbstractData & hasPileupCount & hasReadInfoCount> 
+public class RTArrestFactory<T extends AbstractData & hasBaseCallCount & hasReadInfoCount> 
 extends AbstractMethodFactory<T> {
 
 	public final static String NAME = "rt-arrest";
 
-	public RTArrestFactory(final DataGenerator<T> dataGenerator) {
+	public RTArrestFactory(final RTArrestParameter<T> rtArrestParameter, final DataGenerator<T> dataGenerator) {
 		super(NAME, "Reverse Transcription Arrest - 2 conditions", 
-				new RTArrestParameters<T>(2, new UnstrandedPileupBuilderFactory<T>()),
-				dataGenerator);
+				rtArrestParameter, new BaseCallReadInfoDataBuilderFactory<T>(rtArrestParameter), dataGenerator);
 	}
 
 	@Override
@@ -82,7 +81,7 @@ extends AbstractMethodFactory<T> {
 		
 		addACOption(new StatisticFilterOption(getParameter().getStatisticParameters()));
 
-		addACOption(new ShowReferenceOption(getParameter()));
+		// addACOption(new ShowReferenceOption(getParameter()));
 		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 		
 		addACOption(new MaxThreadOption(getParameter()));
@@ -115,7 +114,7 @@ extends AbstractMethodFactory<T> {
 			addACOption(new FilterNHsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			addACOption(new FilterNMsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new OneConditionPileupDataBuilderOption<T>(
+			addACOption(new OneConditionLibraryTypeOption<T>(
 					conditionIndex, 
 					getParameter().getConditionParameters().get(conditionIndex),
 					getParameter()));
@@ -148,16 +147,15 @@ extends AbstractMethodFactory<T> {
 
 		AbstractOutputFormat<T> resultFormat = null;
 
-		resultFormat = new RTArrestResultFormat<T>(getParameter().getBaseConfig(), 
-				getParameter().getFilterConfig(), getParameter().showReferenceBase());
+		resultFormat = new RTArrestResultFormat<T>(getParameter());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 		
 		return resultFormats;
 	}
 
 	@Override
-	public RTArrestParameters<T> getParameter() {
-		return (RTArrestParameters<T>) super.getParameter();
+	public RTArrestParameter<T> getParameter() {
+		return (RTArrestParameter<T>) super.getParameter();
 	}
 
 	@Override
@@ -188,8 +186,7 @@ extends AbstractMethodFactory<T> {
 	public void debug() {
 		// set custom
 		AbstractTool.getLogger().addDebug("Overwrite file format -> RTArrestDebugResultFormat");
-		getParameter().setFormat(new RTArrestDebugResultFormat<T>(getParameter().getBaseConfig(), 
-				getParameter().getFilterConfig(), getParameter().showReferenceBase()));
+		getParameter().setFormat(new RTArrestDebugResultFormat<T>(getParameter()));
 	}
 	
 }

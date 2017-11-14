@@ -10,31 +10,36 @@ import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.Cache;
+import lib.data.generator.DataGenerator;
 import lib.data.has.hasLibraryType;
 import lib.util.Coordinate;
 
-public abstract class AbstractDataBuilder<T extends AbstractData>
+public class DataBuilder<T extends AbstractData>
 implements hasLibraryType {
 
+	private final DataGenerator<T> dataGenerator;
 	private final AbstractConditionParameter<T> conditionParameter;
 	private final FilterContainer<T> filterContainer;
 
 	private final LIBRARY_TYPE libraryType;
 	
-	private final Cache<T> cache; 
+	private final List<Cache<T>> caches; 
 	private CACHE_STATUS cacheStatus;
 
-	public AbstractDataBuilder(
+	public DataBuilder(
+			final DataGenerator<T> dataGenerator, 
 			final AbstractConditionParameter<T> conditionParameter,
 			final LIBRARY_TYPE libraryType,
-			Cache<T> cache,
+			List<Cache<T>> caches,
 			FilterContainer<T> filterContainer) {
+		
+		this.dataGenerator = dataGenerator;
 		this.conditionParameter	= conditionParameter;
 		this.filterContainer = filterContainer;
 
 		this.libraryType = libraryType;
 		
-		this.cache = cache;
+		this.caches = caches;
 
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
 	}
@@ -42,18 +47,23 @@ implements hasLibraryType {
 	public List<SAMRecordWrapper> buildCache(final Coordinate activeWindowCoordinate,
 			final Iterator<SAMRecordWrapper> iterator) {
 		
-		cache.clear();
+		for (final Cache<T> cache : caches) {
+			cache.clear();
+			cache.setActiveWindowCoordinate(activeWindowCoordinate);
+		}
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
-
-		cache.setActiveWindowCoordinate(activeWindowCoordinate);
+	
 		final List<SAMRecordWrapper> recordWrappers = new ArrayList<SAMRecordWrapper>();
-		
+
 		while (iterator.hasNext()) {
 			final SAMRecordWrapper recordWrapper = iterator.next();
 			// process filters and decode
 			recordWrapper.process();
-			
-			cache.addRecordWrapper(recordWrapper);
+
+			for (final Cache<T> cache : caches) {
+				cache.addRecordWrapper(recordWrapper);
+			}
+
 			if (filterContainer != null) { // FIXME
 				filterContainer.addRecordWrapper(recordWrapper);
 			}
@@ -66,22 +76,27 @@ implements hasLibraryType {
 	
 	// Reset all caches in windows
 	public void clearCache() {
-		cache.clear();
+		for (final Cache<T> cache : caches) {
+			cache.clear();
+		}
 		filterContainer.clear();
 	}
 
-	public abstract T getData(final Coordinate coordinate);
+	public T getData(final Coordinate coordinate) {
+		T data = dataGenerator.createData();
+		for (final Cache<T> cache : caches) {
+			cache.addData(data, coordinate);
+		}
+		data.setCoordinate(new Coordinate(coordinate));
+		return data;
+	}
 	
-	public Cache<T> getCache() {
-		return cache;
+	public List<Cache<T>> getCaches() {
+		return caches;
 	}
 	
 	public FilterContainer<T> getFilterContainer() {
 		return filterContainer;
-	}
-
-	public Coordinate getActiveWindowCoordinate() {
-		return cache.getActiveWindowCoordinate();
 	}
 
 	public AbstractConditionParameter<T> getConditionParameter() {

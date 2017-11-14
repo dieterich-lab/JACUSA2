@@ -21,7 +21,7 @@ public class ReplicateContainer<T extends AbstractData> {
 	private final AbstractParameter<T> generalParameters;
 
 	private final List<SAMRecordWrapperIteratorProvider> iteratorProviders;
-	private final List<AbstractDataBuilder<T>> dataBuilders;
+	private final List<DataBuilder<T>> dataBuilders;
 	
 	public ReplicateContainer( 
 			final AbstractConditionParameter<T> conditionParameter,
@@ -48,7 +48,7 @@ public class ReplicateContainer<T extends AbstractData> {
 			final SAMRecordWrapperIteratorProvider iteratorProvider = iteratorProviders.get(replicateIndex);
 			final SAMRecordWrapperIterator iterator = 
 					iteratorProvider.createIterator(activeWindowCoordinate);
-			final AbstractDataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
+			final DataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
 
 			// TODO test performance
 			recordWrappers.add(dataBuilder.buildCache(activeWindowCoordinate, iterator));
@@ -69,7 +69,7 @@ public class ReplicateContainer<T extends AbstractData> {
 		T[] data = generalParameters.getMethodFactory().createReplicateData(replicateSize);
 
 		for (int replicateIndex = 0; replicateIndex < replicateSize; ++replicateIndex) {
-			final AbstractDataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
+			final DataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
 			data[replicateIndex] = dataBuilder.getData(coordinate);
 		}
 
@@ -80,21 +80,21 @@ public class ReplicateContainer<T extends AbstractData> {
 		final int replicateSize = conditionParameter.getReplicateSize();
 		final List<FilterContainer<T>> filterContainers = new ArrayList<FilterContainer<T>>(replicateSize);
 		
-		for (final AbstractDataBuilder<T> dataBuilder : dataBuilders) {
+		for (final DataBuilder<T> dataBuilder : dataBuilders) {
 			filterContainers.add(dataBuilder.getFilterContainer());
 		}
 
 		return filterContainers;
 	}
 	
-	private List<AbstractDataBuilder<T>> createDataBuilders(
+	private List<DataBuilder<T>> createDataBuilders(
 			final AbstractConditionParameter<T> conditionParameter,
 			final AbstractParameter<T> generalParameter) {
 		
-		final List<AbstractDataBuilder<T>> dataBuilders = new ArrayList<AbstractDataBuilder<T>>(conditionParameter.getReplicateSize());
+		final List<DataBuilder<T>> dataBuilders = new ArrayList<DataBuilder<T>>(conditionParameter.getReplicateSize());
 
 		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); ++replicateIndex) {
-			final AbstractDataBuilder<T> builder = conditionParameter.getDataBuilderFactory().newInstance(conditionParameter);
+			final DataBuilder<T> builder = generalParameter.getMethodFactory().getDataBuilderFactory().newInstance(conditionParameter);
 			dataBuilders.add(builder);
 		}
 
@@ -102,7 +102,7 @@ public class ReplicateContainer<T extends AbstractData> {
 	}
 
 	public boolean isStranded() {
-		for (final AbstractDataBuilder<T> builder : dataBuilders) {
+		for (final DataBuilder<T> builder : dataBuilders) {
 			if (builder.getLibraryType() != LIBRARY_TYPE.UNSTRANDED) {
 				return true;
 			}

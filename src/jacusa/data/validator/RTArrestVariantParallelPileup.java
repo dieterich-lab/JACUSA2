@@ -2,10 +2,10 @@ package jacusa.data.validator;
 
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasPileupCount;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
 
-public class RTArrestVariantParallelPileup<T extends AbstractData & hasPileupCount & hasReadInfoCount>
+public class RTArrestVariantParallelPileup<T extends AbstractData & hasBaseCallCount & hasReadInfoCount>
 implements ParallelDataValidator<T> {
 	
 	public RTArrestVariantParallelPileup() {}

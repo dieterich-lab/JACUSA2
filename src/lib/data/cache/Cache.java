@@ -2,7 +2,6 @@ package lib.data.cache;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.generator.DataGenerator;
 import lib.util.Coordinate;
 
 public interface Cache<X extends AbstractData> {
@@ -11,13 +10,10 @@ public interface Cache<X extends AbstractData> {
 	void addRecordWrapperRegion(final int readPosition, final int length, final SAMRecordWrapper recordWrapper);
 	void addRecordWrapper(final SAMRecordWrapper recordWrapper);
 	
-	
-	
-	
 	void clear();
 
-	DataGenerator<X> getDataGenerator();
-	X getData(final Coordinate coordinate);
+	void addData(X data, final Coordinate coordinate);
+
 	void setActiveWindowCoordinate(final Coordinate coordinate);
 	Coordinate getActiveWindowCoordinate();
 	
