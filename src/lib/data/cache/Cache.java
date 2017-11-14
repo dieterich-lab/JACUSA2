@@ -51,7 +51,7 @@ public interface Cache<X extends AbstractData> {
 			}
 
 			if (length > 0) {
-				final int offset = windowSize - (window + length + 1);
+				final int offset = windowSize - (window + length);
 				if (offset < 0) {
 					length = Math.max(0, length + offset);
 				}

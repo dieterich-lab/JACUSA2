@@ -114,7 +114,7 @@ extends AbstractCache<T> {
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		
 		for (int j = 0; j < windowPosition.getLength(); ++j) {
-			if (maxDepth > 0 && coverage[windowPosition.getWindowPosition() + j] > maxDepth) {
+			if (maxDepth > 0 && coverage[windowPosition.getWindowPosition() + j] >= maxDepth) {
 				continue;
 			}
 			final int baseIndex = getBaseCallConfig().getBaseIndex(record.getReadBases()[windowPosition.getRead() + j]);

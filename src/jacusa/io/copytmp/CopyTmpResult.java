@@ -81,7 +81,7 @@ public class CopyTmpResult<T extends AbstractData & hasPileupCount> implements C
 		final int storedVariants = iteration2storedResults.get(iteration);
 
 		String line;
-		while (storedVariants >= copiedVariants && (line = tmpResultReader.readLine()) != null) {
+		while (storedVariants > copiedVariants && (line = tmpResultReader.readLine()) != null) {
 			resultWriter.write(line);
 			copiedVariants++;
 		}
