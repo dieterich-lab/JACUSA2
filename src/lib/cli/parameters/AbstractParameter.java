@@ -7,7 +7,6 @@ import java.util.List;
 import jacusa.cli.parameters.hasConditionParameter;
 import jacusa.filter.FilterConfig;
 import jacusa.io.Output;
-import jacusa.io.OutputPrinter;
 import jacusa.io.format.AbstractOutputFormat;
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
@@ -57,7 +56,6 @@ implements hasConditionParameter<T> {
 		inputBedFilename	= new String();
 		conditionParameters	= new ArrayList<AbstractConditionParameter<T>>(2);
 
-		output				= new OutputPrinter();
 		filterConfig		= new FilterConfig<T>();
 		
 		separate			= false;
