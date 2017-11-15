@@ -67,7 +67,8 @@ extends AbstractCache<T> {
 	
 	@Override
 	public void addRecordWrapperPosition(final int readPosition, final SAMRecordWrapper recordWrapper) {
-		addRecordWrapperRegion(readPosition, 1, recordWrapper);
+		final int referencePosition = recordWrapper.getSAMRecord().getReferencePositionAtReadPosition(readPosition);
+				incrementBaseCalls(referencePosition, readPosition, 1, recordWrapper);
 	}
 	
 	@Override
@@ -114,8 +115,16 @@ extends AbstractCache<T> {
 	protected void incrementBaseCalls(final int referencePosition, final int readPosition, int length, 
 			final SAMRecordWrapper recordWrapper) {
 
+		if (referencePosition < 0) {
+			throw new IllegalArgumentException("Reference Position cannot be < 0! -> outside of alignmentBlock");
+		}
+		
 		final WindowPosition windowPosition = WindowPosition.convert(
 				getActiveWindowCoordinate(), referencePosition, readPosition, length);
+
+		if (windowPosition.getWindowPosition() < 0 && windowPosition.getLength() > 0) {
+			throw new IllegalArgumentException("Window position cannot be < 0! -> outside of alignmentBlock");
+		}
 		
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		

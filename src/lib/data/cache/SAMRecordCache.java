@@ -6,7 +6,6 @@ import java.util.List;
 import lib.util.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;
-import htsjdk.samtools.SAMRecord;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
@@ -27,45 +26,13 @@ extends AbstractCache<T> {
 
 	@Override
 	public void addRecordWrapperPosition(final int readPosition, final SAMRecordWrapper recordWrapper) {
-		final SAMRecord record = recordWrapper.getSAMRecord();
-		final int referencePosition = record.getReferencePositionAtReadPosition(readPosition);
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), referencePosition);
-		recordWrappers.get(windowPosition).add(recordWrapper);
+		final int referencePosition = recordWrapper.getSAMRecord().getReferencePositionAtReadPosition(readPosition);
+		addSAMRecordWrappers(referencePosition, readPosition, 1, recordWrapper);
 	}
 
-	// TODO
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
-		final SAMRecord record = recordWrapper.getSAMRecord();
-
-		for (final AlignmentBlock block : record.getAlignmentBlocks()) {
-			int referencePosition = block.getReferenceStart();
-			int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), referencePosition);
-			int readPosition = block.getReadStart() - 1;
-
-			// alignment length
-			int length = block.getLength();
-			
-			if (windowPosition == -1) {
-				windowPosition = referencePosition - getActiveWindowCoordinate().getStart();
-				if (windowPosition > getActiveWindowSize()) { // downtstream of window -> ignore TODO distance
-					continue;
-				}
-				// alignment outside of window - upstream TODO distance
-				if (windowPosition + length < 0) { 
-					continue;
-				}
-				final int offset = Math.abs(windowPosition); 
-				windowPosition += offset;
-				readPosition += offset;
-				length -= offset;
-			}
-
-			int lengthOffset = getActiveWindowSize() - (windowPosition + length);
-			if (lengthOffset <= 0) {
-				incrementBaseCalls(windowPosition, readPosition, length + lengthOffset, recordWrapper);
-				return;
-			}
-			incrementBaseCalls(windowPosition, readPosition, length, recordWrapper);
+		for (final AlignmentBlock block : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
+			addSAMRecordWrappers(block.getReferenceStart(), block.getReadStart() - 1, block.getLength(), recordWrapper);
 		}
 	}
 		
@@ -75,11 +42,22 @@ extends AbstractCache<T> {
 		data.getRecordWrapper().addAll(recordWrappers.get(windowPosition));
 	}
 	
-	protected void incrementBaseCalls(final int windowPosition, final int readPosition, final int length, 
+	protected void addSAMRecordWrappers(final int referencePosition, final int readPosition, final int length, 
 			final SAMRecordWrapper recordWrapper) {
 
-		for (int i = 0; i < length; ++i) {
-			recordWrappers.get(windowPosition + i).add(recordWrapper);
+		if (referencePosition < 0) {
+			throw new IllegalArgumentException("Reference Position cannot be < 0! -> outside of alignmentBlock");
+		}
+
+		final WindowPosition windowPosition = WindowPosition.convert(
+				getActiveWindowCoordinate(), referencePosition, readPosition, length);
+		
+		if (windowPosition.getWindowPosition() < 0 && windowPosition.getLength() > 0) {
+			throw new IllegalArgumentException("Window position cannot be < 0! -> outside of alignmentBlock");
+		}
+		
+		for (int j = 0; j < windowPosition.getLength(); ++j) {
+			recordWrappers.get(windowPosition.getWindowPosition() + j).add(recordWrapper);
 		}
 	}
 
@@ -96,10 +74,8 @@ extends AbstractCache<T> {
 
 	@Override
 	public void addRecordWrapperRegion(int readPosition, int length, SAMRecordWrapper recordWrapper) {
-		final SAMRecord record = recordWrapper.getSAMRecord();
-		final int referencePosition = record.getReferencePositionAtReadPosition(readPosition);
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), referencePosition);
-		incrementBaseCalls(windowPosition, readPosition, length, recordWrapper);
+		final int referencePosition = recordWrapper.getSAMRecord().getReferencePositionAtReadPosition(readPosition) - 1;
+		addSAMRecordWrappers(referencePosition, readPosition, length, recordWrapper);
 	}
 
 }

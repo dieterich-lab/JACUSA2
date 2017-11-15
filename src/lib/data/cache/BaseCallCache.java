@@ -23,7 +23,7 @@ extends AbstractCache<T> {
 	
 	private final int[] coverage;
 	private final int[][] baseCalls;
-
+	
 	public BaseCallCache(final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig, final int activeWindowSize) {
 		super(activeWindowSize);
 		this.baseCallConfig = baseCallConfig;
@@ -38,13 +38,14 @@ extends AbstractCache<T> {
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		for (final AlignmentBlock alignmentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
-			addRecordWrapperRegion(alignmentBlock.getReadStart() - 1, alignmentBlock.getLength(), recordWrapper);
+			incrementBaseCalls(alignmentBlock.getReferenceStart(), alignmentBlock.getReadStart() - 1, alignmentBlock.getLength(), recordWrapper);
 		}
 	}
 	
 	@Override
 	public void addRecordWrapperPosition(final int readPosition, final SAMRecordWrapper recordWrapper) {
-		addRecordWrapperRegion(readPosition, 1, recordWrapper);
+		final int referencePosition = recordWrapper.getSAMRecord().getReferencePositionAtReadPosition(readPosition) - 1;
+		incrementBaseCalls(referencePosition, readPosition, 1, recordWrapper);
 	}
 	
 	@Override
@@ -72,8 +73,16 @@ extends AbstractCache<T> {
 	protected void incrementBaseCalls(final int referencePosition, final int readPosition, int length, 
 			final SAMRecordWrapper recordWrapper) {
 
+		if (referencePosition < 0) {
+			throw new IllegalArgumentException("Reference Position cannot be < 0! -> outside of alignmentBlock");
+		}
+		
 		final WindowPosition windowPosition = WindowPosition.convert(
 				getActiveWindowCoordinate(), referencePosition, readPosition, length);
+		
+		if (windowPosition.getWindowPosition() < 0 && windowPosition.getLength() > 0) {
+			throw new IllegalArgumentException("Window position cannot be < 0! -> outside of alignmentBlock");
+		}
 		
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		for (int j = 0; j < windowPosition.getLength(); ++j) {

@@ -113,6 +113,12 @@ extends AbstractOutputFormat<T> {
 			sb.append(RTinfo);
 			sb.append(condition);
 			sb.append(i);
+			
+			if (parameter.isDebug()) {
+				sb.append("read");
+				sb.append(condition);
+				sb.append(i);
+			}
 		}
 	}
 	
@@ -145,7 +151,7 @@ extends AbstractOutputFormat<T> {
 		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
 			addPileups(sb, parallelData.getData(conditionIndex));
 		}
-
+		
 		sb.append(getSEP());
 		sb.append(result.getResultInfo().combine());
 		
@@ -196,9 +202,18 @@ extends AbstractOutputFormat<T> {
 			sb.append(data.getReadInfoCount().getArrest());
 			sb.append(SEP2);
 			sb.append(data.getReadInfoCount().getThrough());
+		
+			if (parameter.isDebug()) {
+				sb.append(SEP);
+				sb.append(data.getReadInfoCount().getStart());
+				sb.append(SEP2);
+				sb.append(data.getReadInfoCount().getInner());
+				sb.append(SEP2);
+				sb.append(data.getReadInfoCount().getEnd());
+			}
 		}
 	}
-
+	
 	public AbstractParameter<T> getParameter() {
 		return parameter;
 	}

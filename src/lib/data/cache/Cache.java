@@ -23,13 +23,13 @@ public interface Cache<X extends AbstractData> {
 		private int read;
 		private int length;
 
-		private int windowPosition;
+		private int window;
 		
-		private WindowPosition(final int reference, final int read, final int length, final int windowPosition) {
+		private WindowPosition(final int reference, final int read, final int length, final int window) {
 			this.reference = reference;
 			this.read = read;
 			this.length = length;
-			this.windowPosition = windowPosition;
+			this.window = window;
 		}
 		
 		public static WindowPosition convert(final Coordinate windowCoordinate,
@@ -69,7 +69,14 @@ public interface Cache<X extends AbstractData> {
 		}
 		
 		public int getWindowPosition() {
-			return windowPosition;
+			return window;
+		}
+		
+		public String toString() {
+			final StringBuilder sb = new StringBuilder();
+			sb.append("ref=" + reference + " win=" + window + " read=" + read + " length=" + length);
+			
+			return sb.toString();
 		}
 		
 	}

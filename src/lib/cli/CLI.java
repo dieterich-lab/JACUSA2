@@ -74,6 +74,7 @@ public class CLI {
 
 		// parse arguments
 		final CommandLineParser parser = new DefaultParser();
+		
 		try {
 			// create hidden debug option
 			AbstractACOption debugACOption = new DebugModusOption(methodFactory.getParameter());
@@ -127,7 +128,7 @@ public class CLI {
 	// FIXME
 	private String[] getFilenames(final String[] args) {
 		for (int i = args.length - 1; i >= 0; --i) {
-			if (args[i].startsWith("-")) {
+			if (args[i].startsWith("-") && i + 2 < args.length) {
 				return Arrays.copyOfRange(args, i + 2, args.length);
 			}
 		}

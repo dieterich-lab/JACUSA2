@@ -62,10 +62,6 @@ public class ReadInfoCount {
 		this.end = end;
 	}
 
-	public int getCoverage() {
-		return start + inner + end;
-	}
-
 	public int getArrest() {
 		return arrest;
 	}

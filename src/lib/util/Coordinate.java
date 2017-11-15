@@ -107,8 +107,7 @@ public class Coordinate {
 		if(position > coordinate.getEnd() || position < coordinate.getStart()){
 			return -1;
 		}
-		int windowPosition = position - coordinate.getStart();
-		return windowPosition;
+		return position - coordinate.getStart();
 	}
 	
 	public static STRAND invertStrand(final STRAND strand) {

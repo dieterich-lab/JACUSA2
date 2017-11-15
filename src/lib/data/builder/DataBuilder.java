@@ -64,7 +64,8 @@ implements hasLibraryType {
 				cache.addRecordWrapper(recordWrapper);
 			}
 
-			if (filterContainer != null) { // FIXME
+			// FIXME
+			if (filterContainer != null) { 
 				filterContainer.addRecordWrapper(recordWrapper);
 			}
 			recordWrappers.add(recordWrapper);

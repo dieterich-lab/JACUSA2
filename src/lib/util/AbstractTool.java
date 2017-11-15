@@ -1,7 +1,5 @@
 package lib.util;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Map;
 
@@ -29,14 +27,16 @@ public abstract class AbstractTool {
 
 		cli = new CLI(getMethodFactories());
 		
-		//final PrintStream ps = System.err;
+		final PrintStream ps = System.err;
+		logger = new Logger(ps, this);
+		/*
 		try {
-			PrintStream ps = new PrintStream(new File("JACAUSA2.log"));
-			logger = new Logger(ps, this);
+			//PrintStream ps = new PrintStream(new File("JACAUSA2.log"));
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-
+		*/
 	}
 
 	public void run() throws Exception {

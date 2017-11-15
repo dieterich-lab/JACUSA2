@@ -54,6 +54,7 @@ public class SAMRecordWrapper {
 		return isValid;
 	}
 
+	// referencePosition needs to be 1-based
 	public boolean isWithinRead(final int referencePosition) {
 		return referencePosition >= record.getAlignmentStart() && 
 				referencePosition <= record.getAlignmentEnd();

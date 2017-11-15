@@ -8,6 +8,7 @@ import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.util.Coordinate;
 
+// FIXME
 public abstract class UniqueCounterCache<T extends AbstractData> 
 implements Cache<T> {
 

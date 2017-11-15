@@ -45,20 +45,25 @@ extends AbstractCache<T> {
 		
 		int windowPosition1 = Coordinate.makeRelativePosition(
 				getActiveWindowCoordinate(), record.getAlignmentStart());
-		if (windowPosition1 != -1) {
+		if (windowPosition1 >= 0) {
 			readStartCount[windowPosition1]++;
 		}
 		
 		int windowPosition2 = Coordinate.makeRelativePosition(
 				getActiveWindowCoordinate(), record.getAlignmentEnd());
-		if (windowPosition2 != -1) {
-			readStartCount[windowPosition2]++;
+		if (windowPosition2 >= 0) {
+			readEndCount[windowPosition2]++;
 		}
+		
 	}
 	
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
 		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
+		if (data.getBaseCallCount().getCoverage() == 0) {
+			return;
+		}
+		
 		data.getReadInfoCount().setStart(readStartCount[windowPosition]);
 		data.getReadInfoCount().setEnd(readEndCount[windowPosition]);
 

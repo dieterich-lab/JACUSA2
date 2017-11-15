@@ -9,7 +9,6 @@ import jacusa.data.validator.RTArrestVariantParallelPileup;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.io.format.AbstractOutputFormat;
 import jacusa.io.format.BED6call;
-import jacusa.io.format.RTArrestDebugResultFormat;
 import jacusa.io.format.RTArrestResultFormat;
 import jacusa.method.call.statistic.StatisticCalculator;
 import jacusa.worker.RTArrestWorker;
@@ -185,8 +184,7 @@ extends AbstractMethodFactory<T> {
 	@Override
 	public void debug() {
 		// set custom
-		AbstractTool.getLogger().addDebug("Overwrite file format -> RTArrestDebugResultFormat");
-		getParameter().setFormat(new RTArrestDebugResultFormat<T>(getParameter()));
+		AbstractTool.getLogger().addDebug("Add additional column(s) in output start,inner,end!");
 	}
 	
 }
