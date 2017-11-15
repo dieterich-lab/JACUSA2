@@ -26,7 +26,7 @@ extends CallFactory<T> {
 		// and new new data builder
 		AbstractACOption removeACOption = null;
 		for (final AbstractACOption ACOption : getACOptions()) {
-			if (ACOption.getOpt().equals("P")) {
+			if (ACOption.getOpt() != null && ACOption.getOpt().equals("P")) {
 				removeACOption = ACOption;
 			}
 		}
