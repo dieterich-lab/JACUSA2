@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jacusa.cli.parameters.CallParameter;
-import jacusa.data.validator.ParallelDataValidator;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.io.copytmp.CopyTmpResult;
@@ -15,6 +14,7 @@ import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.Result;
 import lib.data.has.hasPileupCount;
+import lib.data.validator.ParallelDataValidator;
 import lib.io.copytmp.CopyTmp;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;

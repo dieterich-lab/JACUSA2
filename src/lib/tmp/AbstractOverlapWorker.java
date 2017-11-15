@@ -1,6 +1,5 @@
 package lib.tmp;
 
-import jacusa.data.validator.ParallelDataValidator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,6 +7,7 @@ import java.util.List;
 
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.validator.ParallelDataValidator;
 import lib.io.copytmp.CopyTmp;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;

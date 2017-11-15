@@ -1,4 +1,4 @@
-package jacusa.data.validator;
+package lib.data.validator;
 
 import java.util.List;
 

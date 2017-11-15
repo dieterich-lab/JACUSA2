@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jacusa.cli.parameters.RTArrestParameter;
-import jacusa.data.validator.ParallelDataValidator;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.io.copytmp.CopyTmpRTArrestResult;
@@ -15,6 +14,7 @@ import lib.data.ParallelData;
 import lib.data.Result;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
+import lib.data.validator.ParallelDataValidator;
 import lib.io.copytmp.CopyTmp;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;

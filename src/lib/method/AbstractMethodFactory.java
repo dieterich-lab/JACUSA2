@@ -1,6 +1,5 @@
 package lib.method;
 
-import jacusa.data.validator.ParallelDataValidator;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +16,7 @@ import lib.data.AbstractData;
 import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.data.validator.ParallelDataValidator;
 import lib.util.AbstractTool;
 import lib.util.Coordinate;
 import lib.util.coordinateprovider.BedCoordinateProvider;

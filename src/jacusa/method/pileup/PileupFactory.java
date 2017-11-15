@@ -2,8 +2,6 @@ package jacusa.method.pileup;
 
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.PileupParameter;
-import jacusa.data.validator.MinCoverageValidator;
-import jacusa.data.validator.ParallelDataValidator;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.CombinedDistanceFilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
@@ -45,6 +43,8 @@ import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasPileupCount;
 import lib.data.has.hasReferenceBase;
+import lib.data.validator.MinCoverageValidator;
+import lib.data.validator.ParallelDataValidator;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 

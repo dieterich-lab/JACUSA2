@@ -1,7 +1,5 @@
 package lib.worker;
 
-import jacusa.data.validator.CompositeParallelDataValidator;
-import jacusa.data.validator.ParallelDataValidator;
 
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +10,8 @@ import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.data.validator.CompositeParallelDataValidator;
+import lib.data.validator.ParallelDataValidator;
 import lib.io.copytmp.CopyTmp;
 import lib.location.CoordinateAdvancer;
 import lib.location.StrandedCoordinateAdvancer;

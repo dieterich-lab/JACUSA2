@@ -1,4 +1,4 @@
-package jacusa.data.validator;
+package lib.data.validator;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;

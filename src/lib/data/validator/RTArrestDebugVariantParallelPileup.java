@@ -1,4 +1,4 @@
-package jacusa.data.validator;
+package lib.data.validator;
 
 import lib.data.BaseCallReadInfoData;
 import lib.data.ParallelData;
