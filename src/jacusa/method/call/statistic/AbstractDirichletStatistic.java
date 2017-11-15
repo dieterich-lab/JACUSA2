@@ -11,15 +11,14 @@ import java.text.DecimalFormatSymbols;
 
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.Result;
 import lib.data.has.hasPileupCount;
 import lib.phred2prob.Phred2Prob;
 import lib.util.Info;
 
 public abstract class AbstractDirichletStatistic<T extends AbstractData & hasPileupCount>
-implements StatisticCalculator<T> {
+extends AbstractStatisticCalculator<T> {
 
-	protected final CallParameter<T> parameters;
+	protected final CallParameter<T> parameter;
 	
 	protected Phred2Prob phred2Prob;
 
@@ -42,11 +41,18 @@ implements StatisticCalculator<T> {
 	protected AbstractAlphaInit fallbackAlphaInit;
 	
 	protected DecimalFormat decimalFormat;
-	
-	public AbstractDirichletStatistic(final MinkaEstimateParameters estimateAlpha, 
-			final CallParameter<T> parameters) {
-		this.parameters 	= parameters;
-		final int n 		= parameters.getBaseConfig().getBases().length;
+
+	public AbstractDirichletStatistic(final String name, final String desc, final CallParameter<T> parameter) {
+		super(name, desc);
+		this.parameter = parameter;
+	}
+
+	protected AbstractDirichletStatistic(final String name, final String desc, final double threshold, 
+			final MinkaEstimateParameters estimateAlpha, final CallParameter<T> parameter) {
+
+		super(name, desc, threshold);
+		this.parameter 		= parameter;
+		final int n 		= parameter.getBaseConfig().getBases().length;
 
 		phred2Prob 			= Phred2Prob.getInstance(n);
 		onlyObservedBases 	= false;
@@ -62,6 +68,7 @@ implements StatisticCalculator<T> {
 		otherSymbols.setGroupingSeparator(',');
 		decimalFormat = new DecimalFormat("#.##", otherSymbols);
 	}
+	
 	
 	/**
 	 * 
@@ -92,20 +99,17 @@ implements StatisticCalculator<T> {
 			final int[] baseIndexs,
 			double[] dataVector);
 
+	
+	
 	@Override
-	public synchronized void addStatistic(Result<T> result) {
-		final double statistic = getStatistic(result.getParellelData());
-		result.setStatistic(statistic);
-
-		final Info resultInfo = result.getResultInfo(); 
-
+	public void addInfo(final Info info) {
 		// append content to info field
 		if (! isNumericallyStable()) {
-			resultInfo.add("NumericallyInstable");
+			info.add("NumericallyInstable");
 		}
 
 		if (! estimateInfo.isEmpty()) {
-			resultInfo.addAll(estimateInfo);
+			info.addAll(estimateInfo);
 		}
 	}
 
@@ -160,7 +164,7 @@ implements StatisticCalculator<T> {
 		// base index mask; can be ACGT or only observed bases in parallelPileup
 		final int baseIndexs[] = getBaseIndex(parallelData);
 		// number of globally considered bases, normally 4 : ACGT
-		int baseN = parameters.getBaseConfig().getBases().length;
+		int baseN = parameter.getBaseConfig().getBases().length;
 
 		// flag to indicated numerical stability of parameter estimation
 		numericallyStable = true;
@@ -282,19 +286,19 @@ implements StatisticCalculator<T> {
 	*/
 
 	@Override
-	public boolean filter(double value) {
+	public boolean filter(double value, double threshold) {
 		// if p-value interpret threshold as upper bound
 		if (calcPValue) {
-			return parameters.getStatisticParameters().getThreshold() < value;
+			return threshold < value;
 		}
 		
 		// if log-likelihood ratio and value not set give all results
-		if (parameters.getStatisticParameters().getThreshold() == Double.NaN) {
+		if (parameter.getStatisticParameters().getThreshold() == Double.NaN) {
 			return false;
 		}
 		
 		// if log-likelihood ratio interpret threshold as lower bound 
-		return value < parameters.getStatisticParameters().getThreshold();
+		return value < threshold;
 	}
 
 	
@@ -354,7 +358,7 @@ implements StatisticCalculator<T> {
 			return parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount().getAlleles();
 		}
 
-		return parameters.getBaseConfig().getBaseIndex();
+		return parameter.getBaseConfig().getBaseIndex();
 	}
 	
 	public MinkaEstimateParameters getEstimateAlpha() {

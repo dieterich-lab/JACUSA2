@@ -1,9 +1,9 @@
 package lib.tmp;
 
 import lib.location.CoordinateAdvancer;
-import lib.util.Coordinate;
-import lib.util.Coordinate.STRAND;
-import lib.util.coordinateprovider.WindowedCoordinateProvider;
+import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.Coordinate.STRAND;
+import lib.util.coordinate.provider.WindowedCoordinateProvider;
 
 public class CoordinateController {
 

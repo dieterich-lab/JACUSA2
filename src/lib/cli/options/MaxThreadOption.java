@@ -7,11 +7,11 @@ import org.apache.commons.cli.Option;
 
 public class MaxThreadOption extends AbstractACOption {
 
-	final private AbstractParameter<?> parameters;
+	final private AbstractParameter<?, ?> parameter;
 	
-	public MaxThreadOption(AbstractParameter<?> parameters) {
+	public MaxThreadOption(AbstractParameter<?, ?> parameters) {
 		super("p", "threads");
-		this.parameters = parameters;
+		this.parameter = parameters;
 	}
 	
 	@Override
@@ -20,7 +20,7 @@ public class MaxThreadOption extends AbstractACOption {
 				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
-		        .desc("use # " + getLongOpt().toUpperCase() + " \n default: " + parameters.getMaxThreads())
+		        .desc("use # " + getLongOpt().toUpperCase() + " \n default: " + parameter.getMaxThreads())
 		        .build();
 	}
 
@@ -31,7 +31,7 @@ public class MaxThreadOption extends AbstractACOption {
 	    	if(maxThreads < 1) {
 	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " must be > 0!");
 	    	}
-	    	parameters.setMaxThreads(maxThreads);
+	    	parameter.setMaxThreads(maxThreads);
 	    }
 	}
 

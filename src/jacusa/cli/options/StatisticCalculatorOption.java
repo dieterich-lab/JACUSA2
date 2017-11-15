@@ -1,8 +1,8 @@
 package jacusa.cli.options;
 
-import jacusa.cli.parameters.StatisticParameters;
+import jacusa.cli.parameters.StatisticFactory;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.method.call.statistic.StatisticCalculator;
+import jacusa.method.call.statistic.AbstractStatisticCalculator;
 
 import java.util.Map;
 
@@ -15,11 +15,11 @@ import org.apache.commons.cli.Option;
 public class StatisticCalculatorOption<T extends AbstractData> 
 extends AbstractACOption {
 
-	private StatisticParameters<T> parameters;
-	private Map<String,StatisticCalculator<T>> statistics;
+	private StatisticFactory<T> parameters;
+	private Map<String,AbstractStatisticCalculator<T>> statistics;
 
-	public StatisticCalculatorOption(final StatisticParameters<T> parameters, 
-			final Map<String, StatisticCalculator<T>> statisticCalculator) {
+	public StatisticCalculatorOption(final StatisticFactory<T> parameters, 
+			final Map<String, AbstractStatisticCalculator<T>> statisticCalculator) {
 		super("u", "modues");
 		this.parameters = parameters;
 		this.statistics = statisticCalculator;
@@ -30,9 +30,9 @@ extends AbstractACOption {
 		StringBuilder sb = new StringBuilder();
 
 		for (String name : statistics.keySet()) {
-			StatisticCalculator<T> statistic = statistics.get(name);
+			AbstractStatisticCalculator<T> statistic = statistics.get(name);
 
-			if(parameters.getStatisticCalculator() != null && statistic.getName().equals(parameters.getStatisticCalculator().getName())) {
+			if(parameters.newInstance() != null && statistic.getName().equals(parameters.newInstance().getName())) {
 				sb.append("<*>");
 			} else {
 				sb.append("< >");
@@ -65,7 +65,7 @@ extends AbstractACOption {
 				throw new IllegalArgumentException("Unknown statistic: " + name);
 			}
 			parameters.setStatisticCalculator(statistics.get(name));
-			parameters.getStatisticCalculator().processCLI(line.getOptionValue(getOpt()));
+			parameters.newInstance().processCLI(line.getOptionValue(getOpt()));
 		}
 	}
 

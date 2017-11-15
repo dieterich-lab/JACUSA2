@@ -3,7 +3,7 @@ package lib.data.cache;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;
 

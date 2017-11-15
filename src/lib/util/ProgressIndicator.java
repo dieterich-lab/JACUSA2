@@ -32,7 +32,6 @@ public class ProgressIndicator {
 			percent = (int) (current * 100 / total);
 		}
 
-		// TODO make this half size
 		final StringBuilder sb = new StringBuilder()
 		.append('\r')
     	.append(String.join("", Collections.nCopies(percent == 0 ? 2 : 2 - (int) (Math.log10(percent)), " ")))

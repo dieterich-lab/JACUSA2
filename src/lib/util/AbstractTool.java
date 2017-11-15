@@ -16,7 +16,7 @@ public abstract class AbstractTool {
 	
 	// command line interface
 	private final CLI cli;
-	private WorkerDispatcher<?> workerDispatcher;
+	private WorkerDispatcher<?, ?> workerDispatcher;
 	
 	private static Logger logger;
 
@@ -50,18 +50,18 @@ public abstract class AbstractTool {
 		}
 		
 		// instantiate chosen method
-		final AbstractMethodFactory<?> methodFactory = cli.getMethodFactory();
+		final AbstractMethodFactory<?, ?> methodFactory = cli.getMethodFactory();
 				
 		// run the method...
 		workerDispatcher = methodFactory.getWorkerDispatcher();
 		workerDispatcher.run();
 
 		getLogger().addEpilog(getEpilog());
-		
+
 		// TODO close
 	}
 
-	protected abstract Map<String, lib.method.AbstractMethodFactory<?>> getMethodFactories();
+	protected abstract Map<String, AbstractMethodFactory<?, ?>> getMethodFactories();
 	protected abstract String getEpilog();
 
 	protected String getProlog() {

@@ -7,11 +7,11 @@ import org.apache.commons.cli.Option;
 
 public class WindowSizeOption extends AbstractACOption {
 
-	final private AbstractParameter<?> parameters; 
+	final private AbstractParameter<?, ?> parameters; 
 	
-	public WindowSizeOption(AbstractParameter<?> parameters) {
+	public WindowSizeOption(AbstractParameter<?, ?> parameter) {
 		super("w", "window-size");
-		this.parameters = parameters;
+		this.parameters = parameter;
 	}
 
 	@Override

@@ -13,19 +13,19 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIterator;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIteratorProvider;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 public class ReplicateContainer<T extends AbstractData> {
 
 	private final AbstractConditionParameter<T> conditionParameter;
-	private final AbstractParameter<T> generalParameters;
+	private final AbstractParameter<T, ?> generalParameters;
 
 	private final List<SAMRecordWrapperIteratorProvider> iteratorProviders;
 	private final List<DataBuilder<T>> dataBuilders;
 	
 	public ReplicateContainer( 
 			final AbstractConditionParameter<T> conditionParameter,
-			final AbstractParameter<T> generalParameters) {
+			final AbstractParameter<T, ?> generalParameters) {
 
 		this.conditionParameter = conditionParameter;
 		this.generalParameters = generalParameters;
@@ -89,7 +89,7 @@ public class ReplicateContainer<T extends AbstractData> {
 	
 	private List<DataBuilder<T>> createDataBuilders(
 			final AbstractConditionParameter<T> conditionParameter,
-			final AbstractParameter<T> generalParameter) {
+			final AbstractParameter<T, ?> generalParameter) {
 		
 		final List<DataBuilder<T>> dataBuilders = new ArrayList<DataBuilder<T>>(conditionParameter.getReplicateSize());
 

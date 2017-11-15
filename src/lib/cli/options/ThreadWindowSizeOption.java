@@ -9,11 +9,11 @@ public class ThreadWindowSizeOption extends AbstractACOption {
 
 	public final static int NO_WINDOWS= -1;
 	
-	final private AbstractParameter<?> parameters; 
+	final private AbstractParameter<?, ?> parameter; 
 	
-	public ThreadWindowSizeOption(AbstractParameter<?> parameters) {
+	public ThreadWindowSizeOption(AbstractParameter<?, ?> parameters) {
 		super("W", "thread-window-size");
-		this.parameters = parameters;
+		this.parameter = parameters;
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class ThreadWindowSizeOption extends AbstractACOption {
 				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
-				.desc("size of the window used per thread.\n default: " + parameters.getReservedWindowSize())
+				.desc("size of the window used per thread.\n default: " + parameter.getReservedWindowSize())
 				.build();
 	}
 
@@ -35,7 +35,7 @@ public class ThreadWindowSizeOption extends AbstractACOption {
 	    		throw new IllegalArgumentException("THREAD-WINDOW-SIZE too small: " + windowSize);
 	    	}
 
-	    	parameters.setReservedWindowSize(windowSize);
+	    	parameter.setReservedWindowSize(windowSize);
 		}
 	}
 

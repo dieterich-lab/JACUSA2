@@ -2,7 +2,8 @@ package lib.data.cache;
 
 import java.util.Arrays;
 
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
+import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.util.SequenceUtil;
 
 import lib.data.AbstractData;
@@ -19,88 +20,59 @@ extends AbstractCache<T> {
 		referenceBases = new byte[getActiveWindowSize()];
 	}
 
+	// TODO make more efficient
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
-		/*
-		for (final AlignmentBlock block : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
-			// FIXME
+		byte[] reference = recordWrapper.getReference();
+		if (reference.length == 0) {
+			return;
 		}
-		*/
+		for (final AlignmentBlock alignmentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
+			addReferenceBase(alignmentBlock.getReferenceStart(), 
+					alignmentBlock.getReadStart() - 1, 
+					alignmentBlock.getLength(), 
+					recordWrapper);
+		}
 	}
 	
 	@Override
-	public void addRecordWrapperPosition(final int readPosition, final SAMRecordWrapper recordWrapper) {}
+	public void addRecordWrapperPosition(final int readPosition, final SAMRecordWrapper recordWrapper) {
+		final int referencePosition = recordWrapper.getSAMRecord().getReferencePositionAtReadPosition(readPosition);
+		addReferenceBase(referencePosition, readPosition, 1, recordWrapper);
+	}
 	
 	@Override
-	public void addRecordWrapperRegion(final int readPosition, final int length, final SAMRecordWrapper recordWrapper) {}
-
+	public void addRecordWrapperRegion(final int readPosition, final int length, final SAMRecordWrapper recordWrapper) {
+		final int referencePosition = recordWrapper.getSAMRecord().getReferencePositionAtReadPosition(readPosition);
+		addReferenceBase(referencePosition, readPosition, length, recordWrapper);
+	}
+	
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
 		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
 		data.setReferenceBase(referenceBases[windowPosition]);
 	}
 
-	/* TODO
-	private byte[] parseMDField(final SAMRecord record) {
-		if (! record.hasAttribute(SAMTag.MD.name())) {
-			return new byte[0]; // no MD field :-(
+	protected void addReferenceBase(final int referencePosition, final int readPosition, int length, 
+			final SAMRecordWrapper recordWrapper) {
+
+		if (referencePosition < 0) {
+			throw new IllegalArgumentException("Reference Position cannot be < 0! -> outside of alignmentBlock");
 		}
-		// potential missing number(s)
-		final String MD = "0" + record.getStringAttribute(SAMTag.MD.name()).toUpperCase();
 		
-		// init container size with read length
-		final byte[] referenceBases = new byte[record.getReadLength()];
-		int destPos = 0;
-		// copy read sequence to reference container / concatenate mapped segments ignore DELs
-		for (int i = 0; i < record.getAlignmentBlocks().size(); i++) {
-			if (referenceBases != null) {
-				final int srcPos = record.getAlignmentBlocks().get(i).getReadStart() - 1;
-				final int length = record.getAlignmentBlocks().get(i).getLength();
-				System.arraycopy(
-						record.getReadBases(), 
-						srcPos, 
-						referenceBases, 
-						destPos, 
-						length);
-				destPos += length;
-			}
+		final WindowPosition windowPosition = WindowPosition.convert(
+				getActiveWindowCoordinate(), referencePosition, readPosition, length);
+		
+		if (windowPosition.getWindowPosition() < 0 && windowPosition.getLength() > 0) {
+			throw new IllegalArgumentException("Window position cannot be < 0! -> outside of alignmentBlock");
 		}
-
-		int position = 0;
-		boolean nextInteger = true;
-		// change to reference base based on MD string
-//		int j = 0;
-		for (String e : MD.split("((?<=[0-9]+)(?=[^0-9]+))|((?<=[^0-9]+)(?=[0-9]+))")) {
-			if (nextInteger) { // match
-				// use read sequence
-				int matchLength = Integer.parseInt(e);
-				position += matchLength;
-				nextInteger = false;	
-			} else if (e.charAt(0) == '^') {
-				// ignore deletions from reference
-				nextInteger = true;
-			} else { // mismatch
-//				try {
-				referenceBases[position] = (byte)e.toCharArray()[0];
-//				} catch (ArrayIndexOutOfBoundsException e2) {
-//					String[] tmp = MD.split("((?<=[0-9]+)(?=[^0-9]+))|((?<=[^0-9]+)(?=[0-9]+))");
-//					System.out.println(e2.toString());
-//				}
-
-				position += 1;
-				nextInteger = true;
-			}
-//			++j;
+		
+		for (int j = 0; j < windowPosition.getLength(); ++j) {
+			referenceBases[windowPosition.getWindowPosition() + j] = 
+					recordWrapper.getReference()[windowPosition.getRead() + j];
 		}
-		// resize container if MD < read length
-		if (position < referenceBases.length) {
-			Arrays.copyOf(referenceBases, position);
-		}
-
-		return referenceBases;
 	}
-	*/
-
+	
 	@Override
 	public void clear() {
 		Arrays.fill(referenceBases, SequenceUtil.N);

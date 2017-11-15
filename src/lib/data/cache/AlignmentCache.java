@@ -2,7 +2,7 @@ package lib.data.cache;
 
 import java.util.Arrays;
 
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 import htsjdk.samtools.SAMRecord;
 

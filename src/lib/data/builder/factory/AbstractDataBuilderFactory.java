@@ -13,9 +13,9 @@ import lib.data.generator.DataGenerator;
 
 public abstract class AbstractDataBuilderFactory<T extends AbstractData> {
 	
-	private AbstractParameter<T> generalParameter;
+	private AbstractParameter<T, ?> generalParameter;
 
-	public AbstractDataBuilderFactory(final AbstractParameter<T> generalParameter) {
+	public AbstractDataBuilderFactory(final AbstractParameter<T, ?> generalParameter) {
 		this.generalParameter = generalParameter;
 	}
 	
@@ -23,18 +23,18 @@ public abstract class AbstractDataBuilderFactory<T extends AbstractData> {
 		final List<Cache<T>> caches = createCaches(conditionParameter);
 		
 		final DataGenerator<T> dataGenerator = getGeneralParameter().getMethodFactory().getDataGenerator();
-		final FilterContainer<T> filterContainer = null; // TODO
+		final FilterContainer<T> filterContainer = null; // TODO filter
 
 		return new DataBuilder<T>(dataGenerator, conditionParameter, conditionParameter.getLibraryType(), caches, filterContainer);
 	}
 
 	public abstract List<Cache<T>> createCaches(final AbstractConditionParameter<T> conditionParameter);
 	
-	public AbstractParameter<T> getGeneralParameter() {
+	public AbstractParameter<T, ?> getGeneralParameter() {
 		return generalParameter;
 	}
 	
-	public void setGeneralParameter(final AbstractParameter<T> generalParameter)  {
+	public void setGeneralParameter(final AbstractParameter<T, ?> generalParameter)  {
 		this.generalParameter = generalParameter;
 	}
 	

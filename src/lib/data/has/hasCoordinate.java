@@ -1,6 +1,6 @@
 package lib.data.has;
 
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 /**
  * 

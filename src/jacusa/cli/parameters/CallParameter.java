@@ -7,18 +7,17 @@ import lib.cli.parameters.JACUSAConditionParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasPileupCount;
+import lib.data.result.StatisticResult;
 
 public class CallParameter<T extends AbstractData & hasBaseCallCount & hasPileupCount> 
-extends AbstractParameter<T> implements hasStatisticCalculator<T> {
+extends AbstractParameter<T, StatisticResult<T>> implements hasStatisticCalculator<T> {
 
-	private StatisticParameters<T> statisticParameter;
+	private StatisticFactory<T> statisticFactory;
 	
 	public CallParameter(final int conditionSize) {
 		super(conditionSize);
 		
-		statisticParameter = new StatisticParameters<T>();
-		statisticParameter.setStatisticCalculator(
-				new DirichletMultinomialRobustCompoundError<T>(this));
+		statisticFactory = new StatisticFactory<T>(new DirichletMultinomialRobustCompoundError<T>(this), 1.0);
 	}
 	
 	@Override
@@ -27,8 +26,8 @@ extends AbstractParameter<T> implements hasStatisticCalculator<T> {
 	}
 	
 	@Override
-	public StatisticParameters<T> getStatisticParameters() {
-		return statisticParameter;
+	public StatisticFactory<T> getStatisticParameters() {
+		return statisticFactory;
 	}
 
 }

@@ -10,9 +10,9 @@ import org.apache.commons.cli.Option;
 
 public class BedCoordinatesOption extends AbstractACOption {
 
-	final private AbstractParameter<?> parameters;
+	final private AbstractParameter<?, ?> parameters;
 	
-	public BedCoordinatesOption(AbstractParameter<?> parameters) {
+	public BedCoordinatesOption(AbstractParameter<?, ?> parameters) {
 		super("b", "bed");
 		this.parameters = parameters;
 	}

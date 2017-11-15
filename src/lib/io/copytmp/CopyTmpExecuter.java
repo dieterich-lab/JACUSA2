@@ -9,11 +9,11 @@ import lib.worker.AbstractWorker;
 public class CopyTmpExecuter<T extends AbstractData> {
 
 	private final List<Integer> threadIds;
-	private final List<AbstractWorker<T>> workerContainer;
+	private final List<AbstractWorker<T, ?>> workerContainer;
 	
 	public CopyTmpExecuter(
 			final List<Integer> threadIds, 
-			final List<AbstractWorker<T>> workerContainer) {
+			final List<AbstractWorker<T, ?>> workerContainer) {
 		this.threadIds = threadIds;
 		this.workerContainer = workerContainer;
 	}
@@ -22,26 +22,20 @@ public class CopyTmpExecuter<T extends AbstractData> {
 		final int[] iteration = new int[workerContainer.size()];
 		
 		// close writer
-		for (final AbstractWorker<T> worker : workerContainer) {
-			for (final CopyTmp copyTmp : worker.getCopyTmps()) {
-				copyTmp.closeTmpWriter();
-			}
+		for (final AbstractWorker<T, ?> worker : workerContainer) {
+			worker.getCopyTmpResult().closeTmpWriter();
 		}
 		
 		for (final int threadId : threadIds) {
 			// current worker
-			final AbstractWorker<T> worker = workerContainer.get(threadId);
-			for (final CopyTmp copyTmp : worker.getCopyTmps()) {
-				copyTmp.copy(iteration[threadId]);
-			}
+			final AbstractWorker<T, ?> worker = workerContainer.get(threadId);
+			worker.getCopyTmpResult().copy(iteration[threadId]);
 			iteration[threadId]++;
 		}
 
 		// close reader
-		for (final AbstractWorker<T> worker : workerContainer) {
-			for (final CopyTmp copyTmp : worker.getCopyTmps()) {
-				copyTmp.closeTmpReader();
-			}
+		for (final AbstractWorker<T, ?> worker : workerContainer) {
+			worker.getCopyTmpResult().closeTmpReader();
 		}
 	}
 

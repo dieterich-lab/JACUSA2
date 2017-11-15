@@ -3,7 +3,7 @@ package lib.tmp;
 import java.util.Iterator;
 import java.util.List;
 
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 import lib.variant.Variant;
 
 import lib.data.builder.recordwrapper.SAMRecordWrapper;

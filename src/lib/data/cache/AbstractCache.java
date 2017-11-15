@@ -5,8 +5,8 @@ import java.util.Map.Entry;
 
 import lib.data.AbstractData;
 
-import lib.util.Coordinate;
-import lib.util.Coordinate.STRAND;
+import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.Coordinate.STRAND;
 
 public abstract class AbstractCache<T extends AbstractData> 
 implements Cache<T> {

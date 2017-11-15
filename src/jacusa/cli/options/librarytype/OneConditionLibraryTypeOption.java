@@ -13,11 +13,11 @@ import org.apache.commons.cli.Option;
 public class OneConditionLibraryTypeOption<T extends AbstractData>
 extends AbstractLibraryTypeOption<T> {
 
-	public OneConditionLibraryTypeOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameter, final AbstractParameter<T> generalParameter) {
+	public OneConditionLibraryTypeOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameter, final AbstractParameter<T, ?> generalParameter) {
 		super(conditionIndex, conditionParameter, generalParameter);
 	}
 	
-	public OneConditionLibraryTypeOption(final List<AbstractConditionParameter<T>> conditionParameters, final AbstractParameter<T> generalParameter) {
+	public OneConditionLibraryTypeOption(final List<AbstractConditionParameter<T>> conditionParameters, final AbstractParameter<T, ?> generalParameter) {
 		super(conditionParameters, generalParameter);
 	}
 	

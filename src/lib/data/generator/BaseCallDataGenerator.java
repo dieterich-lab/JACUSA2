@@ -2,7 +2,7 @@ package lib.data.generator;
 
 import lib.data.BaseCallData;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 public class BaseCallDataGenerator
 extends AbstractDataGenerator<BaseCallData> {

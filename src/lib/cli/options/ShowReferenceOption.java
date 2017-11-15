@@ -7,9 +7,9 @@ import org.apache.commons.cli.Option;
 
 public class ShowReferenceOption extends AbstractACOption {
 
-	final private AbstractParameter<?> parameters;
+	final private AbstractParameter<?, ?> parameters;
 
-	public ShowReferenceOption(final AbstractParameter<?> parameters) {
+	public ShowReferenceOption(final AbstractParameter<?, ?> parameters) {
 		super("R", "show-ref");
 		this.parameters = parameters;
 	}

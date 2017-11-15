@@ -56,7 +56,7 @@ extends DirichletMultinomialCompoundError<T> {
 			}
 		}
 
-		T[][] data = parameters.getMethodFactory().createContainerData(2);
+		T[][] data = parameter.getMethodFactory().createContainerData(2);
 		
 		// container for adjusted parallelPileup
 		ParallelData<T> adjustedParallelPileup = null;
@@ -67,10 +67,10 @@ extends DirichletMultinomialCompoundError<T> {
 			System.arraycopy(data[1], 0, parallelData.getData(0), 0, parallelData.getData(0).length);
 
 			adjustedParallelPileup = new ParallelData<T>(
-					parameters.getMethodFactory(),
+					parameter.getMethodFactory(),
 					parallelData.getCoordinate(), data);
 			// and replace pileups2 with pileups1 where the variant bases have been replaced with the common base
-			T[] newConditionData = parameters.getMethodFactory().createReplicateData(adjustedParallelPileup.getData(0).length);
+			T[] newConditionData = parameter.getMethodFactory().createReplicateData(adjustedParallelPileup.getData(0).length);
 			adjustedParallelPileup.setData(0, ParallelData.flat(adjustedParallelPileup.getData(0), newConditionData, variantBaseIs, commonBaseIndex));
 		} else if (a2 > 1 && a1 == 1 && aP == 2) { // condition2
 			
@@ -78,9 +78,9 @@ extends DirichletMultinomialCompoundError<T> {
 			System.arraycopy(data[1], 0, parallelData.getData(1), 0, parallelData.getData(1).length);
 			
 			adjustedParallelPileup = new ParallelData<T>(
-					parameters.getMethodFactory(),
+					parameter.getMethodFactory(),
 					parallelData.getCoordinate(), data);
-			T[] newConditionData = parameters.getMethodFactory().createReplicateData(adjustedParallelPileup.getData(1).length);
+			T[] newConditionData = parameter.getMethodFactory().createReplicateData(adjustedParallelPileup.getData(1).length);
 			adjustedParallelPileup.setData(1, ParallelData.flat(adjustedParallelPileup.getData(1), newConditionData, variantBaseIs, commonBaseIndex));
 		}
 		// aP > 3, just use the existing parallelPileup to calculate the test-statistic

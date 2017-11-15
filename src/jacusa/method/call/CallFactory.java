@@ -12,9 +12,8 @@ import jacusa.filter.factory.INDEL_DistanceFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.ReadPositionDistanceFilterFactory;
 import jacusa.filter.factory.SpliceSiteDistanceFilterFactory;
-import jacusa.io.format.AbstractOutputFormat;
-import jacusa.io.format.BED6call;
-import jacusa.method.call.statistic.StatisticCalculator;
+import jacusa.io.writer.BED6callResultFormat;
+import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundError;
 import jacusa.worker.CallWorker;
 
@@ -25,7 +24,7 @@ import java.util.TreeMap;
 import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
-import lib.cli.options.FormatOption;
+import lib.cli.options.ResultFormatOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ResultFileOption;
@@ -47,16 +46,18 @@ import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasPileupCount;
 import lib.data.has.hasReferenceBase;
+import lib.data.result.StatisticResult;
 import lib.data.validator.MinCoverageValidator;
 import lib.data.validator.ParallelDataValidator;
 import lib.data.validator.VariantSiteValidator;
+import lib.io.AbstractResultFormat;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
 import org.apache.commons.cli.ParseException;
 
 public class CallFactory<T extends AbstractData & hasPileupCount & hasBaseCallCount & hasReferenceBase> 
-extends AbstractMethodFactory<T> {
+extends AbstractMethodFactory<T, StatisticResult<T>> {
 
 	public CallFactory(final CallParameter<T> callParameter, final DataGenerator<T> dataGenerator) {
 		super("call-" + (callParameter.getConditionsSize() == -1 ? "n" : callParameter.getConditionsSize()), 
@@ -142,19 +143,19 @@ extends AbstractMethodFactory<T> {
 		// result format
 		if (getResultFormats().size() == 1 ) {
 			Character[] a = getResultFormats().keySet().toArray(new Character[1]);
-			getParameter().setFormat(getResultFormats().get(a[0]));
+			getParameter().setResultFormat(getResultFormats().get(a[0]));
 		} else {
-			getParameter().setFormat(getResultFormats().get(BED6call.CHAR));
-			addACOption(new FormatOption<T>(
+			getParameter().setResultFormat(getResultFormats().get(BED6callResultFormat.CHAR));
+			addACOption(new ResultFormatOption<T, StatisticResult<T>>(
 					getParameter(), getResultFormats()));
 		}
 	}
 	
-	public Map<String, StatisticCalculator<T>> getStatistics() {
-		final Map<String, StatisticCalculator<T>> statistics = 
-				new TreeMap<String, StatisticCalculator<T>>();
+	public Map<String, AbstractStatisticCalculator<T>> getStatistics() {
+		final Map<String, AbstractStatisticCalculator<T>> statistics = 
+				new TreeMap<String, AbstractStatisticCalculator<T>>();
 
-		StatisticCalculator<T> statistic = null;
+		AbstractStatisticCalculator<T> statistic = null;
 
 		statistic = new DirichletMultinomialRobustCompoundError<T>(getParameter());
 		statistics.put("DirMult", statistic);
@@ -185,14 +186,14 @@ extends AbstractMethodFactory<T> {
 		return abstractPileupFilters;
 	}
 
-	public Map<Character, AbstractOutputFormat<T>> getResultFormats() {
-		final Map<Character, AbstractOutputFormat<T>> resultFormats = 
-				new HashMap<Character, AbstractOutputFormat<T>>();
+	public Map<Character, AbstractResultFormat<T, StatisticResult<T>>> getResultFormats() {
+		final Map<Character, AbstractResultFormat<T, StatisticResult<T>>> resultFormats = 
+				new HashMap<Character, AbstractResultFormat<T, StatisticResult<T>>>();
 
-		AbstractOutputFormat<T> resultFormat = null;
+		AbstractResultFormat<T, StatisticResult<T>> resultFormat = null;
 
 		// BED like output
-		resultFormat = new BED6call<T>(getParameter());
+		resultFormat = new BED6callResultFormat<T, StatisticResult<T>>(getParameter());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 
 		// VCF output
@@ -229,9 +230,10 @@ extends AbstractMethodFactory<T> {
 
 	@Override
 	public CallWorker<T> createWorker(final int threadId) {
-		return new CallWorker<T>(getWorkerDispatcher(), threadId, 
+		return new CallWorker<T>(getWorkerDispatcher(), threadId,
+				getParameter().getResultFormat().createCopyTmp(threadId),
 				getParallelDataValidators(), 
-				(CallParameter<T>)getParameter());
+				getParameter());
 	}
 	
 }

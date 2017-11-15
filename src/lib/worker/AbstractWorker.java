@@ -1,6 +1,10 @@
 package lib.worker;
 
+import jacusa.filter.AbstractFilter;
+import jacusa.filter.FilterConfig;
+import jacusa.filter.factory.AbstractFilterFactory;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,25 +14,28 @@ import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.data.result.Result;
 import lib.data.validator.CompositeParallelDataValidator;
 import lib.data.validator.ParallelDataValidator;
-import lib.io.copytmp.CopyTmp;
+import lib.io.copytmp.CopyTmpResult;
 import lib.location.CoordinateAdvancer;
 import lib.location.StrandedCoordinateAdvancer;
 import lib.location.UnstrandedCoordinateAdvancer;
 import lib.tmp.CoordinateController;
 import lib.util.AbstractTool;
-import lib.util.Coordinate;
-import lib.util.Coordinate.STRAND;
+import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.Coordinate.STRAND;
 
-public abstract class AbstractWorker<T extends AbstractData>
+
+public abstract class AbstractWorker<T extends AbstractData, R extends Result<T>>
 extends Thread
 implements Iterator<ParallelData<T>> {
 
 	public static enum STATUS {INIT, READY, FINISHED, BUSY, WAITING};
 
-	private final WorkerDispatcher<T> workerDispatcher;
+	private final WorkerDispatcher<T, R> workerDispatcher;
 	private final ThreadIdContainer threadIdContainer;
+	private final CopyTmpResult<T, R> copyTmpResult;
 	
 	private final ConditionContainer<T> conditionContainer;
 	private CoordinateController coordinateController;
@@ -36,23 +43,45 @@ implements Iterator<ParallelData<T>> {
 	private final ParallelDataValidator<T> parallelDataValidator;
 	private ParallelData<T> parallelData;
 	
+	private int comparisons;
 	private STATUS status;
 	
-	public AbstractWorker(final WorkerDispatcher<T> workerDispatcher,
+	public AbstractWorker(final WorkerDispatcher<T, R> workerDispatcher,
 			final int threadId,
+			final CopyTmpResult<T, R> copyTmpResult,
 			final List<ParallelDataValidator<T>> parallelDataValidators,
-			final AbstractParameter<T> generalParameter) {
+			final AbstractParameter<T, R> generalParameter) {
 		this.workerDispatcher = workerDispatcher;
 		threadIdContainer = new ThreadIdContainer(threadId);
-
+		this.copyTmpResult = copyTmpResult;
+		
 		conditionContainer = new ConditionContainer<T>(generalParameter);
 		coordinateController = new CoordinateController(generalParameter.getActiveWindowSize(), 
 				createReferenceAdvancer(generalParameter.getConditionParameters()));
 
 		this.parallelDataValidator = new CompositeParallelDataValidator<T>(parallelDataValidators);
+		
+		comparisons = 0;
 		status = STATUS.INIT;
 	}
 
+	protected boolean filter(final R result) {
+		final AbstractParameter<T, R> parameter = workerDispatcher.getMethodFactory().getParameter();
+		final FilterConfig<T> filterConfig = parameter.getFilterConfig();
+
+		boolean isFiltered = false;
+		// apply each filter
+		for (final AbstractFilterFactory<T, ?> filterFactory : filterConfig.getFilterFactories()) {
+			final AbstractFilter<T> filter = filterFactory.getFilter();
+			if (filter.applyFilter(result, getConditionContainer())) {
+				isFiltered = true;
+			}
+		}
+
+		result.setFiltered(isFiltered);
+		return isFiltered;
+	}
+	
 	// TODO make faster if replicates are not valid 
 	@Override
 	public boolean hasNext() {
@@ -62,6 +91,7 @@ implements Iterator<ParallelData<T>> {
 			parallelData = new ParallelData<T>(workerDispatcher.getMethodFactory(), coordinate, data);
 
 			if (parallelData != null && parallelDataValidator.isValid(parallelData)) {
+				comparisons++;
 				return true;
 			}
 			coordinateController.advance();
@@ -87,8 +117,26 @@ implements Iterator<ParallelData<T>> {
 		
 		return parallelData;
 	}
+
+	public void doWork(final ParallelData<T> parallelData) {
+		R result = process(parallelData);
+		if (result == null) {
+			return;
+		}
+
+		final AbstractParameter<T, R> parameter = workerDispatcher.getMethodFactory().getParameter();
+		if (parameter.getFilterConfig().hasFiters()) {
+			filter(result);
+		}
+
+		try {
+			copyTmpResult.addResult(result, parameter.getConditionParameters());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
-	protected abstract void doWork(final ParallelData<T> parallelData);
+	protected abstract R process(final ParallelData<T> parallelData);
 
 	protected void processWaiting() { 
 		// overwrite
@@ -126,9 +174,7 @@ implements Iterator<ParallelData<T>> {
 	
 	protected void processReady() {
 		status = STATUS.BUSY;
-		for (final CopyTmp copyTmp : getCopyTmps()) {
-			copyTmp.nextIteration();
-		}
+		copyTmpResult.newIteration();
 		while (hasNext()) {
 			final ParallelData<T> parallelData = next();
 			doWork(parallelData);	
@@ -161,14 +207,12 @@ implements Iterator<ParallelData<T>> {
 			}
 		}
 
-		/* TODO close reader and open writer
-		tmpWriter.close();
 		try {
-			tmpReader = new TmpWorkerReader<T>(tmpWriter);
+			getCopyTmpResult().closeTmpReader();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
-		
+		}
+
 		synchronized (workerDispatcher) {
 			workerDispatcher.notify();
 		}
@@ -199,7 +243,13 @@ implements Iterator<ParallelData<T>> {
 		return threadIdContainer;
 	}
 
-	public abstract List<CopyTmp> getCopyTmps();
+	public CopyTmpResult<T, R> getCopyTmpResult() {
+		return copyTmpResult;
+	}
+	
+	public int getComparisons() {
+		return comparisons;
+	}
 	
 	private CoordinateAdvancer createReferenceAdvancer(final List<AbstractConditionParameter<T>> conditionParameters) {
 		final Coordinate coordinate = new Coordinate();

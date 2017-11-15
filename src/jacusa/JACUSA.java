@@ -52,12 +52,12 @@ public class JACUSA extends AbstractTool {
 	}
 
 	@Override
-	protected Map<String, AbstractMethodFactory<?>> getMethodFactories() {
+	protected Map<String, AbstractMethodFactory<?, ?>> getMethodFactories() {
 		// container for available methods (e.g.: call, pileup)
-		final Map<String, AbstractMethodFactory<?>> methodFactories = 
-				new TreeMap<String, AbstractMethodFactory<?>>();
+		final Map<String, AbstractMethodFactory<?, ?>> methodFactories = 
+				new TreeMap<String, AbstractMethodFactory<?, ?>>();
 
-		final List<AbstractMethodFactory<?>> factories = new ArrayList<AbstractMethodFactory<?>>(10);
+		final List<AbstractMethodFactory<?, ?>> factories = new ArrayList<AbstractMethodFactory<?, ?>>(10);
 		// calling variants
 		DataGenerator<PileupData> pileupDataGenerator = new PileupDataGenerator();
 		factories.add(new OneConditionCallFactory<PileupData>(pileupDataGenerator));
@@ -72,7 +72,7 @@ public class JACUSA extends AbstractTool {
 		factories.add(new RTArrestFactory<BaseCallReadInfoData>(new RTArrestParameter<BaseCallReadInfoData>(2), 
 				baseCallReadInfoGenerator));
 
-		for (final AbstractMethodFactory<?> factory : factories) {
+		for (final AbstractMethodFactory<?, ?> factory : factories) {
 			methodFactories.put(factory.getName(), factory);
 		}
 		return methodFactories;
@@ -86,7 +86,7 @@ public class JACUSA extends AbstractTool {
 		sb.append("Screening done using " + getCLI().getMethodFactory().getParameter().getMaxThreads() + " thread(s)");
 		sb.append('\n');
 		
-		sb.append("Results can be found in: " + getCLI().getMethodFactory().getParameter().getOutput().getInfo());
+		sb.append("Results can be found in: " + getCLI().getMethodFactory().getParameter().getResultWriter());
 		sb.append('\n');
 		
 		final String lineSep = "--------------------------------------------------------------------------------";

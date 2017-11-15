@@ -4,10 +4,10 @@ import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.RTArrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.io.format.AbstractOutputFormat;
-import jacusa.io.format.BED6call;
-import jacusa.io.format.RTArrestResultFormat;
-import jacusa.method.call.statistic.StatisticCalculator;
+import jacusa.io.copytmp.FileCopyTmpResult;
+import jacusa.io.writer.BED6callResultFormat;
+import jacusa.io.writer.RTArrestResultFormat;
+import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import jacusa.worker.RTArrestWorker;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.TreeMap;
 import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
-import lib.cli.options.FormatOption;
+import lib.cli.options.ResultFormatOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ResultFileOption;
@@ -36,16 +36,20 @@ import lib.data.builder.factory.BaseCallReadInfoDataBuilderFactory;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
+import lib.data.has.hasReferenceBase;
+import lib.data.result.StatisticResult;
 import lib.data.validator.MinCoverageValidator;
 import lib.data.validator.ParallelDataValidator;
 import lib.data.validator.RTArrestVariantParallelPileup;
+import lib.io.AbstractResultFileWriter;
+import lib.io.AbstractResultFormat;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
 import org.apache.commons.cli.ParseException;
 
-public class RTArrestFactory<T extends AbstractData & hasBaseCallCount & hasReadInfoCount> 
-extends AbstractMethodFactory<T> {
+public class RTArrestFactory<T extends AbstractData & hasBaseCallCount & hasReadInfoCount & hasReferenceBase> 
+extends AbstractMethodFactory<T, StatisticResult<T>> {
 
 	public final static String NAME = "rt-arrest";
 
@@ -66,10 +70,10 @@ extends AbstractMethodFactory<T> {
 		// result format
 		if (getResultFormats().size() == 1 ) {
 			Character[] a = getResultFormats().keySet().toArray(new Character[1]);
-			getParameter().setFormat(getResultFormats().get(a[0]));
+			getParameter().setResultFormat(getResultFormats().get(a[0]));
 		} else {
-			getParameter().setFormat(getResultFormats().get(BED6call.CHAR));
-			addACOption(new FormatOption<T>(
+			getParameter().setResultFormat(getResultFormats().get(BED6callResultFormat.CHAR));
+			addACOption(new ResultFormatOption<T, StatisticResult<T>>(
 					getParameter(), getResultFormats()));
 		}
 	}
@@ -120,9 +124,9 @@ extends AbstractMethodFactory<T> {
 		}
 	}
 	
-	public Map<String, StatisticCalculator<T>> getStatistics() {
-		Map<String, StatisticCalculator<T>> statistics = 
-				new TreeMap<String, StatisticCalculator<T>>();
+	public Map<String, AbstractStatisticCalculator<T>> getStatistics() {
+		Map<String, AbstractStatisticCalculator<T>> statistics = 
+				new TreeMap<String, AbstractStatisticCalculator<T>>();
 		return statistics;
 	}
 
@@ -140,13 +144,13 @@ extends AbstractMethodFactory<T> {
 		return abstractPileupFilters;
 	}
 
-	public Map<Character, AbstractOutputFormat<T>> getResultFormats() {
-		Map<Character, AbstractOutputFormat<T>> resultFormats = 
-				new HashMap<Character, AbstractOutputFormat<T>>();
+	public Map<Character, AbstractResultFormat<T, StatisticResult<T>>> getResultFormats() {
+		Map<Character, AbstractResultFormat<T, StatisticResult<T>>> resultFormats = 
+				new HashMap<Character, AbstractResultFormat<T, StatisticResult<T>>>();
 
-		AbstractOutputFormat<T> resultFormat = null;
+		AbstractResultFormat<T,StatisticResult<T>> resultFormat = null;
 
-		resultFormat = new RTArrestResultFormat<T>(getParameter());
+		resultFormat = new RTArrestResultFormat<T, StatisticResult<T>>(getParameter());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 		
 		return resultFormats;
@@ -176,7 +180,9 @@ extends AbstractMethodFactory<T> {
 	
 	@Override
 	public RTArrestWorker<T> createWorker(final int threadId) {
-		return new RTArrestWorker<T>(getWorkerDispatcher(), threadId, 
+		return new RTArrestWorker<T>(getWorkerDispatcher(), threadId,
+				new FileCopyTmpResult<T, StatisticResult<T>>(threadId, 
+						(AbstractResultFileWriter<T, StatisticResult<T>>)getParameter().getResultWriter(), getParameter().getResultFormat()),
 				getParallelDataValidators(), getParameter());
 	}
 	

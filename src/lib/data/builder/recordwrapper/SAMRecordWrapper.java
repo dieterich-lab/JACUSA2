@@ -3,10 +3,12 @@ package lib.data.builder.recordwrapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
+import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SAMTag;
 
 public class SAMRecordWrapper {
 
@@ -23,6 +25,8 @@ public class SAMRecordWrapper {
 	private List<Integer> insertions;
 	private List<Integer> deletions;
 	private List<Integer> INDELs;
+
+	private byte[] reference;
 	
 	public SAMRecordWrapper(
 			final boolean isValid, 
@@ -77,6 +81,63 @@ public class SAMRecordWrapper {
 	}
 	*/
 
+	public byte[] getReference() {
+		if (reference != null) {
+			return reference;
+		}
+		// no MD field :-(
+		if (! record.hasAttribute(SAMTag.MD.name())) {
+			reference = new byte[0];
+			return reference; 
+		}
+		
+		// potential missing number(s)
+		final String MD = "0" + record.getStringAttribute(SAMTag.MD.name()).toUpperCase();
+	
+		int mappedLength = 0;
+		for (final AlignmentBlock block : record.getAlignmentBlocks()) {
+			mappedLength += block.getLength();
+		}
+		
+		// init container size with read length
+		final byte[] referenceBases = new byte[mappedLength];
+		int destPos = 0;
+		// copy read sequence to reference container / concatenate mapped segments ignore DELs
+		for (final AlignmentBlock block : record.getAlignmentBlocks()) {
+			final int srcPos = block.getReadStart() - 1;
+			final int length = block.getLength();
+			System.arraycopy(
+					record.getReadBases(), 
+					srcPos, 
+					referenceBases, 
+					destPos, 
+					length);
+			destPos += length;
+		}
+	
+		int position = 0;
+		boolean nextInteger = true;
+		// change to reference base based on MD string
+		for (String e : MD.split("((?<=[0-9]+)(?=[^0-9]+))|((?<=[^0-9]+)(?=[0-9]+))")) {
+			if (nextInteger) { // match
+				// use read sequence
+				int matchLength = Integer.parseInt(e);
+				position += matchLength;
+				nextInteger = false;	
+			} else if (e.charAt(0) == '^') {
+				// ignore deletions from reference
+				nextInteger = true;
+			} else { // mismatch
+				referenceBases[position] = (byte)e.toCharArray()[0];
+	
+				position += 1;
+				nextInteger = true;
+			}
+		}
+
+		return reference;
+	}
+	
 	public boolean isProcessed () {
 		return cigarElementWrappers.size() > 0;
 	}

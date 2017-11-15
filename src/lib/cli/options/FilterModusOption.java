@@ -7,11 +7,11 @@ import org.apache.commons.cli.Option;
 
 public class FilterModusOption extends AbstractACOption {
 
-	final private AbstractParameter<?> parameters;
+	final private AbstractParameter<?, ?> parameter;
 	
-	public FilterModusOption(final AbstractParameter<?> parameters) {
+	public FilterModusOption(final AbstractParameter<?, ?> parameter) {
 		super("s", "separate");
-		this.parameters = parameters;
+		this.parameter = parameter;
 	}
 	
 	@Override
@@ -26,7 +26,7 @@ public class FilterModusOption extends AbstractACOption {
 	@Override
 	public void process(final CommandLine line) throws Exception {
 		if (line.hasOption(getOpt())) {
-			parameters.setSeparate(true);
+			parameter.setSeparate(true);
 	    }
 	}
 

@@ -13,17 +13,13 @@ extends AbstractConditionACOption<T> {
 
 	private static final String OPT = "P";
 	private static final String LONG_OPT = "build-pileup";
-
-	private AbstractParameter<T> generalParameter;
 	
-	public AbstractLibraryTypeOption(final List<AbstractConditionParameter<T>> conditionParameter, final AbstractParameter<T> generalParameter) { 
+	public AbstractLibraryTypeOption(final List<AbstractConditionParameter<T>> conditionParameter, final AbstractParameter<T, ?> generalParameter) { 
 		super(OPT, LONG_OPT, conditionParameter);
-		this.generalParameter = generalParameter;
 	}
 
-	public AbstractLibraryTypeOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameters, final AbstractParameter<T> generalParameter) { 
+	public AbstractLibraryTypeOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameters, final AbstractParameter<T, ?> generalParameter) { 
 		super(OPT, LONG_OPT, conditionIndex, conditionParameters);
-		this.generalParameter = generalParameter;
 	}
 
 	public LIBRARY_TYPE parse(String s) {
@@ -80,10 +76,6 @@ extends AbstractConditionACOption<T> {
 		}
 		
 		return sb.toString();
-	}
-	
-	public AbstractParameter<T> getGeneralParameter() {
-		return generalParameter;
 	}
 	
 }

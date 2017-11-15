@@ -5,6 +5,7 @@ import lib.cli.parameters.AbstractParameter;
 import lib.cli.parameters.JACUSAConditionParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasPileupCount;
+import lib.data.result.DefaultResult;
 
 /**
  * 
@@ -12,7 +13,7 @@ import lib.data.has.hasPileupCount;
  *
  */
 public class PileupParameter<T extends AbstractData & hasPileupCount>
-extends AbstractParameter<T> {
+extends AbstractParameter<T, DefaultResult<T>> {
 
 	public PileupParameter(final int conditions) {
 		super(conditions);

@@ -1,7 +1,5 @@
 package lib.cli.options;
 
-import jacusa.io.Output;
-import jacusa.io.OutputWriter;
 import lib.cli.parameters.AbstractParameter;
 
 import org.apache.commons.cli.CommandLine;
@@ -14,11 +12,11 @@ import org.apache.commons.cli.Option;
  */
 public class ResultFileOption extends AbstractACOption {
 
-	final private AbstractParameter<?> parameters;
+	final private AbstractParameter<?, ?> parameter;
 	
-	public ResultFileOption(AbstractParameter<?> parameters) {
+	public ResultFileOption(AbstractParameter<?, ?> parameter) {
 		super("r", "result-file");
-		this.parameters = parameters;
+		this.parameter = parameter;
 	}
 
 	@Override
@@ -35,9 +33,9 @@ public class ResultFileOption extends AbstractACOption {
 	@Override
 	public void process(CommandLine line) throws Exception {
 		if (line.hasOption(getOpt())) {
-	    	String resultPathname = line.getOptionValue(getOpt());
-	    	Output output = new OutputWriter(resultPathname);
-	    	parameters.setOutput(output);
+	    	final String resultFilename = line.getOptionValue(getOpt());
+	    	// TODO check overwriting file
+	    	parameter.setResultFilename(resultFilename);
 	    }
 	}
 

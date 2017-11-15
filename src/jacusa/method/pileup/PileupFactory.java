@@ -10,9 +10,9 @@ import jacusa.filter.factory.INDEL_DistanceFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.ReadPositionDistanceFilterFactory;
 import jacusa.filter.factory.SpliceSiteDistanceFilterFactory;
-import jacusa.io.format.AbstractOutputFormat;
-import jacusa.io.format.BED6call;
-import jacusa.io.format.PileupFormat;
+import jacusa.io.copytmp.FileCopyTmpResult;
+import jacusa.io.writer.BED6callResultFormat;
+import jacusa.io.writer.PileupFormat;
 import jacusa.worker.PileupWorker;
 
 import java.util.ArrayList;
@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
-import lib.cli.options.FormatOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ResultFileOption;
+import lib.cli.options.ResultFormatOption;
 import lib.cli.options.ShowReferenceOption;
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.cli.options.WindowSizeOption;
@@ -43,15 +43,18 @@ import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasPileupCount;
 import lib.data.has.hasReferenceBase;
+import lib.data.result.DefaultResult;
 import lib.data.validator.MinCoverageValidator;
 import lib.data.validator.ParallelDataValidator;
+import lib.io.AbstractResultFileWriter;
+import lib.io.AbstractResultFormat;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
 import org.apache.commons.cli.ParseException;
 
 public class PileupFactory<T extends AbstractData & hasBaseCallCount & hasPileupCount & hasReferenceBase> 
-extends AbstractMethodFactory<T> {
+extends AbstractMethodFactory<T, DefaultResult<T>> {
 	
 	public PileupFactory(PileupParameter<T> pileupParameter, final DataGenerator<T> dataGenerator) {
 		super("pileup", "SAMtools like mpileup",
@@ -70,13 +73,12 @@ extends AbstractMethodFactory<T> {
 		initConditionACOptions();
 		
 		// result format
-		if (getOuptutFormats().size() == 1 ) {
-			Character[] a = getOuptutFormats().keySet().toArray(new Character[1]);
-			getParameter().setFormat(getOuptutFormats().get(a[0]));
+		if (getResultFormats().size() == 1 ) {
+			Character[] a = getResultFormats().keySet().toArray(new Character[1]);
+			getParameter().setResultFormat(getResultFormats().get(a[0]));
 		} else {
-			getParameter().setFormat(getOuptutFormats().get(BED6call.CHAR));
-			addACOption(new FormatOption<T>(
-					getParameter(), getOuptutFormats()));
+			getParameter().setResultFormat(getResultFormats().get(BED6callResultFormat.CHAR));
+			addACOption(new ResultFormatOption<T, DefaultResult<T>>(getParameter(), getResultFormats()));
 		}
 	}
 	
@@ -132,16 +134,18 @@ extends AbstractMethodFactory<T> {
 		}
 	}
 
-	public Map<Character, AbstractOutputFormat<T>> getOuptutFormats() {
-		final Map<Character, AbstractOutputFormat<T>> outputFormats = 
-				new HashMap<Character, AbstractOutputFormat<T>>();
+	public Map<Character, AbstractResultFormat<T, DefaultResult<T>>> getResultFormats() {
+		final Map<Character, AbstractResultFormat<T, DefaultResult<T>>> outputFormats = 
+				new HashMap<Character, AbstractResultFormat<T, DefaultResult<T>>>();
 
-		AbstractOutputFormat<T> outputFormat = 
-				new PileupFormat<T>(getParameter().getBaseConfig(), getParameter().showReferenceBase());
+		AbstractResultFormat<T, DefaultResult<T>> outputFormat = 
+				new PileupFormat<T>(getParameter());
 		outputFormats.put(outputFormat.getC(), outputFormat);
 		
-		outputFormat = new BED6call<T>(getParameter());
+		/*
+		outputFormat = new BED6pileupResultFormat<T, DefaultResult<T>>(getParameter());
 		outputFormats.put(outputFormat.getC(), outputFormat);
+		*/
 		
 		return outputFormats;
 	}
@@ -193,7 +197,9 @@ extends AbstractMethodFactory<T> {
 	
 	@Override
 	public PileupWorker<T> createWorker(final int threadId) {
-		return new PileupWorker<T>(getWorkerDispatcher(), threadId, 
+		return new PileupWorker<T>(getWorkerDispatcher(), threadId,
+				new FileCopyTmpResult<T, DefaultResult<T>>(threadId, 
+						(AbstractResultFileWriter<T, DefaultResult<T>>)getParameter().getResultWriter(), getParameter().getResultFormat()),
 				getParallelDataValidators(), getParameter());
 	}
 

@@ -6,17 +6,18 @@ import lib.cli.parameters.JACUSAConditionParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
+import lib.data.result.StatisticResult;
 
 public class RTArrestParameter<T extends AbstractData & hasBaseCallCount & hasReadInfoCount>
-extends AbstractParameter<T> implements hasStatisticCalculator<T> {
+extends AbstractParameter<T, StatisticResult<T>> 
+implements hasStatisticCalculator<T> {
 
-	private StatisticParameters<T> statisticParameters;
+	private StatisticFactory<T> statisticParameters;
 
 	public RTArrestParameter(final int conditions) {
 		super(conditions);
 		
-		statisticParameters = new StatisticParameters<T>();
-		statisticParameters.setStatisticCalculator(new BetaBinomial<T>());
+		statisticParameters = new StatisticFactory<T>(new BetaBinomial<T>(), 1.0);
 	}
 
 	@Override
@@ -25,7 +26,7 @@ extends AbstractParameter<T> implements hasStatisticCalculator<T> {
 	}
 	
 	@Override
-	public StatisticParameters<T> getStatisticParameters() {
+	public StatisticFactory<T> getStatisticParameters() {
 		return statisticParameters;
 	}
 

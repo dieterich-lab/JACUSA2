@@ -75,46 +75,51 @@ implements hasBaseCallCount, hasCoverage, hasReferenceBase {
 		}
 	}
 
-	// TODO adjust minBasq
 	public void add(final int baseIndex, final PileupCount pileupCount) {
 		baseCallCount.add(baseIndex, pileupCount.getBaseCallCount());
 
 		for (int qualIndex = pileupCount.minQual[baseIndex]; qualIndex < Phred2Prob.MAX_Q ; ++qualIndex) {
 			if (pileupCount.base2qual[baseIndex][qualIndex] > 0) {
 				base2qual[baseIndex][qualIndex] += pileupCount.base2qual[baseIndex][qualIndex];
+				if (pileupCount.minQual[baseIndex] < minQual[baseIndex]) {
+					minQual[baseIndex] = pileupCount.minQual[baseIndex];
+				}
 			}
 		}
 	}
 
-	// TODO adjust minBasq
 	public void add(final int baseIndex1, final int baseIndex2, final PileupCount pileupCount) {
 		baseCallCount.add(baseIndex1, baseIndex2, pileupCount.getBaseCallCount());
 		
 		for (int qualIndex = pileupCount.minQual[baseIndex2]; qualIndex < Phred2Prob.MAX_Q ; ++qualIndex) {
 			if (pileupCount.base2qual[baseIndex2][qualIndex] > 0) {
 				base2qual[baseIndex1][qualIndex] += pileupCount.base2qual[baseIndex2][qualIndex];
+				if (pileupCount.minQual[baseIndex2] < minQual[baseIndex2]) {
+					minQual[baseIndex2] = pileupCount.minQual[baseIndex2];
+				}
 			}
 		}
 	}
 
-	// TODO adjust minBasq
 	public void substract(final int baseIndex, final PileupCount pileupCount) {
 		baseCallCount.substract(baseIndex, pileupCount.getBaseCallCount());
 
 		for (int qualIndex = pileupCount.minQual[baseIndex]; qualIndex < Phred2Prob.MAX_Q ; ++qualIndex) {
-			if (pileupCount.base2qual[baseIndex][qualIndex] > 0) {
-				base2qual[baseIndex][qualIndex] -= pileupCount.base2qual[baseIndex][qualIndex];
+			if (pileupCount.minQual[baseIndex] == 0) {
+				minQual[baseIndex] = Phred2Prob.MAX_Q;
 			}
 		}
 	}
 
-	// TODO adjust minBasq
 	public void substract(final int baseIndex1, final int baseIndex2, final PileupCount pileupCount) {
 		baseCallCount.substract(baseIndex1, baseIndex2, pileupCount.getBaseCallCount());
 
 		for (int qualIndex = pileupCount.minQual[baseIndex2]; qualIndex < Phred2Prob.MAX_Q ; ++qualIndex) {
 			if (pileupCount.base2qual[baseIndex2][qualIndex] > 0) {
 				base2qual[baseIndex1][qualIndex] -= pileupCount.base2qual[baseIndex2][qualIndex];
+				if (pileupCount.minQual[baseIndex1] == 0) {
+					minQual[baseIndex2] = Phred2Prob.MAX_Q;
+				}
 			}
 		}
 	}
@@ -148,8 +153,7 @@ implements hasBaseCallCount, hasCoverage, hasReferenceBase {
 	
 	@Override
 	public int getCoverage() {
-		// TODO Auto-generated method stub
-		return 0;
+		return baseCallCount.getCoverage();
 	}
 	
 	public String toString() {
@@ -159,8 +163,6 @@ implements hasBaseCallCount, hasCoverage, hasReferenceBase {
 		sb.append(" Ref.: ");
 		sb.append((char)referenceBase);
 
-		// TODO min max basq?
-		
 		return sb.toString();
 	}
 	

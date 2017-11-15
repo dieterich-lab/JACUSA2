@@ -1,7 +1,7 @@
 package lib.data;
 
 import lib.data.has.hasReadInfoCount;
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 public class BaseCallReadInfoData
 extends BaseCallData

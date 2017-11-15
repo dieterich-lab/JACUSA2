@@ -16,13 +16,14 @@ import lib.data.AbstractData;
 import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.data.result.Result;
 import lib.data.validator.ParallelDataValidator;
 import lib.util.AbstractTool;
-import lib.util.Coordinate;
-import lib.util.coordinateprovider.BedCoordinateProvider;
-import lib.util.coordinateprovider.CoordinateProvider;
-import lib.util.coordinateprovider.SAMCoordinateProvider;
-import lib.util.coordinateprovider.WindowedCoordinateProvider;
+import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.provider.BedCoordinateProvider;
+import lib.util.coordinate.provider.CoordinateProvider;
+import lib.util.coordinate.provider.SAMCoordinateProvider;
+import lib.util.coordinate.provider.WindowedCoordinateProvider;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
@@ -37,7 +38,7 @@ import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.ValidationStringency;
 import htsjdk.samtools.SamReaderFactory.Option;
 
-public abstract class AbstractMethodFactory<T extends AbstractData> 
+public abstract class AbstractMethodFactory<T extends AbstractData, R extends Result<T>> 
 implements DataGenerator<T> {
 
 	private final String name;
@@ -45,15 +46,15 @@ implements DataGenerator<T> {
 	private final AbstractDataBuilderFactory<T> dataBuilderFactory;
 	private final DataGenerator<T> dataGenerator;
 
-	private AbstractParameter<T> parameters;
+	private AbstractParameter<T, R> parameter;
 
 	private final Set<AbstractACOption> ACOptions;
 
 	private CoordinateProvider coordinateProvider;
-	private WorkerDispatcher<T> workerDispatcher;
+	private WorkerDispatcher<T, R> workerDispatcher;
 	
 	public AbstractMethodFactory(final String name, final String desc, 
-			final AbstractParameter<T> parameters,
+			final AbstractParameter<T, R> parameters,
 			final AbstractDataBuilderFactory<T> dataBuilderFactory,
 			final DataGenerator<T> dataGenerator) {
 		this.name = name;
@@ -68,25 +69,25 @@ implements DataGenerator<T> {
 	// needed for Methods where the number of conditions is unknown... 
 	public void initGeneralParameter(final int conditions) { }
 	
-	protected void setParameter(final AbstractParameter<T> parameters) {
-		parameters.setMethodFactory(this);
-		this.parameters = parameters;
+	protected void setParameter(final AbstractParameter<T, R> parameter) {
+		parameter.setMethodFactory(this);
+		this.parameter = parameter;
 		
 	}
 	
-	public AbstractParameter<T> getParameter() {
-		return parameters;
+	public AbstractParameter<T, R> getParameter() {
+		return parameter;
 	}
 
-	public final WorkerDispatcher<T> getWorkerDispatcher() {
+	public final WorkerDispatcher<T, R> getWorkerDispatcher() {
 		if (workerDispatcher == null) {
-			workerDispatcher = new WorkerDispatcher<T>(this);
+			workerDispatcher = new WorkerDispatcher<T, R>(this);
 		}
 		
 		return workerDispatcher;
 	}
 
-	public abstract AbstractWorker<T> createWorker(final int threadId);
+	public abstract AbstractWorker<T, R> createWorker(final int threadId);
 
 	public abstract void initACOptions();
 	protected abstract void initConditionACOptions();
@@ -226,15 +227,15 @@ implements DataGenerator<T> {
 	 * @throws Exception
 	 */
 	public void initCoordinateProvider() throws Exception {
-		final int conditionSize = parameters.getConditionsSize();
+		final int conditionSize = parameter.getConditionsSize();
 		final String[][] recordFilenames = new String[conditionSize][];
 
 		for (int conditionIndex = 0; conditionIndex < conditionSize; conditionIndex++) {
-			recordFilenames[conditionIndex] = parameters.getConditionParameter(conditionIndex).getRecordFilenames();
+			recordFilenames[conditionIndex] = parameter.getConditionParameter(conditionIndex).getRecordFilenames();
 		}
 		
 		boolean isStranded = false;
-		for (final AbstractConditionParameter<T> conditionParameter : parameters.getConditionParameters()) {
+		for (final AbstractConditionParameter<T> conditionParameter : parameter.getConditionParameters()) {
 			if (conditionParameter.getLibraryType() != LIBRARY_TYPE.UNSTRANDED) {
 				isStranded = true;
 				break;
@@ -242,17 +243,17 @@ implements DataGenerator<T> {
 		}
 		
 		final List<SAMSequenceRecord> sequenceRecords = getSAMSequenceRecords(recordFilenames);
-		if (parameters.getInputBedFilename().isEmpty()) {
+		if (parameter.getInputBedFilename().isEmpty()) {
 			coordinateProvider = new SAMCoordinateProvider(isStranded, sequenceRecords);
 		} else {
 			// FIXME what if bed is stranded
-			coordinateProvider = new BedCoordinateProvider(isStranded, parameters.getInputBedFilename());
+			coordinateProvider = new BedCoordinateProvider(isStranded, parameter.getInputBedFilename());
 		}
 
 		// wrap chosen coordinate provider 
-		if (parameters.getMaxThreads() > 1) {
+		if (parameter.getMaxThreads() > 1) {
 			coordinateProvider = new WindowedCoordinateProvider(isStranded,
-					coordinateProvider, parameters.getReservedWindowSize());
+					coordinateProvider, parameter.getReservedWindowSize());
 		}
 	}
 	
@@ -264,7 +265,7 @@ implements DataGenerator<T> {
 	 */
 	public boolean parseArgs(final String[] args) throws Exception {
 		for (int conditionIndex = 0; conditionIndex < args.length; conditionIndex++) {
-			SAMPathnameArg pa = new SAMPathnameArg(conditionIndex + 1, parameters.getConditionParameter(conditionIndex));
+			SAMPathnameArg pa = new SAMPathnameArg(conditionIndex + 1, parameter.getConditionParameter(conditionIndex));
 			pa.processArg(args[conditionIndex]);
 		}
 		

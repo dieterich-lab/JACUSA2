@@ -19,7 +19,7 @@ extends OneConditionLibraryTypeOption<T> {
 	public TwoConditionLibraryTypeOption(
 			final AbstractConditionParameter<T> conditionParameter1, 
 			final AbstractConditionParameter<T> conditionParameter2,
-			final AbstractParameter<T> generalParameter) {
+			final AbstractParameter<T, ?> generalParameter) {
 		super(new ArrayList<AbstractConditionParameter<T>>() {
 			private static final long serialVersionUID = 1L;
 			{

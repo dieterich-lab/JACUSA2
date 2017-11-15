@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.util.AbstractTool;
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SAMRecordIterator;

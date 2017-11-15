@@ -16,7 +16,7 @@ extends AbstractDataBuilderFactory<T> {
 
 	private AbstractDataBuilderFactory<T> dataBuilderFactory; 
 	
-	public BaseCallReadInfoDataBuilderFactory(final AbstractParameter<T> generalParameter) {
+	public BaseCallReadInfoDataBuilderFactory(final AbstractParameter<T, ?> generalParameter) {
 		super(generalParameter);
 		dataBuilderFactory = new BaseCallDataBuilderFactory<T>(generalParameter);
 	}

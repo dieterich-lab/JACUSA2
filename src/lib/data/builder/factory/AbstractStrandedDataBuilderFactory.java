@@ -14,7 +14,7 @@ import lib.data.has.hasPileupCount;
 public abstract class AbstractStrandedDataBuilderFactory<T extends AbstractData & hasPileupCount> 
 extends AbstractDataBuilderFactory<T> {
 
-	public AbstractStrandedDataBuilderFactory(final AbstractParameter<T> generalParameter) {
+	public AbstractStrandedDataBuilderFactory(final AbstractParameter<T, ?> generalParameter) {
 		super(generalParameter);
 	}
 

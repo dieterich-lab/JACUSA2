@@ -1,6 +1,6 @@
 package jacusa.cli.options;
 
-import jacusa.cli.parameters.StatisticParameters;
+import jacusa.cli.parameters.StatisticFactory;
 import lib.cli.options.AbstractACOption;
 
 import org.apache.commons.cli.CommandLine;
@@ -8,9 +8,9 @@ import org.apache.commons.cli.Option;
 
 public class StatisticFilterOption  extends AbstractACOption {
 
-	private StatisticParameters<?> parameters;
+	private StatisticFactory<?> parameters;
 
-	public StatisticFilterOption(StatisticParameters<?> parameters) {
+	public StatisticFilterOption(StatisticFactory<?> parameters) {
 		super("T", "threshold");
 		this.parameters = parameters;
 	}

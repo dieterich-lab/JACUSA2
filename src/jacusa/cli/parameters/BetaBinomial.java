@@ -1,50 +1,51 @@
 package jacusa.cli.parameters;
 
-import jacusa.method.call.statistic.StatisticCalculator;
+import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.Result;
+import lib.util.Info;
 
-public class BetaBinomial<T extends AbstractData> implements StatisticCalculator<T> {
+public class BetaBinomial<T extends AbstractData> 
+extends AbstractStatisticCalculator<T> {
 
-	public BetaBinomial() {}
+	private final static String NAME = "BetaBin"; 
+	private final static String DESC = "BetaBinomial DUMMY";
+	
+	public BetaBinomial() {
+		super(NAME, DESC);
+	}
+
+	private BetaBinomial(final double threshold) {
+		super(NAME, DESC, threshold);
+	}
 	
 	@Override
-	public void addStatistic(Result<T> result) {
-		result.setStatistic(getStatistic(result.getParellelData()));
+	public boolean processCLI(final String line) {
+		return true;
+	}
+
+	@Override
+	protected void addInfo(final Info info) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public double getStatistic(ParallelData<T> parallelData) {
-		// TODO
-		return Double.NaN;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
-	public boolean filter(double value) {
-		return false;
+	public boolean filter(final double statistic, final double threshold) {
+		return statistic <= threshold;
 	}
 
 	@Override
-	public StatisticCalculator<T> newInstance() {
-		return new BetaBinomial<T>();
+	public AbstractStatisticCalculator<T> newInstance(final double threshold) {
+		return new BetaBinomial<T>(threshold);
 	}
-
-	@Override
-	public String getName() {
-		return "BetaBinomial DUMMY";
-	}
-
-	@Override
-	public String getDescription() {
-		return "BetaBinomial DUMMY";
-	}
-
-	@Override
-	public boolean processCLI(String line) {
-		return true;
-	}
-
+	
 	
 	
 }

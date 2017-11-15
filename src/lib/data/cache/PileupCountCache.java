@@ -2,8 +2,8 @@ package lib.data.cache;
 
 import java.util.Arrays;
 
-import lib.util.Coordinate;
-import lib.util.Coordinate.STRAND;
+import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.Coordinate.STRAND;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
@@ -46,7 +46,6 @@ extends AbstractCache<T> {
 		coverage = new int[getActiveWindowSize()];
 		
 		referenceBases = new byte[getActiveWindowSize()];
-		// TODO remove and make this from read using MD string
 		Arrays.fill(referenceBases, (byte)'N');
 		
 		baseCalls = new int[getActiveWindowSize()][baseSize];

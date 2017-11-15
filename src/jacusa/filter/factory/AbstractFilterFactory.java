@@ -5,7 +5,7 @@ import jacusa.filter.FilterContainer;
 import lib.data.AbstractData;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 public abstract class AbstractFilterFactory<T extends AbstractData, F extends AbstractData> 
 implements DataGenerator<F> {

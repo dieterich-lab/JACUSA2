@@ -1,6 +1,6 @@
 package lib.data.cache;
 
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;

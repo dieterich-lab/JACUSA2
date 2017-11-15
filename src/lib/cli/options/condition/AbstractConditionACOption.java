@@ -36,7 +36,6 @@ extends AbstractACOption {
 		return conditionParameters.get(0);
 	}
 
-	// FIXME ugly
 	public int getConditionIndex() {
 		return conditionIndex == -1 ? -1 : conditionIndex + 1;
 	}

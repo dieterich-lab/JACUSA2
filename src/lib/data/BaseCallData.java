@@ -1,12 +1,14 @@
 package lib.data;
 
 import lib.data.has.hasBaseCallCount;
-import lib.util.Coordinate;
+import lib.data.has.hasReferenceBase;
+import lib.util.coordinate.Coordinate;
 
 public class BaseCallData
 extends AbstractData
-implements hasBaseCallCount {
+implements hasBaseCallCount, hasReferenceBase {
 
+	private byte referenceBase;
 	private BaseCallCount baseCallCount;
 
 	public BaseCallData(final BaseCallData pileupData) {
@@ -36,6 +38,11 @@ implements hasBaseCallCount {
 	}
 
 	@Override
+	public byte getReferenceBase() {
+		return referenceBase;
+	}
+	
+	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("Library type: ");
@@ -50,6 +57,11 @@ implements hasBaseCallCount {
 	@Override
 	public int getCoverage() {
 		return getBaseCallCount().getCoverage();
+	}
+
+	@Override
+	public void setReferenceBase(byte referenceBase) {
+		this.referenceBase = referenceBase;
 	}
 	
 }

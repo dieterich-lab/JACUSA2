@@ -2,7 +2,7 @@ package lib.data.generator;
 
 import lib.data.BaseCallReadInfoData;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 public class BaseCallReadInfoDataGenerator implements
 		DataGenerator<BaseCallReadInfoData> {

@@ -1,6 +1,6 @@
 package lib.location;
 
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 public interface CoordinateAdvancer {
 

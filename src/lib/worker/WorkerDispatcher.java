@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.data.AbstractData;
+import lib.data.result.Result;
 import lib.io.copytmp.CopyTmpExecuter;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
-import lib.util.Coordinate;
 import lib.util.ProgressIndicator;
-import lib.util.coordinateprovider.CoordinateProvider;
+import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.provider.CoordinateProvider;
 
 /**
  * 
@@ -18,13 +19,13 @@ import lib.util.coordinateprovider.CoordinateProvider;
  *
  * @param <T>
  */
-public class WorkerDispatcher<T extends AbstractData> {
+public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 
-	private final AbstractMethodFactory<T> methodFactory;
+	private final AbstractMethodFactory<T, R> methodFactory;
 	private final CoordinateProvider coordinateProvider;
 
-	private final List<AbstractWorker<T>> workerContainer;
-	private final List<AbstractWorker<T>> runningWorkers;
+	private final List<AbstractWorker<T, ?>> workerContainer;
+	private final List<AbstractWorker<T, R>> runningWorkers;
 
 	private Integer comparisons;
 	private List<Integer> threadIds;
@@ -32,13 +33,13 @@ public class WorkerDispatcher<T extends AbstractData> {
 	private ProgressIndicator progressIndicator;
 	private int currentCoordinateIndex;
 	
-	public WorkerDispatcher(final AbstractMethodFactory<T> methodFactory) {
+	public WorkerDispatcher(final AbstractMethodFactory<T, R> methodFactory) {
 		this.methodFactory = methodFactory;
 		this.coordinateProvider = methodFactory.getCoordinateProvider();
 		
 		final int maxThreads = methodFactory.getParameter().getMaxThreads();
-		workerContainer = new ArrayList<AbstractWorker<T>>(maxThreads);
-		runningWorkers = new ArrayList<AbstractWorker<T>>(maxThreads);
+		workerContainer = new ArrayList<AbstractWorker<T, ?>>(maxThreads);
+		runningWorkers = new ArrayList<AbstractWorker<T, R>>(maxThreads);
 
 		comparisons = 0;
 		threadIds = new ArrayList<Integer>(10000);
@@ -47,7 +48,7 @@ public class WorkerDispatcher<T extends AbstractData> {
 		currentCoordinateIndex = 0;
 	}
 
-	protected synchronized AbstractWorker<T> createWorker() {
+	protected synchronized AbstractWorker<T, R> createWorker() {
 		return methodFactory.createWorker(workerContainer.size());
 	}
 	
@@ -68,12 +69,12 @@ public class WorkerDispatcher<T extends AbstractData> {
 
 		while (hasNext() || ! runningWorkers.isEmpty()) {
 			for (int i = 0; i < runningWorkers.size(); ++i) {
-				final AbstractWorker<T> runningWorker = runningWorkers.get(i);
+				final AbstractWorker<T, R> runningWorker = runningWorkers.get(i);
 				
 				switch (runningWorker.getStatus()) {
 				case FINISHED:
 					synchronized (comparisons) {
-						// TODO comparisons += runningWorker.getSites();
+						comparisons += runningWorker.getComparisons();
 					}
 					synchronized (runningWorkers) {
 						runningWorkers.remove(runningWorker);
@@ -88,7 +89,7 @@ public class WorkerDispatcher<T extends AbstractData> {
 			synchronized (this) {
 				// fill thread container
 				while (runningWorkers.size() < methodFactory.getParameter().getMaxThreads() && hasNext()) {
-					final AbstractWorker<T> worker = createWorker();
+					final AbstractWorker<T, R> worker = createWorker();
 
 					workerContainer.add(worker);
 					runningWorkers.add(worker);
@@ -115,7 +116,7 @@ public class WorkerDispatcher<T extends AbstractData> {
 		return comparisons;
 	}
 
-	protected List<AbstractWorker<T>> getWorkerContainer() {
+	protected List<AbstractWorker<T, ?>> getWorkerContainer() {
 		return workerContainer;
 	}
 
@@ -123,16 +124,13 @@ public class WorkerDispatcher<T extends AbstractData> {
 		return threadIds;
 	}
 	
-	protected AbstractMethodFactory<T> getMethodFactory() {
+	protected AbstractMethodFactory<T, R> getMethodFactory() {
 		return methodFactory;
 	}
 	
 	protected void writeOutput() throws IOException {
-		// FIXME make this independent from the number of arguments
-		final String header = getMethodFactory()
-				.getParameter().getFormat()
-				.getHeader(getMethodFactory().getParameter().getConditionParameters());
-		getMethodFactory().getParameter().getOutput().write(header);
+		getMethodFactory().getParameter()
+			.getResultWriter().writeHeader(getMethodFactory().getParameter().getConditionParameters());
 		
 		progressIndicator.print("Merging tmp files:");
 		AbstractTool.getLogger().addInfo("Started merging tmp files...");
@@ -142,7 +140,7 @@ public class WorkerDispatcher<T extends AbstractData> {
 		AbstractTool.getLogger().addInfo("Finished merging tmp files!");
 
 		// close output
-		getMethodFactory().getParameter().getOutput().close();
+		getMethodFactory().getParameter().getResultWriter().close();
 	}
 
 }

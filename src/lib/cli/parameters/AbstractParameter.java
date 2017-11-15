@@ -6,14 +6,15 @@ import java.util.List;
 
 import jacusa.cli.parameters.hasConditionParameter;
 import jacusa.filter.FilterConfig;
-import jacusa.io.Output;
-import jacusa.io.format.AbstractOutputFormat;
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
+import lib.data.result.Result;
+import lib.io.ResultFormat;
+import lib.io.ResultWriter;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
-public abstract class AbstractParameter<T extends AbstractData>
+public abstract class AbstractParameter<T extends AbstractData, R extends Result<T>>
 implements hasConditionParameter<T> {
 	
 	// cache related
@@ -30,13 +31,15 @@ implements hasConditionParameter<T> {
 	private String inputBedFilename;
 
 	// chosen method
-	private AbstractMethodFactory<T> methodFactory;
+	private AbstractMethodFactory<T, R> methodFactory;
 
 	protected List<AbstractConditionParameter<T>> conditionParameters;
 
-		private Output output;
-		private AbstractOutputFormat<T> format;
-		private FilterConfig<T> filterConfig;
+	private String resultFilename;
+	private ResultWriter<T, R> resultWriter;
+	private ResultFormat<T, R> resultFormat;
+
+	private FilterConfig<T> filterConfig;
 
 		private boolean separate;
 	
@@ -73,12 +76,12 @@ implements hasConditionParameter<T> {
 	
 	public abstract AbstractConditionParameter<T> createConditionParameter();
 	
-	public AbstractOutputFormat<T> getFormat() {
-		return format;
+	public ResultFormat<T, R> getResultFormat() {
+		return resultFormat;
 	}
 
-	public void setFormat(AbstractOutputFormat<T> format) {
-		this.format = format;
+	public void setResultFormat(ResultFormat<T, R> resultFormat) {
+		this.resultFormat = resultFormat;
 	}
 	
 	/**
@@ -91,15 +94,23 @@ implements hasConditionParameter<T> {
 	/**
 	 * @return the output
 	 */
-	public Output getOutput() {
-		return output;
+	public ResultWriter<T, R> getResultWriter() {
+		return resultWriter;
 	}
 
+	public void setResultFilename(final String resultFilename) {
+		this.resultFilename = resultFilename;
+	}
+	
+	public String getResultFilename() {
+		return resultFilename;
+	}
+	
 	/**
 	 * @param output the output to set
 	 */
-	public void setOutput(Output output) {
-		this.output = output;
+	public void setResultWriter(ResultWriter<T, R> resultWriter) {
+		this.resultWriter = resultWriter;
 	}
 
 	@Override
@@ -201,14 +212,14 @@ implements hasConditionParameter<T> {
 	/**
 	 * @return the methodFactory
 	 */
-	public AbstractMethodFactory<T> getMethodFactory() {
+	public AbstractMethodFactory<T, R> getMethodFactory() {
 		return methodFactory;
 	}
 
 	/**
 	 * @param methodFactory the methodFactory to set
 	 */
-	public void setMethodFactory(AbstractMethodFactory<T> methodFactory) {
+	public void setMethodFactory(final AbstractMethodFactory<T, R> methodFactory) {
 		this.methodFactory = methodFactory;
 	}
 

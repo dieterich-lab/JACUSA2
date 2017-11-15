@@ -9,15 +9,15 @@ import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 public class ConditionContainer<T extends AbstractData> {
 
-	private AbstractParameter<T> generalParameter;
+	private AbstractParameter<T, ?> generalParameter;
 	
 	private List<ReplicateContainer<T>> replicateContainers;
 
-	public ConditionContainer(final AbstractParameter<T> generalParameter) {
+	public ConditionContainer(final AbstractParameter<T, ?> generalParameter) {
 		this.generalParameter = generalParameter;
 
 		replicateContainers = initReplicateContainer(generalParameter);
@@ -142,7 +142,7 @@ public class ConditionContainer<T extends AbstractData> {
 	*/ 
 
 	private List<ReplicateContainer<T>> initReplicateContainer(
-			final AbstractParameter<T> generalParameter) {
+			final AbstractParameter<T, ?> generalParameter) {
 
 		final List<ReplicateContainer<T>> replicateContainers = 
 				new ArrayList<ReplicateContainer<T>>(generalParameter.getConditionsSize());

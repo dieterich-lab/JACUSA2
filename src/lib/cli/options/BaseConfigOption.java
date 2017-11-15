@@ -7,9 +7,9 @@ import org.apache.commons.cli.Option;
 
 public class BaseConfigOption extends AbstractACOption {
 
-	final private AbstractParameter<?> parameters;
+	final private AbstractParameter<?, ?> parameters;
 
-	public BaseConfigOption(final AbstractParameter<?> parameters) {
+	public BaseConfigOption(final AbstractParameter<?, ?> parameters) {
 		super("C", "base-config");
 		this.parameters = parameters;
 	}

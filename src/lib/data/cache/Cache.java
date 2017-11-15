@@ -2,7 +2,7 @@ package lib.data.cache;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 public interface Cache<X extends AbstractData> {
 

@@ -1,7 +1,7 @@
 package lib.location;
 
-import lib.util.Coordinate;
-import lib.util.Coordinate.STRAND;
+import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.Coordinate.STRAND;
 
 public class StrandedCoordinateAdvancer implements CoordinateAdvancer {
 

@@ -12,7 +12,7 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.Cache;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasLibraryType;
-import lib.util.Coordinate;
+import lib.util.coordinate.Coordinate;
 
 public class DataBuilder<T extends AbstractData>
 implements hasLibraryType {
@@ -64,7 +64,7 @@ implements hasLibraryType {
 				cache.addRecordWrapper(recordWrapper);
 			}
 
-			// FIXME
+			// FIXME filters
 			if (filterContainer != null) { 
 				filterContainer.addRecordWrapper(recordWrapper);
 			}

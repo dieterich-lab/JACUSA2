@@ -19,9 +19,9 @@ extends AbstractFilterFactory<T, T> {
 	// 
 	private int homozygousConditionIndex;
 	//
-	private AbstractParameter<T> parameters;
-	
-	public HomozygousFilterFactory(final AbstractParameter<T> parameters) {
+	private AbstractParameter<T, ?> parameters;
+
+	public HomozygousFilterFactory(final AbstractParameter<T, ?> parameters) {
 		super('H', "Filter non-homozygous pileup/BAM in condition 1 or 2 " +
 				"(MUST be set to H:1 or H:2). Default: none", null);
 		homozygousConditionIndex 	= 0;

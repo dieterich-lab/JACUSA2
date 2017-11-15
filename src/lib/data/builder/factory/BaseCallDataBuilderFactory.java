@@ -15,7 +15,7 @@ import lib.data.has.hasBaseCallCount;
 public class BaseCallDataBuilderFactory<T extends AbstractData & hasBaseCallCount> 
 extends AbstractDataBuilderFactory<T> {
 
-	public BaseCallDataBuilderFactory(final AbstractParameter<T> generalParameter) {
+	public BaseCallDataBuilderFactory(final AbstractParameter<T, ?> generalParameter) {
 		super(generalParameter);
 	}
 	

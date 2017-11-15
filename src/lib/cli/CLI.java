@@ -1,13 +1,11 @@
 package lib.cli;
 
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.DebugModusOption;
-import lib.data.AbstractData;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
@@ -18,13 +16,13 @@ import org.apache.commons.cli.DefaultParser;
 
 public class CLI {
 
-	private final Map<String, AbstractMethodFactory<?>> methodFactories;
-	private AbstractMethodFactory<?> methodFactory;
+	private final Map<String, AbstractMethodFactory<?, ?>> methodFactories;
+	private AbstractMethodFactory<?, ?> methodFactory;
 
 	/**
 	 * 
 	 */
-	public CLI(final Map<String, AbstractMethodFactory<? extends AbstractData>> methodFactories) {
+	public CLI(final Map<String, AbstractMethodFactory<?, ?>> methodFactories) {
 		this.methodFactories = methodFactories;
 	}
 
@@ -142,7 +140,7 @@ public class CLI {
 	public void printUsage() {
 		final StringBuilder sb = new StringBuilder();
 		
-		for (final AbstractMethodFactory<?> methodFactory : methodFactories.values()) {
+		for (final AbstractMethodFactory<?, ?> methodFactory : methodFactories.values()) {
 			sb.append("  ");
 			sb.append(methodFactory.getName());
 			sb.append("\t\t");
@@ -154,7 +152,7 @@ public class CLI {
 		System.err.print(sb.toString());
 	}
 
-	public AbstractMethodFactory<?> getMethodFactory() {
+	public AbstractMethodFactory<?, ?> getMethodFactory() {
 		return methodFactory;
 	}
 

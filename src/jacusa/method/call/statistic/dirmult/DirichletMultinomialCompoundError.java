@@ -10,22 +10,19 @@ import lib.data.has.hasPileupCount;
 public class DirichletMultinomialCompoundError<T extends AbstractData & hasPileupCount>
 extends AbstractDirichletStatistic<T> {
 
-	protected double estimatedError = 0.01;
+	private static final String NAME = "DirMult-CE";
+	private static final double ESTIMATED_ERROR = 0.01;
+	private static final String DESC = "Compound Err. (estimated err.{" + ESTIMATED_ERROR + "} + phred score)";
+	
+	protected double estimatedError;
 	protected double priorError = 0d;
 
 	public DirichletMultinomialCompoundError(final CallParameter<T> parameters) {
-		// sorry for ugly, code call to super constructor must be first call
-		super(new MinkaEstimateDirMultParameters(), parameters);
+		this(Double.NaN, parameters);
 	}
 
-	@Override
-	public String getName() {
-		return "DirMult-CE";
-	}
-
-	@Override
-	public String getDescription() {
-		return "Compound Err. (estimated err.{" + estimatedError + "} + phred score)";  
+	public DirichletMultinomialCompoundError(final double threshold, final CallParameter<T> parameter) {
+		super(NAME, DESC, threshold, new MinkaEstimateDirMultParameters(), parameter);
 	}
 
 	@Override
@@ -53,8 +50,8 @@ extends AbstractDirichletStatistic<T> {
 	}
 
 	@Override
-	public DirichletMultinomialCompoundError<T> newInstance() {
-		return new DirichletMultinomialCompoundError<T>(parameters);
+	public DirichletMultinomialCompoundError<T> newInstance(final double threshold) {
+		return new DirichletMultinomialCompoundError<T>(threshold, parameter);
 	}
 	
 	@Override

@@ -2,8 +2,8 @@ package jacusa.filter;
 
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.Result;
 import lib.data.builder.ConditionContainer;
+import lib.data.result.Result;
 
 /**
  * 

@@ -7,22 +7,23 @@ import java.util.List;
 
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.result.Result;
 import lib.data.validator.ParallelDataValidator;
-import lib.io.copytmp.CopyTmp;
+import lib.io.copytmp.CopyTmpResult;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
-public abstract class AbstractOverlapWorker<T extends AbstractData> 
-extends AbstractWorker<T> {
+public abstract class AbstractOverlapWorker<T extends AbstractData, R extends Result<T>> 
+extends AbstractWorker<T, R> {
 
 	private final List<OverlappingRecordWrapperContainer> windowContainers;
 	
-	public AbstractOverlapWorker(final WorkerDispatcher<T> workerDispatcher,
+	public AbstractOverlapWorker(final WorkerDispatcher<T, R> workerDispatcher,
 			final int threadId, 
-			final List<CopyTmp> copyTmps, 
+			final CopyTmpResult<T, R> copyTmpResult, 
 			final List<ParallelDataValidator<T>> parallelDataValidators, 
-			final AbstractParameter<T> generalParameter) throws IOException {
-		super(workerDispatcher, threadId, parallelDataValidators, generalParameter);
+			final AbstractParameter<T, R> generalParameter) throws IOException {
+		super(workerDispatcher, threadId, copyTmpResult, parallelDataValidators, generalParameter);
 
 		windowContainers = createOverlappingContainers(generalParameter.getConditionsSize());
 	}

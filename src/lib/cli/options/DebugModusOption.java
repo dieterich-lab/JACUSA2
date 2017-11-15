@@ -7,11 +7,11 @@ import org.apache.commons.cli.Option;
 
 public class DebugModusOption extends AbstractACOption {
 
-	final private AbstractParameter<?> parameters;
+	final private AbstractParameter<?, ?> parameter;
 	
-	public DebugModusOption(final AbstractParameter<?> parameters) {
+	public DebugModusOption(final AbstractParameter<?, ?> parameter) {
 		super("x", "debug");
-		this.parameters = parameters;
+		this.parameter = parameter;
 	}
 
 	@Override
@@ -25,8 +25,8 @@ public class DebugModusOption extends AbstractACOption {
 	@Override
 	public void process(final CommandLine line) throws Exception {
 		if(line.hasOption(getOpt())) {
-			parameters.setDebug(true);
-			parameters.getMethodFactory().debug();
+			parameter.setDebug(true);
+			parameter.getMethodFactory().debug();
 	    }
 	}
 	
