@@ -20,13 +20,6 @@ public class UnstrandedCoordinateAdvancer implements CoordinateAdvancer {
 		final int currentPosition = coordinate.getStart() + 1;
 		coordinate.setPosition(currentPosition);
 	}
-	
-	@Override
-	public Coordinate nextCoordinate() {
-		UnstrandedCoordinateAdvancer tmp = new UnstrandedCoordinateAdvancer(coordinate);
-		tmp.advance();
-		return tmp.getCurrentCoordinate();
-	}
 
 	@Override
 	public void adjust(final Coordinate coordinate) {

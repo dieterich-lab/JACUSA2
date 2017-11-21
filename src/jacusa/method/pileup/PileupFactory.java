@@ -12,6 +12,7 @@ import jacusa.filter.factory.ReadPositionDistanceFilterFactory;
 import jacusa.filter.factory.SpliceSiteDistanceFilterFactory;
 import jacusa.io.copytmp.FileCopyTmpResult;
 import jacusa.io.writer.BED6callResultFormat;
+import jacusa.io.writer.BED6pileupResultFormat;
 import jacusa.io.writer.PileupFormat;
 import jacusa.worker.PileupWorker;
 
@@ -141,11 +142,9 @@ extends AbstractMethodFactory<T, DefaultResult<T>> {
 		AbstractResultFormat<T, DefaultResult<T>> outputFormat = 
 				new PileupFormat<T>(getParameter());
 		outputFormats.put(outputFormat.getC(), outputFormat);
-		
-		/*
+
 		outputFormat = new BED6pileupResultFormat<T, DefaultResult<T>>(getParameter());
 		outputFormats.put(outputFormat.getC(), outputFormat);
-		*/
 		
 		return outputFormats;
 	}

@@ -8,9 +8,8 @@ import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.cache.BaseCallCache;
 import lib.data.cache.Cache;
-import lib.data.cache.FRPairedEnd1Cache;
-import lib.data.cache.FRPairedEnd2Cache;
 import lib.data.has.hasBaseCallCount;
+import lib.tmp.CoordinateController;
 
 public class BaseCallDataBuilderFactory<T extends AbstractData & hasBaseCallCount> 
 extends AbstractDataBuilderFactory<T> {
@@ -19,32 +18,16 @@ extends AbstractDataBuilderFactory<T> {
 		super(generalParameter);
 	}
 	
-	public List<Cache<T>> createCaches(final AbstractConditionParameter<T> conditionParameter) {
-		final List<Cache<T>> caches = new ArrayList<Cache<T>>(2);
+	protected List<Cache<T>> createCaches(final CoordinateController coordinateController, 
+			final AbstractConditionParameter<T> conditionParameter) {
 
-		switch (conditionParameter.getLibraryType()) {
-		case FR_FIRSTSTRAND:
-			caches.add(new FRPairedEnd1Cache<T>(createCache(conditionParameter), createCache(conditionParameter)));
-			break;
-		
-		case FR_SECONDSTRAND:
-			caches.add(new FRPairedEnd2Cache<T>(createCache(conditionParameter), createCache(conditionParameter)));
-			break;
-			
-		case UNSTRANDED:
-			caches.add(createCache(conditionParameter));
-			break;
-			
-		case MIXED:
-			throw new IllegalArgumentException();
-		}
-		
+		final List<Cache<T>> caches = new ArrayList<Cache<T>>(3);
+		caches.add(
+				new BaseCallCache<T>(
+						conditionParameter.getMaxDepth(), 
+						conditionParameter.getMinBASQ(), 
+						getParameter().getBaseConfig(), coordinateController));
 		return caches;
-	}
-	
-	private Cache<T> createCache(final AbstractConditionParameter<T> conditionParameter) {
-		return new BaseCallCache<T>(conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), 
-				getGeneralParameter().getBaseConfig(), getGeneralParameter().getActiveWindowSize());
 	}
 	
 }

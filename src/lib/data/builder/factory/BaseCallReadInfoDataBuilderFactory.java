@@ -9,6 +9,7 @@ import lib.data.cache.AlignmentCache;
 import lib.data.cache.Cache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
+import lib.tmp.CoordinateController;
 
 
 public class BaseCallReadInfoDataBuilderFactory<T extends AbstractData & hasBaseCallCount & hasReadInfoCount> 
@@ -22,9 +23,12 @@ extends AbstractDataBuilderFactory<T> {
 	}
 
 	@Override
-	public List<Cache<T>> createCaches(final AbstractConditionParameter<T> conditionParameter) {
-		final List<Cache<T>> caches = dataBuilderFactory.createCaches(conditionParameter);
-		caches.add(new AlignmentCache<T>(conditionParameter.getLibraryType(), getGeneralParameter().getActiveWindowSize()));
+	public List<Cache<T>> createCaches(final CoordinateController coordinateController, final AbstractConditionParameter<T> conditionParameter) {
+		final List<Cache<T>> caches = dataBuilderFactory.createCaches(coordinateController, conditionParameter);
+		caches.add(
+				new AlignmentCache<T>(
+						conditionParameter.getLibraryType(), 
+						coordinateController));
 		return caches;
 	}
 

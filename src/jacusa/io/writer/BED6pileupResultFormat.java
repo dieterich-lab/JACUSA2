@@ -1,6 +1,5 @@
 package jacusa.io.writer;
 
-import jacusa.cli.parameters.hasStatistic;
 import jacusa.io.copytmp.FileCopyTmpResult;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
@@ -10,21 +9,21 @@ import lib.io.AbstractResultFileWriter;
 import lib.io.AbstractResultFormat;
 import lib.io.copytmp.CopyTmpResult;
 
-public class BED6callResultFormat<T extends AbstractData & hasPileupCount, R extends Result<T> & hasStatistic> 
+public class BED6pileupResultFormat<T extends AbstractData & hasPileupCount, R extends Result<T>> 
 extends AbstractResultFormat<T, R> {
 
 	public static final char CHAR = 'B';
 	private AbstractParameter<T, R> parameter;
 	
-	public BED6callResultFormat(final AbstractParameter<T, R> parameter) {
+	public BED6pileupResultFormat(final AbstractParameter<T, R> parameter) {
 		super(CHAR, "Default");
 		
 		this.parameter = parameter;
 	}
 
 	@Override
-	public BED6callResultWriter<T, R> createWriter(final String filename) {
-		return new BED6callResultWriter<T, R>(filename, parameter);
+	public BED6pileupResultWriter<T, R> createWriter(final String filename) {
+		return new BED6pileupResultWriter<T, R>(filename, parameter);
 	}
 
 	@Override

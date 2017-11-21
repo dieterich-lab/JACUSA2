@@ -128,35 +128,15 @@ public class Coordinate {
 	public enum STRAND {
 		FORWARD(STRAND_FORWARD_CHAR),REVERSE(STRAND_REVERSE_CHAR),UNKNOWN(STRAND_UNKNOWN_CHAR);
 		
-		final char c;
-		final int i;
+		private final char c;
 		
 		private STRAND(char c) {
 			this.c = c;
-			
-			switch(c) {
-
-			case STRAND_FORWARD_CHAR:
-				i = 2;
-				break;
-
-			case STRAND_REVERSE_CHAR:
-				i = 1;
-				break;
-
-			default:
-				i = 0;
-				break;
-			}
 		}
 
 		public final char character() {
 	        return c;
 	    }
-
-		public final int integer() {
-			return i;
-		}
 
 	}
 	

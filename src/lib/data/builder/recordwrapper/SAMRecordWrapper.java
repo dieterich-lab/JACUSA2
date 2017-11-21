@@ -100,7 +100,7 @@ public class SAMRecordWrapper {
 		}
 		
 		// init container size with read length
-		final byte[] referenceBases = new byte[mappedLength];
+		reference = new byte[mappedLength];
 		int destPos = 0;
 		// copy read sequence to reference container / concatenate mapped segments ignore DELs
 		for (final AlignmentBlock block : record.getAlignmentBlocks()) {
@@ -109,7 +109,7 @@ public class SAMRecordWrapper {
 			System.arraycopy(
 					record.getReadBases(), 
 					srcPos, 
-					referenceBases, 
+					reference, 
 					destPos, 
 					length);
 			destPos += length;
@@ -128,7 +128,7 @@ public class SAMRecordWrapper {
 				// ignore deletions from reference
 				nextInteger = true;
 			} else { // mismatch
-				referenceBases[position] = (byte)e.toCharArray()[0];
+				reference[position] = (byte)e.toCharArray()[0];
 	
 				position += 1;
 				nextInteger = true;

@@ -2,6 +2,8 @@ package lib.data.cache;
 
 import java.util.Arrays;
 
+import lib.tmp.CoordinateController;
+import lib.tmp.CoordinateController.WindowPositionGuard;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.Coordinate.STRAND;
 
@@ -30,8 +32,9 @@ extends AbstractCache<T> {
 	private final byte[][][] baseCallQualities;
 	private final int baseCallQualityRange;
 	
-	public PileupCountCache(final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig, final int activeWindowSize) {
-		super(activeWindowSize);
+	public PileupCountCache(final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig, 
+			final CoordinateController coordinateController) {
+		super(coordinateController);
 		this.baseCallConfig = baseCallConfig;
 		
 		this.maxDepth = maxDepth;
@@ -43,13 +46,13 @@ extends AbstractCache<T> {
 		// range of base call quality score 
 		baseCallQualityRange = getMaxBaseCallQuality() - getMinBaseCallQuality();
 
-		coverage = new int[getActiveWindowSize()];
+		coverage = new int[coordinateController.getActiveWindowSize()];
 		
-		referenceBases = new byte[getActiveWindowSize()];
+		referenceBases = new byte[coordinateController.getActiveWindowSize()];
 		Arrays.fill(referenceBases, (byte)'N');
 		
-		baseCalls = new int[getActiveWindowSize()][baseSize];
-		baseCallQualities = new byte[getActiveWindowSize()][baseSize][baseCallQualityRange];
+		baseCalls = new int[coordinateController.getActiveWindowSize()][baseSize];
+		baseCallQualities = new byte[coordinateController.getActiveWindowSize()][baseSize][baseCallQualityRange];
 	}
 
 	@Override
@@ -78,7 +81,7 @@ extends AbstractCache<T> {
 	
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
+		final int windowPosition = coordinateController.convert2windowPosition(coordinate);
 		data.getPileupCount().setReferenceBase(referenceBases[windowPosition]);
 
 		if (coverage[windowPosition] == 0) {
@@ -118,30 +121,29 @@ extends AbstractCache<T> {
 			throw new IllegalArgumentException("Reference Position cannot be < 0! -> outside of alignmentBlock");
 		}
 		
-		final WindowPosition windowPosition = WindowPosition.convert(
-				getActiveWindowCoordinate(), referencePosition, readPosition, length);
+		final WindowPositionGuard windowPositionGuard = coordinateController.convert(referencePosition, readPosition, length);
 
-		if (windowPosition.getWindowPosition() < 0 && windowPosition.getLength() > 0) {
+		if (windowPositionGuard.getWindowPosition() < 0 && windowPositionGuard.getLength() > 0) {
 			throw new IllegalArgumentException("Window position cannot be < 0! -> outside of alignmentBlock");
 		}
 		
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		
-		for (int j = 0; j < windowPosition.getLength(); ++j) {
-			if (maxDepth > 0 && coverage[windowPosition.getWindowPosition() + j] >= maxDepth) {
+		for (int j = 0; j < windowPositionGuard.getLength(); ++j) {
+			if (maxDepth > 0 && coverage[windowPositionGuard.getWindowPosition() + j] >= maxDepth) {
 				continue;
 			}
-			final int baseIndex = baseCallConfig.getBaseIndex(record.getReadBases()[windowPosition.getRead() + j]);
+			final int baseIndex = baseCallConfig.getBaseIndex(record.getReadBases()[windowPositionGuard.getReadPosition() + j]);
 			if (baseIndex < 0) {
 				continue;
 			}
-			final byte bq = record.getBaseQualities()[windowPosition.getRead() + j];
+			final byte bq = record.getBaseQualities()[windowPositionGuard.getReadPosition() + j];
 			if (bq < minBASQ) {
 				continue;
 			}
-			coverage[windowPosition.getWindowPosition() + j] += 1;
-			baseCalls[windowPosition.getWindowPosition() + j][baseIndex] += 1;
-			baseCallQualities[windowPosition.getWindowPosition() + j][baseIndex][bq - getMinBaseCallQuality()] += 1;
+			coverage[windowPositionGuard.getWindowPosition() + j] += 1;
+			baseCalls[windowPositionGuard.getWindowPosition() + j][baseIndex] += 1;
+			baseCallQualities[windowPositionGuard.getWindowPosition() + j][baseIndex][bq - getMinBaseCallQuality()] += 1;
 		}
 		
 		

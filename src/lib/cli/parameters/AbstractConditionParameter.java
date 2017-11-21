@@ -219,7 +219,7 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 		this.libraryType = libraryType;
 	}
 
-	public SamReader createSamReader(final String inputFilename) {
+	public static SamReader createSamReader(final String inputFilename) {
 		final File file = new File(inputFilename);
 		final SamReader reader = SamReaderFactory
 				.make()

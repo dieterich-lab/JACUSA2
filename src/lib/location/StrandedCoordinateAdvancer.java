@@ -32,11 +32,4 @@ public class StrandedCoordinateAdvancer implements CoordinateAdvancer {
 		return coordinate;
 	}
 
-	@Override
-	public Coordinate nextCoordinate() {
-		StrandedCoordinateAdvancer tmp = new StrandedCoordinateAdvancer(coordinate);
-		tmp.advance();
-		return tmp.getCurrentCoordinate();
-	}
-
 }

@@ -1,7 +1,5 @@
 package jacusa.io.writer;
 
-import jacusa.cli.parameters.hasStatistic;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -15,7 +13,7 @@ import lib.data.has.hasReferenceBase;
 import lib.data.result.Result;
 import lib.io.AbstractResultFileWriter;
 
-public class BEDlikeResultWriter<T extends AbstractData & hasBaseCallCount & hasReferenceBase, R extends Result<T> & hasStatistic> 
+public abstract class BEDlikeResultWriter<T extends AbstractData & hasBaseCallCount & hasReferenceBase, R extends Result<T>> 
 extends AbstractResultFileWriter<T, R> {
 
 	public static final char COMMENT= '#';
@@ -197,10 +195,6 @@ extends AbstractResultFileWriter<T, R> {
 		}
 	}
 	
-	protected String getStatistic(final R result) {
-		return "NA";
-	}
-	
 	protected String getName() {
 		return "variant";
 	}
@@ -237,11 +231,13 @@ extends AbstractResultFileWriter<T, R> {
 		sb.append("variant");
 		
 		sb.append(SEP);
-		sb.append(Double.toString(result.getStatistic()));
+		sb.append(getStatistic(result));
 
 		sb.append(SEP);
 		sb.append(parallelData.getCombinedPooledData().getCoordinate().getStrand().character());
 	}
+	
+	protected abstract String getStatistic(final R result);
 	
 	protected void addResultData(final StringBuilder sb, final R result) {
 		final ParallelData<T> parallelData = result.getParellelData();

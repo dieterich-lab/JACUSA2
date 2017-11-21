@@ -18,6 +18,8 @@ public abstract class AbstractTool {
 	private final CLI cli;
 	private WorkerDispatcher<?, ?> workerDispatcher;
 	
+	private int comparisons;
+	
 	private static Logger logger;
 
 	protected AbstractTool(final String name, final String version, final String[] args) {
@@ -26,6 +28,8 @@ public abstract class AbstractTool {
 		this.args = args;
 
 		cli = new CLI(getMethodFactories());
+		
+		comparisons = 0;
 		
 		final PrintStream ps = System.err;
 		logger = new Logger(ps, this);
@@ -54,7 +58,7 @@ public abstract class AbstractTool {
 				
 		// run the method...
 		workerDispatcher = methodFactory.getWorkerDispatcher();
-		workerDispatcher.run();
+		comparisons = workerDispatcher.run();
 
 		getLogger().addEpilog(getEpilog());
 
@@ -98,4 +102,8 @@ public abstract class AbstractTool {
 		return cli;
 	}
 
+	public int getComparisons() {
+		return comparisons;
+	}
+	
 }

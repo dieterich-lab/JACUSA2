@@ -95,6 +95,11 @@ implements hasConditionParameter<T> {
 	 * @return the output
 	 */
 	public ResultWriter<T, R> getResultWriter() {
+		// use default resultFormat 
+		if (resultWriter == null) {
+			resultWriter = resultFormat.createWriter(getResultFilename());
+		}
+
 		return resultWriter;
 	}
 

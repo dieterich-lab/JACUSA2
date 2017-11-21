@@ -2,6 +2,7 @@ package lib.data.cache;
 
 import java.util.Arrays;
 
+import lib.tmp.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
 import htsjdk.samtools.SAMRecord;
@@ -21,12 +22,12 @@ extends AbstractCache<T> {
 	private final int[] readStartCount;
 	private final int[] readEndCount;
 
-	public AlignmentCache(final LIBRARY_TYPE libraryType, final int activeWindowSize) {
-		super(activeWindowSize);
+	public AlignmentCache(final LIBRARY_TYPE libraryType, final CoordinateController coordinateController) {
+		super(coordinateController);
 		this.libraryType = libraryType;
 
-		readStartCount = new int[getActiveWindowSize()];
-		readEndCount = new int[getActiveWindowSize()];
+		readStartCount = new int[coordinateController.getActiveWindowSize()];
+		readEndCount = new int[coordinateController.getActiveWindowSize()];
 	}
 
 	@Override
@@ -43,14 +44,12 @@ extends AbstractCache<T> {
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		
-		int windowPosition1 = Coordinate.makeRelativePosition(
-				getActiveWindowCoordinate(), record.getAlignmentStart());
+		int windowPosition1 = coordinateController.convert2windowPosition(record.getAlignmentStart());
 		if (windowPosition1 >= 0) {
 			readStartCount[windowPosition1]++;
 		}
 		
-		int windowPosition2 = Coordinate.makeRelativePosition(
-				getActiveWindowCoordinate(), record.getAlignmentEnd());
+		int windowPosition2 = coordinateController.convert2windowPosition(record.getAlignmentEnd());
 		if (windowPosition2 >= 0) {
 			readEndCount[windowPosition2]++;
 		}
@@ -59,7 +58,7 @@ extends AbstractCache<T> {
 	
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
+		final int windowPosition = coordinateController.convert2windowPosition(coordinate);
 		if (data.getBaseCallCount().getCoverage() == 0) {
 			return;
 		}
@@ -107,12 +106,12 @@ extends AbstractCache<T> {
 	}
 
 	public int getReadStartCount(final Coordinate coordinate) {
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
+		final int windowPosition = coordinateController.convert2windowPosition(coordinate);
 		return readStartCount[windowPosition];
 	}
 
 	public int getReadEndCount(final Coordinate coordinate) {
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
+		final int windowPosition = coordinateController.convert2windowPosition(coordinate);
 		return readEndCount[windowPosition];
 	}
 	

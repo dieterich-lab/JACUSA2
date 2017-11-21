@@ -49,7 +49,7 @@ extends AbstractResultFileWriter<T, R> {
 		}
 
 		sb.append(SEP);
-		sb.append(parallelData.getCoordinate().getStrand());
+		sb.append(parallelData.getCoordinate().getStrand().character());
 		
 		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
 			addPileupData(sb, parallelData.getData(conditionIndex));

@@ -9,23 +9,21 @@ import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.tmp.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
 public class ConditionContainer<T extends AbstractData> {
 
-	private AbstractParameter<T, ?> generalParameter;
-	
+	private AbstractParameter<T, ?> parameter;
 	private List<ReplicateContainer<T>> replicateContainers;
 
-	public ConditionContainer(final AbstractParameter<T, ?> generalParameter) {
-		this.generalParameter = generalParameter;
-
-		replicateContainers = initReplicateContainer(generalParameter);
+	public ConditionContainer(final AbstractParameter<T, ?> parameter) {
+		this.parameter = parameter;
 	}
 
 	public List<List<List<SAMRecordWrapper>>> updateWindowCoordinates(final Coordinate activeWindowCoordinate, final Coordinate reservedWindowCoordinate) {
 		final List<List<List<SAMRecordWrapper>>> recordWrappers = 
-				new ArrayList<List<List<SAMRecordWrapper>>>(generalParameter.getConditionsSize());
+				new ArrayList<List<List<SAMRecordWrapper>>>(parameter.getConditionsSize());
 		
 		for (ReplicateContainer<T> replicateContainer : replicateContainers) {
 			replicateContainer.createIterators(activeWindowCoordinate, reservedWindowCoordinate);
@@ -36,7 +34,7 @@ public class ConditionContainer<T extends AbstractData> {
 	
 	public List<List<List<SAMRecordWrapper>>> updateActiveWindowCoordinates(final Coordinate activeWindowCoordinate) {
 		final List<List<List<SAMRecordWrapper>>> recordWrappers = 
-				new ArrayList<List<List<SAMRecordWrapper>>>(generalParameter.getConditionsSize());
+				new ArrayList<List<List<SAMRecordWrapper>>>(parameter.getConditionsSize());
 
 		for (ReplicateContainer<T> replicateContainer : replicateContainers) {
 			recordWrappers.add(replicateContainer.updateIterators(activeWindowCoordinate));
@@ -50,9 +48,9 @@ public class ConditionContainer<T extends AbstractData> {
 	}
 
 	public T[][] getData(final Coordinate coordinate) {
-		final int conditions = generalParameter.getConditionsSize();
+		final int conditions = parameter.getConditionsSize();
 
-		final T[][] data = generalParameter.getMethodFactory().createContainerData(conditions);
+		final T[][] data = parameter.getMethodFactory().createContainerData(conditions);
 		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
 			data[conditionIndex] = getReplicatContainer(conditionIndex).getData(coordinate);
 		}
@@ -62,12 +60,16 @@ public class ConditionContainer<T extends AbstractData> {
 
 	public List<List<FilterContainer<T>>> getFilterContainer() {
 		final List<List<FilterContainer<T>>> filterContainers 
-			= new ArrayList<List<FilterContainer<T>>>(generalParameter.getConditionsSize());
+			= new ArrayList<List<FilterContainer<T>>>(parameter.getConditionsSize());
 
 		for (ReplicateContainer<T> replicateContainer : replicateContainers) {
 			filterContainers.add(replicateContainer.getFilterContainers());
 		}
 		return filterContainers;
+	}
+
+	public int getConditionSize() {
+		return replicateContainers.size();
 	}
 	
 	/*
@@ -141,18 +143,22 @@ public class ConditionContainer<T extends AbstractData> {
 	}
 	*/ 
 
-	private List<ReplicateContainer<T>> initReplicateContainer(
-			final AbstractParameter<T, ?> generalParameter) {
+	public void initReplicateContainer(
+			final CoordinateController coordinateController,
+			final AbstractParameter<T, ?> parameter) {
 
-		final List<ReplicateContainer<T>> replicateContainers = 
-				new ArrayList<ReplicateContainer<T>>(generalParameter.getConditionsSize());
+		replicateContainers = 
+				new ArrayList<ReplicateContainer<T>>(parameter.getConditionsSize());
 
-		for (final AbstractConditionParameter<T> conditionParameter : generalParameter.getConditionParameters()) {
-			final ReplicateContainer<T> replicateContainer = new ReplicateContainer<T>(conditionParameter, generalParameter);
+		for (final AbstractConditionParameter<T> conditionParameter : parameter.getConditionParameters()) {
+			final ReplicateContainer<T> replicateContainer = 
+					new ReplicateContainer<T>(coordinateController, conditionParameter, parameter);
 			replicateContainers.add(replicateContainer);
 		}
-
-		return replicateContainers;
 	}
 
+	public List<AbstractConditionParameter<T>> getConditionParameter() {
+		return parameter.getConditionParameters();
+	}
+	
 }

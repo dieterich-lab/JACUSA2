@@ -2,6 +2,8 @@ package lib.data.cache;
 
 import java.util.Arrays;
 
+import lib.tmp.CoordinateController;
+import lib.tmp.CoordinateController.WindowPositionGuard;
 import lib.util.coordinate.Coordinate;
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.util.SequenceUtil;
@@ -15,9 +17,9 @@ extends AbstractCache<T> {
 
 	private byte[] referenceBases;
 
-	public ReferenceMDCache(final int activeWindowSize) {
-		super(activeWindowSize);
-		referenceBases = new byte[getActiveWindowSize()];
+	public ReferenceMDCache(final CoordinateController coordinateController) {
+		super(coordinateController);
+		referenceBases = new byte[coordinateController.getActiveWindowSize()];
 	}
 
 	// TODO make more efficient
@@ -49,7 +51,7 @@ extends AbstractCache<T> {
 	
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
-		final int windowPosition = Coordinate.makeRelativePosition(getActiveWindowCoordinate(), coordinate.getPosition());
+		final int windowPosition = coordinateController.convert2windowPosition(coordinate);
 		data.setReferenceBase(referenceBases[windowPosition]);
 	}
 
@@ -60,16 +62,15 @@ extends AbstractCache<T> {
 			throw new IllegalArgumentException("Reference Position cannot be < 0! -> outside of alignmentBlock");
 		}
 		
-		final WindowPosition windowPosition = WindowPosition.convert(
-				getActiveWindowCoordinate(), referencePosition, readPosition, length);
+		final WindowPositionGuard windowPositionGuard = coordinateController.convert(referencePosition, readPosition, length);
 		
-		if (windowPosition.getWindowPosition() < 0 && windowPosition.getLength() > 0) {
+		if (windowPositionGuard.getWindowPosition() < 0 && windowPositionGuard.getLength() > 0) {
 			throw new IllegalArgumentException("Window position cannot be < 0! -> outside of alignmentBlock");
 		}
 		
-		for (int j = 0; j < windowPosition.getLength(); ++j) {
-			referenceBases[windowPosition.getWindowPosition() + j] = 
-					recordWrapper.getReference()[windowPosition.getRead() + j];
+		for (int j = 0; j < windowPositionGuard.getLength(); ++j) {
+			referenceBases[windowPositionGuard.getWindowPosition() + j] = 
+					recordWrapper.getReference()[windowPositionGuard.getReadPosition() + j];
 		}
 	}
 	

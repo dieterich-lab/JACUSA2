@@ -1,5 +1,6 @@
 package jacusa.cli.parameters;
 
+import jacusa.io.writer.BED6pileupResultFormat;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
 import lib.cli.parameters.JACUSAConditionParameter;
@@ -17,6 +18,9 @@ extends AbstractParameter<T, DefaultResult<T>> {
 
 	public PileupParameter(final int conditions) {
 		super(conditions);
+
+		// set pileup method specific result format
+		setResultFormat(new BED6pileupResultFormat<T, DefaultResult<T>>(this));
 	}
 
 	@Override

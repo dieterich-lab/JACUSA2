@@ -13,6 +13,7 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIterator;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIteratorProvider;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.tmp.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
 public class ReplicateContainer<T extends AbstractData> {
@@ -24,14 +25,15 @@ public class ReplicateContainer<T extends AbstractData> {
 	private final List<DataBuilder<T>> dataBuilders;
 	
 	public ReplicateContainer( 
+			final CoordinateController coordinateController,
 			final AbstractConditionParameter<T> conditionParameter,
-			final AbstractParameter<T, ?> generalParameters) {
+			final AbstractParameter<T, ?> parameter) {
 
 		this.conditionParameter = conditionParameter;
-		this.generalParameters = generalParameters;
+		this.generalParameters = parameter;
 
 		iteratorProviders = createRecordIteratorProviders(conditionParameter);
-		dataBuilders = createDataBuilders(conditionParameter, generalParameters);
+		dataBuilders = createDataBuilders(coordinateController, conditionParameter, parameter);
 	}
 
 	public List<SAMRecordWrapperIteratorProvider> getIteratorProviders() {
@@ -88,13 +90,15 @@ public class ReplicateContainer<T extends AbstractData> {
 	}
 	
 	private List<DataBuilder<T>> createDataBuilders(
+			final CoordinateController coordinateController,
 			final AbstractConditionParameter<T> conditionParameter,
-			final AbstractParameter<T, ?> generalParameter) {
+			final AbstractParameter<T, ?> parameter) {
 		
 		final List<DataBuilder<T>> dataBuilders = new ArrayList<DataBuilder<T>>(conditionParameter.getReplicateSize());
 
 		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); ++replicateIndex) {
-			final DataBuilder<T> builder = generalParameter.getMethodFactory().getDataBuilderFactory().newInstance(conditionParameter);
+			final DataBuilder<T> builder = 
+					parameter.getMethodFactory().getDataBuilderFactory().newInstance(coordinateController, conditionParameter);
 			dataBuilders.add(builder);
 		}
 
@@ -111,6 +115,10 @@ public class ReplicateContainer<T extends AbstractData> {
 		return false;
 	}
 	
+	public List<DataBuilder<T>> getDataBuilder() {
+		return dataBuilders;
+	}
+	
 	private List<SAMRecordWrapperIteratorProvider> createRecordIteratorProviders(
 			final AbstractConditionParameter<T> conditionParameter) {
 		
@@ -118,7 +126,7 @@ public class ReplicateContainer<T extends AbstractData> {
 				new ArrayList<SAMRecordWrapperIteratorProvider>(conditionParameter.getReplicateSize());
 		
 		for (final String recordFilename : conditionParameter.getRecordFilenames()) {
-			final SamReader samReader = conditionParameter.createSamReader(recordFilename);
+			final SamReader samReader = AbstractConditionParameter.createSamReader(recordFilename);
 			final SAMRecordWrapperIteratorProvider iteratorProvider = 
 					new SAMRecordWrapperIteratorProvider(conditionParameter, samReader);
 			recordProvider.add(iteratorProvider);
@@ -127,66 +135,8 @@ public class ReplicateContainer<T extends AbstractData> {
 		return recordProvider;
 	}
 
-	
-	/* TODO
-	public Set<Integer> getAlleles(final Coordinate coordinate) {
-		final Set<Integer> alleles = new HashSet<Integer>(4);
-
-		for (final DataBuilder<T> builder : dataBuilders) {
-			final int windowPosition = builder.getWindowCoordinates().convert2WindowPosition(coordinate.getStart());
-			for (int baseIndex : builder.getWindowCache(coordinate.getStrand()).getAlleles(windowPosition)) {
-				alleles.add(baseIndex);
-			}
-		}
-
-		return alleles;
+	public int getReplicateSize() {
+		return dataBuilders.size();
 	}
-	*/
-
-	/**
-	 * Get next valid record position within thread window
-	 * @param target
-	 * @return
-	 */
-	/* TODO
-	public int getNextPosition(final Coordinate target) {
-		int position = Integer.MAX_VALUE; 
-		for (final DataBuilder<T> builder : dataBuilders) {
-			final SAMRecord record = builder.getNextRecord(target.getPosition());
-			if (record == null) {
-				continue;
-			}
-
-			int genomicPosition = Math.max(target.getPosition(), record.getAlignmentStart());
-			position = Math.min(position, genomicPosition);
-		}
-
-		return position;
-	}
-	*/
-
-	/* TODO move to isValid 
-	// Change here for more quantitative evaluation
-	public boolean isCovered(final Coordinate coordinate) {
-		for (final DataBuilder<T> builder : dataBuilders) {
-			if (! isCovered(coordinate, builder)) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	private boolean isCovered(final Coordinate coordinate, final DataBuilder<T> builder) {
-		final int windowPosition = builder.getWindowCoordinates().convert2WindowPosition(coordinate.getStart());
-
-		if (windowPosition < 0) {
-			return false;
-		}
-
-		return builder.getCoverage(windowPosition, coordinate.getStrand()) >= getCondition().getMinCoverage();
-	}
-	*/
-	
 	
 }

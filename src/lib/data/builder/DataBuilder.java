@@ -9,7 +9,7 @@ import java.util.List;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.Cache;
+import lib.data.cache.container.CacheContainer;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasLibraryType;
 import lib.util.coordinate.Coordinate;
@@ -23,15 +23,15 @@ implements hasLibraryType {
 
 	private final LIBRARY_TYPE libraryType;
 	
-	private final List<Cache<T>> caches; 
+	private final CacheContainer<T> cacheContainer; 
 	private CACHE_STATUS cacheStatus;
 
 	public DataBuilder(
 			final DataGenerator<T> dataGenerator, 
 			final AbstractConditionParameter<T> conditionParameter,
 			final LIBRARY_TYPE libraryType,
-			List<Cache<T>> caches,
-			FilterContainer<T> filterContainer) {
+			final CacheContainer<T> cacheContainer,
+			final FilterContainer<T> filterContainer) {
 		
 		this.dataGenerator = dataGenerator;
 		this.conditionParameter	= conditionParameter;
@@ -39,7 +39,7 @@ implements hasLibraryType {
 
 		this.libraryType = libraryType;
 		
-		this.caches = caches;
+		this.cacheContainer = cacheContainer;
 
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
 	}
@@ -47,10 +47,7 @@ implements hasLibraryType {
 	public List<SAMRecordWrapper> buildCache(final Coordinate activeWindowCoordinate,
 			final Iterator<SAMRecordWrapper> iterator) {
 		
-		for (final Cache<T> cache : caches) {
-			cache.clear();
-			cache.setActiveWindowCoordinate(activeWindowCoordinate);
-		}
+		cacheContainer.clear();
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
 	
 		final List<SAMRecordWrapper> recordWrappers = new ArrayList<SAMRecordWrapper>();
@@ -59,10 +56,7 @@ implements hasLibraryType {
 			final SAMRecordWrapper recordWrapper = iterator.next();
 			// process filters and decode
 			recordWrapper.process();
-
-			for (final Cache<T> cache : caches) {
-				cache.addRecordWrapper(recordWrapper);
-			}
+			cacheContainer.addRecordWrapper(recordWrapper);
 
 			// FIXME filters
 			if (filterContainer != null) { 
@@ -77,22 +71,18 @@ implements hasLibraryType {
 	
 	// Reset all caches in windows
 	public void clearCache() {
-		for (final Cache<T> cache : caches) {
-			cache.clear();
-		}
+		cacheContainer.clear();
 		filterContainer.clear();
 	}
 
 	public T getData(final Coordinate coordinate) {
 		T data = dataGenerator.createData(getLibraryType(), coordinate);
-		for (final Cache<T> cache : caches) {
-			cache.addData(data, coordinate);
-		}
+		cacheContainer.addData(data, coordinate);
 		return data;
 	}
 	
-	public List<Cache<T>> getCaches() {
-		return caches;
+	public CacheContainer<T> getCacheContainer() {
+		return cacheContainer;
 	}
 	
 	public FilterContainer<T> getFilterContainer() {

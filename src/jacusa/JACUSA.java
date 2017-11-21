@@ -43,12 +43,9 @@ import lib.util.AbstractTool;
  * @author Michael Piechotta
  */
 public class JACUSA extends AbstractTool {
-
-	private int comparisons;
 	
 	public JACUSA(final String args[]) {
-		super("JACUSA", "2.0.0-BETA7", args);
-		comparisons = 0;
+		super("JACUSA", "2.0.0-BETA8", args);
 	}
 
 	@Override
@@ -86,16 +83,16 @@ public class JACUSA extends AbstractTool {
 		sb.append("Screening done using " + getCLI().getMethodFactory().getParameter().getMaxThreads() + " thread(s)");
 		sb.append('\n');
 		
-		sb.append("Results can be found in: " + getCLI().getMethodFactory().getParameter().getResultWriter());
+		sb.append("Results can be found in: " + getCLI().getMethodFactory().getParameter().getResultWriter().getInfo());
 		sb.append('\n');
 		
 		final String lineSep = "--------------------------------------------------------------------------------";
 
 		sb.append(lineSep);
 		sb.append('\n');
-		sb.append("Analyzed Parallel Pileups:\t" + comparisons);
+		sb.append("Analyzed sites:\t" + getComparisons());
 		sb.append('\n');
-		sb.append("Elapsed time:\t\t\t" + getLogger().getTimer().getTotalTimestring());
+		sb.append("Elapsed time:\t" + getLogger().getTimer().getTotalTimestring());
 
 		return sb.toString();
 	}

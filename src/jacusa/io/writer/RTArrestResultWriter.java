@@ -29,6 +29,11 @@ extends BEDlikeResultWriter<T, R> {
 		super.addHeaderConditionData(sb, conditionIndex, replicateIndex);
 		addHeaderBases(sb, conditionIndex, replicateIndex);
 	}
+
+	@Override
+	protected String getStatistic(final R result) {
+		return Double.toString(result.getStatistic());
+	}
 	
 	protected void addHeaderReadInfo(final StringBuilder sb, int conditionIndex, final int replicateIndex) {
 		sb.append(SEP);
