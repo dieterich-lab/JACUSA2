@@ -25,7 +25,7 @@ implements CopyTmpResult<T, R> {
 	private BufferedReader tmpResultReader;
 
 	private final List<Integer> iteration2storedResults;
-
+	
 	public FileCopyTmpResult(final int threadId, 
 			final AbstractResultFileWriter<T, R> resultFileWriter, final ResultFormat<T, R> resultFormat) {
 	

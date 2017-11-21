@@ -1,6 +1,7 @@
 package lib.cli.options;
 
 import lib.cli.parameters.AbstractParameter;
+import lib.io.AbstractResultFileFormat;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -19,7 +20,8 @@ public class FilterModusOption extends AbstractACOption {
 		return Option.builder(getOpt())
 				.longOpt(getLongOpt())
 				.hasArg(false)
-		        .desc("Put feature-filtered results in to a separate file (= RESULT-FILE.filtered)")
+		        .desc("Put feature-filtered results in to a separate file (= RESULT-FILE" + 
+		        		AbstractResultFileFormat.FILE_SUFFIX + ")")
 		        .build();
 	}
 	

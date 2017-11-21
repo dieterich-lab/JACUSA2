@@ -14,10 +14,12 @@ implements ResultFormat<T, R>{
 		this.desc = desc;
 	}
 
+	@Override
 	public final char getC() {
 		return c;
 	}
 
+	@Override
 	public final String getDesc() {
 		return desc;
 	}
