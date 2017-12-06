@@ -10,7 +10,7 @@ import lib.location.CoordinateAdvancer;
 import lib.location.StrandedJumpingCoordinateAdvancer;
 import lib.location.UnstrandedJumpingCoordinateAdvancer;
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.Coordinate.STRAND;
+import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.coordinate.provider.WindowedCoordinateProvider;
 
 public class CoordinateController {

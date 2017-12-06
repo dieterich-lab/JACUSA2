@@ -25,7 +25,7 @@ implements CacheContainer<T> {
 	@Override
 	public int getNext(int windowPosition) {
 		final int forwardNext = forwardContainer.getNext(windowPosition);
-		final int reverseNext = forwardContainer.getNext(windowPosition);
+		final int reverseNext = reverseContainer.getNext(windowPosition);
 
 		int res = -1;
 		if (forwardNext == -1 || reverseNext == -1) {

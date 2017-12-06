@@ -1,7 +1,7 @@
 package lib.location;
 
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.Coordinate.STRAND;
+import lib.util.coordinate.CoordinateUtil.STRAND;
 
 public class StrandedCoordinateAdvancer implements CoordinateAdvancer {
 
@@ -15,10 +15,12 @@ public class StrandedCoordinateAdvancer implements CoordinateAdvancer {
 	public void advance() {
 		if (coordinate.getStrand() == STRAND.FORWARD) {
 			coordinate.setStrand(STRAND.REVERSE);
-		} else {
+		} else if (coordinate.getStrand() == STRAND.REVERSE){
 			coordinate.setStrand(STRAND.FORWARD);
 			final int currentPosition = coordinate.getStart() + 1;
 			coordinate.setPosition(currentPosition);
+		} else {
+			throw new IllegalStateException("Stranded coordinate cannot be: " + coordinate.getStrand());
 		}
 	}
 

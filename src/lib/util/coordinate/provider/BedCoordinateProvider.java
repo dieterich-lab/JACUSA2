@@ -11,7 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.Coordinate.STRAND;
+import lib.util.coordinate.CoordinateUtil.STRAND;
 
 /**
  * @author mpiechotta

@@ -5,7 +5,7 @@ package lib.util.coordinate;
  * @author Michael Piechotta
  *
  */
-public class CoordinateUtil {
+public abstract class CoordinateUtil {
 
 	public static final char STRAND_FORWARD_CHAR = '+';
 	public static final char STRAND_REVERSE_CHAR = '-';
@@ -42,34 +42,14 @@ public class CoordinateUtil {
 		FORWARD(STRAND_FORWARD_CHAR),REVERSE(STRAND_REVERSE_CHAR),UNKNOWN(STRAND_UNKNOWN_CHAR);
 		
 		final char c;
-		final int i;
-		
-		private STRAND(char c) {
+
+		private STRAND(final char c) {
 			this.c = c;
-			
-			switch(c) {
-
-			case STRAND_FORWARD_CHAR:
-				i = 2;
-				break;
-
-			case STRAND_REVERSE_CHAR:
-				i = 1;
-				break;
-
-			default:
-				i = 0;
-				break;
-			}
 		}
-
+		
 		public final char character() {
 	        return c;
 	    }
-
-		public final int integer() {
-			return i;
-		}
 
 	}
 	

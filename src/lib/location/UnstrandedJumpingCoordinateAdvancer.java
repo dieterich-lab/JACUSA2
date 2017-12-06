@@ -77,8 +77,6 @@ implements CoordinateAdvancer {
 			}
 			newWindowPosition = Math.max(newWindowPosition, tmpNextPosition);
 		}
-
-		System.out.println();
 		
 		if (newWindowPosition > windowPosition) {
 			getCurrentCoordinate().setPosition(coordinateController.convert2referencePosition(newWindowPosition));
@@ -105,7 +103,7 @@ implements CoordinateAdvancer {
 	public void adjust(final Coordinate coordinate) {
 		// contig is set somewhere else
 		getCurrentCoordinate().setPosition(coordinate.getPosition());
-		getCurrentCoordinate().setStrand(coordinate.getStrand());
+		// getCurrentCoordinate().setStrand(coordinate.getStrand());
 	}
 	
 }

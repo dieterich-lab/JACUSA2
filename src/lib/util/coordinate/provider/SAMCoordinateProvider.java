@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.Coordinate.STRAND;
+import lib.util.coordinate.CoordinateUtil.STRAND;
 
 import htsjdk.samtools.SAMSequenceRecord;
 

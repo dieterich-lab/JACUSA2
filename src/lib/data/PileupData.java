@@ -2,7 +2,7 @@ package lib.data;
 
 import lib.data.has.hasPileupCount;
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.Coordinate.STRAND;
+import lib.util.coordinate.CoordinateUtil.STRAND;
 
 public class PileupData
 extends AbstractData

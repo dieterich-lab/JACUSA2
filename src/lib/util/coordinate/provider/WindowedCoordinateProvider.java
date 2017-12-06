@@ -7,7 +7,7 @@ import java.util.List;
 
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.Coordinate.STRAND;
+import lib.util.coordinate.CoordinateUtil.STRAND;
 
 public class WindowedCoordinateProvider implements CoordinateProvider {
 

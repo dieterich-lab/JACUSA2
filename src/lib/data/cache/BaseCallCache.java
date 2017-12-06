@@ -5,7 +5,7 @@ import java.util.Arrays;
 import lib.tmp.CoordinateController;
 import lib.tmp.CoordinateController.WindowPositionGuard;
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.Coordinate.STRAND;
+import lib.util.coordinate.CoordinateUtil.STRAND;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;

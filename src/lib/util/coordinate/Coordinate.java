@@ -1,15 +1,13 @@
 package lib.util.coordinate;
 
+import lib.util.coordinate.CoordinateUtil.STRAND;
+
 /**
  * 
  * @author Michael Piechotta
  *
  */
 public class Coordinate {
-
-	public static final char STRAND_FORWARD_CHAR = '+';
-	public static final char STRAND_REVERSE_CHAR = '-';
-	public static final char STRAND_UNKNOWN_CHAR = '.';
 
 	private String contig;
 	private int start;
@@ -123,21 +121,6 @@ public class Coordinate {
 		}
 			
 		return STRAND.UNKNOWN;
-	}
-	
-	public enum STRAND {
-		FORWARD(STRAND_FORWARD_CHAR),REVERSE(STRAND_REVERSE_CHAR),UNKNOWN(STRAND_UNKNOWN_CHAR);
-		
-		private final char c;
-		
-		private STRAND(char c) {
-			this.c = c;
-		}
-
-		public final char character() {
-	        return c;
-	    }
-
 	}
 	
 }

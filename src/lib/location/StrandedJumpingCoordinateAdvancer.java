@@ -5,20 +5,25 @@ import lib.data.builder.DataBuilder;
 import lib.data.builder.ReplicateContainer;
 import lib.tmp.CoordinateController;
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.Coordinate.STRAND;
+import lib.util.coordinate.CoordinateUtil.STRAND;
 
 public class StrandedJumpingCoordinateAdvancer 
 implements CoordinateAdvancer {
 
-	private final Coordinate coordinate;
+	private static final int MAX_MISS_COUNT = 5;
+	
+	private final StrandedCoordinateAdvancer defaultAdvancer;
 
 	private final CoordinateController coordinateController;
 	private final ConditionContainer<?> conditionContainer;
 	
+	private int missCounter;
+	
 	public StrandedJumpingCoordinateAdvancer(
 			final CoordinateController coordinateController,
 			final ConditionContainer<?> conditionContainer) {
-		coordinate = new Coordinate();
+		
+		defaultAdvancer = new StrandedCoordinateAdvancer(new Coordinate());
 
 		this.coordinateController = coordinateController;
 		this.conditionContainer = conditionContainer;
@@ -26,81 +31,72 @@ implements CoordinateAdvancer {
 	
 	@Override
 	public Coordinate getCurrentCoordinate() {
-		return coordinate;
+		return defaultAdvancer.getCurrentCoordinate();
 	}
 
 	@Override
 	public void advance() {
-		_advance();
-		final int referencePosition = coordinate.getPosition();
+		if (missCounter < MAX_MISS_COUNT) { // try to do a "simple" advance
+			simpleAdvance();
+		} else { // or try to jump to next position
+			missCounter = 0;
+			jumpingAdvance();
+		}
+	}
+	
+	
+	private void simpleAdvance() {
+		defaultAdvancer.advance();
+		missCounter++;
+	}
+	
+	private void jumpingAdvance() {
+		final int referencePosition = getCurrentCoordinate().getPosition();
 		final int windowPosition = coordinateController.convert2windowPosition(referencePosition);
+		
 		if (windowPosition < 0) {
 			return;
 		}
 
 		int newWindowPosition = windowPosition;
-		int check = 0;
-		while (true) {
-			for (int conditionIndex = 0; conditionIndex < conditionContainer.getConditionSize(); conditionIndex++) {
-				final int tmp = getNextWindowPosition(newWindowPosition, conditionContainer.getReplicatContainer(conditionIndex));
-				if (tmp == -1) {
-					// advance to the end
-					coordinate.setPosition(Integer.MAX_VALUE);
-					return;
-				}
-				if (newWindowPosition == tmp) {
-					check++;
-					if (check == conditionContainer.getConditionSize()) {
-						coordinate.setPosition(newWindowPosition);
-						return;
-					}
-				} else {
-					check = 0;
-					newWindowPosition = tmp;
-				}
+
+		for (int conditionIndex = 0; conditionIndex < conditionContainer.getConditionSize(); conditionIndex++) {
+			final int tmpNextPosition = getNextWindowPosition(windowPosition, conditionContainer.getReplicatContainer(conditionIndex));
+			if (tmpNextPosition == -1) {
+				// advance to the end
+				getCurrentCoordinate().setPosition(Integer.MAX_VALUE);
+				return;
 			}
+			newWindowPosition = Math.max(newWindowPosition, tmpNextPosition);
+		}
+		
+		if (newWindowPosition > windowPosition) {
+			getCurrentCoordinate().setStrand(STRAND.FORWARD);
+			getCurrentCoordinate().setPosition(coordinateController.convert2referencePosition(newWindowPosition));
+		} else {
+			getCurrentCoordinate().setPosition(Integer.MAX_VALUE);
 		}
 	}
 
-	private void _advance() {
-		if (coordinate.getStrand() == STRAND.FORWARD) {
-			coordinate.setStrand(STRAND.REVERSE);
-		} else {
-			coordinate.setStrand(STRAND.FORWARD);
-			final int currentPosition = coordinate.getStart() + 1;
-			coordinate.setPosition(currentPosition);
-		}
-	}
-	
 	private int getNextWindowPosition(final int windowPosition, final ReplicateContainer<?> replicateContainer) {
 		int newWindowPosition = windowPosition;
 
-		int check = 0;
-		while (true) {
-			check = 0;
-			for (final DataBuilder<?> dataBuilder : replicateContainer.getDataBuilder()) {
-				final int tmp = dataBuilder.getCacheContainer().getNext(newWindowPosition);
-				if (tmp == -1) {
-					return -1;
-				}
-				if (newWindowPosition == tmp) {
-					check++;
-					if (check == replicateContainer.getReplicateSize()) {
-						return newWindowPosition;
-					}
-				} else {
-					check = 0;
-					newWindowPosition = tmp;
-				}
+		for (final DataBuilder<?> dataBuilder : replicateContainer.getDataBuilder()) {
+			final int tmpNextPosition = dataBuilder.getCacheContainer().getNext(windowPosition);
+			if (tmpNextPosition == -1) {
+				return -1;
 			}
+			newWindowPosition = Math.max(newWindowPosition, tmpNextPosition);
 		}
+	
+		return newWindowPosition > windowPosition ? newWindowPosition : -1; 
 	}
-
+	
 	@Override
 	public void adjust(final Coordinate coordinate) {
 		// contig is set somewhere else
-		this.coordinate.setPosition(coordinate.getPosition());
-		this.coordinate.setStrand(coordinate.getStrand());
+		getCurrentCoordinate().setPosition(coordinate.getPosition());
+		getCurrentCoordinate().setStrand(coordinate.getStrand());
 	}
 	
 }
