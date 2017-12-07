@@ -96,7 +96,7 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 					worker.start();
 				}
 
-				// progressIndicator.update("Progress: ", startTime, currentCoordinateIndex, coordinateProvider.getTotal());
+				progressIndicator.update("Progress: ", startTime, currentCoordinateIndex, coordinateProvider.getTotal());
 				
 				// computation finished
 				if (! hasNext() && runningWorkers.isEmpty()) {

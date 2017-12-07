@@ -50,7 +50,7 @@ implements Iterator<ParallelData<T>> {
 		this.copyTmpResult = copyTmpResult;
 
 		conditionContainer = new ConditionContainer<T>(parameter);
-		coordinateController = new CoordinateController(parameter.getActiveWindowSize(), conditionContainer);
+		coordinateController = new CoordinateController(conditionContainer);
 		conditionContainer.initReplicateContainer(coordinateController, parameter);
 
 		this.parallelDataValidator = new CompositeParallelDataValidator<T>(parallelDataValidators);

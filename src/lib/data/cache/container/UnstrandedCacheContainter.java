@@ -11,23 +11,23 @@ import lib.util.coordinate.Coordinate;
 public class UnstrandedCacheContainter<T extends AbstractData> 
 implements CacheContainer<T> {
 
-	private final NextPositionCache nextPositionCache;
+	private final GeneralCache generalCache;
 	
 	private final List<Cache<T>> caches;
 
 	public UnstrandedCacheContainter(final CoordinateController coordinateController, final List<Cache<T>> caches) {
-		nextPositionCache = new SimpleNextPositionCache(coordinateController);
+		generalCache = coordinateController.createGeneralCache();
 		this.caches = caches;
 	}
 	
 	@Override
 	public int getNext(final int windowPosition) {
-		return nextPositionCache.getNext(windowPosition);
+		return generalCache.getNext(windowPosition);
 	}
 	
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
-		nextPositionCache.addRecordWrapper(recordWrapper);
+		generalCache.addRecordWrapper(recordWrapper);
 		
 		for (final Cache<T> cache : caches) {
 			cache.addRecordWrapper(recordWrapper);
@@ -42,7 +42,7 @@ implements CacheContainer<T> {
 	}
 	
 	public void clear() {
-		nextPositionCache.clear();
+		generalCache.clear();
 		for (final Cache<T> cache : caches) {
 			cache.clear();
 		}

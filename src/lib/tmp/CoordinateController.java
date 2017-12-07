@@ -4,7 +4,14 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 
 import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameters.AbstractParameter;
 import lib.data.builder.ConditionContainer;
+import lib.data.cache.container.ComplexGeneralCache;
+import lib.data.cache.container.FileReferenceProvider;
+import lib.data.cache.container.GeneralCache;
+import lib.data.cache.container.MDReferenceProvider;
+import lib.data.cache.container.ReferenceProvider;
+import lib.data.cache.container.SimpleGeneralCache;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.location.CoordinateAdvancer;
 import lib.location.StrandedJumpingCoordinateAdvancer;
@@ -18,13 +25,19 @@ public class CoordinateController {
 	private final int activeWindowSize;
 	private final CoordinateAdvancer coordinateAdvancer;
 	
+	private final AbstractParameter<?, ?> parameter;
+	
 	private Coordinate reserved;
 	private WindowedCoordinateProvider provider;
 	private Coordinate active;
+
+	private ReferenceProvider referenceProvider;
 	
-	public CoordinateController(final int windowActiveSize, final ConditionContainer<?> conditionContainer) {
-		this.activeWindowSize = windowActiveSize;
+	public CoordinateController(final ConditionContainer<?> conditionContainer) {
+		this.activeWindowSize = conditionContainer.getParameter().getActiveWindowSize();
 		coordinateAdvancer = createCoordinateAdvancer(conditionContainer);
+		
+		parameter = conditionContainer.getParameter();
 	}
 
 	private CoordinateAdvancer createCoordinateAdvancer(final ConditionContainer<?> conditionContainer) {
@@ -65,11 +78,9 @@ public class CoordinateController {
 		return active;
 	}
 
-	/*
 	public Coordinate getActive() {
 		return active;
 	}
-	*/
 	
 	public Coordinate getReserved() {
 		return reserved;
@@ -140,6 +151,20 @@ public class CoordinateController {
 		return new SimpleEntry<Integer, STRAND>(windowPosition, coordinate.getStrand());
 	}
 
+	public GeneralCache createGeneralCache() {
+		if (parameter.getReferenceFile() == null) {
+			if (referenceProvider == null) {
+				referenceProvider = new MDReferenceProvider(this);	
+			}
+			return new ComplexGeneralCache((MDReferenceProvider)referenceProvider, this);
+		} 
+		
+		if (referenceProvider == null) {
+			referenceProvider = new FileReferenceProvider(parameter.getReferenceFile(), this);
+		}
+		return new SimpleGeneralCache((FileReferenceProvider)referenceProvider, this);
+	}
+	
 	public WindowPositionGuard convert(int referencePosition, int length) {
 		int windowPosition = referencePosition - active.getStart();
 

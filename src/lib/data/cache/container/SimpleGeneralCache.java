@@ -7,23 +7,27 @@ import lib.tmp.CoordinateController.WindowPositionGuard;
 
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 
-public class SimpleNextPositionCache implements NextPositionCache {
+public class SimpleGeneralCache implements GeneralCache {
 
 	private final CoordinateController coordinateController;
 
-	private final SegmentContainer segmentContainer;
+	private final FileReferenceProvider referenceProvider;
+	private final NextPositionSegmentContainer segmentContainer;
 	
-	public SimpleNextPositionCache(CoordinateController coordinateController) {
+	public SimpleGeneralCache(final FileReferenceProvider referenceProvider, 
+			final CoordinateController coordinateController) {
+		
 		this.coordinateController = coordinateController;
-
-		segmentContainer = new SegmentContainer(coordinateController.getActiveWindowSize());
+		
+		this.referenceProvider = referenceProvider;
+		segmentContainer = new NextPositionSegmentContainer(coordinateController.getActiveWindowSize());
 	
 		clear();
 	}
 	
 	@Override
 	public int getNext(final int windowPosition) {
-		final Segment segment = segmentContainer.get(windowPosition);
+		final NextPositionSegment segment = segmentContainer.get(windowPosition);
 		
 		switch (segment.getType()) {
 		
@@ -45,6 +49,11 @@ public class SimpleNextPositionCache implements NextPositionCache {
 		}
 	}
 
+	@Override
+	public byte getReference(int windowPosition) {
+		return referenceProvider.getReference(windowPosition);
+	}
+	
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		AlignmentBlock previousBlock = null;
@@ -77,6 +86,7 @@ public class SimpleNextPositionCache implements NextPositionCache {
 	@Override
 	public void clear() {
 		segmentContainer.clear();
+		referenceProvider.update();
 	}
 	
 }

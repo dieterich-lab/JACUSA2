@@ -24,6 +24,11 @@ extends AbstractParameter<T, DefaultResult<T>> {
 	}
 
 	@Override
+	public void setDefaultValues() {
+		setResultFormat(new BED6pileupResultFormat<T, DefaultResult<T>>(this));	
+	}
+	
+	@Override
 	public AbstractConditionParameter<T> createConditionParameter() {
 		return new JACUSAConditionParameter<T>();
 	}

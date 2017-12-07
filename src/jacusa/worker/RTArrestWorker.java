@@ -8,13 +8,14 @@ import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
+import lib.data.has.hasReferenceBase;
 import lib.data.result.StatisticResult;
 import lib.data.validator.ParallelDataValidator;
 import lib.io.copytmp.CopyTmpResult;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
-public class RTArrestWorker<T extends AbstractData & hasBaseCallCount & hasReadInfoCount>
+public class RTArrestWorker<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadInfoCount>
 extends AbstractWorker<T, StatisticResult<T>> {
 
 	private final AbstractStatisticCalculator<T> statisticCalculator;

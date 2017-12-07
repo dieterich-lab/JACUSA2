@@ -143,6 +143,10 @@ public class ConditionContainer<T extends AbstractData> {
 	}
 	*/ 
 
+	public AbstractParameter<T, ?> getParameter() {
+		return parameter;
+	}
+	
 	public void initReplicateContainer(
 			final CoordinateController coordinateController,
 			final AbstractParameter<T, ?> parameter) {

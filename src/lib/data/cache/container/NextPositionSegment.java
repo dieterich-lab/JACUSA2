@@ -1,8 +1,8 @@
 package lib.data.cache.container;
 
-import lib.data.cache.container.SegmentContainer.TYPE;
+import lib.data.cache.container.NextPositionSegmentContainer.TYPE;
 
-public class Segment {
+public class NextPositionSegment {
 
 	private int id;
 
@@ -12,7 +12,7 @@ public class Segment {
 	private int start;
 	private int end;
 	
-	public Segment(final SegmentContainer segmentContainer, final TYPE type, 
+	public NextPositionSegment(final NextPositionSegmentContainer segmentContainer, final TYPE type, 
 			final int start, final int end) {
 
 		id = segmentContainer.getNextId();
@@ -24,7 +24,7 @@ public class Segment {
 		this.end = end;
 	}
 
-	public Segment(final SegmentContainer segmentContainer, final TYPE type, 
+	public NextPositionSegment(final NextPositionSegmentContainer segmentContainer, final TYPE type, 
 			final int start, final int end, final int nextPosition) {
 
 		this(segmentContainer, type, start, end);

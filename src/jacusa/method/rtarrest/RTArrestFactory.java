@@ -6,7 +6,7 @@ import jacusa.cli.parameters.RTArrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.io.copytmp.FileCopyTmpResult;
 import jacusa.io.writer.BED6callResultFormat;
-import jacusa.io.writer.RTArrestResultFormat;
+import jacusa.io.writer.BED6rtArrestResultFormat;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import jacusa.worker.RTArrestWorker;
 
@@ -17,11 +17,11 @@ import java.util.TreeMap;
 import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
+import lib.cli.options.ReferenceFastaFilenameOption;
 import lib.cli.options.ResultFormatOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ResultFileOption;
-import lib.cli.options.ShowReferenceOption;
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.cli.options.WindowSizeOption;
 import lib.cli.options.condition.MaxDepthConditionOption;
@@ -84,13 +84,13 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 		
 		addACOption(new StatisticFilterOption(getParameter().getStatisticParameters()));
 
-		addACOption(new ShowReferenceOption(getParameter()));
+		addACOption(new ReferenceFastaFilenameOption(getParameter()));
 		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
-		
+
 		addACOption(new MaxThreadOption(getParameter()));
 		addACOption(new WindowSizeOption(getParameter()));
 		addACOption(new ThreadWindowSizeOption(getParameter()));
-		
+
 		addACOption(new BedCoordinatesOption(getParameter()));
 		addACOption(new ResultFileOption(getParameter()));
 	}
@@ -150,7 +150,7 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 
 		AbstractResultFormat<T,StatisticResult<T>> resultFormat = null;
 
-		resultFormat = new RTArrestResultFormat<T, StatisticResult<T>>(getParameter());
+		resultFormat = new BED6rtArrestResultFormat<T, StatisticResult<T>>(getParameter());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 		
 		return resultFormats;

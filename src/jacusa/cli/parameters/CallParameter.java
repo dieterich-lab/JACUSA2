@@ -1,5 +1,6 @@
 package jacusa.cli.parameters;
 
+import jacusa.io.writer.BED6callResultFormat;
 import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundError;
 import lib.cli.parameters.AbstractConditionParameter;
 import lib.cli.parameters.AbstractParameter;
@@ -18,6 +19,11 @@ extends AbstractParameter<T, StatisticResult<T>> implements hasStatisticCalculat
 		super(conditionSize);
 		
 		statisticFactory = new StatisticFactory<T>(new DirichletMultinomialRobustCompoundError<T>(this), 1.0);
+	}
+	
+	@Override
+	public void setDefaultValues() {
+		setResultFormat(new BED6callResultFormat<T, StatisticResult<T>>(this));
 	}
 	
 	@Override

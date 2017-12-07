@@ -1,5 +1,10 @@
 package lib.cli.parameters;
 
+import htsjdk.samtools.reference.IndexedFastaSequenceFile;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -27,6 +32,9 @@ implements hasConditionParameter<T> {
 		private char[] bases;
 		private boolean showReferenceBase;
 
+	private String referenceFilename;
+	private IndexedFastaSequenceFile referenceFile;
+		
 	// bed file to scan for variants
 	private String inputBedFilename;
 
@@ -47,7 +55,7 @@ implements hasConditionParameter<T> {
 	private boolean debug;
 	
 	protected AbstractParameter() {
-		activeWindowSize 			= 10000;
+		activeWindowSize 	= 10000;
 		reservedWindowSize	= 10 * activeWindowSize;
 		
 		baseConfig			= BaseCallConfig.getInstance();
@@ -75,6 +83,7 @@ implements hasConditionParameter<T> {
 	}
 	
 	public abstract AbstractConditionParameter<T> createConditionParameter();
+	public abstract void setDefaultValues();
 	
 	public ResultFormat<T, R> getResultFormat() {
 		return resultFormat;
@@ -114,8 +123,15 @@ implements hasConditionParameter<T> {
 	/**
 	 * @param output the output to set
 	 */
-	public void setResultWriter(ResultWriter<T, R> resultWriter) {
-		this.resultWriter = resultWriter;
+	public void resetResultWriter() {
+		if (resultWriter != null) {
+			try {
+				resultWriter.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			resultWriter = null;
+		}
 	}
 
 	@Override
@@ -260,6 +276,38 @@ implements hasConditionParameter<T> {
 
 	public BaseCallConfig getBaseConfig() {
 		return baseConfig;
+	}
+	
+	public String getReferenceFilename() {
+		return referenceFilename;
+	}
+	
+	public void setReferernceFilename(final String referenceFilename) {
+		this.referenceFilename = referenceFilename;
+	}
+	
+	public IndexedFastaSequenceFile getReferenceFile() {
+		if (referenceFile == null && ! getReferenceFilename().isEmpty()) {
+			final File file = new File(getReferenceFilename());
+			try {
+				referenceFile = new IndexedFastaSequenceFile(file);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return referenceFile;
+	}
+	
+	public void resetReferenceFile() {
+		if (referenceFile != null) {
+			try {
+				referenceFile.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			referenceFile = null;
+		}
 	}
 	
 	/**

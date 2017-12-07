@@ -4,23 +4,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-// updte next
-public class SegmentContainer {
+public class NextPositionSegmentContainer {
 
 	enum TYPE {UNKNOWN, COVERED, NOT_COVERED}
 	
 	private final int activeWindowSize;
 	
 	private int[] winPos2id;
-	private List<Segment> segments;
+	private List<NextPositionSegment> segments;
 
-	public SegmentContainer(final int activeWindowSize) {
+	public NextPositionSegmentContainer(final int activeWindowSize) {
 		this.activeWindowSize = activeWindowSize;
 		
 		winPos2id = new int[activeWindowSize];
 
 		int n = Math.max(10, activeWindowSize / 10);
-		segments = new ArrayList<Segment>(n);
+		segments = new ArrayList<NextPositionSegment>(n);
 		createUnknown();
 	}
 
@@ -30,18 +29,18 @@ public class SegmentContainer {
 		createUnknown();
 	}
 
-	public Segment get(final int windowPosition) {
+	public NextPositionSegment get(final int windowPosition) {
 		final int id = winPos2id[windowPosition];
 		return segments.get(id);
 	}
 	
 	public void markCovered(final int windowPosition, final int length) {
-		final List<Segment> segments = getSegments(windowPosition, length);
+		final List<NextPositionSegment> segments = getSegments(windowPosition, length);
 
 		int tmpWindowPosition = windowPosition;
 		int tmpLength = length;
 		
-		for (final Segment segment : segments) {
+		for (final NextPositionSegment segment : segments) {
 			final int end = tmpWindowPosition + tmpLength;
 
 			switch (segment.getType()) {
@@ -70,11 +69,11 @@ public class SegmentContainer {
 		}
 	}
 	
-	private void updateUnknown2Covered(final Segment unknown, final int windowPosition, final int length) {
+	private void updateUnknown2Covered(final NextPositionSegment unknown, final int windowPosition, final int length) {
 		final int end = windowPosition + length;
 
 		// create new or extends previous covered segment
-		final Segment previousCovered = getPreviousCovered(unknown);
+		final NextPositionSegment previousCovered = getPreviousCovered(unknown);
 		if (previousCovered != null) {
 			// extend previous covered
 			updateEnd(previousCovered, end);
@@ -89,14 +88,14 @@ public class SegmentContainer {
 		updateStart(unknown, end);
 	}
 	
-	private void updateNotCovered2Covered(final Segment notCovered, final int windowPosition, final int length) {
+	private void updateNotCovered2Covered(final NextPositionSegment notCovered, final int windowPosition, final int length) {
 		final int end = windowPosition + length;
 		
 		// create new or extend previous covered segment
-		final Segment previousCovered = getPreviousCovered(notCovered);
+		final NextPositionSegment previousCovered = getPreviousCovered(notCovered);
 		if (previousCovered != null) {
 			// is the next segment covered too? 
-			final Segment nextCovered = getNextCovered(notCovered);
+			final NextPositionSegment nextCovered = getNextCovered(notCovered);
 			if (nextCovered != null) {
 				mergeCovered(previousCovered, nextCovered);
 			} else {
@@ -107,7 +106,7 @@ public class SegmentContainer {
 			}
 		} else {
 			// is the next segment covered? 
-			final Segment nextCovered = getNextCovered(notCovered);
+			final NextPositionSegment nextCovered = getNextCovered(notCovered);
 			if (nextCovered != null) {
 				// extend adjacent covered segment
 				updateStart(nextCovered, windowPosition);
@@ -133,9 +132,9 @@ public class SegmentContainer {
 		}
 	}
 	
-	private void mergeCovered(final Segment previous, final Segment next) {
+	private void mergeCovered(final NextPositionSegment previous, final NextPositionSegment next) {
 		// pick biggest segment
-		Segment tmp = previous;
+		NextPositionSegment tmp = previous;
 		if (next.getEnd() - next.getStart() > previous.getEnd() - previous.getStart()) {
 			tmp = next;
 			updateStart(tmp, previous.getStart());
@@ -146,9 +145,9 @@ public class SegmentContainer {
 	}
 	
 	public void markNotCovered(int windowPosition, int length, final int nextPosition) {
-	final List<Segment> segments = getSegments(windowPosition, length);
+	final List<NextPositionSegment> segments = getSegments(windowPosition, length);
 		
-		for (final Segment segment : segments) {
+		for (final NextPositionSegment segment : segments) {
 			final int end = windowPosition + length;
 			
 			switch (segment.getType()) {
@@ -175,7 +174,7 @@ public class SegmentContainer {
 		}
 	}
 	
-	private void updateUnknown2NotCovered(final Segment unknown, final int windowPosition, final int length, final int nextPosition) {
+	private void updateUnknown2NotCovered(final NextPositionSegment unknown, final int windowPosition, final int length, final int nextPosition) {
 		assert windowPosition != unknown.getStart();
 		
 		final int end = windowPosition + length;
@@ -192,10 +191,10 @@ public class SegmentContainer {
 		createNotCovered(windowPosition, end, nextPosition);
 	}
 
-	private List<Segment> getSegments(final int windowPosition, final int length) {
+	private List<NextPositionSegment> getSegments(final int windowPosition, final int length) {
  		final int end = windowPosition + length;
-		final List<Segment> segments = new ArrayList<Segment>(3);
-		Segment segment = get(windowPosition);
+		final List<NextPositionSegment> segments = new ArrayList<NextPositionSegment>(3);
+		NextPositionSegment segment = get(windowPosition);
 
 		while (segment.getStart() < end) {
 			segments.add(segment);
@@ -212,32 +211,32 @@ public class SegmentContainer {
 	private void createUnknown() {
 		final int start = 0;
 		final int end = activeWindowSize;
-		add(new Segment(this, TYPE.UNKNOWN, start, end));
+		add(new NextPositionSegment(this, TYPE.UNKNOWN, start, end));
 	}
 
 	private void createCovered(final int start, final int end, final int nextPosition) {
-		add(new Segment(this, TYPE.COVERED, start, end, nextPosition));
+		add(new NextPositionSegment(this, TYPE.COVERED, start, end, nextPosition));
 	}
 
 	private void createNotCovered(final int start, final int end, final int nextPosition) {
-		add(new Segment(this, TYPE.NOT_COVERED, start, end, nextPosition));
+		add(new NextPositionSegment(this, TYPE.NOT_COVERED, start, end, nextPosition));
 	}
 	
-	private void updateStart(final Segment segment, final int start) {
+	private void updateStart(final NextPositionSegment segment, final int start) {
 		if (start < segment.getStart()) {
 			setId(segment.getId(), start, segment.getStart()); 
 		}
 		segment.updateStart(start);
 	}
 
-	private void updateEnd(final Segment segment, final int end) {
+	private void updateEnd(final NextPositionSegment segment, final int end) {
 		if (end > segment.getEnd()) {
 			setId(segment.getId(), segment.getEnd(), end);
 		}
 		segment.updateEnd(end);
 	}
 	
-	private void add(final Segment segment) {
+	private void add(final NextPositionSegment segment) {
 		segments.add(segment);
 		setId(segment.getId(), segment.getStart(), segment.getEnd());
 	}
@@ -250,19 +249,19 @@ public class SegmentContainer {
 		return segments.size();
 	}
 	
-	private Segment getPreviousCovered(final Segment current) {
+	private NextPositionSegment getPreviousCovered(final NextPositionSegment current) {
 		if (current.getStart() <= 0) {
 			return null;
 		}
-		final Segment previous = get(current.getStart() - 1);
+		final NextPositionSegment previous = get(current.getStart() - 1);
 		return previous.getType() == TYPE.COVERED ? previous : null;
 	}
 
-	private Segment getNextCovered(final Segment current) {
+	private NextPositionSegment getNextCovered(final NextPositionSegment current) {
 		if (current.getEnd() >= activeWindowSize) {
 			return null;
 		}
-		final Segment next = get(current.getEnd());
+		final NextPositionSegment next = get(current.getEnd());
 		return next.getType() == TYPE.COVERED ? next : null;
 	}
 

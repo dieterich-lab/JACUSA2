@@ -9,13 +9,13 @@ import lib.data.has.hasReadInfoCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.Result;
 
-public class RTArrestResultWriter<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadInfoCount, R extends Result<T> & hasStatistic> 
+public class BED6rtArrestResultWriter<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadInfoCount, R extends Result<T> & hasStatistic> 
 extends BEDlikeResultWriter<T, R> {
 	
 	// read start, trough, and end	
 	private static final String RTinfo = "reads";
 
-	protected RTArrestResultWriter(final String filename, final AbstractParameter<T, R> parameter) {
+	protected BED6rtArrestResultWriter(final String filename, final AbstractParameter<T, R> parameter) {
 		super(filename, parameter);
 	}
 
