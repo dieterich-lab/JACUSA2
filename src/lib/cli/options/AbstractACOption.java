@@ -8,6 +8,8 @@ public abstract class AbstractACOption {
 	private String opt;
 	private String longOpt;
 
+	private boolean hide;
+	
 	public AbstractACOption(final String opt, final String longOpt) {
 		this.opt 		= opt;
 		this.longOpt 	= longOpt;
@@ -15,7 +17,20 @@ public abstract class AbstractACOption {
 
 	public abstract void process(CommandLine line) throws Exception;
 	public abstract Option getOption();
+	
+	
+	public boolean isHidden() {
+		return hide;
+	}
 
+	protected void hide() {
+		hide = false;
+	}
+	
+	protected void show() {
+		hide = true;
+	}
+	
 	public String getOpt() {
 		return opt;
 	}
@@ -23,5 +38,6 @@ public abstract class AbstractACOption {
 	public String getLongOpt() {
 		return longOpt;
 	}
-		
+
+	
 }

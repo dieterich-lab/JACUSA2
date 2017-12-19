@@ -18,7 +18,6 @@ implements hasCoordinate, hasLibraryType {
 	
 	private DataGenerator<T> dataGenerator;
 	
-	// TODO both need not to be the same for all elements
 	private LIBRARY_TYPE libraryType;
 	private Coordinate coordinate;
 
@@ -75,16 +74,6 @@ implements hasCoordinate, hasLibraryType {
 	public LIBRARY_TYPE getLibraryType() {
 		return libraryType;
 	}
-	
-	/* FIXME
-	public void setLibraryType(final LIBRARY_TYPE libraryType) {
-		this.libraryType = libraryType;
-	}
-	
-	public void setCoordinate(final Coordinate coordinate) {
-		this.coordinate = coordinate;
-	}
-	*/
 	
 	public void setData(T[][] data) {
 		this.data = data;

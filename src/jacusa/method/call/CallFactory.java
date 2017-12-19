@@ -24,6 +24,7 @@ import java.util.TreeMap;
 import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
+import lib.cli.options.DebugModusOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
 import lib.cli.options.ResultFormatOption;
 import lib.cli.options.HelpOption;
@@ -71,6 +72,26 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 	}
 
 	protected void initGlobalACOptions() {
+		// statistic
+		if (getStatistics().size() == 1 ) {
+			String[] a = getStatistics().keySet().toArray(new String[1]);
+			getParameter().getStatisticParameters().setStatisticCalculator(
+					getStatistics().get(a[0]));
+		} else {
+			addACOption(new StatisticCalculatorOption<T>(
+					getParameter().getStatisticParameters(), getStatistics()));
+		}
+		
+		// result format
+		if (getResultFormats().size() == 1 ) {
+			Character[] a = getResultFormats().keySet().toArray(new Character[1]);
+			getParameter().setResultFormat(getResultFormats().get(a[0]));
+		} else {
+			getParameter().setResultFormat(getResultFormats().get(BED6callResultFormat.CHAR));
+			addACOption(new ResultFormatOption<T, StatisticResult<T>>(
+					getParameter(), getResultFormats()));
+		}
+		
 		// addACOption(new FilterModusOption(getParameter()));
 		// addACOption(new BaseConfigOption(getParameter()));
 		// addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
@@ -87,6 +108,8 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 		
 		addACOption(new BedCoordinatesOption(getParameter()));
 		addACOption(new ResultFileOption(getParameter()));
+		
+		addACOption(new DebugModusOption(getParameter()));
 	}
 	
 	@Override
@@ -124,31 +147,6 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 						getParameter().getConditionParameters().get(conditionIndex),
 						getParameter()));
 			}
-		}
-	}
-
-	public void initACOptions() {
-		initGlobalACOptions();
-		initConditionACOptions();
-		
-		// statistic
-		if (getStatistics().size() == 1 ) {
-			String[] a = getStatistics().keySet().toArray(new String[1]);
-			getParameter().getStatisticParameters().setStatisticCalculator(
-					getStatistics().get(a[0]));
-		} else {
-			addACOption(new StatisticCalculatorOption<T>(
-					getParameter().getStatisticParameters(), getStatistics()));
-		}
-		
-		// result format
-		if (getResultFormats().size() == 1 ) {
-			Character[] a = getResultFormats().keySet().toArray(new Character[1]);
-			getParameter().setResultFormat(getResultFormats().get(a[0]));
-		} else {
-			getParameter().setResultFormat(getResultFormats().get(BED6callResultFormat.CHAR));
-			addACOption(new ResultFormatOption<T, StatisticResult<T>>(
-					getParameter(), getResultFormats()));
 		}
 	}
 	

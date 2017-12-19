@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
+import lib.cli.options.DebugModusOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
 import lib.cli.options.ResultFormatOption;
 import lib.cli.options.HelpOption;
@@ -64,10 +65,7 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 		return true;
 	}
 
-	public void initACOptions() {
-		initGlobalACOptions();
-		initConditionACOptions();
-		
+	protected void initGlobalACOptions() {
 		// result format
 		if (getResultFormats().size() == 1 ) {
 			Character[] a = getResultFormats().keySet().toArray(new Character[1]);
@@ -77,9 +75,7 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 			addACOption(new ResultFormatOption<T, StatisticResult<T>>(
 					getParameter(), getResultFormats()));
 		}
-	}
-
-	protected void initGlobalACOptions() {
+		
 		// addACOption(new FilterModusOption(getParameter()));
 		// addACOption(new BaseConfigOption(getParameter()));
 		
@@ -95,6 +91,8 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 
 		addACOption(new BedCoordinatesOption(getParameter()));
 		addACOption(new ResultFileOption(getParameter()));
+		
+		addACOption(new DebugModusOption(getParameter()));
 	}
 
 	protected void initConditionACOptions() {

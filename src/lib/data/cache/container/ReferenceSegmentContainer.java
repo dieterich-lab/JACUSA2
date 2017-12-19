@@ -87,16 +87,16 @@ public class ReferenceSegmentContainer {
 		final ReferenceSegment previousCovered = getPreviousCovered(unknown);
 		if (previousCovered != null) {
 			// extend previous covered
-			updateEnd(previousCovered, end, recordWrapper);
+			updateEnd(previousCovered, end, readPosition, recordWrapper);
 		} else {
 			// create uncovered
 			createNotCovered(unknown.getStart(), windowPosition);
 			// create covered
-			createCovered(windowPosition, end, recordWrapper);
+			createCovered(windowPosition, readPosition, length, recordWrapper);
 		}
 
 		// update unknown segment
-		updateStart(unknown, end, null);
+		updateStart(unknown, end);
 	}
 	
 	private void updateNotCovered2Covered(final ReferenceSegment notCovered, 
@@ -111,44 +111,44 @@ public class ReferenceSegmentContainer {
 			// is the next segment covered too? 
 			final ReferenceSegment nextCovered = getNextCovered(notCovered);
 			if (nextCovered != null) {
-				mergeCovered(previousCovered, nextCovered, recordWrapper);
+				mergeCovered(previousCovered, nextCovered, readPosition, recordWrapper);
 			} else {
 				// extend previous covered segment
-				updateEnd(previousCovered, end, recordWrapper);
+				updateEnd(previousCovered, end, readPosition, recordWrapper);
 				// accordingly shrink notCovered
-				updateStart(notCovered, end, null);
+				updateStart(notCovered, end);
 			}
 		} else {
 			// is the next segment covered? 
 			final ReferenceSegment nextCovered = getNextCovered(notCovered);
 			if (nextCovered != null) {
 				// extend adjacent covered segment
-				updateStart(nextCovered, windowPosition, null);
+				updateStart(nextCovered, windowPosition);
 				// accordingly shrink notCovered 
-				updateEnd(notCovered, windowPosition, null);
+				updateEnd(notCovered, windowPosition);
 			} else {
 				final int tmpNotCoveredEnd = notCovered.getEnd();
 				
 				// shrink not covered
-				updateEnd(notCovered, windowPosition, null);
+				updateEnd(notCovered, windowPosition);
 				// update to next created covered segment
 
 				// create covered
-				createCovered(windowPosition, end, recordWrapper);
+				createCovered(windowPosition, end, readPosition, recordWrapper);
 				// create notCovered
 				createNotCovered(end, tmpNotCoveredEnd);
 			}
 		}
 	}
 	
-	private void mergeCovered(final ReferenceSegment previous, final ReferenceSegment next, final SAMRecordWrapper recordWrapper) {
+	private void mergeCovered(final ReferenceSegment previous, final ReferenceSegment next, final int readPosition, final SAMRecordWrapper recordWrapper) {
 		// pick biggest segment
 		ReferenceSegment tmp = previous;
 		if (next.getEnd() - next.getStart() > previous.getEnd() - previous.getStart()) {
 			tmp = next;
-			updateStart(tmp, previous.getStart(), recordWrapper);
+			updateStart(tmp, previous.getStart(), readPosition, recordWrapper);
 		} else {
-			updateEnd(tmp, next.getEnd(), recordWrapper); 
+			updateEnd(tmp, next.getEnd(), readPosition, recordWrapper); 
 		}
 	}
 	
@@ -188,7 +188,7 @@ public class ReferenceSegmentContainer {
 		final int end = windowPosition + length;
 
 		// shrink unknown
-		updateStart(unknown, windowPosition, null);
+		updateStart(unknown, windowPosition);
 		// create not covered segment
 		createNotCovered(windowPosition, end);
 	}
@@ -216,33 +216,47 @@ public class ReferenceSegmentContainer {
 		add(new ReferenceSegment(this, TYPE.UNKNOWN, start, end));
 	}
 
-	private void createCovered(final int start, final int end, final SAMRecordWrapper recordWrapper) {
-		add(new ReferenceSegment(this, TYPE.COVERED, start, end));
-		setReference(start, end, recordWrapper);
+	private void createCovered(final int windowStart, final int readStart, final int length, final SAMRecordWrapper recordWrapper) {
+		add(new ReferenceSegment(this, TYPE.COVERED, windowStart, windowStart + length));
+		setReference(windowStart, readStart, length, recordWrapper);
 	}
 
 	private void createNotCovered(final int start, final int end) {
 		add(new ReferenceSegment(this, TYPE.NOT_COVERED, start, end));
 	}
 	
-	private void updateStart(final ReferenceSegment segment, final int start, final SAMRecordWrapper recordWrapper) {
-		if (start < segment.getStart()) {
-			setId(segment.getId(), start, segment.getStart());
-			if (segment.getType() == TYPE.COVERED) {
-				setReference(start, segment.getStart(), recordWrapper);
-			}
+	private void updateStart(final ReferenceSegment segment, final int windowStart) {
+		if (windowStart < segment.getStart()) {
+			setId(segment.getId(), windowStart, segment.getStart());
 		}
-		segment.updateStart(start);
+		segment.updateStart(windowStart);
+	}
+	
+	private void updateStart(final ReferenceSegment segment, final int windowStart, final int readPosition, final SAMRecordWrapper recordWrapper) {
+		if (windowStart < segment.getStart()) {
+			setId(segment.getId(), windowStart, segment.getStart());
+			final int length = segment.getStart() - windowStart;
+			setReference(windowStart, readPosition, length, recordWrapper);
+		}
+		segment.updateStart(windowStart);
 	}
 
-	private void updateEnd(final ReferenceSegment segment, final int end, final SAMRecordWrapper recordWrapper) {
-		if (end > segment.getEnd()) {
-			setId(segment.getId(), segment.getEnd(), end);
+	private void updateEnd(final ReferenceSegment segment, final int windowEnd) {
+		if (windowEnd > segment.getEnd()) {
+			setId(segment.getId(), segment.getEnd(), windowEnd);
+		}
+		segment.updateEnd(windowEnd);
+	}
+	
+	private void updateEnd(final ReferenceSegment segment, final int windowEnd, final int readPosition, final SAMRecordWrapper recordWrapper) {
+		if (windowEnd > segment.getEnd()) {
+			setId(segment.getId(), segment.getEnd(), windowEnd);
 			if (segment.getType() == TYPE.COVERED) {
-				setReference(segment.getEnd(), end, recordWrapper);
+				final int length = windowEnd - segment.getEnd(); 
+				setReference(segment.getEnd(), readPosition, length, recordWrapper);
 			}
 		}
-		segment.updateEnd(end);
+		segment.updateEnd(windowEnd);
 	}
 	
 	private void add(final ReferenceSegment segment) {
@@ -254,10 +268,7 @@ public class ReferenceSegmentContainer {
 		Arrays.fill(winPos2id, start, end, id);
 	}
 	
-	private void setReference(final int start, final int end, SAMRecordWrapper recordWrapper) {
-		System.arraycopy(
-				recordWrapper.getReference(), start, 
-				reference, start, end - start);
+	private void setReference(final int windowStart, final int readStart, final int length, SAMRecordWrapper recordWrapper) {
 	}
 	
 	public int getNextId() {

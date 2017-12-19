@@ -1,11 +1,9 @@
 package lib.cli;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import lib.cli.options.AbstractACOption;
-import lib.cli.options.DebugModusOption;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
@@ -13,6 +11,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.ParseException;
 
 public class CLI {
 
@@ -45,27 +44,18 @@ public class CLI {
 			// init method factory (populate: parameters)
 			methodFactory.initACOptions();
 			
-			final Set<AbstractACOption> acOptions = methodFactory.getACOptions();
+			final List<AbstractACOption> acOptions = methodFactory.getACOptions();
 			final Options options = new Options();
-			for (AbstractACOption acoption : acOptions) {
-				options.addOption(acoption.getOption());
+			for (AbstractACOption acOption : acOptions) {
+				if (! acOption.isHidden()) {
+					options.addOption(acOption.getOption());
+				}
 			}
 			
 			methodFactory.printUsage();
 			System.exit(0);
 		}
-		methodFactory.initGeneralParameter(getFilenames(args).length);
-				
-		// init method factory (populate: parameters)
-		methodFactory.initACOptions();
 		
-		Set<AbstractACOption> acOptions = methodFactory.getACOptions();
-		Options options = new Options();
-		
-		for (AbstractACOption acoption : acOptions) {
-			options.addOption(acoption.getOption());
-		}
-	
 		// copy arguments while ignoring the first array element
 		String[] processedArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, processedArgs, 0, args.length - 1);
@@ -73,19 +63,49 @@ public class CLI {
 		// parse arguments
 		final CommandLineParser parser = new DefaultParser();
 		
+		// container for options and parsed line
+		List<AbstractACOption> acOptions;
+		Options options; 
+		CommandLine line = null;
+		int conditions = 0;
+
+		// try to find the correct number of conditions
+		// all provided args need to be correctly parsed
+		do {
+			conditions++;
+
+			methodFactory.initGeneralParameter(conditions);
+			// init method factory (populate: parameters)
+			methodFactory.initACOptions();
+
+			acOptions = methodFactory.getACOptions();
+			options = new Options();
+	
+			for (AbstractACOption acOption : acOptions) {
+				options.addOption(acOption.getOption());
+			}
+		
+			try {
+				line = parser.parse(options, processedArgs);
+			} catch (ParseException e) {
+				e.printStackTrace();
+				methodFactory.printUsage();
+				return false;
+			}
+		} while (conditions < args.length && line.getArgs().length != conditions);
+		
+		// if not all args could be parsed STOP
+		if (line.getArgs().length != conditions) {
+			methodFactory.printUsage();
+			return false;
+		}
+
 		try {
-			// create hidden debug option
-			AbstractACOption debugACOption = new DebugModusOption(methodFactory.getParameter());
-			options.addOption(debugACOption.getOption());
-
-			final CommandLine line = parser.parse(options, processedArgs);
+			// the remainder of line.getArgs should be files 
 			methodFactory.parseArgs(line.getArgs());
-
 			for (AbstractACOption acOption : acOptions) {
 				acOption.process(line);
 			}
-			// parse hidden debug option
-			debugACOption.process(line);
 		} catch (Exception e) {
 			e.printStackTrace();
 			methodFactory.printUsage();
@@ -121,17 +141,6 @@ public class CLI {
 		*/
 		
 		return true;
-	}
-
-	// FIXME
-	private String[] getFilenames(final String[] args) {
-		for (int i = args.length - 1; i >= 0; --i) {
-			if (args[i].startsWith("-") && i + 2 < args.length) {
-				return Arrays.copyOfRange(args, i + 2, args.length);
-			}
-		}
-		
-		return args;
 	}
 
 	/**

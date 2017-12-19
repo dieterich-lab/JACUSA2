@@ -33,18 +33,13 @@ extends AbstractResultFileWriter<T, R> {
 	public void writeHeader(final List<AbstractConditionParameter<T>> conditionParameters) {
 		final StringBuilder sb = new StringBuilder();
 
+		addHeaderConditionDetails(sb, conditionParameters);
+		
 		addHeaderBED6(sb);
 		addHeaderConditions(sb, conditionParameters);
 		addHeaderInfo(sb);
 		sb.append('\n');
 
-		// TODO make this dependent on parameters
-		addHeader2(sb, conditionParameters);
-		sb.append('\n');
-
-		addHeader3(sb, conditionParameters);
-		sb.append('\n');
-		
 		try {
 			getBW().write(sb.toString());
 		} catch (IOException e) {
@@ -98,65 +93,19 @@ extends AbstractResultFileWriter<T, R> {
 		sb.append(replicateIndex + 1);
 	}
 	
-	protected void addHeader2(final StringBuilder sb, final List<AbstractConditionParameter<T>> conditionParameters) {
-		sb.append(COMMENT);
-
-		sb.append(EMPTY);
-		sb.append(getSEP());
-		sb.append(EMPTY);
-		sb.append(getSEP());
-		sb.append(EMPTY);
-		sb.append(getSEP());
-
-		sb.append(EMPTY);
-		sb.append(getSEP());
-
-		// stat	
-		sb.append("TODO");
-		sb.append(getSEP());
-		
-		sb.append("TODO");
-		sb.append(getSEP());
-		
+	protected void addHeaderConditionDetails(final StringBuilder sb, final List<AbstractConditionParameter<T>> conditionParameters) {
+		int conditionIndex = 1;
 		for (final AbstractConditionParameter<T> conditionParameter : conditionParameters) {
+			sb.append(COMMENT);
+			sb.append(COMMENT);
+			
+			sb.append(" condition");
+			sb.append(conditionIndex);
+			
+			sb.append(" library_type=");
 			sb.append(conditionParameter.getLibraryType());
-			sb.append(getSEP());
-		}
-		
-		sb.append(EMPTY);
-		
-		// add filtering info
-		if (parameter.getFilterConfig().hasFiters()) {
-			sb.append(getSEP());
-			sb.append(EMPTY);
-		}
-
-		if (parameter.showReferenceBase()) {
-			sb.append(getSEP());
-			sb.append(EMPTY);
-		}
-	}
-	
-	protected void addHeader3(final StringBuilder sb, final List<AbstractConditionParameter<T>> conditionParameters) {
-		sb.append(COMMENT);
-
-		sb.append(EMPTY);
-		sb.append(getSEP());
-		sb.append(EMPTY);
-		sb.append(getSEP());
-		sb.append(EMPTY);
-		sb.append(getSEP());
-
-		sb.append(EMPTY);
-		sb.append(getSEP());
-
-		sb.append(EMPTY);
-		sb.append(getSEP());
-		
-		sb.append(EMPTY);
-		sb.append(getSEP());
-		
-		for (final AbstractConditionParameter<T> conditionParameter : conditionParameters) {
+			
+			sb.append(" files=");
 			final String[] pathnames = conditionParameter.getRecordFilenames();
 			sb.append(pathnames[0]);
 			for (int replicateIndex = 1; replicateIndex < pathnames.length; replicateIndex++) {
@@ -164,19 +113,8 @@ extends AbstractResultFileWriter<T, R> {
 				sb.append(pathnames[replicateIndex]);
 			}
 			sb.append(getSEP());
-		}
-
-		sb.append(EMPTY);
-		
-		// add filtering info
-		if (parameter.getFilterConfig().hasFiters()) {
-			sb.append(getSEP());
-			sb.append(EMPTY);
-		}
-
-		if (parameter.showReferenceBase()) {
-			sb.append(getSEP());
-			sb.append(EMPTY);
+			conditionIndex++;
+			sb.append('\n');
 		}
 	}
 

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
+import lib.cli.options.DebugModusOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
@@ -69,11 +70,8 @@ extends AbstractMethodFactory<T, DefaultResult<T>> {
 		}
 		setParameter(new PileupParameter<T>(conditionSize));
 	}
-
-	public void initACOptions() {
-		initGlobalACOptions();
-		initConditionACOptions();
-		
+	
+	protected void initGlobalACOptions() {
 		// result format
 		if (getResultFormats().size() == 1 ) {
 			Character[] a = getResultFormats().keySet().toArray(new Character[1]);
@@ -82,9 +80,8 @@ extends AbstractMethodFactory<T, DefaultResult<T>> {
 			getParameter().setResultFormat(getResultFormats().get(BED6callResultFormat.CHAR));
 			addACOption(new ResultFormatOption<T, DefaultResult<T>>(getParameter(), getResultFormats()));
 		}
-	}
-	
-	protected void initGlobalACOptions() {
+		
+		
 		// addACOption(new FilterModusOption(getParameter()));
 		// addACOption(new BaseConfigOption(getParameter()));
 		// addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
@@ -99,6 +96,8 @@ extends AbstractMethodFactory<T, DefaultResult<T>> {
 		
 		addACOption(new BedCoordinatesOption(getParameter()));
 		addACOption(new ResultFileOption(getParameter()));
+		
+		addACOption(new DebugModusOption(getParameter()));
 	}
 	
 	@Override

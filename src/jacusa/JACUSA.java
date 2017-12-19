@@ -59,8 +59,6 @@ public class JACUSA extends AbstractTool {
 		DataGenerator<PileupData> pileupDataGenerator = new PileupDataGenerator();
 		factories.add(new OneConditionCallFactory<PileupData>(pileupDataGenerator));
 		factories.add(new TwoConditionCallFactory<PileupData>(pileupDataGenerator));
-		// factories.add(new CallFactory<PileupData>(new CallParameter<T>(3), dataGenerator)); // TODO make conditions general
-		// pileup information
 
 		factories.add(new PileupFactory<PileupData>(new PileupParameter<PileupData>(1), pileupDataGenerator));
 

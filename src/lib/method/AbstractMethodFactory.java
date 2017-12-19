@@ -1,12 +1,9 @@
 package lib.method;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.SAMPathnameArg;
@@ -48,7 +45,7 @@ implements DataGenerator<T> {
 
 	private AbstractParameter<T, R> parameter;
 
-	private final Set<AbstractACOption> ACOptions;
+	private final List<AbstractACOption> acOptions;
 
 	private CoordinateProvider coordinateProvider;
 	private WorkerDispatcher<T, R> workerDispatcher;
@@ -63,7 +60,7 @@ implements DataGenerator<T> {
 		this.dataGenerator = dataGenerator;
 
 		setParameter(parameters);
-		ACOptions 		= new HashSet<AbstractACOption>(10);
+		acOptions = new ArrayList<AbstractACOption>(10);
 	}
 	
 	// needed for Methods where the number of conditions is unknown... 
@@ -89,7 +86,13 @@ implements DataGenerator<T> {
 
 	public abstract AbstractWorker<T, R> createWorker(final int threadId);
 
-	public abstract void initACOptions();
+	public void initACOptions() {
+		getACOptions().clear();
+		
+		initGlobalACOptions();
+		initConditionACOptions();
+	}
+	
 	protected abstract void initConditionACOptions();
 	protected abstract void initGlobalACOptions();
 	
@@ -132,22 +135,22 @@ implements DataGenerator<T> {
 	
 	protected void addACOption(AbstractACOption newACOption) {
 		if (checkDuplicate(newACOption)) {
-			ACOptions.add(newACOption);
+			acOptions.add(newACOption);
 		}
 	}
 	
 	private boolean checkDuplicate(final AbstractACOption newACOption) {
-		for (final AbstractACOption ACOption : ACOptions) {
+		for (final AbstractACOption ACOption : acOptions) {
 			try {
 				if (ACOption.getOpt() != null && 
 						ACOption.getOpt().equals(newACOption.getOpt())) {
 					throw new Exception("Duplicate opt '" + newACOption.getOpt() + 
-							"' for object: " + newACOption.toString());
+							"' for object: " + newACOption.toString() + " and " + ACOption.toString());
 				}
 				if (ACOption.getOpt() != null && 
 						ACOption.getLongOpt().equals(newACOption.getLongOpt())) {
 					throw new Exception("Duplicate longOpt '" + newACOption.getLongOpt() + 
-							"' for object" + newACOption.toString());
+							"' for object" + newACOption.toString() + " and " + ACOption.toString());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -162,8 +165,8 @@ implements DataGenerator<T> {
 	 * 
 	 * @return
 	 */
-	public Set<AbstractACOption> getACOptions() {
-		return ACOptions;
+	public List<AbstractACOption> getACOptions() {
+		return acOptions;
 	}
 
 	/**
@@ -189,7 +192,7 @@ implements DataGenerator<T> {
 	public void printUsage() {
 		final HelpFormatter formatter = new HelpFormatter();
 		formatter.setWidth(160);
-
+		
 		formatter.printHelp(
 				AbstractTool.getLogger().getTool().getName() + 
 				" " + 
@@ -213,14 +216,15 @@ implements DataGenerator<T> {
 	}
 	
 	protected Options getOptions() {
-		final Set<AbstractACOption> acOptions = getACOptions();
+		final List<AbstractACOption> acOptions = getACOptions();
 		final Options options = new Options();
-		for (AbstractACOption acoption : acOptions) {
-			options.addOption(acoption.getOption());
+		for (final AbstractACOption acOption : acOptions) {
+			if (! acOption.isHidden()) {
+				options.addOption(acOption.getOption());
+			}
 		}
 		return options;
 	}
-	
 	
 	/**
 	 * 
@@ -338,7 +342,7 @@ implements DataGenerator<T> {
 	}
 
 	public void debug() {};
-
+	
 	public AbstractDataBuilderFactory<T> getDataBuilderFactory() {
 		return dataBuilderFactory;
 	}

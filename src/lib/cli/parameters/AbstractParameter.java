@@ -287,7 +287,7 @@ implements hasConditionParameter<T> {
 	}
 	
 	public IndexedFastaSequenceFile getReferenceFile() {
-		if (referenceFile == null && ! getReferenceFilename().isEmpty()) {
+		if (referenceFile == null && getReferenceFilename() != null && ! getReferenceFilename().isEmpty()) {
 			final File file = new File(getReferenceFilename());
 			try {
 				referenceFile = new IndexedFastaSequenceFile(file);

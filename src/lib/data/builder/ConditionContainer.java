@@ -125,24 +125,6 @@ public class ConditionContainer<T extends AbstractData> {
 	}
 	*/
 
-	/* TODO move somewhere else
-	public boolean hasNext() {
-		while (checkReferenceWithinWindow()) {
-			if (! isCovered(referenceAdvancer.getCurrentCoordinate())) {
-				// TODO make it faster
-				
-				if (! advance()) {
-					return false;
-				}
-			} else {
-				return true;
-			}
-		}
-
-		return false;
-	}
-	*/ 
-
 	public AbstractParameter<T, ?> getParameter() {
 		return parameter;
 	}
