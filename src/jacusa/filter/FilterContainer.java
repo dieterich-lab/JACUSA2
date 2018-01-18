@@ -1,22 +1,15 @@
 package jacusa.filter;
 
-import htsjdk.samtools.CigarOperator;
+import jacusa.filter.cache.FilterCache;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import jacusa.filter.storage.AbstractCacheStorage;
-import jacusa.filter.storage.ProcessAlignmentBlock;
-import jacusa.filter.storage.ProcessAlignmentOperator;
-import jacusa.filter.storage.ProcessDeletionOperator;
-import jacusa.filter.storage.ProcessInsertionOperator;
-import jacusa.filter.storage.ProcessRecord;
-import jacusa.filter.storage.ProcessSkippedOperator;
-import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.tmp.CoordinateController;
 
 /**
  * 
@@ -25,45 +18,25 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
  */
 public class FilterContainer<T extends AbstractData> {
 
-	private FilterConfig<T> filterConfig;
+	private final FilterConfig<T> filterConfig;
+	private final CoordinateController coordinateController;
 
-	private AbstractConditionParameter<T> conditionParameter;
-	
-	private Map<Character,AbstractFilter<T>> filters;
-	private Map<Character,AbstractCacheStorage<?>> windowStorage;
+	private final Map<Character, AbstractFilter<T>> filters;
+	private final Map<Character, AbstractDataFilter<T, ?>> dataFilters;
 
 	private int overhang;
 
-	private Map<Character,ProcessRecord> processRecord;
-	private Map<Character,ProcessAlignmentOperator> processAlignment;
-	private Map<Character,ProcessAlignmentBlock> processAlignmentBlock;
-	private Map<Character,ProcessDeletionOperator> processDeletion;
-	private Map<Character,ProcessInsertionOperator> processInsertion;
-	private Map<Character,ProcessSkippedOperator> processSkipped;
-	
-	public FilterContainer(final FilterConfig<T> filterConfig, 
-			final AbstractConditionParameter<T> conditionParameter) {
-		this.filterConfig 		= filterConfig;
-		this.conditionParameter	= conditionParameter;
-		
-		overhang 				= 0;
+	public FilterContainer(final FilterConfig<T> filterConfig,
+			final CoordinateController coordinateController) {
 
-		final int initialCapacity = 3;
-		filters					= new HashMap<Character,AbstractFilter<T>>(initialCapacity);
-		windowStorage			= new HashMap<Character,AbstractCacheStorage<?>>(initialCapacity);
-		
-		processRecord 			= new HashMap<Character,ProcessRecord>(initialCapacity);
-		processAlignment		= new HashMap<Character,ProcessAlignmentOperator>(initialCapacity);
-		processAlignmentBlock	= new HashMap<Character,ProcessAlignmentBlock>(initialCapacity);
-		processDeletion			= new HashMap<Character,ProcessDeletionOperator>(initialCapacity);
-		processInsertion		= new HashMap<Character,ProcessInsertionOperator>(initialCapacity);
-		processSkipped			= new HashMap<Character,ProcessSkippedOperator>(initialCapacity);
-	}
-	
-	public void clear() {
-		for (final AbstractCacheStorage<?> storage : windowStorage.values()) {
-			storage.clear();
-		}
+		this.filterConfig 			= filterConfig;
+		this.coordinateController 	= coordinateController;
+
+		overhang 					= 0;
+
+		final int initialCapacity 	= 3;
+		filters						= new HashMap<Character, AbstractFilter<T>>(initialCapacity);
+		dataFilters					= new HashMap<Character, AbstractDataFilter<T, ?>>(initialCapacity);
 	}
 
 	public int getOverhang() {
@@ -73,78 +46,45 @@ public class FilterContainer<T extends AbstractData> {
 	public FilterConfig<T> getFilterConfig() {
 		return filterConfig;
 	}
-
 	
-	public Collection<ProcessRecord> getProcessRecord() {
-		return processRecord.values();
-	}
-	
-	public void registerProcessRecord(final ProcessRecord e) {
-		processRecord.put(e.getC(), e);
-	}
-	
-	public Collection<ProcessAlignmentOperator> getProcessAlignment() {
-		return processAlignment.values();
-	}
-	
-	public void registerProcessAlignment(final ProcessAlignmentOperator e) {
-		processAlignment.put(e.getC(), e);
-	}
-	
-	public Collection<ProcessAlignmentBlock> getProcessAlignmentBlock() {
-		return processAlignmentBlock.values();
-	}
-	
-	public void registerProcessAlignmentBlock(final ProcessAlignmentBlock e) {
-		processAlignmentBlock.put(e.getC(), e);
-	}
-	
-	public Collection<ProcessDeletionOperator> getProcessDeletion() {
-		return processDeletion.values();
-	}
-	
-	public void registerProcessDeletion(final ProcessDeletionOperator e) {
-		processDeletion.put(e.getC(), e);
-	}
-	
-	public Collection<ProcessInsertionOperator> getProcessInsertion() {
-		return processInsertion.values();
-	}
-	
-	public void registerProcessInsertion(final ProcessInsertionOperator e) {
-		processInsertion.put(e.getC(), e);
-	}
-	
-	public Collection<ProcessSkippedOperator> getProcessSkipped() {
-		return processSkipped.values();
+	public CoordinateController getCoordinateController() {
+		return coordinateController;
 	}
 
-	public void registerProcessSkipped(final ProcessSkippedOperator e) {
-		processSkipped.put(e.getC(), e);
-	}
-	
-	public AbstractCacheStorage<?> getStorage(final char c) {
-		return windowStorage.get(c);
+	public void clear() {
+		for (final AbstractDataFilter<T, ?> dataFilter : dataFilters.values()) {
+			dataFilter.clear();
+		}
 	}
 
-	public void registerStorage(final AbstractCacheStorage<?> e) {
-		windowStorage.put(e.getC(), e);
-	}
-	
-	public void add(AbstractFilter<T> filter) {
+	public void addFilter(final AbstractFilter<T> filter) {
 		filters.put(filter.getC(), filter);
 	}
+
+	public void addDataFilter(final AbstractDataFilter<T, ?> dataFilter) {
+		filters.put(dataFilter.getC(), dataFilter);
+		dataFilters.put(dataFilter.getC(), dataFilter);
+	}
 	
-	public AbstractConditionParameter<T> getConditionParameter() {
-		return conditionParameter;
+	public void addRecordWrapper(final char c, 
+			final int conditionIndex, final int replicateIndex, final SAMRecordWrapper recordWrapper) {
+		
+		final AbstractDataFilter<T, ?> dataFilter = dataFilters.get(c);
+		dataFilter.getFilterCache(conditionIndex, replicateIndex).addRecordWrapper(recordWrapper);
 	}
 
-	public Set<CigarOperator> getCigarOperators() {
-		return null; // TODo
+	public List<FilterCache<?>> getFilterCaches(final int conditionIndex, final int replicateIndex) {
+		final List<FilterCache<?>> filterCaches = new ArrayList<FilterCache<?>>();
+
+		for (final AbstractDataFilter<T, ?> dataFilter : dataFilters.values()) {
+			filterCaches.add(dataFilter.getFilterCache(conditionIndex, replicateIndex));
+		}
+
+		return filterCaches;
 	}
-	
-	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
-		// TODO
+
+	public List<AbstractFilter<T>> getFilters() {
+		return new ArrayList<AbstractFilter<T>>(filters.values());
 	}
 	
 }

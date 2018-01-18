@@ -19,20 +19,24 @@ nucleotide variants (SNVs) from comparing matched sequencing samples.
 
 package jacusa;
 
+import jacusa.cli.parameters.LinkageRTArrestParameter;
 import jacusa.cli.parameters.PileupParameter;
 import jacusa.cli.parameters.RTArrestParameter;
 import jacusa.method.call.OneConditionCallFactory;
 import jacusa.method.call.TwoConditionCallFactory;
 import jacusa.method.pileup.PileupFactory;
+import jacusa.method.rtarrest.LinkageRTArrestFactory;
 import jacusa.method.rtarrest.RTArrestFactory;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import lib.data.BaseCallReadInfoData;
+import lib.data.ReadInfoExtendedData;
 import lib.data.PileupData;
+import lib.data.generator.BaseCallReadInfoExtendedDataGenerator;
 import lib.data.generator.DataGenerator;
 import lib.data.generator.PileupDataGenerator;
 import lib.data.generator.BaseCallReadInfoDataGenerator;
@@ -52,7 +56,7 @@ public class JACUSA extends AbstractTool {
 	protected Map<String, AbstractMethodFactory<?, ?>> getMethodFactories() {
 		// container for available methods (e.g.: call, pileup)
 		final Map<String, AbstractMethodFactory<?, ?>> methodFactories = 
-				new TreeMap<String, AbstractMethodFactory<?, ?>>();
+				new LinkedHashMap<String, AbstractMethodFactory<?, ?>>();
 
 		final List<AbstractMethodFactory<?, ?>> factories = new ArrayList<AbstractMethodFactory<?, ?>>(10);
 		// calling variants
@@ -67,6 +71,10 @@ public class JACUSA extends AbstractTool {
 		factories.add(new RTArrestFactory<BaseCallReadInfoData>(new RTArrestParameter<BaseCallReadInfoData>(2), 
 				baseCallReadInfoGenerator));
 
+		DataGenerator<ReadInfoExtendedData> baseCallReadInfoExtendedGenerator = new BaseCallReadInfoExtendedDataGenerator();
+		factories.add(new LinkageRTArrestFactory<ReadInfoExtendedData>(new LinkageRTArrestParameter<ReadInfoExtendedData>(2), 
+				baseCallReadInfoExtendedGenerator));
+		
 		for (final AbstractMethodFactory<?, ?> factory : factories) {
 			methodFactories.put(factory.getName(), factory);
 		}

@@ -1,6 +1,6 @@
 package lib.cli.options;
 
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -31,7 +31,7 @@ public class ThreadWindowSizeOption extends AbstractACOption {
 		if (line.hasOption(getOpt())) {
 	    	String value = line.getOptionValue(getOpt());
 	    	int windowSize = Integer.parseInt(value);
-	    	if (windowSize != NO_WINDOWS && windowSize < 100) { // TODO make check when variables set ensure windowSize << threadWindowSize
+	    	if (windowSize != NO_WINDOWS && windowSize < 100) {
 	    		throw new IllegalArgumentException("THREAD-WINDOW-SIZE too small: " + windowSize);
 	    	}
 

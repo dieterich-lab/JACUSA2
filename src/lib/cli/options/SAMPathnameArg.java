@@ -5,7 +5,7 @@ import htsjdk.samtools.SamFiles;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
 
 public class SAMPathnameArg {
 

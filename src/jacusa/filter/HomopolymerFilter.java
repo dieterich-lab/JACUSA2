@@ -1,80 +1,51 @@
 package jacusa.filter;
 
-import jacusa.filter.counts.AbstractBaseCallCountFilter;
-import jacusa.filter.counts.MinCountFilter;
-import jacusa.filter.factory.AbstractFilterFactory;
+import java.util.List;
+
+import jacusa.filter.cache.FilterCache;
+import jacusa.filter.factory.AbstractDataFilterFactory;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.BaseCallCount;
 import lib.data.ParallelData;
-import lib.data.builder.ConditionContainer;
 import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasHomopolymerInfo;
 import lib.data.has.hasReferenceBase;
+import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.util.coordinate.Coordinate;
 
-public class HomopolymerFilter<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
-extends AbstractFilter<T> {
+public class HomopolymerFilter<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasHomopolymerInfo> 
+extends AbstractDataFilter<T, F> {
 
-	private AbstractBaseCallCountFilter<T, F> countFilter;
-
-	public HomopolymerFilter(final char c, final int length, final AbstractFilterFactory<T, F> filterFactory) {
-		super(c);
-
-		countFilter = new MinCountFilter<T, F>(1, filterFactory);
-	}
-
-	@Override
-	protected boolean filter(final ParallelData<T> parallelData, final ConditionContainer<T> conditionContainer) {
-		final int[] variantBaseIndexs = countFilter.getVariantBaseIndexs(parallelData);
-		if (variantBaseIndexs.length == 0) {
-			return false;
-		}
-
-		/* TODO
-		// get position from result
-		final Coordinate coordinate = parallelData.getCoordinate();
-		final int genomicPosition = coordinate.getStart();
-		final byte referenceBase = result.getParellelData().getCombinedPooledData().getReferenceBase();
-		*/
-
-		final ParallelData<F> parallelFilteredData = null;
-		/* TODO
-		 * 
-		// create container [condition][replicates]
-		final PileupData[][] baseQualData = new PileupData[parallelData.getConditions()][];
+	public HomopolymerFilter(final char c, 
+			final int minPolymerLength, 
+			final AbstractParameter<T, ?> parameter,
+			final AbstractDataFilterFactory<T, F> dataFilterFactory, 
+			final List<List<FilterCache<F>>> conditionFilterCaches) {
 		
-		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
-			// filter container per condition
-			List<UnstrandedFilterContainer<T>> filterContainers = windowIterator
-					.getConditionContainer()
-					.getReplicatContainer(conditionIndex)
-					.getFilterContainers(coordinate);
-
-			// replicates for condition
-			int replicates = filterContainers.size();
-			
-			// container for replicates of a condition
-			PileupData[] replicatesData = new PileupData[replicates];
-
-			// collect data from each replicate
-			for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
-				// replicate specific filter container
-				final UnstrandedFilterContainer<T> filterContainer = filterContainers.get(replicateIndex);
-				// filter storage associated with filter and replicate
-				final AbstractCacheStorage<T> storage = filterContainer.getStorage(getC());
-				// convert genomic to window/storage speficic coordinates
-				final int windowPosition = storage.getBaseCallCache().getWindowCoordinates().convert2WindowPosition(genomicPosition);
-
-				PileupData replicateData = new PileupData(coordinate, referenceBase, filterContainer.getCondition().getLibraryType());
-				replicateData.setBaseQualCount(storage.getBaseCallCache().getBaseCallCount(windowPosition).copy());
-				replicatesData[replicateIndex] = replicateData;
+		super(c, minPolymerLength, parameter, dataFilterFactory, conditionFilterCaches);
+	}
+	
+	@Override
+	protected boolean filter(final ParallelData<T> parallelData) {
+		final Coordinate coordinate = parallelData.getCoordinate();
+		final int[] variantBaseIndexs = ParallelData.getVariantBaseIndexs(parallelData);
+		
+		for (int variantBaseIndex : variantBaseIndexs) {
+			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
+				for (int replicateIndex = 0; replicateIndex < parallelData.getReplicates(conditionIndex); replicateIndex++) {
+					final BaseCallCount baseCallCount = parallelData.getData(conditionIndex, replicateIndex).getBaseCallCount();
+					if (baseCallCount.getBaseCallCount(variantBaseIndex) > 0) {
+						final LIBRARY_TYPE libraryFype = parallelData.getData(conditionIndex, replicateIndex).getLibraryType();
+						if (getFilteredData(coordinate, libraryFype, conditionIndex, replicateIndex).isHomopolymer()) {
+							return true;
+						}	
+					}
+				}
 			}
 		}
-		*/
 		
-		return countFilter.filter(variantBaseIndexs, parallelData, parallelFilteredData);
-	}
-
-	@Override
-	public int getOverhang() {
-		return 0;
+		return false;
 	}
 	
 }

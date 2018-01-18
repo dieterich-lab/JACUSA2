@@ -6,7 +6,7 @@ import java.util.Iterator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
 
-// FIXME
+// FIXME overlapping windows
 public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 
 	private SAMRecordWrapperIteratorProvider provider;

@@ -7,8 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lib.cli.parameters.AbstractConditionParameter;
 import lib.data.AbstractData;
+import lib.data.builder.ConditionContainer;
+import lib.tmp.CoordinateController;
 
 /**
  * 
@@ -17,10 +18,10 @@ import lib.data.AbstractData;
  */
 public class FilterConfig<T extends AbstractData> implements Cloneable {
 
-	private final Map<Character, AbstractFilterFactory<T, ?>> c2factory;
+	private final Map<Character, AbstractFilterFactory<T>> c2factory;
 	
 	public FilterConfig() {
-		c2factory = new HashMap<Character, AbstractFilterFactory<T, ?>>(6);
+		c2factory = new HashMap<Character, AbstractFilterFactory<T>>(6);
 	}
 
 	/**
@@ -28,7 +29,7 @@ public class FilterConfig<T extends AbstractData> implements Cloneable {
 	 * @param filterFactory
 	 * @throws Exception
 	 */
-	public void addFactory(final AbstractFilterFactory<T, ?> filterFactory) throws Exception {
+	public void addFactory(final AbstractFilterFactory<T> filterFactory) throws Exception {
 		final char c = filterFactory.getC();
 
 		if (c2factory.containsKey(c)) {
@@ -38,19 +39,18 @@ public class FilterConfig<T extends AbstractData> implements Cloneable {
 		}
 	}
 
+	/*
 	/**
 	 * Create CountFilterCache for each available filter.
 	 * Info: some filters might not need the cache
 	 * 
 	 * @return
 	 */
-	public FilterContainer<T> createFilterContainer(final AbstractConditionParameter<T> conditionParameter) {
-		final FilterContainer<T> filterContainer = new FilterContainer<T>(this, conditionParameter);
-	
-		for (final AbstractFilterFactory<T, ?> filterFactory : c2factory.values()) {
-			filterFactory.registerFilter(filterContainer);
+	public FilterContainer<T> createFilterInstances(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
+		final FilterContainer<T> filterContainer = new FilterContainer<T>(this, coordinateController);
+		for (final AbstractFilterFactory<T> filterFactory : c2factory.values()) {
+			filterFactory.registerFilter(coordinateController, conditionContainer);
 		}
-		
 		return filterContainer;
 	}
 
@@ -62,8 +62,8 @@ public class FilterConfig<T extends AbstractData> implements Cloneable {
 		return c2factory.containsKey(c);
 	}
 	
-	public List<AbstractFilterFactory<T, ?>> getFilterFactories() {
-		return new ArrayList<AbstractFilterFactory<T, ?>>(c2factory.values());
+	public List<AbstractFilterFactory<T>> getFilterFactories() {
+		return new ArrayList<AbstractFilterFactory<T>>(c2factory.values());
 	}
 	
 }

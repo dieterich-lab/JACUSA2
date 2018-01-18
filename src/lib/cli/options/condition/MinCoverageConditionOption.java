@@ -2,7 +2,7 @@ package lib.cli.options.condition;
 
 import java.util.List;
 
-import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 
 import org.apache.commons.cli.CommandLine;

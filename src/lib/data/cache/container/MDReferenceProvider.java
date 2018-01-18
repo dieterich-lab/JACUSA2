@@ -21,7 +21,6 @@ public class MDReferenceProvider implements ReferenceProvider {
 	}
 
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
-
 		for (final AlignmentBlock currentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
 
 			final int refPos = currentBlock.getReferenceStart();	

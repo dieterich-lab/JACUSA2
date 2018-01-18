@@ -1,6 +1,6 @@
 package jacusa.io.writer;
 
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.hasPileupCount;
@@ -18,6 +18,11 @@ extends BEDlikeResultWriter<T, R> {
 		final ParallelData<T> parallelData = result.getParellelData();
 		final int coverage = parallelData.getCombinedPooledData().getCoverage();
 		return Integer.toString(coverage);
+	}
+	
+	@Override
+	protected String getFieldName() {
+		return "pileup";
 	}
 	
 }

@@ -41,6 +41,10 @@ implements hasCoverage {
 		return coverage;
 	}
 	
+	public int[] getBaseCallCount() {
+		return baseCallCount;
+	}
+	
 	public int getBaseCallCount(final int baseIndex) {
 		return baseCallCount[baseIndex];
 	}
@@ -56,7 +60,7 @@ implements hasCoverage {
 			}
 		}
 	}
-
+	
 	public void set(final int baseIndex, final int count) {
 		baseCallCount[baseIndex] = count;
 	}

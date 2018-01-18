@@ -2,8 +2,8 @@ package jacusa.cli.options.librarytype;
 
 import java.util.ArrayList;
 
-import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasPileupCount;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;

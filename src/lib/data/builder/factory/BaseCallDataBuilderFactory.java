@@ -3,11 +3,11 @@ package lib.data.builder.factory;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.cache.BaseCallCache;
-import lib.data.cache.Cache;
+import lib.data.cache.BaseCallDataCache;
+import lib.data.cache.DataCache;
 import lib.data.has.hasBaseCallCount;
 import lib.tmp.CoordinateController;
 
@@ -18,16 +18,14 @@ extends AbstractDataBuilderFactory<T> {
 		super(generalParameter);
 	}
 	
-	protected List<Cache<T>> createCaches(final CoordinateController coordinateController, 
+	protected List<DataCache<T>> createDataCaches(final CoordinateController coordinateController, 
 			final AbstractConditionParameter<T> conditionParameter) {
 
-		final List<Cache<T>> caches = new ArrayList<Cache<T>>(3);
-		caches.add(
-				new BaseCallCache<T>(
-						conditionParameter.getMaxDepth(), 
-						conditionParameter.getMinBASQ(), 
+		final List<DataCache<T>> dataCaches = new ArrayList<DataCache<T>>(3);
+		dataCaches.add(
+				new BaseCallDataCache<T>(conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), 
 						getParameter().getBaseConfig(), coordinateController));
-		return caches;
+		return dataCaches;
 	}
 	
 }

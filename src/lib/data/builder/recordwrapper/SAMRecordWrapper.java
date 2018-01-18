@@ -63,23 +63,6 @@ public class SAMRecordWrapper {
 		return referencePosition >= record.getAlignmentStart() && 
 				referencePosition <= record.getAlignmentEnd();
 	}
-	
-	/*
-	public char getBaseCall(final int referencePosition) {
-		final int offset = referencePosition - record.getAlignmentStart();
-		return (char)baseCalls[offset];
-	}
-	
-	public byte getBaseQuality(final int referencePosition) {
-		final int offset = referencePosition - record.getAlignmentStart();
-		return baseQualities[offset];
-	}
-
-	public int getReadPositionAtReferencePosition(final int referencePosition) {
-		final int offset = referencePosition - record.getAlignmentStart();
-		return referencePosition2readPosition[offset];
-	}
-	*/
 
 	public byte[] getReference() {
 		if (reference != null) {
@@ -94,14 +77,8 @@ public class SAMRecordWrapper {
 		// potential missing number(s)
 		final String MD = "0" + record.getStringAttribute(SAMTag.MD.name()).toUpperCase();
 	
-		int mappedLength = 0;
-		for (final AlignmentBlock block : record.getAlignmentBlocks()) {
-			mappedLength += block.getLength();
-		}
-		
 		// init container size with read length
-		reference = new byte[mappedLength];
-		int destPos = 0;
+		reference = new byte[record.getReadLength()];
 		// copy read sequence to reference container / concatenate mapped segments ignore DELs
 		for (final AlignmentBlock block : record.getAlignmentBlocks()) {
 			final int srcPos = block.getReadStart() - 1;
@@ -110,9 +87,8 @@ public class SAMRecordWrapper {
 					record.getReadBases(), 
 					srcPos, 
 					reference, 
-					destPos, 
+					srcPos, 
 					length);
-			destPos += length;
 		}
 	
 		int position = 0;
@@ -149,9 +125,7 @@ public class SAMRecordWrapper {
 		// process CIGAR -> SNP, INDELs
 		for (final CigarElement cigarElement : record.getCigar().getCigarElements()) {
 			
-			cigarElementWrappers.add(new CigarElementWrapper(position.clone(), cigarElement));
-			
-			switch(cigarElement.getOperator()) {
+			switch (cigarElement.getOperator()) {
 
 			/*
 			 * handle insertion
@@ -209,6 +183,32 @@ public class SAMRecordWrapper {
 
 	public String toString() {
 		return record.toString();
+	}
+	
+	public int getUpstreamMatch(final int index) {
+		if (index == 0) {
+			return 0;
+		}
+		
+		final CigarElementWrapper upstream = cigarElementWrappers.get(index - 1);
+		if (! upstream.getCigarElement().getOperator().isAlignment()) {
+			return 0;
+		}
+		
+		return upstream.getCigarElement().getLength();
+	}
+	
+	public int getDownstreamMatch(final int index) {
+		if (index == cigarElementWrappers.size() - 1) {
+			return 0;
+		}
+		
+		final CigarElementWrapper downstream = cigarElementWrappers.get(index + 1);
+		if (! downstream.getCigarElement().getOperator().isAlignment()) {
+			return 0;
+		}
+		
+		return downstream.getCigarElement().getLength();
 	}
 	
 	public class Position {

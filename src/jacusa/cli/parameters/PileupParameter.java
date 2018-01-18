@@ -1,9 +1,9 @@
 package jacusa.cli.parameters;
 
 import jacusa.io.writer.BED6pileupResultFormat;
-import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
-import lib.cli.parameters.JACUSAConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.JACUSAConditionParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasPileupCount;
 import lib.data.result.DefaultResult;
@@ -29,8 +29,8 @@ extends AbstractParameter<T, DefaultResult<T>> {
 	}
 	
 	@Override
-	public AbstractConditionParameter<T> createConditionParameter() {
-		return new JACUSAConditionParameter<T>();
+	public AbstractConditionParameter<T> createConditionParameter(final int conditionIndex) {
+		return new JACUSAConditionParameter<T>(conditionIndex);
 	}
 	
 }

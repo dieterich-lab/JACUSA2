@@ -7,6 +7,7 @@ import java.util.List;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.ReferenceSegment.TYPE;
 
+// FIXME segments not working
 public class ReferenceSegmentContainer {
 
 	private final int activeWindowSize;
@@ -37,7 +38,7 @@ public class ReferenceSegmentContainer {
 		final int id = winPos2id[windowPosition];
 		return segments.get(id);
 	}
-	
+
 	public void markCovered(final int windowPosition, final int readPosition, final int length, 
 			final SAMRecordWrapper recordWrapper) {
 
@@ -84,7 +85,7 @@ public class ReferenceSegmentContainer {
 		final int end = windowPosition + length;
 
 		// create new or extends previous covered segment
-		final ReferenceSegment previousCovered = getPreviousCovered(unknown);
+		final ReferenceSegment previousCovered = getPreviousCovered(windowPosition, end);
 		if (previousCovered != null) {
 			// extend previous covered
 			updateEnd(previousCovered, end, readPosition, recordWrapper);
@@ -106,10 +107,10 @@ public class ReferenceSegmentContainer {
 		final int end = windowPosition + length;
 		
 		// create new or extend previous covered segment
-		final ReferenceSegment previousCovered = getPreviousCovered(notCovered);
+		final ReferenceSegment previousCovered = getPreviousCovered(windowPosition, end);
 		if (previousCovered != null) {
 			// is the next segment covered too? 
-			final ReferenceSegment nextCovered = getNextCovered(notCovered);
+			final ReferenceSegment nextCovered = getNextCovered(windowPosition, end);
 			if (nextCovered != null) {
 				mergeCovered(previousCovered, nextCovered, readPosition, recordWrapper);
 			} else {
@@ -120,7 +121,7 @@ public class ReferenceSegmentContainer {
 			}
 		} else {
 			// is the next segment covered? 
-			final ReferenceSegment nextCovered = getNextCovered(notCovered);
+			final ReferenceSegment nextCovered = getNextCovered(windowPosition, end);
 			if (nextCovered != null) {
 				// extend adjacent covered segment
 				updateStart(nextCovered, windowPosition);
@@ -269,25 +270,31 @@ public class ReferenceSegmentContainer {
 	}
 	
 	private void setReference(final int windowStart, final int readStart, final int length, SAMRecordWrapper recordWrapper) {
+		//try{
+			System.arraycopy(recordWrapper.getReference(), readStart, reference, windowStart, length);
+		//} catch (ArrayIndexOutOfBoundsException e) {
+		//	int i = 0;
+		//	i++;
+		//}
 	}
 	
 	public int getNextId() {
 		return segments.size();
 	}
 	
-	private ReferenceSegment getPreviousCovered(final ReferenceSegment current) {
-		if (current.getStart() <= 0) {
+	private ReferenceSegment getPreviousCovered(final int start, final int end) {
+		if (start <= 0) {
 			return null;
 		}
-		final ReferenceSegment previous = get(current.getStart() - 1);
+		final ReferenceSegment previous = get(start - 1);
 		return previous.getType() == TYPE.COVERED ? previous : null;
 	}
 
-	private ReferenceSegment getNextCovered(final ReferenceSegment current) {
-		if (current.getEnd() >= activeWindowSize) {
+	private ReferenceSegment getNextCovered(final int start, final int end) {
+		if (end >= activeWindowSize) {
 			return null;
 		}
-		final ReferenceSegment next = get(current.getEnd());
+		final ReferenceSegment next = get(end);
 		return next.getType() == TYPE.COVERED ? next : null;
 	}
 

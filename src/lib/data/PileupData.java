@@ -19,7 +19,7 @@ implements hasPileupCount {
 	
 	public PileupData(final PileupData pileupData) {
 		super(pileupData);
-		this.pileupCount = pileupData.pileupCount .copy();
+		this.pileupCount = pileupData.pileupCount.copy();
 		this.effectiveStrand = pileupData.effectiveStrand;
 	}
 	
@@ -63,7 +63,11 @@ implements hasPileupCount {
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("Library type: ");
-		sb.append(getLibraryType().toString());
+		if (getLibraryType() != null) {
+			sb.append(getLibraryType().toString());
+		} else {
+			sb.append("null");
+		}
 		sb.append('\n');
 
 		sb.append("Base count: ");

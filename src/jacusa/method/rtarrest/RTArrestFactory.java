@@ -60,11 +60,6 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 				rtArrestParameter, new BaseCallReadInfoDataBuilderFactory<T>(rtArrestParameter), dataGenerator);
 	}
 
-	@Override
-	public boolean checkState() {
-		return true;
-	}
-
 	protected void initGlobalACOptions() {
 		// result format
 		if (getResultFormats().size() == 1 ) {
@@ -130,14 +125,14 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 		return statistics;
 	}
 
-	public Map<Character, AbstractFilterFactory<T, ?>> getFilterFactories() {
-		final Map<Character, AbstractFilterFactory<T, ?>> abstractPileupFilters = 
-				new HashMap<Character, AbstractFilterFactory<T, ?>>();
+	public Map<Character, AbstractFilterFactory<T>> getFilterFactories() {
+		final Map<Character, AbstractFilterFactory<T>> abstractPileupFilters = 
+				new HashMap<Character, AbstractFilterFactory<T>>();
 
-		List<AbstractFilterFactory<T, ?>> filterFactories = 
-				new ArrayList<AbstractFilterFactory<T, ?>>(5);
+		List<AbstractFilterFactory<T>> filterFactories = 
+				new ArrayList<AbstractFilterFactory<T>>(5);
 
-		for (final AbstractFilterFactory<T, ?> filterFactory : filterFactories) {
+		for (final AbstractFilterFactory<T> filterFactory : filterFactories) {
 			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
 		}
 

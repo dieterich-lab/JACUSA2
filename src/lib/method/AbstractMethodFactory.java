@@ -7,8 +7,8 @@ import java.util.List;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.SAMPathnameArg;
-import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.data.generator.DataGenerator;
@@ -54,6 +54,7 @@ implements DataGenerator<T> {
 			final AbstractParameter<T, R> parameters,
 			final AbstractDataBuilderFactory<T> dataBuilderFactory,
 			final DataGenerator<T> dataGenerator) {
+
 		this.name = name;
 		this.desc = desc;
 		this.dataBuilderFactory = dataBuilderFactory;
@@ -97,7 +98,14 @@ implements DataGenerator<T> {
 	protected abstract void initGlobalACOptions();
 	
 	// check state after parameters have been set
-	public abstract boolean checkState();
+	final public boolean checkState() {
+		if (getParameter().getActiveWindowSize() >= getParameter().getReservedWindowSize()) {
+			AbstractTool.getLogger().addError("THREAD-WINDOW-SIZE must be << WINDOW-SIZE");
+			return false;
+		}
+		
+		return true;
+	}
 
 	public DataGenerator<T> getDataGenerator() {
 		return dataGenerator;

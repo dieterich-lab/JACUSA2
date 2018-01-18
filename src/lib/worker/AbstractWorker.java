@@ -1,14 +1,12 @@
 package lib.worker;
 
 import jacusa.filter.AbstractFilter;
-import jacusa.filter.FilterConfig;
-import jacusa.filter.factory.AbstractFilterFactory;
 
 import java.util.Iterator;
 import java.util.List;
 
-import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
@@ -60,14 +58,11 @@ implements Iterator<ParallelData<T>> {
 	}
 
 	protected boolean filter(final R result) {
-		final AbstractParameter<T, R> parameter = workerDispatcher.getMethodFactory().getParameter();
-		final FilterConfig<T> filterConfig = parameter.getFilterConfig();
 
 		boolean isFiltered = false;
 		// apply each filter
-		for (final AbstractFilterFactory<T, ?> filterFactory : filterConfig.getFilterFactories()) {
-			final AbstractFilter<T> filter = filterFactory.getFilter();
-			if (filter.applyFilter(result, getConditionContainer())) {
+		for (final AbstractFilter<T> filter : conditionContainer.getFilterContainer().getFilters()) {
+			if (filter.applyFilter(result)) {
 				isFiltered = true;
 			}
 		}

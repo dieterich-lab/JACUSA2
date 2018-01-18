@@ -4,7 +4,7 @@ import jacusa.filter.factory.AbstractFilterFactory;
 
 import java.util.Map;
 
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 
 import org.apache.commons.cli.CommandLine;
@@ -17,10 +17,10 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 	private static final char OR = ',';
 	//private static char AND = '&'; // Future Feature add logic
 
-	final private Map<Character, AbstractFilterFactory<T, ?>> filterFactories;
+	final private Map<Character, AbstractFilterFactory<T>> filterFactories;
 
 	public FilterConfigOption(final AbstractParameter<T, ?> parameter, 
-			final Map<Character, AbstractFilterFactory<T, ?>> filterFactories) {
+			final Map<Character, AbstractFilterFactory<T>> filterFactories) {
 		super("a", "pileup-filter");
 		this.parameters = parameter;
 
@@ -32,10 +32,10 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 		StringBuffer sb = new StringBuffer();
 
 		for (final char c : filterFactories.keySet()) {
-			final AbstractFilterFactory<T, ?> pileupFilterFactory = filterFactories.get(c);
-			sb.append(pileupFilterFactory.getC());
+			final AbstractFilterFactory<T> filterFactory = filterFactories.get(c);
+			sb.append(filterFactory.getC());
 			sb.append(" | ");
-			sb.append(pileupFilterFactory.getDesc());
+			sb.append(filterFactory.getDesc());
 			sb.append("\n");
 		}
 
@@ -60,7 +60,7 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 				if (! filterFactories.containsKey(c)) {
 					throw new IllegalArgumentException("Unknown SAM processing: " + c);
 				}
-				final AbstractFilterFactory<T, ?> filterFactory = filterFactories.get(c);
+				final AbstractFilterFactory<T> filterFactory = filterFactories.get(c);
 				if (a.length() > 1) {
 					filterFactory.processCLI(a);
 				}

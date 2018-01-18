@@ -4,7 +4,7 @@ package lib.io;
 import java.io.Closeable;
 import java.util.List;
 
-import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.result.Result;
 

@@ -3,11 +3,11 @@ package lib.data.builder.factory;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.cache.Cache;
-import lib.data.cache.PileupCountCache;
+import lib.data.cache.DataCache;
+import lib.data.cache.PileupCountDataCache;
 import lib.data.has.hasPileupCount;
 import lib.tmp.CoordinateController;
 
@@ -18,12 +18,12 @@ extends AbstractDataBuilderFactory<T> {
 		super(generalParameter);
 	}
 	
-	protected List<Cache<T>> createCaches(final CoordinateController coordinateController, 
+	protected List<DataCache<T>> createDataCaches(final CoordinateController coordinateController, 
 			final AbstractConditionParameter<T> conditionParameter) {
 
-		final List<Cache<T>> caches = new ArrayList<Cache<T>>(1);
+		final List<DataCache<T>> caches = new ArrayList<DataCache<T>>(1);
 		caches.add(
-				new PileupCountCache<T>(
+				new PileupCountDataCache<T>(
 						conditionParameter.getMaxDepth(), 
 						conditionParameter.getMinBASQ(), 
 						getParameter().getBaseConfig(), coordinateController));

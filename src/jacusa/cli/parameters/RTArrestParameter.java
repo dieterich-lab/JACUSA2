@@ -1,9 +1,9 @@
 package jacusa.cli.parameters;
 
 import jacusa.io.writer.BED6rtArrestResultFormat;
-import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
-import lib.cli.parameters.JACUSAConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.JACUSAConditionParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
@@ -23,8 +23,8 @@ implements hasStatisticCalculator<T> {
 	}
 
 	@Override
-	public AbstractConditionParameter<T> createConditionParameter() {
-		return new JACUSAConditionParameter<T>();
+	public AbstractConditionParameter<T> createConditionParameter(final int conditionIndex) {
+		return new JACUSAConditionParameter<T>(conditionIndex);
 	}
 	
 	@Override

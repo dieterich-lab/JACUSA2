@@ -11,10 +11,10 @@ public class SimpleGeneralCache implements GeneralCache {
 
 	private final CoordinateController coordinateController;
 
-	private final FileReferenceProvider referenceProvider;
+	private final ReferenceProvider referenceProvider;
 	private final NextPositionSegmentContainer segmentContainer;
 	
-	public SimpleGeneralCache(final FileReferenceProvider referenceProvider, 
+	public SimpleGeneralCache(final ReferenceProvider referenceProvider, 
 			final CoordinateController coordinateController) {
 		
 		this.coordinateController = coordinateController;

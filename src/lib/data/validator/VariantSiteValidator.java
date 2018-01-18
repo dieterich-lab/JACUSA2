@@ -20,9 +20,10 @@ implements ParallelDataValidator<T> {
 
 		// pick reference base by MD or by majority.
 		// all other bases will be converted in pileup2 to refBaseI
-		if (data.getReferenceBase() != 'N') {
-			byte referfenceBase = data.getReferenceBase();
-			final int refBaseIndex = BaseCallConfig.BASES[referfenceBase];
+		byte referenceBase = data.getReferenceBase();
+		if (referenceBase != 'N') {
+			
+			final int refBaseIndex = BaseCallConfig.getInstance().getBaseIndex(referenceBase);
 
 			// there has to be at least one non-reference base call in the data
 			return data.getBaseCallCount().getCoverage() - data.getBaseCallCount().getBaseCallCount(refBaseIndex) > 0;

@@ -5,9 +5,9 @@ import java.util.List;
 
 import htsjdk.samtools.SamReader;
 
-import jacusa.filter.FilterContainer;
-import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
+import jacusa.filter.cache.FilterCache;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIterator;
@@ -18,17 +18,22 @@ import lib.util.coordinate.Coordinate;
 
 public class ReplicateContainer<T extends AbstractData> {
 
+	private final ConditionContainer<T> conditionContainer;
+	
 	private final AbstractConditionParameter<T> conditionParameter;
 	private final AbstractParameter<T, ?> generalParameters;
 
 	private final List<SAMRecordWrapperIteratorProvider> iteratorProviders;
 	private final List<DataBuilder<T>> dataBuilders;
 	
-	public ReplicateContainer( 
+	public ReplicateContainer(
+			final ConditionContainer<T> conditionContainer,
 			final CoordinateController coordinateController,
 			final AbstractConditionParameter<T> conditionParameter,
 			final AbstractParameter<T, ?> parameter) {
 
+		this.conditionContainer = conditionContainer;
+		
 		this.conditionParameter = conditionParameter;
 		this.generalParameters = parameter;
 
@@ -77,17 +82,6 @@ public class ReplicateContainer<T extends AbstractData> {
 
 		return data;
 	}
-
-	public List<FilterContainer<T>> getFilterContainers() {
-		final int replicateSize = conditionParameter.getReplicateSize();
-		final List<FilterContainer<T>> filterContainers = new ArrayList<FilterContainer<T>>(replicateSize);
-		
-		for (final DataBuilder<T> dataBuilder : dataBuilders) {
-			filterContainers.add(dataBuilder.getFilterContainer());
-		}
-
-		return filterContainers;
-	}
 	
 	private List<DataBuilder<T>> createDataBuilders(
 			final CoordinateController coordinateController,
@@ -97,8 +91,11 @@ public class ReplicateContainer<T extends AbstractData> {
 		final List<DataBuilder<T>> dataBuilders = new ArrayList<DataBuilder<T>>(conditionParameter.getReplicateSize());
 
 		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); ++replicateIndex) {
+			final List<FilterCache<?>> filterCaches = 
+					conditionContainer.getFilterContainer().getFilterCaches(conditionParameter.getConditionIndex(), replicateIndex);
+			
 			final DataBuilder<T> builder = 
-					parameter.getMethodFactory().getDataBuilderFactory().newInstance(coordinateController, conditionParameter);
+					parameter.getMethodFactory().getDataBuilderFactory().newInstance(coordinateController, conditionParameter, filterCaches);
 			dataBuilders.add(builder);
 		}
 

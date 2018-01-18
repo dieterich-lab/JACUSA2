@@ -3,7 +3,7 @@ package jacusa.io.writer;
 import jacusa.cli.parameters.hasStatistic;
 import jacusa.io.copytmp.FileCopyTmpResult;
 
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
@@ -17,7 +17,7 @@ import lib.io.copytmp.CopyTmpResult;
 public class BED6rtArrestResultFormat<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadInfoCount, R extends Result<T> & hasStatistic> 
 extends AbstractResultFormat<T, R> {
 
-	public static final char CHAR = 'B';
+	public static final char CHAR = 'D';
 
 	private AbstractParameter<T, R> parameter;
 	
@@ -31,7 +31,7 @@ extends AbstractResultFormat<T, R> {
 	}
 
 	public BED6rtArrestResultFormat(final AbstractParameter<T, R> parameter) {
-		this(CHAR, "Default", parameter);
+		this(CHAR, "DEBUG", parameter);
 	}
 
 	@Override

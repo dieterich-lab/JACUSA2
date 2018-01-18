@@ -2,7 +2,7 @@ package lib.io;
 
 import jacusa.io.copytmp.FileCopyTmpResult;
 import jacusa.io.copytmp.FileCopyTmpSeparatedResult;
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.result.Result;
 import lib.io.copytmp.CopyTmpResult;

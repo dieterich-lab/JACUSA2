@@ -1,6 +1,9 @@
 package lib.cli.options;
 
-import lib.cli.parameters.AbstractParameter;
+import java.io.File;
+import java.nio.file.FileAlreadyExistsException;
+
+import lib.cli.parameter.AbstractParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -31,10 +34,13 @@ public class ResultFileOption extends AbstractACOption {
 	}
 
 	@Override
-	public void process(CommandLine line) throws Exception {
+	public void process(CommandLine line) throws FileAlreadyExistsException {
 		if (line.hasOption(getOpt())) {
 	    	final String resultFilename = line.getOptionValue(getOpt());
-	    	// TODO check overwriting file
+	    	final File file = new File(resultFilename);
+		 	if (file.exists()) {
+		 		// FIXME throw new FileAlreadyExistsException(resultFilename);
+		 	}
 	    	parameter.setResultFilename(resultFilename);
 	    }
 	}

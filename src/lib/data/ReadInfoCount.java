@@ -14,7 +14,7 @@ public class ReadInfoCount {
 
 	private int arrest;
 	private int through;
-	
+
 	public ReadInfoCount() {
 		start 	= 0;
 		inner 	= 0;

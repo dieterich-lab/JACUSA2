@@ -1,6 +1,6 @@
 package lib.cli.options;
 
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.io.AbstractResultFileFormat;
 
 import org.apache.commons.cli.CommandLine;

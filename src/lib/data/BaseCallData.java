@@ -13,12 +13,14 @@ implements hasBaseCallCount, hasReferenceBase {
 
 	public BaseCallData(final BaseCallData pileupData) {
 		super(pileupData);
+		referenceBase = pileupData.referenceBase;
 		this.baseCallCount = pileupData.baseCallCount.copy();
 	}
 	
-	public BaseCallData(final LIBRARY_TYPE libraryType, final Coordinate coordinate) {
+	public BaseCallData(final LIBRARY_TYPE libraryType, final Coordinate coordinate, final byte referenceBase) {
 		super(libraryType, coordinate);
 
+		this.referenceBase = referenceBase;
 		baseCallCount = new BaseCallCount();
 	}
 

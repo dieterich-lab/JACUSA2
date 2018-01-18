@@ -1,12 +1,12 @@
 package lib.data.builder;
 
-import jacusa.filter.FilterContainer;
+import jacusa.filter.cache.FilterCache;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.CacheContainer;
@@ -19,7 +19,7 @@ implements hasLibraryType {
 
 	private final DataGenerator<T> dataGenerator;
 	private final AbstractConditionParameter<T> conditionParameter;
-	private final FilterContainer<T> filterContainer;
+	private final List<FilterCache<?>> filterCaches;
 
 	private final LIBRARY_TYPE libraryType;
 	
@@ -31,11 +31,11 @@ implements hasLibraryType {
 			final AbstractConditionParameter<T> conditionParameter,
 			final LIBRARY_TYPE libraryType,
 			final CacheContainer<T> cacheContainer,
-			final FilterContainer<T> filterContainer) {
+			final List<FilterCache<?>> filterCaches) {
 		
 		this.dataGenerator = dataGenerator;
 		this.conditionParameter	= conditionParameter;
-		this.filterContainer = filterContainer;
+		this.filterCaches = filterCaches;
 
 		this.libraryType = libraryType;
 		
@@ -57,10 +57,8 @@ implements hasLibraryType {
 			// process filters and decode
 			recordWrapper.process();
 			cacheContainer.addRecordWrapper(recordWrapper);
-
-			// FIXME filters
-			if (filterContainer != null) { 
-				filterContainer.addRecordWrapper(recordWrapper);
+			for (FilterCache<?> filterCache : filterCaches) {
+				filterCache.addRecordWrapper(recordWrapper);
 			}
 			recordWrappers.add(recordWrapper);
 		}
@@ -72,7 +70,9 @@ implements hasLibraryType {
 	// Reset all caches in windows
 	public void clearCache() {
 		cacheContainer.clear();
-		filterContainer.clear();
+		for (FilterCache<?> filterCache : filterCaches) {
+			filterCache.clear();
+		}
 	}
 
 	public T getData(final Coordinate coordinate) {
@@ -83,10 +83,6 @@ implements hasLibraryType {
 	
 	public CacheContainer<T> getCacheContainer() {
 		return cacheContainer;
-	}
-	
-	public FilterContainer<T> getFilterContainer() {
-		return filterContainer;
 	}
 
 	public AbstractConditionParameter<T> getConditionParameter() {

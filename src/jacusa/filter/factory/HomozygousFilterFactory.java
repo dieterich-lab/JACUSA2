@@ -1,12 +1,12 @@
 package jacusa.filter.factory;
 
 import jacusa.filter.AbstractFilter;
-import jacusa.filter.FilterContainer;
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
 import lib.data.has.hasBaseCallCount;
+import lib.tmp.CoordinateController;
 
 /**
  * 
@@ -14,7 +14,7 @@ import lib.data.has.hasBaseCallCount;
  *
  */
 public class HomozygousFilterFactory<T extends AbstractData & hasBaseCallCount> 
-extends AbstractFilterFactory<T, T> {
+extends AbstractFilterFactory<T> {
 
 	// 
 	private int homozygousConditionIndex;
@@ -23,7 +23,7 @@ extends AbstractFilterFactory<T, T> {
 
 	public HomozygousFilterFactory(final AbstractParameter<T, ?> parameters) {
 		super('H', "Filter non-homozygous pileup/BAM in condition 1 or 2 " +
-				"(MUST be set to H:1 or H:2). Default: none", null);
+				"(MUST be set to H:1 or H:2). Default: none");
 		homozygousConditionIndex 	= 0;
 		this.parameters 			= parameters;
 	}
@@ -66,13 +66,8 @@ extends AbstractFilterFactory<T, T> {
 	}
 
 	@Override
-	public AbstractFilter<T> getFilter() {
-		return new HomozygousFilter(getC());
-	}
-
-	@Override
-	public void registerFilter(final FilterContainer<T> filterContainer) {
-		filterContainer.add(getFilter());
+	public void registerFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
+		conditionContainer.getFilterContainer().addFilter(new HomozygousFilter(getC()));
 	}
 	
 	private class HomozygousFilter 
@@ -83,7 +78,7 @@ extends AbstractFilterFactory<T, T> {
 		}
 
 		@Override
-		public boolean filter(final ParallelData<T> parallelData, final ConditionContainer<T> conditionContainer) {
+		public boolean filter(final ParallelData<T> parallelData) {
 			final int alleles = parallelData.getPooledData(homozygousConditionIndex)
 					.getBaseCallCount().getAlleles().length;
 
@@ -91,7 +86,9 @@ extends AbstractFilterFactory<T, T> {
 		}
 		
 		@Override
-		public int getOverhang() { return 0; }
+		public int getOverhang() { 
+			return 0; 
+		}
 
 	}
 	

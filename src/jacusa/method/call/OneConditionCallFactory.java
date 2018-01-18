@@ -31,12 +31,12 @@ extends CallFactory<T> {
 	}
 
 	@Override
-	public Map<Character, AbstractFilterFactory<T, ?>> getFilterFactories() {
-		Map<Character, AbstractFilterFactory<T, ?>> c2filterFactory = 
-				new HashMap<Character, AbstractFilterFactory<T, ?>>();
+	public Map<Character, AbstractFilterFactory<T>> getFilterFactories() {
+		Map<Character, AbstractFilterFactory<T>> c2filterFactory = 
+				new HashMap<Character, AbstractFilterFactory<T>>();
 
-		final List<AbstractFilterFactory<T, ?>> filterFactories = 
-				new ArrayList<AbstractFilterFactory<T, ?>>(5);
+		final List<AbstractFilterFactory<T>> filterFactories = 
+				new ArrayList<AbstractFilterFactory<T>>(5);
 		
 		final DataGenerator<BaseCallData> dataGenerator = new BaseCallDataGenerator();
 		filterFactories.add(new CombinedDistanceFilterFactory<T, BaseCallData>(dataGenerator));
@@ -45,7 +45,7 @@ extends CallFactory<T> {
 		filterFactories.add(new SpliceSiteDistanceFilterFactory<T, BaseCallData>(dataGenerator));
 		filterFactories.add(new MaxAlleleCountFilterFactory<T>());
 
-		for (final AbstractFilterFactory<T, ?> filterFactory : filterFactories) {
+		for (final AbstractFilterFactory<T> filterFactory : filterFactories) {
 			c2filterFactory.put(filterFactory.getC(), filterFactory);
 		}
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.cli.options.AbstractACOption;
-import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 
 public abstract class AbstractConditionACOption<T extends AbstractData> 

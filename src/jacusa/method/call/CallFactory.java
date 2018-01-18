@@ -112,11 +112,6 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 		addACOption(new DebugModusOption(getParameter()));
 	}
 	
-	@Override
-	public boolean checkState() {
-		return true;
-	}
-	
 	protected void initConditionACOptions() {
 		// for all conditions
 		addACOption(new MinMAPQConditionOption<T>(getParameter().getConditionParameters()));
@@ -162,12 +157,12 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 		return statistics;
 	}
 
-	public Map<Character, AbstractFilterFactory<T, ?>> getFilterFactories() {
-		final Map<Character, AbstractFilterFactory<T, ?>> abstractPileupFilters = 
-				new HashMap<Character, AbstractFilterFactory<T, ?>>();
+	public Map<Character, AbstractFilterFactory<T>> getFilterFactories() {
+		final Map<Character, AbstractFilterFactory<T>> abstractPileupFilters = 
+				new HashMap<Character, AbstractFilterFactory<T>>();
 
-		final List<AbstractFilterFactory<T, ?>> filterFactories = 
-				new ArrayList<AbstractFilterFactory<T, ?>>(10);
+		final List<AbstractFilterFactory<T>> filterFactories = 
+				new ArrayList<AbstractFilterFactory<T>>(10);
 		
 		final DataGenerator<BaseCallData> dataGenerator = new BaseCallDataGenerator();
 		filterFactories.add(new CombinedDistanceFilterFactory<T, BaseCallData>(dataGenerator));
@@ -178,7 +173,7 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 		filterFactories.add(new MaxAlleleCountFilterFactory<T>());
 		filterFactories.add(new HomopolymerFilterFactory<T, BaseCallData>(dataGenerator));
 
-		for (final AbstractFilterFactory<T,?> filterFactory : filterFactories) {
+		for (final AbstractFilterFactory<T> filterFactory : filterFactories) {
 			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
 		}
 

@@ -11,17 +11,17 @@ public class ComplexGeneralCache implements GeneralCache {
 
 	private final CoordinateController coordinateController;
 
-	private final MDReferenceProvider referenceProvider;
+	private final ReferenceProvider referenceProvider;
 	private final NextPositionSegmentContainer segmentContainer;
 	
-	public ComplexGeneralCache(final MDReferenceProvider referenceProvider, 
+	public ComplexGeneralCache(final ReferenceProvider referenceProvider, 
 			final CoordinateController coordinateController) {
 		
 		this.coordinateController = coordinateController;
 		
 		this.referenceProvider = referenceProvider;
 		segmentContainer = new NextPositionSegmentContainer(coordinateController.getActiveWindowSize());
-	
+		
 		clear();
 	}
 	
@@ -53,7 +53,7 @@ public class ComplexGeneralCache implements GeneralCache {
 	public byte getReference(int windowPosition) {
 		return referenceProvider.getReference(windowPosition);
 	}
-	
+
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		referenceProvider.addRecordWrapper(recordWrapper);

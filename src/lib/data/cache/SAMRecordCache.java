@@ -14,7 +14,7 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.has.hasRecordWrapper;
 
 public class SAMRecordCache<T extends AbstractData & hasRecordWrapper> 
-extends AbstractCache<T> {
+extends AbstractDataCache<T> {
 
 	private List<List<SAMRecordWrapper>> recordWrappers;
 
@@ -26,12 +26,6 @@ extends AbstractCache<T> {
 		}
 	}
 
-	@Override
-	public void addRecordWrapperPosition(final int readPosition, final SAMRecordWrapper recordWrapper) {
-		final int referencePosition = recordWrapper.getSAMRecord().getReferencePositionAtReadPosition(readPosition);
-		addSAMRecordWrappers(referencePosition, readPosition, 1, recordWrapper);
-	}
-
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		for (final AlignmentBlock block : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
 			addSAMRecordWrappers(block.getReferenceStart(), block.getReadStart() - 1, block.getLength(), recordWrapper);
@@ -40,7 +34,7 @@ extends AbstractCache<T> {
 		
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
-		final int windowPosition = coordinateController.convert2windowPosition(coordinate); 
+		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate); 
 		data.getRecordWrapper().addAll(recordWrappers.get(windowPosition));
 	}
 	
@@ -51,7 +45,7 @@ extends AbstractCache<T> {
 			throw new IllegalArgumentException("Reference Position cannot be < 0! -> outside of alignmentBlock");
 		}
 
-		final WindowPositionGuard windowPositionGuard = coordinateController.convert(referencePosition, readPosition, length);
+		final WindowPositionGuard windowPositionGuard = getCoordinateController().convert(referencePosition, readPosition, length);
 		
 		if (windowPositionGuard.getWindowPosition() < 0 && windowPositionGuard.getLength() > 0) {
 			throw new IllegalArgumentException("Window position cannot be < 0! -> outside of alignmentBlock");
@@ -71,12 +65,6 @@ extends AbstractCache<T> {
 
 	public List<SAMRecordWrapper> getRecordWrapper(final int windowPosition) {
 		return recordWrappers.get(windowPosition);
-	}
-
-	@Override
-	public void addRecordWrapperRegion(int readPosition, int length, SAMRecordWrapper recordWrapper) {
-		final int referencePosition = recordWrapper.getSAMRecord().getReferencePositionAtReadPosition(readPosition) - 1;
-		addSAMRecordWrappers(referencePosition, readPosition, length, recordWrapper);
 	}
 
 }

@@ -2,8 +2,8 @@ package jacusa.cli.options.librarytype;
 
 import java.util.List;
 
-import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
@@ -38,7 +38,7 @@ extends AbstractLibraryTypeOption<T> {
 	    	String s = line.getOptionValue(getOpt());
 	    	LIBRARY_TYPE libraryType = parse(s);
 	    	if (libraryType == null) {
-	    		throw new IllegalArgumentException("Possible values for " + getLongOpt().toUpperCase() + ":\n" + getPossibleValues());
+	    		throw new IllegalArgumentException("Unknown Library Type for for -" + getOpt() + " --" + getLongOpt().toUpperCase());
 	    	}
 	    	
 	    	for (final AbstractConditionParameter<T> conditionParameter : getConditionParameters()) {

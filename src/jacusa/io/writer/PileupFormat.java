@@ -1,7 +1,7 @@
 package jacusa.io.writer;
 
 import jacusa.io.copytmp.FileCopyTmpResult;
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasPileupCount;
 import lib.data.result.DefaultResult;

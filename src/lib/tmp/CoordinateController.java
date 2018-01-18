@@ -3,15 +3,15 @@ package lib.tmp;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 
-import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.container.ComplexGeneralCache;
 import lib.data.cache.container.FileReferenceProvider;
 import lib.data.cache.container.GeneralCache;
-import lib.data.cache.container.MDReferenceProvider;
 import lib.data.cache.container.ReferenceProvider;
 import lib.data.cache.container.SimpleGeneralCache;
+import lib.data.cache.container.SimpleMDReferenceProvider;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.location.CoordinateAdvancer;
 import lib.location.StrandedJumpingCoordinateAdvancer;
@@ -151,19 +151,28 @@ public class CoordinateController {
 		return new SimpleEntry<Integer, STRAND>(windowPosition, coordinate.getStrand());
 	}
 
-	public GeneralCache createGeneralCache() {
+	public GeneralCache getGeneralCache() {
 		if (parameter.getReferenceFile() == null) {
-			if (referenceProvider == null) {
-				referenceProvider = new MDReferenceProvider(this);	
-			}
-			return new ComplexGeneralCache((MDReferenceProvider)referenceProvider, this);
+			return new ComplexGeneralCache(getReferenceProvider(), this);
 		} 
+
+		return new SimpleGeneralCache(getReferenceProvider(), this);
+	}
+	
+	public ReferenceProvider getReferenceProvider() {
+		if (referenceProvider != null) {
+			return referenceProvider;
+		}
 		
-		if (referenceProvider == null) {
+		if (parameter.getReferenceFile() == null) {
+			referenceProvider = new SimpleMDReferenceProvider(this);
+		} else {
 			referenceProvider = new FileReferenceProvider(parameter.getReferenceFile(), this);
 		}
-		return new SimpleGeneralCache((FileReferenceProvider)referenceProvider, this);
+		
+		return referenceProvider;
 	}
+	
 	
 	public WindowPositionGuard convert(int referencePosition, int length) {
 		int windowPosition = referencePosition - active.getStart();
@@ -266,7 +275,7 @@ public class CoordinateController {
 			return readPosition + length;
 		}
 		
-		public int getReferencePosition() {
+		public int getReferenceEndPosition() {
 			return referencePosition + length;
 		}
 		

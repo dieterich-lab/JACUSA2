@@ -2,7 +2,7 @@ package jacusa.io.writer;
 
 import jacusa.cli.parameters.hasStatistic;
 
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
@@ -22,6 +22,11 @@ extends BEDlikeResultWriter<T, R> {
 	@Override
 	protected String getHeaderStat() {
 		return "pvalue";
+	}
+	
+	@Override
+	protected String getFieldName() {
+		return "arrest";
 	}
 	
 	@Override

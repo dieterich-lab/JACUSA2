@@ -15,8 +15,8 @@ implements hasReadInfoCount {
 		this.readInfoCount = data.readInfoCount.copy();
 	}
 	
-	public BaseCallReadInfoData(final LIBRARY_TYPE libraryType, final Coordinate coordinate) {
-		super(libraryType, coordinate);
+	public BaseCallReadInfoData(final LIBRARY_TYPE libraryType, final Coordinate coordinate, final byte referenceBase) {
+		super(libraryType, coordinate, referenceBase);
 
 		readInfoCount = new ReadInfoCount();
 	}

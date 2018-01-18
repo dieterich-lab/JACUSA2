@@ -9,7 +9,7 @@ public class BaseCallReadInfoDataGenerator implements
 
 	@Override
 	public BaseCallReadInfoData createData(LIBRARY_TYPE libraryType, Coordinate coordinate) {
-		return new BaseCallReadInfoData(libraryType, coordinate);
+		return new BaseCallReadInfoData(libraryType, coordinate, (byte)'N');
 	}
 	
 	@Override

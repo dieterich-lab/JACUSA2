@@ -108,7 +108,7 @@ public class CLI {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			methodFactory.printUsage();
+			// methodFactory.printUsage();
 			return false;
 		}
 

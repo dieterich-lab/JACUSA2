@@ -2,7 +2,7 @@ package lib.data.builder.recordwrapper;
 
 import java.io.IOException;
 
-import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.util.AbstractTool;
 import lib.util.coordinate.Coordinate;
 

@@ -19,7 +19,7 @@ extends AbstractDataGenerator<BaseCallData> {
 	
 	@Override
 	public BaseCallData createData(LIBRARY_TYPE libraryType, Coordinate coordinate) {
-		return new BaseCallData(libraryType, coordinate);
+		return new BaseCallData(libraryType, coordinate, (byte)'N');
 	}
 	
 	@Override

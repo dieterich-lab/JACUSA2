@@ -1,11 +1,11 @@
 package jacusa.filter.factory;
 
 import jacusa.filter.AbstractFilter;
-import jacusa.filter.FilterContainer;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
 import lib.data.has.hasBaseCallCount;
+import lib.tmp.CoordinateController;
 
 /**
  * 
@@ -13,27 +13,19 @@ import lib.data.has.hasBaseCallCount;
  *
  */
 public class MaxAlleleCountFilterFactory<T extends AbstractData & hasBaseCallCount> 
-extends AbstractFilterFactory<T, T> { // TODO <T, T> ??? <T> is enough
+extends AbstractFilterFactory<T> {
 
-	//
 	private static final int MAX_ALLELES = 2;
-	//
 	private int alleles;
 
-	// TODO null is okay?
 	public MaxAlleleCountFilterFactory() {
-		super('M', "Max allowed alleles per parallel pileup. Default: "+ MAX_ALLELES, null);
+		super('M', "Max allowed alleles per parallel pileup. Default: "+ MAX_ALLELES);
 		alleles = MAX_ALLELES;
 	}
 
 	@Override
-	public AbstractFilter<T> getFilter() {
-		return new MaxAlleleFilter(getC());
-	}
-
-	@Override
-	public void registerFilter(FilterContainer<T> filterContainer) {
-		filterContainer.add(getFilter());
+	public void registerFilter(final CoordinateController coordinateController, ConditionContainer<T> conditionContainer) {
+		conditionContainer.getFilterContainer().addFilter(new MaxAlleleFilter(getC()));
 	}
 	
 	@Override
@@ -62,12 +54,13 @@ extends AbstractFilterFactory<T, T> { // TODO <T, T> ??? <T> is enough
 	}
 	
 	private class MaxAlleleFilter extends AbstractFilter<T> {
+		
 		public MaxAlleleFilter(final char c) {
 			super(c);
 		}
 		
 		@Override
-		public boolean filter(final ParallelData<T> parallelData, final ConditionContainer<T> conditionContainer) {
+		public boolean filter(final ParallelData<T> parallelData) {
 			return parallelData.getCombinedPooledData()
 					.getBaseCallCount().getAlleles().length > alleles;
 		}

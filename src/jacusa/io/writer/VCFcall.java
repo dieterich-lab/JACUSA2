@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import lib.cli.options.BaseCallConfig;
-import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.hasPileupCount;
@@ -56,7 +56,7 @@ extends AbstractResultFormat<T, R> {
 		sb.append('\n');
 
 		// add filter descriptions to header
-		for (final AbstractFilterFactory<T, ?> filterFactory : filterConfig.getFilterFactories()) {
+		for (final AbstractFilterFactory<T> filterFactory : filterConfig.getFilterFactories()) {
 			sb.append("##FILTER=<ID=");
 			sb.append(filterFactory.getC());
 			sb.append(",Description=");

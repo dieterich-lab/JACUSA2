@@ -11,7 +11,6 @@ import lib.data.result.Result;
 public abstract class AbstractResultFileWriter<T extends AbstractData, R extends Result<T>> 
 implements ResultWriter<T, R> {
 
-	// TODO add gzip
 	private final String filename;
 	private BufferedWriter bw;
 	

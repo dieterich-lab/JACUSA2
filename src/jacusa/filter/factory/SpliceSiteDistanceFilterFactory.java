@@ -1,10 +1,23 @@
 package jacusa.filter.factory;
 
-import jacusa.filter.FilterContainer;
+import java.util.ArrayList;
+import java.util.List;
+
+import jacusa.filter.BaseCallDataFilter;
+import jacusa.filter.cache.DistanceFilterCache;
+import jacusa.filter.cache.FilterCache;
+import jacusa.filter.cache.processrecord.ProcessRecord;
+import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
+import lib.cli.options.BaseCallConfig;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.builder.ConditionContainer;
+import lib.data.cache.UniqueBaseCallDataCache;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
+import lib.tmp.CoordinateController;
 
 /**
  * 
@@ -18,23 +31,30 @@ extends AbstractDistanceFilterFactory<T, F> {
 		super('S', "Filter distance to Splice Site.", 6, 0.5, 2, dataGenerator);
 	}
 
-	public SpliceSiteDistanceFilter<T, F> getFilter() {
-		return new SpliceSiteDistanceFilter<T, F>(getC(), 
-				getFilterDistance(),getFilterMinRatio(), getFilterDistance(), 
-				this);
-	}
-
-	/* (non-Javadoc)
-	 * @see jacusa.filter.factory.AbstractFilterFactory#registerFilter(jacusa.filter.FilterContainer)
-	 */
 	@Override
-	public void registerFilter(FilterContainer<T> filterContainer) {
-		filterContainer.add(getFilter());
+	public void registerFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
+		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
-		/* TODO
-		DistanceStorage<T> storage = new DistanceStorage<T>(getC(), getFilterDistance(), getParameters().getBaseConfig());
-		filterContainer.registerProcessSkipped(storage);
-		*/
+		final List<List<FilterCache<F>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
+		final BaseCallDataFilter<T, F> dataFilter = 
+				new BaseCallDataFilter<T, F>(getC(), 
+						getDistance(), getMinCount(), getMinRatio(), 
+						parameter, this, conditionFilterCaches);
+		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
+	}
+	
+	@Override
+	protected FilterCache<F> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
+			final BaseCallConfig baseCallConfig, 
+			final CoordinateController coordinateController) {
+
+		final UniqueBaseCallDataCache<F> uniqueBaseCallCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
+		
+		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
+		processRecords.add(new ProcessSkippedOperator(getDistance(), uniqueBaseCallCache));
+
+		final DistanceFilterCache<F> distanceFilterCache = new DistanceFilterCache<F>(getC(), uniqueBaseCallCache, processRecords);
+		return distanceFilterCache;
 	}
 	
 }

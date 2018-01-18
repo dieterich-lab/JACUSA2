@@ -1,11 +1,24 @@
 package jacusa.filter.factory;
 
-import jacusa.filter.FilterContainer;
-import jacusa.filter.storage.DistanceStorage;
+import java.util.ArrayList;
+import java.util.List;
+
+import jacusa.filter.BaseCallDataFilter;
+import jacusa.filter.cache.DistanceFilterCache;
+import jacusa.filter.cache.FilterCache;
+import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
+import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
+import jacusa.filter.cache.processrecord.ProcessRecord;
+import lib.cli.options.BaseCallConfig;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.builder.ConditionContainer;
+import lib.data.cache.UniqueBaseCallDataCache;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
+import lib.tmp.CoordinateController;
 
 public class INDEL_DistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
 extends AbstractDistanceFilterFactory<T, F> {
@@ -14,20 +27,31 @@ extends AbstractDistanceFilterFactory<T, F> {
 		super('I', "Filter distance to INDEL position.", 6, 0.2, 2, dataGenerator);
 	}
 
-	public INDEL_DistanceFilter<T, F> getFilter() {
-		return new INDEL_DistanceFilter<T, F>(getC(), 
-				getFilterDistance(),getFilterMinRatio(), getFilterDistance(), this);
+	@Override
+	public void registerFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
+		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
+		
+		final List<List<FilterCache<F>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
+		final BaseCallDataFilter<T, F> dataFilter = 
+				new BaseCallDataFilter<T, F>(getC(), 
+						getDistance(), getMinCount(), getMinRatio(), 
+						parameter, this, conditionFilterCaches);
+		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
 	}
 
 	@Override
-	public void registerFilter(FilterContainer<T> filterContainer) {
-		filterContainer.add(getFilter());
+	protected FilterCache<F> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
+			final BaseCallConfig baseCallConfig, 
+			final CoordinateController coordinateController) {
 
-		// TODO
-		final DistanceStorage<T> storage = new DistanceStorage<T>(getC(), getFilterDistance(), null);
-		filterContainer.registerStorage(storage);
-		filterContainer.registerProcessInsertion(storage);
-		filterContainer.registerProcessDeletion(storage);
+		final UniqueBaseCallDataCache<F> uniqueBaseCallCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
+		
+		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
+		processRecords.add(new ProcessInsertionOperator(getDistance(), uniqueBaseCallCache));
+		processRecords.add(new ProcessDeletionOperator(getDistance(), uniqueBaseCallCache));
+
+		final DistanceFilterCache<F> distanceFilterCache = new DistanceFilterCache<F>(getC(), uniqueBaseCallCache, processRecords);
+		return distanceFilterCache;
 	}
 	
 }

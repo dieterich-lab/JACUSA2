@@ -2,9 +2,9 @@ package jacusa.cli.parameters;
 
 import jacusa.io.writer.BED6callResultFormat;
 import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundError;
-import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
-import lib.cli.parameters.JACUSAConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.JACUSAConditionParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasPileupCount;
@@ -27,8 +27,8 @@ extends AbstractParameter<T, StatisticResult<T>> implements hasStatisticCalculat
 	}
 	
 	@Override
-	public AbstractConditionParameter<T> createConditionParameter() {
-		return new JACUSAConditionParameter<T>();
+	public AbstractConditionParameter<T> createConditionParameter(final int conditionIndex) {
+		return new JACUSAConditionParameter<T>(conditionIndex);
 	}
 	
 	@Override

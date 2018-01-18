@@ -3,7 +3,7 @@ package jacusa.io.writer;
 import java.util.List;
 
 import lib.cli.options.BaseCallConfig;
-import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.hasPileupCount;

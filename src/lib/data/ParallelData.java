@@ -6,6 +6,7 @@ import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoordinate;
 import lib.data.has.hasLibraryType;
 import lib.data.has.hasPileupCount;
+import lib.data.has.hasReferenceBase;
 import lib.util.coordinate.Coordinate;
 
 /**
@@ -232,6 +233,7 @@ implements hasCoordinate, hasLibraryType {
 		return ret;
 	}
 
+	// FIXME
 	// suffices that one replicate contains replicate
 	public static <S extends AbstractData & hasBaseCallCount> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
 		int n = 0;
@@ -259,6 +261,48 @@ implements hasCoordinate, hasLibraryType {
 
 		return variantBaseIs;
 	}
+	
+	// FIXME
+	// ORDER RESULTS [0] SHOULD BE THE VARIANTs TO TEST
+	public static <S extends AbstractData & hasBaseCallCount & hasReferenceBase> int[] getVariantBaseIndexs2(final ParallelData<S> parallelData) {
+			final int conditions = parallelData.getConditions();
+			final byte referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
+			final int[] alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
+
+			int[] observedAlleleCount = new int[BaseCallConfig.BASES.length];
+			for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
+				for (int baseIndex : parallelData.getPooledData(conditionIndex).getBaseCallCount().getAlleles()) {
+					observedAlleleCount[baseIndex]++;
+				}
+			}
+
+			// A | G
+			// define all non-reference base as potential variants
+			if (alleles.length == 2 && 
+					observedAlleleCount[alleles[0]] + observedAlleleCount[alleles[1]] == conditions) {
+				// define non-reference base as potential variants
+				if (referenceBase == 'N') {
+					return new int[0];
+				}
+				
+				final int referenceBaseIndex = BaseCallConfig.getInstance().getBaseIndex((byte)referenceBase);
+				for (final int baseIndex : alleles) {
+					if (baseIndex != referenceBaseIndex) {
+						return new int[] {baseIndex};
+					}
+				}
+			}
+			
+			// A | AG
+			if (alleles.length == 2 && 
+					observedAlleleCount[alleles[0]] + observedAlleleCount[alleles[1]] > conditions) {
+				return ParallelData.getVariantBaseIndexs(parallelData);
+			}
+
+			// condition1: AG | AG AND condition2: AGC |AGC
+			// return allelesIs;
+			return new int[0];
+		}
 	
 	public static <S extends AbstractData & hasPileupCount> S[] flat(final S[] data, 
 			final S[]ret, 

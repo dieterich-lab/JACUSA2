@@ -3,7 +3,7 @@ package lib.cli.options;
 
 import java.util.Map;
 
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.result.Result;
 import lib.io.AbstractResultFormat;

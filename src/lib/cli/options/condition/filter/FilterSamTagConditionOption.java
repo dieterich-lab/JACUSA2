@@ -4,7 +4,7 @@ import java.util.List;
 
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
-import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 
 import org.apache.commons.cli.CommandLine;

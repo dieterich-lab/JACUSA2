@@ -3,8 +3,8 @@ package jacusa.cli.options.librarytype;
 import java.util.List;
 
 import lib.cli.options.condition.AbstractConditionACOption;
-import lib.cli.parameters.AbstractConditionParameter;
-import lib.cli.parameters.AbstractParameter;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
@@ -26,21 +26,12 @@ extends AbstractConditionACOption<T> {
 		s = s.toUpperCase();
 		s = s.replace("-", "_");
 		
-		switch(LIBRARY_TYPE.valueOf(s)) {
-
-		case UNSTRANDED:
-			return LIBRARY_TYPE.UNSTRANDED;
-			
-		case FR_FIRSTSTRAND:
-			return LIBRARY_TYPE.FR_FIRSTSTRAND;
-		
-		case FR_SECONDSTRAND:
-			return LIBRARY_TYPE.FR_SECONDSTRAND;
-			
-		default:
-			return null;
-			
+		for (LIBRARY_TYPE l : LIBRARY_TYPE.values()) {
+			if (l.toString().equals(s)) {
+				return l;
+			}
 		}
+		return null;
 	}
 	
 	public String getPossibleValues() {

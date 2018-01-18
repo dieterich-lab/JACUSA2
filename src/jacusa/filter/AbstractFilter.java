@@ -2,20 +2,20 @@ package jacusa.filter;
 
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.builder.ConditionContainer;
 import lib.data.result.Result;
 
-/**
- * 
- * @author Michael Piechotta
- *
- */
 public abstract class AbstractFilter<T extends AbstractData> {
 
 	private final char c;
+	private final int overhang;
 	
-	public AbstractFilter(final char c) {
+	protected AbstractFilter(final char c) {
+		this(c, 0);
+	}
+	
+	protected AbstractFilter(final char c, final int overhang) {
 		this.c = c;
+		this.overhang = overhang;
 	}
 
 	/**
@@ -28,23 +28,29 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	
 	/**
 	 * 
-	 * @param result
-	 * @param location
-	 * @param windowIterator
+	 * @param parallelData
+	 * @param conditionContainer
 	 * @return
 	 */
-	protected abstract boolean filter(final ParallelData<T> parallelData, final ConditionContainer<T> conditionContainer);
+	protected abstract boolean filter(final ParallelData<T> parallelData);
+
+	/**
+	 * 
+	 * @return
+	 */
+	public int getOverhang() {
+		return overhang;
+	}
 	
 	/**
 	 * 
 	 * @param result
-	 * @param location
-	 * @param windowIterator
+	 * @param conditonContainer
 	 * @return
 	 */
-	public boolean applyFilter(final Result<T> result, final ConditionContainer<T> conditonContainer) {
+	public boolean applyFilter(final Result<T> result) {
 		final ParallelData<T> parallelData = result.getParellelData();
-		if (filter(parallelData, conditonContainer)) {
+		if (filter(parallelData)) {
 			addFilterInfo(result);
 			return true;
 		}
@@ -59,7 +65,5 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	public void addFilterInfo(Result<T> result) {
 		result.getFilterInfo().add(Character.toString(getC()));
 	}
-
-	public abstract int getOverhang();
 
 }

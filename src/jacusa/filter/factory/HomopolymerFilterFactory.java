@@ -1,16 +1,17 @@
 package jacusa.filter.factory;
 
-import jacusa.filter.AbstractFilter;
-import jacusa.filter.FilterContainer;
-import jacusa.filter.HomopolymerFilter;
-import jacusa.filter.storage.HomopolymerStorage;
+import jacusa.filter.cache.FilterCache;
+import lib.cli.options.BaseCallConfig;
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
+import lib.data.builder.ConditionContainer;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
+import lib.tmp.CoordinateController;
 
 public class HomopolymerFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
-extends AbstractFilterFactory<T, F> {
+extends AbstractDataFilterFactory<T, F> {
 
 	private static final int LENGTH = 7;
 	private int length;
@@ -45,20 +46,35 @@ extends AbstractFilterFactory<T, F> {
 	}
 
 	@Override
-	public void registerFilter(final FilterContainer<T> filterContainer) {
-		filterContainer.add(getFilter());
-
-		// TODO
-		HomopolymerStorage<F> storage = new HomopolymerStorage<F>(getC(), length, null);
-		
-		filterContainer.registerStorage(storage);
-		filterContainer.registerProcessAlignment(storage);
+	protected FilterCache<F> createFilterCache(
+			AbstractConditionParameter<T> conditionParameter,
+			BaseCallConfig baseCallConfig,
+			CoordinateController coordinateController) {
+		// TODO Auto-generated method stub
+		return null;
 	}
-
+	
 	@Override
-	public AbstractFilter<T> getFilter() {
-		return new HomopolymerFilter<T, F>(getC(), length, this);
+	public void registerFilter(CoordinateController coordinateController,
+			ConditionContainer<T> conditionContainer) {
+		// TODO Auto-generated method stub
+		
 	}
+	
+	/*
+	@Override
+	public void registerFilter(final FilterContainer<T> filterContainer) {
+		final HomopolymerFilterCache filterCache = 
+				new HomopolymerFilterCache(getC(), length, filterContainer.getCoordinateController());
+		filterContainer.addFilterCache(filterCache);
+	}
+	
+	@Override
+	public void registerFilter(ConditionContainer<T> conditionContainer) {
+		// TODO Auto-generated method stub
+		conditionContainer.getFilterContainer().addDataFilter(new HomopolymerFilter<T>(getC(), length, this));
+	}
+	*/
 	
 	public final void setLength(int length) {
 		this.length = length;

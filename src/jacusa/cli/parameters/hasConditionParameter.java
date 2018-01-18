@@ -2,7 +2,7 @@ package jacusa.cli.parameters;
 
 import java.util.List;
 
-import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 
 public interface hasConditionParameter<T extends AbstractData> {

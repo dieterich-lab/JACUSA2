@@ -3,7 +3,7 @@ package lib.cli.options.condition.filter;
 import java.util.List;
 
 import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
-import lib.cli.parameters.AbstractConditionParameter;
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 
 public class FilterNHsamTagOption<T extends AbstractData> extends FilterSamTagConditionOption<T> {
