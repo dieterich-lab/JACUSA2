@@ -13,6 +13,7 @@ implements hasBaseCallCount, hasReferenceBase {
 
 	public BaseCallData(final BaseCallData pileupData) {
 		super(pileupData);
+
 		referenceBase = pileupData.referenceBase;
 		this.baseCallCount = pileupData.baseCallCount.copy();
 	}

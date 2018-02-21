@@ -9,9 +9,10 @@ import lib.data.cache.AlignmentDataCache;
 import lib.data.cache.DataCache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadInfoCount;
+import lib.data.has.hasReferenceBase;
 import lib.tmp.CoordinateController;
 
-public class BaseCallReadInfoDataBuilderFactory<T extends AbstractData & hasBaseCallCount & hasReadInfoCount> 
+public class BaseCallReadInfoDataBuilderFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadInfoCount> 
 extends AbstractDataBuilderFactory<T> {
 
 	private AbstractDataBuilderFactory<T> dataBuilderFactory; 

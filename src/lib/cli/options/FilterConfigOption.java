@@ -61,9 +61,7 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 					throw new IllegalArgumentException("Unknown SAM processing: " + c);
 				}
 				final AbstractFilterFactory<T> filterFactory = filterFactories.get(c);
-				if (a.length() > 1) {
-					filterFactory.processCLI(a);
-				}
+				filterFactory.processCLI(a);
 				parameters.getFilterConfig().addFactory(filterFactory);
 			}
 		}

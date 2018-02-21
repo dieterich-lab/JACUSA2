@@ -23,10 +23,10 @@ extends AbstractWorker<T, StatisticResult<T>> {
 			final int threadId,
 			final CopyTmpResult<T, StatisticResult<T>> copyTmpResult,
 			final List<ParallelDataValidator<T>> parallelDataValidators, 
-			final LinkageRTArrestParameter<T> rtArrestParameter) {
+			final LinkageRTArrestParameter<T> lrtArrestParameter) {
 
-		super(workerDispatcher, threadId, copyTmpResult, parallelDataValidators, rtArrestParameter);
-		statisticCalculator = rtArrestParameter
+		super(workerDispatcher, threadId, copyTmpResult, parallelDataValidators, lrtArrestParameter);
+		statisticCalculator = lrtArrestParameter
 				.getStatisticParameters().newInstance();
 	}
 

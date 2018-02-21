@@ -96,7 +96,9 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 					worker.start();
 				}
 
-				progressIndicator.update("Progress: ", startTime, currentCoordinateIndex, coordinateProvider.getTotal());
+				if (! getMethodFactory().getParameter().isDebug()) {
+					progressIndicator.update("Progress: ", startTime, currentCoordinateIndex, coordinateProvider.getTotal());
+				}
 				
 				// computation finished
 				if (! hasNext() && runningWorkers.isEmpty()) {
@@ -141,6 +143,9 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 
 		// close output
 		getMethodFactory().getParameter().getResultWriter().close();
+		if (getMethodFactory().getParameter().getFilteredResultWriter() != null) {
+			getMethodFactory().getParameter().getFilteredResultWriter().close();
+		}
 	}
 
 }

@@ -32,7 +32,7 @@ extends BEDlikeResultWriter<T, R> {
 	@Override
 	protected void addHeaderConditionData(final StringBuilder sb, final int conditionIndex, final int replicateIndex) {
 		super.addHeaderConditionData(sb, conditionIndex, replicateIndex);
-		addHeaderBases(sb, conditionIndex, replicateIndex);
+		addHeaderReadInfo(sb, conditionIndex, replicateIndex);
 	}
 
 	@Override

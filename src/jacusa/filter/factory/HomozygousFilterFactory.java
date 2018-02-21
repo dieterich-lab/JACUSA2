@@ -24,14 +24,14 @@ extends AbstractFilterFactory<T> {
 	public HomozygousFilterFactory(final AbstractParameter<T, ?> parameters) {
 		super('H', "Filter non-homozygous pileup/BAM in condition 1 or 2 " +
 				"(MUST be set to H:1 or H:2). Default: none");
-		homozygousConditionIndex 	= 0;
+		homozygousConditionIndex 	= -1;
 		this.parameters 			= parameters;
 	}
 
 	@Override
 	public void processCLI(final String line) throws IllegalArgumentException {
 		if (line.length() == 1) {
-			throw new IllegalArgumentException("Invalid argument " + line);
+			throw new IllegalArgumentException("Invalid argument " + line + ". MUST be set to H:1 or H:2)");
 		}
 
 		final String[] s = line.split(Character.toString(AbstractFilterFactory.SEP));
@@ -79,7 +79,7 @@ extends AbstractFilterFactory<T> {
 
 		@Override
 		public boolean filter(final ParallelData<T> parallelData) {
-			final int alleles = parallelData.getPooledData(homozygousConditionIndex)
+			final int alleles = parallelData.getPooledData(homozygousConditionIndex - 1)
 					.getBaseCallCount().getAlleles().length;
 
 			return alleles > 1;

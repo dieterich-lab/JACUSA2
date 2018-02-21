@@ -37,12 +37,12 @@ implements CopyTmpResult<T, R> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		iteration2storedResults = new ArrayList<Integer>(1000);
 	}
 	
 	private String createTmpResultFilename(final int threadId) throws IOException {
-		final String prefix = "calls_" + threadId + "_";
+		final String prefix = "jacusa2_" + threadId + "_";
 		final File file = File.createTempFile(prefix, ".gz");
 		if (! AbstractTool.getLogger().isDebug()) {
 			file.deleteOnExit();

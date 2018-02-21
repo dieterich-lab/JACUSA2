@@ -27,7 +27,7 @@ extends AbstractFilterFactory<T> {
 	public void registerFilter(final CoordinateController coordinateController, ConditionContainer<T> conditionContainer) {
 		conditionContainer.getFilterContainer().addFilter(new MaxAlleleFilter(getC()));
 	}
-	
+
 	@Override
 	public void processCLI(String line) throws IllegalArgumentException {
 		if (line.length() == 1) {

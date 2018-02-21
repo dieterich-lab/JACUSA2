@@ -39,6 +39,11 @@ implements hasReadInfoCount {
 		return new BaseCallReadInfoData(this);
 	}
 	
+	@Override
+	public int getCoverage() {
+		return readInfoCount.getStart() + readInfoCount.getInner() + readInfoCount.getEnd();
+	}
+	
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		final String sep = ", ";

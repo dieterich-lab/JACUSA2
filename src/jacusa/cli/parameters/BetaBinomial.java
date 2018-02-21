@@ -26,13 +26,13 @@ extends AbstractStatisticCalculator<T> {
 
 	@Override
 	protected void addInfo(final Info info) {
-		// TODO Auto-generated method stub
+		// TODO
 		
 	}
 
 	@Override
 	public double getStatistic(ParallelData<T> parallelData) {
-		// TODO Auto-generated method stub
+		// TODO
 		return 0;
 	}
 

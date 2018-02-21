@@ -23,7 +23,6 @@ import lib.data.has.hasReadInfoExtendedCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
-// TODO do we consider read end by quality or by alignment
 public class LinkageArrest2BaseChangeDataCache<T extends AbstractData & hasCoverage & hasReferenceBase & hasReadInfoExtendedCount> 
 extends AbstractDataCache<T> {
 
@@ -73,6 +72,7 @@ extends AbstractDataCache<T> {
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
+
 		int windowPosition1 = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
 		if (windowPosition1 >= 0) {
 			readStartCount[windowPosition1]++;
@@ -111,7 +111,7 @@ extends AbstractDataCache<T> {
 		int windowPosition2 = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
 
 		for (int j = 0; j < windowPositionGuard.getLength(); ++j) {
-			final int guardedReferencePosition = windowPositionGuard.getReference() + j;
+			final int guardedReferencePosition = windowPositionGuard.getReferencePosition() + j;
 			final int guardedWindowPosition = windowPositionGuard.getWindowPosition() + j;
 			final int guardedReadPosition = windowPositionGuard.getReadPosition() + j;
 
@@ -160,10 +160,7 @@ extends AbstractDataCache<T> {
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
 		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
-		if (! windowPositions.contains(windowPosition)) {
-			return;
-		}
-		
+
 		final ReadInfoExtendedCount readInfoExtendedCount = data.getReadInfoExtendedCount(); 
 		
 		readInfoExtendedCount.setStart(readStartCount[windowPosition]);
@@ -191,7 +188,7 @@ extends AbstractDataCache<T> {
 			arrest 	+= readInfoExtendedCount.getEnd();
 			through += readInfoExtendedCount.getInner();
 			
-			add2ReadInfoExtendedCount(windowPosition, readStart, readInfoExtendedCount, true);
+			add2ReadInfoExtendedCount(windowPosition, readEnd, readInfoExtendedCount, true);
 			// FIXME add2ReadInfoExtendedCount(windowPosition, readInner, readInfoExtendedCount, false);
 			
 			break;

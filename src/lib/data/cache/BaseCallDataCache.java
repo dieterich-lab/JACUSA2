@@ -96,7 +96,6 @@ extends AbstractDataCache<T> {
 		if (coordinate.getStrand() == STRAND.REVERSE) {
 			data.getBaseCallCount().invert();
 		}
-		
 	}
 	
 	@Override

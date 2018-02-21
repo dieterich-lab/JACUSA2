@@ -25,6 +25,8 @@ import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.DebugModusOption;
+import lib.cli.options.FilterConfigOption;
+import lib.cli.options.FilterModusOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
 import lib.cli.options.ResultFormatOption;
 import lib.cli.options.HelpOption;
@@ -42,9 +44,11 @@ import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.AbstractData;
 import lib.data.BaseCallData;
+import lib.data.HomopolymerInfoData;
 import lib.data.builder.factory.PileupDataBuilderFactory;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
+import lib.data.generator.HomopolymerInfoDataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasPileupCount;
 import lib.data.has.hasReferenceBase;
@@ -92,9 +96,9 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 					getParameter(), getResultFormats()));
 		}
 		
-		// addACOption(new FilterModusOption(getParameter()));
+		addACOption(new FilterModusOption(getParameter()));
 		// addACOption(new BaseConfigOption(getParameter()));
-		// addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
+		addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
 		
 		addACOption(new StatisticFilterOption(getParameter().getStatisticParameters()));
 
@@ -171,7 +175,9 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 		filterFactories.add(new SpliceSiteDistanceFilterFactory<T, BaseCallData>(dataGenerator));
 		filterFactories.add(new HomozygousFilterFactory<T>(getParameter()));
 		filterFactories.add(new MaxAlleleCountFilterFactory<T>());
-		filterFactories.add(new HomopolymerFilterFactory<T, BaseCallData>(dataGenerator));
+		
+		final DataGenerator<HomopolymerInfoData> dataGenerator2 = new HomopolymerInfoDataGenerator();
+		filterFactories.add(new HomopolymerFilterFactory<T, HomopolymerInfoData>(dataGenerator2));
 
 		for (final AbstractFilterFactory<T> filterFactory : filterFactories) {
 			abstractPileupFilters.put(filterFactory.getC(), filterFactory);

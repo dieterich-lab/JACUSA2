@@ -8,5 +8,6 @@ package lib.data.has;
 public interface hasHomopolymerInfo {
 
 	boolean isHomopolymer();
+	void setHomopolymer(boolean b);
 	
 }

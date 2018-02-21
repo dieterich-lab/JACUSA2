@@ -251,7 +251,7 @@ public class CoordinateController {
 			return convert(referencePosition + offset, readPosition + offset, length);
 		}
 		
-		public int getReference() {
+		public int getReferencePosition() {
 			return referencePosition;
 		}
 		

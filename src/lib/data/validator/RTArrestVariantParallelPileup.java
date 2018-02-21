@@ -14,12 +14,11 @@ implements ParallelDataValidator<T> {
 	public RTArrestVariantParallelPileup() {
 		variantSite = new VariantSiteValidator<T>();
 	}
-	
 
 	@Override
 	public boolean isValid(final ParallelData<T> parallelData) {
 		T combinedPooledData = parallelData.getCombinedPooledData();
-		
+
 		return variantSite.isValid(parallelData) || combinedPooledData.getReadInfoCount().getArrest() > 0 &&
 				combinedPooledData.getReadInfoCount().getThrough() > 0;
 	}

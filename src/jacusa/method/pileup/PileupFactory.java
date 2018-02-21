@@ -10,7 +10,6 @@ import jacusa.filter.factory.INDEL_DistanceFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.ReadPositionDistanceFilterFactory;
 import jacusa.filter.factory.SpliceSiteDistanceFilterFactory;
-import jacusa.io.copytmp.FileCopyTmpResult;
 import jacusa.io.writer.BED6callResultFormat;
 import jacusa.io.writer.BED6pileupResultFormat;
 import jacusa.io.writer.PileupFormat;
@@ -23,6 +22,8 @@ import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.DebugModusOption;
+import lib.cli.options.FilterConfigOption;
+import lib.cli.options.FilterModusOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
@@ -40,16 +41,17 @@ import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.AbstractData;
 import lib.data.BaseCallData;
+import lib.data.HomopolymerInfoData;
 import lib.data.builder.factory.PileupDataBuilderFactory;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
+import lib.data.generator.HomopolymerInfoDataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasPileupCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.DefaultResult;
 import lib.data.validator.MinCoverageValidator;
 import lib.data.validator.ParallelDataValidator;
-import lib.io.AbstractResultFileWriter;
 import lib.io.AbstractResultFormat;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
@@ -82,9 +84,9 @@ extends AbstractMethodFactory<T, DefaultResult<T>> {
 		}
 		
 		
-		// addACOption(new FilterModusOption(getParameter()));
+		addACOption(new FilterModusOption(getParameter()));
 		// addACOption(new BaseConfigOption(getParameter()));
-		// addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
+		addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
 		
 		addACOption(new ShowReferenceOption(getParameter()));
 		addACOption(new ReferenceFastaFilenameOption(getParameter()));
@@ -159,7 +161,9 @@ extends AbstractMethodFactory<T, DefaultResult<T>> {
 		filterFactories.add(new SpliceSiteDistanceFilterFactory<T, BaseCallData>(dataGenerator));
 		filterFactories.add(new HomozygousFilterFactory<T>(getParameter()));
 		filterFactories.add(new MaxAlleleCountFilterFactory<T>());
-		filterFactories.add(new HomopolymerFilterFactory<T, BaseCallData>(dataGenerator));
+		
+		final DataGenerator<HomopolymerInfoData> dataGenerator2 = new HomopolymerInfoDataGenerator();
+		filterFactories.add(new HomopolymerFilterFactory<T, HomopolymerInfoData>(dataGenerator2));
 
 		for (final AbstractFilterFactory<T> filterFactory : filterFactories) {
 			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
@@ -192,10 +196,12 @@ extends AbstractMethodFactory<T, DefaultResult<T>> {
 	
 	@Override
 	public PileupWorker<T> createWorker(final int threadId) {
-		return new PileupWorker<T>(getWorkerDispatcher(), threadId,
-				new FileCopyTmpResult<T, DefaultResult<T>>(threadId, 
-						(AbstractResultFileWriter<T, DefaultResult<T>>)getParameter().getResultWriter(), getParameter().getResultFormat()),
-				getParallelDataValidators(), getParameter());
+		return new PileupWorker<T>(
+				getWorkerDispatcher(), 
+				threadId,
+				getParameter().getResultFormat().createCopyTmp(threadId),
+				getParallelDataValidators(),
+				getParameter());
 	}
 
 }

@@ -13,16 +13,16 @@ import lib.io.copytmp.CopyTmpResult;
 public class FileCopyTmpSeparatedResult<T extends AbstractData, R extends Result<T>> 
 implements CopyTmpResult<T, R> {
 
-
-	private FileCopyTmpSeparatedResult<T, R> copyResult;
-	private FileCopyTmpSeparatedResult<T, R> copyFilteredResult;
+	private FileCopyTmpResult<T, R> copyResult;
+	private FileCopyTmpResult<T, R> copyFilteredResult;
 	
 	public FileCopyTmpSeparatedResult(final int threadId, 
 			final AbstractResultFileWriter<T, R> resultFileWriter, 
 			final AbstractResultFileWriter<T, R> filteredResultFileWriter,
 			final ResultFormat<T, R> resultFormat) {
-		
-		
+
+		copyResult = new FileCopyTmpResult<T, R>(threadId, resultFileWriter, resultFormat);
+		copyFilteredResult = new FileCopyTmpResult<T, R>(threadId, filteredResultFileWriter, resultFormat);
 	}
 	
 	@Override

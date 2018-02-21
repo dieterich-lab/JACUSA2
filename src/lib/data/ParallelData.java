@@ -238,14 +238,15 @@ implements hasCoordinate, hasLibraryType {
 	public static <S extends AbstractData & hasBaseCallCount> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
 		int n = 0;
 		int[] alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
+		int[] baseCount = new int[BaseCallConfig.BASES.length];
 		
 		for (int baseIndex : alleles) {
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
 				if (parallelData.getPooledData(conditionIndex).getBaseCallCount().getBaseCallCount(baseIndex) > 0) {
-					alleles[baseIndex]++;
+					baseCount[baseIndex]++;
 				}
 			}
-			if (alleles[baseIndex] > 0 && alleles[baseIndex] < parallelData.getConditions()) {
+			if (baseCount[baseIndex] > 0 && baseCount[baseIndex] < parallelData.getConditions()) {
 				++n;
 			}
 		}
@@ -253,7 +254,7 @@ implements hasCoordinate, hasLibraryType {
 		int[] variantBaseIs = new int[n];
 		int j = 0;
 		for (int baseIndex : alleles) {
-			if (alleles[baseIndex] > 0 && alleles[baseIndex] < parallelData.getConditions()) {
+			if (baseCount[baseIndex] > 0 && baseCount[baseIndex] < parallelData.getConditions()) {
 				variantBaseIs[j] = baseIndex;
 				++j;
 			}

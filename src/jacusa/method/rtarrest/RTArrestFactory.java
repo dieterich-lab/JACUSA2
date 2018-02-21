@@ -4,7 +4,6 @@ import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.RTArrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.io.copytmp.FileCopyTmpResult;
 import jacusa.io.writer.BED6callResultFormat;
 import jacusa.io.writer.BED6rtArrestResultFormat;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
@@ -43,7 +42,6 @@ import lib.data.result.StatisticResult;
 import lib.data.validator.MinCoverageValidator;
 import lib.data.validator.ParallelDataValidator;
 import lib.data.validator.RTArrestVariantParallelPileup;
-import lib.io.AbstractResultFileWriter;
 import lib.io.AbstractResultFormat;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
@@ -176,8 +174,7 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 	@Override
 	public RTArrestWorker<T> createWorker(final int threadId) {
 		return new RTArrestWorker<T>(getWorkerDispatcher(), threadId,
-				new FileCopyTmpResult<T, StatisticResult<T>>(threadId, 
-						(AbstractResultFileWriter<T, StatisticResult<T>>)getParameter().getResultWriter(), getParameter().getResultFormat()),
+				getParameter().getResultFormat().createCopyTmp(threadId),
 				getParallelDataValidators(), getParameter());
 	}
 	

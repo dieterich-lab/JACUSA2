@@ -1,127 +1,39 @@
 package jacusa.filter.cache;
 
+import java.util.Arrays;
+
+import htsjdk.samtools.AlignmentBlock;
+import htsjdk.samtools.SAMRecord;
+import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.has.hasHomopolymerInfo;
 import lib.tmp.CoordinateController;
+import lib.tmp.CoordinateController.WindowPositionGuard;
 import lib.util.coordinate.Coordinate;
 
-public class HomopolymerFilterCache 
-extends AbstractFilterCache<AbstractData> {
+public class HomopolymerFilterCache<T extends AbstractData & hasHomopolymerInfo> 
+extends AbstractFilterCache<T> {
 	
-	private int minLength;
+	private final int minLength;
 
-	/* TODO
-	private List<Integer> bases;
-	private List<Integer> quals;
-	private int windowPositionStart;
-	private int readPositionStart;
-	private int readPositionLast;
-	*/
+	private final BaseCallConfig baseCallConfig;
+	private final CoordinateController coordinateController;
+	
+	private final boolean[] isHomopolymer;
 	
 	/**
 	 * 
 	 * @param c
 	 * @param distance
 	 */
-	public HomopolymerFilterCache(final char c, final int length, final CoordinateController coordinateController) {
+	public HomopolymerFilterCache(final char c, final int length, final BaseCallConfig baseCallConfig, final CoordinateController coordinateController) {
 		super(c);
 		this.minLength = length;
-
-		/* TODO
-		int n = minLength + 5;
-		
-		bases = new ArrayList<Integer>(n);
-		quals = new ArrayList<Integer>(n);
-		*/
+		this.baseCallConfig = baseCallConfig;
+		this.coordinateController = coordinateController;
+		isHomopolymer = new boolean[coordinateController.getActiveWindowSize()];
 	}
-
-	/* TODO
-	@Override
-	public void processAlignmentOperator(int windowPosition, int readPosition, int genomicPosition, 
-			CigarElement cigarElement, SAMRecord record, int base, int qual) {
-		// check if record changed		
-		if (this.recordwrapper != record) {
-			checkAndAdd2WindowCache();
-			resetAndAdd(windowPosition, base, qual);
-			readPositionStart = readPosition;
-			readPositionLast = readPosition;
-			this.recordwrapper = record;
-		// check if discontinued
-		} else if(readPositionLast + 1 != readPosition) {
-			checkAndAdd2WindowCache();
-			resetAndAdd(windowPosition, base, qual);
-			readPositionStart = readPosition;
-			readPositionLast = readPosition;	
-		} else {
-			// check if the base changed
-			if (bases.size() > 0 && bases.get(bases.size() - 1) != base) {
-				checkAndAdd2WindowCache();
-				resetAndAdd(windowPosition, base, qual);
-				readPositionLast = readPosition;
-			} else {
-				bases.add(base);
-				quals.add(qual);
-				// check if we 
-				if (readPosition - readPositionStart + 1 == cigarElement.getLength()) {
-					checkAndAdd2WindowCache();
-
-					// reset
-					windowPositionStart = -1;
-					readPositionStart = -1;
-					bases.clear();
-				}
-				readPositionLast = readPosition;
-			}
-		}
-	}
-
-	private void checkAndAdd2WindowCache() {
-		int coveredReadLength = bases.size();
-		if (coveredReadLength >= minLength) {
-			for (int i = 0; i < bases.size(); ++i) {
-				if (windowPositionStart + i >= 0 && windowPositionStart + i < getBaseCallCache().getWindowSize()) {
-					getBaseCallCache().addHighQualityBaseCall(windowPositionStart + i, bases.get(i), quals.get(i));
-				} else {
-					return;
-				}
-			}
-		}
-	}
-
-	private void resetAndAdd(int windowPosition, int base, int qual) {
-		windowPositionStart = windowPosition;
-		bases.clear();
-		bases.add(base);
-		quals.add(qual);
-	}
-	
-	/*
-	@Override
-	public void processRecord(int genomicWindowStart, SAMRecord record) {
-		readPositionStart = readPosition;
-		windowPositionStart = windowPosition;
-		baseI = record.getReadBases()[readPositionStart];
-
-		for (int i = 1; i < cigarElement.getLength(); ++i) {
-			byte qual = record.getBaseQualities()[readPosition + i];
-			// quick fix
-			qual = (byte)Math.min(qual, Phred2Prob.MAX_Q - 1);
-			
-			if (baseI != record.getReadBases()[readPosition + i]) {
-				// fill cache
-				final int coveredReadLength = readPosition + i - readPositionStart; 
-				if (coveredReadLength >= minLength) {
-					parseRecord(windowPositionStart, coveredReadLength, readPositionStart, record);
-				}
-
-				// reset
-				readPositionStart = readPosition + i;
-				windowPositionStart = windowPosition + i;
-				baseI = record.getReadBases()[readPositionStart];
-			}
-		}
-	}
-	*/
 
 	public int getOverhang() {
 		return minLength;
@@ -129,25 +41,81 @@ extends AbstractFilterCache<AbstractData> {
 
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
-		// TODO Auto-generated method stub
+		for (AlignmentBlock block : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
+			final int referencePosition = block.getReferenceStart();
+			final int readPosition = block.getReadStart() - 1;
+			final int length = block.getLength();
+			
+			if (length >= minLength) {
+				processAlignmentBlock(referencePosition, readPosition, length, recordWrapper);
+			}
+		}
+	}
+	
+	private void processAlignmentBlock(final int referencePosition, final int readPosition, final int length, final SAMRecordWrapper recordWrapper) {
+		if (referencePosition < 0) {
+			throw new IllegalArgumentException("Reference Position cannot be < 0! -> outside of alignmentBlock");
+		}
 		
+		final WindowPositionGuard windowPositionGuard = getCoordinateController().convert(referencePosition, readPosition, length);
+		
+		if (windowPositionGuard.getWindowPosition() < 0 && windowPositionGuard.getLength() > 0) {
+			throw new IllegalArgumentException("Window position cannot be < 0! -> outside of alignmentBlock");
+		}
+		
+		final SAMRecord record = recordWrapper.getSAMRecord();
+		
+		int polymerLength = 0;
+		int firstReferencePosition = -1;
+		int lastBaseIndex = -1;
+
+		for (int j = 0; j < windowPositionGuard.getLength(); ++j) {
+			final int baseIndex = baseCallConfig.getBaseIndex(record.getReadBases()[windowPositionGuard.getReadPosition() + j]);
+			if (baseIndex < 0) {
+				if (polymerLength >= minLength) {
+					markRegion(firstReferencePosition, polymerLength);
+				}
+				polymerLength = 0;
+				firstReferencePosition = -1;
+				lastBaseIndex = -1;
+			} else if (baseIndex == lastBaseIndex) {
+				polymerLength++;
+			} else {
+				if (polymerLength >= minLength) {
+					markRegion(firstReferencePosition, polymerLength);
+				}
+				polymerLength = 1;
+				firstReferencePosition = windowPositionGuard.getReferencePosition() + j;
+				lastBaseIndex = baseIndex;
+			}
+		}
+	}
+
+	private void markRegion(final int firstReferencePosition, final int length) {
+		final int windowPosition = coordinateController.convert2windowPosition(firstReferencePosition);
+		for (int i = 0; i < length; ++i) {
+			isHomopolymer[windowPosition + i] = true;
+		}
 	}
 	
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
+		Arrays.fill(isHomopolymer, false);
 	}
 
 	@Override
-	public void addData(AbstractData data, Coordinate coordinate) {
-		// TODO Auto-generated method stub
-		
+	public void addData(final T data, final Coordinate coordinate) {
+		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
+		if (windowPosition < 0) {
+			return;
+		}
+
+		data.setHomopolymer(isHomopolymer[windowPosition]);
 	}
 
 	@Override
 	public CoordinateController getCoordinateController() {
-		// TODO Auto-generated method stub
-		return null;
+		return coordinateController;
 	}
 	
 	

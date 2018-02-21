@@ -21,8 +21,6 @@ public class SimpleGeneralCache implements GeneralCache {
 		
 		this.referenceProvider = referenceProvider;
 		segmentContainer = new NextPositionSegmentContainer(coordinateController.getActiveWindowSize());
-	
-		clear();
 	}
 	
 	@Override

@@ -8,13 +8,13 @@ import java.util.List;
 
 import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.hasPileupCount;
 import lib.data.result.Result;
 import lib.io.AbstractResultFormat;
 import lib.io.ResultWriter;
-import lib.io.copytmp.CopyTmpResult;
 import lib.util.AbstractTool;
 
 public class VCFcall<T extends AbstractData & hasPileupCount, R extends Result<T>> 
@@ -25,10 +25,10 @@ extends AbstractResultFormat<T, R> {
 	private BaseCallConfig baseConfig;
 	private FilterConfig<T> filterConfig;
 	
-	public VCFcall(final BaseCallConfig baseConfig, final FilterConfig<T> filterConfig) {
-		super(CHAR, "VCF Output format. Option -P will be ignored (VCF is unstranded)");
-		this.baseConfig = baseConfig;
-		this.filterConfig = filterConfig;
+	public VCFcall(final AbstractParameter<T, R> parameter) {
+		super(CHAR, "VCF Output format. Option -P will be ignored (VCF is unstranded)", parameter);
+		this.baseConfig = parameter.getBaseConfig();
+		this.filterConfig = parameter.getFilterConfig();
 	}
 	
 	public String addHeader(final List<AbstractConditionParameter<T>> conditionParameters) {
@@ -201,15 +201,6 @@ extends AbstractResultFormat<T, R> {
 		return '.';
 	}
 
-	@Override
-	public CopyTmpResult<T, R> createCopyTmp(final int threadId) {
-		return null;
-		/*
-		return new FileCopyTmpResult<T, R>(threadId, 
-				(AbstractResultFileWriter<T, R>)parameter.getResultWriter(), this);
-				*/
-	}
-	
 	@Override
 	public ResultWriter<T, R> createWriter(String filename) {
 		// TODO Auto-generated method stub

@@ -21,6 +21,8 @@ import lib.util.AbstractTool;
 
 public abstract class AbstractParameter<T extends AbstractData, R extends Result<T>>
 implements hasConditionParameter<T> {
+
+	public static final String FILE_SUFFIX = ".filtered";
 	
 	// cache related
 	private int activeWindowSize;
@@ -47,6 +49,8 @@ implements hasConditionParameter<T> {
 	private ResultWriter<T, R> resultWriter;
 	private ResultFormat<T, R> resultFormat;
 
+	private ResultWriter<T, R> filteredResultWriter;
+	
 	private FilterConfig<T> filterConfig;
 
 		private boolean separate;
@@ -112,6 +116,16 @@ implements hasConditionParameter<T> {
 		return resultWriter;
 	}
 
+	/**
+	 * @return the output
+	 */
+	public ResultWriter<T, R> getFilteredResultWriter() {
+		if (separate && filteredResultWriter == null) {
+			filteredResultWriter = resultFormat.createWriter(getResultFilename() + FILE_SUFFIX);
+		}
+		return filteredResultWriter;
+	}
+	
 	public void setResultFilename(final String resultFilename) {
 		this.resultFilename = resultFilename;
 	}

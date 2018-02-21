@@ -39,6 +39,11 @@ public class FilterConfig<T extends AbstractData> implements Cloneable {
 		}
 	}
 
+	public FilterContainer<T> createFilterInstances(final FilterConfig<T> filterConfig, 
+			final CoordinateController coordinateController) {
+		return new FilterContainer<T>(this, coordinateController);
+	}
+	
 	/*
 	/**
 	 * Create CountFilterCache for each available filter.
@@ -46,12 +51,10 @@ public class FilterConfig<T extends AbstractData> implements Cloneable {
 	 * 
 	 * @return
 	 */
-	public FilterContainer<T> createFilterInstances(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
-		final FilterContainer<T> filterContainer = new FilterContainer<T>(this, coordinateController);
+	public void registerFilters(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
 		for (final AbstractFilterFactory<T> filterFactory : c2factory.values()) {
 			filterFactory.registerFilter(coordinateController, conditionContainer);
 		}
-		return filterContainer;
 	}
 
 	public boolean hasFiters() {
