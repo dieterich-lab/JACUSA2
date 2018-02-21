@@ -32,6 +32,8 @@ implements hasBaseCallCount, hasReferenceBase {
 	
 	public void add(AbstractData abstractData) {
 		BaseCallData pileupData = (BaseCallData) abstractData;
+
+		this.referenceBase = pileupData.referenceBase;
 		this.baseCallCount.add(pileupData.getBaseCallCount());
 	}
 	
