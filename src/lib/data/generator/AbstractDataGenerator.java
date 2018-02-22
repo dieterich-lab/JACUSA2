@@ -6,7 +6,7 @@ public abstract class AbstractDataGenerator<T extends AbstractData>
 implements DataGenerator<T> {
 
 	@Override
-	public T[] copyReplicateData(final T[] dataContainer) {
+	public final T[] copyReplicateData(final T[] dataContainer) {
 		T[] ret = createReplicateData(dataContainer.length);
 		for (int i = 0; i < dataContainer.length; ++i) {
 			ret[i] = copyData(dataContainer[i]);
@@ -15,7 +15,7 @@ implements DataGenerator<T> {
 	}
 	
 	@Override
-	public T[][] copyContainerData(final T[][] dataContainer) {
+	public final T[][] copyContainerData(final T[][] dataContainer) {
 		T[][] ret = createContainerData(dataContainer.length);
 		
 		for (int i = 0; i < dataContainer.length; ++i) {

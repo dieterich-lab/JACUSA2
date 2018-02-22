@@ -21,7 +21,7 @@ implements hasLibraryType {
 	private final AbstractConditionParameter<T> conditionParameter;
 	private final List<FilterCache<?>> filterCaches;
 
-	private final LIBRARY_TYPE libraryType;
+	private LIBRARY_TYPE libraryType;
 	
 	private final CacheContainer<T> cacheContainer; 
 	private CACHE_STATUS cacheStatus;

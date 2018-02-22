@@ -19,7 +19,7 @@ implements hasCoordinate, hasLibraryType {
 		this.libraryType = libraryType;
 		this.coordinate = new Coordinate(coordinate);
 	}
-		
+
 	public Coordinate getCoordinate() {
 		return coordinate;
 	}
@@ -28,12 +28,6 @@ implements hasCoordinate, hasLibraryType {
 	public LIBRARY_TYPE getLibraryType() {
 		return libraryType;
 	}
-	
-	/*
-	public void setCoordinate(final Coordinate coordinate) {
-		this.coordinate = coordinate;
-	}
-	*/
 
 	public abstract void add(final AbstractData abstractData);
 	public abstract AbstractData copy();

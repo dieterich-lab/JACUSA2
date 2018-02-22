@@ -26,4 +26,5 @@ extends AbstractDataGenerator<PileupData> {
 	public PileupData copyData(final PileupData dataContainer) {
 		return new PileupData(dataContainer);
 	}
+
 }

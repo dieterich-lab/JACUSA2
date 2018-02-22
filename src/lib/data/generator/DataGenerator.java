@@ -6,12 +6,12 @@ import lib.util.coordinate.Coordinate;
 
 public interface DataGenerator<T extends AbstractData> {
 
-	public abstract T createData(LIBRARY_TYPE libraryType, final Coordinate coordinate);
-	public abstract T[] createReplicateData(final int n);
-	public abstract T[][] createContainerData(final int n);
+	abstract T createData(LIBRARY_TYPE libraryType, final Coordinate coordinate);
+	abstract T[] createReplicateData(final int n);
+	abstract T[][] createContainerData(final int n);
 
-	public abstract T copyData(final T data);
-	public abstract T[] copyReplicateData(final T[] replicateData);
-	public abstract T[][] copyContainerData(final T[][] containerData);
+	abstract T copyData(final T data);
+	abstract T[] copyReplicateData(final T[] replicateData);
+	abstract T[][] copyContainerData(final T[][] containerData);
 	
 }
