@@ -16,14 +16,15 @@ import htsjdk.samtools.SAMRecord;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.ReadInfoExtendedCount;
+import lib.data.LinkedReadArrestCount;
+import lib.data.ReadArrestCount;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.has.hasCoverage;
-import lib.data.has.hasReadInfoExtendedCount;
+import lib.data.has.hasLinkedReadArrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
-public class LinkageArrest2BaseChangeDataCache<T extends AbstractData & hasCoverage & hasReferenceBase & hasReadInfoExtendedCount> 
+public class LinkageArrest2BaseChangeDataCache<T extends AbstractData & hasCoverage & hasReferenceBase & hasLinkedReadArrestCount> 
 extends AbstractDataCache<T> {
 
 	private final LIBRARY_TYPE libraryType;
@@ -161,13 +162,14 @@ extends AbstractDataCache<T> {
 	public void addData(final T data, final Coordinate coordinate) {
 		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
 
-		final ReadInfoExtendedCount readInfoExtendedCount = data.getReadInfoExtendedCount(); 
+		final LinkedReadArrestCount linkedReadArrestCount = data.getLinkedReadArrestCount();
+		final ReadArrestCount readArrestCount = linkedReadArrestCount.getReadArrestCount();
 		
-		readInfoExtendedCount.setStart(readStartCount[windowPosition]);
-		readInfoExtendedCount.setEnd(readEndCount[windowPosition]);
+		readArrestCount.setReadStart(readStartCount[windowPosition]);
+		readArrestCount.setReadEnd(readEndCount[windowPosition]);
 
-		final int inner = coverage[windowPosition] - (readInfoExtendedCount.getStart() + readInfoExtendedCount.getEnd());
-		readInfoExtendedCount.setInner(inner);
+		final int internal = coverage[windowPosition] - (readArrestCount.getReadStart() + readArrestCount.getReadEnd());
+		readArrestCount.setReadInternal(internal);
 
 		int arrest = 0;
 		int through = 0;
@@ -175,29 +177,29 @@ extends AbstractDataCache<T> {
 		switch (libraryType) {
 
 		case UNSTRANDED:
-			arrest 	+= readInfoExtendedCount.getStart();
-			arrest 	+= readInfoExtendedCount.getEnd();
-			through += readInfoExtendedCount.getInner();
+			arrest 	+= readArrestCount.getReadStart();
+			arrest 	+= readArrestCount.getReadEnd();
+			through += readArrestCount.getReadInternal();
 			
-			add2ReadInfoExtendedCount(windowPosition, readStart, readInfoExtendedCount, true);
+			add2ReadInfoExtendedCount(windowPosition, readStart, linkedReadArrestCount, true);
 			// FIXME add2ReadInfoExtendedCount(windowPosition, readInner, readInfoExtendedCount, false);
 
 			break;
 
 		case FR_FIRSTSTRAND:
-			arrest 	+= readInfoExtendedCount.getEnd();
-			through += readInfoExtendedCount.getInner();
+			arrest 	+= readArrestCount.getReadEnd();
+			through += readArrestCount.getReadInternal();
 			
-			add2ReadInfoExtendedCount(windowPosition, readEnd, readInfoExtendedCount, true);
+			add2ReadInfoExtendedCount(windowPosition, readEnd, linkedReadArrestCount, true);
 			// FIXME add2ReadInfoExtendedCount(windowPosition, readInner, readInfoExtendedCount, false);
 			
 			break;
 
 		case FR_SECONDSTRAND:
-			arrest 	+= readInfoExtendedCount.getStart();
-			through += readInfoExtendedCount.getInner();
+			arrest 	+= readArrestCount.getReadStart();
+			through += readArrestCount.getReadInternal();
 			
-			add2ReadInfoExtendedCount(windowPosition, readStart, readInfoExtendedCount, true);
+			add2ReadInfoExtendedCount(windowPosition, readStart, linkedReadArrestCount, true);
 			// FIXME add2ReadInfoExtendedCount(windowPosition, readInner, readInfoExtendedCount, false);
 			
 			break;
@@ -208,13 +210,13 @@ extends AbstractDataCache<T> {
 
 		data.setReferenceBase(getCoordinateController().getReferenceProvider().getReference(windowPosition));
 		
-		readInfoExtendedCount.setArrest(arrest);
-		readInfoExtendedCount.setThrough(through);
+		readArrestCount.setReadArrest(arrest);
+		readArrestCount.setReadThrough(through);
 	}
 	
 	private void add2ReadInfoExtendedCount(final int windowPosition, 
 			final List<List<SimpleEntry<Integer, Integer>>> win2refBc,  
-			final ReadInfoExtendedCount readInfoExtendedCount, final boolean arrest) {
+			final LinkedReadArrestCount readInfoExtendedCount, final boolean arrest) {
 
 		if (windowPosition >= 0 && windowPosition < win2refBc.size()) {
 			for (int i = 0; i < win2refBc.get(windowPosition).size(); ++i) {

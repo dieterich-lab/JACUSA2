@@ -4,11 +4,11 @@ import jacusa.cli.parameters.hasStatistic;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.has.hasReadInfoCount;
+import lib.data.has.hasReadArrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.Result;
 
-public class BED6rtArrestResultWriter1<T extends AbstractData & hasReferenceBase & hasReadInfoCount, R extends Result<T> & hasStatistic> 
+public class BED6rtArrestResultWriter1<T extends AbstractData & hasReferenceBase & hasReadArrestCount, R extends Result<T> & hasStatistic> 
 extends BEDlikeWriter<T, R> {
 	
 	// read start, trough, and end	
@@ -61,17 +61,17 @@ extends BEDlikeWriter<T, R> {
 	
 	protected void addResultReadInfoCount(final StringBuilder sb, final T data) {
 		sb.append(SEP);
-		sb.append(data.getReadInfoCount().getArrest());
+		sb.append(data.getReadArrestCount().getReadArrest());
 		sb.append(SEP2);
-		sb.append(data.getReadInfoCount().getThrough());
+		sb.append(data.getReadArrestCount().getReadThrough());
 		
 		if (getParameter().isDebug()) {
 			sb.append(SEP);
-			sb.append(data.getReadInfoCount().getStart());
+			sb.append(data.getReadArrestCount().getReadStart());
 			sb.append(SEP2);
-			sb.append(data.getReadInfoCount().getInner());
+			sb.append(data.getReadArrestCount().getReadInternal());
 			sb.append(SEP2);
-			sb.append(data.getReadInfoCount().getEnd());
+			sb.append(data.getReadArrestCount().getReadEnd());
 		}
 	}
 

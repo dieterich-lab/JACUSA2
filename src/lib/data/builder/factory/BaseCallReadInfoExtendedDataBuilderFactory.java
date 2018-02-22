@@ -9,11 +9,11 @@ import lib.data.AbstractData;
 import lib.data.cache.DataCache;
 import lib.data.cache.LinkageArrest2BaseChangeDataCache;
 import lib.data.has.hasCoverage;
-import lib.data.has.hasReadInfoExtendedCount;
+import lib.data.has.hasLinkedReadArrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.tmp.CoordinateController;
 
-public class BaseCallReadInfoExtendedDataBuilderFactory<T extends AbstractData & hasCoverage & hasReferenceBase & hasReadInfoExtendedCount> 
+public class BaseCallReadInfoExtendedDataBuilderFactory<T extends AbstractData & hasCoverage & hasReferenceBase & hasLinkedReadArrestCount> 
 extends AbstractDataBuilderFactory<T> {
 
 	public BaseCallReadInfoExtendedDataBuilderFactory(final AbstractParameter<T, ?> generalParameter) {

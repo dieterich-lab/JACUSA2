@@ -5,11 +5,11 @@ import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.cli.parameter.JACUSAConditionParameter;
 import lib.data.AbstractData;
-import lib.data.has.hasReadInfoExtendedCount;
+import lib.data.has.hasLinkedReadArrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.StatisticResult;
 
-public class LinkageRTArrestParameter<T extends AbstractData & hasReferenceBase & hasReadInfoExtendedCount>
+public class LinkageRTArrestParameter<T extends AbstractData & hasReferenceBase & hasLinkedReadArrestCount>
 extends AbstractParameter<T, StatisticResult<T>> 
 implements hasStatisticCalculator<T> {
 

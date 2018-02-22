@@ -3,10 +3,10 @@ package lib.data.validator;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReadInfoCount;
+import lib.data.has.hasReadArrestCount;
 import lib.data.has.hasReferenceBase;
 
-public class RTArrestVariantParallelPileup<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadInfoCount>
+public class RTArrestVariantParallelPileup<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadArrestCount>
 implements ParallelDataValidator<T> {
 	
 	private VariantSiteValidator<T> variantSite;
@@ -19,8 +19,8 @@ implements ParallelDataValidator<T> {
 	public boolean isValid(final ParallelData<T> parallelData) {
 		T combinedPooledData = parallelData.getCombinedPooledData();
 
-		return variantSite.isValid(parallelData) || combinedPooledData.getReadInfoCount().getArrest() > 0 &&
-				combinedPooledData.getReadInfoCount().getThrough() > 0;
+		return variantSite.isValid(parallelData) || combinedPooledData.getReadArrestCount().getReadArrest() > 0 &&
+				combinedPooledData.getReadArrestCount().getReadThrough() > 0;
 	}
 
 }

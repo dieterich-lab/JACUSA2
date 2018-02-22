@@ -1,13 +1,13 @@
 package lib.data;
 
-import lib.data.has.hasReadInfoCount;
+import lib.data.has.hasReadArrestCount;
 import lib.util.coordinate.Coordinate;
 
 public class BaseCallReadInfoData
 extends BaseCallData
-implements hasReadInfoCount {
+implements hasReadArrestCount {
 
-	private ReadInfoCount readInfoCount;
+	private ReadArrestCount readInfoCount;
 	
 	public BaseCallReadInfoData(final BaseCallReadInfoData data) {
 		super(data);
@@ -18,11 +18,11 @@ implements hasReadInfoCount {
 	public BaseCallReadInfoData(final LIBRARY_TYPE libraryType, final Coordinate coordinate, final byte referenceBase) {
 		super(libraryType, coordinate, referenceBase);
 
-		readInfoCount = new ReadInfoCount();
+		readInfoCount = new ReadArrestCount();
 	}
 		
 	@Override
-	public ReadInfoCount getReadInfoCount() {
+	public ReadArrestCount getReadArrestCount() {
 		return readInfoCount;
 	}
 	
@@ -41,7 +41,7 @@ implements hasReadInfoCount {
 	
 	@Override
 	public int getCoverage() {
-		return readInfoCount.getStart() + readInfoCount.getInner() + readInfoCount.getEnd();
+		return readInfoCount.getReadStart() + readInfoCount.getReadInternal() + readInfoCount.getReadEnd();
 	}
 	
 	public String toString() {
@@ -52,15 +52,15 @@ implements hasReadInfoCount {
 		sb.append('\n');
 
 		sb.append("Read info: (start, inner, end) (");
-		sb.append(getReadInfoCount().getStart());
+		sb.append(getReadArrestCount().getReadStart());
 		sb.append(sep);
-		sb.append(getReadInfoCount().getInner());
+		sb.append(getReadArrestCount().getReadInternal());
 		sb.append(sep);
-		sb.append(getReadInfoCount().getEnd());
+		sb.append(getReadArrestCount().getReadEnd());
 		sb.append(") (arrest, through) ; (");
-		sb.append(getReadInfoCount().getArrest());
+		sb.append(getReadArrestCount().getReadArrest());
 		sb.append(sep);
-		sb.append(getReadInfoCount().getThrough());
+		sb.append(getReadArrestCount().getReadThrough());
 		sb.append(")");
 
 		return sb.toString();

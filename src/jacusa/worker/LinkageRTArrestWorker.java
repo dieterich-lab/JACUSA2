@@ -6,7 +6,7 @@ import jacusa.cli.parameters.LinkageRTArrestParameter;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasReadInfoExtendedCount;
+import lib.data.has.hasLinkedReadArrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.StatisticResult;
 import lib.data.validator.ParallelDataValidator;
@@ -14,7 +14,7 @@ import lib.io.copytmp.CopyTmpResult;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
-public class LinkageRTArrestWorker<T extends AbstractData & hasReferenceBase & hasReadInfoExtendedCount>
+public class LinkageRTArrestWorker<T extends AbstractData & hasReferenceBase & hasLinkedReadArrestCount>
 extends AbstractWorker<T, StatisticResult<T>> {
 
 	private final AbstractStatisticCalculator<T> statisticCalculator;

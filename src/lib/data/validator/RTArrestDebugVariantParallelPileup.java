@@ -11,10 +11,10 @@ implements ParallelDataValidator<T> {
 	@Override
 	public boolean isValid(final ParallelData<T> parallelData) {
 		int i = 0;
-		if (parallelData.getCombinedPooledData().getReadInfoCount().getEnd() > 0) {
+		if (parallelData.getCombinedPooledData().getReadArrestCount().getReadEnd() > 0) {
 			++i;
 		}
-		if (parallelData.getCombinedPooledData().getReadInfoCount().getInner() > 0) {
+		if (parallelData.getCombinedPooledData().getReadArrestCount().getReadInternal() > 0) {
 			++i;
 		}
 

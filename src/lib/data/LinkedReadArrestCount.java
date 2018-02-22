@@ -3,31 +3,22 @@ package lib.data;
 import java.util.Map;
 import java.util.TreeMap;
 
+import lib.data.has.hasReadArrestCount;
+
 /**
  * 
  * @author Michael Piechotta
  *
  */
-public class ReadInfoExtendedCount {
+public class LinkedReadArrestCount implements hasReadArrestCount {
 
-	// container
-	private int start;
-	private int inner;
-	private int end;
-
-	private int arrest;
-	private int through;
+	private ReadArrestCount readArrestCount;
 
 	private Map<Integer, BaseCallCount> refPos2baseChange4arrest;
 	private Map<Integer, BaseCallCount> refPos2baseChange4through;
-	
-	public ReadInfoExtendedCount() {
-		start 	= 0;
-		inner 	= 0;
-		end 	= 0;
-		
-		arrest	= 0;
-		through = 0;
+
+	public LinkedReadArrestCount() {
+		readArrestCount = new ReadArrestCount();
 
 		refPos2baseChange4arrest = new TreeMap<Integer, BaseCallCount>();
 		refPos2baseChange4through = new TreeMap<Integer, BaseCallCount>();
@@ -36,58 +27,17 @@ public class ReadInfoExtendedCount {
 	/**
 	 * Copy constructor
 	 * 
-	 * @param readInfoExtendedCount
+	 * @param linkedReadArrestCount
 	 */
-	public ReadInfoExtendedCount(final ReadInfoExtendedCount readInfoExtendedCount) {
-		this.start 		= readInfoExtendedCount.start;
-		this.inner 		= readInfoExtendedCount.inner;
-		this.end 		= readInfoExtendedCount.end;
-		
-		this.arrest 	= readInfoExtendedCount.arrest;
-		this.through	= readInfoExtendedCount.through;
+	public LinkedReadArrestCount(final LinkedReadArrestCount linkedReadArrestCount) {
+		readArrestCount = linkedReadArrestCount.readArrestCount.copy();
 
-		refPos2baseChange4arrest = new TreeMap<Integer, BaseCallCount>(readInfoExtendedCount.refPos2baseChange4arrest);
-		refPos2baseChange4through = new TreeMap<Integer, BaseCallCount>(readInfoExtendedCount.refPos2baseChange4through);
+		refPos2baseChange4arrest = new TreeMap<Integer, BaseCallCount>(linkedReadArrestCount.refPos2baseChange4arrest);
+		refPos2baseChange4through = new TreeMap<Integer, BaseCallCount>(linkedReadArrestCount.refPos2baseChange4through);
 	}
 	
-	public int getStart() {
-		return start;
-	}
-
-	public void setStart(final int start) {
-		this.start = start;
-	}
-
-	public int getInner() {
-		return inner;
-	}
-
-	public void setInner(final int inner) {
-		this.inner = inner;
-	}
-
-	public int getEnd() {
-		return end;
-	}
-
-	public void setEnd(int end) {
-		this.end = end;
-	}
-
-	public int getArrest() {
-		return arrest;
-	}
-	
-	public void setArrest(final int arrest) {
-		this.arrest = arrest;
-	}
-	
-	public int getThrough() {
-		return through;
-	}
-	
-	public void setThrough(final int through) {
-		this.through = through;
+	public ReadArrestCount getReadArrestCount() {
+		return readArrestCount;
 	}
 
 	public void add2arrest(final int referencePosition, final int baseIndex) {
@@ -114,14 +64,8 @@ public class ReadInfoExtendedCount {
 		return refPos2baseChange4through;
 	}
 	
-	public void add(final ReadInfoExtendedCount readInfoCount) {
-		start 	+= readInfoCount.start;
-		inner 	+= readInfoCount.inner;
-		end 	+= readInfoCount.end;
-		
-		arrest	+= readInfoCount.arrest;
-		through	+= readInfoCount.through;
-		
+	public void add(final LinkedReadArrestCount readInfoCount) {
+		readArrestCount.add(readInfoCount.readArrestCount);
 		
 		copy(refPos2baseChange4arrest, readInfoCount.refPos2baseChange4arrest);
 		copy(refPos2baseChange4through, readInfoCount.refPos2baseChange4through);
@@ -136,9 +80,9 @@ public class ReadInfoExtendedCount {
 			}
 		}
 	}
-	
-	public ReadInfoExtendedCount copy() {
-		return new ReadInfoExtendedCount(this);
+
+	public LinkedReadArrestCount copy() {
+		return new LinkedReadArrestCount(this);
 	}
 	
 }

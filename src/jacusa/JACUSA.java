@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import lib.data.BaseCallReadInfoData;
-import lib.data.ReadInfoExtendedData;
+import lib.data.LinkedReadArrestCountData;
 import lib.data.PileupData;
 import lib.data.generator.BaseCallReadInfoExtendedDataGenerator;
 import lib.data.generator.DataGenerator;
@@ -71,8 +71,8 @@ public class JACUSA extends AbstractTool {
 		factories.add(new RTArrestFactory<BaseCallReadInfoData>(new RTArrestParameter<BaseCallReadInfoData>(2), 
 				baseCallReadInfoGenerator));
 
-		DataGenerator<ReadInfoExtendedData> baseCallReadInfoExtendedGenerator = new BaseCallReadInfoExtendedDataGenerator();
-		factories.add(new LinkageRTArrestFactory<ReadInfoExtendedData>(new LinkageRTArrestParameter<ReadInfoExtendedData>(2), 
+		DataGenerator<LinkedReadArrestCountData> baseCallReadInfoExtendedGenerator = new BaseCallReadInfoExtendedDataGenerator();
+		factories.add(new LinkageRTArrestFactory<LinkedReadArrestCountData>(new LinkageRTArrestParameter<LinkedReadArrestCountData>(2), 
 				baseCallReadInfoExtendedGenerator));
 		
 		for (final AbstractMethodFactory<?, ?> factory : factories) {
