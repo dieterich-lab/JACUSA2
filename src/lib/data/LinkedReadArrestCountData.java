@@ -1,5 +1,6 @@
 package lib.data;
 
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoverage;
 import lib.data.has.hasLinkedReadArrestCount;
 import lib.data.has.hasReferenceBase;
@@ -7,15 +8,17 @@ import lib.util.coordinate.Coordinate;
 
 public class LinkedReadArrestCountData
 extends AbstractData
-implements hasCoverage, hasReferenceBase, hasLinkedReadArrestCount {
+implements hasCoverage, hasBaseCallCount, hasReferenceBase, hasLinkedReadArrestCount {
 
 	private byte referenceBase;
+	private BaseCallCount baseCallCount;
 	private LinkedReadArrestCount linkedReadArrestCount;
 	
 	public LinkedReadArrestCountData(final LinkedReadArrestCountData data) {
 		super(data);
 
 		this.referenceBase 			= data.referenceBase;
+		this.baseCallCount			= data.baseCallCount;
 		this.linkedReadArrestCount 	= data.linkedReadArrestCount.copy();
 	}
 	
@@ -25,7 +28,12 @@ implements hasCoverage, hasReferenceBase, hasLinkedReadArrestCount {
 		this.referenceBase = referenceBase;
 		linkedReadArrestCount = new LinkedReadArrestCount();
 	}
-		
+	
+	@Override
+	public BaseCallCount getBaseCallCount() {
+		return baseCallCount;
+	}
+	
 	@Override
 	public LinkedReadArrestCount getLinkedReadArrestCount() {
 		return linkedReadArrestCount;
@@ -35,6 +43,7 @@ implements hasCoverage, hasReferenceBase, hasLinkedReadArrestCount {
 	public void add(AbstractData abstractData) {
 		LinkedReadArrestCountData baseQualReadInfoData = (LinkedReadArrestCountData) abstractData;
 		referenceBase = baseQualReadInfoData.referenceBase;
+		baseCallCount.add(baseQualReadInfoData.baseCallCount);
 		linkedReadArrestCount.add(baseQualReadInfoData.linkedReadArrestCount);
 	}
 	

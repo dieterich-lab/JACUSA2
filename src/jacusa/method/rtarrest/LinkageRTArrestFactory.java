@@ -35,11 +35,12 @@ import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.AbstractData;
 import lib.data.builder.factory.BaseCallReadInfoExtendedDataBuilderFactory;
 import lib.data.generator.DataGenerator;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoverage;
 import lib.data.has.hasLinkedReadArrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.StatisticResult;
-import lib.data.validator.LinkageRTArrestVariantParallelPileup;
+import lib.data.validator.LinkedRTArrestVariantParallelPileup;
 import lib.data.validator.MinCoverageValidator;
 import lib.data.validator.ParallelDataValidator;
 import lib.io.AbstractResultFormat;
@@ -48,7 +49,7 @@ import lib.util.AbstractTool;
 
 import org.apache.commons.cli.ParseException;
 
-public class LinkageRTArrestFactory<T extends AbstractData & hasCoverage & hasReferenceBase & hasLinkedReadArrestCount> 
+public class LinkageRTArrestFactory<T extends AbstractData & hasBaseCallCount & hasCoverage & hasReferenceBase & hasLinkedReadArrestCount> 
 extends AbstractMethodFactory<T, StatisticResult<T>> {
 
 	public final static String NAME = "lrt-arrest";
@@ -167,7 +168,7 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 	public List<ParallelDataValidator<T>> getParallelDataValidators() {
 		final List<ParallelDataValidator<T>> validators = super.getParallelDataValidators();
 		validators.add(new MinCoverageValidator<T>(getParameter().getConditionParameters()));
-		validators.add(new LinkageRTArrestVariantParallelPileup<T>());
+		validators.add(new LinkedRTArrestVariantParallelPileup<T>());
 		return validators;
 	}
 	

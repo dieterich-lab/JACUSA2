@@ -19,51 +19,45 @@ import lib.data.AbstractData;
 import lib.data.LinkedReadArrestCount;
 import lib.data.ReadArrestCount;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoverage;
 import lib.data.has.hasLinkedReadArrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
-public class LinkageArrest2BaseChangeDataCache<T extends AbstractData & hasCoverage & hasReferenceBase & hasLinkedReadArrestCount> 
+public class LinkedRT2BaseChangeDataCache<T extends AbstractData & hasCoverage & hasBaseCallCount & hasReferenceBase & hasLinkedReadArrestCount> 
 extends AbstractDataCache<T> {
 
 	private final LIBRARY_TYPE libraryType;
-	
-	private final BaseCallConfig baseCallConfig;
-	private final byte minBASQ;
 
 	private final List<List<SimpleEntry<Integer, Integer>>> readStart;
-	// FIXME what about through private final List<List<SimpleEntry<Integer, Integer>>> readInner;
 	private final List<List<SimpleEntry<Integer, Integer>>> readEnd;
 	
 	private final Set<Integer> windowPositions;
 	
 	private final int[] readStartCount;
 	private final int[] readEndCount;
-
-	private final int[] coverage;
 	
-	public LinkageArrest2BaseChangeDataCache(final LIBRARY_TYPE libraryType, final BaseCallConfig baseCallConfig,
-			final byte minBASQ, 
+	private BaseCallDataCache<T> baseCallDataCache;
+	
+	public LinkedRT2BaseChangeDataCache(final LIBRARY_TYPE libraryType,
+			final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig,
 			final CoordinateController coordinateController) {
 		
 		super(coordinateController);
+		
+		baseCallDataCache = new BaseCallDataCache<T>(maxDepth, minBASQ, baseCallConfig, coordinateController);
+		
 		this.libraryType = libraryType;
-		this.baseCallConfig = baseCallConfig;
-		this.minBASQ = minBASQ;
 	
 		readStartCount = new int[coordinateController.getActiveWindowSize()];
 		readEndCount = new int[coordinateController.getActiveWindowSize()];
 		
-		coverage = new int[coordinateController.getActiveWindowSize()];
-		
 		readStart = new ArrayList<List<SimpleEntry<Integer,Integer>>>(coordinateController.getActiveWindowSize());
-		// readInner = new ArrayList<List<SimpleEntry<Integer,Integer>>>(coordinateController.getActiveWindowSize());
 		readEnd = new ArrayList<List<SimpleEntry<Integer,Integer>>>(coordinateController.getActiveWindowSize());
 		
 		for (int i = 0; i < coordinateController.getActiveWindowSize(); ++i) {
 			readStart.add(new ArrayList<SimpleEntry<Integer,Integer>>(10));
-			// readInner.add(new ArrayList<SimpleEntry<Integer,Integer>>(10));
 			readEnd.add(new ArrayList<SimpleEntry<Integer,Integer>>(10));
 		}
 		
@@ -87,8 +81,7 @@ extends AbstractDataCache<T> {
 		if (windowPosition1 < 0 && windowPosition2 < 0) {
 			return;
 		}
-		
-		// System.out.println(record.toString());
+
 		for (final AlignmentBlock alignmentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
 			parseTODO(alignmentBlock.getReferenceStart(), alignmentBlock.getReadStart() - 1, alignmentBlock.getLength(), recordWrapper);
 		}
@@ -115,25 +108,25 @@ extends AbstractDataCache<T> {
 			final int guardedReferencePosition = windowPositionGuard.getReferencePosition() + j;
 			final int guardedWindowPosition = windowPositionGuard.getWindowPosition() + j;
 			final int guardedReadPosition = windowPositionGuard.getReadPosition() + j;
-
-			coverage[guardedWindowPosition]++;
 			
 			final byte bc = record.getReadBases()[guardedReadPosition];
-			final int baseIndex = baseCallConfig.getBaseIndex(bc);
+			final int baseIndex = baseCallDataCache.getBaseCallConfig().getBaseIndex(bc);
 			if (baseIndex < 0) {
 				continue;
 			}
 			final byte bq = record.getBaseQualities()[guardedReadPosition];
-			if (bq < minBASQ) {
+			if (bq < baseCallDataCache.getMinBaseCallQuality()) {
 				continue;
 			}
 
 			byte refBase = getCoordinateController().getReferenceProvider().getReference(guardedWindowPosition);
 			// ignore N reference
-			if (baseCallConfig.getBaseIndex(refBase) < 0) {
+			if (baseCallDataCache.getBaseCallConfig().getBaseIndex(refBase) < 0) {
 				continue;
 			}
 
+			baseCallDataCache.incrementBaseCall(guardedWindowPosition, guardedReadPosition, baseIndex, bq);
+			
 			if (refBase != bc) {
 				// mismatch
 				if (windowPosition1 >= 0) {
@@ -143,12 +136,6 @@ extends AbstractDataCache<T> {
 				if (windowPosition2 >= 0) {
 					add(windowPosition2, guardedReferencePosition, baseIndex, readEnd);
 				}
-				
-				/* FIXME
-				if (guardedWindowPosition != windowPosition1 && guardedWindowPosition != windowPosition2) {
-					add(windowPosition2, guardedReferencePosition, baseIndex, readInner);
-				}
-				*/
 			}
 		}
 	}
@@ -160,6 +147,9 @@ extends AbstractDataCache<T> {
 	
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
+		// add base calls
+		baseCallDataCache.addData(data, coordinate);
+
 		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
 
 		final LinkedReadArrestCount linkedReadArrestCount = data.getLinkedReadArrestCount();
@@ -168,7 +158,8 @@ extends AbstractDataCache<T> {
 		readArrestCount.setReadStart(readStartCount[windowPosition]);
 		readArrestCount.setReadEnd(readEndCount[windowPosition]);
 
-		final int internal = coverage[windowPosition] - (readArrestCount.getReadStart() + readArrestCount.getReadEnd());
+		final int internal = baseCallDataCache.getCoverage()[windowPosition] - 
+				(readArrestCount.getReadStart() + readArrestCount.getReadEnd());
 		readArrestCount.setReadInternal(internal);
 
 		int arrest = 0;
@@ -182,8 +173,6 @@ extends AbstractDataCache<T> {
 			through += readArrestCount.getReadInternal();
 			
 			add2ReadInfoExtendedCount(windowPosition, readStart, linkedReadArrestCount, true);
-			// FIXME add2ReadInfoExtendedCount(windowPosition, readInner, readInfoExtendedCount, false);
-
 			break;
 
 		case FR_FIRSTSTRAND:
@@ -191,8 +180,6 @@ extends AbstractDataCache<T> {
 			through += readArrestCount.getReadInternal();
 			
 			add2ReadInfoExtendedCount(windowPosition, readEnd, linkedReadArrestCount, true);
-			// FIXME add2ReadInfoExtendedCount(windowPosition, readInner, readInfoExtendedCount, false);
-			
 			break;
 
 		case FR_SECONDSTRAND:
@@ -200,8 +187,6 @@ extends AbstractDataCache<T> {
 			through += readArrestCount.getReadInternal();
 			
 			add2ReadInfoExtendedCount(windowPosition, readStart, linkedReadArrestCount, true);
-			// FIXME add2ReadInfoExtendedCount(windowPosition, readInner, readInfoExtendedCount, false);
-			
 			break;
 			
 		case MIXED:
@@ -233,13 +218,13 @@ extends AbstractDataCache<T> {
 	
 	@Override
 	public void clear() {
+		baseCallDataCache.clear();
+		
 		for (int windowPosition : windowPositions) {
 			readStart.get(windowPosition).clear();
 			readEnd.get(windowPosition).clear();
 		}
 		windowPositions.clear();
-
-		Arrays.fill(coverage, 0);
 		
 		Arrays.fill(readStartCount, 0);
 		Arrays.fill(readEndCount, 0);
@@ -255,8 +240,8 @@ extends AbstractDataCache<T> {
 		return readEndCount[windowPosition];
 	}
 
-	public int getBaseSize() {
-		return baseCallConfig.getBases().length; 
+	public BaseCallDataCache<T> getBaseCallDataCache() {
+		return baseCallDataCache; 
 	}
 
 }
