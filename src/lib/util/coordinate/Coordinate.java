@@ -106,7 +106,14 @@ public class Coordinate {
 		}
 		return position - coordinate.getStart();
 	}
-	
+
+	public boolean equal(final Coordinate coordinate) {
+		return contig == coordinate.contig && 
+				start == coordinate.start &&
+				end == coordinate.end &&
+				strand == coordinate.strand;
+	}
+
 	public static STRAND invertStrand(final STRAND strand) {
 		switch (strand) {
 		case FORWARD:

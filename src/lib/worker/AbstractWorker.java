@@ -77,7 +77,7 @@ implements Iterator<ParallelData<T>> {
 		while (coordinateController.checkCoordinateAdvancerWithinActiveWindow()) {
 			final Coordinate coordinate = new Coordinate(coordinateController.getCoordinateAdvancer().getCurrentCoordinate());
 			final T[][] data = conditionContainer.getData(coordinate);
-			parallelData = new ParallelData<T>(workerDispatcher.getMethodFactory(), coordinate, data);
+			parallelData = new ParallelData<T>(workerDispatcher.getMethodFactory(), data);
 
 			if (parallelData != null && parallelDataValidator.isValid(parallelData)) {
 				comparisons++;

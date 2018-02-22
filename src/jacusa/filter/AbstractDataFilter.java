@@ -32,11 +32,9 @@ extends AbstractFilter<T> {
 	}
 
 	protected ParallelData<F> getFilteredParallelData(final ParallelData<T> parallelData) {
-		final Coordinate coordinate = parallelData.getCoordinate();
 		final F[][] filteredDataArray = getFilteredData(parallelData);
 
-		final ParallelData<F> filteredParallelData = 
-				new ParallelData<F>(getFilterFactory(), coordinate, filteredDataArray);
+		final ParallelData<F> filteredParallelData = new ParallelData<F>(getFilterFactory(), filteredDataArray);
 
 		return filteredParallelData;
 	}
@@ -51,7 +49,7 @@ extends AbstractFilter<T> {
 	
 	protected F[][] getFilteredData(final ParallelData<T> parallelData) {
 		final int conditions = parallelData.getConditions();
-		final Coordinate coordinate = parallelData.getCoordinate();
+		final Coordinate coordinate = parallelData.getCombinedPooledData().getCoordinate();
 
 		// create container [condition][replicates]
 		final F[][] filteredData = getFilterFactory().createContainerData(conditions);

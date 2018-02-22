@@ -18,9 +18,6 @@ public class ParallelData<T extends AbstractData>
 implements hasCoordinate, hasLibraryType {
 	
 	private DataGenerator<T> dataGenerator;
-	
-	private LIBRARY_TYPE libraryType;
-	private Coordinate coordinate;
 
 	private T[][] data;
 	private T[] cachedCombinedData;
@@ -35,12 +32,8 @@ implements hasCoordinate, hasLibraryType {
 		reset();
 	}
 
-	public ParallelData(final DataGenerator<T> dataGenerator, 
-			final Coordinate coordinate, final T[][] data) {
+	public ParallelData(final DataGenerator<T> dataGenerator, final T[][] data) {
 		this.dataGenerator 	= dataGenerator;
-		this.coordinate 	= new Coordinate(coordinate);
-		
-		this.libraryType	= getCommonLibraryType(data);
 		
 		int conditions 		= data.length;
 
@@ -58,7 +51,6 @@ implements hasCoordinate, hasLibraryType {
 	 */
 	public ParallelData(final ParallelData<T> parallelData) {
 		dataGenerator = parallelData.dataGenerator;
-		coordinate = new Coordinate(parallelData.getCoordinate());
 
 		// copy data
 		data = dataGenerator.copyContainerData(parallelData.data);
@@ -66,14 +58,6 @@ implements hasCoordinate, hasLibraryType {
 			cachedCombinedData = dataGenerator.copyReplicateData(parallelData.cachedCombinedData);
 		}
 		cachedTotalReplicates = parallelData.cachedTotalReplicates;
-	}
-	
-	public Coordinate getCoordinate() {
-		return coordinate;
-	}
-
-	public LIBRARY_TYPE getLibraryType() {
-		return libraryType;
 	}
 	
 	public void setData(T[][] data) {
@@ -99,8 +83,6 @@ implements hasCoordinate, hasLibraryType {
 	}
 
 	public void reset() {
-		coordinate 	= new Coordinate();
-
 		if (data != null) {
 			data = dataGenerator.createContainerData(data.length);
 		}
@@ -147,7 +129,7 @@ implements hasCoordinate, hasLibraryType {
 		if (cachedPooledData[conditionIndex] == null && 
 				getReplicates(conditionIndex) > 0) {
 			
-			T tmpData = dataGenerator.createData(null, getCoordinate());
+			T tmpData = dataGenerator.createData(null, cachedPooledData[conditionIndex].getCoordinate());
 			
 			for (int replicateIndex = 0; replicateIndex < getReplicates(conditionIndex); replicateIndex++) {
 				tmpData.add(getData(conditionIndex, replicateIndex));
@@ -161,7 +143,7 @@ implements hasCoordinate, hasLibraryType {
 	public T getCombinedPooledData() {
 		if (cachedCombinedPooledData == null && getPooledData(0) != null) {
 
-			cachedCombinedPooledData = dataGenerator.createData(getLibraryType(), getCoordinate());
+			cachedCombinedPooledData = dataGenerator.createData(getCommonLibraryType(data), getCommonCoordinate(data));
 			for (int conditionIndex = 0; conditionIndex < getConditions(); conditionIndex++) {
 				cachedCombinedPooledData.add(getPooledData(conditionIndex));
 			}
@@ -189,6 +171,16 @@ implements hasCoordinate, hasLibraryType {
 		return cachedCombinedData;
 	}
 
+	@Override
+	public Coordinate getCoordinate() {
+		return getCommonCoordinate(data);
+	}
+
+	@Override
+	public LIBRARY_TYPE getLibraryType() {
+		return getCommonLibraryType(data);
+	}
+	
 	public T getData(int conditionIndex, int replicateIndex) {
 		return data[conditionIndex][replicateIndex];
 	}
@@ -320,6 +312,27 @@ implements hasCoordinate, hasLibraryType {
 		return ret;
 	}
 
+	public static <S extends AbstractData> Coordinate getCommonCoordinate(final S[][] data) {
+		Coordinate coordinate = null;
+		for (final S[] conditionData : data) {
+			coordinate = getCommonCoordinate(conditionData, coordinate);
+		}
+
+		return coordinate;
+	}
+	
+	private static <S extends AbstractData> Coordinate getCommonCoordinate(final S[] data, Coordinate coordinate) {
+		for (final S replicateData : data) {
+			if (coordinate == null) {
+				coordinate = replicateData.getCoordinate();
+			} else if (! coordinate.equal(replicateData.getCoordinate())) {
+				throw new IllegalStateException("Replicate data has different coordinates: " + coordinate.toString() + " != " + replicateData.getCoordinate().toString());
+			}
+		}
+
+		return coordinate;
+	}
+	
 	public static <S extends AbstractData> LIBRARY_TYPE getCommonLibraryType(final S[][] data) {
 		LIBRARY_TYPE tmp = null;
 		for (final S[] conditionData : data) {
@@ -341,7 +354,7 @@ implements hasCoordinate, hasLibraryType {
 
 		// coordinate
 		sb.append("Container Coordinate: ");
-		sb.append(parallelPileupData.getCoordinate().toString());
+		sb.append(parallelPileupData.getCombinedPooledData().getCoordinate().toString());
 		sb.append('\n');
 
 		// pooled

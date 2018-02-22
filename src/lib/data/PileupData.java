@@ -13,6 +13,7 @@ implements hasPileupCount {
 
 	public PileupData(final LIBRARY_TYPE libraryType, final Coordinate coordinate) {
 		super(libraryType, coordinate);
+
 		pileupCount = new PileupCount();
 		effectiveStrand	= STRAND.UNKNOWN;
 	}
