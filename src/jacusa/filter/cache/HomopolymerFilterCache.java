@@ -8,8 +8,8 @@ import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.has.hasHomopolymerInfo;
-import lib.tmp.CoordinateController;
-import lib.tmp.CoordinateController.WindowPositionGuard;
+import lib.util.coordinate.CoordinateController;
+import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 import lib.util.coordinate.Coordinate;
 
 public class HomopolymerFilterCache<T extends AbstractData & hasHomopolymerInfo> 

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 
 /**
  * 

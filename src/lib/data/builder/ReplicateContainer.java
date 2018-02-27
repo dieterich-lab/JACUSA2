@@ -13,7 +13,7 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIterator;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIteratorProvider;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
 public class ReplicateContainer<T extends AbstractData> {

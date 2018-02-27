@@ -9,7 +9,7 @@ import lib.data.AbstractData;
 import lib.data.cache.BaseCallDataCache;
 import lib.data.cache.DataCache;
 import lib.data.has.hasBaseCallCount;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 
 public class BaseCallDataBuilderFactory<T extends AbstractData & hasBaseCallCount> 
 extends AbstractDataBuilderFactory<T> {

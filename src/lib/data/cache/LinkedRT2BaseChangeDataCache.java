@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import lib.tmp.CoordinateController;
-import lib.tmp.CoordinateController.WindowPositionGuard;
+import lib.util.coordinate.CoordinateController;
+import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 import lib.util.coordinate.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;

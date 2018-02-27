@@ -5,8 +5,8 @@ import htsjdk.samtools.AlignmentBlock;
 import java.util.Arrays;
 
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.tmp.CoordinateController;
-import lib.tmp.CoordinateController.WindowPositionGuard;
+import lib.util.coordinate.CoordinateController;
+import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 import lib.util.coordinate.Coordinate;
 
 public class SimpleMDReferenceProvider implements ReferenceProvider {

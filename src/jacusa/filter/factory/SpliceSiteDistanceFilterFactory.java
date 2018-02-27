@@ -17,7 +17,7 @@ import lib.data.cache.UniqueBaseCallDataCache;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 
 /**
  * 

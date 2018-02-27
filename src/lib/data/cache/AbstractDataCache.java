@@ -1,7 +1,7 @@
 package lib.data.cache;
 
 import lib.data.AbstractData;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 
 public abstract class AbstractDataCache<T extends AbstractData>
 implements DataCache<T> {

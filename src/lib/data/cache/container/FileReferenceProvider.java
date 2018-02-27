@@ -4,7 +4,7 @@ import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
 
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
 public class FileReferenceProvider implements ReferenceProvider {

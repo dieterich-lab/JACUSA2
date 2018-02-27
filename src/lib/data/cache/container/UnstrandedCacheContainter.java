@@ -5,7 +5,7 @@ import java.util.List;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.DataCache;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
 public class UnstrandedCacheContainter<T extends AbstractData> 

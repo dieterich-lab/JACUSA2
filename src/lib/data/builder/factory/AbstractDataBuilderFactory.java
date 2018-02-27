@@ -14,7 +14,7 @@ import lib.data.cache.container.FRPairedEnd1CacheContainer;
 import lib.data.cache.container.FRPairedEnd2CacheContainer;
 import lib.data.cache.container.UnstrandedCacheContainter;
 import lib.data.generator.DataGenerator;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 
 public abstract class AbstractDataBuilderFactory<T extends AbstractData> {
 	

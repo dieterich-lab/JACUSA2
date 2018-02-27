@@ -2,7 +2,7 @@ package lib.data.cache;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
 public interface DataCache<X extends AbstractData> {

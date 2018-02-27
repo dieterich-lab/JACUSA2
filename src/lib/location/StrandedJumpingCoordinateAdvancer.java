@@ -3,7 +3,7 @@ package lib.location;
 import lib.data.builder.ConditionContainer;
 import lib.data.builder.DataBuilder;
 import lib.data.builder.ReplicateContainer;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 

@@ -2,8 +2,8 @@ package lib.data.cache.container;
 
 import htsjdk.samtools.AlignmentBlock;
 
-import lib.tmp.CoordinateController;
-import lib.tmp.CoordinateController.WindowPositionGuard;
+import lib.util.coordinate.CoordinateController;
+import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 

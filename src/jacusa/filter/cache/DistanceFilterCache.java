@@ -8,7 +8,7 @@ import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.UniqueBaseCallDataCache;
 import lib.data.has.hasBaseCallCount;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
 public class DistanceFilterCache<T extends AbstractData & hasBaseCallCount> 

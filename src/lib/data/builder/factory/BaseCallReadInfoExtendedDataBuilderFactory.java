@@ -12,7 +12,7 @@ import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoverage;
 import lib.data.has.hasLinkedReadArrestCount;
 import lib.data.has.hasReferenceBase;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 
 public class BaseCallReadInfoExtendedDataBuilderFactory<T extends AbstractData & hasCoverage & hasReferenceBase & hasBaseCallCount & hasLinkedReadArrestCount> 
 extends AbstractDataBuilderFactory<T> {

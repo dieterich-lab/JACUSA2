@@ -61,8 +61,6 @@ public abstract class AbstractTool {
 		comparisons = workerDispatcher.run();
 
 		getLogger().addEpilog(getEpilog());
-
-		// TODO close
 	}
 
 	protected abstract Map<String, AbstractMethodFactory<?, ?>> getMethodFactories();

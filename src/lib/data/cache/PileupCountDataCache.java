@@ -2,7 +2,7 @@ package lib.data.cache;
 
 import java.util.Arrays;
 
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 

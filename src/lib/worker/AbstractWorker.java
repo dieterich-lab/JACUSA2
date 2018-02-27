@@ -14,7 +14,7 @@ import lib.data.result.Result;
 import lib.data.validator.CompositeParallelDataValidator;
 import lib.data.validator.ParallelDataValidator;
 import lib.io.copytmp.CopyTmpResult;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 import lib.util.AbstractTool;
 import lib.util.coordinate.Coordinate;
 

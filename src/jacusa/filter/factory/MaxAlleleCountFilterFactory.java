@@ -5,7 +5,7 @@ import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
 import lib.data.has.hasBaseCallCount;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 
 /**
  * 

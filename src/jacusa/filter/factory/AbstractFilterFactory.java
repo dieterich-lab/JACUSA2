@@ -2,7 +2,7 @@ package jacusa.filter.factory;
 
 import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 
 public abstract class AbstractFilterFactory<T extends AbstractData> {
 

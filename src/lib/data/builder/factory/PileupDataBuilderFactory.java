@@ -9,7 +9,7 @@ import lib.data.AbstractData;
 import lib.data.cache.DataCache;
 import lib.data.cache.PileupCountDataCache;
 import lib.data.has.hasPileupCount;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 
 public class PileupDataBuilderFactory<T extends AbstractData & hasPileupCount> 
 extends AbstractDataBuilderFactory<T> {

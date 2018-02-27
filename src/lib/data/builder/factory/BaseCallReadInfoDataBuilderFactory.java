@@ -10,7 +10,7 @@ import lib.data.cache.DataCache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReadArrestCount;
 import lib.data.has.hasReferenceBase;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 
 public class BaseCallReadInfoDataBuilderFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadArrestCount> 
 extends AbstractDataBuilderFactory<T> {

@@ -1,6 +1,6 @@
 package lib.data.cache;
 
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 
 import htsjdk.samtools.AlignmentBlock;
 

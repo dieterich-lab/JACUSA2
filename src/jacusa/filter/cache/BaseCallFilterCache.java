@@ -1,6 +1,6 @@
 package jacusa.filter.cache;
 
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
 import lib.cli.options.BaseCallConfig;

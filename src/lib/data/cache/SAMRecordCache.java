@@ -3,8 +3,8 @@ package lib.data.cache;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.tmp.CoordinateController;
-import lib.tmp.CoordinateController.WindowPositionGuard;
+import lib.util.coordinate.CoordinateController;
+import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 import lib.util.coordinate.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;

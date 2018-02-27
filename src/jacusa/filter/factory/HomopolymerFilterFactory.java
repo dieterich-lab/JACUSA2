@@ -14,7 +14,7 @@ import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasHomopolymerInfo;
 import lib.data.has.hasReferenceBase;
-import lib.tmp.CoordinateController;
+import lib.util.coordinate.CoordinateController;
 
 public class HomopolymerFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasHomopolymerInfo> 
 extends AbstractDataFilterFactory<T, F> {
