@@ -258,7 +258,6 @@ implements DataGenerator<T> {
 		if (parameter.getInputBedFilename().isEmpty()) {
 			coordinateProvider = new SAMCoordinateProvider(isStranded, sequenceRecords);
 		} else {
-			// FIXME what if bed is stranded
 			coordinateProvider = new BedCoordinateProvider(isStranded, parameter.getInputBedFilename());
 		}
 
