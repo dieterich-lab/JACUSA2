@@ -26,14 +26,6 @@ public class SAMRecordWrapperIteratorProvider {
 		filteredSAMRecords = 0;
 	}
 
-	/*
-	// get iterator to fill the window
-	public SAMRecordWrapperIterator createIterator(final Coordinate activeWindowCoordinate, final Coordinate reservedWindowCoordinate) {
-		final SAMRecordIterator iterator = createSAMRecordIterator(reservedWindowCoordinate);
-		return new SAMRecordWrapperIterator(this, activeWindowCoordinate, iterator);
-	}
-	*/
-	// FIXME
 	public SAMRecordWrapperIterator createIterator(final Coordinate activeWindowCoordinate) {
 		final SAMRecordIterator iterator = createSAMRecordIterator(activeWindowCoordinate);
 		return new SAMRecordWrapperIterator(this, iterator);

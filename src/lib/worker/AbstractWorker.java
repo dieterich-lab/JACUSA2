@@ -71,7 +71,6 @@ implements Iterator<ParallelData<T>> {
 		return isFiltered;
 	}
 	
-	// TODO make faster if replicates are not valid 
 	@Override
 	public boolean hasNext() {
 		while (coordinateController.checkCoordinateAdvancerWithinActiveWindow()) {

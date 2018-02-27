@@ -5,12 +5,8 @@ import lib.data.ParallelData;
 import lib.data.has.hasLinkedReadArrestCount;
 import lib.data.has.hasReferenceBase;
 
-// FIXME make hasReadInfoExtendedCount extend from hasReadInfoCount
 public class LinkedRTArrestVariantParallelPileup<T extends AbstractData & hasReferenceBase & hasLinkedReadArrestCount>
 implements ParallelDataValidator<T> {
-	
-	public LinkedRTArrestVariantParallelPileup() {
-	}
 
 	@Override
 	public boolean isValid(final ParallelData<T> parallelData) {

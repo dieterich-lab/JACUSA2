@@ -7,7 +7,7 @@ import lib.data.LinkedReadArrestCount;
  * @author Michael Piechotta
  *
  */
-public interface hasLinkedReadArrestCount {
+public interface hasLinkedReadArrestCount extends hasReadArrestCount {
 	
 	LinkedReadArrestCount getLinkedReadArrestCount();
 	

@@ -5,6 +5,7 @@ import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.util.Info;
 
+// TODO
 public class BetaBinomial<T extends AbstractData> 
 extends AbstractStatisticCalculator<T> {
 
@@ -26,14 +27,11 @@ extends AbstractStatisticCalculator<T> {
 
 	@Override
 	protected void addInfo(final Info info) {
-		// TODO
-		
 	}
 
 	@Override
 	public double getStatistic(ParallelData<T> parallelData) {
-		// TODO
-		return 0;
+		return -1;
 	}
 
 	@Override

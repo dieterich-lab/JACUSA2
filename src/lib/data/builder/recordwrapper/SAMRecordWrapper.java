@@ -157,7 +157,6 @@ public class SAMRecordWrapper {
 			cigarElementWrappers.add(new CigarElementWrapper(position.clone(), cigarElement));
 			index = cigarElementWrappers.size();
 			position.advance(cigarElement);
-			// TODO if outside window stop
 		}
 	}
 
@@ -271,12 +270,10 @@ public class SAMRecordWrapper {
 		}
 
 		public int convertReference2WindowPosition(final int referencePosition, final Coordinate activeWindowCoordinate) {
-			// TODO within block
 			return Coordinate.makeRelativePosition(activeWindowCoordinate, referencePosition);
 		}
 		
 		public int convertRead2WindowPosition(final int readPosition, final Coordinate activeWindowCoordinate) {
-			// TODO within block
 			if (position.getReadPosition() < readPosition || position.getReadPosition() > readPosition) {
 				return -1;
 			}

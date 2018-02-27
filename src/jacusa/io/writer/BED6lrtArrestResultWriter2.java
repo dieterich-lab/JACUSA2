@@ -74,11 +74,6 @@ extends BEDlikeWriter<T, R> {
 
 		final Map<Integer, BaseCallCount> ref2baseCallCount4arrest = data.getLinkedReadArrestCount().getRefPos2baseChange4arrest();
 		addResultRefPos2baseChange(sb, ref2baseCallCount4arrest);
-		/* FIXME what about through base changes
-		sb.append(SEP5);
-		final Map<Integer, BaseCallCount> ref2baseCallCount4through = data.getReadInfoExtendedCount().getRefPos2baseChange4through();
-		addResultRefPos2baseChange(sb, ref2baseCallCount4through);
-		*/
 	}
 
 	protected void addResultRefPos2baseChange(final StringBuilder sb, final Map<Integer, BaseCallCount> ref2baseCallCount) {

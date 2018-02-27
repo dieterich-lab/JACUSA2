@@ -58,26 +58,12 @@ public class WindowCoordinate extends Coordinate {
 		return referencePosition >= getStart() && referencePosition <= getEnd();
 	}
 
-	// TODO start + end and not only position
 	public boolean isContainedInWindow(final Coordinate coordinate) {
 		return coordinate.getPosition() >= getStart() && coordinate.getPosition() <= getEnd();
 	}
 	
-	/**
-	 * Calculates genomicPosition or -1 or -2 if genomicPosition is outside the window
-	 * -1 if downstream of windowEnd
-	 * -2 if upstream of windowStart
-	 * @param referencePosition
-	 * @return
-	 */
 	public int convert2WindowPosition(final int referencePosition) {
-		/*
-		if(genomicPosition < genomicWindowStart) {
-			return -2;
-		} else if(genomicPosition > getGenomicWindowEnd()){
-			return -1;
-		}
-		*/
+
 		
 		if(referencePosition > getEnd()){
 			return -1;

@@ -40,6 +40,11 @@ implements hasCoverage, hasBaseCallCount, hasReferenceBase, hasLinkedReadArrestC
 	}
 	
 	@Override
+	public ReadArrestCount getReadArrestCount() {
+		return linkedReadArrestCount.getReadArrestCount();
+	}
+	
+	@Override
 	public void add(AbstractData abstractData) {
 		LinkedReadArrestCountData baseQualReadInfoData = (LinkedReadArrestCountData) abstractData;
 		referenceBase = baseQualReadInfoData.referenceBase;

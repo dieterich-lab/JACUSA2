@@ -6,7 +6,6 @@ import java.util.Iterator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
 
-// FIXME overlapping windows
 public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 
 	private SAMRecordWrapperIteratorProvider provider;
@@ -65,14 +64,6 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 
 		return null;
 	}
-
-	/* FIXME
-	public void updateActiveWindowCoordinate(final Coordinate activeWindowCoordinate) {
-		this.activeWindowCoordinate = activeWindowCoordinate;
-		reset();
-	}
-	*/
-
 	
 	// clear buffer
 	private void reset() {
@@ -80,17 +71,7 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 		bufferPosition = 0;
 		Arrays.fill(buffer, null);
 	}
-
-	// TODO overlapping windows
-	// TODO ignore left overlapping records they will be taken from left thread
-	// ignore left overlapping records they will be taken from left thread
-	/*
-	if (record.getAlignmentStart() > windowCoordinates.getEnd()) {
-		return bufferSize;
-	}
-	*/
 	
-	// FIXME
 	private int processIterator() {
 		while (iterator.hasNext() && bufferSize < buffer.length) {
 			final SAMRecord record = iterator.next();
@@ -103,7 +84,6 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 				provider.incrementFilteredSAMRecords();
 			}
 
-			// FIXME
 			if (isValid) {
 				final SAMRecordWrapper recordWrapper = new SAMRecordWrapper(isValid, record);
 				buffer[bufferSize++] = recordWrapper;

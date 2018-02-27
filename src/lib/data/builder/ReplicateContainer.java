@@ -57,7 +57,6 @@ public class ReplicateContainer<T extends AbstractData> {
 					iteratorProvider.createIterator(activeWindowCoordinate);
 			final DataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
 
-			// TODO test performance
 			recordWrappers.add(dataBuilder.buildCache(activeWindowCoordinate, iterator));
 			iterator.close();
 		}
@@ -65,7 +64,6 @@ public class ReplicateContainer<T extends AbstractData> {
 		return recordWrappers; 
 	}
 
-	// FIXME
 	public List<List<SAMRecordWrapper>> updateIterators(final Coordinate activeWindowCoordinate) {
 		return createIterators(activeWindowCoordinate, null);
 	}
