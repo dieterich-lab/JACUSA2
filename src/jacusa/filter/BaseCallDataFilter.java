@@ -38,7 +38,7 @@ extends AbstractDataFilter<T, F> {
 		for (int variantBaseIndex : variantBaseIndexs) {
 			int count = 0;
 			int filteredCount = 0;
-			
+
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
 				for (int replicateIndex = 0; replicateIndex < parallelData.getReplicates(conditionIndex); replicateIndex++) {
 					count += parallelData.getData(conditionIndex, replicateIndex).getBaseCallCount().getBaseCallCount(variantBaseIndex);

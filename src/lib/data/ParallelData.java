@@ -1,12 +1,14 @@
 package lib.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lib.cli.options.BaseCallConfig;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoordinate;
 import lib.data.has.hasLibraryType;
 import lib.data.has.hasPileupCount;
-import lib.data.has.hasReferenceBase;
 import lib.util.coordinate.Coordinate;
 
 /**
@@ -225,77 +227,77 @@ implements hasCoordinate, hasLibraryType {
 		return ret;
 	}
 
-	// FIXME
-	// suffices that one replicate contains replicate
+	// for RRDs RNA RNA differences
 	public static <S extends AbstractData & hasBaseCallCount> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
-		int n = 0;
 		int[] alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
-		int[] baseCount = new int[BaseCallConfig.BASES.length];
+		final List<Integer> baseIndexs = new ArrayList<Integer>(BaseCallConfig.BASES.length);
 		
 		for (int baseIndex : alleles) {
+			int n = 0;
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
 				if (parallelData.getPooledData(conditionIndex).getBaseCallCount().getBaseCallCount(baseIndex) > 0) {
-					baseCount[baseIndex]++;
+					n++;
 				}
 			}
-			if (baseCount[baseIndex] > 0 && baseCount[baseIndex] < parallelData.getConditions()) {
-				++n;
+			if (n > 0 && n < parallelData.getConditions()) {
+				baseIndexs.add(baseIndex);
 			}
 		}
 
-		int[] variantBaseIs = new int[n];
-		int j = 0;
-		for (int baseIndex : alleles) {
-			if (baseCount[baseIndex] > 0 && baseCount[baseIndex] < parallelData.getConditions()) {
-				variantBaseIs[j] = baseIndex;
-				++j;
-			}
+		int[] variantBaseIs = new int[baseIndexs.size()];
+		for (int i = 0; i < baseIndexs.size(); ++i) {
+			variantBaseIs[i] = baseIndexs.get(i);
 		}
 
 		return variantBaseIs;
 	}
 	
-	// FIXME
-	// ORDER RESULTS [0] SHOULD BE THE VARIANTs TO TEST
-	public static <S extends AbstractData & hasBaseCallCount & hasReferenceBase> int[] getVariantBaseIndexs2(final ParallelData<S> parallelData) {
-			final int conditions = parallelData.getConditions();
-			final byte referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
-			final int[] alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
+	// for RRDs RNA RNA differences
+	/* @depracted
+	public static <S extends AbstractData & hasBaseCallCount & hasReferenceBase> int[] getNonRefBaseIndexs(final ParallelData<S> parallelData) {
+		final int conditions = parallelData.getConditions();
+		final byte referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
+		if (referenceBase == 'N') {
+			throw new IllegalStateException("Missing reference information");
+		}
+		
+		final int[] alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
 
-			int[] observedAlleleCount = new int[BaseCallConfig.BASES.length];
-			for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
-				for (int baseIndex : parallelData.getPooledData(conditionIndex).getBaseCallCount().getAlleles()) {
-					observedAlleleCount[baseIndex]++;
-				}
+		int[] observedAlleleCount = new int[BaseCallConfig.BASES.length];
+		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
+			for (int baseIndex : parallelData.getPooledData(conditionIndex).getBaseCallCount().getAlleles()) {
+				observedAlleleCount[baseIndex]++;
 			}
+		}
 
-			// A | G
-			// define all non-reference base as potential variants
-			if (alleles.length == 2 && 
-					observedAlleleCount[alleles[0]] + observedAlleleCount[alleles[1]] == conditions) {
-				// define non-reference base as potential variants
-				if (referenceBase == 'N') {
-					return new int[0];
-				}
-				
-				final int referenceBaseIndex = BaseCallConfig.getInstance().getBaseIndex((byte)referenceBase);
-				for (final int baseIndex : alleles) {
-					if (baseIndex != referenceBaseIndex) {
-						return new int[] {baseIndex};
-					}
-				}
+		// A | G
+		// define all non-reference base as potential variants
+		if (alleles.length == 2 && 
+				observedAlleleCount[alleles[0]] + observedAlleleCount[alleles[1]] == conditions) {
+			// define non-reference base as potential variants
+			if (referenceBase == 'N') {
+				return new int[0];
 			}
 			
-			// A | AG
-			if (alleles.length == 2 && 
-					observedAlleleCount[alleles[0]] + observedAlleleCount[alleles[1]] > conditions) {
-				return ParallelData.getVariantBaseIndexs(parallelData);
+			final int referenceBaseIndex = BaseCallConfig.getInstance().getBaseIndex((byte)referenceBase);
+			for (final int baseIndex : alleles) {
+				if (baseIndex != referenceBaseIndex) {
+					return new int[] {baseIndex};
+				}
 			}
-
-			// condition1: AG | AG AND condition2: AGC |AGC
-			// return allelesIs;
-			return new int[0];
 		}
+		
+		// A | AG
+		if (alleles.length == 2 && 
+				observedAlleleCount[alleles[0]] + observedAlleleCount[alleles[1]] > conditions) {
+			return ParallelData.getVariantBaseIndexs(parallelData);
+		}
+
+		// condition1: AG | AG AND condition2: AGC |AGC
+		// return allelesIs;
+		return new int[0];
+	}
+	*/
 	
 	public static <S extends AbstractData & hasPileupCount> S[] flat(final S[] data, 
 			final S[]ret, 
