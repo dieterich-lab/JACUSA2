@@ -37,7 +37,7 @@ import lib.data.builder.factory.BaseCallReadInfoExtendedDataBuilderFactory;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoverage;
-import lib.data.has.hasLinkedReadArrestCount;
+import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.StatisticResult;
 import lib.data.validator.LinkedRTArrestVariantParallelPileup;
@@ -49,7 +49,7 @@ import lib.util.AbstractTool;
 
 import org.apache.commons.cli.ParseException;
 
-public class LinkageRTArrestFactory<T extends AbstractData & hasBaseCallCount & hasCoverage & hasReferenceBase & hasLinkedReadArrestCount> 
+public class LinkageRTArrestFactory<T extends AbstractData & hasBaseCallCount & hasCoverage & hasReferenceBase & hasLRTarrestCount> 
 extends AbstractMethodFactory<T, StatisticResult<T>> {
 
 	public final static String NAME = "lrt-arrest";

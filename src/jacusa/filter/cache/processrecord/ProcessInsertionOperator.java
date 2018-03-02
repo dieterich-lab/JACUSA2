@@ -3,14 +3,13 @@ package jacusa.filter.cache.processrecord;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapper.CigarElementWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapper.Position;
-import lib.data.cache.UniqueBaseCallDataCache;
+import lib.data.cache.AbstractUniqueDataCache;
 
 public class ProcessInsertionOperator extends AbstractProcessRecord {
 
-	public ProcessInsertionOperator(final int distance, final UniqueBaseCallDataCache<?> uniqueBaseCallCache) {
-		super(distance, uniqueBaseCallCache);
+	public ProcessInsertionOperator(final int distance, final AbstractUniqueDataCache<?> uniqueDataCache) {
+		super(distance, uniqueDataCache);
 	}
-
 	
 	@Override
 	public void processRecord(SAMRecordWrapper recordWrapper) {

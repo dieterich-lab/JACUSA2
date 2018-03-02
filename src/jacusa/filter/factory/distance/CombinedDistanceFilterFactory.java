@@ -1,13 +1,16 @@
-package jacusa.filter.factory;
+package jacusa.filter.factory.distance;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import jacusa.filter.BaseCallDataFilter;
-import jacusa.filter.cache.DistanceFilterCache;
+import jacusa.filter.cache.UniqueFilterCacheWrapper;
 import jacusa.filter.cache.FilterCache;
+import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
+import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
 import jacusa.filter.cache.processrecord.ProcessRecord;
+import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
 import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
@@ -19,11 +22,11 @@ import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
 import lib.util.coordinate.CoordinateController;
 
-public class ReadPositionDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
-extends AbstractDistanceFilterFactory<T, F> {
+public class CombinedDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
+extends AbstractBaseCallDistanceFilterFactory<T, F> {
 
-	public ReadPositionDistanceFilterFactory(final DataGenerator<F> dataGenerator) {
-		super('B', "Filter distance to Read Start/End.", 6, 0.5, 2, dataGenerator);
+	public CombinedDistanceFilterFactory(final DataGenerator<F> dataGenerator) {
+		super('D', "Filter distance to TODO position.", 5, 0.5, 1, dataGenerator);
 	}
 
 	@Override
@@ -46,10 +49,16 @@ extends AbstractDistanceFilterFactory<T, F> {
 		final UniqueBaseCallDataCache<F> uniqueBaseCallCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
 		
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
+		// INDELs
+		processRecords.add(new ProcessInsertionOperator(getDistance(), uniqueBaseCallCache));
+		processRecords.add(new ProcessDeletionOperator(getDistance(), uniqueBaseCallCache));
+		// read start end 
 		processRecords.add(new ProcessReadStartEnd(getDistance(), uniqueBaseCallCache));
+		// introns
+		processRecords.add(new ProcessSkippedOperator(getDistance(), uniqueBaseCallCache));
 
-		final DistanceFilterCache<F> distanceFilterCache = new DistanceFilterCache<F>(getC(), uniqueBaseCallCache, processRecords);
+		final UniqueFilterCacheWrapper<F> distanceFilterCache = new UniqueFilterCacheWrapper<F>(getC(), uniqueBaseCallCache, processRecords);
 		return distanceFilterCache;
 	}
-	
+
 }

@@ -19,13 +19,13 @@ public class BaseCallDataCache<T extends AbstractData & hasBaseCallCount>
 extends AbstractDataCache<T> {
 
 	private final BaseCallConfig baseCallConfig;
-	
+
 	private final int maxDepth;
 	private final byte minBASQ;
-	
+
 	private final int[] coverage;
 	private final int[][] baseCalls;
-	
+
 	public BaseCallDataCache(final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig, final CoordinateController coordinateController) {
 		super(coordinateController);
 		this.baseCallConfig = baseCallConfig;
@@ -43,7 +43,7 @@ extends AbstractDataCache<T> {
 			incrementBaseCalls(alignmentBlock.getReferenceStart(), alignmentBlock.getReadStart() - 1, alignmentBlock.getLength(), recordWrapper);
 		}
 	}
-	
+
 	protected void incrementBaseCalls(final int referencePosition, final int readPosition, int length, 
 			final SAMRecordWrapper recordWrapper) {
 

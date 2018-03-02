@@ -3,6 +3,7 @@ package lib.data;
 import lib.data.has.hasHomopolymerInfo;
 import lib.util.coordinate.Coordinate;
 
+@Deprecated
 public class HomopolymerInfoData
 extends AbstractData
 implements hasHomopolymerInfo {

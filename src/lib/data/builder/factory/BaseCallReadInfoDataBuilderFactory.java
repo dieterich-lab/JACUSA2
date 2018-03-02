@@ -8,11 +8,11 @@ import lib.data.AbstractData;
 import lib.data.cache.AlignmentDataCache;
 import lib.data.cache.DataCache;
 import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReadArrestCount;
+import lib.data.has.hasRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.util.coordinate.CoordinateController;
 
-public class BaseCallReadInfoDataBuilderFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadArrestCount> 
+public class BaseCallReadInfoDataBuilderFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasRTarrestCount> 
 extends AbstractDataBuilderFactory<T> {
 
 	private AbstractDataBuilderFactory<T> dataBuilderFactory; 

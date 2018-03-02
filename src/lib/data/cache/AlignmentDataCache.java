@@ -12,11 +12,11 @@ import htsjdk.samtools.SAMRecord;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReadArrestCount;
+import lib.data.has.hasRTarrestCount;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.data.has.hasReferenceBase;
 
-public class AlignmentDataCache<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadArrestCount> 
+public class AlignmentDataCache<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasRTarrestCount> 
 extends AbstractDataCache<T> {
 
 	private final LIBRARY_TYPE libraryType;
@@ -80,11 +80,11 @@ extends AbstractDataCache<T> {
 			return;
 		}
 		
-		data.getReadArrestCount().setReadStart(readStartCount[windowPosition]);
-		data.getReadArrestCount().setReadEnd(readEndCount[windowPosition]);
+		data.getRTarrestCount().setReadStart(readStartCount[windowPosition]);
+		data.getRTarrestCount().setReadEnd(readEndCount[windowPosition]);
 
-		final int inner = coverage[windowPosition] - (data.getReadArrestCount().getReadStart() + data.getReadArrestCount().getReadEnd());
-		data.getReadArrestCount().setReadInternal(inner);
+		final int inner = coverage[windowPosition] - (data.getRTarrestCount().getReadStart() + data.getRTarrestCount().getReadEnd());
+		data.getRTarrestCount().setReadInternal(inner);
 
 		int arrest = 0;
 		int through = 0;
@@ -92,19 +92,19 @@ extends AbstractDataCache<T> {
 		switch (libraryType) {
 
 		case UNSTRANDED:
-			arrest 	+= data.getReadArrestCount().getReadStart();
-			arrest 	+= data.getReadArrestCount().getReadEnd();
-			through += data.getReadArrestCount().getReadInternal();
+			arrest 	+= data.getRTarrestCount().getReadStart();
+			arrest 	+= data.getRTarrestCount().getReadEnd();
+			through += data.getRTarrestCount().getReadInternal();
 			break;
 
 		case FR_FIRSTSTRAND:
-			arrest 	+= data.getReadArrestCount().getReadEnd();
-			through += data.getReadArrestCount().getReadInternal();
+			arrest 	+= data.getRTarrestCount().getReadEnd();
+			through += data.getRTarrestCount().getReadInternal();
 			break;
 
 		case FR_SECONDSTRAND:
-			arrest 	+= data.getReadArrestCount().getReadStart();
-			through += data.getReadArrestCount().getReadInternal();
+			arrest 	+= data.getRTarrestCount().getReadStart();
+			through += data.getRTarrestCount().getReadInternal();
 			break;
 			
 		case MIXED:
@@ -113,8 +113,8 @@ extends AbstractDataCache<T> {
 
 		data.setReferenceBase(getCoordinateController().getReferenceProvider().getReference(windowPosition));
 		
-		data.getReadArrestCount().setReadArrest(arrest);
-		data.getReadArrestCount().setReadThrough(through);
+		data.getRTarrestCount().setReadArrest(arrest);
+		data.getRTarrestCount().setReadThrough(through);
 	}
 	
 	@Override

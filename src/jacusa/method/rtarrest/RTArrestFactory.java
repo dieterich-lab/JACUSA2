@@ -36,7 +36,7 @@ import lib.data.AbstractData;
 import lib.data.builder.factory.BaseCallReadInfoDataBuilderFactory;
 import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReadArrestCount;
+import lib.data.has.hasRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.StatisticResult;
 import lib.data.validator.MinCoverageValidator;
@@ -48,7 +48,7 @@ import lib.util.AbstractTool;
 
 import org.apache.commons.cli.ParseException;
 
-public class RTArrestFactory<T extends AbstractData & hasBaseCallCount & hasReadArrestCount & hasReferenceBase> 
+public class RTArrestFactory<T extends AbstractData & hasBaseCallCount & hasRTarrestCount & hasReferenceBase> 
 extends AbstractMethodFactory<T, StatisticResult<T>> {
 
 	public final static String NAME = "rt-arrest";

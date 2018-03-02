@@ -8,11 +8,11 @@ import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
-import lib.data.has.hasLinkedReadArrestCount;
+import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.Result;
 
-public class BED6lrtArrestResultWriter2<T extends AbstractData & hasReferenceBase & hasLinkedReadArrestCount, R extends Result<T> & hasStatistic> 
+public class BED6lrtArrestResultWriter2<T extends AbstractData & hasReferenceBase & hasLRTarrestCount, R extends Result<T> & hasStatistic> 
 extends BEDlikeWriter<T, R> {
 	
 	public static final char SEP3 	= ':';
@@ -72,7 +72,7 @@ extends BEDlikeWriter<T, R> {
 		// output condition: Ax,Cx,Gx,Tx
 		sb.append(SEP);
 
-		final Map<Integer, BaseCallCount> ref2baseCallCount4arrest = data.getLinkedReadArrestCount().getRefPos2baseChange4arrest();
+		final Map<Integer, BaseCallCount> ref2baseCallCount4arrest = data.getLRTarrestCount().getRefPos2bc4arrest();
 		addResultRefPos2baseChange(sb, ref2baseCallCount4arrest);
 	}
 
@@ -114,9 +114,9 @@ extends BEDlikeWriter<T, R> {
 
 	protected void addResultReadInfoCount(final StringBuilder sb, final T data) {
 		sb.append(SEP);
-		sb.append(data.getLinkedReadArrestCount().getReadArrestCount().getReadArrest());
+		sb.append(data.getLRTarrestCount().getRTarrestCount().getReadArrest());
 		sb.append(SEP2);
-		sb.append(data.getLinkedReadArrestCount().getReadArrestCount().getReadThrough());
+		sb.append(data.getLRTarrestCount().getRTarrestCount().getReadThrough());
 	}
 
 }

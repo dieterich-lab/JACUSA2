@@ -5,13 +5,13 @@ import jacusa.cli.parameters.hasStatistic;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReadArrestCount;
+import lib.data.has.hasRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.Result;
 import lib.io.AbstractResultFormat;
 import lib.io.ResultWriter;
 
-public class BED6rtArrestResultFormat<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadArrestCount, R extends Result<T> & hasStatistic> 
+public class BED6rtArrestResultFormat<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasRTarrestCount, R extends Result<T> & hasStatistic> 
 extends AbstractResultFormat<T, R> {
 
 	public static final char CHAR = 'D';

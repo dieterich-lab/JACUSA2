@@ -6,29 +6,32 @@ import java.util.List;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.UniqueBaseCallDataCache;
-import lib.data.has.hasBaseCallCount;
+import lib.data.cache.UniqueRef2BaseCallDataCache;
+import lib.data.has.hasLRTarrestCount;
+import lib.data.has.hasReferenceBase;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
-public class DistanceFilterCache<T extends AbstractData & hasBaseCallCount> 
+
+// TODO merge unique caches
+public class LinkedRTDistanceFilterCache<T extends AbstractData & hasReferenceBase & hasLRTarrestCount> 
 extends AbstractFilterCache<T> {
 
-	private UniqueBaseCallDataCache<T> uniqueBaseCallCache;
+	private UniqueRef2BaseCallDataCache<T> uniqueRef2BaseCallDataCache;
 	private List<ProcessRecord> processRecord;
-	
-	public DistanceFilterCache(final char c, 
-			final UniqueBaseCallDataCache<T> uniqueBaseCallCache,
+
+	public LinkedRTDistanceFilterCache(final char c, 
+			final UniqueRef2BaseCallDataCache<T> uniqueRef2BaseCallDataCache,
 			final List<ProcessRecord> processRecord) {
 
 		super(c);
-		this.uniqueBaseCallCache = uniqueBaseCallCache;
+		this.uniqueRef2BaseCallDataCache = uniqueRef2BaseCallDataCache;
 		this.processRecord = processRecord;
 	}
 
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
-		uniqueBaseCallCache.resetVisited(recordWrapper); 
+		uniqueRef2BaseCallDataCache.resetVisited(recordWrapper); 
 		for (final ProcessRecord p : processRecord) {
 			p.processRecord(recordWrapper);
 		}
@@ -36,16 +39,17 @@ extends AbstractFilterCache<T> {
 	
 	@Override
 	public CoordinateController getCoordinateController() {
-		return  uniqueBaseCallCache.getCoordinateController();
+		return  uniqueRef2BaseCallDataCache.getCoordinateController();
 	}
 	
 	@Override
 	public void clear() {
-		uniqueBaseCallCache.clear();	
+		uniqueRef2BaseCallDataCache.clear();	
 	}
 
 	@Override
 	public void addData(T data, Coordinate coordinate) {
-		uniqueBaseCallCache.addData(data, coordinate);
+		uniqueRef2BaseCallDataCache.addData(data, coordinate);
 	}
+
 }

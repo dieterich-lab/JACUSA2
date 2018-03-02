@@ -1,10 +1,10 @@
-package jacusa.filter.factory;
+	package jacusa.filter.factory.distance;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import jacusa.filter.BaseCallDataFilter;
-import jacusa.filter.cache.DistanceFilterCache;
+import jacusa.filter.cache.UniqueFilterCacheWrapper;
 import jacusa.filter.cache.FilterCache;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
@@ -25,7 +25,7 @@ import lib.util.coordinate.CoordinateController;
  *
  */
 public class SpliceSiteDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount>
-extends AbstractDistanceFilterFactory<T, F> {
+extends AbstractBaseCallDistanceFilterFactory<T, F> {
 
 	public SpliceSiteDistanceFilterFactory(final DataGenerator<F> dataGenerator) {
 		super('S', "Filter distance to Splice Site.", 6, 0.5, 2, dataGenerator);
@@ -53,7 +53,7 @@ extends AbstractDistanceFilterFactory<T, F> {
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
 		processRecords.add(new ProcessSkippedOperator(getDistance(), uniqueBaseCallCache));
 
-		final DistanceFilterCache<F> distanceFilterCache = new DistanceFilterCache<F>(getC(), uniqueBaseCallCache, processRecords);
+		final UniqueFilterCacheWrapper<F> distanceFilterCache = new UniqueFilterCacheWrapper<F>(getC(), uniqueBaseCallCache, processRecords);
 		return distanceFilterCache;
 	}
 	

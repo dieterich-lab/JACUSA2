@@ -33,13 +33,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import lib.data.BaseCallReadInfoData;
-import lib.data.LinkedReadArrestCountData;
+import lib.data.RTarrestData;
+import lib.data.LRTarrestData;
 import lib.data.PileupData;
-import lib.data.generator.BaseCallReadInfoExtendedDataGenerator;
+import lib.data.generator.LRTarrestDataGenerator;
 import lib.data.generator.DataGenerator;
 import lib.data.generator.PileupDataGenerator;
-import lib.data.generator.BaseCallReadInfoDataGenerator;
+import lib.data.generator.RTarrestDataGenerator;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
@@ -67,12 +67,12 @@ public class JACUSA extends AbstractTool {
 		factories.add(new PileupFactory<PileupData>(new PileupParameter<PileupData>(1), pileupDataGenerator));
 
 		// Read info
-		DataGenerator<BaseCallReadInfoData> baseCallReadInfoGenerator = new BaseCallReadInfoDataGenerator();
-		factories.add(new RTArrestFactory<BaseCallReadInfoData>(new RTArrestParameter<BaseCallReadInfoData>(2), 
+		DataGenerator<RTarrestData> baseCallReadInfoGenerator = new RTarrestDataGenerator();
+		factories.add(new RTArrestFactory<RTarrestData>(new RTArrestParameter<RTarrestData>(2), 
 				baseCallReadInfoGenerator));
 
-		DataGenerator<LinkedReadArrestCountData> baseCallReadInfoExtendedGenerator = new BaseCallReadInfoExtendedDataGenerator();
-		factories.add(new LinkageRTArrestFactory<LinkedReadArrestCountData>(new LinkageRTArrestParameter<LinkedReadArrestCountData>(2), 
+		DataGenerator<LRTarrestData> baseCallReadInfoExtendedGenerator = new LRTarrestDataGenerator();
+		factories.add(new LinkageRTArrestFactory<LRTarrestData>(new LinkageRTArrestParameter<LRTarrestData>(2), 
 				baseCallReadInfoExtendedGenerator));
 		
 		for (final AbstractMethodFactory<?, ?> factory : factories) {

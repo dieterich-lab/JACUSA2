@@ -1,31 +1,37 @@
 package jacusa.filter;
 
+import htsjdk.samtools.util.StringUtil;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import jacusa.filter.cache.FilterCache;
 import jacusa.filter.factory.AbstractDataFilterFactory;
-import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.BaseCallData;
 import lib.data.ParallelData;
 import lib.data.generator.BaseCallDataGenerator;
-import lib.data.has.hasLinkedReadArrestCount;
+import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.data.result.Result;
 import lib.util.coordinate.Coordinate;
 
-public class Ref2BaseCallDataFilter<T extends AbstractData & hasLinkedReadArrestCount, F extends AbstractData & hasLinkedReadArrestCount> 
+public class Ref2BaseCallDataFilter<T extends AbstractData & hasLRTarrestCount, F extends AbstractData & hasLRTarrestCount> 
 extends AbstractDataFilter<T, F> {
 
+	public static final char SEP = ',';
+	
 	private int minCount;
 	private double minRatio;
 	
-	private BaseCallDataGenerator bcDataGenerator;
+	private final BaseCallDataGenerator bcDataGenerator;
 
+	private final List<Integer> filteredRefPositions;
+	
 	public Ref2BaseCallDataFilter(final char c, 
 			final int overhang, 
 			final int minCount,
@@ -37,11 +43,17 @@ extends AbstractDataFilter<T, F> {
 		super(c, overhang, parameter, filterFactory, conditionFilterCaches);
 		this.minCount = minCount;
 		this.minRatio = minRatio;
+		
 		bcDataGenerator = new BaseCallDataGenerator();
+		
+		filteredRefPositions = new ArrayList<Integer>(10);
 	}
 
 	@Override
 	protected boolean filter(final ParallelData<T> parallelData) {
+		// clear buffer
+		filteredRefPositions.clear();
+		
 		// coordinate of potential read arrest position
 		final Coordinate coordinate = parallelData.getCoordinate();
 		
@@ -52,7 +64,7 @@ extends AbstractDataFilter<T, F> {
 		final T combinedPooled = parallelData.getCombinedPooledData();
 
 		// get all reference positions of base substitutions that are linked to the same read arrest site
-		final Set<Integer> refPositions = new TreeSet<Integer>(combinedPooled.getLinkedReadArrestCount().getRefPos2baseChange4arrest().keySet());
+		final Set<Integer> refPositions = new TreeSet<Integer>(combinedPooled.getLRTarrestCount().getRefPos2bc4arrest().keySet());
 		
 		final boolean[] artefact = new boolean[refPositions.size()];
 		// result of method: all linked positions need to be artefacts
@@ -72,7 +84,7 @@ extends AbstractDataFilter<T, F> {
 					// create new data
 					bcData[conditionIndex][replicateIndex] = bcDataGenerator.createData(tmpData.getLibraryType(), coordinate);
 					// get base call count from linked position
-					BaseCallCount tmpBcCount = tmpData.getLinkedReadArrestCount().getRefPos2baseChange4arrest().get(refPosition);
+					BaseCallCount tmpBcCount = tmpData.getLRTarrestCount().getRefPos2bc4arrest().get(refPosition);
 					// add to new data
 					bcData[conditionIndex][replicateIndex].getBaseCallCount().add(tmpBcCount);
 				}
@@ -91,8 +103,8 @@ extends AbstractDataFilter<T, F> {
 
 						final LIBRARY_TYPE libraryFype = tmpParallelData.getData(conditionIndex, replicateIndex).getLibraryType();
 						filteredCount += getFilteredData(coordinate, libraryFype, conditionIndex, replicateIndex)
-								.getLinkedReadArrestCount()
-								.getRefPos2baseChange4arrest()
+								.getLRTarrestCount()
+								.getRefPos2bc4arrest()
 								.get(refPosition)
 								.getBaseCallCount(variantBaseIndex);
 					}
@@ -100,6 +112,8 @@ extends AbstractDataFilter<T, F> {
 
 				if (filter(count, filteredCount)) {
 					artefact[refPositionIndex] = true;
+					// add to buffer
+					filteredRefPositions.add(refPosition);
 					if (refPositionIndex == 0) {
 						filter = true;
 					} else {
@@ -121,7 +135,8 @@ extends AbstractDataFilter<T, F> {
 	}
 
 	public void addFilterInfo(Result<T> result) {
-		result.getFilterInfo().add(Character.toString(getC()));
+		final String value = StringUtil.join(Character.toString(SEP), filteredRefPositions);
+		result.getFilterInfo().add(Character.toString(getC()), value);
 	}
-	
+
 }

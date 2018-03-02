@@ -10,11 +10,11 @@ import lib.data.cache.DataCache;
 import lib.data.cache.LinkedRT2BaseChangeDataCache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoverage;
-import lib.data.has.hasLinkedReadArrestCount;
+import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.util.coordinate.CoordinateController;
 
-public class BaseCallReadInfoExtendedDataBuilderFactory<T extends AbstractData & hasCoverage & hasReferenceBase & hasBaseCallCount & hasLinkedReadArrestCount> 
+public class BaseCallReadInfoExtendedDataBuilderFactory<T extends AbstractData & hasCoverage & hasReferenceBase & hasBaseCallCount & hasLRTarrestCount> 
 extends AbstractDataBuilderFactory<T> {
 
 	public BaseCallReadInfoExtendedDataBuilderFactory(final AbstractParameter<T, ?> generalParameter) {
@@ -27,8 +27,6 @@ extends AbstractDataBuilderFactory<T> {
 		dataCaches.add(
 				new LinkedRT2BaseChangeDataCache<T>(
 						conditionParameter.getLibraryType(),
-						conditionParameter.getMaxDepth(),
-						conditionParameter.getMinBASQ(),
 						getParameter().getBaseConfig(),
 						coordinateController));
 		return dataCaches;

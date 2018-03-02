@@ -1,23 +1,23 @@
 package jacusa.filter.cache.processrecord;
 
-import lib.data.cache.UniqueBaseCallDataCache;
+import lib.data.cache.AbstractUniqueDataCache;
 
 public abstract class AbstractProcessRecord implements ProcessRecord {
 
 	private int distance;
-	private UniqueBaseCallDataCache<?> uniqueBaseCallCache;
+	private AbstractUniqueDataCache<?> uniqueCache;
 	
-	public AbstractProcessRecord(final int distance, final UniqueBaseCallDataCache<?> uniqueBaseCallCache) {
+	public AbstractProcessRecord(final int distance, final AbstractUniqueDataCache<?> uniqueCache) {
 		this.distance = distance;
-		this.uniqueBaseCallCache = uniqueBaseCallCache;
+		this.uniqueCache = uniqueCache;
 	}
 
 	public int getDistance() {
 		return distance;
 	}
 	
-	public UniqueBaseCallDataCache<?> getCache() {
-		return uniqueBaseCallCache;
+	public AbstractUniqueDataCache<?> getCache() {
+		return uniqueCache;
 	}
 	
 }

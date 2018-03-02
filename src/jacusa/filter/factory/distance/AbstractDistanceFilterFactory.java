@@ -1,15 +1,11 @@
-package jacusa.filter.factory;
+package jacusa.filter.factory.distance;
 
-import lib.cli.options.BaseCallConfig;
-import lib.cli.parameter.AbstractConditionParameter;
+import jacusa.filter.factory.AbstractDataFilterFactory;
+import jacusa.filter.factory.AbstractFilterFactory;
 import lib.data.AbstractData;
-import lib.data.cache.UniqueBaseCallDataCache;
 import lib.data.generator.DataGenerator;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReferenceBase;
-import lib.util.coordinate.CoordinateController;
 
-public abstract class AbstractDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount>
+public abstract class AbstractDistanceFilterFactory<T extends AbstractData, F extends AbstractData>
 extends AbstractDataFilterFactory<T, F> {
 
 	private int filterDistance;
@@ -85,18 +81,6 @@ extends AbstractDataFilterFactory<T, F> {
 
 	public int getMinCount() {
 		return filterMinCount;
-	}
-
-	protected UniqueBaseCallDataCache<F> createUniqueBaseCallCache(
-			final AbstractConditionParameter<T> conditionParameter,
-			final BaseCallConfig baseCallConfig,
-			final CoordinateController coordinateController) {
-		
-		return new UniqueBaseCallDataCache<F>(
-				conditionParameter.getMaxDepth(), 
-				conditionParameter.getMinBASQ(), 
-				baseCallConfig, 
-				coordinateController);
 	}
 
 }

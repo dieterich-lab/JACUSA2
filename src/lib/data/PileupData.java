@@ -8,24 +8,25 @@ public class PileupData
 extends AbstractData
 implements hasPileupCount {
 
-	private PileupCount pileupCount;
-	private STRAND effectiveStrand;
+	private final PileupCount pileupCount;
+	private final STRAND effectiveStrand;
 
 	public PileupData(final LIBRARY_TYPE libraryType, final Coordinate coordinate) {
 		super(libraryType, coordinate);
 
-		pileupCount = new PileupCount();
+		pileupCount 	= new PileupCount();
 		effectiveStrand	= STRAND.UNKNOWN;
 	}
 	
 	public PileupData(final PileupData pileupData) {
 		super(pileupData);
-		this.pileupCount = pileupData.pileupCount.copy();
-		this.effectiveStrand = pileupData.effectiveStrand;
+		this.pileupCount 		= pileupData.pileupCount.copy();
+		this.effectiveStrand 	= pileupData.effectiveStrand;
 	}
 	
 	public PileupData(final Coordinate coordinate, final byte referenceBase,
 			final LIBRARY_TYPE libraryType) {
+
 		super(libraryType, coordinate);
 
 		pileupCount = new PileupCount();
@@ -39,18 +40,17 @@ implements hasPileupCount {
 		return pileupCount;
 	}
 
-	/*
 	@Override
-	public void setPileupCount(final PileupCount pileupCount) {
-		this.pileupCount = pileupCount;
-	}
-	*/
-
 	public void add(AbstractData abstractData) {
 		PileupData pileupData = (PileupData) abstractData;
-		this.pileupCount.add(pileupData.getPileupCount());
+		// TODO check strand information
+		pileupCount.add(pileupData.getPileupCount());
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public STRAND getEffectiveStrand() {
 		return effectiveStrand;
 	}

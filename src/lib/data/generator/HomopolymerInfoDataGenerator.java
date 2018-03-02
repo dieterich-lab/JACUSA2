@@ -4,6 +4,7 @@ import lib.data.HomopolymerInfoData;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.util.coordinate.Coordinate;
 
+@Deprecated
 public class HomopolymerInfoDataGenerator
 extends AbstractDataGenerator<HomopolymerInfoData> {
 

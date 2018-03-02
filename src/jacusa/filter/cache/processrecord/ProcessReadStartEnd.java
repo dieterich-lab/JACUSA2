@@ -3,16 +3,15 @@ package jacusa.filter.cache.processrecord;
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 
-
 import java.util.List;
 
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.UniqueBaseCallDataCache;
+import lib.data.cache.AbstractUniqueDataCache;
 
 public class ProcessReadStartEnd extends AbstractProcessRecord {
 
-	public ProcessReadStartEnd(final int distance, final UniqueBaseCallDataCache<?> uniqueBaseCallCache) {
-		super(distance, uniqueBaseCallCache);
+	public ProcessReadStartEnd(final int distance, final AbstractUniqueDataCache<?> uniqueDataCache) {
+		super(distance, uniqueDataCache);
 	}
 
 	public void processRecord(final SAMRecordWrapper recordWrapper) {

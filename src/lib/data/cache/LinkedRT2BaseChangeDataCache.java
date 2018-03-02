@@ -16,20 +16,20 @@ import htsjdk.samtools.SAMRecord;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.LinkedReadArrestCount;
-import lib.data.ReadArrestCount;
+import lib.data.LRTarrestCount;
+import lib.data.RTarrestCount;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasCoverage;
-import lib.data.has.hasLinkedReadArrestCount;
+import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
-public class LinkedRT2BaseChangeDataCache<T extends AbstractData & hasCoverage & hasBaseCallCount & hasReferenceBase & hasLinkedReadArrestCount> 
+public class LinkedRT2BaseChangeDataCache<T extends AbstractData & hasReferenceBase & hasLRTarrestCount> 
 extends AbstractDataCache<T> {
 
 	private final LIBRARY_TYPE libraryType;
-
+	
+	private final BaseCallConfig baseCallConfig;
+	
 	private final List<List<SimpleEntry<Integer, Integer>>> readStart;
 	private final List<List<SimpleEntry<Integer, Integer>>> readEnd;
 	
@@ -37,21 +37,20 @@ extends AbstractDataCache<T> {
 	
 	private final int[] readStartCount;
 	private final int[] readEndCount;
+	private final int[] coverage;
 	
-	private BaseCallDataCache<T> baseCallDataCache;
-	
-	public LinkedRT2BaseChangeDataCache(final LIBRARY_TYPE libraryType,
-			final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig,
+	public LinkedRT2BaseChangeDataCache(final LIBRARY_TYPE libraryType, final BaseCallConfig baseCallConfig,
 			final CoordinateController coordinateController) {
 		
 		super(coordinateController);
 		
-		baseCallDataCache = new BaseCallDataCache<T>(maxDepth, minBASQ, baseCallConfig, coordinateController);
-		
 		this.libraryType = libraryType;
-	
+
+		this.baseCallConfig = baseCallConfig;
+		
 		readStartCount = new int[coordinateController.getActiveWindowSize()];
 		readEndCount = new int[coordinateController.getActiveWindowSize()];
+		coverage = new int[coordinateController.getActiveWindowSize()];
 		
 		readStart = new ArrayList<List<SimpleEntry<Integer,Integer>>>(coordinateController.getActiveWindowSize());
 		readEnd = new ArrayList<List<SimpleEntry<Integer,Integer>>>(coordinateController.getActiveWindowSize());
@@ -109,56 +108,52 @@ extends AbstractDataCache<T> {
 			final int guardedWindowPosition = windowPositionGuard.getWindowPosition() + j;
 			final int guardedReadPosition = windowPositionGuard.getReadPosition() + j;
 			
+			coverage[guardedWindowPosition]++;
+			
 			final byte bc = record.getReadBases()[guardedReadPosition];
-			final int baseIndex = baseCallDataCache.getBaseCallConfig().getBaseIndex(bc);
+			final int baseIndex = baseCallConfig.getBaseIndex(bc);
 			if (baseIndex < 0) {
-				continue;
-			}
-			final byte bq = record.getBaseQualities()[guardedReadPosition];
-			if (bq < baseCallDataCache.getMinBaseCallQuality()) {
 				continue;
 			}
 
 			byte refBase = getCoordinateController().getReferenceProvider().getReference(guardedWindowPosition);
 			// ignore N reference
-			if (baseCallDataCache.getBaseCallConfig().getBaseIndex(refBase) < 0) {
+			if (baseCallConfig.getBaseIndex(refBase) < 0) {
 				continue;
 			}
-
-			baseCallDataCache.incrementBaseCall(guardedWindowPosition, guardedReadPosition, baseIndex, bq);
 			
 			if (refBase != bc) {
 				// mismatch
 				if (windowPosition1 >= 0) {
-					add(windowPosition1, guardedReferencePosition, baseIndex, readStart);
+					add(windowPosition1, guardedReadPosition, guardedReferencePosition, baseIndex, readStart);
 				}
 				
 				if (windowPosition2 >= 0) {
-					add(windowPosition2, guardedReferencePosition, baseIndex, readEnd);
+					add(windowPosition2, guardedReadPosition, guardedReferencePosition, baseIndex, readEnd);
 				}
 			}
 		}
 	}
 	
-	private void add(final int windowPosition, final int reference, final int baseIndex, final List<List<SimpleEntry<Integer, Integer>>> win2refBc) {
+	protected void add(final int windowPosition, final int readPosition, final int reference, 
+			final int baseIndex, final List<List<SimpleEntry<Integer, Integer>>> win2refBc) {
+
 		windowPositions.add(windowPosition);
 		win2refBc.get(windowPosition).add(new SimpleEntry<Integer, Integer>(reference, baseIndex));
 	}
 	
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
-		// add base calls
-		baseCallDataCache.addData(data, coordinate);
-
 		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
 
-		final LinkedReadArrestCount linkedReadArrestCount = data.getLinkedReadArrestCount();
-		final ReadArrestCount readArrestCount = linkedReadArrestCount.getReadArrestCount();
+		final LRTarrestCount linkedReadArrestCount = data.getLRTarrestCount();
+		final RTarrestCount readArrestCount = linkedReadArrestCount.getRTarrestCount();
 		
 		readArrestCount.setReadStart(readStartCount[windowPosition]);
 		readArrestCount.setReadEnd(readEndCount[windowPosition]);
 
-		final int internal = baseCallDataCache.getCoverage()[windowPosition] - 
+		// TODO TEST if coverage is calculated correctly
+		final int internal = coverage[windowPosition] - 
 				(readArrestCount.getReadStart() + readArrestCount.getReadEnd());
 		readArrestCount.setReadInternal(internal);
 
@@ -201,7 +196,7 @@ extends AbstractDataCache<T> {
 	
 	private void add2ReadInfoExtendedCount(final int windowPosition, 
 			final List<List<SimpleEntry<Integer, Integer>>> win2refBc,  
-			final LinkedReadArrestCount readInfoExtendedCount, final boolean arrest) {
+			final LRTarrestCount readInfoExtendedCount, final boolean arrest) {
 
 		if (windowPosition >= 0 && windowPosition < win2refBc.size()) {
 			for (int i = 0; i < win2refBc.get(windowPosition).size(); ++i) {
@@ -218,8 +213,6 @@ extends AbstractDataCache<T> {
 	
 	@Override
 	public void clear() {
-		baseCallDataCache.clear();
-		
 		for (int windowPosition : windowPositions) {
 			readStart.get(windowPosition).clear();
 			readEnd.get(windowPosition).clear();
@@ -228,6 +221,7 @@ extends AbstractDataCache<T> {
 		
 		Arrays.fill(readStartCount, 0);
 		Arrays.fill(readEndCount, 0);
+		Arrays.fill(coverage, 0);
 	}
 
 	public int getReadStartCount(final Coordinate coordinate) {
@@ -238,10 +232,6 @@ extends AbstractDataCache<T> {
 	public int getReadEndCount(final Coordinate coordinate) {
 		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
 		return readEndCount[windowPosition];
-	}
-
-	public BaseCallDataCache<T> getBaseCallDataCache() {
-		return baseCallDataCache; 
 	}
 
 }

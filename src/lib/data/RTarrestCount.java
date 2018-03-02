@@ -5,7 +5,7 @@ package lib.data;
  * @author Michael Piechotta
  *
  */
-public class ReadArrestCount {
+public class RTarrestCount {
 
 	// counter start,internal,end
 	private int readStart;
@@ -16,7 +16,7 @@ public class ReadArrestCount {
 	private int readArrest;
 	private int readThrough;
 
-	public ReadArrestCount() {
+	public RTarrestCount() {
 		readStart 		= 0;
 		readInternal	= 0;
 		readEnd 		= 0;
@@ -30,7 +30,7 @@ public class ReadArrestCount {
 	 * 
 	 * @param readArrestCount
 	 */
-	public ReadArrestCount(final ReadArrestCount readArrestCount) {
+	public RTarrestCount(final RTarrestCount readArrestCount) {
 		this.readStart 		= readArrestCount.readStart;
 		this.readInternal 	= readArrestCount.readInternal;
 		this.readEnd 		= readArrestCount.readEnd;
@@ -79,7 +79,7 @@ public class ReadArrestCount {
 		this.readThrough = readThrough;
 	}
 	
-	public void add(final ReadArrestCount readArrestCount) {
+	public void add(final RTarrestCount readArrestCount) {
 		readStart 		+= readArrestCount.readStart;
 		readInternal 	+= readArrestCount.readInternal;
 		readEnd 		+= readArrestCount.readEnd;
@@ -88,8 +88,8 @@ public class ReadArrestCount {
 		readThrough	+= readArrestCount.readThrough;
 	}
 	
-	public ReadArrestCount copy() {
-		return new ReadArrestCount(this);
+	public RTarrestCount copy() {
+		return new RTarrestCount(this);
 	}
 	
 }

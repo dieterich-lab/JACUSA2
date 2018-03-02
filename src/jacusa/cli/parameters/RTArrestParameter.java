@@ -6,11 +6,11 @@ import lib.cli.parameter.AbstractParameter;
 import lib.cli.parameter.JACUSAConditionParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReadArrestCount;
+import lib.data.has.hasRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.StatisticResult;
 
-public class RTArrestParameter<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadArrestCount>
+public class RTArrestParameter<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasRTarrestCount>
 extends AbstractParameter<T, StatisticResult<T>> 
 implements hasStatisticCalculator<T> {
 
