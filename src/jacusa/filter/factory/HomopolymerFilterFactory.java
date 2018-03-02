@@ -16,16 +16,14 @@ import lib.data.has.hasHomopolymerInfo;
 import lib.data.has.hasReferenceBase;
 import lib.util.coordinate.CoordinateController;
 
-public class HomopolymerFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasHomopolymerInfo> 
-extends AbstractDataFilterFactory<T, F> {
+public class HomopolymerFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasHomopolymerInfo> 
+extends AbstractDataFilterFactory<T> {
 
 	private static final int MIN_HOMOPOLYMER_LENGTH = 7;
 	private int length;
 		
-	public HomopolymerFilterFactory(final DataGenerator<F> dataGenerator) {
-		super('Y', 
-				"Filter wrong variant calls within homopolymers. Default: " + MIN_HOMOPOLYMER_LENGTH + " (Y:length)", 
-				dataGenerator);
+	public HomopolymerFilterFactory() {
+		super('Y', "Filter wrong variant calls within homopolymers. Default: " + MIN_HOMOPOLYMER_LENGTH + " (Y:length)");
 		length = MIN_HOMOPOLYMER_LENGTH;
 	}
 	
@@ -52,7 +50,7 @@ extends AbstractDataFilterFactory<T, F> {
 	}
 
 	@Override
-	protected FilterCache<F> createFilterCache(
+	protected FilterCache<T> createFilterCache(
 			AbstractConditionParameter<T> conditionParameter,
 			BaseCallConfig baseCallConfig,
 			CoordinateController coordinateController) {

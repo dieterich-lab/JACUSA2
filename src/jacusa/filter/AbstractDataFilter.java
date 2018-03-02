@@ -7,6 +7,7 @@ import jacusa.filter.factory.AbstractDataFilterFactory;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
+import lib.data.generator.DataGenerator;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.util.coordinate.Coordinate;
 
@@ -30,7 +31,8 @@ extends AbstractFilter<T> {
 		
 	protected T getFilteredData(final Coordinate coordinate, final LIBRARY_TYPE libraryFype, 
 			final int condititonIndex, final int replicateIndex) {
-		
+
+		// FIXME
 		final T filteredData = getFilterFactory().createData(libraryFype, coordinate);
 		getFilterCache(condititonIndex, replicateIndex).addData(filteredData, coordinate);
 		return filteredData;
@@ -39,16 +41,17 @@ extends AbstractFilter<T> {
 	protected T[][] getFilteredData(final ParallelData<T> parallelData) {
 		final int conditions = parallelData.getConditions();
 		final Coordinate coordinate = parallelData.getCombinedPooledData().getCoordinate();
-
+		final DataGenerator<T> dataGenerator = parallelData.getDataGenerator();
+		
 		// create container [condition][replicates]
-		final T[][] filteredData = getFilterFactory().createContainerData(conditions);
+		final T[][] filteredData = dataGenerator.createContainerData(conditions);
 
 		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
 			// replicates for condition
 			int replicates = parallelData.getReplicates(conditionIndex);
-			
+
 			// container for replicates of a condition
-			filteredData[conditionIndex] = getFilterFactory().createReplicateData(replicates);
+			filteredData[conditionIndex] = dataGenerator.createReplicateData(replicates);
 
 			// collect data from each replicate
 			for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
