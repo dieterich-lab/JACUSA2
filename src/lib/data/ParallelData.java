@@ -173,6 +173,10 @@ implements hasCoordinate, hasLibraryType {
 		return cachedCombinedData;
 	}
 
+	public DataGenerator<T> getDataGenerator() {
+		return dataGenerator;
+	}
+	
 	@Override
 	public Coordinate getCoordinate() {
 		return getCommonCoordinate(data);

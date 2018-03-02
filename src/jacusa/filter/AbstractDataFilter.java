@@ -10,49 +10,38 @@ import lib.data.ParallelData;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.util.coordinate.Coordinate;
 
-public abstract class AbstractDataFilter<T extends AbstractData, F extends AbstractData> 
+public abstract class AbstractDataFilter<T extends AbstractData> 
 extends AbstractFilter<T> {
 
-	private final AbstractDataFilterFactory<T, F> filterFactory;
-	private final List<List<FilterCache<F>>> conditionFilterCaches;
+	private final List<List<FilterCache<T>>> conditionFilterCaches;
 	
 	protected AbstractDataFilter(final char c, 
 			final int overhang, 
 			final AbstractParameter<T, ?> parameter,
-			final AbstractDataFilterFactory<T, F> dataFilterFactory,
-			final List<List<FilterCache<F>>> conditionFilterCaches) {
+			final List<List<FilterCache<T>>> conditionFilterCaches) {
 		
 		super(c, overhang);
-		this.filterFactory = dataFilterFactory;
 		this.conditionFilterCaches = conditionFilterCaches;
 	}
-	
-	public AbstractDataFilterFactory<T, F> getFilterFactory() {
-		return filterFactory;
-	}
 
-	protected ParallelData<F> getFilteredParallelData(final ParallelData<T> parallelData) {
-		final F[][] filteredDataArray = getFilteredData(parallelData);
-
-		final ParallelData<F> filteredParallelData = new ParallelData<F>(getFilterFactory(), filteredDataArray);
-
-		return filteredParallelData;
+	protected ParallelData<T> getFilteredParallelData(final ParallelData<T> parallelData) {
+		return new ParallelData<T>(parallelData.getDataGenerator(), getFilteredData(parallelData));
 	}
 		
-	protected F getFilteredData(final Coordinate coordinate, final LIBRARY_TYPE libraryFype, 
+	protected T getFilteredData(final Coordinate coordinate, final LIBRARY_TYPE libraryFype, 
 			final int condititonIndex, final int replicateIndex) {
 		
-		final F filteredData = getFilterFactory().createData(libraryFype, coordinate);
+		final T filteredData = getFilterFactory().createData(libraryFype, coordinate);
 		getFilterCache(condititonIndex, replicateIndex).addData(filteredData, coordinate);
 		return filteredData;
 	}
 	
-	protected F[][] getFilteredData(final ParallelData<T> parallelData) {
+	protected T[][] getFilteredData(final ParallelData<T> parallelData) {
 		final int conditions = parallelData.getConditions();
 		final Coordinate coordinate = parallelData.getCombinedPooledData().getCoordinate();
 
 		// create container [condition][replicates]
-		final F[][] filteredData = getFilterFactory().createContainerData(conditions);
+		final T[][] filteredData = getFilterFactory().createContainerData(conditions);
 
 		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
 			// replicates for condition
@@ -72,14 +61,14 @@ extends AbstractFilter<T> {
 	}
 	
 	public void clear() {
-		for (List<FilterCache<F>> replicateFilterCaches : conditionFilterCaches) {
-			for (FilterCache<F> replicateFilter : replicateFilterCaches) {
+		for (List<FilterCache<T>> replicateFilterCaches : conditionFilterCaches) {
+			for (FilterCache<T> replicateFilter : replicateFilterCaches) {
 				replicateFilter.clear();
 			}
 		}
 	}
 
-	public FilterCache<F> getFilterCache(final int conditionIndex, final int replicateIndex) {
+	public FilterCache<T> getFilterCache(final int conditionIndex, final int replicateIndex) {
 		return conditionFilterCaches.get(conditionIndex).get(replicateIndex);
 	}
 	

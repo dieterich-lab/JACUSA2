@@ -22,10 +22,11 @@ extends AbstractDataFilter<T, F> {
 			final int minCount,
 			final double minRatio,
 			final AbstractParameter<T, ?> parameter,
-			final AbstractDataFilterFactory<T, F> filterFactory,
+			final AbstractDataFilterFactory<T> dataFilterFactory,
 			final List<List<FilterCache<F>>> conditionFilterCaches) {
 		
-		super(c, overhang, parameter, filterFactory, conditionFilterCaches);
+		super(c, overhang, parameter, conditionFilterCaches);
+
 		this.minCount = minCount;
 		this.minRatio = minRatio;
 	}

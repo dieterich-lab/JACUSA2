@@ -12,6 +12,7 @@ import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.BaseCallCount;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.UniqueBaseCallDataCache;
 import lib.data.generator.DataGenerator;
@@ -24,7 +25,7 @@ import lib.util.coordinate.CoordinateController;
  * @author Michael Piechotta
  *
  */
-public class SpliceSiteDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount>
+public class SpliceSiteDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasSpliceSiteDistanceFilter>
 extends AbstractBaseCallDistanceFilterFactory<T, F> {
 
 	public SpliceSiteDistanceFilterFactory(final DataGenerator<F> dataGenerator) {
@@ -56,5 +57,12 @@ extends AbstractBaseCallDistanceFilterFactory<T, F> {
 		final UniqueFilterCacheWrapper<F> distanceFilterCache = new UniqueFilterCacheWrapper<F>(getC(), uniqueBaseCallCache, processRecords);
 		return distanceFilterCache;
 	}
-	
+
+	public interface hasSpliceSiteDistanceFilter {
+
+		BaseCallCount getSpliceSiteDistancefilter();
+		void setSpliceSiteDistancefilter(BaseCallCount baseCallCount);
+
+	}
+
 }
