@@ -3,7 +3,7 @@ package jacusa.filter.factory.distance;
 import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.filter.BaseCallDataFilter;
+import jacusa.filter.basecall.ReadPositionBaseCallDataFilter;
 import jacusa.filter.cache.UniqueFilterCacheWrapper;
 import jacusa.filter.cache.FilterCache;
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
@@ -14,41 +14,43 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.UniqueBaseCallDataCache;
-import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
+import lib.data.has.filter.hasReadPositionDistanceFilterData;
 import lib.util.coordinate.CoordinateController;
 
-public class ReadPositionDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase, F extends AbstractData & hasBaseCallCount> 
-extends AbstractBaseCallDistanceFilterFactory<T, F> {
+public class ReadPositionDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadPositionDistanceFilterData> 
+extends AbstractBaseCallDistanceFilterFactory<T> {
 
-	public ReadPositionDistanceFilterFactory(final DataGenerator<F> dataGenerator) {
-		super('B', "Filter distance to Read Start/End.", 6, 0.5, 2, dataGenerator);
+	public ReadPositionDistanceFilterFactory() {
+		super('B', 
+				"Filter potential false positive variants adjacent to read start/end.", 
+				6, 0.5, 2);
 	}
 
 	@Override
 	public void registerFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
-		final List<List<FilterCache<F>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
-		final BaseCallDataFilter<T, F> dataFilter = 
-				new BaseCallDataFilter<T, F>(getC(), 
+		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
+		final ReadPositionBaseCallDataFilter<T> dataFilter = 
+				new ReadPositionBaseCallDataFilter<T>(getC(), 
 						getDistance(), getMinCount(), getMinRatio(), 
-						parameter, this, conditionFilterCaches);
+						parameter, conditionFilterCaches);
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
 	}
 	
 	@Override
-	protected FilterCache<F> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
+	protected FilterCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
 			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
 
-		final UniqueBaseCallDataCache<F> uniqueBaseCallCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
+		final UniqueBaseCallDataCache<T> uniqueBaseCallCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
 		
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
 		processRecords.add(new ProcessReadStartEnd(getDistance(), uniqueBaseCallCache));
 
-		final UniqueFilterCacheWrapper<F> distanceFilterCache = new UniqueFilterCacheWrapper<F>(getC(), uniqueBaseCallCache, processRecords);
+		final UniqueFilterCacheWrapper<T> distanceFilterCache = new UniqueFilterCacheWrapper<T>(getC(), uniqueBaseCallCache, processRecords);
 		return distanceFilterCache;
 	}
 	

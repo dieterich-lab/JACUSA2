@@ -1,27 +1,36 @@
 package lib.data;
 
 import lib.data.has.hasPileupCount;
+import lib.data.has.filter.PileupFilterData;
+import lib.data.has.filter.hasPileupFilterData;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
 public class PileupData
 extends AbstractData
-implements hasPileupCount {
+implements hasPileupCount, hasPileupFilterData {
 
 	private final PileupCount pileupCount;
 	private final STRAND effectiveStrand;
 
+	private final PileupFilterData pileupFilterData;
+	
 	public PileupData(final LIBRARY_TYPE libraryType, final Coordinate coordinate) {
 		super(libraryType, coordinate);
 
-		pileupCount 	= new PileupCount();
-		effectiveStrand	= STRAND.UNKNOWN;
+		pileupCount 		= new PileupCount();
+		effectiveStrand		= STRAND.UNKNOWN;
+
+		pileupFilterData	= new PileupFilterData();
 	}
 	
 	public PileupData(final PileupData pileupData) {
 		super(pileupData);
+
 		this.pileupCount 		= pileupData.pileupCount.copy();
 		this.effectiveStrand 	= pileupData.effectiveStrand;
+		
+		this.pileupFilterData	= pileupData.pileupFilterData.copy();
 	}
 	
 	public PileupData(final Coordinate coordinate, final byte referenceBase,
@@ -32,19 +41,73 @@ implements hasPileupCount {
 		pileupCount = new PileupCount();
 		pileupCount.setReferenceBase(referenceBase);
 		
-		this.effectiveStrand= STRAND.UNKNOWN;
+		this.effectiveStrand	= STRAND.UNKNOWN;
+		pileupFilterData		= new PileupFilterData();
 	}
 		
 	@Override
 	public PileupCount getPileupCount() {
 		return pileupCount;
 	}
+	
+	@Override
+	public boolean isHomopolymer() {
+		return pileupFilterData.isHomopolymer();
+	}
+	
+	@Override
+	public void setHomopolymer(boolean isHomopolymer) {
+		pileupFilterData.setHomopolymer(isHomopolymer);
+	}
+	
+	@Override
+	public BaseCallCount getCombinedDistanceFilterData() {
+		return pileupFilterData.getCombinedDistanceFilterData();
+	}
+	
+	@Override
+	public void setCombinedDistanceFilterData(final BaseCallCount baseCallCount) {
+		pileupFilterData.setCombinedDistanceFilterData(baseCallCount);
+	}
 
+	@Override
+	public BaseCallCount getINDEL_DistanceFilterData() {
+		return pileupFilterData.getINDEL_DistanceFilterData();
+	}
+	
+	@Override
+	public BaseCallCount getReadPositionDistanceFilterData() {
+		return pileupFilterData.getReadPositionDistanceFilterData();
+	}
+	
+	@Override
+	public BaseCallCount getSpliceSiteDistanceFilterData() {
+		return pileupFilterData.getSpliceSiteDistanceFilterData();
+	}
+	
+	@Override
+	public void setINDEL_DistanceFilterData(final BaseCallCount baseCallCount) {
+		pileupFilterData.setINDEL_DistanceFilterData(baseCallCount);
+	}
+	
+	@Override
+	public void setReadPositionDistanceFilterData(final BaseCallCount baseCallCount) {
+		pileupFilterData.setReadPositionDistanceFilterData(baseCallCount);
+	}
+	
+	@Override
+	public void setSpliceSiteDistanceFilterData(final BaseCallCount baseCallCount) {
+		pileupFilterData.setSpliceSiteDistanceFilterData(baseCallCount);
+	}
+	
 	@Override
 	public void add(AbstractData abstractData) {
 		PileupData pileupData = (PileupData) abstractData;
 		// TODO check strand information
 		pileupCount.add(pileupData.getPileupCount());
+
+		// filter related
+		pileupFilterData.add(pileupData.pileupFilterData);
 	}
 
 	/**

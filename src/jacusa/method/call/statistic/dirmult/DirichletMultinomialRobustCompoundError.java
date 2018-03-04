@@ -9,7 +9,7 @@ import lib.data.has.hasPileupCount;
 public class DirichletMultinomialRobustCompoundError<T extends AbstractData & hasBaseCallCount & hasPileupCount>
 extends DirichletMultinomialCompoundError<T> {
 
-	public DirichletMultinomialRobustCompoundError(final CallParameter<T> parameters) {
+	public DirichletMultinomialRobustCompoundError(final CallParameter parameters) {
 		super(parameters);
 	}
 
@@ -56,7 +56,7 @@ extends DirichletMultinomialCompoundError<T> {
 			}
 		}
 
-		T[][] data = parameter.getMethodFactory().createContainerData(2);
+		T[][] data = parallelData.getDataGenerator().createContainerData(2);
 		
 		// container for adjusted parallelPileup
 		ParallelData<T> adjustedParallelPileup = null;
@@ -67,9 +67,9 @@ extends DirichletMultinomialCompoundError<T> {
 			System.arraycopy(data[1], 0, parallelData.getData(0), 0, parallelData.getData(0).length);
 
 			adjustedParallelPileup = new ParallelData<T>(
-					parameter.getMethodFactory(), data);
+					parallelData.getDataGenerator(), data);
 			// and replace pileups2 with pileups1 where the variant bases have been replaced with the common base
-			T[] newConditionData = parameter.getMethodFactory().createReplicateData(adjustedParallelPileup.getData(0).length);
+			T[] newConditionData = parallelData.getDataGenerator().createReplicateData(adjustedParallelPileup.getData(0).length);
 			adjustedParallelPileup.setData(0, ParallelData.flat(adjustedParallelPileup.getData(0), newConditionData, variantBaseIs, commonBaseIndex));
 		} else if (a2 > 1 && a1 == 1 && aP == 2) { // condition2
 			
@@ -77,8 +77,8 @@ extends DirichletMultinomialCompoundError<T> {
 			System.arraycopy(data[1], 0, parallelData.getData(1), 0, parallelData.getData(1).length);
 			
 			adjustedParallelPileup = new ParallelData<T>(
-					parameter.getMethodFactory(), data);
-			T[] newConditionData = parameter.getMethodFactory().createReplicateData(adjustedParallelPileup.getData(1).length);
+					parallelData.getDataGenerator(), data);
+			T[] newConditionData = parallelData.getDataGenerator().createReplicateData(adjustedParallelPileup.getData(1).length);
 			adjustedParallelPileup.setData(1, ParallelData.flat(adjustedParallelPileup.getData(1), newConditionData, variantBaseIs, commonBaseIndex));
 		}
 		// aP > 3, just use the existing parallelPileup to calculate the test-statistic

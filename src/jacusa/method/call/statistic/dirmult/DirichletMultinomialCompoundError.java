@@ -17,11 +17,11 @@ extends AbstractDirichletStatistic<T> {
 	protected double estimatedError;
 	protected double priorError = 0d;
 
-	public DirichletMultinomialCompoundError(final CallParameter<T> parameters) {
+	public DirichletMultinomialCompoundError(final CallParameter parameters) {
 		this(Double.NaN, parameters);
 	}
 
-	public DirichletMultinomialCompoundError(final double threshold, final CallParameter<T> parameter) {
+	public DirichletMultinomialCompoundError(final double threshold, final CallParameter parameter) {
 		super(NAME, DESC, threshold, new MinkaEstimateDirMultParameters(), parameter);
 	}
 

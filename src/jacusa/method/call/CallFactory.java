@@ -42,16 +42,9 @@ import lib.cli.options.condition.MinMAPQConditionOption;
 import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
-import lib.data.AbstractData;
-import lib.data.BaseCallData;
-import lib.data.HomopolymerInfoData;
+import lib.data.CallData;
 import lib.data.builder.factory.PileupDataBuilderFactory;
-import lib.data.generator.BaseCallDataGenerator;
-import lib.data.generator.DataGenerator;
-import lib.data.generator.HomopolymerInfoDataGenerator;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasPileupCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.generator.CallDataGenerator;
 import lib.data.result.StatisticResult;
 import lib.data.validator.MinCoverageValidator;
 import lib.data.validator.ParallelDataValidator;
@@ -62,17 +55,17 @@ import lib.util.AbstractTool;
 
 import org.apache.commons.cli.ParseException;
 
-public class CallFactory<T extends AbstractData & hasPileupCount & hasBaseCallCount & hasReferenceBase> 
-extends AbstractMethodFactory<T, StatisticResult<T>> {
+public class CallFactory 
+extends AbstractMethodFactory<CallData, StatisticResult<CallData>> {
 
-	public CallFactory(final CallParameter<T> callParameter, final DataGenerator<T> dataGenerator) {
+	public CallFactory(final CallParameter callParameter) {
 		super("call-" + (callParameter.getConditionsSize() == -1 ? "n" : callParameter.getConditionsSize()), 
 				"Call variants - " + 
 						(callParameter.getConditionsSize() == -1 ? "n" : callParameter.getConditionsSize()) + 
 						(callParameter.getConditionsSize() == -1 || callParameter.getConditionsSize() == 2 ? " conditions" : " condition"), 
 				callParameter,
-				new PileupDataBuilderFactory<T>(callParameter),
-				dataGenerator);
+				new PileupDataBuilderFactory<CallData>(callParameter),
+				new CallDataGenerator());
 	}
 
 	protected void initGlobalACOptions() {
@@ -82,7 +75,7 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 			getParameter().getStatisticParameters().setStatisticCalculator(
 					getStatistics().get(a[0]));
 		} else {
-			addACOption(new StatisticCalculatorOption<T>(
+			addACOption(new StatisticCalculatorOption<CallData>(
 					getParameter().getStatisticParameters(), getStatistics()));
 		}
 		
@@ -92,13 +85,13 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 			getParameter().setResultFormat(getResultFormats().get(a[0]));
 		} else {
 			getParameter().setResultFormat(getResultFormats().get(BED6callResultFormat.CHAR));
-			addACOption(new ResultFormatOption<T, StatisticResult<T>>(
+			addACOption(new ResultFormatOption<CallData, StatisticResult<CallData>>(
 					getParameter(), getResultFormats()));
 		}
 		
 		addACOption(new FilterModusOption(getParameter()));
 		// addACOption(new BaseConfigOption(getParameter()));
-		addACOption(new FilterConfigOption<T>(getParameter(), getFilterFactories()));
+		addACOption(new FilterConfigOption<CallData>(getParameter(), getFilterFactories()));
 		
 		addACOption(new StatisticFilterOption(getParameter().getStatisticParameters()));
 
@@ -118,30 +111,30 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 	
 	protected void initConditionACOptions() {
 		// for all conditions
-		addACOption(new MinMAPQConditionOption<T>(getParameter().getConditionParameters()));
-		addACOption(new MinBASQConditionOption<T>(getParameter().getConditionParameters()));
-		addACOption(new MinCoverageConditionOption<T>(getParameter().getConditionParameters()));
-		addACOption(new MaxDepthConditionOption<T>(getParameter().getConditionParameters()));
-		addACOption(new FilterFlagConditionOption<T>(getParameter().getConditionParameters()));
+		addACOption(new MinMAPQConditionOption<CallData>(getParameter().getConditionParameters()));
+		addACOption(new MinBASQConditionOption<CallData>(getParameter().getConditionParameters()));
+		addACOption(new MinCoverageConditionOption<CallData>(getParameter().getConditionParameters()));
+		addACOption(new MaxDepthConditionOption<CallData>(getParameter().getConditionParameters()));
+		addACOption(new FilterFlagConditionOption<CallData>(getParameter().getConditionParameters()));
 		
-		addACOption(new FilterNHsamTagOption<T>(getParameter().getConditionParameters()));
-		addACOption(new FilterNMsamTagOption<T>(getParameter().getConditionParameters()));
+		addACOption(new FilterNHsamTagOption<CallData>(getParameter().getConditionParameters()));
+		addACOption(new FilterNMsamTagOption<CallData>(getParameter().getConditionParameters()));
 		
-		addACOption(new OneConditionLibraryTypeOption<T>(getParameter().getConditionParameters(), getParameter()));
+		addACOption(new OneConditionLibraryTypeOption<CallData>(getParameter().getConditionParameters(), getParameter()));
 		
 		// only add contions specific options when there are more than 1 conditions
 		if (getParameter().getConditionsSize() > 1) {
 			for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-				addACOption(new MinMAPQConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MinBASQConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MinCoverageConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MaxDepthConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new FilterFlagConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinMAPQConditionOption<CallData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinBASQConditionOption<CallData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinCoverageConditionOption<CallData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MaxDepthConditionOption<CallData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterFlagConditionOption<CallData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 				
-				addACOption(new FilterNHsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new FilterNMsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterNHsamTagOption<CallData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterNMsamTagOption<CallData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 				
-				addACOption(new OneConditionLibraryTypeOption<T>(
+				addACOption(new OneConditionLibraryTypeOption<CallData>(
 						conditionIndex, 
 						getParameter().getConditionParameters().get(conditionIndex),
 						getParameter()));
@@ -149,51 +142,49 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 		}
 	}
 	
-	public Map<String, AbstractStatisticCalculator<T>> getStatistics() {
-		final Map<String, AbstractStatisticCalculator<T>> statistics = 
-				new TreeMap<String, AbstractStatisticCalculator<T>>();
+	public Map<String, AbstractStatisticCalculator<CallData>> getStatistics() {
+		final Map<String, AbstractStatisticCalculator<CallData>> statistics = 
+				new TreeMap<String, AbstractStatisticCalculator<CallData>>();
 
-		AbstractStatisticCalculator<T> statistic = null;
+		AbstractStatisticCalculator<CallData> statistic = null;
 
-		statistic = new DirichletMultinomialRobustCompoundError<T>(getParameter());
+		statistic = new DirichletMultinomialRobustCompoundError<CallData>(getParameter());
 		statistics.put("DirMult", statistic);
 
 		return statistics;
 	}
 
-	public Map<Character, AbstractFilterFactory<T>> getFilterFactories() {
-		final Map<Character, AbstractFilterFactory<T>> abstractPileupFilters = 
-				new HashMap<Character, AbstractFilterFactory<T>>();
+	public Map<Character, AbstractFilterFactory<CallData>> getFilterFactories() {
+		final Map<Character, AbstractFilterFactory<CallData>> abstractPileupFilters = 
+				new HashMap<Character, AbstractFilterFactory<CallData>>();
 
-		final List<AbstractFilterFactory<T>> filterFactories = 
-				new ArrayList<AbstractFilterFactory<T>>(10);
+		final List<AbstractFilterFactory<CallData>> filterFactories = 
+				new ArrayList<AbstractFilterFactory<CallData>>(10);
 		
-		final DataGenerator<BaseCallData> dataGenerator = new BaseCallDataGenerator();
-		filterFactories.add(new CombinedDistanceFilterFactory<T, BaseCallData>(dataGenerator));
-		filterFactories.add(new INDEL_DistanceFilterFactory<T, BaseCallData>(dataGenerator));
-		filterFactories.add(new ReadPositionDistanceFilterFactory<T, BaseCallData>(dataGenerator));
-		filterFactories.add(new SpliceSiteDistanceFilterFactory<T, BaseCallData>(dataGenerator));
-		filterFactories.add(new HomozygousFilterFactory<T>(getParameter()));
-		filterFactories.add(new MaxAlleleCountFilterFactory<T>());
-		
-		final DataGenerator<HomopolymerInfoData> dataGenerator2 = new HomopolymerInfoDataGenerator();
-		filterFactories.add(new HomopolymerFilterFactory<T, HomopolymerInfoData>(dataGenerator2));
+		filterFactories.add(new CombinedDistanceFilterFactory<CallData>());
+		filterFactories.add(new INDEL_DistanceFilterFactory<CallData>());
+		filterFactories.add(new ReadPositionDistanceFilterFactory<CallData>());
+		filterFactories.add(new SpliceSiteDistanceFilterFactory<CallData>());
+		filterFactories.add(new HomozygousFilterFactory<CallData>(getParameter()));
+		filterFactories.add(new MaxAlleleCountFilterFactory<CallData>());
 
-		for (final AbstractFilterFactory<T> filterFactory : filterFactories) {
+		filterFactories.add(new HomopolymerFilterFactory<CallData>());
+
+		for (final AbstractFilterFactory<CallData> filterFactory : filterFactories) {
 			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
 		}
 
 		return abstractPileupFilters;
 	}
 
-	public Map<Character, AbstractResultFormat<T, StatisticResult<T>>> getResultFormats() {
-		final Map<Character, AbstractResultFormat<T, StatisticResult<T>>> resultFormats = 
-				new HashMap<Character, AbstractResultFormat<T, StatisticResult<T>>>();
+	public Map<Character, AbstractResultFormat<CallData, StatisticResult<CallData>>> getResultFormats() {
+		final Map<Character, AbstractResultFormat<CallData, StatisticResult<CallData>>> resultFormats = 
+				new HashMap<Character, AbstractResultFormat<CallData, StatisticResult<CallData>>>();
 
-		AbstractResultFormat<T, StatisticResult<T>> resultFormat = null;
+		AbstractResultFormat<CallData, StatisticResult<CallData>> resultFormat = null;
 
 		// BED like output
-		resultFormat = new BED6callResultFormat<T, StatisticResult<T>>(getParameter());
+		resultFormat = new BED6callResultFormat<CallData, StatisticResult<CallData>>(getParameter());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 
 		// VCF output
@@ -207,8 +198,8 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 	}
 
 	@Override
-	public CallParameter<T> getParameter() {
-		return (CallParameter<T>) super.getParameter();
+	public CallParameter getParameter() {
+		return (CallParameter) super.getParameter();
 	}
 
 	@Override
@@ -221,16 +212,16 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 	}
 	
 	@Override
-	public List<ParallelDataValidator<T>> getParallelDataValidators() {
-		final List<ParallelDataValidator<T>> validators = super.getParallelDataValidators();
-		validators.add(new MinCoverageValidator<T>(getParameter().getConditionParameters()));
-		validators.add(new VariantSiteValidator<T>());
+	public List<ParallelDataValidator<CallData>> getParallelDataValidators() {
+		final List<ParallelDataValidator<CallData>> validators = super.getParallelDataValidators();
+		validators.add(new MinCoverageValidator<CallData>(getParameter().getConditionParameters()));
+		validators.add(new VariantSiteValidator<CallData>());
 		return validators;
 	}
 
 	@Override
-	public CallWorker<T> createWorker(final int threadId) {
-		return new CallWorker<T>(getWorkerDispatcher(), threadId,
+	public CallWorker createWorker(final int threadId) {
+		return new CallWorker(getWorkerDispatcher(), threadId,
 				getParameter().getResultFormat().createCopyTmp(threadId),
 				getParallelDataValidators(), 
 				getParameter());

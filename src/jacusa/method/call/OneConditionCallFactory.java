@@ -13,39 +13,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lib.data.AbstractData;
-import lib.data.BaseCallData;
-import lib.data.generator.BaseCallDataGenerator;
-import lib.data.generator.DataGenerator;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasPileupCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.CallData;
 
 import org.apache.commons.cli.ParseException;
 
-public class OneConditionCallFactory<T extends AbstractData & hasPileupCount & hasBaseCallCount & hasReferenceBase> 
-extends CallFactory<T> {
+public class OneConditionCallFactory 
+extends CallFactory {
 
-	public OneConditionCallFactory(final DataGenerator<T> dataGenerator) {
-		super(new CallParameter<T>(1), dataGenerator);
+	public OneConditionCallFactory() {
+		super(new CallParameter(1));
 	}
 
 	@Override
-	public Map<Character, AbstractFilterFactory<T>> getFilterFactories() {
-		Map<Character, AbstractFilterFactory<T>> c2filterFactory = 
-				new HashMap<Character, AbstractFilterFactory<T>>();
+	public Map<Character, AbstractFilterFactory<CallData>> getFilterFactories() {
+		Map<Character, AbstractFilterFactory<CallData>> c2filterFactory = 
+				new HashMap<Character, AbstractFilterFactory<CallData>>();
 
-		final List<AbstractFilterFactory<T>> filterFactories = 
-				new ArrayList<AbstractFilterFactory<T>>(5);
-		
-		final DataGenerator<BaseCallData> dataGenerator = new BaseCallDataGenerator();
-		filterFactories.add(new CombinedDistanceFilterFactory<T, BaseCallData>(dataGenerator));
-		filterFactories.add(new INDEL_DistanceFilterFactory<T, BaseCallData>(dataGenerator));
-		filterFactories.add(new ReadPositionDistanceFilterFactory<T, BaseCallData>(dataGenerator));
-		filterFactories.add(new SpliceSiteDistanceFilterFactory<T, BaseCallData>(dataGenerator));
-		filterFactories.add(new MaxAlleleCountFilterFactory<T>());
+		final List<AbstractFilterFactory<CallData>> filterFactories = 
+				new ArrayList<AbstractFilterFactory<CallData>>(5);
 
-		for (final AbstractFilterFactory<T> filterFactory : filterFactories) {
+		filterFactories.add(new CombinedDistanceFilterFactory<CallData>());
+		filterFactories.add(new INDEL_DistanceFilterFactory<CallData>());
+		filterFactories.add(new ReadPositionDistanceFilterFactory<CallData>());
+		filterFactories.add(new SpliceSiteDistanceFilterFactory<CallData>());
+		filterFactories.add(new MaxAlleleCountFilterFactory<CallData>());
+
+		for (final AbstractFilterFactory<CallData> filterFactory : filterFactories) {
 			c2filterFactory.put(filterFactory.getC(), filterFactory);
 		}
 

@@ -18,7 +18,7 @@ import lib.util.Info;
 public abstract class AbstractDirichletStatistic<T extends AbstractData & hasPileupCount>
 extends AbstractStatisticCalculator<T> {
 
-	protected final CallParameter<T> parameter;
+	protected final CallParameter parameter;
 	
 	protected Phred2Prob phred2Prob;
 
@@ -42,13 +42,13 @@ extends AbstractStatisticCalculator<T> {
 	
 	protected DecimalFormat decimalFormat;
 
-	public AbstractDirichletStatistic(final String name, final String desc, final CallParameter<T> parameter) {
+	public AbstractDirichletStatistic(final String name, final String desc, final CallParameter parameter) {
 		super(name, desc);
 		this.parameter = parameter;
 	}
 
 	protected AbstractDirichletStatistic(final String name, final String desc, final double threshold, 
-			final MinkaEstimateParameters estimateAlpha, final CallParameter<T> parameter) {
+			final MinkaEstimateParameters estimateAlpha, final CallParameter parameter) {
 
 		super(name, desc, threshold);
 		this.parameter 		= parameter;

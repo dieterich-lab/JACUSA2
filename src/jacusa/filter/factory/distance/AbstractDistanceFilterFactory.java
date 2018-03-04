@@ -3,10 +3,9 @@ package jacusa.filter.factory.distance;
 import jacusa.filter.factory.AbstractDataFilterFactory;
 import jacusa.filter.factory.AbstractFilterFactory;
 import lib.data.AbstractData;
-import lib.data.generator.DataGenerator;
 
-public abstract class AbstractDistanceFilterFactory<T extends AbstractData, F extends AbstractData>
-extends AbstractDataFilterFactory<T, F> {
+public abstract class AbstractDistanceFilterFactory<T extends AbstractData>
+extends AbstractDataFilterFactory<T> {
 
 	private int filterDistance;
 	private double filterMinRatio;
@@ -15,15 +14,13 @@ extends AbstractDataFilterFactory<T, F> {
 	public AbstractDistanceFilterFactory(final char c, final String desc, 
 			final int defaultFilterDistance, 
 			final double defaultFilterMinRatio, 
-			final int defaultFilterMinCount, 
-			final DataGenerator<F> dataGenerator) {
+			final int defaultFilterMinCount) {
 
 		super(c, desc + " Default: " + 
 			defaultFilterDistance + ":" 
 			+ defaultFilterMinRatio + ":" 
 			+ defaultFilterMinCount + 
-			" (" + c+ ":distance:min_ratio:min_count)",
-			dataGenerator);
+			" (" + c+ ":distance:min_ratio:min_count)");
 
 		filterDistance = defaultFilterDistance;
 		filterMinRatio = defaultFilterMinRatio;

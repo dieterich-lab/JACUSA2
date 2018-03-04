@@ -22,7 +22,7 @@ public class FilterContainer<T extends AbstractData> {
 	private final CoordinateController coordinateController;
 
 	private final Map<Character, AbstractFilter<T>> filters;
-	private final Map<Character, AbstractDataFilter<T, ?>> dataFilters;
+	private final Map<Character, AbstractDataFilter<T>> dataFilters;
 
 	private int overhang;
 
@@ -36,7 +36,7 @@ public class FilterContainer<T extends AbstractData> {
 
 		final int initialCapacity 	= 3;
 		filters						= new HashMap<Character, AbstractFilter<T>>(initialCapacity);
-		dataFilters					= new HashMap<Character, AbstractDataFilter<T, ?>>(initialCapacity);
+		dataFilters					= new HashMap<Character, AbstractDataFilter<T>>(initialCapacity);
 	}
 
 	public int getOverhang() {
@@ -52,7 +52,7 @@ public class FilterContainer<T extends AbstractData> {
 	}
 
 	public void clear() {
-		for (final AbstractDataFilter<T, ?> dataFilter : dataFilters.values()) {
+		for (final AbstractDataFilter<T> dataFilter : dataFilters.values()) {
 			dataFilter.clear();
 		}
 	}
@@ -61,7 +61,7 @@ public class FilterContainer<T extends AbstractData> {
 		filters.put(filter.getC(), filter);
 	}
 
-	public void addDataFilter(final AbstractDataFilter<T, ?> dataFilter) {
+	public void addDataFilter(final AbstractDataFilter<T> dataFilter) {
 		filters.put(dataFilter.getC(), dataFilter);
 		dataFilters.put(dataFilter.getC(), dataFilter);
 	}
@@ -69,14 +69,14 @@ public class FilterContainer<T extends AbstractData> {
 	public void addRecordWrapper(final char c, 
 			final int conditionIndex, final int replicateIndex, final SAMRecordWrapper recordWrapper) {
 		
-		final AbstractDataFilter<T, ?> dataFilter = dataFilters.get(c);
+		final AbstractDataFilter<T> dataFilter = dataFilters.get(c);
 		dataFilter.getFilterCache(conditionIndex, replicateIndex).addRecordWrapper(recordWrapper);
 	}
 
 	public List<FilterCache<?>> getFilterCaches(final int conditionIndex, final int replicateIndex) {
 		final List<FilterCache<?>> filterCaches = new ArrayList<FilterCache<?>>();
 
-		for (final AbstractDataFilter<T, ?> dataFilter : dataFilters.values()) {
+		for (final AbstractDataFilter<T> dataFilter : dataFilters.values()) {
 			filterCaches.add(dataFilter.getFilterCache(conditionIndex, replicateIndex));
 		}
 
@@ -86,5 +86,5 @@ public class FilterContainer<T extends AbstractData> {
 	public List<AbstractFilter<T>> getFilters() {
 		return new ArrayList<AbstractFilter<T>>(filters.values());
 	}
-	
+
 }

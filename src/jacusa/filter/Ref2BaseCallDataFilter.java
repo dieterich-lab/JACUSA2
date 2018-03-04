@@ -8,49 +8,44 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import jacusa.filter.cache.FilterCache;
-import jacusa.filter.factory.AbstractDataFilterFactory;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.BaseCallData;
 import lib.data.ParallelData;
 import lib.data.generator.BaseCallDataGenerator;
+import lib.data.generator.DataGenerator;
 import lib.data.has.hasLRTarrestCount;
-import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import lib.data.result.Result;
 import lib.util.coordinate.Coordinate;
 
-public class Ref2BaseCallDataFilter<T extends AbstractData & hasLRTarrestCount, F extends AbstractData & hasLRTarrestCount> 
-extends AbstractDataFilter<T, F> {
+public class Ref2BaseCallDataFilter<T extends AbstractData & hasLRTarrestCount> 
+extends AbstractDataFilter<T> {
 
 	public static final char SEP = ',';
 	
 	private int minCount;
 	private double minRatio;
-	
-	private final BaseCallDataGenerator bcDataGenerator;
 
 	private final List<Integer> filteredRefPositions;
 	
 	public Ref2BaseCallDataFilter(final char c, 
 			final int overhang, 
-			final int minCount,
-			final double minRatio,
+			final int minCount, final double minRatio,
 			final AbstractParameter<T, ?> parameter,
-			final AbstractDataFilterFactory<T, F> filterFactory,
-			final List<List<FilterCache<F>>> conditionFilterCaches) {
+			final List<List<FilterCache<T>>> conditionFilterCaches) {
 		
-		super(c, overhang, parameter, filterFactory, conditionFilterCaches);
+		super(c, overhang, parameter, conditionFilterCaches);
 		this.minCount = minCount;
 		this.minRatio = minRatio;
-		
-		bcDataGenerator = new BaseCallDataGenerator();
 		
 		filteredRefPositions = new ArrayList<Integer>(10);
 	}
 
 	@Override
 	protected boolean filter(final ParallelData<T> parallelData) {
+		addFilteredData(parallelData);
+		
 		// clear buffer
 		filteredRefPositions.clear();
 		
@@ -71,9 +66,10 @@ extends AbstractDataFilter<T, F> {
 		boolean filter = false;
 		int refPositionIndex = 0;
 		
+		final DataGenerator<BaseCallData> dataGenerator =  new BaseCallDataGenerator();
 		for (int refPosition : refPositions) {
+			final BaseCallData[][] baseCallData = dataGenerator.createContainerData(conditions);
 			// create new data container to store linked base substitution positions
-			final BaseCallData[][] bcData = bcDataGenerator.createContainerData(conditions);
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
 				// number of replicates for this condition
 				final int replicates = parallelData.getReplicates(conditionIndex);
@@ -82,15 +78,15 @@ extends AbstractDataFilter<T, F> {
 					final T tmpData = parallelData.getData(conditionIndex, replicateIndex);
 					
 					// create new data
-					bcData[conditionIndex][replicateIndex] = bcDataGenerator.createData(tmpData.getLibraryType(), coordinate);
+					baseCallData[conditionIndex][replicateIndex] = dataGenerator.createData(tmpData.getLibraryType(), coordinate);
 					// get base call count from linked position
 					BaseCallCount tmpBcCount = tmpData.getLRTarrestCount().getRefPos2bc4arrest().get(refPosition);
 					// add to new data
-					bcData[conditionIndex][replicateIndex].getBaseCallCount().add(tmpBcCount);
+					baseCallData[conditionIndex][replicateIndex].getBaseCallCount().add(tmpBcCount);
 				}
 			}
 			// create new parallel data
-			ParallelData<BaseCallData> tmpParallelData = new ParallelData<BaseCallData>(bcDataGenerator, bcData);
+			ParallelData<BaseCallData> tmpParallelData = new ParallelData<BaseCallData>(dataGenerator, baseCallData);
 			final int[] variantBaseIndexs = ParallelData.getVariantBaseIndexs(tmpParallelData);
 
 			for (int variantBaseIndex : variantBaseIndexs) {
@@ -100,9 +96,7 @@ extends AbstractDataFilter<T, F> {
 				for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
 					for (int replicateIndex = 0; replicateIndex < parallelData.getReplicates(conditionIndex); replicateIndex++) {
 						count += tmpParallelData.getData(conditionIndex, replicateIndex).getBaseCallCount().getBaseCallCount(variantBaseIndex);
-
-						final LIBRARY_TYPE libraryFype = tmpParallelData.getData(conditionIndex, replicateIndex).getLibraryType();
-						filteredCount += getFilteredData(coordinate, libraryFype, conditionIndex, replicateIndex)
+						filteredCount += parallelData.getData(conditionIndex, replicateIndex)
 								.getLRTarrestCount()
 								.getRefPos2bc4arrest()
 								.get(refPosition)
@@ -132,8 +126,9 @@ extends AbstractDataFilter<T, F> {
 
 	protected boolean filter(final int count, int filteredCount) {
 		return (double)filteredCount / (double)count <= minRatio || count - filteredCount >= minCount;
-	}
+	}	
 
+	@Override
 	public void addFilterInfo(Result<T> result) {
 		final String value = StringUtil.join(Character.toString(SEP), filteredRefPositions);
 		result.getFilterInfo().add(Character.toString(getC()), value);

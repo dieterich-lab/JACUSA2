@@ -3,19 +3,15 @@ package jacusa.method.call;
 import jacusa.cli.options.librarytype.TwoConditionLibraryTypeOption;
 import jacusa.cli.parameters.CallParameter;
 import lib.cli.options.AbstractACOption;
-import lib.data.AbstractData;
-import lib.data.generator.DataGenerator;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasPileupCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.CallData;
 
 import org.apache.commons.cli.ParseException;
 
-public class TwoConditionCallFactory<T extends AbstractData & hasPileupCount & hasBaseCallCount & hasReferenceBase> 
-extends CallFactory<T> {
+public class TwoConditionCallFactory 
+extends CallFactory {
 
-	public TwoConditionCallFactory(final DataGenerator<T> dataGenerator) {
-		super(new CallParameter<T>(2), dataGenerator);
+	public TwoConditionCallFactory() {
+		super(new CallParameter(2));
 	}
 
 	@Override
@@ -34,7 +30,7 @@ extends CallFactory<T> {
 			getACOptions().remove(removeACOption);
 		}
 
-		addACOption(new TwoConditionLibraryTypeOption<T>(
+		addACOption(new TwoConditionLibraryTypeOption<CallData>(
 				getParameter().getConditionParameters().get(0),
 				getParameter().getConditionParameters().get(1),
 				getParameter()));

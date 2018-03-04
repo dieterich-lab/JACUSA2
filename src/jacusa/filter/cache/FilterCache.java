@@ -6,5 +6,5 @@ import lib.data.cache.DataCache;
 public interface FilterCache<T extends AbstractData> extends DataCache<T> {
 
 	char getC();
-	
+
 }

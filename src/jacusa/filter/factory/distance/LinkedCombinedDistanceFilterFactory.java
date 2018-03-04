@@ -17,36 +17,37 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.UniqueRef2BaseCallDataCache;
-import lib.data.generator.DataGenerator;
 import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.util.coordinate.CoordinateController;
 
-public class LinkedCombinedDistanceFilterFactory<T extends AbstractData & hasReferenceBase & hasLRTarrestCount, F extends AbstractData & hasReferenceBase & hasLRTarrestCount> 
-extends AbstractDistanceFilterFactory<T, F> {
+public class LinkedCombinedDistanceFilterFactory<T extends AbstractData & hasReferenceBase & hasLRTarrestCount & hasLRTarrestCountFilteredData> 
+extends AbstractDistanceFilterFactory<T> {
 
-	public LinkedCombinedDistanceFilterFactory(final DataGenerator<F> dataGenerator) {
-		super('D', "Filter distance to TODO position.", 5, 0.5, 1, dataGenerator);
+	public LinkedCombinedDistanceFilterFactory() {
+		super('D', 
+				"Filter distance to TODO position.", 
+				5, 0.5, 1);
 	}
 
 	@Override
 	public void registerFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
-		final List<List<FilterCache<F>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
-		final Ref2BaseCallDataFilter<T, F> dataFilter = 
-				new Ref2BaseCallDataFilter<T, F>(getC(), 
+		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
+		final Ref2BaseCallDataFilter<T> dataFilter = 
+				new Ref2BaseCallDataFilter<T>(getC(), 
 						getDistance(), getMinCount(), getMinRatio(), 
-						parameter, this, conditionFilterCaches);
+						parameter, conditionFilterCaches);
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
 	}
 	
 	@Override
-	protected FilterCache<F> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
+	protected FilterCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
 			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
 
-		final UniqueRef2BaseCallDataCache<F> uniqueDataCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
+		final UniqueRef2BaseCallDataCache<T> uniqueDataCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
 
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
 		// INDELs
@@ -57,15 +58,15 @@ extends AbstractDistanceFilterFactory<T, F> {
 		// introns
 		processRecords.add(new ProcessSkippedOperator(getDistance(), uniqueDataCache));
 
-		return new UniqueFilterCacheWrapper<F>(getC(), uniqueDataCache, processRecords);
+		return new UniqueFilterCacheWrapper<T>(getC(), uniqueDataCache, processRecords);
 	}
 
-	protected UniqueRef2BaseCallDataCache<F> createUniqueBaseCallCache(
+	protected UniqueRef2BaseCallDataCache<T> createUniqueBaseCallCache(
 			final AbstractConditionParameter<T> conditionParameter,
 			final BaseCallConfig baseCallConfig,
 			final CoordinateController coordinateController) {
 		
-		return new UniqueRef2BaseCallDataCache<F>(
+		return new UniqueRef2BaseCallDataCache<T>(
 				conditionParameter.getLibraryType(),
 				baseCallConfig, 
 				coordinateController);

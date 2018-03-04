@@ -235,7 +235,7 @@ implements hasCoordinate, hasLibraryType {
 	public static <S extends AbstractData & hasBaseCallCount> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
 		int[] alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
 		final List<Integer> baseIndexs = new ArrayList<Integer>(BaseCallConfig.BASES.length);
-		
+
 		for (int baseIndex : alleles) {
 			int n = 0;
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {

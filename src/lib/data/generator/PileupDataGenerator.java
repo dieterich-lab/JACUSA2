@@ -23,8 +23,8 @@ extends AbstractDataGenerator<PileupData> {
 	}
 
 	@Override
-	public PileupData copyData(final PileupData dataContainer) {
-		return new PileupData(dataContainer);
+	public PileupData copyData(final PileupData data) {
+		return new PileupData(data);
 	}
 
 }

@@ -5,34 +5,32 @@ import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundEr
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.cli.parameter.JACUSAConditionParameter;
-import lib.data.AbstractData;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasPileupCount;
+import lib.data.CallData;
 import lib.data.result.StatisticResult;
 
-public class CallParameter<T extends AbstractData & hasBaseCallCount & hasPileupCount> 
-extends AbstractParameter<T, StatisticResult<T>> implements hasStatisticCalculator<T> {
+public class CallParameter 
+extends AbstractParameter<CallData, StatisticResult<CallData>> implements hasStatisticCalculator<CallData> {
 
-	private StatisticFactory<T> statisticFactory;
+	private StatisticFactory<CallData> statisticFactory;
 	
 	public CallParameter(final int conditionSize) {
 		super(conditionSize);
 		
-		statisticFactory = new StatisticFactory<T>(new DirichletMultinomialRobustCompoundError<T>(this), 1.0);
+		statisticFactory = new StatisticFactory<CallData>(new DirichletMultinomialRobustCompoundError<CallData>(this), 1.0);
 	}
 	
 	@Override
 	public void setDefaultValues() {
-		setResultFormat(new BED6callResultFormat<T, StatisticResult<T>>(this));
+		setResultFormat(new BED6callResultFormat<CallData, StatisticResult<CallData>>(this));
 	}
 	
 	@Override
-	public AbstractConditionParameter<T> createConditionParameter(final int conditionIndex) {
-		return new JACUSAConditionParameter<T>(conditionIndex);
+	public AbstractConditionParameter<CallData> createConditionParameter(final int conditionIndex) {
+		return new JACUSAConditionParameter<CallData>(conditionIndex);
 	}
 	
 	@Override
-	public StatisticFactory<T> getStatisticParameters() {
+	public StatisticFactory<CallData> getStatisticParameters() {
 		return statisticFactory;
 	}
 

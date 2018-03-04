@@ -5,13 +5,12 @@ import java.util.ArrayList;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.has.hasPileupCount;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class TwoConditionLibraryTypeOption<T extends AbstractData & hasPileupCount> 
+public class TwoConditionLibraryTypeOption<T extends AbstractData> 
 extends OneConditionLibraryTypeOption<T> {
 
 	private static final char SEP = ',';

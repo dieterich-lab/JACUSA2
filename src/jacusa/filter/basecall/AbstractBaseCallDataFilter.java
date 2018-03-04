@@ -1,29 +1,26 @@
-package jacusa.filter;
+package jacusa.filter.basecall;
 
 import java.util.List;
 
+import jacusa.filter.AbstractDataFilter;
 import jacusa.filter.cache.FilterCache;
-import jacusa.filter.factory.AbstractDataFilterFactory;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.BaseCallCount;
 import lib.data.ParallelData;
 import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasLibraryType.LIBRARY_TYPE;
-import lib.util.coordinate.Coordinate;
 
-public class BaseCallDataFilter<T extends AbstractData & hasBaseCallCount, F extends AbstractData & hasBaseCallCount> 
-extends AbstractDataFilter<T, F> {
+public abstract class AbstractBaseCallDataFilter<T extends AbstractData & hasBaseCallCount> 
+extends AbstractDataFilter<T> {
 
 	private int minCount;
 	private double minRatio;
-	
-	public BaseCallDataFilter(final char c, 
+
+	public AbstractBaseCallDataFilter(final char c, 
 			final int overhang, 
-			final int minCount,
-			final double minRatio,
+			final int minCount, final double minRatio,
 			final AbstractParameter<T, ?> parameter,
-			final AbstractDataFilterFactory<T> dataFilterFactory,
-			final List<List<FilterCache<F>>> conditionFilterCaches) {
+			final List<List<FilterCache<T>>> conditionFilterCaches) {
 		
 		super(c, overhang, parameter, conditionFilterCaches);
 
@@ -33,9 +30,10 @@ extends AbstractDataFilter<T, F> {
 
 	@Override
 	protected boolean filter(final ParallelData<T> parallelData) {
-		final Coordinate coordinate = parallelData.getCoordinate();
+		addFilteredData(parallelData);
+
 		final int[] variantBaseIndexs = ParallelData.getVariantBaseIndexs(parallelData);
-		
+
 		for (int variantBaseIndex : variantBaseIndexs) {
 			int count = 0;
 			int filteredCount = 0;
@@ -43,9 +41,7 @@ extends AbstractDataFilter<T, F> {
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
 				for (int replicateIndex = 0; replicateIndex < parallelData.getReplicates(conditionIndex); replicateIndex++) {
 					count += parallelData.getData(conditionIndex, replicateIndex).getBaseCallCount().getBaseCallCount(variantBaseIndex);
-
-					final LIBRARY_TYPE libraryFype = parallelData.getData(conditionIndex, replicateIndex).getLibraryType();
-					filteredCount += getFilteredData(coordinate, libraryFype, conditionIndex, replicateIndex).getBaseCallCount().getBaseCallCount(variantBaseIndex);
+					filteredCount += getFilteredBaseCallData(parallelData, conditionIndex, replicateIndex).getBaseCallCount(variantBaseIndex);
 				}
 			}
 			
@@ -57,6 +53,8 @@ extends AbstractDataFilter<T, F> {
 		
 		return false;
 	}
+
+	protected abstract BaseCallCount getFilteredBaseCallData(final ParallelData<T> parallelData, final int conditionIndex, final int replicateIndex);
 
 	protected boolean filter(final int count, int filteredCount) {
 		return (double)filteredCount / (double)count <= minRatio || count - filteredCount >= minCount;

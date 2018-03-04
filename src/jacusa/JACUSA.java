@@ -35,10 +35,8 @@ import java.util.Map;
 
 import lib.data.RTarrestData;
 import lib.data.LRTarrestData;
-import lib.data.PileupData;
 import lib.data.generator.LRTarrestDataGenerator;
 import lib.data.generator.DataGenerator;
-import lib.data.generator.PileupDataGenerator;
 import lib.data.generator.RTarrestDataGenerator;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
@@ -60,11 +58,10 @@ public class JACUSA extends AbstractTool {
 
 		final List<AbstractMethodFactory<?, ?>> factories = new ArrayList<AbstractMethodFactory<?, ?>>(10);
 		// calling variants
-		DataGenerator<PileupData> pileupDataGenerator = new PileupDataGenerator();
-		factories.add(new OneConditionCallFactory<PileupData>(pileupDataGenerator));
-		factories.add(new TwoConditionCallFactory<PileupData>(pileupDataGenerator));
+		factories.add(new OneConditionCallFactory());
+		factories.add(new TwoConditionCallFactory());
 
-		factories.add(new PileupFactory<PileupData>(new PileupParameter<PileupData>(1), pileupDataGenerator));
+		factories.add(new PileupFactory(new PileupParameter(1)));
 
 		// Read info
 		DataGenerator<RTarrestData> baseCallReadInfoGenerator = new RTarrestDataGenerator();

@@ -4,29 +4,28 @@ import java.util.List;
 
 import jacusa.cli.parameters.PileupParameter;
 
-import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasPileupCount;
+import lib.data.PileupData;
 import lib.data.result.DefaultResult;
 import lib.data.validator.ParallelDataValidator;
 import lib.io.copytmp.CopyTmpResult;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
-public class PileupWorker<T extends AbstractData & hasPileupCount> 
-extends AbstractWorker<T, DefaultResult<T>> {
+public class PileupWorker
+extends AbstractWorker<PileupData, DefaultResult<PileupData>> {
 	
-	public PileupWorker(final WorkerDispatcher<T, DefaultResult<T>> workerDispatcher, 
+	public PileupWorker(final WorkerDispatcher<PileupData, DefaultResult<PileupData>> workerDispatcher, 
 			final int threadId,
-			final CopyTmpResult<T, DefaultResult<T>> copyTmpResult,
-			final List<ParallelDataValidator<T>> parallelDataValidators, 
-			final PileupParameter<T> pileupParameter) {
+			final CopyTmpResult<PileupData, DefaultResult<PileupData>> copyTmpResult,
+			final List<ParallelDataValidator<PileupData>> parallelDataValidators, 
+			final PileupParameter pileupParameter) {
 
 		super(workerDispatcher, threadId, copyTmpResult, parallelDataValidators, pileupParameter);
 	}
 
 	@Override
-	protected DefaultResult<T> process(final ParallelData<T> parallelData) {
-		return new DefaultResult<T>(parallelData);
+	protected DefaultResult<PileupData> process(final ParallelData<PileupData> parallelData) {
+		return new DefaultResult<PileupData>(parallelData);
 	}	
 }

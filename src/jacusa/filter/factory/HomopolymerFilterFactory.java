@@ -10,7 +10,6 @@ import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
-import lib.data.generator.DataGenerator;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasHomopolymerInfo;
 import lib.data.has.hasReferenceBase;
@@ -55,7 +54,7 @@ extends AbstractDataFilterFactory<T> {
 			BaseCallConfig baseCallConfig,
 			CoordinateController coordinateController) {
 		
-		return new HomopolymerFilterCache<F>(getC(), MIN_HOMOPOLYMER_LENGTH, baseCallConfig, coordinateController);
+		return new HomopolymerFilterCache<T>(getC(), MIN_HOMOPOLYMER_LENGTH, baseCallConfig, coordinateController);
 	}
 	
 	@Override
@@ -64,9 +63,9 @@ extends AbstractDataFilterFactory<T> {
 
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
-		final List<List<FilterCache<F>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
-		final HomopolymerDataFilter<T, F> dataFilter = 
-				new HomopolymerDataFilter<T, F>(getC(), parameter, this, conditionFilterCaches);
+		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
+		final HomopolymerDataFilter<T> dataFilter = 
+				new HomopolymerDataFilter<T>(getC(), parameter, conditionFilterCaches);
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
 	}
 	
