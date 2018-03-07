@@ -1,22 +1,3 @@
-/*
-    JAVA framework for accurate SNV assessment (JACUSA) is a one-stop solution to detect single
-nucleotide variants (SNVs) from comparing matched sequencing samples.
-    Copyright (C) 2015  Michael Piechotta
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package jacusa;
 
 import jacusa.cli.parameters.LinkageRTArrestParameter;
@@ -41,7 +22,43 @@ import lib.data.generator.RTarrestDataGenerator;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
+/*
+    JAVA framework for accurate SNV assessment (JACUSA) is a one-stop solution 
+    to detect single nucleotide variants (SNVs) from comparing matched sequencing samples.
+    Copyright (C) 2015  Michael Piechotta
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 /**
+ * JAVA framework for accurate SNV assessment (JACUSA) is a one-stop solution 
+ * to detect single nucleotide variants (SNVs) from comparing matched sequencing samples.
+ * Copyright (C) 2015  Michael Piechotta
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * @author Michael Piechotta
  */
 public class JACUSA extends AbstractTool {
@@ -56,41 +73,58 @@ public class JACUSA extends AbstractTool {
 		final Map<String, AbstractMethodFactory<?, ?>> methodFactories = 
 				new LinkedHashMap<String, AbstractMethodFactory<?, ?>>();
 
-		final List<AbstractMethodFactory<?, ?>> factories = new ArrayList<AbstractMethodFactory<?, ?>>(10);
+		// populate container
+		for (final AbstractMethodFactory<?, ?> factory : getMethodFactoriesList()) {
+			methodFactories.put(factory.getName(), factory);
+		}
+
+		return methodFactories;
+	}
+
+	/**
+	 * Helper - gives the list of available methods
+	 * @return list of available methods
+	 */
+	private List<AbstractMethodFactory<?, ?>> getMethodFactoriesList() {
+		// list container for available methods
+		final List<AbstractMethodFactory<?, ?>> factories = 
+				new ArrayList<AbstractMethodFactory<?, ?>>(10);
+
 		// calling variants
 		factories.add(new OneConditionCallFactory());
 		factories.add(new TwoConditionCallFactory());
 
+		// pileup
 		factories.add(new PileupFactory(new PileupParameter(1)));
 
-		// Read info
-		DataGenerator<RTarrestData> baseCallReadInfoGenerator = new RTarrestDataGenerator();
+		// reverse transcription read arrest
+		DataGenerator<RTarrestData> rtArrestDataGenerator = new RTarrestDataGenerator();
 		factories.add(new RTArrestFactory<RTarrestData>(new RTArrestParameter<RTarrestData>(2), 
-				baseCallReadInfoGenerator));
+				rtArrestDataGenerator));
 
-		DataGenerator<LRTarrestData> baseCallReadInfoExtendedGenerator = new LRTarrestDataGenerator();
+		// linked reverse transcription read arrest
+		DataGenerator<LRTarrestData> lrtArrestDataGenerator = new LRTarrestDataGenerator();
 		factories.add(new LinkageRTArrestFactory<LRTarrestData>(new LinkageRTArrestParameter<LRTarrestData>(2), 
-				baseCallReadInfoExtendedGenerator));
-		
-		for (final AbstractMethodFactory<?, ?> factory : factories) {
-			methodFactories.put(factory.getName(), factory);
-		}
-		return methodFactories;
+				lrtArrestDataGenerator));
+
+		return factories; 
 	}
 
 	@Override
 	protected String getEpilog() {
 		final StringBuilder sb = new StringBuilder();
 
-		// print statistics to STDERR
+		// number of threads
 		sb.append("Screening done using " + getCLI().getMethodFactory().getParameter().getMaxThreads() + " thread(s)");
 		sb.append('\n');
 		
+		// location of result
 		sb.append("Results can be found in: " + getCLI().getMethodFactory().getParameter().getResultWriter().getInfo());
 		sb.append('\n');
 		
 		final String lineSep = "--------------------------------------------------------------------------------";
 
+		// # of result and total elapsd time
 		sb.append(lineSep);
 		sb.append('\n');
 		sb.append("Analyzed sites:\t" + getComparisons());
@@ -101,12 +135,11 @@ public class JACUSA extends AbstractTool {
 	}
 
 	/**
-	 * 
-	 * @param args
-	 * @throws Exception
+	 * Main method for JACUSA2
+	 * @param args command line arguments
 	 */
-	public static void main(String[] args) {
-		JACUSA jacusa = new JACUSA(args);
+	public static void main(final String[] args) {
+		final JACUSA jacusa = new JACUSA(args);
 		try {
 			jacusa.run();
 		} catch (Exception e) {

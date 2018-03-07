@@ -1,18 +1,22 @@
 package jacusa.cli.options;
 
-import jacusa.cli.parameters.StatisticFactory;
+import jacusa.cli.parameters.StatisticParameter;
 import lib.cli.options.AbstractACOption;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
+/**
+ * Enables the user to choose a threshold by command line
+ * @author Michael Piechotta
+ */
 public class StatisticFilterOption  extends AbstractACOption {
 
-	private StatisticFactory<?> parameters;
+	private StatisticParameter<?> statisticParamter;
 
-	public StatisticFilterOption(StatisticFactory<?> parameters) {
+	public StatisticFilterOption(StatisticParameter<?> parameters) {
 		super("T", "threshold");
-		this.parameters = parameters;
+		this.statisticParamter = parameters;
 	}
 
 	@Override
@@ -34,7 +38,7 @@ public class StatisticFilterOption  extends AbstractACOption {
 	    		throw new IllegalArgumentException("Invalid value for " + getLongOpt().toUpperCase() + 
 	    				". Allowed values are 0 <= " + getLongOpt().toUpperCase());
 	    	}
-	    	parameters.setThreshold(stat);
+	    	statisticParamter.setThreshold(stat);
 		}
 	}
 

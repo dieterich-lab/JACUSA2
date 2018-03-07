@@ -1,6 +1,6 @@
 package jacusa.cli.options;
 
-import jacusa.cli.parameters.StatisticFactory;
+import jacusa.cli.parameters.StatisticParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 
@@ -12,32 +12,43 @@ import lib.data.AbstractData;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
+/**
+ * Enables the user to choose between different statistics. 
+ * @author Michael Piechotta
+ * @param <T>
+ */
+// TODO remove T
 public class StatisticCalculatorOption<T extends AbstractData> 
 extends AbstractACOption {
 
-	private StatisticFactory<T> parameters;
-	private Map<String,AbstractStatisticCalculator<T>> statistics;
 
-	public StatisticCalculatorOption(final StatisticFactory<T> parameters, 
+	private final StatisticParameter<T> statisticParameter;
+	// available statistics for a method
+	private final Map<String, AbstractStatisticCalculator<T>> statisticCalculator;
+
+	public StatisticCalculatorOption(final StatisticParameter<T> statisticFactory, 
 			final Map<String, AbstractStatisticCalculator<T>> statisticCalculator) {
-		super("u", "modues");
-		this.parameters = parameters;
-		this.statistics = statisticCalculator;
+
+		super("u", "mode");
+		this.statisticParameter 		= statisticFactory;
+		this.statisticCalculator 	= statisticCalculator;
 	}
 
 	@Override
 	public Option getOption() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
-		for (String name : statistics.keySet()) {
-			AbstractStatisticCalculator<T> statistic = statistics.get(name);
+		for (final String statName : statisticCalculator.keySet()) {
+			final AbstractStatisticCalculator<T> statistic = 
+					statisticCalculator.get(statName);
 
-			if(parameters.newInstance() != null && statistic.getName().equals(parameters.newInstance().getName())) {
+			if (statisticParameter.newInstance() != null && 
+					statistic.getName().equals(statisticParameter.newInstance().getName())) {
 				sb.append("<*>");
 			} else {
 				sb.append("< >");
 			}
-			sb.append(" " + name);
+			sb.append(" " + statName);
 			sb.append(" : ");
 			sb.append(statistic.getDescription());
 			sb.append("\n");
@@ -52,20 +63,28 @@ extends AbstractACOption {
 	}
 
 	@Override
-	public void process(CommandLine line) throws Exception {
+	public void process(final CommandLine line) throws Exception {
 		if (line.hasOption(getOpt())) {
-			String name = line.getOptionValue(getOpt());
+			// name of the statistic
+			String statName = line.getOptionValue(getOpt());
+			// separator for optional arguments
 			String str = Character.toString(AbstractFilterFactory.SEP);
-			if (name.indexOf(str) > -1) {
-				String[] cols = name.split(str, 2);
-				name = cols[0];
+			// parse name and options
+			if (statName.indexOf(str) > -1) {
+				String[] cols = statName.split(str, 2);
+				statName = cols[0];
 			}
 
-			if (! statistics.containsKey(name)) {
-				throw new IllegalArgumentException("Unknown statistic: " + name);
+			// check if statName is a valid statistic name
+			if (! statisticCalculator.containsKey(statName)) {
+				throw new IllegalArgumentException("Unknown statistic: " + statName);
 			}
-			parameters.setStatisticCalculator(statistics.get(name));
-			parameters.newInstance().processCLI(line.getOptionValue(getOpt()));
+
+			// update statistic factory
+			statisticParameter.setStatisticCalculator(statisticCalculator.get(statName));
+			// create and process command line options
+			// FIXME what is done with the newInstance
+			statisticParameter.newInstance().processCLI(line.getOptionValue(getOpt()));
 		}
 	}
 

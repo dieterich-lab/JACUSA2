@@ -1,11 +1,15 @@
-package jacusa.cli.parameters;
+package jacusa.method.rtarrest;
 
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.util.Info;
 
-// TODO
+/**
+ * TODO implement this test-statistic
+ * @author Michael Piechotta
+ * @param <T>
+ */
 public class BetaBinomial<T extends AbstractData> 
 extends AbstractStatisticCalculator<T> {
 
@@ -43,7 +47,5 @@ extends AbstractStatisticCalculator<T> {
 	public AbstractStatisticCalculator<T> newInstance(final double threshold) {
 		return new BetaBinomial<T>(threshold);
 	}
-	
-	
 	
 }

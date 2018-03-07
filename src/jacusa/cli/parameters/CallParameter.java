@@ -8,20 +8,31 @@ import lib.cli.parameter.JACUSAConditionParameter;
 import lib.data.CallData;
 import lib.data.result.StatisticResult;
 
+/**
+ * Parameters specific to call method(s)
+ * @author Michael Piechotta
+ */
 public class CallParameter 
-extends AbstractParameter<CallData, StatisticResult<CallData>> implements hasStatisticCalculator<CallData> {
+extends AbstractParameter<CallData, StatisticResult<CallData>> 
+implements hasStatisticCalculator<CallData> {
 
-	private StatisticFactory<CallData> statisticFactory;
+	private final StatisticParameter<CallData> statisticParameter;
 	
 	public CallParameter(final int conditionSize) {
 		super(conditionSize);
+		statisticParameter = new StatisticParameter<CallData>();
 		
-		statisticFactory = new StatisticFactory<CallData>(new DirichletMultinomialRobustCompoundError<CallData>(this), 1.0);
 	}
 	
 	@Override
 	public void setDefaultValues() {
+		// set default result
 		setResultFormat(new BED6callResultFormat<CallData, StatisticResult<CallData>>(this));
+
+		// set default DirMul and threshold to 1.0
+		statisticParameter.setStatisticCalculator(
+				new DirichletMultinomialRobustCompoundError<CallData>(this));
+		statisticParameter.setThreshold(1.0);
 	}
 	
 	@Override
@@ -30,8 +41,8 @@ extends AbstractParameter<CallData, StatisticResult<CallData>> implements hasSta
 	}
 	
 	@Override
-	public StatisticFactory<CallData> getStatisticParameters() {
-		return statisticFactory;
+	public StatisticParameter<CallData> getStatisticParameters() {
+		return statisticParameter;
 	}
 
 }

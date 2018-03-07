@@ -10,14 +10,23 @@ import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
+/**
+ * Specific command line option to chose library type for one condition.
+ * @author Michael Piechotta
+ * @param <T>
+ */
 public class OneConditionLibraryTypeOption<T extends AbstractData>
 extends AbstractLibraryTypeOption<T> {
 
-	public OneConditionLibraryTypeOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameter, final AbstractParameter<T, ?> generalParameter) {
+	public OneConditionLibraryTypeOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameter, 
+			final AbstractParameter<T, ?> generalParameter) {
+
 		super(conditionIndex, conditionParameter, generalParameter);
 	}
-	
-	public OneConditionLibraryTypeOption(final List<AbstractConditionParameter<T>> conditionParameters, final AbstractParameter<T, ?> generalParameter) {
+
+	public OneConditionLibraryTypeOption(final List<AbstractConditionParameter<T>> conditionParameters, 
+			final AbstractParameter<T, ?> generalParameter) {
+
 		super(conditionParameters, generalParameter);
 	}
 	
@@ -35,12 +44,16 @@ extends AbstractLibraryTypeOption<T> {
 	@Override
 	public void process(CommandLine line) throws Exception {
 		if (line.hasOption(getOpt())) {
-	    	String s = line.getOptionValue(getOpt());
-	    	LIBRARY_TYPE libraryType = parse(s);
+			// get option as string
+	    	final String s = line.getOptionValue(getOpt());
+	    	// try to get library for s
+	    	final LIBRARY_TYPE libraryType = parse(s);
+	    	// error if no library type
 	    	if (libraryType == null) {
 	    		throw new IllegalArgumentException("Unknown Library Type for for -" + getOpt() + " --" + getLongOpt().toUpperCase());
 	    	}
-	    	
+
+	    	// set chosen library type
 	    	for (final AbstractConditionParameter<T> conditionParameter : getConditionParameters()) {
 	    		conditionParameter.setLibraryType(libraryType);
 	    	}

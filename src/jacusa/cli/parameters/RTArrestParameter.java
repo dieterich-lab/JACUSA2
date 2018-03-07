@@ -1,6 +1,7 @@
 package jacusa.cli.parameters;
 
 import jacusa.io.writer.BED6rtArrestResultFormat;
+import jacusa.method.rtarrest.BetaBinomial;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.cli.parameter.JACUSAConditionParameter;
@@ -14,12 +15,12 @@ public class RTArrestParameter<T extends AbstractData & hasBaseCallCount & hasRe
 extends AbstractParameter<T, StatisticResult<T>> 
 implements hasStatisticCalculator<T> {
 
-	private StatisticFactory<T> statisticParameters;
+	private StatisticParameter<T> statisticParameters;
 
 	public RTArrestParameter(final int conditions) {
 		super(conditions);
 		
-		statisticParameters = new StatisticFactory<T>(new BetaBinomial<T>(), 1.0);
+		statisticParameters = new StatisticParameter<T>(new BetaBinomial<T>(), 1.0);
 	}
 
 	@Override
@@ -33,7 +34,7 @@ implements hasStatisticCalculator<T> {
 	}
 	
 	@Override
-	public StatisticFactory<T> getStatisticParameters() {
+	public StatisticParameter<T> getStatisticParameters() {
 		return statisticParameters;
 	}
 

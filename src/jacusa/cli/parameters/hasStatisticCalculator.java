@@ -9,6 +9,6 @@ import lib.data.AbstractData;
  */
 public interface hasStatisticCalculator<T extends AbstractData> {
 
-	StatisticFactory<T> getStatisticParameters();
+	StatisticParameter<T> getStatisticParameters();
 
 }
