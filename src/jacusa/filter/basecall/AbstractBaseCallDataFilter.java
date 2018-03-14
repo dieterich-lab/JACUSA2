@@ -10,11 +10,16 @@ import lib.data.BaseCallCount;
 import lib.data.ParallelData;
 import lib.data.has.hasBaseCallCount;
 
+/**
+ * Abstract class that enables filtering based on base call count data and some other filter chached data.
+ * 
+ * @param <T>
+ */
 public abstract class AbstractBaseCallDataFilter<T extends AbstractData & hasBaseCallCount> 
 extends AbstractDataFilter<T> {
 
-	private int minCount;
-	private double minRatio;
+	private final int minCount;
+	private final double minRatio;
 
 	public AbstractBaseCallDataFilter(final char c, 
 			final int overhang, 
@@ -30,8 +35,6 @@ extends AbstractDataFilter<T> {
 
 	@Override
 	protected boolean filter(final ParallelData<T> parallelData) {
-		addFilteredData(parallelData);
-
 		final int[] variantBaseIndexs = ParallelData.getVariantBaseIndexs(parallelData);
 
 		for (int variantBaseIndex : variantBaseIndexs) {
@@ -54,9 +57,25 @@ extends AbstractDataFilter<T> {
 		return false;
 	}
 
-	protected abstract BaseCallCount getFilteredBaseCallData(final ParallelData<T> parallelData, final int conditionIndex, final int replicateIndex);
+	/**
+	 * Returns a BaseCallCount object for a specific condition and replicate.
+	 * 
+	 * @param parallelData		the data to extract the BaseCallCount object from 
+	 * @param conditionIndex	the condition
+	 * @param replicateIndex	the replicate
+	 * @return a BaseCallCount object
+	 */
+	protected abstract BaseCallCount getFilteredBaseCallData(ParallelData<T> parallelData, 
+			int conditionIndex, int replicateIndex);
 
-	protected boolean filter(final int count, int filteredCount) {
+	/**
+	 * TODO add comments
+	 * 
+	 * @param count			observed count
+	 * @param filteredCount processed filtered count
+	 * @return  
+	 */
+	protected boolean filter(final int count, final int filteredCount) {
 		return (double)filteredCount / (double)count <= minRatio || count - filteredCount >= minCount;
 	}
 	

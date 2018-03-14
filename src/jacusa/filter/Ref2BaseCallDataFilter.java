@@ -19,33 +19,36 @@ import lib.data.has.hasLRTarrestCount;
 import lib.data.result.Result;
 import lib.util.coordinate.Coordinate;
 
+/**
+ * 
+ * @param <T>
+ */
 public class Ref2BaseCallDataFilter<T extends AbstractData & hasLRTarrestCount> 
 extends AbstractDataFilter<T> {
 
 	public static final char SEP = ',';
-	
+
 	private int minCount;
 	private double minRatio;
 
+	// container for artefacts
 	private final List<Integer> filteredRefPositions;
-	
+
 	public Ref2BaseCallDataFilter(final char c, 
 			final int overhang, 
 			final int minCount, final double minRatio,
 			final AbstractParameter<T, ?> parameter,
 			final List<List<FilterCache<T>>> conditionFilterCaches) {
-		
+
 		super(c, overhang, parameter, conditionFilterCaches);
 		this.minCount = minCount;
 		this.minRatio = minRatio;
-		
+
 		filteredRefPositions = new ArrayList<Integer>(10);
 	}
 
 	@Override
 	protected boolean filter(final ParallelData<T> parallelData) {
-		addFilteredData(parallelData);
-		
 		// clear buffer
 		filteredRefPositions.clear();
 		
@@ -131,6 +134,7 @@ extends AbstractDataFilter<T> {
 	@Override
 	public void addFilterInfo(Result<T> result) {
 		final String value = StringUtil.join(Character.toString(SEP), filteredRefPositions);
+		// add position of artefact(s) to unique char id
 		result.getFilterInfo().add(Character.toString(getC()), value);
 	}
 

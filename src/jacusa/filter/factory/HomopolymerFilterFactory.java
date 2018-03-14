@@ -65,7 +65,7 @@ extends AbstractDataFilterFactory<T> {
 		
 		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
 		final HomopolymerDataFilter<T> dataFilter = 
-				new HomopolymerDataFilter<T>(getC(), parameter, conditionFilterCaches);
+				new HomopolymerDataFilter<T>(getC(), length, parameter, conditionFilterCaches);
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
 	}
 	

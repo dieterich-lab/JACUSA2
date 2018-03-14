@@ -3,11 +3,11 @@ package lib.data.has.filter;
 import lib.data.has.hasHomopolymerInfo;
 
 public interface hasPileupFilterData 
-extends hasCombindedDistanceFilterData, 
+extends hasCombindedFilterData, 
 		hasHomopolymerInfo, 
-		hasINDEL_DistanceFilterData,
-		hasReadPositionDistanceFilterData,
-		hasSpliceSiteDistanceFilterData {
+		hasINDEL_FilterData,
+		hasReadPositionFilterData,
+		hasSpliceSiteFilterData {
 	// empty
 }
 

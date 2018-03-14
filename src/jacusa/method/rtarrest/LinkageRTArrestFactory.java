@@ -2,7 +2,7 @@ package jacusa.method.rtarrest;
 
 import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
-import jacusa.cli.parameters.LinkageRTArrestParameter;
+import jacusa.cli.parameters.LRTarrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.io.writer.BED6callResultFormat;
 import jacusa.io.writer.BED6lrtArrestResultFormat2;
@@ -54,7 +54,7 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 
 	public final static String NAME = "lrt-arrest";
 
-	public LinkageRTArrestFactory(final LinkageRTArrestParameter<T> rtArrestParameter, final DataGenerator<T> dataGenerator) {
+	public LinkageRTArrestFactory(final LRTarrestParameter<T> rtArrestParameter, final DataGenerator<T> dataGenerator) {
 		super(NAME, "Linkage arrest to base substitution - 2 conditions", 
 				rtArrestParameter, new BaseCallReadInfoExtendedDataBuilderFactory<T>(rtArrestParameter), dataGenerator);
 	}
@@ -151,8 +151,8 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 	}
 
 	@Override
-	public LinkageRTArrestParameter<T> getParameter() {
-		return (LinkageRTArrestParameter<T>) super.getParameter();
+	public LRTarrestParameter<T> getParameter() {
+		return (LRTarrestParameter<T>) super.getParameter();
 	}
 
 	@Override

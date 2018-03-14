@@ -2,9 +2,9 @@ package lib.data.has.filter;
 
 import lib.data.BaseCallCount;
 
-public interface hasSpliceSiteDistanceFilterData {
+public interface hasSpliceSiteFilterData {
 
-	BaseCallCount getSpliceSiteDistanceFilterData();
+	BaseCallCount getSpliceSiteFilterData();
 	void setSpliceSiteDistanceFilterData(BaseCallCount baseCallCount);
 	
 }

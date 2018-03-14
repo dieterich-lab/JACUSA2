@@ -4,7 +4,10 @@ import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import lib.data.AbstractData;
 
 /**
- * @author Michael Piechotta
+ * Class that stores need statistic parameters such as the method
+ * to calculate the test-statistic and a threshold to filter relevant results. 
+ * 
+ * @param <T>
  */
 public class StatisticParameter<T extends AbstractData> {
 
@@ -28,6 +31,7 @@ public class StatisticParameter<T extends AbstractData> {
 	
 	/**
 	 * Returns an double that is used to filter the test-statistic.
+	 * 
 	 * @return threshold
 	 */
 	public double getThreshold() {
@@ -36,6 +40,7 @@ public class StatisticParameter<T extends AbstractData> {
 
 	/**
 	 * Updates the threshold.
+	 * 
 	 * @param threshold new threshold to be set 
 	 */
 	public void setThreshold(final double threshold) {
@@ -44,6 +49,7 @@ public class StatisticParameter<T extends AbstractData> {
 
 	/**
 	 * Create a new instance of AbstractStatisticCalculator.
+	 * 
 	 * @return an instance of AbstractStatisticCalculator 
 	 */
 	public AbstractStatisticCalculator<T> newInstance() {
@@ -52,6 +58,7 @@ public class StatisticParameter<T extends AbstractData> {
 
 	/**
 	 * Updates the statisticCalculator.
+	 * 
 	 * @param statisticCalculator new statisticCalculator to be set 
 	 */
 	public void setStatisticCalculator(final AbstractStatisticCalculator<T> statisticCalculator) {

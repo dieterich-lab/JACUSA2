@@ -61,8 +61,8 @@ implements hasPileupCount, hasPileupFilterData {
 	}
 	
 	@Override
-	public BaseCallCount getCombinedDistanceFilterData() {
-		return pileupFilterData.getCombinedDistanceFilterData();
+	public BaseCallCount getCombinedFilterData() {
+		return pileupFilterData.getCombinedFilterData();
 	}
 	
 	@Override
@@ -71,18 +71,18 @@ implements hasPileupCount, hasPileupFilterData {
 	}
 
 	@Override
-	public BaseCallCount getINDEL_DistanceFilterData() {
-		return pileupFilterData.getINDEL_DistanceFilterData();
+	public BaseCallCount getINDEL_FilterData() {
+		return pileupFilterData.getINDEL_FilterData();
 	}
 	
 	@Override
-	public BaseCallCount getReadPositionDistanceFilterData() {
-		return pileupFilterData.getReadPositionDistanceFilterData();
+	public BaseCallCount getReadPositionFilterData() {
+		return pileupFilterData.getReadPositionFilterData();
 	}
 	
 	@Override
-	public BaseCallCount getSpliceSiteDistanceFilterData() {
-		return pileupFilterData.getSpliceSiteDistanceFilterData();
+	public BaseCallCount getSpliceSiteFilterData() {
+		return pileupFilterData.getSpliceSiteFilterData();
 	}
 	
 	@Override

@@ -21,12 +21,12 @@ public class ProcessReadStartEnd extends AbstractProcessRecord {
 
 		// read start
 		final AlignmentBlock firstBlock = alignmentBlocks.get(0);
-		getCache().addRecordWrapperRegion(firstBlock.getReadStart() - 1, Math.min(getDistance(), firstBlock.getLength()), recordWrapper);
+		getUniqueCache().addRecordWrapperRegion(firstBlock.getReadStart() - 1, Math.min(getDistance(), firstBlock.getLength()), recordWrapper);
 		
 		// read end
 		final AlignmentBlock lastBlock = alignmentBlocks.get(alignmentBlocks.size() - 1);
 		final int length = Math.min(getDistance(), lastBlock.getLength());
-		getCache().addRecordWrapperRegion(lastBlock.getReadStart() - 1 + lastBlock.getLength() - 1 - length, length, recordWrapper);	
+		getUniqueCache().addRecordWrapperRegion(lastBlock.getReadStart() - 1 + lastBlock.getLength() - 1 - length, length, recordWrapper);	
 	}
 	
 }

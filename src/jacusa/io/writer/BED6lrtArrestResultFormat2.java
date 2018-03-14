@@ -1,12 +1,12 @@
 package jacusa.io.writer;
 
-import jacusa.cli.parameters.hasStatistic;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.Result;
+import lib.data.result.hasStatistic;
 import lib.io.AbstractResultFormat;
 import lib.io.ResultWriter;
 

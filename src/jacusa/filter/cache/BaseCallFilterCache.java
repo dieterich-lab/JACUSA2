@@ -9,18 +9,23 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.BaseCallDataCache;
 import lib.data.has.hasBaseCallCount;
 
-public class BaseCallFilterCache<F extends AbstractData & hasBaseCallCount> 
-extends AbstractFilterCache<F> {
+/**
+ * Implements FilterCache for base calls base on BaseCallDataCache class.
+ *
+ * @param <T>
+ */
+public class BaseCallFilterCache<T extends AbstractData & hasBaseCallCount> 
+extends AbstractFilterCache<T> {
 
-	private final BaseCallDataCache<F> baseCallcache;
+	private final BaseCallDataCache<T> baseCallcache;
 
 	public BaseCallFilterCache(final char c, 
 			final int maxDepth, final byte minBASQ, 
 			final BaseCallConfig baseCallConfig, final CoordinateController coordinateController) {
 
 		super(c);
-		
-		baseCallcache = new BaseCallDataCache<F>(maxDepth, minBASQ, baseCallConfig, coordinateController);
+		baseCallcache = new BaseCallDataCache<T>(maxDepth, minBASQ, 
+				baseCallConfig, coordinateController);
 	}
 
 	@Override
@@ -39,15 +44,19 @@ extends AbstractFilterCache<F> {
 	}
 	
 	@Override
-	public void addData(F data, Coordinate coordinate) {
+	public void addData(T data, Coordinate coordinate) {
+		baseCallcache.addData(data, coordinate);
+
+		/* TODO test if the upper replacement works
 		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
 		if (windowPosition < 0) {
 			return;
 		}
-
+		
 		for (final int baseIndex : baseCallcache.getBaseCalls()[windowPosition]) {
 			data.getBaseCallCount().set(baseIndex, baseCallcache.getBaseCalls()[windowPosition][baseIndex]);
-		};
+		}
+		*/
 	}
 	
 }

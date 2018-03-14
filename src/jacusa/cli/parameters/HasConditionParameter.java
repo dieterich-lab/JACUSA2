@@ -7,18 +7,20 @@ import lib.data.AbstractData;
 
 /**
  * Interface to handle condition parameters.
- * @author Michael Piechotta
+ * 
  * @param <T>
  */
-public interface hasConditionParameter<T extends AbstractData> {
+public interface HasConditionParameter<T extends AbstractData> {
 
 	/**
-	 * Returns the list of all condition parameter objects. 
+	 * Returns the list of all condition parameter objects.
+	 *  
 	 * @return a list of AbstractConditionParameter objects
 	 */
 	List<AbstractConditionParameter<T>> getConditionParameters();
 	
 	/**
+	 * Returns a specific conditionParameter object.
 	 * 
 	 * @param conditionIndex index identifies a specific condition
 	 * @return a specific condition parameter object
@@ -26,14 +28,21 @@ public interface hasConditionParameter<T extends AbstractData> {
 	AbstractConditionParameter<T> getConditionParameter(int conditionIndex);
 	
 	/**
+	 * Updates 
 	 * 
-	 * @param conditionParameters
+	 * @param conditionParameters the new list of condition parameters
 	 */
 	void setConditionParameters(List<AbstractConditionParameter<T>> conditionParameters);
 
+	/**
+	 * Returns the current number of stored condition.
+	 * 
+	 * @return the number of stored conditions
+	 */
 	int getConditionsSize();
 	
 	/**
+	 * Returns the number of replicate for a specific condition.
 	 * 
 	 * @param conditionIndex 
 	 * @return the number of replicates for conditionIndex

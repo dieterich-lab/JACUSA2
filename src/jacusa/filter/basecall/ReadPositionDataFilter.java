@@ -9,27 +9,31 @@ import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.ParallelData;
 import lib.data.has.hasBaseCallCount;
-import lib.data.has.filter.hasCombindedDistanceFilterData;
+import lib.data.has.filter.hasReadPositionFilterData;
 
-public class CombinedBaseCallDataFilter<T extends AbstractData & hasBaseCallCount & hasCombindedDistanceFilterData> 
+/**
+ * TODO add comments
+ */
+public class ReadPositionDataFilter<T extends AbstractData & hasBaseCallCount & hasReadPositionFilterData> 
 extends AbstractBaseCallDataFilter<T> {
 
-	public CombinedBaseCallDataFilter(final char c, 
+	public ReadPositionDataFilter(final char c, 
 			final int overhang, 
 			final int minCount, final double minRatio,
 			final AbstractParameter<T, ?> parameter,
 			final List<List<FilterCache<T>>> conditionFilterCaches) {
 
-		super(c, 
-				overhang, 
+		super(c, overhang, 
 				minCount, minRatio,
 				parameter, 
 				conditionFilterCaches);
 	}
 
 	@Override
-	protected BaseCallCount getFilteredBaseCallData(final ParallelData<T> parallelData, final int conditionIndex, final int replicateIndex) {
-		return parallelData.getData(conditionIndex, replicateIndex).getCombinedDistanceFilterData();
+	protected BaseCallCount getFilteredBaseCallData(final ParallelData<T> parallelData, 
+			final int conditionIndex, final int replicateIndex) {
+
+		return parallelData.getData(conditionIndex, replicateIndex).getReadPositionFilterData();
 	}
 
 }

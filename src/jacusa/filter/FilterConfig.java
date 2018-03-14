@@ -12,12 +12,14 @@ import lib.data.builder.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
 /**
+ * This class holds the configuration of chosen filters by storing 
+ * the factories of the respective filters.
  * 
- * @author Michael Piechotta
- *
+ * @param <T>
  */
 public class FilterConfig<T extends AbstractData> implements Cloneable {
 
+	// Map holds chosen filter factories, indexed by unique char id
 	private final Map<Character, AbstractFilterFactory<T>> c2factory;
 	
 	public FilterConfig() {
@@ -25,9 +27,11 @@ public class FilterConfig<T extends AbstractData> implements Cloneable {
 	}
 
 	/**
+	 * Adds a filterFactory to the list of active filters. Can be only added once
+	 * otherwise an Exception is thrown.
 	 * 
-	 * @param filterFactory
-	 * @throws Exception
+	 * @param filterFactory filterFactory to be added
+	 * @throws Exception if filter has been already added
 	 */
 	public void addFactory(final AbstractFilterFactory<T> filterFactory) throws Exception {
 		final char c = filterFactory.getC();
@@ -39,17 +43,22 @@ public class FilterConfig<T extends AbstractData> implements Cloneable {
 		}
 	}
 
-	public FilterContainer<T> createFilterInstances(final FilterConfig<T> filterConfig, 
-			final CoordinateController coordinateController) {
+	/**
+	 * TODO add comments
+	 * 
+	 * @param coordinateController
+	 * @return
+	 */
+	public FilterContainer<T> createFilterInstances(final CoordinateController coordinateController) {
 		return new FilterContainer<T>(this, coordinateController);
 	}
 	
-	/*
 	/**
-	 * Create CountFilterCache for each available filter.
-	 * Info: some filters might not need the cache
+	 * TODO add comments
+	 * FIXME add this to addFactory or createFilterInstance
 	 * 
-	 * @return
+	 * @param coordinateController
+	 * @param conditionContainer
 	 */
 	public void registerFilters(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
 		for (final AbstractFilterFactory<T> filterFactory : c2factory.values()) {
@@ -57,14 +66,20 @@ public class FilterConfig<T extends AbstractData> implements Cloneable {
 		}
 	}
 
+	/**
+	 * Indicates if any filter has been configured.
+	 * 
+	 * @return true if any filter has been added
+	 */
 	public boolean hasFiters() {
 		return c2factory.size() > 0;
 	}
 
-	public boolean hasFilter(final char c) {
-		return c2factory.containsKey(c);
-	}
-	
+	/**
+	 * Returns a list of the chosen filters.
+	 * 
+	 * @return a list of FilterFactories
+	 */
 	public List<AbstractFilterFactory<T>> getFilterFactories() {
 		return new ArrayList<AbstractFilterFactory<T>>(c2factory.values());
 	}

@@ -11,6 +11,11 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.util.coordinate.CoordinateController;
 
+/**
+ * TODO add comments.
+ *  
+ * @param <T>
+ */
 public abstract class AbstractDataFilterFactory<T extends AbstractData> 
 extends AbstractFilterFactory<T> {
 
@@ -18,27 +23,51 @@ extends AbstractFilterFactory<T> {
 		super(c, desc);
 	}
 
+	/**
+	 * TODO add comments.
+	 * 
+	 * @param conditionParameter
+	 * @param baseCallConfig
+	 * @param coordinateController
+	 * @return
+	 */
 	protected abstract FilterCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
 			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController);
 	
+	/**
+	 * TODO add comments.
+	 * 
+	 * @param parameter
+	 * @param coordinateContainer
+	 * @param dataFilterFactory
+	 * @return
+	 */
 	protected List<List<FilterCache<T>>> createConditionFilterCaches(final AbstractParameter<T, ?> parameter,
 			final CoordinateController coordinateContainer,
 			final AbstractDataFilterFactory<T> dataFilterFactory) {
 
+		// container for the result - 
+		// outer list -> conditions
+		// inner list -> replicates
 		final List<List<FilterCache<T>>> filterCaches = 
 				new ArrayList<List<FilterCache<T>>>(parameter.getConditionsSize());
 
 		for (int conditionIndex = 0; conditionIndex < parameter.getConditionsSize(); conditionIndex++) {
+			// replicates for conditionIndex
 			final int replicates = parameter.getReplicates(conditionIndex);
-			List<FilterCache<T>> list = new ArrayList<FilterCache<T>>(replicates);
+			final List<FilterCache<T>> list = new ArrayList<FilterCache<T>>(replicates);
 		
 			for (int replicateIndex = 0; replicateIndex < parameter.getConditionsSize(); replicateIndex++) {
-				final FilterCache<T> filterCache = createFilterCache(parameter.getConditionParameter(conditionIndex),
+				// create filterCache 
+				final FilterCache<T> filterCache = createFilterCache(
+						parameter.getConditionParameter(conditionIndex),
 						parameter.getBaseConfig(),
 						coordinateContainer);
+				// add to list of replicates
 				list.add(filterCache);
 			}
+			// add list of replicates to list of conditions
 			filterCaches.add(list);
 		}
 

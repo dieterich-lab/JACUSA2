@@ -13,14 +13,18 @@ import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
 
-// TODO merge unique caches
-public class LinkedRTDistanceFilterCache<T extends AbstractData & hasReferenceBase & hasLRTarrestCount> 
+/**
+ * TODO add comments
+ * // TODO merge unique caches
+ * @param <T>
+ */
+public class LRTarrestFilterCache<T extends AbstractData & hasReferenceBase & hasLRTarrestCount> 
 extends AbstractFilterCache<T> {
 
 	private UniqueRef2BaseCallDataCache<T> uniqueRef2BaseCallDataCache;
 	private List<ProcessRecord> processRecord;
 
-	public LinkedRTDistanceFilterCache(final char c, 
+	public LRTarrestFilterCache(final char c, 
 			final UniqueRef2BaseCallDataCache<T> uniqueRef2BaseCallDataCache,
 			final List<ProcessRecord> processRecord) {
 

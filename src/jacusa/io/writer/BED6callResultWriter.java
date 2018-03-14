@@ -1,11 +1,11 @@
 package jacusa.io.writer;
 
-import jacusa.cli.parameters.hasStatistic;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasPileupCount;
 import lib.data.result.Result;
+import lib.data.result.hasStatistic;
 
 public class BED6callResultWriter<T extends AbstractData & hasPileupCount, R extends Result<T> & hasStatistic> 
 extends BEDlikeResultWriter<T, R> {

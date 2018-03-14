@@ -3,7 +3,7 @@ package jacusa.filter.factory.distance;
 import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.filter.basecall.CombinedBaseCallDataFilter;
+import jacusa.filter.basecall.CombinedDataFilter;
 import jacusa.filter.cache.UniqueFilterCacheWrapper;
 import jacusa.filter.cache.FilterCache;
 import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
@@ -19,10 +19,10 @@ import lib.data.builder.ConditionContainer;
 import lib.data.cache.UniqueBaseCallDataCache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
-import lib.data.has.filter.hasCombindedDistanceFilterData;
+import lib.data.has.filter.hasCombindedFilterData;
 import lib.util.coordinate.CoordinateController;
 
-public class CombinedDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasCombindedDistanceFilterData & hasReferenceBase> 
+public class CombinedDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasCombindedFilterData & hasReferenceBase> 
 extends AbstractBaseCallDistanceFilterFactory<T> {
 
 	public CombinedDistanceFilterFactory() {
@@ -36,8 +36,8 @@ extends AbstractBaseCallDistanceFilterFactory<T> {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
 		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
-		final CombinedBaseCallDataFilter<T> dataFilter = 
-				new CombinedBaseCallDataFilter<T>(getC(), 
+		final CombinedDataFilter<T> dataFilter = 
+				new CombinedDataFilter<T>(getC(), 
 						getDistance(), getMinCount(), getMinRatio(), 
 						parameter, conditionFilterCaches);
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);

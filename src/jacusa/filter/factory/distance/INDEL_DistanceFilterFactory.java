@@ -3,7 +3,7 @@ package jacusa.filter.factory.distance;
 import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.filter.basecall.INDEL_BaseCallDataFilter;
+import jacusa.filter.basecall.INDEL_DataFilter;
 import jacusa.filter.cache.UniqueFilterCacheWrapper;
 import jacusa.filter.cache.FilterCache;
 import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
@@ -17,10 +17,10 @@ import lib.data.builder.ConditionContainer;
 import lib.data.cache.UniqueBaseCallDataCache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
-import lib.data.has.filter.hasINDEL_DistanceFilterData;
+import lib.data.has.filter.hasINDEL_FilterData;
 import lib.util.coordinate.CoordinateController;
 
-public class INDEL_DistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasINDEL_DistanceFilterData & hasReferenceBase> 
+public class INDEL_DistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasINDEL_FilterData & hasReferenceBase> 
 extends AbstractBaseCallDistanceFilterFactory<T> {
 
 	public INDEL_DistanceFilterFactory() {
@@ -34,8 +34,8 @@ extends AbstractBaseCallDistanceFilterFactory<T> {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
 		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
-		final INDEL_BaseCallDataFilter<T> dataFilter = 
-				new INDEL_BaseCallDataFilter<T>(getC(), 
+		final INDEL_DataFilter<T> dataFilter = 
+				new INDEL_DataFilter<T>(getC(), 
 						getDistance(), getMinCount(), getMinRatio(), 
 						parameter, conditionFilterCaches);
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);

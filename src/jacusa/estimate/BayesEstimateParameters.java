@@ -8,6 +8,9 @@ import lib.phred2prob.Phred2Prob;
 // posterior estimation
 // p(p|D) ~ D(n + alpha)
 // use for zero replicate
+/**
+ * TODO comments
+ */
 public class BayesEstimateParameters extends AbstractEstimateParameters {
 
 	private final double initialAlphaNull;

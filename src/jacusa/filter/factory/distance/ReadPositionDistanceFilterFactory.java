@@ -3,7 +3,7 @@ package jacusa.filter.factory.distance;
 import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.filter.basecall.ReadPositionBaseCallDataFilter;
+import jacusa.filter.basecall.ReadPositionDataFilter;
 import jacusa.filter.cache.UniqueFilterCacheWrapper;
 import jacusa.filter.cache.FilterCache;
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
@@ -16,10 +16,10 @@ import lib.data.builder.ConditionContainer;
 import lib.data.cache.UniqueBaseCallDataCache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
-import lib.data.has.filter.hasReadPositionDistanceFilterData;
+import lib.data.has.filter.hasReadPositionFilterData;
 import lib.util.coordinate.CoordinateController;
 
-public class ReadPositionDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadPositionDistanceFilterData> 
+public class ReadPositionDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadPositionFilterData> 
 extends AbstractBaseCallDistanceFilterFactory<T> {
 
 	public ReadPositionDistanceFilterFactory() {
@@ -33,8 +33,8 @@ extends AbstractBaseCallDistanceFilterFactory<T> {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
 		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
-		final ReadPositionBaseCallDataFilter<T> dataFilter = 
-				new ReadPositionBaseCallDataFilter<T>(getC(), 
+		final ReadPositionDataFilter<T> dataFilter = 
+				new ReadPositionDataFilter<T>(getC(), 
 						getDistance(), getMinCount(), getMinRatio(), 
 						parameter, conditionFilterCaches);
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);

@@ -10,6 +10,11 @@ import lib.data.cache.AbstractUniqueDataCache;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
+/**
+ * TODO add comments.
+ * 
+ * @param <T>
+ */
 public class UniqueFilterCacheWrapper<T extends AbstractData> 
 extends AbstractFilterCache<T> {
 
@@ -32,12 +37,12 @@ extends AbstractFilterCache<T> {
 			p.processRecord(recordWrapper);
 		}
 	}
-	
+
 	@Override
 	public CoordinateController getCoordinateController() {
 		return  uniqueDataCache.getCoordinateController();
 	}
-	
+
 	@Override
 	public void clear() {
 		uniqueDataCache.clear();	

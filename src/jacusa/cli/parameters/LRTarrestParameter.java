@@ -10,16 +10,18 @@ import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.StatisticResult;
 
-public class LinkageRTArrestParameter<T extends AbstractData & hasReferenceBase & hasLRTarrestCount>
+/**
+ * Class defines parameters and default values that are need for Linked Reverse Transcription arrest (lrt-arrest).
+ */
+public class LRTarrestParameter<T extends AbstractData & hasReferenceBase & hasLRTarrestCount>
 extends AbstractParameter<T, StatisticResult<T>> 
-implements hasStatisticCalculator<T> {
+implements HasStatisticParameters<T> {
 
 	private StatisticParameter<T> statisticParameters;
 
-	public LinkageRTArrestParameter(final int conditions) {
+	public LRTarrestParameter(final int conditions) {
 		super(conditions);
-		
-		statisticParameters = new StatisticParameter<T>(new BetaBinomial<T>(), 1.0);
+		statisticParameters = new StatisticParameter<T>();
 	}
 
 	@Override
@@ -29,7 +31,11 @@ implements hasStatisticCalculator<T> {
 	
 	@Override
 	public void setDefaultValues() {
+		// default output format
 		setResultFormat(new BED6lrtArrestResultFormat2<T, StatisticResult<T>>(this));
+		// test-statistic related
+		statisticParameters.setStatisticCalculator(new BetaBinomial<T>());
+		statisticParameters.setThreshold(1.0);
 	}
 	
 	@Override

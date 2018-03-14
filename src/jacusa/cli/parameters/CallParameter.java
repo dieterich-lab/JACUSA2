@@ -9,12 +9,11 @@ import lib.data.CallData;
 import lib.data.result.StatisticResult;
 
 /**
- * Parameters specific to call method(s)
- * @author Michael Piechotta
+ * Parameters specific to call method(s).
  */
 public class CallParameter 
 extends AbstractParameter<CallData, StatisticResult<CallData>> 
-implements hasStatisticCalculator<CallData> {
+implements HasStatisticParameters<CallData> {
 
 	private final StatisticParameter<CallData> statisticParameter;
 	

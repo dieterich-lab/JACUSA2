@@ -2,9 +2,9 @@ package lib.data.has.filter;
 
 import lib.data.BaseCallCount;
 
-public interface hasReadPositionDistanceFilterData {
+public interface hasReadPositionFilterData {
 
-	BaseCallCount getReadPositionDistanceFilterData();
+	BaseCallCount getReadPositionFilterData();
 	void setReadPositionDistanceFilterData(BaseCallCount baseCallCount);
 	
 }

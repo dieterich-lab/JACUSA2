@@ -39,7 +39,7 @@ implements hasPileupFilterData {
 	}
 	
 	@Override
-	public BaseCallCount getCombinedDistanceFilterData() {
+	public BaseCallCount getCombinedFilterData() {
 		return combinedDistanceFilterData;
 	}
 	
@@ -49,7 +49,7 @@ implements hasPileupFilterData {
 	}
 
 	@Override
-	public BaseCallCount getINDEL_DistanceFilterData() {
+	public BaseCallCount getINDEL_FilterData() {
 		return INDEL_DistanceFilterData;
 	}
 	
@@ -59,7 +59,7 @@ implements hasPileupFilterData {
 	}
 	
 	@Override
-	public BaseCallCount getReadPositionDistanceFilterData() {
+	public BaseCallCount getReadPositionFilterData() {
 		return readPositionDistanceFilterData;
 	}
 	
@@ -69,7 +69,7 @@ implements hasPileupFilterData {
 	}
 	
 	@Override
-	public BaseCallCount getSpliceSiteDistanceFilterData() {
+	public BaseCallCount getSpliceSiteFilterData() {
 		return spliceSiteDistanceFilterData;
 	}
 	

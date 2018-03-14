@@ -2,7 +2,6 @@ package jacusa.io.writer;
 
 import java.util.Map;
 
-import jacusa.cli.parameters.hasStatistic;
 
 import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractParameter;
@@ -11,6 +10,7 @@ import lib.data.BaseCallCount;
 import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.Result;
+import lib.data.result.hasStatistic;
 
 public class BED6lrtArrestResultWriter2<T extends AbstractData & hasReferenceBase & hasLRTarrestCount, R extends Result<T> & hasStatistic> 
 extends BEDlikeWriter<T, R> {

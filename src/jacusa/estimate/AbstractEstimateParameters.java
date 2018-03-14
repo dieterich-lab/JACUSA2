@@ -3,6 +3,9 @@ package jacusa.estimate;
 import lib.data.PileupCount;
 import lib.phred2prob.Phred2Prob;
 
+/**
+ * TODO comments
+ */
 public abstract class AbstractEstimateParameters {
 
 	private final String name;

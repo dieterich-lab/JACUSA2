@@ -1,10 +1,10 @@
 package jacusa.io.writer;
 
-import jacusa.cli.parameters.hasStatistic;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasPileupCount;
 import lib.data.result.Result;
+import lib.data.result.hasStatistic;
 import lib.io.AbstractResultFormat;
 
 public class BED6callResultFormat<T extends AbstractData & hasPileupCount, R extends Result<T> & hasStatistic> 

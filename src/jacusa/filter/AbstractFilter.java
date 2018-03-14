@@ -4,9 +4,16 @@ import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.result.Result;
 
+/**
+ * Abstract class that finds and marks false positive variants.
+ * 
+ * @param <T>
+ */
 public abstract class AbstractFilter<T extends AbstractData> {
 
+	// unique char char identifies a filter
 	private final char c;
+	// region that is required up- and downstream of current position
 	private final int overhang;
 	
 	protected AbstractFilter(final char c) {
@@ -19,50 +26,58 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	}
 
 	/**
+	 * Return the unique char id of this filter.
 	 * 
-	 * @return
+	 * @return unique char
 	 */
 	public final char getC() {
 		return c;
 	}
 	
 	/**
+	 * Return true or false if this filter identifies a site as an false position variant.
+	 * This method can only be called from within the filter. 
 	 * 
-	 * @param parallelData
-	 * @param conditionContainer
-	 * @return
+	 * @param parallelData the data to investigate
+	 * @return true if site was filtered, or false otherwise
 	 */
-	protected abstract boolean filter(final ParallelData<T> parallelData);
+	protected abstract boolean filter(ParallelData<T> parallelData);
 
 	/**
+	 * Returns the region that this filter requires up- and downstream from current position.
 	 * 
-	 * @return
+	 * @return the region that the filter requires 
 	 */
 	public int getOverhang() {
 		return overhang;
 	}
 	
 	/**
+	 * This method applies the filter to the data (ParallelData) stored within result object and 
+	 * adds info fields to the result object if the filter found any false positive variants.
 	 * 
-	 * @param result
-	 * @param conditonContainer
-	 * @return
+	 * @param result the Result object to investigate and populate
+	 * @return true if filter found artefact, false otherwise
 	 */
 	public boolean applyFilter(final Result<T> result) {
+		// get data to investigate
 		final ParallelData<T> parallelData = result.getParellelData();
+		// if filter finds artefact, add info to result and return true
 		if (filter(parallelData)) {
 			addFilterInfo(result);
 			return true;
 		}
 
+		// no false variant found
 		return false;
 	}
 
 	/**
+	 * Adds unique id of filter to result object 
 	 * 
-	 * @param result
+	 * @param result object to be marked by this filter 
 	 */
-	public void addFilterInfo(Result<T> result) {
+	public void addFilterInfo(final Result<T> result) {
 		result.getFilterInfo().add(Character.toString(getC()));
 	}
 

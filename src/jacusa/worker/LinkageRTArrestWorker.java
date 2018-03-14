@@ -2,7 +2,7 @@ package jacusa.worker;
 
 import java.util.List;
 
-import jacusa.cli.parameters.LinkageRTArrestParameter;
+import jacusa.cli.parameters.LRTarrestParameter;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
@@ -23,7 +23,7 @@ extends AbstractWorker<T, StatisticResult<T>> {
 			final int threadId,
 			final CopyTmpResult<T, StatisticResult<T>> copyTmpResult,
 			final List<ParallelDataValidator<T>> parallelDataValidators, 
-			final LinkageRTArrestParameter<T> lrtArrestParameter) {
+			final LRTarrestParameter<T> lrtArrestParameter) {
 
 		super(workerDispatcher, threadId, copyTmpResult, parallelDataValidators, lrtArrestParameter);
 		statisticCalculator = lrtArrestParameter

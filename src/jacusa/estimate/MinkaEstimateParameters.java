@@ -6,6 +6,9 @@ import lib.util.Info;
 
 import org.apache.commons.math3.special.Gamma;
 
+/**
+ * TODO comments
+ */
 public abstract class MinkaEstimateParameters {
 
 	protected AbstractAlphaInit alphaInit;

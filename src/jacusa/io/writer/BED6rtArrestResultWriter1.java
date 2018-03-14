@@ -1,12 +1,12 @@
 package jacusa.io.writer;
 
-import jacusa.cli.parameters.hasStatistic;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.hasRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.Result;
+import lib.data.result.hasStatistic;
 
 public class BED6rtArrestResultWriter1<T extends AbstractData & hasReferenceBase & hasRTarrestCount, R extends Result<T> & hasStatistic> 
 extends BEDlikeWriter<T, R> {

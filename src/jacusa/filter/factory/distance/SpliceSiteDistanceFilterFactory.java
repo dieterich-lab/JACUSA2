@@ -3,7 +3,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.filter.basecall.SpliceSiteBaseCallDataFilter;
+import jacusa.filter.basecall.SpliceSiteDataFilter;
 import jacusa.filter.cache.UniqueFilterCacheWrapper;
 import jacusa.filter.cache.FilterCache;
 import jacusa.filter.cache.processrecord.ProcessRecord;
@@ -16,7 +16,7 @@ import lib.data.builder.ConditionContainer;
 import lib.data.cache.UniqueBaseCallDataCache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
-import lib.data.has.filter.hasSpliceSiteDistanceFilterData;
+import lib.data.has.filter.hasSpliceSiteFilterData;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -24,7 +24,7 @@ import lib.util.coordinate.CoordinateController;
  * @author Michael Piechotta
  *
  */
-public class SpliceSiteDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasSpliceSiteDistanceFilterData>
+public class SpliceSiteDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasSpliceSiteFilterData>
 extends AbstractBaseCallDistanceFilterFactory<T> {
 
 	public SpliceSiteDistanceFilterFactory() {
@@ -38,8 +38,8 @@ extends AbstractBaseCallDistanceFilterFactory<T> {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
 		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
-		final SpliceSiteBaseCallDataFilter<T> dataFilter = 
-				new SpliceSiteBaseCallDataFilter<T>(getC(), 
+		final SpliceSiteDataFilter<T> dataFilter = 
+				new SpliceSiteDataFilter<T>(getC(), 
 						getDistance(), getMinCount(), getMinRatio(), 
 						parameter, conditionFilterCaches);
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);

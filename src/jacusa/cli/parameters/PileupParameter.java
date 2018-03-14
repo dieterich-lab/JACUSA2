@@ -8,23 +8,18 @@ import lib.data.PileupData;
 import lib.data.result.DefaultResult;
 
 /**
- * 
- * @author Michael Piechotta
- *
+ * Class defines parameters and default values that are need for pileup method.
  */
 public class PileupParameter
 extends AbstractParameter<PileupData, DefaultResult<PileupData>> {
 
 	public PileupParameter(final int conditions) {
 		super(conditions);
-
-		// set pileup method specific result format
-		setResultFormat(new BED6pileupResultFormat<PileupData, DefaultResult<PileupData>>(this));
 	}
 
 	@Override
 	public void setDefaultValues() {
-		setResultFormat(new BED6pileupResultFormat<PileupData, DefaultResult<PileupData>>(this));	
+		setResultFormat(new BED6pileupResultFormat<PileupData, DefaultResult<PileupData>>(this));
 	}
 	
 	@Override

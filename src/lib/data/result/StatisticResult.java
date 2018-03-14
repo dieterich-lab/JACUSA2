@@ -1,6 +1,5 @@
 package lib.data.result;
 
-import jacusa.cli.parameters.hasStatistic;
 
 import lib.data.AbstractData;
 import lib.data.ParallelData;

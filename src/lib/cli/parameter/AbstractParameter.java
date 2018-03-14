@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import java.util.List;
 
-import jacusa.cli.parameters.hasConditionParameter;
+import jacusa.cli.parameters.HasConditionParameter;
 import jacusa.filter.FilterConfig;
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
@@ -20,7 +20,7 @@ import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
 public abstract class AbstractParameter<T extends AbstractData, R extends Result<T>>
-implements hasConditionParameter<T> {
+implements HasConditionParameter<T> {
 
 	public static final String FILE_SUFFIX = ".filtered";
 	

@@ -1,8 +1,8 @@
 package jacusa;
 
-import jacusa.cli.parameters.LinkageRTArrestParameter;
+import jacusa.cli.parameters.LRTarrestParameter;
 import jacusa.cli.parameters.PileupParameter;
-import jacusa.cli.parameters.RTArrestParameter;
+import jacusa.cli.parameters.RTarrestParameter;
 import jacusa.method.call.OneConditionCallFactory;
 import jacusa.method.call.TwoConditionCallFactory;
 import jacusa.method.pileup.PileupFactory;
@@ -46,20 +46,22 @@ import lib.util.AbstractTool;
  * JAVA framework for accurate SNV assessment (JACUSA) is a one-stop solution 
  * to detect single nucleotide variants (SNVs) from comparing matched sequencing samples.
  * Copyright (C) 2015  Michael Piechotta
-
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
  * @author Michael Piechotta
+ * @version 2.0.0 
  */
 public class JACUSA extends AbstractTool {
 	
@@ -99,12 +101,12 @@ public class JACUSA extends AbstractTool {
 
 		// reverse transcription read arrest
 		DataGenerator<RTarrestData> rtArrestDataGenerator = new RTarrestDataGenerator();
-		factories.add(new RTArrestFactory<RTarrestData>(new RTArrestParameter<RTarrestData>(2), 
+		factories.add(new RTArrestFactory<RTarrestData>(new RTarrestParameter<RTarrestData>(2), 
 				rtArrestDataGenerator));
 
 		// linked reverse transcription read arrest
 		DataGenerator<LRTarrestData> lrtArrestDataGenerator = new LRTarrestDataGenerator();
-		factories.add(new LinkageRTArrestFactory<LRTarrestData>(new LinkageRTArrestParameter<LRTarrestData>(2), 
+		factories.add(new LinkageRTArrestFactory<LRTarrestData>(new LRTarrestParameter<LRTarrestData>(2), 
 				lrtArrestDataGenerator));
 
 		return factories; 
@@ -135,7 +137,8 @@ public class JACUSA extends AbstractTool {
 	}
 
 	/**
-	 * Main method for JACUSA2
+	 * Main method for JACUSA2.
+	 * 
 	 * @param args command line arguments
 	 */
 	public static void main(final String[] args) {

@@ -2,7 +2,7 @@ package jacusa.method.rtarrest;
 
 import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
-import jacusa.cli.parameters.RTArrestParameter;
+import jacusa.cli.parameters.RTarrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.io.writer.BED6callResultFormat;
 import jacusa.io.writer.BED6rtArrestResultFormat;
@@ -53,7 +53,7 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 
 	public final static String NAME = "rt-arrest";
 
-	public RTArrestFactory(final RTArrestParameter<T> rtArrestParameter, final DataGenerator<T> dataGenerator) {
+	public RTArrestFactory(final RTarrestParameter<T> rtArrestParameter, final DataGenerator<T> dataGenerator) {
 		super(NAME, "Reverse Transcription Arrest - 2 conditions", 
 				rtArrestParameter, new BaseCallReadInfoDataBuilderFactory<T>(rtArrestParameter), dataGenerator);
 	}
@@ -150,8 +150,8 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 	}
 
 	@Override
-	public RTArrestParameter<T> getParameter() {
-		return (RTArrestParameter<T>) super.getParameter();
+	public RTarrestParameter<T> getParameter() {
+		return (RTarrestParameter<T>) super.getParameter();
 	}
 
 	@Override

@@ -7,6 +7,9 @@ import lib.util.MathUtil;
 
 import org.apache.commons.math3.special.Gamma;
 
+/**
+ * TODO comments
+ */
 public class MinkaEstimateDirMultParameters extends MinkaEstimateParameters {
 
 	private final static double EPSILON = 0.001;

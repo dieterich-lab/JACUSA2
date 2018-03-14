@@ -11,16 +11,17 @@ import lib.data.has.hasRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.StatisticResult;
 
-public class RTArrestParameter<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasRTarrestCount>
+/**
+ * Class defines parameters and default values that are need for Reverse Transcription arrest (rt-arrest).
+ */
+public class RTarrestParameter<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasRTarrestCount>
 extends AbstractParameter<T, StatisticResult<T>> 
-implements hasStatisticCalculator<T> {
+implements HasStatisticParameters<T> {
 
 	private StatisticParameter<T> statisticParameters;
 
-	public RTArrestParameter(final int conditions) {
+	public RTarrestParameter(final int conditions) {
 		super(conditions);
-		
-		statisticParameters = new StatisticParameter<T>(new BetaBinomial<T>(), 1.0);
 	}
 
 	@Override
@@ -30,7 +31,11 @@ implements hasStatisticCalculator<T> {
 	
 	@Override
 	public void setDefaultValues() {
+		// default result format
 		setResultFormat(new BED6rtArrestResultFormat<T, StatisticResult<T>>(this));
+		// related to test-statistic
+		statisticParameters.setStatisticCalculator(new BetaBinomial<T>());
+		statisticParameters.setThreshold(1.0);
 	}
 	
 	@Override
