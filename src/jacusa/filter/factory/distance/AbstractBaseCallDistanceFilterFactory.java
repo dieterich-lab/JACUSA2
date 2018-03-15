@@ -8,6 +8,11 @@ import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
 import lib.util.coordinate.CoordinateController;
 
+/**
+ * TODO add comments.
+ *
+ * @param <T>
+ */
 public abstract class AbstractBaseCallDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase>
 extends AbstractDistanceFilterFactory<T> {
 		
@@ -20,6 +25,13 @@ extends AbstractDistanceFilterFactory<T> {
 				defaultFilterDistance, defaultFilterMinRatio, defaultFilterMinCount);
 	}
 
+	/**
+	 * 
+	 * @param conditionParameter
+	 * @param baseCallConfig
+	 * @param coordinateController
+	 * @return
+	 */
 	protected UniqueBaseCallDataCache<T> createUniqueBaseCallCache(
 			final AbstractConditionParameter<T> conditionParameter,
 			final BaseCallConfig baseCallConfig,

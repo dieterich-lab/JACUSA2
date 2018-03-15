@@ -68,7 +68,7 @@ extends AbstractACOption {
 			// name of the statistic
 			String statName = line.getOptionValue(getOpt());
 			// separator for optional arguments
-			String str = Character.toString(AbstractFilterFactory.SEP);
+			String str = Character.toString(AbstractFilterFactory.OPTION_SEP);
 			// parse name and options
 			if (statName.indexOf(str) > -1) {
 				String[] cols = statName.split(str, 2);

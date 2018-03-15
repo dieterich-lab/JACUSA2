@@ -5,14 +5,15 @@ import lib.data.builder.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
 /**
- * This filter factory 
+ * This factory creates an artefact filter object and registers it.  
  * 
  * @param <T>
  */
 public abstract class AbstractFilterFactory<T extends AbstractData> {
 
-	// TODO add comment - what does this stand for?
-	public final static char SEP = ':';
+	// add CLI options after OPTION_SEP, 
+	// e.g.: C:opt1=val1
+	public final static char OPTION_SEP = ':';
 
 	// unique char id - corresponds CLI
 	private final char c;

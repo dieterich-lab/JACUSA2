@@ -305,7 +305,7 @@ extends AbstractStatisticCalculator<T> {
 	@Override
 	public boolean processCLI(String line) {
 		// format: -u DirMult:epsilon=<epsilon>:maxIterations=<maxIterions>:onlyObserved
-		String[] s = line.split(Character.toString(AbstractFilterFactory.SEP));
+		String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
 		// indicates if a CLI has been successfully parsed
 		boolean r = false;
 

@@ -15,11 +15,14 @@ import lib.util.coordinate.CoordinateController;
 public class MaxAlleleCountFilterFactory<T extends AbstractData & hasBaseCallCount> 
 extends AbstractFilterFactory<T> {
 
+	// default value for max alleles
 	private static final int MAX_ALLELES = 2;
+	// chosen value
 	private int alleles;
 
 	public MaxAlleleCountFilterFactory() {
-		super('M', "Max allowed alleles per parallel pileup. Default: "+ MAX_ALLELES);
+		super('M', 
+				"Max allowed alleles per parallel pileup. Default: "+ MAX_ALLELES);
 		alleles = MAX_ALLELES;
 	}
 
@@ -34,8 +37,8 @@ extends AbstractFilterFactory<T> {
 			return;
 		}
 
-		final String[] s = line.split(Character.toString(AbstractFilterFactory.SEP));
-
+		// format: M:2
+		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
 		for (int i = 1; i < s.length; ++i) {
 			switch(i) {
 
@@ -53,6 +56,9 @@ extends AbstractFilterFactory<T> {
 		}
 	}
 	
+	/**
+	 * TODO add comments.
+	 */
 	private class MaxAlleleFilter extends AbstractFilter<T> {
 		
 		public MaxAlleleFilter(final char c) {

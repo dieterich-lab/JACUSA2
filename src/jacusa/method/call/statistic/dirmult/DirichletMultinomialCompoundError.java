@@ -57,7 +57,7 @@ extends AbstractDirichletStatistic<T> {
 	@Override
 	public boolean processCLI(String line) {
 		boolean r = super.processCLI(line);
-		String[] s = line.split(Character.toString(AbstractFilterFactory.SEP));
+		String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
 
 		for (int i = 1; i < s.length; ++i) {
 			// key=value

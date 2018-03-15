@@ -10,19 +10,19 @@ import lib.util.coordinate.CoordinateController;
 
 /**
  * 
- * @author Michael Piechotta
  *
+ * @param <T>
  */
 public class HomozygousFilterFactory<T extends AbstractData & hasBaseCallCount> 
 extends AbstractFilterFactory<T> {
 
-	// 
+	// which condition is required to be homozygous
 	private int homozygousConditionIndex;
-	//
-	private AbstractParameter<T, ?> parameters;
+	private final AbstractParameter<T, ?> parameters;
 
 	public HomozygousFilterFactory(final AbstractParameter<T, ?> parameters) {
-		super('H', "Filter non-homozygous pileup/BAM in condition 1 or 2 " +
+		super('H', 
+				"Filter non-homozygous pileup/BAM in condition 1 or 2 " +
 				"(MUST be set to H:1 or H:2). Default: none");
 		homozygousConditionIndex 	= -1;
 		this.parameters 			= parameters;
@@ -34,10 +34,9 @@ extends AbstractFilterFactory<T> {
 			throw new IllegalArgumentException("Invalid argument " + line + ". MUST be set to H:1 or H:2)");
 		}
 
-		final String[] s = line.split(Character.toString(AbstractFilterFactory.SEP));
-		
 		// format of s: 	H:<condition>[:strict]
 		// array content:	0:1			  :2
+		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
 		for (int i = 1; i < s.length; ++i) {
 			switch(i) {
 
@@ -45,7 +44,7 @@ extends AbstractFilterFactory<T> {
 				final int conditionIndex = Integer.parseInt(s[1]);
 				// make sure conditionIndex is within provided conditions
 				if (conditionIndex >= 1 && conditionIndex <= parameters.getConditionsSize()) {
-					setHomozygousConditionIndex(conditionIndex);
+					this.homozygousConditionIndex = conditionIndex;
 				} else {
 					throw new IllegalArgumentException("Invalid argument: " + line);
 				}
@@ -56,20 +55,17 @@ extends AbstractFilterFactory<T> {
 			}
 		}
 	}
-	
-	public final void setHomozygousConditionIndex(final int conditionIndex) {
-		this.homozygousConditionIndex = conditionIndex;
-	}
-
-	public final int getConditionIndex() {
-		return homozygousConditionIndex;
-	}
 
 	@Override
 	public void registerFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
+		// no caches are need
+		// parallelData suffices to filter
 		conditionContainer.getFilterContainer().addFilter(new HomozygousFilter(getC()));
 	}
 	
+	/**
+	 * TODO add comments. 
+	 */
 	private class HomozygousFilter 
 	extends AbstractFilter<T> {
 

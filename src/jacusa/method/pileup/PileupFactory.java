@@ -6,10 +6,10 @@ import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
-import jacusa.filter.factory.distance.CombinedDistanceFilterFactory;
-import jacusa.filter.factory.distance.INDEL_DistanceFilterFactory;
+import jacusa.filter.factory.distance.CombinedFilterFactory;
+import jacusa.filter.factory.distance.INDEL_FilterFactory;
 import jacusa.filter.factory.distance.ReadPositionDistanceFilterFactory;
-import jacusa.filter.factory.distance.SpliceSiteDistanceFilterFactory;
+import jacusa.filter.factory.distance.SpliceSiteFilterFactory;
 import jacusa.io.writer.BED6callResultFormat;
 import jacusa.io.writer.BED6pileupResultFormat;
 import jacusa.io.writer.PileupFormat;
@@ -147,10 +147,10 @@ extends AbstractMethodFactory<PileupData, DefaultResult<PileupData>> {
 		final List<AbstractFilterFactory<PileupData>> filterFactories = 
 				new ArrayList<AbstractFilterFactory<PileupData>>(10);
 		
-		filterFactories.add(new CombinedDistanceFilterFactory<PileupData>());
-		filterFactories.add(new INDEL_DistanceFilterFactory<PileupData>());
+		filterFactories.add(new CombinedFilterFactory<PileupData>());
+		filterFactories.add(new INDEL_FilterFactory<PileupData>());
 		filterFactories.add(new ReadPositionDistanceFilterFactory<PileupData>());
-		filterFactories.add(new SpliceSiteDistanceFilterFactory<PileupData>());
+		filterFactories.add(new SpliceSiteFilterFactory<PileupData>());
 		filterFactories.add(new HomozygousFilterFactory<PileupData>(getParameter()));
 		filterFactories.add(new MaxAlleleCountFilterFactory<PileupData>());
 		

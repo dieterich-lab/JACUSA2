@@ -10,10 +10,19 @@ import lib.io.AbstractResultFileWriter;
 import lib.io.ResultFormat;
 import lib.io.copytmp.CopyTmpResult;
 
+/**
+ * TODO add comments. 
+ * Used, when results should be split based on artefact filters for one thread
+ *
+ * @param <T>
+ * @param <R>
+ */
 public class FileCopyTmpSeparatedResult<T extends AbstractData, R extends Result<T>> 
 implements CopyTmpResult<T, R> {
 
+	// handles NOT filtered results
 	private FileCopyTmpResult<T, R> copyResult;
+	// handles filtered results
 	private FileCopyTmpResult<T, R> copyFilteredResult;
 	
 	public FileCopyTmpSeparatedResult(final int threadId, 
@@ -21,8 +30,8 @@ implements CopyTmpResult<T, R> {
 			final AbstractResultFileWriter<T, R> filteredResultFileWriter,
 			final ResultFormat<T, R> resultFormat) {
 
-		copyResult = new FileCopyTmpResult<T, R>(threadId, resultFileWriter, resultFormat);
-		copyFilteredResult = new FileCopyTmpResult<T, R>(threadId, filteredResultFileWriter, resultFormat);
+		copyResult 			= new FileCopyTmpResult<T, R>(threadId, resultFileWriter, resultFormat);
+		copyFilteredResult 	= new FileCopyTmpResult<T, R>(threadId, filteredResultFileWriter, resultFormat);
 	}
 	
 	@Override

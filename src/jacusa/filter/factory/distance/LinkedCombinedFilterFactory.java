@@ -1,9 +1,10 @@
 package jacusa.filter.factory.distance;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
-import jacusa.filter.basecall.CombinedDataFilter;
+import jacusa.filter.Ref2BaseCallDataFilter;
 import jacusa.filter.cache.UniqueFilterCacheWrapper;
 import jacusa.filter.cache.FilterCache;
 import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
@@ -16,18 +17,22 @@ import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
-import lib.data.cache.UniqueBaseCallDataCache;
-import lib.data.has.hasBaseCallCount;
+import lib.data.cache.UniqueRef2BaseCallDataCache;
+import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
-import lib.data.has.filter.hasCombindedFilterData;
 import lib.util.coordinate.CoordinateController;
 
-public class CombinedDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasCombindedFilterData & hasReferenceBase> 
-extends AbstractBaseCallDistanceFilterFactory<T> {
+/**
+ * TODO add comments.
+ * 
+ * @param <T>
+ */
+public class LinkedCombinedFilterFactory<T extends AbstractData & hasReferenceBase & hasLRTarrestCount & hasLRTarrestCountFilteredData> 
+extends AbstractDistanceFilterFactory<T> {
 
-	public CombinedDistanceFilterFactory() {
+	public LinkedCombinedFilterFactory() {
 		super('D', 
-				"Filter artefacts in the vicinity of read start/end, INDELs, and splice site position(s)", 
+				"Filter distance to TODO position.", 
 				5, 0.5, 1);
 	}
 
@@ -36,8 +41,8 @@ extends AbstractBaseCallDistanceFilterFactory<T> {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
 		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
-		final CombinedDataFilter<T> dataFilter = 
-				new CombinedDataFilter<T>(getC(), 
+		final Ref2BaseCallDataFilter<T> dataFilter = 
+				new Ref2BaseCallDataFilter<T>(getC(), 
 						getDistance(), getMinCount(), getMinRatio(), 
 						parameter, conditionFilterCaches);
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
@@ -48,19 +53,29 @@ extends AbstractBaseCallDistanceFilterFactory<T> {
 			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
 
-		final UniqueBaseCallDataCache<T> uniqueBaseCallCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
-		
+		final UniqueRef2BaseCallDataCache<T> uniqueDataCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
+
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
 		// INDELs
-		processRecords.add(new ProcessInsertionOperator(getDistance(), uniqueBaseCallCache));
-		processRecords.add(new ProcessDeletionOperator(getDistance(), uniqueBaseCallCache));
+		processRecords.add(new ProcessInsertionOperator(getDistance(), uniqueDataCache));
+		processRecords.add(new ProcessDeletionOperator(getDistance(), uniqueDataCache));
 		// read start end 
-		processRecords.add(new ProcessReadStartEnd(getDistance(), uniqueBaseCallCache));
+		processRecords.add(new ProcessReadStartEnd(getDistance(), uniqueDataCache));
 		// introns
-		processRecords.add(new ProcessSkippedOperator(getDistance(), uniqueBaseCallCache));
+		processRecords.add(new ProcessSkippedOperator(getDistance(), uniqueDataCache));
 
-		final UniqueFilterCacheWrapper<T> distanceFilterCache = new UniqueFilterCacheWrapper<T>(getC(), uniqueBaseCallCache, processRecords);
-		return distanceFilterCache;
+		return new UniqueFilterCacheWrapper<T>(getC(), uniqueDataCache, processRecords);
 	}
 
+	protected UniqueRef2BaseCallDataCache<T> createUniqueBaseCallCache(
+			final AbstractConditionParameter<T> conditionParameter,
+			final BaseCallConfig baseCallConfig,
+			final CoordinateController coordinateController) {
+		
+		return new UniqueRef2BaseCallDataCache<T>(
+				conditionParameter.getLibraryType(),
+				baseCallConfig, 
+				coordinateController);
+	}
+	
 }

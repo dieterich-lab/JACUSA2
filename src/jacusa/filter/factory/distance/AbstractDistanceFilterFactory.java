@@ -33,7 +33,7 @@ extends AbstractDataFilterFactory<T> {
 			return;
 		}
 
-		final String[] s = line.split(Character.toString(AbstractFilterFactory.SEP));
+		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
 
 		// format D:distance:minRatio:minCount
 		for (int i = 1; i < s.length; ++i) {

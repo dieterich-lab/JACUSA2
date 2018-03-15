@@ -3,10 +3,10 @@ package jacusa.method.call;
 import jacusa.cli.parameters.CallParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
-import jacusa.filter.factory.distance.CombinedDistanceFilterFactory;
-import jacusa.filter.factory.distance.INDEL_DistanceFilterFactory;
+import jacusa.filter.factory.distance.CombinedFilterFactory;
+import jacusa.filter.factory.distance.INDEL_FilterFactory;
 import jacusa.filter.factory.distance.ReadPositionDistanceFilterFactory;
-import jacusa.filter.factory.distance.SpliceSiteDistanceFilterFactory;
+import jacusa.filter.factory.distance.SpliceSiteFilterFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,10 +32,10 @@ extends CallFactory {
 		final List<AbstractFilterFactory<CallData>> filterFactories = 
 				new ArrayList<AbstractFilterFactory<CallData>>(5);
 
-		filterFactories.add(new CombinedDistanceFilterFactory<CallData>());
-		filterFactories.add(new INDEL_DistanceFilterFactory<CallData>());
+		filterFactories.add(new CombinedFilterFactory<CallData>());
+		filterFactories.add(new INDEL_FilterFactory<CallData>());
 		filterFactories.add(new ReadPositionDistanceFilterFactory<CallData>());
-		filterFactories.add(new SpliceSiteDistanceFilterFactory<CallData>());
+		filterFactories.add(new SpliceSiteFilterFactory<CallData>());
 		filterFactories.add(new MaxAlleleCountFilterFactory<CallData>());
 
 		for (final AbstractFilterFactory<CallData> filterFactory : filterFactories) {

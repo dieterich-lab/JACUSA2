@@ -18,11 +18,15 @@ import lib.util.coordinate.CoordinateController;
 public class HomopolymerFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasHomopolymerInfo> 
 extends AbstractDataFilterFactory<T> {
 
+	// default length of consecutive identical base call for
+	// a homopolymer
 	private static final int MIN_HOMOPOLYMER_LENGTH = 7;
+	// chosen length of homopolymer
 	private int length;
 		
 	public HomopolymerFilterFactory() {
-		super('Y', "Filter wrong variant calls within homopolymers. Default: " + MIN_HOMOPOLYMER_LENGTH + " (Y:length)");
+		super('Y', 
+				"Filter wrong variant calls within homopolymers. Default: " + MIN_HOMOPOLYMER_LENGTH + " (Y:length)");
 		length = MIN_HOMOPOLYMER_LENGTH;
 	}
 	
@@ -32,14 +36,14 @@ extends AbstractDataFilterFactory<T> {
 			return;
 		}
 
-		String[] s = line.split(Character.toString(AbstractFilterFactory.SEP));
 		// format Y:length
+		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
 		for (int i = 1; i < s.length; ++i) {
 			int value = Integer.valueOf(s[i]);
 
 			switch(i) {
 			case 1:
-				setLength(value);
+				this.length = value;
 				break;
 
 			default:
@@ -62,19 +66,15 @@ extends AbstractDataFilterFactory<T> {
 			final ConditionContainer<T> conditionContainer) {
 
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
-		
-		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
+
+		// TODO add comments.
+		final List<List<FilterCache<T>>> conditionFilterCaches = 
+				createConditionFilterCaches(parameter, coordinateController, this);
+		// create filter 
 		final HomopolymerDataFilter<T> dataFilter = 
 				new HomopolymerDataFilter<T>(getC(), length, parameter, conditionFilterCaches);
+		// and propagate conditionFilterCache
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
-	}
-	
-	public final void setLength(int length) {
-		this.length = length;
-	}
-
-	public final int getLength() {
-		return length;
 	}
 
 }

@@ -1,11 +1,14 @@
-	package jacusa.filter.factory.distance;
+package jacusa.filter.factory.distance;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.filter.basecall.SpliceSiteDataFilter;
+import jacusa.filter.basecall.CombinedDataFilter;
 import jacusa.filter.cache.UniqueFilterCacheWrapper;
 import jacusa.filter.cache.FilterCache;
+import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
+import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
+import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
 import lib.cli.options.BaseCallConfig;
@@ -16,21 +19,21 @@ import lib.data.builder.ConditionContainer;
 import lib.data.cache.UniqueBaseCallDataCache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
-import lib.data.has.filter.hasSpliceSiteFilterData;
+import lib.data.has.filter.hasCombindedFilterData;
 import lib.util.coordinate.CoordinateController;
 
 /**
+ * TODO add comments.
  * 
- * @author Michael Piechotta
- *
+ * @param <T>
  */
-public class SpliceSiteDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasSpliceSiteFilterData>
+public class CombinedFilterFactory<T extends AbstractData & hasBaseCallCount & hasCombindedFilterData & hasReferenceBase> 
 extends AbstractBaseCallDistanceFilterFactory<T> {
 
-	public SpliceSiteDistanceFilterFactory() {
-		super('S', 
-				"Filter potential false positive variants adjacent to splice site(s).", 
-				6, 0.5, 2);
+	public CombinedFilterFactory() {
+		super('D', 
+				"Filter artefacts in the vicinity of read start/end, INDELs, and splice site position(s)", 
+				5, 0.5, 1);
 	}
 
 	@Override
@@ -38,8 +41,8 @@ extends AbstractBaseCallDistanceFilterFactory<T> {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
 		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
-		final SpliceSiteDataFilter<T> dataFilter = 
-				new SpliceSiteDataFilter<T>(getC(), 
+		final CombinedDataFilter<T> dataFilter = 
+				new CombinedDataFilter<T>(getC(), 
 						getDistance(), getMinCount(), getMinRatio(), 
 						parameter, conditionFilterCaches);
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
@@ -53,6 +56,12 @@ extends AbstractBaseCallDistanceFilterFactory<T> {
 		final UniqueBaseCallDataCache<T> uniqueBaseCallCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
 		
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
+		// INDELs
+		processRecords.add(new ProcessInsertionOperator(getDistance(), uniqueBaseCallCache));
+		processRecords.add(new ProcessDeletionOperator(getDistance(), uniqueBaseCallCache));
+		// read start end 
+		processRecords.add(new ProcessReadStartEnd(getDistance(), uniqueBaseCallCache));
+		// introns
 		processRecords.add(new ProcessSkippedOperator(getDistance(), uniqueBaseCallCache));
 
 		final UniqueFilterCacheWrapper<T> distanceFilterCache = new UniqueFilterCacheWrapper<T>(getC(), uniqueBaseCallCache, processRecords);
