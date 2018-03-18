@@ -17,30 +17,46 @@ import lib.io.AbstractResultFormat;
 import lib.io.ResultWriter;
 import lib.util.AbstractTool;
 
+/**
+ * TODO add comments.
+ * TODO use htsjdk implementation
+ *
+ * @param <T>
+ * @param <R>
+ */
 public class VCFcall<T extends AbstractData & hasPileupCount, R extends Result<T>> 
 extends AbstractResultFormat<T, R> {
 
-	public static final char CHAR = 'V';
+	// unique char id for CLI
+	public static final char CHAR 		= 'V';
 	
-	private BaseCallConfig baseConfig;
-	private FilterConfig<T> filterConfig;
+	public static final char COMMENT 	= '#';
+	public static final char SEP 		= '\t';
+	public static final char SEP2 		= ';';
+	public static final char SEP3 		= ':';
+	public static final char EMPTY 		= '.';
+	
+	private final BaseCallConfig baseConfig;
+	private final FilterConfig<T> filterConfig;
 	
 	public VCFcall(final AbstractParameter<T, R> parameter) {
 		super(CHAR, "VCF Output format. Option -P will be ignored (VCF is unstranded)", parameter);
-		this.baseConfig = parameter.getBaseConfig();
-		this.filterConfig = parameter.getFilterConfig();
+		this.baseConfig 	= parameter.getBaseConfig();
+		this.filterConfig 	= parameter.getFilterConfig();
 	}
 	
 	public String addHeader(final List<AbstractConditionParameter<T>> conditionParameters) {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append(getCOMMENT());
+		final StringBuilder sb = new StringBuilder();
+
+		// VCF format version
+		sb.append(COMMENT);
 		sb.append("#fileformat=VCFv4.0");
 		sb.append('\n');
 		
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		int month = Calendar.getInstance().get(Calendar.MONTH);
-		int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		// date 
+		final int year = Calendar.getInstance().get(Calendar.YEAR);
+		final int month = Calendar.getInstance().get(Calendar.MONTH);
+		final int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 		sb.append("##fileDate=");
 		sb.append(year);
 		if (month < 10)
@@ -51,6 +67,7 @@ extends AbstractResultFormat<T, R> {
 		sb.append(day);
 		sb.append('\n');
 
+		// name and version of JACUSA...
 		sb.append("##source=");
 		sb.append(AbstractTool.getLogger().getTool().getName() + "-" + AbstractTool.getLogger().getTool().getVersion());
 		sb.append('\n');
@@ -66,7 +83,8 @@ extends AbstractResultFormat<T, R> {
 		sb.append("##FORMAT=<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">\n");
 		sb.append("##FORMAT=<ID=BC,Number=4,Type=Integer,Description=\"Base counts A,C,G,T\">\n");
 		
-		String[] cols = {
+		// column names of header
+		final String[] cols = {
 				"CHROM",
 				"POS",
 				"ID",
@@ -77,17 +95,17 @@ extends AbstractResultFormat<T, R> {
 				"INFO",
 				"FORMAT"
 		};
-		
-		sb.append(getCOMMENT());
+		sb.append(COMMENT);
 		sb.append(cols[0]);
 		for (int i = 1; i < cols.length; ++i) {
-			sb.append(getSEP());
+			sb.append(SEP);
 			sb.append(cols[i]);
 		}
-		
+
+		// filename of condition and replicate BAMs
 		for (final AbstractConditionParameter<T> conditionParameter : conditionParameters) {
 			for (String recordFilename : conditionParameter.getRecordFilenames())  {
-				sb.append(getSEP());
+				sb.append(SEP);
 				sb.append(recordFilename);
 			}
 		}
@@ -95,7 +113,9 @@ extends AbstractResultFormat<T, R> {
 		return sb.toString();
 	}
 
-	public String convert2String(R result) {
+	// TODO what to do with this?
+	/*
+	private String convert2String(final R result) {
 		final StringBuilder sb = new StringBuilder();
 		final ParallelData<T> parallelData = result.getParellelData();
 		String filterInfo = result.getFilterInfo().combine();
@@ -149,7 +169,9 @@ extends AbstractResultFormat<T, R> {
 		
 		return sb.toString();
 	}
+	*/
 
+	/* TODO do we need this?
 	private void addParallelPileup(final StringBuilder sb, final T data[]) {
 		for (int i = 0; i < data.length; ++i) {
 			// add DP
@@ -180,30 +202,11 @@ extends AbstractResultFormat<T, R> {
 			}
 		}
 	}
-	
-	public char getCOMMENT() {
-		return '#';
-	}
-
-	public char getSEP() {
-		return '\t';
-	}
-
-	public char getSEP2() {
-		return ';';
-	}
-
-	public char getSEP3() {
-		return ':';
-	}
-	
-	public char getEMPTY() {
-		return '.';
-	}
+	*/
 
 	@Override
 	public ResultWriter<T, R> createWriter(String filename) {
-		// TODO Auto-generated method stub
+		// TODO implement a writer...
 		return null;
 	}
 	

@@ -13,26 +13,43 @@ import lib.phred2prob.Phred2Prob;
 
 import htsjdk.samtools.SAMUtils;
 
+/**
+ * TODO add comments.
+ *
+ * @param <T>
+ * @param <R>
+ */
 public class PileupResultWriter<T extends AbstractData & hasPileupCount, R extends Result<T>> 
 extends AbstractResultFileWriter<T, R> {
 
-	public static char EMPTY 	= '*';
-	public static char COMMENT = '#';
-	public static char SEP 	= '\t';
-	public static char SEP2 	= ',';
+	// empty field, e.g.: no filters, no infos etc.
+	public static final char EMPTY 	= '*';
+	// char to start a comment
+	public static final char COMMENT = '#';
+	// separate columns by
+	public static final char SEP 	= '\t';
+	// separate within columns by
+	public static final char SEP2 	= ',';
 
-	private boolean showReferenceBase;
-	private BaseCallConfig baseConfig;
+	private final BaseCallConfig baseConfig;
+	// indicates if the reference base should be added as a column 
+	private final boolean showReferenceBase;
 
 	public PileupResultWriter(final String filename, 
 			final BaseCallConfig baseConfig, final boolean showReferenceBase) {
 
 		super(filename);
-		this.showReferenceBase = showReferenceBase;
 		this.baseConfig = baseConfig;
+		this.showReferenceBase = showReferenceBase;
 	}
 
-	public String convert2String(final R result) {
+	/**
+	 * Converts a result object to a string.
+	 * 
+	 * @param result the object to be converted
+	 * @return a string representation of the result object
+	 */
+	private String convert2String(final R result) {
 		final StringBuilder sb = new StringBuilder();
 		final ParallelData<T> parallelData = result.getParellelData();
 
@@ -41,16 +58,19 @@ extends AbstractResultFileWriter<T, R> {
 		sb.append(SEP);
 		sb.append(parallelData.getCoordinate().getEnd());
 
-		sb.append(getSEP());
+		// add reference
+		sb.append(SEP);
 		if (showReferenceBase) {
 			sb.append(parallelData.getCombinedPooledData().getPileupCount().getReferenceBase());
 		} else {
 			sb.append("N");
 		}
 
+		// add strand
 		sb.append(SEP);
 		sb.append(parallelData.getCoordinate().getStrand().character());
 		
+		// add pileup data
 		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
 			addPileupData(sb, parallelData.getData(conditionIndex));
 		}
@@ -58,6 +78,12 @@ extends AbstractResultFileWriter<T, R> {
 		return sb.toString();		
 	}
 	
+	/**
+	 * TODO add comments.
+	 * 
+	 * @param sb
+	 * @param dataArray
+	 */
 	protected void addPileupData(final StringBuilder sb, final T[] dataArray) {
 		for (final T data : dataArray) {
 			sb.append(SEP);
@@ -65,9 +91,11 @@ extends AbstractResultFileWriter<T, R> {
 			sb.append(SEP);
 			
 			final int[] alleles = data.getPileupCount().getBaseCallCount().getAlleles();
-			for (int baseIndex : alleles) {
-				// print bases 
-				for (int i = 0; i < data.getPileupCount().getBaseCallCount().getBaseCallCount(baseIndex); ++i) {
+			// print bases
+			for (final int baseIndex : alleles) {
+				final int count = data.getPileupCount().getBaseCallCount().getBaseCallCount(baseIndex);
+				// repeat count times
+				for (int i = 0; i < count; ++i) {
 					sb.append(baseConfig.getBases()[baseIndex]);
 				}
 			}
@@ -75,40 +103,21 @@ extends AbstractResultFileWriter<T, R> {
 			sb.append(SEP);
 
 			// print quals
-			for (int base : alleles) {
+			for (final int base : alleles) {
 				for (byte qual = 0; qual < Phred2Prob.MAX_Q; ++qual) {
-
-					int count = data.getPileupCount().getQualCount(base, qual);
-					if (count > 0) {
-						// repeat count times
-						for (int j = 0; j < count; ++j) {
-							sb.append(SAMUtils.phredToFastq(qual));
-						}
+					final int count = data.getPileupCount().getQualCount(base, qual);
+					// repeat count times
+					for (int j = 0; j < count; ++j) {
+						sb.append(SAMUtils.phredToFastq(qual));
 					}
 				}
 			}
 		}
 	}
-	
-	public char getCOMMENT() {
-		return COMMENT;
-	}
-
-	public char getEMPTY() {
-		return EMPTY;
-	}
-
-	public char getSEP() {
-		return SEP;
-	}
-
-	public char getSEP2() {
-		return SEP2;
-	}
 
 	@Override
 	public void writeHeader(List<AbstractConditionParameter<T>> conditionParameter) {
-		// no header - no output
+		// pileup result format has to header
 	}
 
 	@Override

@@ -7,6 +7,13 @@ import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.Result;
 
+/**
+ * 
+ * @author michael
+ *
+ * @param <T>
+ * @param <R>
+ */
 public abstract class BEDlikeResultWriter<T extends AbstractData & hasBaseCallCount & hasReferenceBase, R extends Result<T>> 
 extends BEDlikeWriter<T, R> {
 
@@ -23,6 +30,7 @@ extends BEDlikeWriter<T, R> {
 
 	protected abstract String getStatistic(final R result);
 	
+	@Override
 	protected void addResultBaseCallCount(final StringBuilder sb, final T data) {
 		// output condition: Ax,Cx,Gx,Tx
 		sb.append(SEP);
@@ -46,22 +54,6 @@ extends BEDlikeWriter<T, R> {
 			sb.append(SEP2);
 			sb.append(count);
 		}
-	}
-
-	public char getCOMMENT() {
-		return COMMENT;
-	}
-
-	public char getEMPTY() {
-		return EMPTY;
-	}
-
-	public char getSEP() {
-		return SEP;
-	}
-	
-	public char getSEP2() {
-		return SEP2;
 	}
 	
 }

@@ -18,7 +18,7 @@ extends AbstractResultFormat<T, R> {
 
 	// unique char id for CLI 
 	public static final char CHAR = 'B';
-	
+
 	public BED6callResultFormat(final AbstractParameter<T, R> parameter) {
 		super(CHAR, "BED6-extended result format", parameter);
 	}
