@@ -44,14 +44,13 @@ public abstract class AbstractTool {
 	}
 
 	public void run() throws Exception {
-		// prolog printed in logger
-
-		getLogger().addProlog(getProlog());
-		
 		// parse CLI
 		if (! cli.processArgs(args)) {
 			System.exit(1);
 		}
+
+		// prolog printed in logger
+		getLogger().addProlog(getProlog());
 		
 		// instantiate chosen method
 		final AbstractMethodFactory<?, ?> methodFactory = cli.getMethodFactory();

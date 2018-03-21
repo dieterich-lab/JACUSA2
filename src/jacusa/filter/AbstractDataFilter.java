@@ -10,13 +10,15 @@ import lib.util.coordinate.Coordinate;
 
 /**
  * Defines a class that needs additional data to be calculate to filter artefacts.
+ * 
+ * @param <T>
  */
 public abstract class AbstractDataFilter<T extends AbstractData> 
 extends AbstractFilter<T> {
 
 	// first list stores condition and each nested list the respective replicates
 	private final List<List<FilterCache<T>>> filterCaches;
-	
+
 	protected AbstractDataFilter(final char c, 
 			final int overhang, 
 			final AbstractParameter<T, ?> parameter,
@@ -33,7 +35,7 @@ extends AbstractFilter<T> {
 	 */
 	public void addFilteredData(final ParallelData<T> parallelData) {
 		final int conditions = parallelData.getConditions();
-		// coorindate of parallelData - identifies linked data in filterCache
+		// coordinate of parallelData - identifies linked data in filterCache
 		final Coordinate coordinate = parallelData.getCoordinate();
 
 		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
@@ -45,9 +47,11 @@ extends AbstractFilter<T> {
 			// to 
 			// ParallelData(conditionIndex, replicateIndex)
 			for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
-				filterCaches
-					.get(conditionIndex).get(replicateIndex) // data from filterFache 
-					.addData(parallelData.getData(conditionIndex, replicateIndex), coordinate); // data from parallelData
+				// data from parallelData
+				final T data = parallelData.getData(conditionIndex, replicateIndex);
+				// data from filterFache
+				final FilterCache<T> filterCache = getFilterCache(conditionIndex, replicateIndex);
+				filterCache.addData(data, coordinate); 
 			}
 		}
 	}

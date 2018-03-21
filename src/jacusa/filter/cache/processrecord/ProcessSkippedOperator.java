@@ -36,10 +36,12 @@ public class ProcessSkippedOperator extends AbstractProcessRecord {
 		
 		// add upstream
 		final int upstreamMatch = Math.min(getDistance(), recordWrapper.getUpstreamMatch(cigarElementWrapperIndex));
+		// mark region
 		getUniqueCache().addRecordWrapperRegion(position.getReadPosition() - upstreamMatch, upstreamMatch + 1, recordWrapper);
 		
 		// add downstream
 		final int downstreamMatch = Math.min(getDistance(), recordWrapper.getDownstreamMatch(cigarElementWrapperIndex));
+		// mark region
 		getUniqueCache().addRecordWrapperRegion(position.getReadPosition() + cigarElementWrapper.getCigarElement().getLength(), downstreamMatch + 1, recordWrapper);		
 	}
 

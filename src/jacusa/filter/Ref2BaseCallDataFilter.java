@@ -132,7 +132,7 @@ extends AbstractDataFilter<T> {
 	}	
 
 	@Override
-	public void addFilterInfo(Result<T> result) {
+	public void addInfo(Result<T> result) {
 		final String value = StringUtil.join(Character.toString(SEP), filteredRefPositions);
 		// add position of artefact(s) to unique char id
 		result.getFilterInfo().add(Character.toString(getC()), value);

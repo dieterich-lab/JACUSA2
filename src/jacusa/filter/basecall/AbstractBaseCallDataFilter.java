@@ -42,18 +42,24 @@ extends AbstractDataFilter<T> {
 			int filteredCount = 0;
 
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
-				for (int replicateIndex = 0; replicateIndex < parallelData.getReplicates(conditionIndex); replicateIndex++) {
-					count += parallelData.getData(conditionIndex, replicateIndex).getBaseCallCount().getBaseCallCount(variantBaseIndex);
-					filteredCount += getFilteredBaseCallData(parallelData, conditionIndex, replicateIndex).getBaseCallCount(variantBaseIndex);
+				final int replicates = parallelData.getReplicates(conditionIndex);
+				for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
+					// observed count
+					final T data = parallelData.getData(conditionIndex, replicateIndex);
+					count += data.getBaseCallCount().getBaseCallCount(variantBaseIndex);
+					// possible artefact count
+					filteredCount += getBaseCallFilterData(parallelData, conditionIndex, replicateIndex)
+							.getBaseCallCount(variantBaseIndex);
 				}
 			}
-			
+
+			// check if too much filteredCount
 			if (filter(count, filteredCount)) {
 				return true;
 			}
 			
 		}
-		
+
 		return false;
 	}
 
@@ -65,7 +71,7 @@ extends AbstractDataFilter<T> {
 	 * @param replicateIndex	the replicate
 	 * @return a BaseCallCount object
 	 */
-	protected abstract BaseCallCount getFilteredBaseCallData(ParallelData<T> parallelData, 
+	protected abstract BaseCallCount getBaseCallFilterData(ParallelData<T> parallelData, 
 			int conditionIndex, int replicateIndex);
 
 	/**

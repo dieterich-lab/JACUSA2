@@ -15,11 +15,11 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	private final char c;
 	// region that is required up- and downstream of current position
 	private final int overhang;
-	
+
 	protected AbstractFilter(final char c) {
 		this(c, 0);
 	}
-	
+
 	protected AbstractFilter(final char c, final int overhang) {
 		this.c = c;
 		this.overhang = overhang;
@@ -64,7 +64,7 @@ public abstract class AbstractFilter<T extends AbstractData> {
 		final ParallelData<T> parallelData = result.getParellelData();
 		// if filter finds artefact, add info to result and return true
 		if (filter(parallelData)) {
-			addFilterInfo(result);
+			addInfo(result);
 			return true;
 		}
 
@@ -77,7 +77,7 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	 * 
 	 * @param result object to be marked by this filter 
 	 */
-	public void addFilterInfo(final Result<T> result) {
+	public void addInfo(final Result<T> result) {
 		result.getFilterInfo().add(Character.toString(getC()));
 	}
 

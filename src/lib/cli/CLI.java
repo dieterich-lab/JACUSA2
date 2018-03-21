@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import lib.cli.options.AbstractACOption;
+import lib.cli.options.ShowVersionOption;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
@@ -35,6 +36,24 @@ public class CLI {
 			printUsage();
 			System.exit(0);
 		} else if (args.length > 0 && ! methodFactories.containsKey(args[0].toLowerCase())) {
+			// check if version should be printed
+			final ShowVersionOption showVersion = new ShowVersionOption();
+			final Options options = new Options();
+			options.addOption(showVersion.getOption());
+			// parse arguments
+			final CommandLineParser parser = new DefaultParser();
+			try {
+				CommandLine line = parser.parse(options, args);
+				showVersion.process(line);
+				if (showVersion.isPrinted()) {
+					System.exit(0);
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
 			printUsage();
 			System.exit(0);
 		}

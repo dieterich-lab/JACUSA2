@@ -30,9 +30,9 @@ extends AbstractBaseCallDataFilter<T> {
 				parameter, 
 				conditionFilterCaches);
 	}
-
+	
 	@Override
-	protected BaseCallCount getFilteredBaseCallData(final ParallelData<T> parallelData, 
+	protected BaseCallCount getBaseCallFilterData(final ParallelData<T> parallelData, 
 			final int conditionIndex, final int replicateIndex) {
 
 		return parallelData.getData(conditionIndex, replicateIndex).getSpliceSiteFilterData();
