@@ -108,10 +108,10 @@ public class Coordinate {
 	}
 
 	public boolean equal(final Coordinate coordinate) {
-		return contig == coordinate.contig && 
+		return contig.equals(coordinate.contig) && 
 				start == coordinate.start &&
 				end == coordinate.end &&
-				strand == coordinate.strand;
+				strand.equals(coordinate.strand);
 	}
 
 	public static STRAND invertStrand(final STRAND strand) {

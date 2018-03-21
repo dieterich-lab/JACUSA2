@@ -18,6 +18,8 @@ import lib.util.coordinate.Coordinate;
  */
 public class ParallelData<T extends AbstractData> 
 implements hasCoordinate, hasLibraryType {
+
+	private final int REPLICATE_INDEX = 0;
 	
 	private DataGenerator<T> dataGenerator;
 
@@ -131,8 +133,14 @@ implements hasCoordinate, hasLibraryType {
 		if (cachedPooledData[conditionIndex] == null && 
 				getReplicates(conditionIndex) > 0) {
 			
-			T tmpData = dataGenerator.createData(null, cachedPooledData[conditionIndex].getCoordinate());
-			
+			// use first replicate do infer coordinates and library type
+			// should be all the same for all replicates from one condition
+			final T data = getData(conditionIndex, REPLICATE_INDEX);
+			final LIBRARY_TYPE libraryType = data.getLibraryType();
+			final Coordinate coordinate = data.getCoordinate();
+
+			final T tmpData = dataGenerator.createData(libraryType, new Coordinate(coordinate));
+
 			for (int replicateIndex = 0; replicateIndex < getReplicates(conditionIndex); replicateIndex++) {
 				tmpData.add(getData(conditionIndex, replicateIndex));
 			}

@@ -34,7 +34,7 @@ public class ShowVersionOption extends AbstractACOption {
 			sb.append(tool.getName());
 			sb.append(' ');
 			sb.append(tool.getVersion());
-			System.err.println(sb.toString());
+			System.out.println(sb.toString());
 			printed = true;
 	    }
 	}
