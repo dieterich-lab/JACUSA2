@@ -17,6 +17,7 @@ import lib.util.coordinate.Coordinate;
  * 
  * @param <T>
  */
+// FIXME make me more efficient - share homopolymer information between BAM(s)
 public class HomopolymerFilterCache<T extends AbstractData & hasHomopolymerInfo> 
 extends AbstractFilterCache<T> {
 	

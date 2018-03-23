@@ -3,11 +3,14 @@ package jacusa.filter.cache.processrecord;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapper.CigarElementWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapper.Position;
-import lib.data.cache.AbstractUniqueDataCache;
+import lib.data.cache.region.UniqueRegionDataCache;
 
+/**
+ * 
+ */
 public class ProcessDeletionOperator extends AbstractProcessRecord {
 
-	public ProcessDeletionOperator(final int distance, final AbstractUniqueDataCache<?> uniqueDataCache) {
+	public ProcessDeletionOperator(final int distance, final UniqueRegionDataCache<?> uniqueDataCache) {
 		super(distance, uniqueDataCache);
 	}
 	
@@ -24,11 +27,19 @@ public class ProcessDeletionOperator extends AbstractProcessRecord {
 		
 		// add upstream
 		final int upstreamMatch = Math.min(getDistance(), recordWrapper.getUpstreamMatch(cigarElementWrapperIndex));
-		getUniqueCache().addRecordWrapperRegion(position.getReadPosition() - upstreamMatch, upstreamMatch + 1, recordWrapper);
-		
+		getUniqueCache().addRecordWrapperRegion(
+				position.getReferencePosition() - upstreamMatch - 1, 
+				position.getReadPosition() - upstreamMatch - 1, 
+				upstreamMatch + 1, 
+				recordWrapper);
+
 		// add downstream
 		final int downstreamMatch = Math.min(getDistance(), recordWrapper.getDownstreamMatch(cigarElementWrapperIndex));
-		getUniqueCache().addRecordWrapperRegion(position.getReadPosition() + cigarElementWrapper.getCigarElement().getLength(), downstreamMatch + 1, recordWrapper);
+		getUniqueCache().addRecordWrapperRegion(
+				position.getReferencePosition() + cigarElementWrapper.getCigarElement().getLength(), 
+				position.getReadPosition(), 
+				downstreamMatch, 
+				recordWrapper);
 	}
 
 	

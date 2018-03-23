@@ -9,6 +9,7 @@ import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoordinate;
 import lib.data.has.hasLibraryType;
 import lib.data.has.hasPileupCount;
+import lib.data.has.hasReferenceBase;
 import lib.util.coordinate.Coordinate;
 
 /**
@@ -211,15 +212,14 @@ implements hasCoordinate, hasLibraryType {
 		return new ParallelData<T>(this);
 	}
 
-	public static <S extends PileupData> int[] getNonReferenceBaseIndexs(ParallelData<S> parallelData) {
-		final byte referenceBase = parallelData.getCombinedPooledData().getPileupCount().getReferenceBase();
+	public static <S extends AbstractData & hasReferenceBase & hasBaseCallCount> int[] getNonReferenceBaseIndexs(ParallelData<S> parallelData) {
+		final byte referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
 		if (referenceBase == 'N') {
 			return new int[0];
 		}
 	
 		final int[] allelesIndexs = parallelData
 				.getCombinedPooledData()
-				.getPileupCount()
 				.getBaseCallCount()
 				.getAlleles();
 		
@@ -263,7 +263,12 @@ implements hasCoordinate, hasLibraryType {
 
 		return variantBaseIs;
 	}
-	
+
+	@Override
+	public String toString() {
+		return prettyPrint(this);
+	}
+
 	// for RRDs RNA RNA differences
 	/* @depracted
 	public static <S extends AbstractData & hasBaseCallCount & hasReferenceBase> int[] getNonRefBaseIndexs(final ParallelData<S> parallelData) {
@@ -363,7 +368,7 @@ implements hasCoordinate, hasLibraryType {
 		return tmp;
 	}
 	
-	public static <S extends AbstractData> void prettyPrint(final ParallelData<S> parallelPileupData) {
+	public static <S extends AbstractData> String prettyPrint(final ParallelData<S> parallelPileupData) {
 		final StringBuilder sb = new StringBuilder();
 
 		// coordinate
@@ -376,7 +381,7 @@ implements hasCoordinate, hasLibraryType {
 		sb.append(parallelPileupData.getCombinedPooledData().toString());
 		sb.append('\n');
 
-		System.out.print(sb.toString());
+		return sb.toString();
 	}
 	
 }

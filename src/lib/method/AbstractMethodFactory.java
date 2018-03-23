@@ -19,7 +19,7 @@ import lib.util.AbstractTool;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.provider.BedCoordinateProvider;
 import lib.util.coordinate.provider.CoordinateProvider;
-import lib.util.coordinate.provider.SAMCoordinateProvider;
+import lib.util.coordinate.provider.SAMCoordinateProviderAdvanced;
 import lib.util.coordinate.provider.WindowedCoordinateProvider;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
@@ -256,7 +256,8 @@ implements DataGenerator<T> {
 		
 		final List<SAMSequenceRecord> sequenceRecords = getSAMSequenceRecords(recordFilenames);
 		if (parameter.getInputBedFilename().isEmpty()) {
-			coordinateProvider = new SAMCoordinateProvider(isStranded, sequenceRecords);
+			coordinateProvider = new SAMCoordinateProviderAdvanced(isStranded, sequenceRecords, parameter);
+			// coordinateProvider = new SAMCoordinateProvider(isStranded, sequenceRecords);
 		} else {
 			coordinateProvider = new BedCoordinateProvider(isStranded, parameter.getInputBedFilename());
 		}

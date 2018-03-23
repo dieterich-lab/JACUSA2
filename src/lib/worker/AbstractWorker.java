@@ -58,7 +58,6 @@ implements Iterator<ParallelData<T>> {
 	}
 
 	protected boolean filter(final R result) {
-
 		boolean isFiltered = false;
 		// apply each filter
 		for (final AbstractFilter<T> filter : conditionContainer.getFilterContainer().getFilters()) {

@@ -9,6 +9,7 @@ import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.ParallelData;
 import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasReferenceBase;
 import lib.data.has.filter.hasSpliceSiteFilterData;
 
 /**
@@ -16,7 +17,7 @@ import lib.data.has.filter.hasSpliceSiteFilterData;
  * 
  * @param <T>
  */
-public class SpliceSiteDataFilter<T extends AbstractData & hasBaseCallCount & hasSpliceSiteFilterData> 
+public class SpliceSiteDataFilter<T extends AbstractData & hasBaseCallCount & hasSpliceSiteFilterData & hasReferenceBase> 
 extends AbstractBaseCallDataFilter<T> {
 
 	public SpliceSiteDataFilter(final char c, 

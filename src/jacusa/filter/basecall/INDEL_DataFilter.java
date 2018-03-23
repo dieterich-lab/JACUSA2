@@ -9,6 +9,7 @@ import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.ParallelData;
 import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasReferenceBase;
 import lib.data.has.filter.hasINDEL_FilterData;
 
 /**
@@ -16,7 +17,7 @@ import lib.data.has.filter.hasINDEL_FilterData;
  * 
  * @param <T>
  */
-public class INDEL_DataFilter<T extends AbstractData & hasBaseCallCount & hasINDEL_FilterData> 
+public class INDEL_DataFilter<T extends AbstractData & hasBaseCallCount & hasINDEL_FilterData & hasReferenceBase> 
 extends AbstractBaseCallDataFilter<T> {
 
 	public INDEL_DataFilter(final char c, 

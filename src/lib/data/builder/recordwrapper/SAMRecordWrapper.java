@@ -79,7 +79,11 @@ public class SAMRecordWrapper {
 	
 		// init container size with read length
 		reference = new byte[record.getReadLength()];
-		// copy read sequence to reference container / concatenate mapped segments ignore DELs
+		int destPos = 0;
+		// hack
+		// copy read sequence to reference container / CONCATENATE mapped segments ignore DELs
+		// some base calls, e.g.: insertions will be ignored
+		// reference is independent of read position 
 		for (final AlignmentBlock block : record.getAlignmentBlocks()) {
 			final int srcPos = block.getReadStart() - 1;
 			final int length = block.getLength();
@@ -87,10 +91,11 @@ public class SAMRecordWrapper {
 					record.getReadBases(), 
 					srcPos, 
 					reference, 
-					srcPos, 
+					destPos, 
 					length);
+			destPos += length;
 		}
-	
+
 		int position = 0;
 		boolean nextInteger = true;
 		// change to reference base based on MD string
@@ -105,7 +110,6 @@ public class SAMRecordWrapper {
 				nextInteger = true;
 			} else { // mismatch
 				reference[position] = (byte)e.toCharArray()[0];
-	
 				position += 1;
 				nextInteger = true;
 			}

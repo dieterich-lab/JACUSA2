@@ -12,18 +12,20 @@ import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.BaseCallCount;
 import lib.data.builder.ConditionContainer;
-import lib.data.cache.UniqueBaseCallDataCache;
+import lib.data.cache.region.AbstractUniqueBaseCallRegionDataCache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.has.filter.hasSpliceSiteFilterData;
+import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 
 /**
  * TODO add comments.
  */
 public class SpliceSiteFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasSpliceSiteFilterData>
-extends AbstractBaseCallDistanceFilterFactory<T> {
+extends AbstractDistanceFilterFactory<T> {
 
 	public SpliceSiteFilterFactory() {
 		super('S', 
@@ -49,13 +51,26 @@ extends AbstractBaseCallDistanceFilterFactory<T> {
 			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
 
-		final UniqueBaseCallDataCache<T> uniqueBaseCallCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
+		// save classes
+		final AbstractUniqueBaseCallRegionDataCache<T> uniqueBaseCallCache = 
+			new AbstractUniqueBaseCallRegionDataCache<T>(conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), baseCallConfig, coordinateController) {
+			
+			@Override
+			public void addData(final T data, final Coordinate coordinate) {
+				final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
+				if (getCoverage()[windowPosition] == 0) {
+					return;
+				}
+				final BaseCallCount baseCallCount = new BaseCallCount();
+				data.setSpliceSiteDistanceFilterData(baseCallCount);
+				add(windowPosition, coordinate.getStrand(), baseCallCount);				
+			}
+		};
 		
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
 		processRecords.add(new ProcessSkippedOperator(getDistance(), uniqueBaseCallCache));
 
-		final UniqueFilterCacheWrapper<T> distanceFilterCache = new UniqueFilterCacheWrapper<T>(getC(), uniqueBaseCallCache, processRecords);
-		return distanceFilterCache;
+		return new UniqueFilterCacheWrapper<T>(getC(), uniqueBaseCallCache, processRecords);
 	}
 
 }

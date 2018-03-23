@@ -15,11 +15,13 @@ import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.BaseCallCount;
 import lib.data.builder.ConditionContainer;
-import lib.data.cache.UniqueBaseCallDataCache;
+import lib.data.cache.region.AbstractUniqueBaseCallRegionDataCache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.has.filter.hasCombindedFilterData;
+import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -28,7 +30,7 @@ import lib.util.coordinate.CoordinateController;
  * @param <T>
  */
 public class CombinedFilterFactory<T extends AbstractData & hasBaseCallCount & hasCombindedFilterData & hasReferenceBase> 
-extends AbstractBaseCallDistanceFilterFactory<T> {
+extends AbstractDistanceFilterFactory<T> {
 
 	public CombinedFilterFactory() {
 		super('D', 
@@ -53,7 +55,21 @@ extends AbstractBaseCallDistanceFilterFactory<T> {
 			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
 
-		final UniqueBaseCallDataCache<T> uniqueBaseCallCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
+		// save classes
+		final AbstractUniqueBaseCallRegionDataCache<T> uniqueBaseCallCache = 
+			new AbstractUniqueBaseCallRegionDataCache<T>(conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), baseCallConfig, coordinateController) {
+			
+			@Override
+			public void addData(final T data, final Coordinate coordinate) {
+				final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
+				if (getCoverage()[windowPosition] == 0) {
+					return;
+				}
+				final BaseCallCount baseCallCount = new BaseCallCount();
+				data.setCombinedDistanceFilterData(baseCallCount);
+				add(windowPosition, coordinate.getStrand(), baseCallCount);				
+			}
+		};
 		
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
 		// INDELs

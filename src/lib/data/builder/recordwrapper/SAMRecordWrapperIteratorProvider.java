@@ -61,7 +61,6 @@ public class SAMRecordWrapperIteratorProvider {
 	
 	private SAMRecordIterator createSAMRecordIterator(final Coordinate windowCoordinate) {
 		check(windowCoordinate);
-
 		return reader.query(
 				windowCoordinate.getContig(), 
 				windowCoordinate.getStart(), 

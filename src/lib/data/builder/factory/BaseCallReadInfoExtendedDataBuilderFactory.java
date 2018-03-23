@@ -7,7 +7,7 @@ import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.cache.DataCache;
-import lib.data.cache.LinkedRT2BaseChangeDataCache;
+import lib.data.cache.LRTarrest2BaseChangeDataCache;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasCoverage;
 import lib.data.has.hasLRTarrestCount;
@@ -25,7 +25,7 @@ extends AbstractDataBuilderFactory<T> {
 	public List<DataCache<T>> createDataCaches(final CoordinateController coordinateController, final AbstractConditionParameter<T> conditionParameter) {
 		final List<DataCache<T>> dataCaches = new ArrayList<DataCache<T>>(2);
 		dataCaches.add(
-				new LinkedRT2BaseChangeDataCache<T>(
+				new LRTarrest2BaseChangeDataCache<T>(
 						conditionParameter.getLibraryType(),
 						getParameter().getBaseConfig(),
 						coordinateController));

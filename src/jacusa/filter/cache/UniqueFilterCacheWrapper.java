@@ -6,7 +6,7 @@ import java.util.List;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.AbstractUniqueDataCache;
+import lib.data.cache.region.UniqueRegionDataCache;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
@@ -18,21 +18,21 @@ import lib.util.coordinate.Coordinate;
 public class UniqueFilterCacheWrapper<T extends AbstractData> 
 extends AbstractFilterCache<T> {
 
-	private AbstractUniqueDataCache<T> uniqueDataCache;
+	private UniqueRegionDataCache<T> uniqueRegionDataCache;
 	private List<ProcessRecord> processRecord;
 
 	public UniqueFilterCacheWrapper(final char c, 
-			final AbstractUniqueDataCache<T> uniqueDataCache,
+			final UniqueRegionDataCache<T> uniqueRegionDataCache,
 			final List<ProcessRecord> processRecord) {
 
 		super(c);
-		this.uniqueDataCache = uniqueDataCache;
+		this.uniqueRegionDataCache = uniqueRegionDataCache;
 		this.processRecord = processRecord;
 	}
 
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
-		uniqueDataCache.resetVisited(recordWrapper); 
+		uniqueRegionDataCache.resetVisited(recordWrapper); 
 		for (final ProcessRecord p : processRecord) {
 			p.processRecord(recordWrapper);
 		}
@@ -40,17 +40,17 @@ extends AbstractFilterCache<T> {
 
 	@Override
 	public CoordinateController getCoordinateController() {
-		return  uniqueDataCache.getCoordinateController();
+		return  uniqueRegionDataCache.getCoordinateController();
 	}
 
 	@Override
 	public void clear() {
-		uniqueDataCache.clear();	
+		uniqueRegionDataCache.clear();	
 	}
 
 	@Override
 	public void addData(T data, Coordinate coordinate) {
-		uniqueDataCache.addData(data, coordinate);
+		uniqueRegionDataCache.addData(data, coordinate);
 	}
 
 }

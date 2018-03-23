@@ -14,8 +14,6 @@ import lib.data.has.hasPileupCount;
 public class PileupCountDataCache<T extends AbstractData & hasPileupCount>
 extends BaseCallDataCache<T> {
 
-	private final byte[] referenceBases;
-
 	private final byte[][][] baseCallQualities;
 	private final int baseCallQualityRange;
 	
@@ -27,9 +25,6 @@ extends BaseCallDataCache<T> {
 		// range of base call quality score 
 		baseCallQualityRange = getMaxBaseCallQuality() - getMinBaseCallQuality();
 		
-		referenceBases = new byte[coordinateController.getActiveWindowSize()];
-		Arrays.fill(referenceBases, (byte)'N');
-		
 		baseCallQualities = 
 				new byte[coordinateController.getActiveWindowSize()][getBaseSize()][baseCallQualityRange];
 	}
@@ -40,7 +35,6 @@ extends BaseCallDataCache<T> {
 		if (getCoverage()[windowPosition] == 0) {
 			return;
 		}
-		data.getPileupCount().setReferenceBase(referenceBases[windowPosition]);
 
 		int[] baseCount = new int[BaseCallConfig.BASES.length];
 		byte[][] base2qual = new byte[BaseCallConfig.BASES.length][getMaxBaseCallQuality()];
@@ -60,7 +54,10 @@ extends BaseCallDataCache<T> {
 			}
 		}
 		
-		final PileupCount pileupCount = new PileupCount(referenceBases[windowPosition], baseCount, base2qual, minMapq);
+		final byte referenceBase = getCoordinateController().getReferenceProvider().getReference(windowPosition);
+		// TODO referenceBase set twice
+		data.getPileupCount().setReferenceBase(referenceBase);
+		final PileupCount pileupCount = new PileupCount(referenceBase, baseCount, base2qual, minMapq);
 		data.getPileupCount().add(pileupCount);
 
 		if (coordinate.getStrand() == STRAND.REVERSE) {
@@ -69,7 +66,7 @@ extends BaseCallDataCache<T> {
 	}
 
 	@Override
-	protected void incrementBaseCall(final int windowPosition, final int readPosition,
+	public void incrementBaseCall(final int windowPosition, final int readPosition,
 			final int baseIndex, final byte bq) {
 		super.incrementBaseCall(windowPosition, readPosition, baseIndex, bq);
 		baseCallQualities[windowPosition][baseIndex][bq - getMinBaseCallQuality()] += 1;
@@ -79,7 +76,6 @@ extends BaseCallDataCache<T> {
 	public void clear() {
 		super.clear();
 
-		Arrays.fill(referenceBases, (byte)'N');
 		for (byte[][] bcs : baseCallQualities) {
 			for (byte[] b : bcs) {
 				Arrays.fill(b, (byte)0);	

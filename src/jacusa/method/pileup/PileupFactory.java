@@ -3,7 +3,6 @@ package jacusa.method.pileup;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.PileupParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.distance.CombinedFilterFactory;
@@ -154,7 +153,7 @@ extends AbstractMethodFactory<PileupData, DefaultResult<PileupData>> {
 		filterFactories.add(new HomozygousFilterFactory<PileupData>(getParameter()));
 		filterFactories.add(new MaxAlleleCountFilterFactory<PileupData>());
 		
-		filterFactories.add(new HomopolymerFilterFactory<PileupData>());
+		// FIXME filterFactories.add(new HomopolymerFilterFactory<PileupData>());
 
 		for (final AbstractFilterFactory<PileupData> filterFactory : filterFactories) {
 			abstractPileupFilters.put(filterFactory.getC(), filterFactory);

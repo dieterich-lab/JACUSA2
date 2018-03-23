@@ -103,6 +103,8 @@ implements hasPileupCount, hasPileupFilterData {
 	@Override
 	public void add(AbstractData abstractData) {
 		PileupData pileupData = (PileupData) abstractData;
+		// TODO this is not nice - this should be done in PileupCount
+		pileupCount.setReferenceBase(pileupData.getReferenceBase());
 		// TODO check strand information
 		pileupCount.add(pileupData.getPileupCount());
 

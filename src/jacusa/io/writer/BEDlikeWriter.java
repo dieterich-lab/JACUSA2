@@ -83,11 +83,10 @@ extends AbstractResultFileWriter<T, R> {
 		// name of statistic column can be customized
 		sb.append(getHeaderStat());
 		sb.append(SEP);
-		
+
 		sb.append("strand");
-		sb.append(SEP);
 	}
-	
+
 	/**
 	 * Gets name for the 4-th column of a BED6 file. 
 	 * 

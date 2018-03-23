@@ -9,6 +9,7 @@ import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.ParallelData;
 import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasReferenceBase;
 import lib.data.has.filter.hasReadPositionFilterData;
 
 /**
@@ -16,7 +17,7 @@ import lib.data.has.filter.hasReadPositionFilterData;
  * 
  * @param <T>
  */
-public class ReadPositionDataFilter<T extends AbstractData & hasBaseCallCount & hasReadPositionFilterData> 
+public class ReadPositionDataFilter<T extends AbstractData & hasBaseCallCount & hasReadPositionFilterData & hasReferenceBase> 
 extends AbstractBaseCallDataFilter<T> {
 
 	public ReadPositionDataFilter(final char c, 

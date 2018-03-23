@@ -6,6 +6,7 @@ import jacusa.filter.cache.FilterCache;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
+import lib.data.result.Result;
 import lib.util.coordinate.Coordinate;
 
 /**
@@ -17,7 +18,7 @@ public abstract class AbstractDataFilter<T extends AbstractData>
 extends AbstractFilter<T> {
 
 	// first list stores condition and each nested list the respective replicates
-	private final List<List<FilterCache<T>>> filterCaches;
+	protected final List<List<FilterCache<T>>> filterCaches;
 
 	protected AbstractDataFilter(final char c, 
 			final int overhang, 
@@ -28,12 +29,19 @@ extends AbstractFilter<T> {
 		this.filterCaches = conditionFilterCaches;
 	}
 
+	@Override
+	public boolean applyFilter(final Result<T> result) {
+		// add filtered data and then filter
+		addFilteredData(result.getParellelData());
+		return super.applyFilter(result);
+	}
+	
 	/**
 	 * FilterCache data that is linked by coordinate is added to parallelData.
 	 * 
 	 * @param parallelData the parallelData to add filterCache data
 	 */
-	public void addFilteredData(final ParallelData<T> parallelData) {
+	private void addFilteredData(final ParallelData<T> parallelData) {
 		final int conditions = parallelData.getConditions();
 		// coordinate of parallelData - identifies linked data in filterCache
 		final Coordinate coordinate = parallelData.getCoordinate();

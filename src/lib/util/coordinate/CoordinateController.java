@@ -36,7 +36,7 @@ public class CoordinateController {
 	public CoordinateController(final ConditionContainer<?> conditionContainer) {
 		this.activeWindowSize = conditionContainer.getParameter().getActiveWindowSize();
 		coordinateAdvancer = createCoordinateAdvancer(conditionContainer);
-		
+
 		parameter = conditionContainer.getParameter();
 	}
 

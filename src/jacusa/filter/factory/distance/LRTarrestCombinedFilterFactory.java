@@ -16,10 +16,13 @@ import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.BaseCallCount;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.UniqueRef2BaseCallDataCache;
+import lib.data.cache.region.AbstractUniqueBaseCallRegionDataCache;
 import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
+import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -27,10 +30,10 @@ import lib.util.coordinate.CoordinateController;
  * 
  * @param <T>
  */
-public class LinkedCombinedFilterFactory<T extends AbstractData & hasReferenceBase & hasLRTarrestCount & hasLRTarrestCountFilteredData> 
+public class LRTarrestCombinedFilterFactory<T extends AbstractData & hasReferenceBase & hasLRTarrestCount & hasLRTarrestCountFilteredData> 
 extends AbstractDistanceFilterFactory<T> {
 
-	public LinkedCombinedFilterFactory() {
+	public LRTarrestCombinedFilterFactory() {
 		super('D', 
 				"Filter distance to TODO position.", 
 				5, 0.5, 1);
@@ -53,18 +56,32 @@ extends AbstractDistanceFilterFactory<T> {
 			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
 
-		final UniqueRef2BaseCallDataCache<T> uniqueDataCache = createUniqueBaseCallCache(conditionParameter, baseCallConfig, coordinateController);
+		// save classes
+		final AbstractUniqueBaseCallRegionDataCache<T> uniqueBaseCallCache = 
+			new AbstractUniqueBaseCallRegionDataCache<T>(conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), baseCallConfig, coordinateController) {
+			
+			@Override
+			public void addData(final T data, final Coordinate coordinate) {
+				final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
+				if (getCoverage()[windowPosition] == 0) {
+					return;
+				}
+				final BaseCallCount baseCallCount = new BaseCallCount();
+				// TODO 
+				add(windowPosition, coordinate.getStrand(), baseCallCount);				
+			}
+		};
 
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
 		// INDELs
-		processRecords.add(new ProcessInsertionOperator(getDistance(), uniqueDataCache));
-		processRecords.add(new ProcessDeletionOperator(getDistance(), uniqueDataCache));
+		processRecords.add(new ProcessInsertionOperator(getDistance(), uniqueBaseCallCache));
+		processRecords.add(new ProcessDeletionOperator(getDistance(), uniqueBaseCallCache));
 		// read start end 
-		processRecords.add(new ProcessReadStartEnd(getDistance(), uniqueDataCache));
+		processRecords.add(new ProcessReadStartEnd(getDistance(), uniqueBaseCallCache));
 		// introns
-		processRecords.add(new ProcessSkippedOperator(getDistance(), uniqueDataCache));
+		processRecords.add(new ProcessSkippedOperator(getDistance(), uniqueBaseCallCache));
 
-		return new UniqueFilterCacheWrapper<T>(getC(), uniqueDataCache, processRecords);
+		return new UniqueFilterCacheWrapper<T>(getC(), uniqueBaseCallCache, processRecords);
 	}
 
 	protected UniqueRef2BaseCallDataCache<T> createUniqueBaseCallCache(

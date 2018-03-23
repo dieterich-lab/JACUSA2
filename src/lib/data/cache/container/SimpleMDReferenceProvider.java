@@ -24,20 +24,25 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 	}
 
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
+		int srcPos = 0;
 		for (final AlignmentBlock block : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
 			final int referencePosition = block.getReferenceStart();
 			final int readPosition = block.getReadStart() - 1;
 			final int length = block.getLength();
 			
 			final WindowPositionGuard windowPositionGuard = coordinateController.convert(referencePosition, readPosition, length);
-			if ( windowPositionGuard.isValid()) {
+			if (windowPositionGuard.isValid()) {
+				// hack - see method recordWrapper.getReference()
+				// adjust srcPos by offset from diff. of read position(s)
+				final int offset = windowPositionGuard.getReadPosition() - readPosition;
 				System.arraycopy(
 						recordWrapper.getReference(), 
-						windowPositionGuard.getReadPosition(), 
+						srcPos + offset, 
 						reference, 
 						windowPositionGuard.getWindowPosition(), 
 						windowPositionGuard.getLength());
 			}
+			srcPos += length;
 		}
 	}
 

@@ -17,6 +17,7 @@ import htsjdk.samtools.SAMSequenceRecord;
  * @author mpiechotta
  *
  */
+// FIXME read files to get next covered position
 public class SAMCoordinateProvider implements CoordinateProvider {
 
 	final boolean isStranded;

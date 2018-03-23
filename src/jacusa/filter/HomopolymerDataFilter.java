@@ -8,6 +8,7 @@ import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasHomopolymerInfo;
+import lib.data.has.hasReferenceBase;
 
 /**
  * This class implements the homopolymorph filter that identifies variants
@@ -15,7 +16,7 @@ import lib.data.has.hasHomopolymerInfo;
  * 
  * @param <T>
  */
-public class HomopolymerDataFilter<T extends AbstractData & hasBaseCallCount & hasHomopolymerInfo> 
+public class HomopolymerDataFilter<T extends AbstractData & hasBaseCallCount & hasHomopolymerInfo & hasReferenceBase> 
 extends AbstractDataFilter<T> {
 
 	public HomopolymerDataFilter(final char c, 
@@ -29,7 +30,7 @@ extends AbstractDataFilter<T> {
 	@Override
 	protected boolean filter(final ParallelData<T> parallelData) {
 		// get variants bases
-		final int[] variantBaseIndexs = ParallelData.getVariantBaseIndexs(parallelData);
+		final int[] variantBaseIndexs = ParallelData.getNonReferenceBaseIndexs(parallelData);
 
 		// try to identify variants base calls within homopolymers
 		for (int i = 0; i < variantBaseIndexs.length; i++) {

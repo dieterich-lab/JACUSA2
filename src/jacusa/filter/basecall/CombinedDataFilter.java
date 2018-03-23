@@ -9,6 +9,7 @@ import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.ParallelData;
 import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasReferenceBase;
 import lib.data.has.filter.hasCombindedFilterData;
 
 /**
@@ -17,7 +18,7 @@ import lib.data.has.filter.hasCombindedFilterData;
  * 
  * @param <T>
  */
-public class CombinedDataFilter<T extends AbstractData & hasBaseCallCount & hasCombindedFilterData> 
+public class CombinedDataFilter<T extends AbstractData & hasBaseCallCount & hasCombindedFilterData & hasReferenceBase> 
 extends AbstractBaseCallDataFilter<T> {
 
 	public CombinedDataFilter(final char c, 

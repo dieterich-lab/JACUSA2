@@ -12,7 +12,7 @@ public class PileupCount
 implements hasBaseCallCount, hasCoverage, hasReferenceBase {
 
 	private byte referenceBase;
-	
+
 	private BaseCallCount baseCallCount;
 	
 	// container

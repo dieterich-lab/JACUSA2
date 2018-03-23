@@ -9,13 +9,14 @@ import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.ParallelData;
 import lib.data.has.hasBaseCallCount;
+import lib.data.has.hasReferenceBase;
 
 /**
  * Abstract class that enables filtering based on base call count data and some other filter chached data.
  * 
  * @param <T>
  */
-public abstract class AbstractBaseCallDataFilter<T extends AbstractData & hasBaseCallCount> 
+public abstract class AbstractBaseCallDataFilter<T extends AbstractData & hasReferenceBase & hasBaseCallCount> 
 extends AbstractDataFilter<T> {
 
 	private final int minCount;
@@ -35,7 +36,8 @@ extends AbstractDataFilter<T> {
 
 	@Override
 	protected boolean filter(final ParallelData<T> parallelData) {
-		final int[] variantBaseIndexs = ParallelData.getVariantBaseIndexs(parallelData);
+		// final int[] variantBaseIndexs = ParallelData.getVariantBaseIndexs(parallelData);
+		final int[] variantBaseIndexs = ParallelData.getNonReferenceBaseIndexs(parallelData);
 
 		for (int variantBaseIndex : variantBaseIndexs) {
 			int count = 0;
@@ -46,15 +48,27 @@ extends AbstractDataFilter<T> {
 				for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
 					// observed count
 					final T data = parallelData.getData(conditionIndex, replicateIndex);
-					count += data.getBaseCallCount().getBaseCallCount(variantBaseIndex);
+					final int tmpCount = data.getBaseCallCount().getBaseCallCount(variantBaseIndex);
+					count += tmpCount;
 					// possible artefact count
-					filteredCount += getBaseCallFilterData(parallelData, conditionIndex, replicateIndex)
-							.getBaseCallCount(variantBaseIndex);
+					final BaseCallCount filteredBaseCallCount = getBaseCallFilterData(parallelData, conditionIndex, replicateIndex);
+					if (filteredBaseCallCount != null) {
+						filteredCount += tmpCount - filteredBaseCallCount.getBaseCallCount(variantBaseIndex);						
+					} else {
+						filteredCount += tmpCount;
+					}
 				}
 			}
 
+			/*
+			final String s = parallelData.getCombinedPooledData().getCoordinate().toString();
+			int alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles().length;
+			System.out.println(s + "\t" + count + "\t" + filteredCount + "\t" + (double)filteredCount / (double)count + "\t" + variantBaseIndexs.length + "\t" + alleles);
+			*/
 			// check if too much filteredCount
 			if (filter(count, filteredCount)) {
+				// FIXME int referencePosition = parallelData.getCoordinate().getPosition();
+				// FIXME int windowPosition = filterCaches.get(0).get(0).getCoordinateController().convert2windowPosition(parallelData.getCoordinate());
 				return true;
 			}
 			
@@ -82,7 +96,8 @@ extends AbstractDataFilter<T> {
 	 * @return  
 	 */
 	protected boolean filter(final int count, final int filteredCount) {
-		return (double)filteredCount / (double)count <= minRatio || count - filteredCount >= minCount;
+		return (double)filteredCount / (double)count <= minRatio;
+		// FIXME && filteredCount >= minCount;
 	}
 	
 }

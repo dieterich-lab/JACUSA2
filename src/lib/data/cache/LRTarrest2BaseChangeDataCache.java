@@ -23,7 +23,7 @@ import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.has.hasLibraryType.LIBRARY_TYPE;
 
-public class LinkedRT2BaseChangeDataCache<T extends AbstractData & hasReferenceBase & hasLRTarrestCount> 
+public class LRTarrest2BaseChangeDataCache<T extends AbstractData & hasReferenceBase & hasLRTarrestCount> 
 extends AbstractDataCache<T> {
 
 	private final LIBRARY_TYPE libraryType;
@@ -39,7 +39,7 @@ extends AbstractDataCache<T> {
 	private final int[] readEndCount;
 	private final int[] coverage;
 	
-	public LinkedRT2BaseChangeDataCache(final LIBRARY_TYPE libraryType, final BaseCallConfig baseCallConfig,
+	public LRTarrest2BaseChangeDataCache(final LIBRARY_TYPE libraryType, final BaseCallConfig baseCallConfig,
 			final CoordinateController coordinateController) {
 		
 		super(coordinateController);

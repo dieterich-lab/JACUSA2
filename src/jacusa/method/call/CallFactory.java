@@ -5,7 +5,6 @@ import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.CallParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.distance.CombinedFilterFactory;
@@ -78,7 +77,7 @@ extends AbstractMethodFactory<CallData, StatisticResult<CallData>> {
 			addACOption(new StatisticCalculatorOption<CallData>(
 					getParameter().getStatisticParameters(), getStatistics()));
 		}
-		
+
 		// result format
 		if (getResultFormats().size() == 1 ) {
 			Character[] a = getResultFormats().keySet().toArray(new Character[1]);
@@ -168,7 +167,7 @@ extends AbstractMethodFactory<CallData, StatisticResult<CallData>> {
 		filterFactories.add(new HomozygousFilterFactory<CallData>(getParameter()));
 		filterFactories.add(new MaxAlleleCountFilterFactory<CallData>());
 
-		filterFactories.add(new HomopolymerFilterFactory<CallData>());
+		// FIXME filterFactories.add(new HomopolymerFilterFactory<CallData>());
 
 		for (final AbstractFilterFactory<CallData> filterFactory : filterFactories) {
 			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
