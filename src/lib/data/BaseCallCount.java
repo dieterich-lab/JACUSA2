@@ -53,6 +53,10 @@ implements hasCoverage {
 		baseCallCount[baseIndex]++;
 	}
 		
+	public void clear() {
+		Arrays.fill(baseCallCount, 0);
+	}
+	
 	public void add(final BaseCallCount baseQualCount) {
 		for (int baseIndex = 0; baseIndex < baseQualCount.baseCallCount.length; ++baseIndex) {
 			if (baseQualCount.baseCallCount[baseIndex] > 0) {

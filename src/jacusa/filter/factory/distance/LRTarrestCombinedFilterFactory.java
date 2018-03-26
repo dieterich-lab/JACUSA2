@@ -30,7 +30,7 @@ import lib.util.coordinate.CoordinateController;
  * 
  * @param <T>
  */
-public class LRTarrestCombinedFilterFactory<T extends AbstractData & hasReferenceBase & hasLRTarrestCount & hasLRTarrestCountFilteredData> 
+public class LRTarrestCombinedFilterFactory<T extends AbstractData & hasReferenceBase & hasLRTarrestCount & hasLRTarrestCombinedFilteredData> 
 extends AbstractDistanceFilterFactory<T> {
 
 	public LRTarrestCombinedFilterFactory() {
