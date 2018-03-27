@@ -1,33 +1,33 @@
 package lib.data.builder.factory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.cache.AlignmentDataCache;
 import lib.data.cache.DataCache;
-import lib.data.cache.LRTarrest2BaseChangeDataCache;
 import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasCoverage;
-import lib.data.has.hasLRTarrestCount;
+import lib.data.has.hasRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.util.coordinate.CoordinateController;
 
-public class BaseCallReadInfoExtendedDataBuilderFactory<T extends AbstractData & hasCoverage & hasReferenceBase & hasBaseCallCount & hasLRTarrestCount> 
+public class RTarrestDataBuilderFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasRTarrestCount> 
 extends AbstractDataBuilderFactory<T> {
 
-	public BaseCallReadInfoExtendedDataBuilderFactory(final AbstractParameter<T, ?> generalParameter) {
+	private AbstractDataBuilderFactory<T> dataBuilderFactory; 
+	
+	public RTarrestDataBuilderFactory(final AbstractParameter<T, ?> generalParameter) {
 		super(generalParameter);
+		dataBuilderFactory = new BaseCallDataBuilderFactory<T>(generalParameter);
 	}
 
 	@Override
 	public List<DataCache<T>> createDataCaches(final CoordinateController coordinateController, final AbstractConditionParameter<T> conditionParameter) {
-		final List<DataCache<T>> dataCaches = new ArrayList<DataCache<T>>(2);
+		final List<DataCache<T>> dataCaches = dataBuilderFactory.createDataCaches(coordinateController, conditionParameter);
 		dataCaches.add(
-				new LRTarrest2BaseChangeDataCache<T>(
-						conditionParameter.getLibraryType(),
-						getParameter().getBaseConfig(),
+				new AlignmentDataCache<T>(
+						conditionParameter.getLibraryType(), 
 						coordinateController));
 		return dataCaches;
 	}

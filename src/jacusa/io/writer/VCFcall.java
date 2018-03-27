@@ -10,7 +10,6 @@ import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.ParallelData;
 import lib.data.has.hasPileupCount;
 import lib.data.result.Result;
 import lib.io.AbstractResultFormat;

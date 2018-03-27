@@ -7,20 +7,21 @@ import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.Result;
 import lib.data.result.hasStatistic;
 
-public class BED6lrtArrestResultWriter2<T extends AbstractData & hasReferenceBase & hasLRTarrestCount, R extends Result<T> & hasStatistic> 
-extends BEDlikeWriter<T, R> {
+public class BED6lrtArrestResultWriter2<T extends AbstractData & hasReferenceBase & hasBaseCallCount & hasLRTarrestCount, R extends Result<T> & hasStatistic> 
+extends BEDlikeResultWriter<T, R> {
 	
 	public static final char SEP3 	= ':';
 	public static final char SEP4 	= ';';
 	public static final char SEP5 	= '=';
 	
 	// read start, trough, and end	
-	private static final String RT_INFO = "reads";
+	private static final String INFO = "reads";
 	private static final String REF2BC_INFO = "ref2bc";
 	
 	protected BED6lrtArrestResultWriter2(final String filename, final AbstractParameter<T, R> parameter) {
@@ -44,6 +45,7 @@ extends BEDlikeWriter<T, R> {
 	}
 
 	protected void addHeaderBases(final StringBuilder sb, final int conditionIndex, final int replicateIndex) {
+		super.addHeaderBases(sb, conditionIndex, replicateIndex);
 		sb.append(SEP);
 		sb.append(REF2BC_INFO);
 		sb.append(conditionIndex + 1);
@@ -57,7 +59,7 @@ extends BEDlikeWriter<T, R> {
 	
 	protected void addHeaderReadInfo(final StringBuilder sb, int conditionIndex, final int replicateIndex) {
 		sb.append(SEP);
-		sb.append(RT_INFO);
+		sb.append(INFO);
 		sb.append(conditionIndex + 1);
 		sb.append(replicateIndex + 1);
 	}
@@ -69,6 +71,7 @@ extends BEDlikeWriter<T, R> {
 	}
 
 	protected void addResultBaseCallCount(final StringBuilder sb, final T data) {
+		super.addResultBaseCallCount(sb, data);
 		// output condition: Ax,Cx,Gx,Tx
 		sb.append(SEP);
 

@@ -5,41 +5,35 @@ import jacusa.method.rtarrest.BetaBinomial;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.cli.parameter.JACUSAConditionParameter;
-import lib.data.AbstractData;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasRTarrestCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.RTarrestData;
 import lib.data.result.StatisticResult;
 
 /**
  * Class defines parameters and default values that are need for Reverse Transcription arrest (rt-arrest).
  */
-public class RTarrestParameter<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasRTarrestCount>
-extends AbstractParameter<T, StatisticResult<T>> 
-implements HasStatisticParameters<T> {
+public class RTarrestParameter
+extends AbstractParameter<RTarrestData, StatisticResult<RTarrestData>> 
+implements HasStatisticParameters<RTarrestData> {
 
-	private StatisticParameter<T> statisticParameters;
+	private StatisticParameter<RTarrestData> statisticParameters;
 
 	public RTarrestParameter(final int conditions) {
 		super(conditions);
+		statisticParameters = new StatisticParameter<RTarrestData>();
+		// default result format
+		setResultFormat(new BED6rtArrestResultFormat<RTarrestData, StatisticResult<RTarrestData>>(this));
+		// related to test-statistic
+		statisticParameters.setStatisticCalculator(new BetaBinomial<RTarrestData>());
+		statisticParameters.setThreshold(1.0);
 	}
 
 	@Override
-	public AbstractConditionParameter<T> createConditionParameter(final int conditionIndex) {
-		return new JACUSAConditionParameter<T>(conditionIndex);
+	public AbstractConditionParameter<RTarrestData> createConditionParameter(final int conditionIndex) {
+		return new JACUSAConditionParameter<RTarrestData>(conditionIndex);
 	}
 	
 	@Override
-	public void setDefaultValues() {
-		// default result format
-		setResultFormat(new BED6rtArrestResultFormat<T, StatisticResult<T>>(this));
-		// related to test-statistic
-		statisticParameters.setStatisticCalculator(new BetaBinomial<T>());
-		statisticParameters.setThreshold(1.0);
-	}
-	
-	@Override
-	public StatisticParameter<T> getStatisticParameters() {
+	public StatisticParameter<RTarrestData> getStatisticParameters() {
 		return statisticParameters;
 	}
 

@@ -3,6 +3,7 @@ package jacusa.io.writer;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.has.hasBaseCallCount;
 import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
 import lib.data.result.Result;
@@ -10,7 +11,7 @@ import lib.data.result.hasStatistic;
 import lib.io.AbstractResultFormat;
 import lib.io.ResultWriter;
 
-public class BED6lrtArrestResultFormat2<T extends AbstractData & hasReferenceBase & hasLRTarrestCount, R extends Result<T> & hasStatistic> 
+public class BED6lrtArrestResultFormat2<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasLRTarrestCount, R extends Result<T> & hasStatistic> 
 extends AbstractResultFormat<T, R> {
 
 	public static final char CHAR = 'L';

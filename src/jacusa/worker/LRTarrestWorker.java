@@ -4,26 +4,24 @@ import java.util.List;
 
 import jacusa.cli.parameters.LRTarrestParameter;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
-import lib.data.AbstractData;
+import lib.data.LRTarrestData;
 import lib.data.ParallelData;
-import lib.data.has.hasLRTarrestCount;
-import lib.data.has.hasReferenceBase;
 import lib.data.result.StatisticResult;
 import lib.data.validator.ParallelDataValidator;
 import lib.io.copytmp.CopyTmpResult;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
-public class LinkageRTArrestWorker<T extends AbstractData & hasReferenceBase & hasLRTarrestCount>
-extends AbstractWorker<T, StatisticResult<T>> {
+public class LRTarrestWorker
+extends AbstractWorker<LRTarrestData, StatisticResult<LRTarrestData>> {
 
-	private final AbstractStatisticCalculator<T> statisticCalculator;
+	private final AbstractStatisticCalculator<LRTarrestData> statisticCalculator;
 	
-	public LinkageRTArrestWorker(final WorkerDispatcher<T, StatisticResult<T>> workerDispatcher,
+	public LRTarrestWorker(final WorkerDispatcher<LRTarrestData, StatisticResult<LRTarrestData>> workerDispatcher,
 			final int threadId,
-			final CopyTmpResult<T, StatisticResult<T>> copyTmpResult,
-			final List<ParallelDataValidator<T>> parallelDataValidators, 
-			final LRTarrestParameter<T> lrtArrestParameter) {
+			final CopyTmpResult<LRTarrestData, StatisticResult<LRTarrestData>> copyTmpResult,
+			final List<ParallelDataValidator<LRTarrestData>> parallelDataValidators, 
+			final LRTarrestParameter lrtArrestParameter) {
 
 		super(workerDispatcher, threadId, copyTmpResult, parallelDataValidators, lrtArrestParameter);
 		statisticCalculator = lrtArrestParameter
@@ -31,7 +29,7 @@ extends AbstractWorker<T, StatisticResult<T>> {
 	}
 
 	@Override
-	protected StatisticResult<T> process(final ParallelData<T> parallelData) {
+	protected StatisticResult<LRTarrestData> process(final ParallelData<LRTarrestData> parallelData) {
 		return statisticCalculator.filter(parallelData);
 	}
 	

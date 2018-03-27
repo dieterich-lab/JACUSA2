@@ -20,18 +20,13 @@ implements HasStatisticParameters<CallData> {
 	public CallParameter(final int conditionSize) {
 		super(conditionSize);
 		statisticParameter = new StatisticParameter<CallData>();
-		
-	}
-	
-	@Override
-	public void setDefaultValues() {
 		// set default result
 		setResultFormat(new BED6callResultFormat<CallData, StatisticResult<CallData>>(this));
 
 		// set default DirMul and threshold to 1.0
 		statisticParameter.setStatisticCalculator(
 				new DirichletMultinomialRobustCompoundError<CallData>(this));
-		statisticParameter.setThreshold(1.0);
+		statisticParameter.setThreshold(1.0);		
 	}
 	
 	@Override

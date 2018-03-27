@@ -68,22 +68,14 @@ extends AbstractMethodFactory<CallData, StatisticResult<CallData>> {
 	}
 
 	protected void initGlobalACOptions() {
-		// statistic
-		if (getStatistics().size() == 1 ) {
-			String[] a = getStatistics().keySet().toArray(new String[1]);
-			getParameter().getStatisticParameters().setStatisticCalculator(
-					getStatistics().get(a[0]));
-		} else {
+		// statistic option only if there is a choice
+		if (getStatistics().size() > 1 ) {
 			addACOption(new StatisticCalculatorOption<CallData>(
 					getParameter().getStatisticParameters(), getStatistics()));
 		}
 
-		// result format
-		if (getResultFormats().size() == 1 ) {
-			Character[] a = getResultFormats().keySet().toArray(new Character[1]);
-			getParameter().setResultFormat(getResultFormats().get(a[0]));
-		} else {
-			getParameter().setResultFormat(getResultFormats().get(BED6callResultFormat.CHAR));
+		// result format option only if there is a choice
+		if (getResultFormats().size() > 1 ) {
 			addACOption(new ResultFormatOption<CallData, StatisticResult<CallData>>(
 					getParameter(), getResultFormats()));
 		}

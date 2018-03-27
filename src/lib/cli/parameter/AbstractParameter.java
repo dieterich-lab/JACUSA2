@@ -87,7 +87,6 @@ implements HasConditionParameter<T> {
 	}
 	
 	public abstract AbstractConditionParameter<T> createConditionParameter(final int conditionIndex);
-	public abstract void setDefaultValues();
 	
 	public ResultFormat<T, R> getResultFormat() {
 		return resultFormat;

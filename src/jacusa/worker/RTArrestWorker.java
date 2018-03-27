@@ -4,27 +4,24 @@ import java.util.List;
 
 import jacusa.cli.parameters.RTarrestParameter;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
-import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasRTarrestCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.RTarrestData;
 import lib.data.result.StatisticResult;
 import lib.data.validator.ParallelDataValidator;
 import lib.io.copytmp.CopyTmpResult;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
-public class RTArrestWorker<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasRTarrestCount>
-extends AbstractWorker<T, StatisticResult<T>> {
+public class RTArrestWorker
+extends AbstractWorker<RTarrestData, StatisticResult<RTarrestData>> {
 
-	private final AbstractStatisticCalculator<T> statisticCalculator;
+	private final AbstractStatisticCalculator<RTarrestData> statisticCalculator;
 	
-	public RTArrestWorker(final WorkerDispatcher<T, StatisticResult<T>> workerDispatcher,
+	public RTArrestWorker(final WorkerDispatcher<RTarrestData, StatisticResult<RTarrestData>> workerDispatcher,
 			final int threadId,
-			final CopyTmpResult<T, StatisticResult<T>> copyTmpResult,
-			final List<ParallelDataValidator<T>> parallelDataValidators, 
-			final RTarrestParameter<T> rtArrestParameter) {
+			final CopyTmpResult<RTarrestData, StatisticResult<RTarrestData>> copyTmpResult,
+			final List<ParallelDataValidator<RTarrestData>> parallelDataValidators, 
+			final RTarrestParameter rtArrestParameter) {
 
 		super(workerDispatcher, threadId, copyTmpResult, parallelDataValidators, rtArrestParameter);
 		statisticCalculator = rtArrestParameter
@@ -32,7 +29,7 @@ extends AbstractWorker<T, StatisticResult<T>> {
 	}
 
 	@Override
-	protected StatisticResult<T> process(final ParallelData<T> parallelData) {
+	protected StatisticResult<RTarrestData> process(final ParallelData<RTarrestData> parallelData) {
 		return statisticCalculator.filter(parallelData);
 	}
 	

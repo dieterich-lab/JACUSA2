@@ -4,7 +4,6 @@ import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.RTarrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.io.writer.BED6callResultFormat;
 import jacusa.io.writer.BED6rtArrestResultFormat;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import jacusa.worker.RTArrestWorker;
@@ -32,12 +31,10 @@ import lib.cli.options.condition.MinMAPQConditionOption;
 import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
-import lib.data.AbstractData;
-import lib.data.builder.factory.BaseCallReadInfoDataBuilderFactory;
-import lib.data.generator.DataGenerator;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasRTarrestCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.LRTarrestData;
+import lib.data.RTarrestData;
+import lib.data.builder.factory.RTarrestDataBuilderFactory;
+import lib.data.generator.RTarrestDataGenerator;
 import lib.data.result.StatisticResult;
 import lib.data.validator.MinCoverageValidator;
 import lib.data.validator.ParallelDataValidator;
@@ -48,24 +45,22 @@ import lib.util.AbstractTool;
 
 import org.apache.commons.cli.ParseException;
 
-public class RTArrestFactory<T extends AbstractData & hasBaseCallCount & hasRTarrestCount & hasReferenceBase> 
-extends AbstractMethodFactory<T, StatisticResult<T>> {
+public class RTArrestFactory 
+extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 
 	public final static String NAME = "rt-arrest";
 
-	public RTArrestFactory(final RTarrestParameter<T> rtArrestParameter, final DataGenerator<T> dataGenerator) {
+	public RTArrestFactory(final RTarrestParameter rtArrestParameter) {
 		super(NAME, "Reverse Transcription Arrest - 2 conditions", 
-				rtArrestParameter, new BaseCallReadInfoDataBuilderFactory<T>(rtArrestParameter), dataGenerator);
+				rtArrestParameter, 
+				new RTarrestDataBuilderFactory<RTarrestData>(rtArrestParameter), 
+				new RTarrestDataGenerator());
 	}
 
 	protected void initGlobalACOptions() {
-		// result format
-		if (getResultFormats().size() == 1 ) {
-			Character[] a = getResultFormats().keySet().toArray(new Character[1]);
-			getParameter().setResultFormat(getResultFormats().get(a[0]));
-		} else {
-			getParameter().setResultFormat(getResultFormats().get(BED6callResultFormat.CHAR));
-			addACOption(new ResultFormatOption<T, StatisticResult<T>>(
+		// result format option only if there is a choice
+		if (getResultFormats().size() > 1 ) {
+			addACOption(new ResultFormatOption<RTarrestData, StatisticResult<RTarrestData>>(
 					getParameter(), getResultFormats()));
 		}
 		
@@ -90,68 +85,77 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 
 	protected void initConditionACOptions() {
 		// for all conditions
-		addACOption(new MinMAPQConditionOption<T>(getParameter().getConditionParameters()));
-		addACOption(new MinBASQConditionOption<T>(getParameter().getConditionParameters()));
-		addACOption(new MinCoverageConditionOption<T>(getParameter().getConditionParameters()));
-		addACOption(new MaxDepthConditionOption<T>(getParameter().getConditionParameters()));
-		addACOption(new FilterFlagConditionOption<T>(getParameter().getConditionParameters()));
+		addACOption(new MinMAPQConditionOption<RTarrestData>(getParameter().getConditionParameters()));
+		addACOption(new MinBASQConditionOption<RTarrestData>(getParameter().getConditionParameters()));
+		addACOption(new MinCoverageConditionOption<RTarrestData>(getParameter().getConditionParameters()));
+		addACOption(new MaxDepthConditionOption<RTarrestData>(getParameter().getConditionParameters()));
+		addACOption(new FilterFlagConditionOption<RTarrestData>(getParameter().getConditionParameters()));
 		
-		addACOption(new FilterNHsamTagOption<T>(getParameter().getConditionParameters()));
-		addACOption(new FilterNMsamTagOption<T>(getParameter().getConditionParameters()));
+		addACOption(new FilterNHsamTagOption<RTarrestData>(getParameter().getConditionParameters()));
+		addACOption(new FilterNMsamTagOption<RTarrestData>(getParameter().getConditionParameters()));
 		
 		// condition specific
 		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-			addACOption(new MinMAPQConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinBASQConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinCoverageConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MaxDepthConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterFlagConditionOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinMAPQConditionOption<RTarrestData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinBASQConditionOption<RTarrestData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinCoverageConditionOption<RTarrestData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MaxDepthConditionOption<RTarrestData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterFlagConditionOption<RTarrestData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new FilterNHsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterNMsamTagOption<T>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNHsamTagOption<RTarrestData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNMsamTagOption<RTarrestData>(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new OneConditionLibraryTypeOption<T>(
+			addACOption(new OneConditionLibraryTypeOption<RTarrestData>(
 					conditionIndex, 
 					getParameter().getConditionParameters().get(conditionIndex),
 					getParameter()));
 		}
 	}
 	
-	public Map<String, AbstractStatisticCalculator<T>> getStatistics() {
-		Map<String, AbstractStatisticCalculator<T>> statistics = 
-				new TreeMap<String, AbstractStatisticCalculator<T>>();
+	public Map<String, AbstractStatisticCalculator<LRTarrestData>> getStatistics() {
+		final Map<String, AbstractStatisticCalculator<LRTarrestData>> statistics = 
+				new TreeMap<String, AbstractStatisticCalculator<LRTarrestData>>();
+
+		final List<AbstractStatisticCalculator<LRTarrestData>> tmpList = new ArrayList<AbstractStatisticCalculator<LRTarrestData>>(5);
+		tmpList.add(new DummyStatistic<LRTarrestData>());
+		tmpList.add(new BetaBinomial<LRTarrestData>());
+		
+		for (final AbstractStatisticCalculator<LRTarrestData> statistic : tmpList) {
+			statistics.put(statistic.getName(), statistic);
+		}
+		
 		return statistics;
 	}
 
-	public Map<Character, AbstractFilterFactory<T>> getFilterFactories() {
-		final Map<Character, AbstractFilterFactory<T>> abstractPileupFilters = 
-				new HashMap<Character, AbstractFilterFactory<T>>();
+	public Map<Character, AbstractFilterFactory<RTarrestData>> getFilterFactories() {
+		final Map<Character, AbstractFilterFactory<RTarrestData>> abstractPileupFilters = 
+				new HashMap<Character, AbstractFilterFactory<RTarrestData>>();
 
-		List<AbstractFilterFactory<T>> filterFactories = 
-				new ArrayList<AbstractFilterFactory<T>>(5);
+		List<AbstractFilterFactory<RTarrestData>> filterFactories = 
+				new ArrayList<AbstractFilterFactory<RTarrestData>>(5);
 
-		for (final AbstractFilterFactory<T> filterFactory : filterFactories) {
+		for (final AbstractFilterFactory<RTarrestData> filterFactory : filterFactories) {
 			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
 		}
 
 		return abstractPileupFilters;
 	}
 
-	public Map<Character, AbstractResultFormat<T, StatisticResult<T>>> getResultFormats() {
-		Map<Character, AbstractResultFormat<T, StatisticResult<T>>> resultFormats = 
-				new HashMap<Character, AbstractResultFormat<T, StatisticResult<T>>>();
+	public Map<Character, AbstractResultFormat<RTarrestData, StatisticResult<RTarrestData>>> getResultFormats() {
+		Map<Character, AbstractResultFormat<RTarrestData, StatisticResult<RTarrestData>>> resultFormats = 
+				new HashMap<Character, AbstractResultFormat<RTarrestData, StatisticResult<RTarrestData>>>();
 
-		AbstractResultFormat<T,StatisticResult<T>> resultFormat = null;
+		AbstractResultFormat<RTarrestData, StatisticResult<RTarrestData>> resultFormat = null;
 
-		resultFormat = new BED6rtArrestResultFormat<T, StatisticResult<T>>(getParameter());
+		resultFormat = new BED6rtArrestResultFormat<RTarrestData, StatisticResult<RTarrestData>>(getParameter());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 		
 		return resultFormats;
 	}
 
 	@Override
-	public RTarrestParameter<T> getParameter() {
-		return (RTarrestParameter<T>) super.getParameter();
+	public RTarrestParameter getParameter() {
+		return (RTarrestParameter) super.getParameter();
 	}
 
 	@Override
@@ -164,16 +168,16 @@ extends AbstractMethodFactory<T, StatisticResult<T>> {
 	}
 
 	@Override
-	public List<ParallelDataValidator<T>> getParallelDataValidators() {
-		final List<ParallelDataValidator<T>> validators = super.getParallelDataValidators();
-		validators.add(new MinCoverageValidator<T>(getParameter().getConditionParameters()));
-		validators.add(new RTArrestVariantParallelPileup<T>());
+	public List<ParallelDataValidator<RTarrestData>> getParallelDataValidators() {
+		final List<ParallelDataValidator<RTarrestData>> validators = super.getParallelDataValidators();
+		validators.add(new MinCoverageValidator<RTarrestData>(getParameter().getConditionParameters()));
+		validators.add(new RTArrestVariantParallelPileup<RTarrestData>());
 		return validators;
 	}
 	
 	@Override
-	public RTArrestWorker<T> createWorker(final int threadId) {
-		return new RTArrestWorker<T>(getWorkerDispatcher(), threadId,
+	public RTArrestWorker createWorker(final int threadId) {
+		return new RTArrestWorker(getWorkerDispatcher(), threadId,
 				getParameter().getResultFormat().createCopyTmp(threadId),
 				getParallelDataValidators(), getParameter());
 	}

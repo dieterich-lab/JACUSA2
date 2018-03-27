@@ -6,7 +6,7 @@ import jacusa.cli.parameters.RTarrestParameter;
 import jacusa.method.call.OneConditionCallFactory;
 import jacusa.method.call.TwoConditionCallFactory;
 import jacusa.method.pileup.PileupFactory;
-import jacusa.method.rtarrest.LinkageRTArrestFactory;
+import jacusa.method.rtarrest.LRTarrestFactory;
 import jacusa.method.rtarrest.RTArrestFactory;
 
 import java.util.ArrayList;
@@ -14,11 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import lib.data.RTarrestData;
-import lib.data.LRTarrestData;
-import lib.data.generator.LRTarrestDataGenerator;
-import lib.data.generator.DataGenerator;
-import lib.data.generator.RTarrestDataGenerator;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
@@ -100,14 +95,10 @@ public class JACUSA extends AbstractTool {
 		factories.add(new PileupFactory(new PileupParameter(1)));
 
 		// reverse transcription read arrest
-		DataGenerator<RTarrestData> rtArrestDataGenerator = new RTarrestDataGenerator();
-		factories.add(new RTArrestFactory<RTarrestData>(new RTarrestParameter<RTarrestData>(2), 
-				rtArrestDataGenerator));
+		factories.add(new RTArrestFactory(new RTarrestParameter(2)));
 
 		// linked reverse transcription read arrest
-		DataGenerator<LRTarrestData> lrtArrestDataGenerator = new LRTarrestDataGenerator();
-		factories.add(new LinkageRTArrestFactory<LRTarrestData>(new LRTarrestParameter<LRTarrestData>(2), 
-				lrtArrestDataGenerator));
+		factories.add(new LRTarrestFactory(new LRTarrestParameter(2)));
 
 		return factories; 
 	}

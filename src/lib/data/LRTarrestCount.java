@@ -39,14 +39,6 @@ public class LRTarrestCount implements hasRTarrestCount {
 	public RTarrestCount getRTarrestCount() {
 		return rtArrestCount;
 	}
-
-	public void add2arrest(final int referencePosition, final int baseIndex) {
-		add(refPos2bc4arrest, referencePosition, baseIndex);
-	}
-	
-	public void add2through(final int referencePosition, final int baseIndex) {
-		add(refPos2bc4through, referencePosition, baseIndex);
-	}
 	
 	/**
 	 * Helper function
@@ -55,12 +47,12 @@ public class LRTarrestCount implements hasRTarrestCount {
 	 * @param referencePosition
 	 * @param baseIndex
 	 */
-	private void add(final Map<Integer, BaseCallCount> refPos2bc, final int referencePosition, final int baseIndex) {
+	public void add(final Map<Integer, BaseCallCount> refPos2bc, final int referencePosition, final BaseCallCount baseCallCount) {
 		if (! refPos2bc.containsKey(referencePosition)) {
 			refPos2bc.put(referencePosition, new BaseCallCount());
 		}
 
-		refPos2bc.get(referencePosition).increment(baseIndex);		
+		refPos2bc.get(referencePosition).add(baseCallCount);		
 	}
 	
 	public Map<Integer, BaseCallCount> getRefPos2bc4arrest() {

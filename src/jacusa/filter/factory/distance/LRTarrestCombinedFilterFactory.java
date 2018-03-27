@@ -18,7 +18,6 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.builder.ConditionContainer;
-import lib.data.cache.UniqueRef2BaseCallDataCache;
 import lib.data.cache.region.AbstractUniqueBaseCallRegionDataCache;
 import lib.data.has.hasLRTarrestCount;
 import lib.data.has.hasReferenceBase;
@@ -30,7 +29,7 @@ import lib.util.coordinate.CoordinateController;
  * 
  * @param <T>
  */
-public class LRTarrestCombinedFilterFactory<T extends AbstractData & hasReferenceBase & hasLRTarrestCount & hasLRTarrestCombinedFilteredData> 
+public class LRTarrestCombinedFilterFactory<T extends AbstractData & hasReferenceBase & hasLRTarrestCount> 
 extends AbstractDistanceFilterFactory<T> {
 
 	public LRTarrestCombinedFilterFactory() {
@@ -84,6 +83,7 @@ extends AbstractDistanceFilterFactory<T> {
 		return new UniqueFilterCacheWrapper<T>(getC(), uniqueBaseCallCache, processRecords);
 	}
 
+	/*
 	protected UniqueRef2BaseCallDataCache<T> createUniqueBaseCallCache(
 			final AbstractConditionParameter<T> conditionParameter,
 			final BaseCallConfig baseCallConfig,
@@ -94,5 +94,6 @@ extends AbstractDistanceFilterFactory<T> {
 				baseCallConfig, 
 				coordinateController);
 	}
+	*/
 	
 }

@@ -15,10 +15,6 @@ extends AbstractParameter<PileupData, DefaultResult<PileupData>> {
 
 	public PileupParameter(final int conditions) {
 		super(conditions);
-	}
-
-	@Override
-	public void setDefaultValues() {
 		setResultFormat(new BED6pileupResultFormat<PileupData, DefaultResult<PileupData>>(this));
 	}
 	

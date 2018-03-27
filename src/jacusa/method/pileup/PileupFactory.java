@@ -9,7 +9,6 @@ import jacusa.filter.factory.distance.CombinedFilterFactory;
 import jacusa.filter.factory.distance.INDEL_FilterFactory;
 import jacusa.filter.factory.distance.ReadPositionDistanceFilterFactory;
 import jacusa.filter.factory.distance.SpliceSiteFilterFactory;
-import jacusa.io.writer.BED6callResultFormat;
 import jacusa.io.writer.BED6pileupResultFormat;
 import jacusa.io.writer.PileupFormat;
 import jacusa.worker.PileupWorker;
@@ -66,16 +65,11 @@ extends AbstractMethodFactory<PileupData, DefaultResult<PileupData>> {
 	}
 	
 	protected void initGlobalACOptions() {
-		// result format
-		if (getResultFormats().size() == 1 ) {
-			Character[] a = getResultFormats().keySet().toArray(new Character[1]);
-			getParameter().setResultFormat(getResultFormats().get(a[0]));
-		} else {
-			getParameter().setResultFormat(getResultFormats().get(BED6callResultFormat.CHAR));
+		// result format option only if there is a choice
+		if (getResultFormats().size() > 1 ) {
 			addACOption(new ResultFormatOption<PileupData, DefaultResult<PileupData>>(getParameter(), getResultFormats()));
 		}
-		
-		
+
 		addACOption(new FilterModusOption(getParameter()));
 		// addACOption(new BaseConfigOption(getParameter()));
 		addACOption(new FilterConfigOption<PileupData>(getParameter(), getFilterFactories()));
