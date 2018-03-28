@@ -7,7 +7,7 @@ import lib.data.RTarrestCount;
  * @author Michael Piechotta
  *
  */
-public interface hasRTarrestCount {
+public interface HasRTarrestCount {
 	
 	RTarrestCount getRTarrestCount();
 	

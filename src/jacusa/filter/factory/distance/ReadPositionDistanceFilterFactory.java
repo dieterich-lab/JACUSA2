@@ -15,13 +15,13 @@ import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.region.AbstractUniqueBaseCallRegionDataCache;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReferenceBase;
-import lib.data.has.filter.hasReadPositionFilterData;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasReferenceBase;
+import lib.data.has.filter.HasReadPositionFilterData;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 
-public class ReadPositionDistanceFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasReadPositionFilterData> 
+public class ReadPositionDistanceFilterFactory<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasReadPositionFilterData> 
 extends AbstractDistanceFilterFactory<T> {
 
 	public ReadPositionDistanceFilterFactory() {

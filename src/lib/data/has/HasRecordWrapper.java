@@ -5,7 +5,7 @@ import java.util.List;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 
 
-public interface hasRecordWrapper {
+public interface HasRecordWrapper {
 
 	List<SAMRecordWrapper> getRecordWrapper();
 	

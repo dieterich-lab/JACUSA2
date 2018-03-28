@@ -7,7 +7,7 @@ import lib.data.LRTarrestCount;
  * @author Michael Piechotta
  *
  */
-public interface hasLRTarrestCount extends hasRTarrestCount {
+public interface HasLRTarrestCount extends HasRTarrestCount {
 	
 	LRTarrestCount getLRTarrestCount();
 	

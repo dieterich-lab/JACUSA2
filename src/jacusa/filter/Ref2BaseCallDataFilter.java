@@ -15,7 +15,7 @@ import lib.data.BaseCallData;
 import lib.data.ParallelData;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
-import lib.data.has.hasLRTarrestCount;
+import lib.data.has.HasLRTarrestCount;
 import lib.data.result.Result;
 import lib.util.coordinate.Coordinate;
 
@@ -23,7 +23,7 @@ import lib.util.coordinate.Coordinate;
  * 
  * @param <T>
  */
-public class Ref2BaseCallDataFilter<T extends AbstractData & hasLRTarrestCount> 
+public class Ref2BaseCallDataFilter<T extends AbstractData & HasLRTarrestCount> 
 extends AbstractDataFilter<T> {
 
 	public static final char SEP = ',';

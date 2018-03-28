@@ -5,9 +5,9 @@ import jacusa.estimate.MinkaEstimateDirMultParameters;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.AbstractDirichletStatistic;
 import lib.data.AbstractData;
-import lib.data.has.hasPileupCount;
+import lib.data.has.HasPileupCount;
 
-public class DirichletMultinomialCompoundError<T extends AbstractData & hasPileupCount>
+public class DirichletMultinomialCompoundError<T extends AbstractData & HasPileupCount>
 extends AbstractDirichletStatistic<T> {
 
 	private static final String NAME = "DirMult-CE";

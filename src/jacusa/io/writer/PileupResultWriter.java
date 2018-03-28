@@ -6,7 +6,7 @@ import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasPileupCount;
+import lib.data.has.HasPileupCount;
 import lib.data.result.Result;
 import lib.io.AbstractResultFileWriter;
 import lib.phred2prob.Phred2Prob;
@@ -19,7 +19,7 @@ import htsjdk.samtools.SAMUtils;
  * @param <T>
  * @param <R>
  */
-public class PileupResultWriter<T extends AbstractData & hasPileupCount, R extends Result<T>> 
+public class PileupResultWriter<T extends AbstractData & HasPileupCount, R extends Result<T>> 
 extends AbstractResultFileWriter<T, R> {
 
 	// empty field, e.g.: no filters, no infos etc.

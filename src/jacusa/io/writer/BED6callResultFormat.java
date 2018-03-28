@@ -2,7 +2,7 @@ package jacusa.io.writer;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.has.hasPileupCount;
+import lib.data.has.HasPileupCount;
 import lib.data.result.Result;
 import lib.data.result.hasStatistic;
 import lib.io.AbstractResultFormat;
@@ -13,7 +13,7 @@ import lib.io.AbstractResultFormat;
  * @param <T>
  * @param <R>
  */
-public class BED6callResultFormat<T extends AbstractData & hasPileupCount, R extends Result<T> & hasStatistic> 
+public class BED6callResultFormat<T extends AbstractData & HasPileupCount, R extends Result<T> & hasStatistic> 
 extends AbstractResultFormat<T, R> {
 
 	// unique char id for CLI 

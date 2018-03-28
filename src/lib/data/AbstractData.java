@@ -1,11 +1,11 @@
 package lib.data;
 
-import lib.data.has.hasCoordinate;
-import lib.data.has.hasLibraryType;
+import lib.data.has.HasCoordinate;
+import lib.data.has.HasLibraryType;
 import lib.util.coordinate.Coordinate;
 
 public abstract class AbstractData
-implements hasCoordinate, hasLibraryType {
+implements HasCoordinate, HasLibraryType {
 
 	private LIBRARY_TYPE libraryType;
 	private Coordinate coordinate;

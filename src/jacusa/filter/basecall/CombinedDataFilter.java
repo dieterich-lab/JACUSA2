@@ -8,9 +8,9 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.ParallelData;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReferenceBase;
-import lib.data.has.filter.hasCombindedFilterData;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasReferenceBase;
+import lib.data.has.filter.HasCombindedFilterData;
 
 /**
  * This filter combines read start/end position, INDEL, and splice site position filter.
@@ -18,7 +18,7 @@ import lib.data.has.filter.hasCombindedFilterData;
  * 
  * @param <T>
  */
-public class CombinedDataFilter<T extends AbstractData & hasBaseCallCount & hasCombindedFilterData & hasReferenceBase> 
+public class CombinedDataFilter<T extends AbstractData & HasBaseCallCount & HasCombindedFilterData & HasReferenceBase> 
 extends AbstractBaseCallDataFilter<T> {
 
 	public CombinedDataFilter(final char c, 

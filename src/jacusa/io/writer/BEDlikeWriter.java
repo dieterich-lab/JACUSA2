@@ -7,7 +7,7 @@ import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasReferenceBase;
 import lib.data.result.Result;
 import lib.io.AbstractResultFileWriter;
 
@@ -19,7 +19,7 @@ import lib.io.AbstractResultFileWriter;
  * @param <T>
  * @param <R>
  */
-public abstract class BEDlikeWriter<T extends AbstractData & hasReferenceBase, R extends Result<T>> 
+public abstract class BEDlikeWriter<T extends AbstractData & HasReferenceBase, R extends Result<T>> 
 extends AbstractResultFileWriter<T, R> {
 
 	// TODO add comments.

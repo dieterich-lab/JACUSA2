@@ -6,9 +6,9 @@ import jacusa.filter.cache.FilterCache;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasHomopolymerInfo;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasHomopolymerInfo;
+import lib.data.has.HasReferenceBase;
 
 /**
  * This class implements the homopolymorph filter that identifies variants
@@ -16,7 +16,7 @@ import lib.data.has.hasReferenceBase;
  * 
  * @param <T>
  */
-public class HomopolymerDataFilter<T extends AbstractData & hasBaseCallCount & hasHomopolymerInfo & hasReferenceBase> 
+public class HomopolymerDataFilter<T extends AbstractData & HasBaseCallCount & HasHomopolymerInfo & HasReferenceBase> 
 extends AbstractDataFilter<T> {
 
 	public HomopolymerDataFilter(final char c, 

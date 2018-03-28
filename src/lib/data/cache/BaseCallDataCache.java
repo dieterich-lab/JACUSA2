@@ -8,9 +8,9 @@ import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.region.AbstractBaseCallRegionDataCache;
-import lib.data.has.hasBaseCallCount;
+import lib.data.has.HasBaseCallCount;
 
-public class BaseCallDataCache<T extends AbstractData & hasBaseCallCount>
+public class BaseCallDataCache<T extends AbstractData & HasBaseCallCount>
 extends AbstractBaseCallRegionDataCache<T> implements DataCache<T>{
 
 	public BaseCallDataCache(final int maxDepth, final byte minBASQ, final BaseCallConfig baseCallConfig, final CoordinateController coordinateController) {

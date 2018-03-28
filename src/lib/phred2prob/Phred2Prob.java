@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.PileupCount;
-import lib.data.has.hasPileupCount;
+import lib.data.has.HasPileupCount;
 import lib.util.MathUtil;
 
 public final class Phred2Prob {
@@ -41,7 +41,7 @@ public final class Phred2Prob {
 		return phred2baseP[qual];
 	}
 
-	public double[] colSumCount(final int[] baseIndexs, final hasPileupCount o) {
+	public double[] colSumCount(final int[] baseIndexs, final HasPileupCount o) {
 		// container for accumulated probabilities 
 		final double[] c = new double[BaseCallConfig.BASES.length];
 

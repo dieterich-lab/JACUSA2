@@ -1,14 +1,14 @@
 package lib.data;
 
-import lib.data.has.hasPileupCount;
+import lib.data.has.HasPileupCount;
 import lib.data.has.filter.PileupFilterData;
-import lib.data.has.filter.hasPileupFilterData;
+import lib.data.has.filter.HasPileupFilterData;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
 public class PileupData
 extends AbstractData
-implements hasPileupCount, hasPileupFilterData {
+implements HasPileupCount, HasPileupFilterData {
 
 	private final PileupCount pileupCount;
 	private final STRAND effectiveStrand;

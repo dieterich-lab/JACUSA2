@@ -8,10 +8,10 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.cache.BaseCallDataCache;
 import lib.data.cache.DataCache;
-import lib.data.has.hasBaseCallCount;
+import lib.data.has.HasBaseCallCount;
 import lib.util.coordinate.CoordinateController;
 
-public class BaseCallDataBuilderFactory<T extends AbstractData & hasBaseCallCount> 
+public class BaseCallDataBuilderFactory<T extends AbstractData & HasBaseCallCount> 
 extends AbstractDataBuilderFactory<T> {
 
 	public BaseCallDataBuilderFactory(final AbstractParameter<T, ?> generalParameter) {

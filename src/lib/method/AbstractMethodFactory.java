@@ -12,7 +12,7 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.data.generator.DataGenerator;
-import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 import lib.data.result.Result;
 import lib.data.validator.ParallelDataValidator;
 import lib.util.AbstractTool;

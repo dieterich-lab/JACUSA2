@@ -10,12 +10,12 @@ import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasHomopolymerInfo;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasHomopolymerInfo;
+import lib.data.has.HasReferenceBase;
 import lib.util.coordinate.CoordinateController;
 
-public class HomopolymerFilterFactory<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasHomopolymerInfo> 
+public class HomopolymerFilterFactory<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasHomopolymerInfo> 
 extends AbstractDataFilterFactory<T> {
 
 	// default length of consecutive identical base call for

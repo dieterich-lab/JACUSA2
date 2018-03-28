@@ -6,7 +6,7 @@ import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 
 /**
  * General command line option to chose library type for one or all conditions.

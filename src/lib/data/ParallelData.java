@@ -5,11 +5,11 @@ import java.util.List;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.generator.DataGenerator;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasCoordinate;
-import lib.data.has.hasLibraryType;
-import lib.data.has.hasPileupCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasCoordinate;
+import lib.data.has.HasLibraryType;
+import lib.data.has.HasPileupCount;
+import lib.data.has.HasReferenceBase;
 import lib.util.coordinate.Coordinate;
 
 /**
@@ -18,7 +18,7 @@ import lib.util.coordinate.Coordinate;
  *
  */
 public class ParallelData<T extends AbstractData> 
-implements hasCoordinate, hasLibraryType {
+implements HasCoordinate, HasLibraryType {
 
 	private final int REPLICATE_INDEX = 0;
 	
@@ -212,7 +212,7 @@ implements hasCoordinate, hasLibraryType {
 		return new ParallelData<T>(this);
 	}
 
-	public static <S extends AbstractData & hasReferenceBase & hasBaseCallCount> int[] getNonReferenceBaseIndexs(ParallelData<S> parallelData) {
+	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> int[] getNonReferenceBaseIndexs(ParallelData<S> parallelData) {
 		final byte referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
 		if (referenceBase == 'N') {
 			return new int[0];
@@ -240,7 +240,7 @@ implements hasCoordinate, hasLibraryType {
 	}
 
 	// for RRDs RNA RNA differences
-	public static <S extends AbstractData & hasBaseCallCount> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
+	public static <S extends AbstractData & HasBaseCallCount> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
 		int[] alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
 		final List<Integer> baseIndexs = new ArrayList<Integer>(BaseCallConfig.BASES.length);
 
@@ -316,7 +316,7 @@ implements hasCoordinate, hasLibraryType {
 	}
 	*/
 	
-	public static <S extends AbstractData & hasPileupCount> S[] flat(final S[] data, 
+	public static <S extends AbstractData & HasPileupCount> S[] flat(final S[] data, 
 			final S[]ret, 
 			final int[] variantBaseIndexs, final int commonBaseIndex) {
 		for (int i = 0; i < data.length; ++i) {

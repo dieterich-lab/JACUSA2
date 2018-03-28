@@ -8,15 +8,15 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.ParallelData;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasReferenceBase;
 
 /**
  * Abstract class that enables filtering based on base call count data and some other filter chached data.
  * 
  * @param <T>
  */
-public abstract class AbstractBaseCallDataFilter<T extends AbstractData & hasReferenceBase & hasBaseCallCount> 
+public abstract class AbstractBaseCallDataFilter<T extends AbstractData & HasReferenceBase & HasBaseCallCount> 
 extends AbstractDataFilter<T> {
 
 	private final int minCount;

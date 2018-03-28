@@ -1,12 +1,12 @@
 package lib.data;
 
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasReferenceBase;
 import lib.util.coordinate.Coordinate;
 
 public class BaseCallData
 extends AbstractData
-implements hasBaseCallCount, hasReferenceBase {
+implements HasBaseCallCount, HasReferenceBase {
 
 	private byte referenceBase;
 	private BaseCallCount baseCallCount;

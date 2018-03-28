@@ -2,11 +2,11 @@ package jacusa.io.writer;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.has.hasPileupCount;
+import lib.data.has.HasPileupCount;
 import lib.data.result.Result;
 import lib.io.AbstractResultFormat;
 
-public class BED6pileupResultFormat<T extends AbstractData & hasPileupCount, R extends Result<T>> 
+public class BED6pileupResultFormat<T extends AbstractData & HasPileupCount, R extends Result<T>> 
 extends AbstractResultFormat<T, R> {
 
 	public static final char CHAR = 'B';

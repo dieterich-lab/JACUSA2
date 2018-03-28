@@ -3,14 +3,14 @@ package lib.data;
 import java.util.Map;
 import java.util.TreeMap;
 
-import lib.data.has.hasRTarrestCount;
+import lib.data.has.HasRTarrestCount;
 
 /**
  * 
  * @author Michael Piechotta
  *
  */
-public class LRTarrestCount implements hasRTarrestCount {
+public class LRTarrestCount implements HasRTarrestCount {
 
 	private final RTarrestCount rtArrestCount;
 

@@ -3,13 +3,13 @@ package lib.data;
 import java.util.Arrays;
 
 import lib.cli.options.BaseCallConfig;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasCoverage;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasCoverage;
+import lib.data.has.HasReferenceBase;
 import lib.phred2prob.Phred2Prob;
 
 public class PileupCount 
-implements hasBaseCallCount, hasCoverage, hasReferenceBase {
+implements HasBaseCallCount, HasCoverage, HasReferenceBase {
 
 	private byte referenceBase;
 

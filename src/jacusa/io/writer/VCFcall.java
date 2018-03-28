@@ -10,7 +10,7 @@ import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.has.hasPileupCount;
+import lib.data.has.HasPileupCount;
 import lib.data.result.Result;
 import lib.io.AbstractResultFormat;
 import lib.io.ResultWriter;
@@ -23,7 +23,7 @@ import lib.util.AbstractTool;
  * @param <T>
  * @param <R>
  */
-public class VCFcall<T extends AbstractData & hasPileupCount, R extends Result<T>> 
+public class VCFcall<T extends AbstractData & HasPileupCount, R extends Result<T>> 
 extends AbstractResultFormat<T, R> {
 
 	// unique char id for CLI

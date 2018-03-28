@@ -3,10 +3,10 @@ package jacusa.method.call.statistic.dirmult;
 import jacusa.cli.parameters.CallParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasPileupCount;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasPileupCount;
 
-public class DirichletMultinomialRobustCompoundError<T extends AbstractData & hasBaseCallCount & hasPileupCount>
+public class DirichletMultinomialRobustCompoundError<T extends AbstractData & HasBaseCallCount & HasPileupCount>
 extends DirichletMultinomialCompoundError<T> {
 
 	public DirichletMultinomialRobustCompoundError(final CallParameter parameters) {

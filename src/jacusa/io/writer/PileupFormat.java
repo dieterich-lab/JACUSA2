@@ -2,7 +2,7 @@ package jacusa.io.writer;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.has.hasPileupCount;
+import lib.data.has.HasPileupCount;
 import lib.data.result.DefaultResult;
 import lib.io.AbstractResultFormat;
 import lib.io.ResultWriter;
@@ -13,7 +13,7 @@ import lib.io.ResultWriter;
  *
  * @param <T>
  */
-public class PileupFormat<T extends AbstractData & hasPileupCount> 
+public class PileupFormat<T extends AbstractData & HasPileupCount> 
 extends AbstractResultFormat<T, DefaultResult<T>> {
 
 	// unique char id for CLI

@@ -3,12 +3,12 @@ package jacusa.io.writer;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.has.hasRTarrestCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasRTarrestCount;
+import lib.data.has.HasReferenceBase;
 import lib.data.result.Result;
 import lib.data.result.hasStatistic;
 
-public class BED6rtArrestResultWriter1<T extends AbstractData & hasReferenceBase & hasRTarrestCount, R extends Result<T> & hasStatistic> 
+public class BED6rtArrestResultWriter1<T extends AbstractData & HasReferenceBase & HasRTarrestCount, R extends Result<T> & hasStatistic> 
 extends BEDlikeWriter<T, R> {
 	
 	// read start, trough, and end	

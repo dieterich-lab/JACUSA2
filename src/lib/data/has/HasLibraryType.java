@@ -1,6 +1,6 @@
 package lib.data.has;
 
-public interface hasLibraryType {
+public interface HasLibraryType {
 
 	LIBRARY_TYPE getLibraryType();
 

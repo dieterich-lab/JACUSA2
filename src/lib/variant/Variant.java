@@ -1,9 +1,9 @@
 package lib.variant;
 
-import lib.data.has.hasCoordinate;
+import lib.data.has.HasCoordinate;
 import lib.util.coordinate.Coordinate;
 
-public class Variant implements hasCoordinate {
+public class Variant implements HasCoordinate {
 
 	private Coordinate coordinate;
 	

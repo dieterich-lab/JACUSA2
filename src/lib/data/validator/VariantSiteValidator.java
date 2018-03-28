@@ -3,10 +3,10 @@ package lib.data.validator;
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasReferenceBase;
 
-public class VariantSiteValidator<T extends AbstractData & hasBaseCallCount & hasReferenceBase> 
+public class VariantSiteValidator<T extends AbstractData & HasBaseCallCount & HasReferenceBase> 
 implements ParallelDataValidator<T> {
 	
 	@Override

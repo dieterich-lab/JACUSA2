@@ -19,8 +19,8 @@ import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.region.AbstractUniqueBaseCallRegionDataCache;
-import lib.data.has.hasLRTarrestCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasLRTarrestCount;
+import lib.data.has.HasReferenceBase;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 
@@ -29,7 +29,7 @@ import lib.util.coordinate.CoordinateController;
  * 
  * @param <T>
  */
-public class LRTarrestCombinedFilterFactory<T extends AbstractData & hasReferenceBase & hasLRTarrestCount> 
+public class LRTarrestCombinedFilterFactory<T extends AbstractData & HasReferenceBase & HasLRTarrestCount> 
 extends AbstractDistanceFilterFactory<T> {
 
 	public LRTarrestCombinedFilterFactory() {

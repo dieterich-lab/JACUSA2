@@ -7,7 +7,7 @@ import lib.util.coordinate.Coordinate;
  * @author Michael Piechotta
  *
  */
-public interface hasCoordinate {
+public interface HasCoordinate {
 
 	Coordinate getCoordinate();
 	

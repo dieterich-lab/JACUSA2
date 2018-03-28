@@ -8,10 +8,10 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.cache.DataCache;
 import lib.data.cache.PileupCountDataCache;
-import lib.data.has.hasPileupCount;
+import lib.data.has.HasPileupCount;
 import lib.util.coordinate.CoordinateController;
 
-public class PileupDataBuilderFactory<T extends AbstractData & hasPileupCount> 
+public class PileupDataBuilderFactory<T extends AbstractData & HasPileupCount> 
 extends AbstractDataBuilderFactory<T> {
 
 	public PileupDataBuilderFactory(final AbstractParameter<T, ?> generalParameter) {

@@ -11,11 +11,11 @@ import java.text.DecimalFormatSymbols;
 
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasPileupCount;
+import lib.data.has.HasPileupCount;
 import lib.phred2prob.Phred2Prob;
 import lib.util.Info;
 
-public abstract class AbstractDirichletStatistic<T extends AbstractData & hasPileupCount>
+public abstract class AbstractDirichletStatistic<T extends AbstractData & HasPileupCount>
 extends AbstractStatisticCalculator<T> {
 
 	protected final CallParameter parameter;

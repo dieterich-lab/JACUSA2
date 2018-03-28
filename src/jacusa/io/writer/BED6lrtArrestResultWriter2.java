@@ -7,13 +7,13 @@ import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasLRTarrestCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasLRTarrestCount;
+import lib.data.has.HasReferenceBase;
 import lib.data.result.Result;
 import lib.data.result.hasStatistic;
 
-public class BED6lrtArrestResultWriter2<T extends AbstractData & hasReferenceBase & hasBaseCallCount & hasLRTarrestCount, R extends Result<T> & hasStatistic> 
+public class BED6lrtArrestResultWriter2<T extends AbstractData & HasReferenceBase & HasBaseCallCount & HasLRTarrestCount, R extends Result<T> & hasStatistic> 
 extends BEDlikeResultWriter<T, R> {
 	
 	public static final char SEP3 	= ':';

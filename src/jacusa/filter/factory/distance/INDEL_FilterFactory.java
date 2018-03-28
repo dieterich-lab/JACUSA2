@@ -16,9 +16,9 @@ import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.region.AbstractUniqueBaseCallRegionDataCache;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReferenceBase;
-import lib.data.has.filter.hasINDEL_FilterData;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasReferenceBase;
+import lib.data.has.filter.HasINDEL_FilterData;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 
@@ -27,7 +27,7 @@ import lib.util.coordinate.CoordinateController;
  * 
  * @param <T>
  */
-public class INDEL_FilterFactory<T extends AbstractData & hasBaseCallCount & hasINDEL_FilterData & hasReferenceBase> 
+public class INDEL_FilterFactory<T extends AbstractData & HasBaseCallCount & HasINDEL_FilterData & HasReferenceBase> 
 extends AbstractDistanceFilterFactory<T> {
 
 	public INDEL_FilterFactory() {

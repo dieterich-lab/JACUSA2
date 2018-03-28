@@ -13,7 +13,7 @@ import java.util.List;
 
 import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
 import lib.data.AbstractData;
-import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 import lib.util.AbstractTool;
 
 public abstract class AbstractConditionParameter<T extends AbstractData> {

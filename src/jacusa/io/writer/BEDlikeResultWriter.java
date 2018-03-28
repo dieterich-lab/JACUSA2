@@ -3,8 +3,8 @@ package jacusa.io.writer;
 import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasReferenceBase;
 import lib.data.result.Result;
 
 /**
@@ -14,7 +14,7 @@ import lib.data.result.Result;
  * @param <T>
  * @param <R>
  */
-public abstract class BEDlikeResultWriter<T extends AbstractData & hasBaseCallCount & hasReferenceBase, R extends Result<T>> 
+public abstract class BEDlikeResultWriter<T extends AbstractData & HasBaseCallCount & HasReferenceBase, R extends Result<T>> 
 extends BEDlikeWriter<T, R> {
 
 	private static final String INFO = "bases";

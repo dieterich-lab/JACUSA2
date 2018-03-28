@@ -1,11 +1,11 @@
 package lib.data;
 
-import lib.data.has.hasRTarrestCount;
+import lib.data.has.HasRTarrestCount;
 import lib.util.coordinate.Coordinate;
 
 public class RTarrestData
 extends BaseCallData
-implements hasRTarrestCount {
+implements HasRTarrestCount {
 
 	private final RTarrestCount rtArrestCount;
 	

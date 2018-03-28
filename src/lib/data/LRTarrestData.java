@@ -1,14 +1,14 @@
 package lib.data;
 
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasCoverage;
-import lib.data.has.hasLRTarrestCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasCoverage;
+import lib.data.has.HasLRTarrestCount;
+import lib.data.has.HasReferenceBase;
 import lib.util.coordinate.Coordinate;
 
 public class LRTarrestData
 extends AbstractData
-implements hasCoverage, hasBaseCallCount, hasReferenceBase, hasLRTarrestCount {
+implements HasCoverage, HasBaseCallCount, HasReferenceBase, HasLRTarrestCount {
 
 	private byte referenceBase;
 	private final BaseCallCount baseCallCount;

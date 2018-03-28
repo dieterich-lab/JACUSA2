@@ -7,7 +7,7 @@ import htsjdk.samtools.SAMRecord;
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.has.hasHomopolymerInfo;
+import lib.data.has.HasHomopolymerInfo;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 import lib.util.coordinate.Coordinate;
@@ -18,7 +18,7 @@ import lib.util.coordinate.Coordinate;
  * @param <T>
  */
 // FIXME make me more efficient - share homopolymer information between BAM(s)
-public class HomopolymerFilterCache<T extends AbstractData & hasHomopolymerInfo> 
+public class HomopolymerFilterCache<T extends AbstractData & HasHomopolymerInfo> 
 extends AbstractFilterCache<T> {
 	
 	// min length of identical base call to define homopolymer

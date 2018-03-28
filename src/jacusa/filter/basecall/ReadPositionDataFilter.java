@@ -8,16 +8,16 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.ParallelData;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReferenceBase;
-import lib.data.has.filter.hasReadPositionFilterData;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasReferenceBase;
+import lib.data.has.filter.HasReadPositionFilterData;
 
 /**
  * TODO add comments
  * 
  * @param <T>
  */
-public class ReadPositionDataFilter<T extends AbstractData & hasBaseCallCount & hasReadPositionFilterData & hasReferenceBase> 
+public class ReadPositionDataFilter<T extends AbstractData & HasBaseCallCount & HasReadPositionFilterData & HasReferenceBase> 
 extends AbstractBaseCallDataFilter<T> {
 
 	public ReadPositionDataFilter(final char c, 

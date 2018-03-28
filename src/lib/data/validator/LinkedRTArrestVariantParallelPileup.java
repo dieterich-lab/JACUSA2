@@ -2,10 +2,10 @@ package lib.data.validator;
 
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasLRTarrestCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasLRTarrestCount;
+import lib.data.has.HasReferenceBase;
 
-public class LinkedRTArrestVariantParallelPileup<T extends AbstractData & hasReferenceBase & hasLRTarrestCount>
+public class LinkedRTArrestVariantParallelPileup<T extends AbstractData & HasReferenceBase & HasLRTarrestCount>
 implements ParallelDataValidator<T> {
 
 	@Override

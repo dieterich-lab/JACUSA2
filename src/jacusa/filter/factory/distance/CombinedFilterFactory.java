@@ -18,9 +18,9 @@ import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.region.AbstractUniqueBaseCallRegionDataCache;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasReferenceBase;
-import lib.data.has.filter.hasCombindedFilterData;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasReferenceBase;
+import lib.data.has.filter.HasCombindedFilterData;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 
@@ -29,7 +29,7 @@ import lib.util.coordinate.CoordinateController;
  * 
  * @param <T>
  */
-public class CombinedFilterFactory<T extends AbstractData & hasBaseCallCount & hasCombindedFilterData & hasReferenceBase> 
+public class CombinedFilterFactory<T extends AbstractData & HasBaseCallCount & HasCombindedFilterData & HasReferenceBase> 
 extends AbstractDistanceFilterFactory<T> {
 
 	public CombinedFilterFactory() {

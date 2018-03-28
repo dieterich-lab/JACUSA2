@@ -7,7 +7,7 @@ import lib.data.PileupCount;
  * @author Michael Piechotta
  *
  */
-public interface hasPileupCount extends hasBaseCallCount, hasReferenceBase {
+public interface HasPileupCount extends HasBaseCallCount, HasReferenceBase {
 	
 	PileupCount getPileupCount();
 

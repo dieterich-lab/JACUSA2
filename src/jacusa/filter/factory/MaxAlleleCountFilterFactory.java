@@ -4,7 +4,7 @@ import jacusa.filter.AbstractFilter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
-import lib.data.has.hasBaseCallCount;
+import lib.data.has.HasBaseCallCount;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -12,7 +12,7 @@ import lib.util.coordinate.CoordinateController;
  * @author Michael Piechotta
  *
  */
-public class MaxAlleleCountFilterFactory<T extends AbstractData & hasBaseCallCount> 
+public class MaxAlleleCountFilterFactory<T extends AbstractData & HasBaseCallCount> 
 extends AbstractFilterFactory<T> {
 
 	// default value for max alleles

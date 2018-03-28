@@ -9,9 +9,9 @@ import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.PileupCount;
-import lib.data.has.hasPileupCount;
+import lib.data.has.HasPileupCount;
 
-public class PileupCountDataCache<T extends AbstractData & hasPileupCount>
+public class PileupCountDataCache<T extends AbstractData & HasPileupCount>
 extends BaseCallDataCache<T> {
 
 	private final byte[][][] baseCallQualities;

@@ -3,11 +3,11 @@ package lib.data.cache.region;
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
-import lib.data.has.filter.hasINDEL_FilterData;
+import lib.data.has.filter.HasINDEL_FilterData;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 
-public class INDEL_RegionDataCache<T extends AbstractData & hasINDEL_FilterData> 
+public class INDEL_RegionDataCache<T extends AbstractData & HasINDEL_FilterData> 
 extends AbstractUniqueBaseCallRegionDataCache<T> {
 
 	public INDEL_RegionDataCache(int maxDepth, byte minBASQ,

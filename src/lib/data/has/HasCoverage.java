@@ -1,6 +1,6 @@
 package lib.data.has;
 
-public interface hasCoverage {
+public interface HasCoverage {
 
 	int getCoverage();
 	

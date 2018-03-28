@@ -2,11 +2,11 @@ package lib.data.validator;
 
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasRTarrestCount;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasRTarrestCount;
+import lib.data.has.HasReferenceBase;
 
-public class RTArrestVariantParallelPileup<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasRTarrestCount>
+public class RTArrestVariantParallelPileup<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasRTarrestCount>
 implements ParallelDataValidator<T> {
 	
 	private VariantSiteValidator<T> variantSite;

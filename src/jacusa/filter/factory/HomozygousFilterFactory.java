@@ -5,7 +5,7 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
-import lib.data.has.hasBaseCallCount;
+import lib.data.has.HasBaseCallCount;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -13,7 +13,7 @@ import lib.util.coordinate.CoordinateController;
  *
  * @param <T>
  */
-public class HomozygousFilterFactory<T extends AbstractData & hasBaseCallCount> 
+public class HomozygousFilterFactory<T extends AbstractData & HasBaseCallCount> 
 extends AbstractFilterFactory<T> {
 
 	// which condition is required to be homozygous

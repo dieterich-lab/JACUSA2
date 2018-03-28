@@ -11,9 +11,9 @@ import htsjdk.samtools.AlignmentBlock;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.has.hasRecordWrapper;
+import lib.data.has.HasRecordWrapper;
 
-public class SAMRecordCache<T extends AbstractData & hasRecordWrapper> 
+public class SAMRecordCache<T extends AbstractData & HasRecordWrapper> 
 extends AbstractDataCache<T> {
 
 	private List<List<SAMRecordWrapper>> recordWrappers;

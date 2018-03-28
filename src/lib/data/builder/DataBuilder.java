@@ -11,11 +11,11 @@ import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.CacheContainer;
 import lib.data.generator.DataGenerator;
-import lib.data.has.hasLibraryType;
+import lib.data.has.HasLibraryType;
 import lib.util.coordinate.Coordinate;
 
 public class DataBuilder<T extends AbstractData>
-implements hasLibraryType {
+implements HasLibraryType {
 
 	private final DataGenerator<T> dataGenerator;
 	private final AbstractConditionParameter<T> conditionParameter;

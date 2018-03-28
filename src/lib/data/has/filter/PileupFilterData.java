@@ -3,7 +3,7 @@ package lib.data.has.filter;
 import lib.data.BaseCallCount;
 
 public class PileupFilterData 
-implements hasPileupFilterData {
+implements HasPileupFilterData {
 
 	private boolean isHomopolymer;
 

@@ -1,10 +1,10 @@
 package lib.data.result;
 
 import lib.data.AbstractData;
-import lib.data.has.hasParallelData;
+import lib.data.has.HasParallelData;
 import lib.util.Info;
 
-public interface Result <T extends AbstractData> extends hasParallelData<T> {
+public interface Result <T extends AbstractData> extends HasParallelData<T> {
 
 	Info getResultInfo();
 	Info getFilterInfo();

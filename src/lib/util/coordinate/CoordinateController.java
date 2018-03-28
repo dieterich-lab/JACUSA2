@@ -12,7 +12,7 @@ import lib.data.cache.container.GeneralCache;
 import lib.data.cache.container.ReferenceProvider;
 import lib.data.cache.container.SimpleGeneralCache;
 import lib.data.cache.container.SimpleMDReferenceProvider;
-import lib.data.has.hasLibraryType.LIBRARY_TYPE;
+import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 import lib.location.CoordinateAdvancer;
 import lib.location.StrandedJumpingCoordinateAdvancer;
 import lib.location.UnstrandedJumpingCoordinateAdvancer;

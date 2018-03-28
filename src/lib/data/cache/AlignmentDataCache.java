@@ -11,12 +11,12 @@ import htsjdk.samtools.SAMRecord;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.has.hasBaseCallCount;
-import lib.data.has.hasRTarrestCount;
-import lib.data.has.hasLibraryType.LIBRARY_TYPE;
-import lib.data.has.hasReferenceBase;
+import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasRTarrestCount;
+import lib.data.has.HasLibraryType.LIBRARY_TYPE;
+import lib.data.has.HasReferenceBase;
 
-public class AlignmentDataCache<T extends AbstractData & hasBaseCallCount & hasReferenceBase & hasRTarrestCount> 
+public class AlignmentDataCache<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasRTarrestCount> 
 extends AbstractDataCache<T> {
 
 	private final LIBRARY_TYPE libraryType;

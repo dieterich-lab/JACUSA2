@@ -3,10 +3,10 @@ package lib.data;
 import java.util.Arrays;
 
 import lib.cli.options.BaseCallConfig;
-import lib.data.has.hasCoverage;
+import lib.data.has.HasCoverage;
 
 public class BaseCallCount 
-implements hasCoverage {
+implements HasCoverage {
 
 	// container
 	private int[] baseCallCount;

@@ -5,9 +5,9 @@ import java.util.List;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.has.hasCoverage;
+import lib.data.has.HasCoverage;
 
-public class MinCoverageValidator<T extends AbstractData & hasCoverage> 
+public class MinCoverageValidator<T extends AbstractData & HasCoverage> 
 implements ParallelDataValidator<T> {
 
 	private final List<AbstractConditionParameter<T>> conditionParameters;
