@@ -10,9 +10,7 @@ import jacusa.filter.cache.UniqueFilterCacheWrapper;
 import jacusa.filter.cache.FilterCache;
 import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
 import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
-import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
 import jacusa.filter.cache.processrecord.ProcessRecord;
-import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
 import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
@@ -21,11 +19,11 @@ import lib.data.BaseCallCount;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.lrtarrest.AbstractUniqueLRTarrest2BaseCallCountDataCache;
-import lib.data.cache.lrtarrest.CombinedLRTarrest2BaseCallCountDataCache;
+import lib.data.cache.lrtarrest.INDEL_LRTarrest2BaseCallCountDataCache;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasLRTarrestCount;
 import lib.data.has.HasReferenceBase;
-import lib.data.has.filter.HasLRTarrestCombinedFilteredData;
+import lib.data.has.filter.HasLRTarrestINDEL_FilteredData;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -33,12 +31,12 @@ import lib.util.coordinate.CoordinateController;
  * 
  * @param <T>
  */
-public class LRTarrestCombinedFilterFactory<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasLRTarrestCount & HasLRTarrestCombinedFilteredData> 
+public class LRTarrestINDEL_FilterFactory<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasLRTarrestCount & HasLRTarrestINDEL_FilteredData> 
 extends AbstractDistanceFilterFactory<T> {
 
-	public LRTarrestCombinedFilterFactory() {
+	public LRTarrestINDEL_FilterFactory() {
 		super('D', 
-				"Filter artefacts (INDEL, read start/end, and splice site) of read arrest positions.", 
+				"Filter artefacts around INDELs of read arrest positions.", 
 				5, 0.5, 1);
 	}
 
@@ -47,17 +45,18 @@ extends AbstractDistanceFilterFactory<T> {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
 		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
-		final AbstractLRTarrestRef2BaseCallDataFilter<T> dataFilter =
+		final AbstractLRTarrestRef2BaseCallDataFilter<T> dataFilter = 
 				new AbstractLRTarrestRef2BaseCallDataFilter<T>(getC(), 
 						getDistance(), getMinCount(), getMinRatio(), 
 						parameter, conditionFilterCaches) {
-			@Override
-			protected Map<Integer, BaseCallCount> getFilteredData(
-					ParallelData<T> parallelData,
-					int conditionIndex, int replicateIndex) {
-				return parallelData.getData(conditionIndex, replicateIndex).getLRTarrestCombinedFilteredData();
-			}
-		};
+				@Override
+				protected Map<Integer, BaseCallCount> getFilteredData(
+						ParallelData<T> parallelData,
+						int conditionIndex, int replicateIndex) {
+					return parallelData.getData(conditionIndex, replicateIndex).getLRTarrestINDEL_FilteredData();
+				}
+			};
+		
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
 	}
 	
@@ -67,7 +66,7 @@ extends AbstractDistanceFilterFactory<T> {
 			final CoordinateController coordinateController) {
 
 		final AbstractUniqueLRTarrest2BaseCallCountDataCache<T> uniqueCache = 
-				new CombinedLRTarrest2BaseCallCountDataCache<T>(
+				new INDEL_LRTarrest2BaseCallCountDataCache<T>(
 						conditionParameter.getLibraryType(), conditionParameter.getMinBASQ(), 
 						baseCallConfig, coordinateController);
 
@@ -75,10 +74,6 @@ extends AbstractDistanceFilterFactory<T> {
 		// INDELs
 		processRecords.add(new ProcessInsertionOperator(getDistance(), uniqueCache));
 		processRecords.add(new ProcessDeletionOperator(getDistance(), uniqueCache));
-		// read start end 
-		processRecords.add(new ProcessReadStartEnd(getDistance(), uniqueCache));
-		// introns
-		processRecords.add(new ProcessSkippedOperator(getDistance(), uniqueCache));
 
 		return new UniqueFilterCacheWrapper<T>(getC(), uniqueCache, processRecords);
 	}

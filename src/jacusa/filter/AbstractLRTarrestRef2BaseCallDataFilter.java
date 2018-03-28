@@ -4,6 +4,7 @@ import htsjdk.samtools.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -15,6 +16,7 @@ import lib.data.BaseCallData;
 import lib.data.ParallelData;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
+import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasLRTarrestCount;
 import lib.data.result.Result;
 import lib.util.coordinate.Coordinate;
@@ -23,18 +25,19 @@ import lib.util.coordinate.Coordinate;
  * 
  * @param <T>
  */
-public class Ref2BaseCallDataFilter<T extends AbstractData & HasLRTarrestCount> 
+public abstract class AbstractLRTarrestRef2BaseCallDataFilter<T extends AbstractData & HasBaseCallCount & HasLRTarrestCount> 
 extends AbstractDataFilter<T> {
 
 	public static final char SEP = ',';
 
+	// FIXME use minCount
 	private int minCount;
 	private double minRatio;
 
 	// container for artefacts
 	private final List<Integer> filteredRefPositions;
 
-	public Ref2BaseCallDataFilter(final char c, 
+	public AbstractLRTarrestRef2BaseCallDataFilter(final char c, 
 			final int overhang, 
 			final int minCount, final double minRatio,
 			final AbstractParameter<T, ?> parameter,
@@ -98,12 +101,16 @@ extends AbstractDataFilter<T> {
 
 				for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
 					for (int replicateIndex = 0; replicateIndex < parallelData.getReplicates(conditionIndex); replicateIndex++) {
-						count += tmpParallelData.getData(conditionIndex, replicateIndex).getBaseCallCount().getBaseCallCount(variantBaseIndex);
-						filteredCount += parallelData.getData(conditionIndex, replicateIndex)
-								.getLRTarrestCount()
-								.getRefPos2bc4arrest()
+						final BaseCallCount observed = tmpParallelData.getData(conditionIndex, replicateIndex).getBaseCallCount();
+						if (observed != null) {
+							count += tmpParallelData.getData(conditionIndex, replicateIndex).getBaseCallCount().getBaseCallCount(variantBaseIndex);
+						}
+						final Map<Integer, BaseCallCount> filtered = getFilteredData(parallelData, conditionIndex, replicateIndex);
+						if (filtered != null && filtered.containsKey(refPositions)) {
+							filteredCount += getFilteredData(parallelData, conditionIndex, replicateIndex)
 								.get(refPosition)
 								.getBaseCallCount(variantBaseIndex);
+						}
 					}
 				}
 
@@ -127,8 +134,11 @@ extends AbstractDataFilter<T> {
 		return filter;
 	}
 
+	protected abstract Map<Integer, BaseCallCount> getFilteredData(ParallelData<T> parallelData, int conditionIndex, int replicateIndex);
+	
 	protected boolean filter(final int count, int filteredCount) {
-		return (double)filteredCount / (double)count <= minRatio || count - filteredCount >= minCount;
+		return (double)filteredCount / (double)count <= minRatio;
+		// || count - filteredCount >= minCount;
 	}	
 
 	@Override

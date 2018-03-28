@@ -5,6 +5,10 @@ import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.LRTarrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.distance.LRTarrestCombinedFilterFactory;
+import jacusa.filter.factory.distance.LRTarrestINDEL_FilterFactory;
+import jacusa.filter.factory.distance.LRTarrestReadPositionFilterFactory;
+import jacusa.filter.factory.distance.LRTarrestSpliceSiteFilterFactory;
 import jacusa.io.writer.BED6lrtArrestResultFormat2;
 import jacusa.io.writer.BED6rtArrestResultFormat1;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
@@ -18,6 +22,7 @@ import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.DebugModusOption;
+import lib.cli.options.FilterModusOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
 import lib.cli.options.ResultFormatOption;
 import lib.cli.options.HelpOption;
@@ -72,7 +77,7 @@ extends AbstractMethodFactory<LRTarrestData, StatisticResult<LRTarrestData>> {
 					getParameter(), getResultFormats()));
 		}
 		
-		// addACOption(new FilterModusOption(getParameter()));
+		addACOption(new FilterModusOption(getParameter()));
 		// addACOption(new BaseConfigOption(getParameter()));
 		
 		addACOption(new StatisticFilterOption(getParameter().getStatisticParameters()));
@@ -142,6 +147,11 @@ extends AbstractMethodFactory<LRTarrestData, StatisticResult<LRTarrestData>> {
 		List<AbstractFilterFactory<LRTarrestData>> filterFactories = 
 				new ArrayList<AbstractFilterFactory<LRTarrestData>>(5);
 
+		filterFactories.add(new LRTarrestCombinedFilterFactory<LRTarrestData>());
+		filterFactories.add(new LRTarrestReadPositionFilterFactory<LRTarrestData>());
+		filterFactories.add(new LRTarrestINDEL_FilterFactory<LRTarrestData>());
+		filterFactories.add(new LRTarrestSpliceSiteFilterFactory<LRTarrestData>());
+		
 		for (final AbstractFilterFactory<LRTarrestData> filterFactory : filterFactories) {
 			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
 		}
