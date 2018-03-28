@@ -150,7 +150,7 @@ extends AbstractDataCache<T> {
 			if (bq < minBASQ) {
 				continue;
 			}
-
+			
 			// count base call
 			baseCalls[guardedWindowPosition][baseIndex]++;
 			
@@ -297,6 +297,9 @@ extends AbstractDataCache<T> {
 		Arrays.fill(readEndCount, 0);
 		Arrays.fill(coverageWithBQ, 0);
 		Arrays.fill(coverageWithoutBQ, 0);
+		for (int[] b : baseCalls) {
+			Arrays.fill(b, 0);	
+		}
 	}
 
 	public int getReadStartCount(final Coordinate coordinate) {
