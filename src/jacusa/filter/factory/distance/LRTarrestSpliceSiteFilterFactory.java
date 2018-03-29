@@ -34,7 +34,7 @@ public class LRTarrestSpliceSiteFilterFactory<T extends AbstractData & HasBaseCa
 extends AbstractDistanceFilterFactory<T> {
 
 	public LRTarrestSpliceSiteFilterFactory() {
-		super('D', 
+		super('S', 
 				"Filter artefacts around splice site of read arrest positions.", 
 				5, 0.5, 1);
 	}

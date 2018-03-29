@@ -93,7 +93,7 @@ extends AbstractDataFilter<T> {
 			}
 			// create new parallel data
 			ParallelData<BaseCallData> tmpParallelData = new ParallelData<BaseCallData>(dataGenerator, baseCallData);
-			final int[] variantBaseIndexs = ParallelData.getVariantBaseIndexs(tmpParallelData);
+			final int[] variantBaseIndexs = ParallelData.getNonReferenceBaseIndexs(tmpParallelData);
 
 			for (int variantBaseIndex : variantBaseIndexs) {
 				int count = 0;

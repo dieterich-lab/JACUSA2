@@ -22,6 +22,7 @@ import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.DebugModusOption;
+import lib.cli.options.FilterConfigOption;
 import lib.cli.options.FilterModusOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
 import lib.cli.options.ResultFormatOption;
@@ -79,6 +80,7 @@ extends AbstractMethodFactory<LRTarrestData, StatisticResult<LRTarrestData>> {
 		
 		addACOption(new FilterModusOption(getParameter()));
 		// addACOption(new BaseConfigOption(getParameter()));
+		addACOption(new FilterConfigOption<LRTarrestData>(getParameter(), getFilterFactories()));
 		
 		addACOption(new StatisticFilterOption(getParameter().getStatisticParameters()));
 

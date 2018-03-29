@@ -106,6 +106,11 @@ implements UniqueRegionDataCache<T> {
 			final int guardedReferencePosition = windowPositionGuard.getReferencePosition() + j;
 			final int guardedReadPosition = windowPositionGuard.getReadPosition() + j;
 
+			if (guardedReadPosition == -1) {
+				int i = 0;
+				++i;
+			}
+			
 			// check baseCall is not "N"
 			final byte bc = record.getReadBases()[guardedReadPosition];
 			final int baseIndex = baseCallConfig.getBaseIndex(bc);
@@ -132,7 +137,7 @@ implements UniqueRegionDataCache<T> {
 	protected void add(final int windowPosition, final int readPosition, final int reference, 
 			final int baseIndex, final List<Map<Integer, BaseCallCount>> win2refBc) {
 
-		if (visited[windowPosition]) {
+		if (visited[readPosition]) {
 			return;
 		}
 		
@@ -143,7 +148,7 @@ implements UniqueRegionDataCache<T> {
 		}
 		ref2bc.get(reference).increment(baseIndex);
 		
-		visited[windowPosition] = true;
+		visited[readPosition] = true;
 	}
 	
 	@Override

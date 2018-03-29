@@ -26,10 +26,11 @@ public class ProcessDeletionOperator extends AbstractProcessRecord {
 		final Position position = cigarElementWrapper.getPosition();
 		
 		// add upstream
+		// FIXME
 		final int upstreamMatch = Math.min(getDistance(), recordWrapper.getUpstreamMatch(cigarElementWrapperIndex));
 		getUniqueCache().addRecordWrapperRegion(
 				position.getReferencePosition() - upstreamMatch - 1, 
-				position.getReadPosition() - upstreamMatch - 1, 
+				position.getReadPosition() - upstreamMatch, 
 				upstreamMatch + 1, 
 				recordWrapper);
 

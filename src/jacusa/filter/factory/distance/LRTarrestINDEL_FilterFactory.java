@@ -35,7 +35,7 @@ public class LRTarrestINDEL_FilterFactory<T extends AbstractData & HasBaseCallCo
 extends AbstractDistanceFilterFactory<T> {
 
 	public LRTarrestINDEL_FilterFactory() {
-		super('D', 
+		super('I', 
 				"Filter artefacts around INDELs of read arrest positions.", 
 				5, 0.5, 1);
 	}

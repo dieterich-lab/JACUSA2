@@ -16,7 +16,7 @@ extends AbstractDataFilterFactory<T> {
 			final double defaultFilterMinRatio, 
 			final int defaultFilterMinCount) {
 
-		super(c, desc + " Default: " + 
+		super(c, desc + "\n   Default: " + 
 			defaultFilterDistance + ":" 
 			+ defaultFilterMinRatio + ":" 
 			+ defaultFilterMinCount + 

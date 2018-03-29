@@ -34,7 +34,7 @@ public class LRTarrestReadPositionFilterFactory<T extends AbstractData & HasBase
 extends AbstractDistanceFilterFactory<T> {
 
 	public LRTarrestReadPositionFilterFactory() {
-		super('D', 
+		super('B', 
 				"Filter artefacts (INDEL, read start/end, and splice site) of read arrest positions.", 
 				5, 0.5, 1);
 	}

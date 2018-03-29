@@ -19,6 +19,7 @@ import lib.data.has.HasReferenceBase;
 public abstract class AbstractBaseCallDataFilter<T extends AbstractData & HasReferenceBase & HasBaseCallCount> 
 extends AbstractDataFilter<T> {
 
+	// FIXME use
 	private final int minCount;
 	private final double minRatio;
 
