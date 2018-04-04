@@ -225,17 +225,12 @@ public class SAMRecordWrapper {
 		}
 
 		public void advance(final CigarElement e) {
-			if (e.getOperator().consumesReferenceBases() && e.getOperator().consumesReadBases()) {
+			if (e.getOperator().consumesReferenceBases()) {
 				referencePosition += e.getLength();
-				readPosition += e.getLength();
-			} else {
-				if (e.getOperator().consumesReferenceBases()) {
-					referencePosition += e.getLength();
-				}
+			}
 				
-				if (e.getOperator().consumesReadBases()) {
-					readPosition += e.getLength();
-				}
+			if (e.getOperator().consumesReadBases()) {
+				readPosition += e.getLength();
 			}
 		}
 		

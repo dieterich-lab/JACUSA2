@@ -108,7 +108,7 @@ public class FilterContainer<T extends AbstractData> {
 	 * @param replicateIndex
 	 * @param recordWrapper
 	 */
-	/* FIXME it this needed?
+	/* FIXME is this needed?
 	public void addRecordWrapper(final char c, 
 			final int conditionIndex, final int replicateIndex, final SAMRecordWrapper recordWrapper) {
 		

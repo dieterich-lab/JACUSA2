@@ -17,8 +17,8 @@ import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.lrtarrest.AbstractUniqueLRTarrest2BaseCallCountDataCache;
-import lib.data.cache.lrtarrest.ReadPositionLRTarrest2BaseCallCountDataCache;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasLRTarrestCount;
 import lib.data.has.HasReferenceBase;
@@ -36,7 +36,7 @@ extends AbstractDistanceFilterFactory<T> {
 	public LRTarrestReadPositionFilterFactory() {
 		super('B', 
 				"Filter artefacts (INDEL, read start/end, and splice site) of read arrest positions.", 
-				5, 0.5, 1);
+				6, 0.5, 1);
 	}
 
 	@Override
@@ -65,9 +65,22 @@ extends AbstractDistanceFilterFactory<T> {
 			final CoordinateController coordinateController) {
 
 		final AbstractUniqueLRTarrest2BaseCallCountDataCache<T> uniqueCache = 
-				new ReadPositionLRTarrest2BaseCallCountDataCache<T>(
+				new AbstractUniqueLRTarrest2BaseCallCountDataCache<T>(
 						conditionParameter.getLibraryType(), conditionParameter.getMinBASQ(), 
-						baseCallConfig, coordinateController);
+						baseCallConfig, coordinateController) {
+			@Override
+			protected void addRefPos2bc(final Map<Integer, BaseCallCount> ref2bc, final T data) {
+				data.setLRTarrestReadPositionFilteredData(ref2bc);
+			}
+			
+			public void addRecordWrapperRegion(int referencePosition, int readPosition, int length, 
+					final SAMRecordWrapper recordWrapper) {
+				super.addRecordWrapperRegion(referencePosition, readPosition, length, recordWrapper);
+				System.out.println("ref.:" + referencePosition);
+				System.out.println("read:" + readPosition);
+				System.out.println("len.:" + length);
+			}
+		};
 
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
 		// read start end 

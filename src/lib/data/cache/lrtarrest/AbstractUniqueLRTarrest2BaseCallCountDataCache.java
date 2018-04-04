@@ -106,10 +106,12 @@ implements UniqueRegionDataCache<T> {
 			final int guardedReferencePosition = windowPositionGuard.getReferencePosition() + j;
 			final int guardedReadPosition = windowPositionGuard.getReadPosition() + j;
 
+			/* TODO remove
 			if (guardedReadPosition == -1) {
 				int i = 0;
 				++i;
 			}
+			*/
 			
 			// check baseCall is not "N"
 			final byte bc = record.getReadBases()[guardedReadPosition];
@@ -147,10 +149,10 @@ implements UniqueRegionDataCache<T> {
 			ref2bc.put(reference, new BaseCallCount());
 		}
 		ref2bc.get(reference).increment(baseIndex);
-		
+
 		visited[readPosition] = true;
 	}
-	
+
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
 		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
@@ -183,6 +185,7 @@ implements UniqueRegionDataCache<T> {
 			throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
 		}
 
+		addRefPos2bc(ref2bc, data);
 	}
 	
 	protected abstract void addRefPos2bc(Map<Integer, BaseCallCount> ref2bc, T Data);

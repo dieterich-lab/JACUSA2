@@ -19,7 +19,6 @@ import lib.data.BaseCallCount;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.lrtarrest.AbstractUniqueLRTarrest2BaseCallCountDataCache;
-import lib.data.cache.lrtarrest.INDEL_LRTarrest2BaseCallCountDataCache;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasLRTarrestCount;
 import lib.data.has.HasReferenceBase;
@@ -37,7 +36,7 @@ extends AbstractDistanceFilterFactory<T> {
 	public LRTarrestINDEL_FilterFactory() {
 		super('I', 
 				"Filter artefacts around INDELs of read arrest positions.", 
-				5, 0.5, 1);
+				6, 0.5, 1);
 	}
 
 	@Override
@@ -66,9 +65,15 @@ extends AbstractDistanceFilterFactory<T> {
 			final CoordinateController coordinateController) {
 
 		final AbstractUniqueLRTarrest2BaseCallCountDataCache<T> uniqueCache = 
-				new INDEL_LRTarrest2BaseCallCountDataCache<T>(
+				new AbstractUniqueLRTarrest2BaseCallCountDataCache<T>(
 						conditionParameter.getLibraryType(), conditionParameter.getMinBASQ(), 
-						baseCallConfig, coordinateController);
+						baseCallConfig, coordinateController) {
+
+			@Override
+			protected void addRefPos2bc(final Map<Integer, BaseCallCount> ref2bc, final T data) {
+				data.setLRTarrestINDEL_FilteredData(ref2bc);
+			}
+		};
 
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
 		// INDELs

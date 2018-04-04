@@ -67,6 +67,18 @@ extends AbstractDistanceFilterFactory<T> {
 				data.setINDEL_DistanceFilterData(baseCallCount);
 				add(windowPosition, coordinate.getStrand(), baseCallCount);				
 			}
+
+			/*
+			public void addRecordWrapperRegion(final int referencePosition, int readPosition, int length, SAMRecordWrapper recordWrapper) {
+				System.out.println("ref.:" + referencePosition);
+				System.out.println("read:" + readPosition);
+				System.out.println("length:" + length);
+				final String s = StringUtil.bytesToString(recordWrapper.getSAMRecord().getReadBases(), readPosition, length);
+				System.out.println(s);
+				super.addRecordWrapperRegion(referencePosition, readPosition, length, recordWrapper);
+			}
+			*/
+			
 		};		
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
 		processRecords.add(new ProcessInsertionOperator(getDistance(), uniqueBaseCallCache));

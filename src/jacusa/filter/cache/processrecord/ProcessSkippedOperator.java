@@ -27,7 +27,6 @@ public class ProcessSkippedOperator extends AbstractProcessRecord {
 	 * @param cigarElementWrapperIndex
 	 * @param recordWrapper
 	 */
-	// FIXME
 	private void processSkippedOperator(final int cigarElementWrapperIndex, final SAMRecordWrapper recordWrapper) {
 		final CigarElementWrapper cigarElementWrapper = 
 				recordWrapper.getCigarElementWrappers().get(cigarElementWrapperIndex);
@@ -36,20 +35,24 @@ public class ProcessSkippedOperator extends AbstractProcessRecord {
 		// add upstream
 		final int upstreamMatch = Math.min(getDistance(), recordWrapper.getUpstreamMatch(cigarElementWrapperIndex));
 		// mark region
-		getUniqueCache().addRecordWrapperRegion(
-				position.getReferencePosition() - upstreamMatch,
-				position.getReadPosition() - upstreamMatch, 
-				upstreamMatch, 
-				recordWrapper);
+		if (upstreamMatch > 0) {
+			getUniqueCache().addRecordWrapperRegion(
+					position.getReferencePosition() - upstreamMatch,
+					position.getReadPosition() - upstreamMatch, 
+					upstreamMatch, 
+					recordWrapper);
+		}
 
 		// add downstream
 		final int downstreamMatch = Math.min(getDistance(), recordWrapper.getDownstreamMatch(cigarElementWrapperIndex));
 		// mark region
-		getUniqueCache().addRecordWrapperRegion(
-				position.getReferencePosition() + cigarElementWrapper.getCigarElement().getLength(),
-				position.getReadPosition(), 
-				downstreamMatch, 
-				recordWrapper);		
+		if (downstreamMatch > 0) {
+			getUniqueCache().addRecordWrapperRegion(
+					position.getReferencePosition() + cigarElementWrapper.getCigarElement().getLength(),
+					position.getReadPosition(), 
+					downstreamMatch, 
+					recordWrapper);
+		}
 	}
 
 }
