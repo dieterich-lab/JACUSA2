@@ -28,7 +28,7 @@ implements CacheContainer<T> {
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		generalCache.addRecordWrapper(recordWrapper);
-		
+
 		for (final DataCache<T> dataCache : dataCaches) {
 			dataCache.addRecordWrapper(recordWrapper);
 		}

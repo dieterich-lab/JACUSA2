@@ -20,7 +20,7 @@ public abstract class AbstractBaseCallDataFilter<T extends AbstractData & HasRef
 extends AbstractDataFilter<T> {
 
 	// FIXME use
-	private final int minCount;
+	// private final int minCount;
 	private final double minRatio;
 
 	public AbstractBaseCallDataFilter(final char c, 
@@ -31,7 +31,7 @@ extends AbstractDataFilter<T> {
 		
 		super(c, overhang, parameter, conditionFilterCaches);
 
-		this.minCount = minCount;
+		// this.minCount = minCount;
 		this.minRatio = minRatio;
 	}
 
@@ -61,15 +61,13 @@ extends AbstractDataFilter<T> {
 				}
 			}
 
-			/*
+			/* TODO remove
 			final String s = parallelData.getCombinedPooledData().getCoordinate().toString();
 			int alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles().length;
 			System.out.println(s + "\t" + count + "\t" + filteredCount + "\t" + (double)filteredCount / (double)count + "\t" + variantBaseIndexs.length + "\t" + alleles);
 			*/
 			// check if too much filteredCount
 			if (filter(count, filteredCount)) {
-				// FIXME int referencePosition = parallelData.getCoordinate().getPosition();
-				// FIXME int windowPosition = filterCaches.get(0).get(0).getCoordinateController().convert2windowPosition(parallelData.getCoordinate());
 				return true;
 			}
 			

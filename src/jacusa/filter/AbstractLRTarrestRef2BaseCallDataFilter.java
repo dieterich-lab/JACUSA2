@@ -2,7 +2,7 @@ package jacusa.filter;
 
 import htsjdk.samtools.util.StringUtil;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +18,7 @@ import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasLRTarrestCount;
+import lib.data.has.HasReferenceBase;
 import lib.data.result.Result;
 import lib.util.coordinate.Coordinate;
 
@@ -25,17 +26,17 @@ import lib.util.coordinate.Coordinate;
  * 
  * @param <T>
  */
-public abstract class AbstractLRTarrestRef2BaseCallDataFilter<T extends AbstractData & HasBaseCallCount & HasLRTarrestCount> 
+public abstract class AbstractLRTarrestRef2BaseCallDataFilter<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasLRTarrestCount> 
 extends AbstractDataFilter<T> {
 
 	public static final char SEP = ',';
 
 	// FIXME use minCount
-	private int minCount;
+	// private int minCount;
 	private double minRatio;
 
 	// container for artefacts
-	private final List<Integer> filteredRefPositions;
+	private final Set<Integer> filteredRefPositions;
 
 	public AbstractLRTarrestRef2BaseCallDataFilter(final char c, 
 			final int overhang, 
@@ -44,10 +45,10 @@ extends AbstractDataFilter<T> {
 			final List<List<FilterCache<T>>> conditionFilterCaches) {
 
 		super(c, overhang, parameter, conditionFilterCaches);
-		this.minCount = minCount;
+		//this.minCount = minCount;
 		this.minRatio = minRatio;
 
-		filteredRefPositions = new ArrayList<Integer>(10);
+		filteredRefPositions = new HashSet<Integer>(10);
 	}
 
 	@Override
@@ -75,20 +76,25 @@ extends AbstractDataFilter<T> {
 		final DataGenerator<BaseCallData> dataGenerator =  new BaseCallDataGenerator();
 		for (int refPosition : refPositions) {
 			final BaseCallData[][] baseCallData = dataGenerator.createContainerData(conditions);
+			final byte refBase = combinedPooled.getLRTarrestCount().getReference().get(refPosition);
 			// create new data container to store linked base substitution positions
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
 				// number of replicates for this condition
 				final int replicates = parallelData.getReplicates(conditionIndex);
+				baseCallData[conditionIndex] = dataGenerator.createReplicateData(replicates);
 				for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
 					// specific data
 					final T tmpData = parallelData.getData(conditionIndex, replicateIndex);
-					
 					// create new data
 					baseCallData[conditionIndex][replicateIndex] = dataGenerator.createData(tmpData.getLibraryType(), coordinate);
+					// set reference base
+					baseCallData[conditionIndex][replicateIndex].setReferenceBase(refBase);
 					// get base call count from linked position
 					BaseCallCount tmpBcCount = tmpData.getLRTarrestCount().getRefPos2bc4arrest().get(refPosition);
-					// add to new data
-					baseCallData[conditionIndex][replicateIndex].getBaseCallCount().add(tmpBcCount);
+					if (tmpBcCount != null) {
+						// add to new data
+						baseCallData[conditionIndex][replicateIndex].getBaseCallCount().add(tmpBcCount);
+					}
 				}
 			}
 			// create new parallel data
@@ -102,35 +108,40 @@ extends AbstractDataFilter<T> {
 				for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
 					for (int replicateIndex = 0; replicateIndex < parallelData.getReplicates(conditionIndex); replicateIndex++) {
 						final BaseCallCount observed = tmpParallelData.getData(conditionIndex, replicateIndex).getBaseCallCount();
+						int tmpCount = 0;
 						if (observed != null) {
-							count += tmpParallelData.getData(conditionIndex, replicateIndex).getBaseCallCount().getBaseCallCount(variantBaseIndex);
+							tmpCount = observed.getBaseCallCount(variantBaseIndex);
+							count += tmpCount;
 						}
 						final Map<Integer, BaseCallCount> filtered = getFilteredData(parallelData, conditionIndex, replicateIndex);
-						if (filtered != null && filtered.containsKey(refPositions)) {
-							filteredCount += getFilteredData(parallelData, conditionIndex, replicateIndex)
-								.get(refPosition)
-								.getBaseCallCount(variantBaseIndex);
+						if (filtered != null && filtered.containsKey(refPosition)) {
+							filteredCount += tmpCount - getFilteredData(parallelData, conditionIndex, replicateIndex)
+									.get(refPosition)
+									.getBaseCallCount(variantBaseIndex);
+						} else {
+							filteredCount += tmpCount;
 						}
 					}
 				}
-
+				
 				if (filter(count, filteredCount)) {
 					artefact[refPositionIndex] = true;
 					// add to buffer
 					filteredRefPositions.add(refPosition);
-					if (refPositionIndex == 0) {
-						filter = true;
-					} else {
-						filter &= true;
-					}
-				} else {
-					filter = false;
+					filter = true;
 				}
+				
+				/*
+				System.out.println("Pos.:" + combinedPooled.getCoordinate());
+				System.out.println("Variant Base.:" + BaseCallConfig.BASES[variantBaseIndex]);
+				System.out.println("Ref.:" + refPosition + " " + (char)refBase);
+				System.out.println("Filter.:" + filter(count, filteredCount));
+				*/
 			}
 
 			refPositionIndex++;
 		}
-
+		
 		return filter;
 	}
 

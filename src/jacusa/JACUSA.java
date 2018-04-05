@@ -61,7 +61,7 @@ import lib.util.AbstractTool;
 public class JACUSA extends AbstractTool {
 	
 	public JACUSA(final String args[]) {
-		super("JACUSA", "2.0.0-DEVEL", args);
+		super("JACUSA", "2.0.0-BETA11", args);
 	}
 
 	@Override

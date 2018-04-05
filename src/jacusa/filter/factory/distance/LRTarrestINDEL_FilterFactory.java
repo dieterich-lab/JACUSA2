@@ -70,8 +70,8 @@ extends AbstractDistanceFilterFactory<T> {
 						baseCallConfig, coordinateController) {
 
 			@Override
-			protected void addRefPos2bc(final Map<Integer, BaseCallCount> ref2bc, final T data) {
-				data.setLRTarrestINDEL_FilteredData(ref2bc);
+			protected Map<Integer, BaseCallCount> getRefPos2bc(final T data) {
+				return data.getLRTarrestINDEL_FilteredData();
 			}
 		};
 

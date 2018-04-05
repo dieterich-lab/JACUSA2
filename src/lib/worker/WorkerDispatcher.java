@@ -9,7 +9,6 @@ import lib.data.result.Result;
 import lib.io.copytmp.CopyTmpExecuter;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
-import lib.util.ProgressIndicator;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.provider.CoordinateProvider;
 
@@ -30,7 +29,7 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 	private Integer comparisons;
 	private List<Integer> threadIds;
 	
-	private ProgressIndicator progressIndicator;
+	// private final ProgressIndicator progressIndicator;
 	private int currentCoordinateIndex;
 	
 	public WorkerDispatcher(final AbstractMethodFactory<T, R> methodFactory) {
@@ -44,7 +43,7 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 		comparisons = 0;
 		threadIds = new ArrayList<Integer>(10000);
 
-		progressIndicator = new ProgressIndicator(System.out);
+		// progressIndicator = new ProgressIndicator(System.out);
 		currentCoordinateIndex = 0;
 	}
 
@@ -64,8 +63,8 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 	}
 
 	public int run() throws IOException {
-	    final long startTime = System.currentTimeMillis();
-	    progressIndicator.print("Working:");
+	    // final long startTime = System.currentTimeMillis();
+	    // progressIndicator.print("Working:");
 
 		while (hasNext() || ! runningWorkers.isEmpty()) {
 			for (int i = 0; i < runningWorkers.size(); ++i) {
@@ -96,15 +95,16 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 					worker.start();
 				}
 
+				/*
 				if (! getMethodFactory().getParameter().isDebug()) {
-					progressIndicator.update("Progress: ", startTime, currentCoordinateIndex, coordinateProvider.getTotal());
+					// progressIndicator.update("Progress: ", startTime, currentCoordinateIndex, coordinateProvider.getTotal());
 				}
 				
 				// computation finished
 				if (! hasNext() && runningWorkers.isEmpty()) {
-					progressIndicator.print("\nDone!\n");
+					// progressIndicator.print("\nDone!\n");
 					break;
-				}
+				}*/
 				try {
 					this.wait(2 * 1000);
 				} catch (InterruptedException e) {
@@ -134,11 +134,11 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 		getMethodFactory().getParameter()
 			.getResultWriter().writeHeader(getMethodFactory().getParameter().getConditionParameters());
 		
-		progressIndicator.print("Merging tmp files:");
+		// progressIndicator.print("Merging tmp files:");
 		AbstractTool.getLogger().addInfo("Started merging tmp files...");
 		final CopyTmpExecuter<T> copyTmpExecuter = new CopyTmpExecuter<T>(threadIds, workerContainer);
 		copyTmpExecuter.copy();
-		progressIndicator.print("\nDone!");
+		// progressIndicator.print("\nDone!");
 		AbstractTool.getLogger().addInfo("Finished merging tmp files!");
 
 		// close output

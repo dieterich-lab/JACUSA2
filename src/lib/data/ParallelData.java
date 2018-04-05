@@ -212,19 +212,28 @@ implements HasCoordinate, HasLibraryType {
 		return new ParallelData<T>(this);
 	}
 
+	// this will be according to STRAND
 	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> int[] getNonReferenceBaseIndexs(ParallelData<S> parallelData) {
 		final byte referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
 		if (referenceBase == 'N') {
 			return new int[0];
 		}
-	
+
 		final int[] allelesIndexs = parallelData
 				.getCombinedPooledData()
 				.getBaseCallCount()
 				.getAlleles();
+
+		int referenceBaseIndex = BaseCallConfig.getInstance().getBaseIndex((byte)referenceBase);
+		switch (parallelData.getCoordinate().getStrand()) {
+		case REVERSE:
+			referenceBaseIndex = BaseCallConfig.BASES_COMPLEMENT[referenceBaseIndex];
+			break;
+
+		default:
+			break;
+		}
 		
-		final int referenceBaseIndex = BaseCallConfig.getInstance().getBaseIndex((byte)referenceBase);
-	
 		// find non-reference base(s)
 		int i = 0;
 		final int[] tmp = new int[allelesIndexs.length];

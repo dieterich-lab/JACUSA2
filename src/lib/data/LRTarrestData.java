@@ -49,9 +49,9 @@ implements HasCoverage, HasBaseCallCount, HasReferenceBase, HasLRTarrestCount, H
 	
 	public LRTarrestData(final LIBRARY_TYPE libraryType, final Coordinate coordinate, final byte referenceBase) {
 		super(libraryType, coordinate);
-		this.referenceBase = referenceBase;
-		baseCallCount = new BaseCallCount();
-		lrtArrestCount = new LRTarrestCount();
+		this.referenceBase 					= referenceBase;
+		baseCallCount 						= new BaseCallCount();
+		lrtArrestCount 						= new LRTarrestCount();
 		lrtArrestINDEL_FilteredData 		= new HashMap<Integer, BaseCallCount>();
 		lrtArrestReadPositionFilteredData 	= new HashMap<Integer, BaseCallCount>();
 		lrtArrestCombinedFilteredData		= new HashMap<Integer, BaseCallCount>();
@@ -85,7 +85,7 @@ implements HasCoverage, HasBaseCallCount, HasReferenceBase, HasLRTarrestCount, H
 		add(lrtArrestReadPositionFilteredData, lrtArrestData.lrtArrestReadPositionFilteredData);
 	}
 	
-	private void add(final Map<Integer, BaseCallCount> src, final Map<Integer, BaseCallCount> dest) {
+	private void add(final Map<Integer, BaseCallCount> dest, final Map<Integer, BaseCallCount> src) {
 		for (final int referencePosition : src.keySet()) {
 			if (! dest.containsKey(referencePosition)) {
 				dest.put(referencePosition, new BaseCallCount());

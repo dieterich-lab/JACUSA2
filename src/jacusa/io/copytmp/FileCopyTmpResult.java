@@ -109,16 +109,6 @@ implements CopyTmpResult<T, R> {
 		iteration2storedResults.set(iteration, storedResults);
 	}
 	
-	/* TODO delete - not needed
-	protected AbstractResultFileWriter<T, R> getResultWriter() {
-		return resultFileWriter;
-	}
-	
-	protected ResultWriter<T, R> getTmpResultWriter() {
-		return tmpResultWriter;
-	}
-	*/
-	
 	@Override
 	public void copy(int iteration) throws IOException {
 		int copiedResults = 0;

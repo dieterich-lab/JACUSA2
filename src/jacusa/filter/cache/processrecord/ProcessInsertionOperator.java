@@ -27,7 +27,6 @@ public class ProcessInsertionOperator extends AbstractProcessRecord {
 		final Position position = cigarElementWrapper.getPosition();
 		
 		// add upstream
-		// FIXME
 		final int upstreamMatch = Math.min(getDistance(), recordWrapper.getUpstreamMatch(cigarElementWrapperIndex));
 		if (upstreamMatch > 0) {
 			getUniqueCache().addRecordWrapperRegion(

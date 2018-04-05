@@ -17,7 +17,6 @@ import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
-import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.lrtarrest.AbstractUniqueLRTarrest2BaseCallCountDataCache;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasLRTarrestCount;
@@ -69,17 +68,20 @@ extends AbstractDistanceFilterFactory<T> {
 						conditionParameter.getLibraryType(), conditionParameter.getMinBASQ(), 
 						baseCallConfig, coordinateController) {
 			@Override
-			protected void addRefPos2bc(final Map<Integer, BaseCallCount> ref2bc, final T data) {
-				data.setLRTarrestReadPositionFilteredData(ref2bc);
+			protected Map<Integer, BaseCallCount> getRefPos2bc(final T data) {
+				return data.getLRTarrestReadPositionFilteredData();
 			}
 			
+			/*
 			public void addRecordWrapperRegion(int referencePosition, int readPosition, int length, 
 					final SAMRecordWrapper recordWrapper) {
 				super.addRecordWrapperRegion(referencePosition, readPosition, length, recordWrapper);
+				System.out.println("Filter:");
 				System.out.println("ref.:" + referencePosition);
 				System.out.println("read:" + readPosition);
 				System.out.println("len.:" + length);
 			}
+			*/
 		};
 
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);

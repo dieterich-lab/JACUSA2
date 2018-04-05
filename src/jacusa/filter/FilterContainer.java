@@ -36,7 +36,6 @@ public class FilterContainer<T extends AbstractData> {
 		this.filterConfig 			= filterConfig;
 		this.coordinateController 	= coordinateController;
 
-		// FIXME
 		overhang 					= 0;
 
 		final int initialCapacity 	= 3;

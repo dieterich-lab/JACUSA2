@@ -178,7 +178,7 @@ extends AbstractMethodFactory<CallData, StatisticResult<CallData>> {
 		resultFormat = new BED6callResultFormat<CallData, StatisticResult<CallData>>(getParameter());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 
-		// VCF output
+		// FIXME VCF output 
 		/*
 		resultFormat = new VCFcall<T>(getParameter().getBaseConfig(), 
 				getParameter().getFilterConfig());

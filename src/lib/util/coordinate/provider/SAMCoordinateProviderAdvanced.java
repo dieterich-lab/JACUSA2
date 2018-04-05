@@ -26,7 +26,7 @@ import htsjdk.samtools.SamReader;
 public class SAMCoordinateProviderAdvanced implements CoordinateProvider {
 
 	private final boolean isStranded;
-	private final List<SAMSequenceRecord> sequenceRecords;
+	private final int total;
 	private final Iterator<SAMSequenceRecord> it;
 	private SAMSequenceRecord sequenceRecord;
 	
@@ -42,10 +42,16 @@ public class SAMCoordinateProviderAdvanced implements CoordinateProvider {
 			final AbstractParameter<?, ?> parameter) {
 
 		this.isStranded = isStranded;
-		this.sequenceRecords = sequenceRecords;
 		it = sequenceRecords.iterator();
 		
 		this.reservedWindowSize = parameter.getReservedWindowSize();
+		int tmpTotal = 0;
+		sequenceRecords.size();
+		for (final SAMSequenceRecord sr : sequenceRecords) {
+			tmpTotal += sr.getSequenceLength() / reservedWindowSize + 1;
+		}
+		total = tmpTotal;
+		
 		// create readers for conditions and replicate
 		readers = new ArrayList<List<SamReader>>(parameter.getConditionsSize());
 		for (final AbstractConditionParameter<?> condition : parameter.getConditionParameters()) {
@@ -87,8 +93,7 @@ public class SAMCoordinateProviderAdvanced implements CoordinateProvider {
 	}
 
 	public int getTotal() {
-		// TODO
-		return sequenceRecords.size();
+		return total;
 	}
 
 	private Coordinate searchNext(Coordinate current) {

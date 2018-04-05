@@ -67,8 +67,8 @@ extends AbstractDistanceFilterFactory<T> {
 						conditionParameter.getLibraryType(), conditionParameter.getMinBASQ(), 
 						baseCallConfig, coordinateController) {
 			@Override
-			protected void addRefPos2bc(final Map<Integer, BaseCallCount> ref2bc, final T data) {
-				data.setLRTarrestSpliceSiteFilteredData(ref2bc);
+			protected Map<Integer, BaseCallCount> getRefPos2bc(final T data) {
+				return data.getLRTarrestSpliceSiteFilteredData();
 			}
 		};
 		
