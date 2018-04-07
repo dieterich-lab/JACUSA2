@@ -12,11 +12,14 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.CacheContainer;
 import lib.data.generator.DataGenerator;
 import lib.data.has.HasLibraryType;
+import lib.util.AbstractTool;
 import lib.util.coordinate.Coordinate;
 
 public class DataBuilder<T extends AbstractData>
 implements HasLibraryType {
 
+	private final int replicateIndex;
+	
 	private final DataGenerator<T> dataGenerator;
 	private final AbstractConditionParameter<T> conditionParameter;
 	private final List<FilterCache<?>> filterCaches;
@@ -27,11 +30,14 @@ implements HasLibraryType {
 	private CACHE_STATUS cacheStatus;
 
 	public DataBuilder(
+			final int replicateIndex,
 			final DataGenerator<T> dataGenerator, 
 			final AbstractConditionParameter<T> conditionParameter,
 			final LIBRARY_TYPE libraryType,
 			final CacheContainer<T> cacheContainer,
 			final List<FilterCache<?>> filterCaches) {
+		
+		this.replicateIndex = replicateIndex;
 		
 		this.dataGenerator = dataGenerator;
 		this.conditionParameter	= conditionParameter;
@@ -52,16 +58,26 @@ implements HasLibraryType {
 	
 		final List<SAMRecordWrapper> recordWrappers = new ArrayList<SAMRecordWrapper>();
 
-		while (iterator.hasNext()) {
-			final SAMRecordWrapper recordWrapper = iterator.next();
-			// process filters and decode
-			recordWrapper.process();
-			cacheContainer.addRecordWrapper(recordWrapper);
-			for (FilterCache<?> filterCache : filterCaches) {
-				filterCache.addRecordWrapper(recordWrapper);
+		SAMRecordWrapper recordWrapper = null;
+		try {
+			while (iterator.hasNext()) {
+				recordWrapper = iterator.next();
+				// process filters and decode
+				recordWrapper.process();
+				cacheContainer.addRecordWrapper(recordWrapper);
+				for (FilterCache<?> filterCache : filterCaches) {
+					filterCache.addRecordWrapper(recordWrapper);
+				}
+				recordWrappers.add(recordWrapper);
 			}
-			recordWrappers.add(recordWrapper);
+		} catch (Exception e){
+			if (recordWrapper != null) {
+				AbstractTool.getLogger().addError("Problem with read: " + recordWrapper.getSAMRecord().getReadName() + 
+						" in " + conditionParameter.getRecordFilenames()[replicateIndex]);
+			}
+			e.printStackTrace();
 		}
+
 
 		cacheStatus = recordWrappers.size() > 0 ? CACHE_STATUS.CACHED : CACHE_STATUS.NOT_FOUND; 
 		return recordWrappers;

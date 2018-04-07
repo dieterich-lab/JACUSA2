@@ -25,6 +25,7 @@ implements HasStatisticParameters<LRTarrestData> {
 		// test-statistic related
 		statisticParameters.setStatisticCalculator(new BetaBinomial<LRTarrestData>());
 		statisticParameters.setThreshold(1.0);
+		setActiveWindowSize(1000);
 	}
 
 	@Override

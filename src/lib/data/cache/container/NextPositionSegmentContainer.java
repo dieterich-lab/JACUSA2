@@ -50,7 +50,30 @@ public class NextPositionSegmentContainer {
 				break;
 			
 			case NOT_COVERED:
-				updateNotCovered2Covered(segment, tmpWindowPosition, tmpLength);
+				try {
+					updateNotCovered2Covered(segment, tmpWindowPosition, tmpLength);
+				} catch (IllegalArgumentException e){
+					e.printStackTrace();
+					int i = 0;
+					for (NextPositionSegment s : segments) {
+						System.out.println("Segment: i");
+						System.out.println(s.toString());
+						++i;
+					}
+					System.out.println("Segment: " + segment.toString());
+					System.out.println("windowPosition: " + tmpWindowPosition);
+					System.out.println("length: " + length);
+
+					i = 0;
+					for (NextPositionSegment s : this.segments) {
+						System.out.println("Segment: i");
+						System.out.println(s.toString());
+					}
+
+					for (i = 0; i < winPos2id.length; ++i) {
+						System.out.println(i + " -> " + winPos2id[i]);
+					}
+				}
 				break;
 				
 			case COVERED:
@@ -116,6 +139,11 @@ public class NextPositionSegmentContainer {
 				notCovered.updateNext(windowPosition);
 			} else {
 				final int tmpNotCoveredEnd = notCovered.getEnd();
+				if (end > tmpNotCoveredEnd) {
+					int i = 0;
+					i++;
+				}
+				
 				// store next
 				final int nextPosition = notCovered.getNext();
 				
@@ -123,9 +151,10 @@ public class NextPositionSegmentContainer {
 				updateEnd(notCovered, windowPosition);
 				// update to next created covered segment
 				notCovered.updateNext(windowPosition);
-				
+
 				// create covered
 				createCovered(windowPosition, end, nextPosition);
+
 				// create notCovered
 				createNotCovered(end, tmpNotCoveredEnd, nextPosition);
 			}
@@ -145,7 +174,7 @@ public class NextPositionSegmentContainer {
 	}
 	
 	public void markNotCovered(int windowPosition, int length, final int nextPosition) {
-	final List<NextPositionSegment> segments = getSegments(windowPosition, length);
+		final List<NextPositionSegment> segments = getSegments(windowPosition, length);
 		
 		for (final NextPositionSegment segment : segments) {
 			final int end = windowPosition + length;
@@ -172,6 +201,9 @@ public class NextPositionSegmentContainer {
 			}
 			
 		}
+		
+		int TODO = 0;
+		TODO = 1;
 	}
 	
 	private void updateUnknown2NotCovered(final NextPositionSegment unknown, final int windowPosition, final int length, final int nextPosition) {
@@ -242,6 +274,11 @@ public class NextPositionSegmentContainer {
 	}
 	
 	private void setId(final int id, final int start, final int end) {
+		if (start > end) {
+			int j = 0;
+			j++;
+			j++;
+		}
 		Arrays.fill(winPos2id, start, end, id);
 	}
 	

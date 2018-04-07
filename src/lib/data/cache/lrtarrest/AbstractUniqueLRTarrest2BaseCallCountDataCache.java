@@ -1,17 +1,21 @@
 package lib.data.cache.lrtarrest;
 
+import htsjdk.samtools.AlignmentBlock;
+import htsjdk.samtools.SAMRecord;
+
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
+import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.cache.AbstractDataCache;
 import lib.data.cache.region.UniqueRegionDataCache;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasLRTarrestCount;
@@ -19,17 +23,32 @@ import lib.data.has.HasReferenceBase;
 import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 
 public abstract class AbstractUniqueLRTarrest2BaseCallCountDataCache<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasLRTarrestCount> 
-extends AbstractLRTarrest2BaseCallCountDataCache<T> 
+extends AbstractDataCache<T> 
 implements UniqueRegionDataCache<T> {
 
+	private final LIBRARY_TYPE libraryType;
+	private final BaseCallConfig baseCallConfig;
+	private final byte minBASQ;
+
+	private final LRTarrest2BaseCallCount start;
+	private final LRTarrest2BaseCallCount end;
+		
 	private boolean[] visited;
-	
+
 	public AbstractUniqueLRTarrest2BaseCallCountDataCache(final LIBRARY_TYPE libraryType, 
 			final byte minBASQ,
 			final BaseCallConfig baseCallConfig,
 			final CoordinateController coordinateController) {
 		
-		super(libraryType, minBASQ, baseCallConfig, coordinateController);
+		super(coordinateController);
+		
+		this.libraryType 	= libraryType;
+		this.minBASQ 		= minBASQ;
+		this.baseCallConfig = baseCallConfig;
+		
+		final int n = coordinateController.getActiveWindowSize();
+		start 		= new LRTarrest2BaseCallCount(coordinateController, n);
+		end 		= new LRTarrest2BaseCallCount(coordinateController, n);
 	}
 
 	@Override
@@ -44,38 +63,19 @@ implements UniqueRegionDataCache<T> {
 			return false;
 		}
 
+		Map<Integer, BaseCallCount> ref2bc = win2refBc.get(windowPosition);
+		if (! ref2bc.containsKey(reference)) {
+			ref2bc.put(reference, new BaseCallCount());
+		}
+		ref2bc.get(reference).increment(baseIndex);
+		
 		visited[readPosition] = true;
-		return super.add(windowPosition, readPosition, reference, baseIndex, win2refBc);
-	}
-
-	protected void add(final int windowPosition, final boolean invert,
-			final List<Map<Integer, BaseCallCount>> win2ref2bc,
-			final List<Set<Integer>> win2refPositions,
-			final Map<Integer, BaseCallCount> dest) {
-
-		if (windowPosition < 0 && windowPosition >= win2ref2bc.size()) {
-			return;
-		}
-		
-		final Set<Integer> refPositions = win2refPositions.get(windowPosition);
-		final Map<Integer, BaseCallCount> ref2bc = win2ref2bc.get(windowPosition);
-		
-		for (final int referencePosition : refPositions) {
-			final BaseCallCount baseCallCount = ref2bc.get(referencePosition);
-			if (invert) {
-				baseCallCount.invert();
-			}
-			
-			if (! dest.containsKey(referencePosition)) {
-				dest.put(referencePosition, new BaseCallCount());
-			}
-			dest.get(referencePosition).add(baseCallCount);
-		}
+		return true;
 	}
 	
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
-		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
+		final int winArrestPos = getCoordinateController().convert2windowPosition(coordinate);
 
 		boolean invert = false;
 		if (coordinate.getStrand() == STRAND.REVERSE) {
@@ -87,15 +87,15 @@ implements UniqueRegionDataCache<T> {
 		switch (getLibraryType()) {
 
 		case UNSTRANDED:
-			add(windowPosition, invert, getReadStart2ref2bcs(), getReadStart2ref(), ref2bc);
+			start.copyNonRef(winArrestPos, invert, ref2bc);
 			break;
 
 		case FR_FIRSTSTRAND:
-			add(windowPosition, invert, getReadEnd2ref2bcs(), getReadEnd2ref(), ref2bc);
+			end.copyNonRef(winArrestPos, invert, ref2bc);
 			break;
 
 		case FR_SECONDSTRAND:
-			add(windowPosition, invert, getReadStart2ref2bcs(), getReadStart2ref(), ref2bc);
+			start.copyNonRef(winArrestPos, invert, ref2bc);
 			break;
 			
 		case MIXED:
@@ -103,4 +103,75 @@ implements UniqueRegionDataCache<T> {
 		}
 	}
 	
+	public LIBRARY_TYPE getLibraryType() {
+		return libraryType;
+	}
+	
+	@Override
+	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
+		for (final AlignmentBlock alignmentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
+			final WindowPositionGuard windowPositionGuard = 
+					getCoordinateController().convert(alignmentBlock.getReferenceStart(), alignmentBlock.getReadStart() - 1, alignmentBlock.getLength());
+
+			addRecordWrapperRegion(windowPositionGuard.getReferencePosition(), 
+					windowPositionGuard.getReadPosition(), 
+					windowPositionGuard.getLength(), recordWrapper);
+		}
+	}
+
+	public void addRecordWrapperRegion(final int referencePosition, final int readPosition, int length, 
+			final SAMRecordWrapper recordWrapper) {
+		
+		if (referencePosition < 0) {
+			throw new IllegalArgumentException("Reference Position cannot be < 0! -> outside of alignmentBlock");
+		}
+		
+		final SAMRecord record = recordWrapper.getSAMRecord();
+		int windowPosition1 = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
+		int windowPosition2 = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
+
+		for (int j = 0; j < length; ++j) {
+			final int tmpReferencePosition 	= referencePosition + j;
+			final int tmpReadPosition 		= readPosition + j;
+
+			// check baseCall is not "N"
+			final byte bc = record.getReadBases()[tmpReadPosition];
+			final int baseIndex = baseCallConfig.getBaseIndex(bc);
+			if (baseIndex < 0) {
+				continue;
+			}
+
+			final byte bq = record.getBaseQualities()[tmpReadPosition];
+			if (bq < minBASQ) {
+				continue;
+			}
+			
+			add(windowPosition1, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, start);
+			add(windowPosition2, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, end);
+		}
+	}
+
+	private void add(final int windowPosition, final int referencePosition, final int readPosition, final int baseIndex, 
+			final SAMRecordWrapper recordWrapper, LRTarrest2BaseCallCount dest) {
+
+		if (windowPosition < 0) {
+			return; 
+		}
+
+		if (visited[readPosition]) {
+			return;
+		}
+
+		dest.addBaseCall(windowPosition, referencePosition, baseIndex);
+		visited[readPosition] = true;
+	}
+	
+	protected abstract Map<Integer, BaseCallCount> getRefPos2bc(T Data);
+	
+	@Override
+	public void clear() {
+		start.clear();
+		end.clear();
+	}
+
 }

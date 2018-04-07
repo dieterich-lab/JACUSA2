@@ -248,8 +248,11 @@ implements HasCoordinate, HasLibraryType {
 		return ret;
 	}
 
-	// for RRDs RNA RNA differences
-	public static <S extends AbstractData & HasBaseCallCount> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
+	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
+		if (parallelData.getConditions() == 1) {
+			return getNonReferenceBaseIndexs(parallelData);
+		}
+
 		int[] alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
 		final List<Integer> baseIndexs = new ArrayList<Integer>(BaseCallConfig.BASES.length);
 
@@ -260,12 +263,12 @@ implements HasCoordinate, HasLibraryType {
 					n++;
 				}
 			}
-			if (n > 0 && n < parallelData.getConditions()) {
+			if (n < parallelData.getConditions()) {
 				baseIndexs.add(baseIndex);
 			}
 		}
 
-		int[] variantBaseIs = new int[baseIndexs.size()];
+		final int[] variantBaseIs = new int[baseIndexs.size()];
 		for (int i = 0; i < baseIndexs.size(); ++i) {
 			variantBaseIs[i] = baseIndexs.get(i);
 		}

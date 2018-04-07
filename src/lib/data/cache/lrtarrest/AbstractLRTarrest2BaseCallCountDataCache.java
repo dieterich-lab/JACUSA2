@@ -1,12 +1,8 @@
 package lib.data.cache.lrtarrest;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
@@ -18,7 +14,6 @@ import htsjdk.samtools.SAMRecord;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.BaseCallCount;
 import lib.data.LRTarrestCount;
 import lib.data.RTarrestCount;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
@@ -32,29 +27,16 @@ public abstract class AbstractLRTarrest2BaseCallCountDataCache<T extends Abstrac
 extends AbstractDataCache<T> {
 
 	private final LIBRARY_TYPE libraryType;
-	
 	private final BaseCallConfig baseCallConfig;
-
 	private final byte minBASQ;
-	
-	// readStart of read -> reference position of mismatch position -> baseCallCount of mismatch position
-	private final List<Map<Integer, BaseCallCount>> readStart2ref2bcs;
-	private final List<Map<Integer, BaseCallCount>> readEnd2ref2bcs;
-	
-	private final Map<Integer, Byte> reference;
-	
-	// readStart[i] -> positions in readStart2ref2baseCalls[i][]
-	private final List<Set<Integer>> readStart2ref;
-	private final List<Set<Integer>> readEnd2ref;
 
-	private final int[] readStartCount;
-	private final int[] readEndCount;
-	private final int[] coverageWithBQ;
+	private final LRTarrest2BaseCallCount start;
+	private final LRTarrest2BaseCallCount end;
+	
+	private final Map<Integer, Byte> ref2base;
+	
 	private final int[] coverageWithoutBQ;
-
 	private final int[][] baseCalls;
-	
-	private final Set<Integer> windowPositions;
 	
 	public AbstractLRTarrest2BaseCallCountDataCache(final LIBRARY_TYPE libraryType, 
 			final byte minBASQ,
@@ -64,35 +46,15 @@ extends AbstractDataCache<T> {
 		super(coordinateController);
 		
 		this.libraryType = libraryType;
-
 		this.minBASQ = minBASQ;
-		
 		this.baseCallConfig = baseCallConfig;
 		
 		final int n 		= coordinateController.getActiveWindowSize();
-		readStartCount 		= new int[n];
-		readEndCount 		= new int[n];
-		coverageWithBQ		= new int[n];
+		start 				= new LRTarrest2BaseCallCount(coordinateController, n);
+		end 				= new LRTarrest2BaseCallCount(coordinateController, n);
+
 		coverageWithoutBQ	= new int[n];
-
-		readStart2ref2bcs 	= new ArrayList<Map<Integer,BaseCallCount>>(n);
-		readEnd2ref2bcs 	= new ArrayList<Map<Integer,BaseCallCount>>(n);
-		
-		readStart2ref 		= new ArrayList<Set<Integer>>(n);
-		readEnd2ref 		= new ArrayList<Set<Integer>>(n);
-		windowPositions		= new HashSet<Integer>(n);
-		
-		reference			= new HashMap<Integer, Byte>(n);
-		
-		final int mutations = 5;
-		for (int i = 0; i < n; ++i) {
-			readStart2ref2bcs.add(new HashMap<Integer, BaseCallCount>(100));
-			readEnd2ref2bcs.add(new HashMap<Integer, BaseCallCount>(100));
-
-			readStart2ref.add(new HashSet<Integer>(mutations));
-			readEnd2ref.add(new HashSet<Integer>(mutations));
-		}
-
+		ref2base			= new HashMap<Integer, Byte>(100);
 		baseCalls 			= new int[n][baseCallConfig.getBases().length];
 	}
 
@@ -102,12 +64,12 @@ extends AbstractDataCache<T> {
 
 		int windowPosition1 = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
 		if (windowPosition1 >= 0) {
-			readStartCount[windowPosition1]++;
+			start.addArrest(windowPosition1);
 		}
 
 		int windowPosition2 = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
 		if (windowPosition2 >= 0) {
-			readEndCount[windowPosition2]++;
+			end.addArrest(windowPosition2);
 		}
 
 		for (final AlignmentBlock alignmentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
@@ -135,10 +97,8 @@ extends AbstractDataCache<T> {
 
 		for (int j = 0; j < length; ++j) {
 			final int tmpReferencePosition 	= referencePosition + j;
-			final int tmpWindowPosition 	= windowPosition + j;
+			final int tmpWindowPosition 	= windowPosition < 0 ? -1 : windowPosition + j;
 			final int tmpReadPosition 		= readPosition + j;
-
-			byte refBase 					= 'N';
 
 			// check baseCall is not "N"
 			final byte bc = record.getReadBases()[tmpReadPosition];
@@ -147,82 +107,71 @@ extends AbstractDataCache<T> {
 				continue;
 			}
 
-			if (tmpWindowPosition >= 0 && tmpWindowPosition < getCoordinateController().getActiveWindowSize()) {
+			if (tmpWindowPosition >= 0) {
 				// ignore base quality here 
 				coverageWithoutBQ[tmpWindowPosition]++;
-	
-				// check baseCall quality
-				final byte bq = record.getBaseQualities()[tmpReadPosition];
-				if (bq < minBASQ) {
-					continue;
-				}
-
-				// count base call
-				baseCalls[tmpWindowPosition][baseIndex]++;
-
-				// get reference base from common storage within window
-				refBase = getCoordinateController().getReferenceProvider().getReference(tmpWindowPosition);
-			} else {
-				// get reference base from read
-				refBase = recordWrapper.getReference()[tmpReadPosition];
 			}
 
-			// position has a non-ref base call
-			boolean nonRef = false;
-			if (baseCallConfig.getBaseIndex(refBase) >= 0 && refBase != bc) {
-				nonRef = true;
+			// check baseCall quality
+			final byte bq = record.getBaseQualities()[tmpReadPosition];
+			if (bq < minBASQ) {
+				continue;
 			}
+			// TODO count with or without BASQ
+			// count base call
+			baseCalls[tmpWindowPosition][baseIndex]++;
 			
-			// mismatch
-			if (windowPosition1 >= 0) {
-				if (add(windowPosition1, tmpReadPosition, tmpReferencePosition, baseIndex, readStart2ref2bcs)) {
-					if (nonRef) {
-						readStart2ref.get(windowPosition1).add(tmpReferencePosition);
-						if (! reference.containsKey(tmpReferencePosition)) {
-							reference.put(tmpReferencePosition, refBase);
-						}
-					}
-				}
-			}
-				
-			if (windowPosition2 >= 0) {
-				if (add(windowPosition2, tmpReadPosition, tmpReferencePosition, baseIndex, readEnd2ref2bcs)) {
-					if (nonRef) {
-						readEnd2ref.get(windowPosition2).add(tmpReferencePosition);
-						if (! reference.containsKey(tmpReferencePosition)) {
-							reference.put(tmpReferencePosition, refBase);
-						}
-					}
-				}
-			}
+			add(windowPosition1, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, start);
+			add(windowPosition2, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, end);
 		}
 	}
 
-	protected boolean add(final int windowPosition, final int readPosition, final int reference, 
-			final int baseIndex, final List<Map<Integer, BaseCallCount>> win2refBc) {
+	private void add(final int windowPosition, final int referencePosition, final int readPosition, final int baseIndex, 
+			final SAMRecordWrapper recordWrapper, LRTarrest2BaseCallCount dest) {
 
-		windowPositions.add(windowPosition);
-		Map<Integer, BaseCallCount> ref2bc = win2refBc.get(windowPosition);
-		if (! ref2bc.containsKey(reference)) {
-			ref2bc.put(reference, new BaseCallCount());
+		if (windowPosition < 0) {
+			return; 
 		}
-		ref2bc.get(reference).increment(baseIndex);
+
+		byte refBase = 'N';
+
+		// check if we are outside of window
+		final int tmpWindowPosition = getCoordinateController().convert2windowPosition(referencePosition);
+		if (tmpWindowPosition < 0) {
+			if (! ref2base.containsKey(referencePosition)) {
+				ref2base.put(referencePosition, recordWrapper.getReference()[readPosition]);
+			}
+			refBase = ref2base.get(referencePosition);
+		} else {
+			// get reference base from common storage within window
+			refBase = getCoordinateController().getReferenceProvider().getReference(tmpWindowPosition);
+		}
 		
-		return true;
+		boolean nonRef = false;
+		final int refBaseIndex = baseCallConfig.getBaseIndex(refBase);
+		if (refBaseIndex >= 0 && refBaseIndex != baseIndex) {
+			nonRef = true;
+		}
+		
+		if (nonRef) {
+			dest.addNonRefBaseCall(windowPosition, referencePosition, baseIndex);
+		} else {
+			dest.addBaseCall(windowPosition, referencePosition, baseIndex);
+		}
 	}
-	
+
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
-		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
+		final int winArrestPos = getCoordinateController().convert2windowPosition(coordinate);
 
 		final LRTarrestCount lrtArrestCount = data.getLRTarrestCount();
 		final RTarrestCount readArrestCount = lrtArrestCount.getRTarrestCount();
 		
-		readArrestCount.setReadStart(readStartCount[windowPosition]);
-		readArrestCount.setReadEnd(readEndCount[windowPosition]);
+		readArrestCount.setReadStart(start.getArrestCount(winArrestPos));
+		readArrestCount.setReadEnd(end.getArrestCount(winArrestPos));
 
 		// TODO TEST if coverage is calculated correctly
-		final int internal = coverageWithoutBQ[windowPosition] - 
+		final int internal = coverageWithoutBQ[winArrestPos] - 
 				(readArrestCount.getReadStart() + readArrestCount.getReadEnd());
 		readArrestCount.setReadInternal(internal);
 
@@ -233,8 +182,6 @@ extends AbstractDataCache<T> {
 		
 		int arrest = 0;
 		int through = 0;
-
-		final Map<Integer, BaseCallCount> ref2bc = getRefPos2bc(data);
 		
 		switch (libraryType) {
 
@@ -242,42 +189,33 @@ extends AbstractDataCache<T> {
 			arrest 	+= readArrestCount.getReadStart();
 			arrest 	+= readArrestCount.getReadEnd();
 			through += readArrestCount.getReadInternal();
-			
-			add(windowPosition, invert, readStart2ref2bcs, readStart2ref,
-					lrtArrestCount, ref2bc);
+
+			start.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
 			break;
 
 		case FR_FIRSTSTRAND:
 			arrest 	+= readArrestCount.getReadEnd();
 			through += readArrestCount.getReadInternal();
-			
-			add(windowPosition, invert, readEnd2ref2bcs, readEnd2ref,
-					lrtArrestCount, ref2bc);
+
+			end.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
 			break;
 
 		case FR_SECONDSTRAND:
 			arrest 	+= readArrestCount.getReadStart();
 			through += readArrestCount.getReadInternal();
-			
-			add(windowPosition, invert, readStart2ref2bcs, readStart2ref,
-					lrtArrestCount, ref2bc);
+
+			start.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
 			break;
 			
 		case MIXED:
 			throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
 		}
 
-		for (int refPosition : ref2bc.keySet()) {
-			if (! lrtArrestCount.getReference().containsKey(refPosition)) {
-				lrtArrestCount.getReference().put(refPosition, reference.get(refPosition));
-			}
-		}
-		
 		// FIXME this should be done somewhere else
-		data.setReferenceBase(getCoordinateController().getReferenceProvider().getReference(windowPosition));
+		data.setReferenceBase(getCoordinateController().getReferenceProvider().getReference(winArrestPos));
 
 		// add base call data
-		System.arraycopy(baseCalls[windowPosition], 0, 
+		System.arraycopy(baseCalls[winArrestPos], 0, 
 				data.getBaseCallCount().getBaseCallCount(), 0, baseCallConfig.getBases().length);
 		if (invert) {
 			data.getBaseCallCount().invert();
@@ -287,80 +225,16 @@ extends AbstractDataCache<T> {
 		readArrestCount.setReadThrough(through);
 	}
 	
-	protected abstract Map<Integer, BaseCallCount> getRefPos2bc(T Data);
-	
-	protected void add(final int windowPosition, final boolean invert,
-			final List<Map<Integer, BaseCallCount>> win2ref2bc,
-			final List<Set<Integer>> win2refPositions,
-			final LRTarrestCount lrtArrestCount,
-			final Map<Integer, BaseCallCount> lrtArrestRef2bc) {
-
-		if (windowPosition < 0 && windowPosition >= win2ref2bc.size()) {
-			return;
-		}
-
-		final Set<Integer> refPositions = win2refPositions.get(windowPosition);
-		final Map<Integer, BaseCallCount> ref2bc = win2ref2bc.get(windowPosition);
-
-		for (final int referencePosition : refPositions) {
-			final BaseCallCount baseCallCount = ref2bc.get(referencePosition);
-			if (invert) {
-				baseCallCount.invert();
-			}
-
-			lrtArrestCount.add(lrtArrestRef2bc, referencePosition, baseCallCount);
-		}
-	}
-	
 	@Override
 	public void clear() {
-		for (int windowPosition : windowPositions) {
-			readStart2ref2bcs.get(windowPosition).clear();
-			readEnd2ref2bcs.get(windowPosition).clear();
-			
-			readStart2ref.get(windowPosition).clear();
-			readEnd2ref.get(windowPosition).clear();
-		}
-		windowPositions.clear();
-		reference.clear();
-		
-		Arrays.fill(readStartCount, 0);
-		Arrays.fill(readEndCount, 0);
-		Arrays.fill(coverageWithBQ, 0);
+		start.clear();
+		end.clear();
+
 		Arrays.fill(coverageWithoutBQ, 0);
+		ref2base.clear();
 		for (int[] b : baseCalls) {
 			Arrays.fill(b, 0);	
 		}
-	}
-
-	protected List<Map<Integer, BaseCallCount>> getReadStart2ref2bcs() {
-		return readStart2ref2bcs;
-	}
-	
-	protected List<Map<Integer, BaseCallCount>> getReadEnd2ref2bcs() {
-		return readEnd2ref2bcs;
-	}
-
-	protected List<Set<Integer>> getReadStart2ref() {
-		return readStart2ref;
-	}
-	
-	protected List<Set<Integer>> getReadEnd2ref() {
-		return readEnd2ref;
-	}
-
-	protected Map<Integer, Byte> getReference() {
-		return reference;
-	}
-	
-	public int getReadStartCount(final Coordinate coordinate) {
-		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
-		return readStartCount[windowPosition];
-	}
-
-	public int getReadEndCount(final Coordinate coordinate) {
-		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
-		return readEndCount[windowPosition];
 	}
 
 	public LIBRARY_TYPE getLibraryType() {

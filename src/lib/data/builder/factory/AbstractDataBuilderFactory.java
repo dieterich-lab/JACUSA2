@@ -24,15 +24,15 @@ public abstract class AbstractDataBuilderFactory<T extends AbstractData> {
 		this.generalParameter = generalParameter;
 	}
 	
-	public DataBuilder<T> newInstance(final CoordinateController coordinateController, 
+	public DataBuilder<T> newInstance(final int replicateIndex, final CoordinateController coordinateController, 
 			final AbstractConditionParameter<T> conditionParameter,
 			final List<FilterCache<?>> filterCaches) throws IllegalArgumentException {
-		
+
 		final CacheContainer<T> cacheContainer = createContainer(coordinateController, conditionParameter);
 		
 		final DataGenerator<T> dataGenerator = getParameter().getMethodFactory().getDataGenerator();
 
-		return new DataBuilder<T>(dataGenerator, conditionParameter, conditionParameter.getLibraryType(), 
+		return new DataBuilder<T>(replicateIndex, dataGenerator, conditionParameter, conditionParameter.getLibraryType(), 
 				cacheContainer, filterCaches);
 	}
 

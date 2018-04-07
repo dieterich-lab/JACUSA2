@@ -20,7 +20,7 @@ import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.provider.BedCoordinateProvider;
 import lib.util.coordinate.provider.CoordinateProvider;
 import lib.util.coordinate.provider.SAMCoordinateProviderAdvanced;
-import lib.util.coordinate.provider.WindowedCoordinateProvider;
+import lib.util.coordinate.provider.WindowedCoordinateProviderStatic;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
@@ -262,11 +262,13 @@ implements DataGenerator<T> {
 			coordinateProvider = new BedCoordinateProvider(isStranded, parameter.getInputBedFilename());
 		}
 
-		// wrap chosen coordinate provider 
+		// wrap chosen coordinate provider
+		/* TODO not necessary
 		if (parameter.getMaxThreads() > 1) {
-			coordinateProvider = new WindowedCoordinateProvider(isStranded,
+			coordinateProvider = new WindowedCoordinateProviderStatic(isStranded,
 					coordinateProvider, parameter.getReservedWindowSize());
 		}
+		*/
 	}
 	
 	/**
@@ -328,7 +330,7 @@ implements DataGenerator<T> {
 	protected List<SAMSequenceRecord> getSAMSequenceRecords(final String[][] recordFilenames) throws Exception {
 		AbstractTool.getLogger().addInfo("Computing overlap between sequence records.");
 		final String error = "Sequence Dictionaries of BAM files do not match";
-
+		
 		String lastRecordFilename = null;
 		SAMSequenceDictionary lastSequenceDictionary = null;
 		for (String[] outer : recordFilenames) {

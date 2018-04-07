@@ -99,12 +99,13 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 				if (! getMethodFactory().getParameter().isDebug()) {
 					// progressIndicator.update("Progress: ", startTime, currentCoordinateIndex, coordinateProvider.getTotal());
 				}
+				*/
 				
 				// computation finished
 				if (! hasNext() && runningWorkers.isEmpty()) {
 					// progressIndicator.print("\nDone!\n");
 					break;
-				}*/
+				}
 				try {
 					this.wait(2 * 1000);
 				} catch (InterruptedException e) {

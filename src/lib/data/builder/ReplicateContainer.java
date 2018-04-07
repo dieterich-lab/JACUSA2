@@ -91,9 +91,9 @@ public class ReplicateContainer<T extends AbstractData> {
 		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); ++replicateIndex) {
 			final List<FilterCache<?>> filterCaches = 
 					conditionContainer.getFilterContainer().getFilterCaches(conditionParameter.getConditionIndex(), replicateIndex);
-			
+
 			final DataBuilder<T> builder = 
-					parameter.getMethodFactory().getDataBuilderFactory().newInstance(coordinateController, conditionParameter, filterCaches);
+					parameter.getMethodFactory().getDataBuilderFactory().newInstance(replicateIndex, coordinateController, conditionParameter, filterCaches);
 			dataBuilders.add(builder);
 		}
 

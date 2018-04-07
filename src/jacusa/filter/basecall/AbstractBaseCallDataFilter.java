@@ -37,8 +37,8 @@ extends AbstractDataFilter<T> {
 
 	@Override
 	protected boolean filter(final ParallelData<T> parallelData) {
-		// final int[] variantBaseIndexs = ParallelData.getVariantBaseIndexs(parallelData);
-		final int[] variantBaseIndexs = ParallelData.getNonReferenceBaseIndexs(parallelData);
+		// TODO TEST final int[] variantBaseIndexs = ParallelData.getNonReferenceBaseIndexs(parallelData);
+		final int[] variantBaseIndexs = ParallelData.getVariantBaseIndexs(parallelData);
 
 		for (int variantBaseIndex : variantBaseIndexs) {
 			int count = 0;

@@ -6,7 +6,6 @@ import lib.util.coordinate.CoordinateController;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.BaseCallCount;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasLRTarrestCount;
 import lib.data.has.HasReferenceBase;
@@ -21,11 +20,6 @@ extends AbstractLRTarrest2BaseCallCountDataCache<T> {
 			final CoordinateController coordinateController) {
 		
 		super(libraryType, minBASQ, baseCallConfig, coordinateController);
-	}
-
-	@Override
-	protected Map<Integer, BaseCallCount> getRefPos2bc(final T data) {
-		return data.getLRTarrestCount().getRefPos2bc4arrest();
 	}
 	
 }

@@ -55,7 +55,15 @@ public class ComplexGeneralCache implements GeneralCache {
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		referenceProvider.addRecordWrapper(recordWrapper);
-
+		
+		/*
+		boolean right = false;
+		if (recordWrapper.getSAMRecord().getReadName().equals("HWI-ST999:294:C9LMJACXX:1:1206:5347:41258") || 
+				recordWrapper.getSAMRecord().getReadName().equals("HWI-ST999:294:C9LMJACXX:1:2206:6528:78416")) {
+			right = true;
+		}
+		*/
+		
 		AlignmentBlock previousBlock = null;
 		for (final AlignmentBlock currentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
 			
@@ -70,7 +78,8 @@ public class ComplexGeneralCache implements GeneralCache {
 				
 			if (previousBlock != null) {
 				final int previousRefPos = previousBlock.getReferenceStart() + previousBlock.getLength();	
-				final int previousLen = currentRefPos - 1 - previousRefPos;
+				// final int previousLen = currentRefPos - 1 - previousRefPos;
+				final int previousLen = currentRefPos - previousRefPos;
 				final WindowPositionGuard previousWinPosGuard = coordinateController.convert(previousRefPos, previousLen);
 				
 				if (previousWinPosGuard.isValid()) {

@@ -9,18 +9,18 @@ import lib.cli.options.ThreadWindowSizeOption;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
-public class WindowedCoordinateProvider implements CoordinateProvider {
+public class WindowedCoordinateProviderDynamic implements CoordinateProvider {
 
 	private Iterator<Coordinate> it;
 	private int total;
 	
-	public WindowedCoordinateProvider(final boolean stranded, final Coordinate coordinate, final int windowSize) {
+	public WindowedCoordinateProviderDynamic(final boolean stranded, final Coordinate coordinate, final int windowSize) {
 		final List<Coordinate> coordinates = makeWindows(stranded, coordinate, windowSize);
 		total = coordinates.size();
 		it = coordinates.iterator();
 	}
-	
-	public WindowedCoordinateProvider(final boolean stranded, final CoordinateProvider cp, final int windowSize) {
+
+	public WindowedCoordinateProviderDynamic(final boolean stranded, final CoordinateProvider cp, final int windowSize) {
 		final List<Coordinate> coordinates = makeWindows(stranded, cp, windowSize);
 		total = coordinates.size();
 		it = coordinates.iterator();

@@ -18,7 +18,7 @@ import lib.location.StrandedJumpingCoordinateAdvancer;
 import lib.location.UnstrandedJumpingCoordinateAdvancer;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
-import lib.util.coordinate.provider.WindowedCoordinateProvider;
+import lib.util.coordinate.provider.WindowedCoordinateProviderStatic;
 
 public class CoordinateController {
 
@@ -28,7 +28,7 @@ public class CoordinateController {
 	private final AbstractParameter<?, ?> parameter;
 	
 	private Coordinate reserved;
-	private WindowedCoordinateProvider provider;
+	private WindowedCoordinateProviderStatic provider;
 	private Coordinate active;
 
 	private ReferenceProvider referenceProvider;
@@ -56,7 +56,7 @@ public class CoordinateController {
 	public void updateReserved(final Coordinate reservedWindowCoordinate) {
 		active = null;
 		reserved = reservedWindowCoordinate;
-		provider = new WindowedCoordinateProvider(reservedWindowCoordinate.getStrand() != STRAND.UNKNOWN, 
+		provider = new WindowedCoordinateProviderStatic(reservedWindowCoordinate.getStrand() != STRAND.UNKNOWN, 
 				reservedWindowCoordinate, activeWindowSize);
 
 		coordinateAdvancer.getCurrentCoordinate().setContig(reservedWindowCoordinate.getContig());
