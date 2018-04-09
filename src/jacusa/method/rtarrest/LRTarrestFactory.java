@@ -5,6 +5,8 @@ import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.LRTarrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.LRTarrestHomozygousFilterFactory;
+import jacusa.filter.factory.LRTarrestMaxAlleleCountFilterFactory;
 import jacusa.filter.factory.distance.LRTarrestCombinedFilterFactory;
 import jacusa.filter.factory.distance.LRTarrestINDEL_FilterFactory;
 import jacusa.filter.factory.distance.LRTarrestReadPositionFilterFactory;
@@ -149,6 +151,8 @@ extends AbstractMethodFactory<LRTarrestData, StatisticResult<LRTarrestData>> {
 		List<AbstractFilterFactory<LRTarrestData>> filterFactories = 
 				new ArrayList<AbstractFilterFactory<LRTarrestData>>(5);
 
+		filterFactories.add(new LRTarrestMaxAlleleCountFilterFactory<LRTarrestData>());
+		filterFactories.add(new LRTarrestHomozygousFilterFactory<LRTarrestData>(getParameter()));
 		filterFactories.add(new LRTarrestCombinedFilterFactory<LRTarrestData>());
 		filterFactories.add(new LRTarrestReadPositionFilterFactory<LRTarrestData>());
 		filterFactories.add(new LRTarrestINDEL_FilterFactory<LRTarrestData>());
