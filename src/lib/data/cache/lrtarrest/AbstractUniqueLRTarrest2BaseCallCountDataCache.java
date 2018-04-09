@@ -29,11 +29,16 @@ implements UniqueRegionDataCache<T> {
 	private final BaseCallConfig baseCallConfig;
 	private final byte minBASQ;
 
-	private final LRTarrest2BaseCallCount start;
-	private final LRTarrest2BaseCallCount end;
+	private final LRTarrest2FilteredBaseCallCount start;
+	private final LRTarrest2FilteredBaseCallCount end;
 		
 	private boolean[] visited;
-
+	
+	/* TODO remove
+	private boolean s;
+	private boolean e;
+	*/
+	
 	public AbstractUniqueLRTarrest2BaseCallCountDataCache(final LIBRARY_TYPE libraryType, 
 			final byte minBASQ,
 			final BaseCallConfig baseCallConfig,
@@ -46,8 +51,13 @@ implements UniqueRegionDataCache<T> {
 		this.baseCallConfig = baseCallConfig;
 		
 		final int n = coordinateController.getActiveWindowSize();
-		start 		= new LRTarrest2BaseCallCount(coordinateController, n);
-		end 		= new LRTarrest2BaseCallCount(coordinateController, n);
+		start 		= new LRTarrest2FilteredBaseCallCount(coordinateController, n);
+		end 		= new LRTarrest2FilteredBaseCallCount(coordinateController, n);
+		
+		/* TODO remove
+		s = false;
+		e = false;
+		*/
 	}
 
 	@Override
@@ -59,6 +69,17 @@ implements UniqueRegionDataCache<T> {
 	public void addData(final T data, final Coordinate coordinate) {
 		final int winArrestPos = getCoordinateController().convert2windowPosition(coordinate);
 
+		/* TODO remove
+		if (! s) {
+			start.print();
+			s = true;
+		}
+		if (! e) {
+			end.print();
+			e = true;
+		}
+		*/
+		
 		boolean invert = false;
 		if (coordinate.getStrand() == STRAND.REVERSE) {
 			invert = true;
@@ -129,22 +150,22 @@ implements UniqueRegionDataCache<T> {
 				continue;
 			}
 			
-			add(windowArrestPosition1, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, start);
-			add(windowArrestPosition2, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, end);
+			if (! visited[tmpReadPosition]) {
+				if (windowArrestPosition1 >= 0) {
+					add(windowArrestPosition1, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, start);
+				}
+				if (windowArrestPosition2 >= 0) {
+					add(windowArrestPosition2, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, end);
+				}
+				visited[tmpReadPosition] = true;
+			}
 		}
 	}
 
 	private void add(final int windowArrestPosition, final int baseCallReferencePosition, final int readPosition, final int baseIndex, 
-			final SAMRecordWrapper recordWrapper, LRTarrest2BaseCallCount dest) {
+			final SAMRecordWrapper recordWrapper, LRTarrest2FilteredBaseCallCount dest) {
 
-		if (windowArrestPosition < 0) {
-			return; 
-		}
-		if (visited[readPosition]) {
-			return;
-		}
 		dest.addBaseCall(windowArrestPosition, baseCallReferencePosition, baseIndex);
-		visited[readPosition] = true;
 	}
 	
 	protected abstract Map<Integer, BaseCallCount> getRefPos2bc(T Data);

@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import jacusa.filter.cache.FilterCache;
-import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
@@ -78,6 +77,8 @@ extends AbstractDataFilter<T> {
 		for (int refPosition : refPositions) {
 			final BaseCallData[][] baseCallData = dataGenerator.createContainerData(conditions);
 			final byte refBase = combinedPooled.getLRTarrestCount().getReference().get(refPosition);
+			final Coordinate tmpCoordinate = new Coordinate(coordinate);
+			tmpCoordinate.setPosition(refPosition);
 			// create new data container to store linked base substitution positions
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
 				// number of replicates for this condition
@@ -87,7 +88,7 @@ extends AbstractDataFilter<T> {
 					// specific data
 					final T tmpData = parallelData.getData(conditionIndex, replicateIndex);
 					// create new data
-					baseCallData[conditionIndex][replicateIndex] = dataGenerator.createData(tmpData.getLibraryType(), coordinate);
+					baseCallData[conditionIndex][replicateIndex] = dataGenerator.createData(tmpData.getLibraryType(), tmpCoordinate);
 					// set reference base
 					baseCallData[conditionIndex][replicateIndex].setReferenceBase(refBase);
 					// get base call count from linked position
@@ -125,18 +126,20 @@ extends AbstractDataFilter<T> {
 						}
 					}
 				}
-				
+
 				if (filter(count, filteredCount)) {
 					artefact[refPositionIndex] = true;
 					// add to buffer
 					filteredRefPositions.add(refPosition);
 					filter = true;
 				}
-				
+
+				/*
 				System.out.println("Pos.:" + combinedPooled.getCoordinate());
 				System.out.println("Variant Base.:" + BaseCallConfig.BASES[variantBaseIndex]);
 				System.out.println("Ref.:" + refPosition + " " + (char)refBase);
 				System.out.println("Filter.:" + filter(count, filteredCount));
+				*/
 			}
 
 			refPositionIndex++;
