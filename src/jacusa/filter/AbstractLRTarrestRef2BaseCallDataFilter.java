@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import jacusa.filter.cache.FilterCache;
+import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
@@ -132,12 +133,10 @@ extends AbstractDataFilter<T> {
 					filter = true;
 				}
 				
-				/*
 				System.out.println("Pos.:" + combinedPooled.getCoordinate());
 				System.out.println("Variant Base.:" + BaseCallConfig.BASES[variantBaseIndex]);
 				System.out.println("Ref.:" + refPosition + " " + (char)refBase);
 				System.out.println("Filter.:" + filter(count, filteredCount));
-				*/
 			}
 
 			refPositionIndex++;

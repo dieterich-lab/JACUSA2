@@ -1,7 +1,5 @@
 package lib.data.cache.lrtarrest;
 
-import java.util.Map;
-
 import lib.util.coordinate.CoordinateController;
 
 import lib.cli.options.BaseCallConfig;

@@ -6,7 +6,6 @@ import jacusa.filter.factory.AbstractFilterFactory;
 import java.util.Calendar;
 import java.util.List;
 
-import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
@@ -35,12 +34,12 @@ extends AbstractResultFormat<T, R> {
 	public static final char SEP3 		= ':';
 	public static final char EMPTY 		= '.';
 	
-	private final BaseCallConfig baseConfig;
+	// private final BaseCallConfig baseConfig;
 	private final FilterConfig<T> filterConfig;
 	
 	public VCFcall(final AbstractParameter<T, R> parameter) {
 		super(CHAR, "VCF Output format. Option -P will be ignored (VCF is unstranded)", parameter);
-		this.baseConfig 	= parameter.getBaseConfig();
+		// this.baseConfig 	= parameter.getBaseConfig();
 		this.filterConfig 	= parameter.getFilterConfig();
 	}
 	

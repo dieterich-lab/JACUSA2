@@ -92,8 +92,8 @@ extends AbstractDataCache<T> {
 		final int windowPosition = getCoordinateController().convert2windowPosition(referencePosition);
 		
 		final SAMRecord record = recordWrapper.getSAMRecord();
-		int windowPosition1 = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
-		int windowPosition2 = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
+		int windowArrestPosition1 = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
+		int windowArrestPosition2 = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
 
 		for (int j = 0; j < length; ++j) {
 			final int tmpReferencePosition 	= referencePosition + j;
@@ -121,30 +121,30 @@ extends AbstractDataCache<T> {
 			// count base call
 			baseCalls[tmpWindowPosition][baseIndex]++;
 			
-			add(windowPosition1, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, start);
-			add(windowPosition2, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, end);
+			add(windowArrestPosition1, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, start);
+			add(windowArrestPosition2, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, end);
 		}
 	}
 
-	private void add(final int windowPosition, final int referencePosition, final int readPosition, final int baseIndex, 
+	private void add(final int windowArrestPosition, final int baseCallReferencePosition, final int readPosition, final int baseIndex, 
 			final SAMRecordWrapper recordWrapper, LRTarrest2BaseCallCount dest) {
 
-		if (windowPosition < 0) {
+		if (windowArrestPosition < 0) {
 			return; 
 		}
 
 		byte refBase = 'N';
 
 		// check if we are outside of window
-		final int tmpWindowPosition = getCoordinateController().convert2windowPosition(referencePosition);
-		if (tmpWindowPosition < 0) {
-			if (! ref2base.containsKey(referencePosition)) {
-				ref2base.put(referencePosition, recordWrapper.getReference()[readPosition]);
+		final int baseCallWindowPosition = getCoordinateController().convert2windowPosition(baseCallReferencePosition);
+		if (baseCallWindowPosition < 0) {
+			if (! ref2base.containsKey(baseCallReferencePosition)) {
+				ref2base.put(baseCallReferencePosition, recordWrapper.getReference()[readPosition]);
 			}
-			refBase = ref2base.get(referencePosition);
+			refBase = ref2base.get(baseCallReferencePosition);
 		} else {
 			// get reference base from common storage within window
-			refBase = getCoordinateController().getReferenceProvider().getReference(tmpWindowPosition);
+			refBase = getCoordinateController().getReferenceProvider().getReference(baseCallWindowPosition);
 		}
 		
 		boolean nonRef = false;
@@ -154,9 +154,9 @@ extends AbstractDataCache<T> {
 		}
 		
 		if (nonRef) {
-			dest.addNonRefBaseCall(windowPosition, referencePosition, baseIndex);
+			dest.addNonRefBaseCall(windowArrestPosition, baseCallReferencePosition, baseIndex);
 		} else {
-			dest.addBaseCall(windowPosition, referencePosition, baseIndex);
+			dest.addBaseCall(windowArrestPosition, baseCallReferencePosition, baseIndex);
 		}
 	}
 
@@ -191,6 +191,7 @@ extends AbstractDataCache<T> {
 			through += readArrestCount.getReadInternal();
 
 			start.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
+			end.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
 			break;
 
 		case FR_FIRSTSTRAND:
@@ -213,7 +214,16 @@ extends AbstractDataCache<T> {
 
 		// FIXME this should be done somewhere else
 		data.setReferenceBase(getCoordinateController().getReferenceProvider().getReference(winArrestPos));
-
+		// copy reference bases
+		for (final int baseCallRefPos : lrtArrestCount.getRefPos2bc4arrest().keySet()) {
+			final int tmpWindowPosition = getCoordinateController().convert2windowPosition(baseCallRefPos);
+			if (tmpWindowPosition < 0) {
+				lrtArrestCount.getReference().put(baseCallRefPos, ref2base.get(baseCallRefPos));
+			} else {
+				lrtArrestCount.getReference().put(baseCallRefPos, getCoordinateController().getReferenceProvider().getReference(tmpWindowPosition));
+			}
+		}
+		
 		// add base call data
 		System.arraycopy(baseCalls[winArrestPos], 0, 
 				data.getBaseCallCount().getBaseCallCount(), 0, baseCallConfig.getBases().length);

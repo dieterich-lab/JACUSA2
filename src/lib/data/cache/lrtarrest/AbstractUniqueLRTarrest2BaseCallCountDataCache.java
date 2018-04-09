@@ -3,7 +3,6 @@ package lib.data.cache.lrtarrest;
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 
-import java.util.List;
 import java.util.Map;
 
 import lib.util.coordinate.Coordinate;
@@ -56,23 +55,6 @@ implements UniqueRegionDataCache<T> {
 		visited = new boolean[recordWrapper.getSAMRecord().getReadLength()];
 	}
 
-	protected boolean add(final int windowPosition, final int readPosition, final int reference, 
-			final int baseIndex, final List<Map<Integer, BaseCallCount>> win2refBc) {
-
-		if (visited[readPosition]) {
-			return false;
-		}
-
-		Map<Integer, BaseCallCount> ref2bc = win2refBc.get(windowPosition);
-		if (! ref2bc.containsKey(reference)) {
-			ref2bc.put(reference, new BaseCallCount());
-		}
-		ref2bc.get(reference).increment(baseIndex);
-		
-		visited[readPosition] = true;
-		return true;
-	}
-	
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
 		final int winArrestPos = getCoordinateController().convert2windowPosition(coordinate);
@@ -87,15 +69,16 @@ implements UniqueRegionDataCache<T> {
 		switch (getLibraryType()) {
 
 		case UNSTRANDED:
-			start.copyNonRef(winArrestPos, invert, ref2bc);
+			start.copyAll(winArrestPos, invert, ref2bc);
+			end.copyAll(winArrestPos, invert, ref2bc);
 			break;
 
 		case FR_FIRSTSTRAND:
-			end.copyNonRef(winArrestPos, invert, ref2bc);
+			end.copyAll(winArrestPos, invert, ref2bc);
 			break;
 
 		case FR_SECONDSTRAND:
-			start.copyNonRef(winArrestPos, invert, ref2bc);
+			start.copyAll(winArrestPos, invert, ref2bc);
 			break;
 			
 		case MIXED:
@@ -127,8 +110,8 @@ implements UniqueRegionDataCache<T> {
 		}
 		
 		final SAMRecord record = recordWrapper.getSAMRecord();
-		int windowPosition1 = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
-		int windowPosition2 = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
+		int windowArrestPosition1 = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
+		int windowArrestPosition2 = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
 
 		for (int j = 0; j < length; ++j) {
 			final int tmpReferencePosition 	= referencePosition + j;
@@ -146,23 +129,21 @@ implements UniqueRegionDataCache<T> {
 				continue;
 			}
 			
-			add(windowPosition1, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, start);
-			add(windowPosition2, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, end);
+			add(windowArrestPosition1, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, start);
+			add(windowArrestPosition2, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, end);
 		}
 	}
 
-	private void add(final int windowPosition, final int referencePosition, final int readPosition, final int baseIndex, 
+	private void add(final int windowArrestPosition, final int baseCallReferencePosition, final int readPosition, final int baseIndex, 
 			final SAMRecordWrapper recordWrapper, LRTarrest2BaseCallCount dest) {
 
-		if (windowPosition < 0) {
+		if (windowArrestPosition < 0) {
 			return; 
 		}
-
 		if (visited[readPosition]) {
 			return;
 		}
-
-		dest.addBaseCall(windowPosition, referencePosition, baseIndex);
+		dest.addBaseCall(windowArrestPosition, baseCallReferencePosition, baseIndex);
 		visited[readPosition] = true;
 	}
 	

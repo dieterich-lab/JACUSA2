@@ -139,10 +139,6 @@ public class NextPositionSegmentContainer {
 				notCovered.updateNext(windowPosition);
 			} else {
 				final int tmpNotCoveredEnd = notCovered.getEnd();
-				if (end > tmpNotCoveredEnd) {
-					int i = 0;
-					i++;
-				}
 				
 				// store next
 				final int nextPosition = notCovered.getNext();
@@ -201,9 +197,6 @@ public class NextPositionSegmentContainer {
 			}
 			
 		}
-		
-		int TODO = 0;
-		TODO = 1;
 	}
 	
 	private void updateUnknown2NotCovered(final NextPositionSegment unknown, final int windowPosition, final int length, final int nextPosition) {
@@ -274,11 +267,6 @@ public class NextPositionSegmentContainer {
 	}
 	
 	private void setId(final int id, final int start, final int end) {
-		if (start > end) {
-			int j = 0;
-			j++;
-			j++;
-		}
 		Arrays.fill(winPos2id, start, end, id);
 	}
 	

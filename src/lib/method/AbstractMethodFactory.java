@@ -260,15 +260,12 @@ implements DataGenerator<T> {
 			// coordinateProvider = new SAMCoordinateProvider(isStranded, sequenceRecords);
 		} else {
 			coordinateProvider = new BedCoordinateProvider(isStranded, parameter.getInputBedFilename());
+			// wrap chosen provider
+			if (parameter.getMaxThreads() > 1) {
+				coordinateProvider = new WindowedCoordinateProviderStatic(isStranded,
+						coordinateProvider, parameter.getReservedWindowSize());
+			}
 		}
-
-		// wrap chosen coordinate provider
-		/* TODO not necessary
-		if (parameter.getMaxThreads() > 1) {
-			coordinateProvider = new WindowedCoordinateProviderStatic(isStranded,
-					coordinateProvider, parameter.getReservedWindowSize());
-		}
-		*/
 	}
 	
 	/**
