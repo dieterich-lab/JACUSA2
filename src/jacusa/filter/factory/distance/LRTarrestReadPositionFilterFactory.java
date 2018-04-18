@@ -34,7 +34,7 @@ extends AbstractDistanceFilterFactory<T> {
 
 	public LRTarrestReadPositionFilterFactory() {
 		super('B', 
-				"Filter artefacts (INDEL, read start/end, and splice site) of read arrest positions.", 
+				"Filter artefacts in the vicinity of read start/end of read arrest reads.", 
 				6, 0.5, 1);
 	}
 

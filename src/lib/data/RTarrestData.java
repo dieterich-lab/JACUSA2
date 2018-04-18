@@ -4,7 +4,7 @@ import lib.data.has.HasRTarrestCount;
 import lib.util.coordinate.Coordinate;
 
 public class RTarrestData
-extends BaseCallData
+extends PileupData
 implements HasRTarrestCount {
 
 	private final RTarrestCount rtArrestCount;

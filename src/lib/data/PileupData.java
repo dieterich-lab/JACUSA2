@@ -33,8 +33,7 @@ implements HasPileupCount, HasPileupFilterData {
 		this.pileupFilterData	= pileupData.pileupFilterData.copy();
 	}
 	
-	public PileupData(final Coordinate coordinate, final byte referenceBase,
-			final LIBRARY_TYPE libraryType) {
+	public PileupData(final LIBRARY_TYPE libraryType, final Coordinate coordinate, final byte referenceBase) {
 
 		super(libraryType, coordinate);
 

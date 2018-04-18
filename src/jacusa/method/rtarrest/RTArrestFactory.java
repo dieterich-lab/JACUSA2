@@ -4,6 +4,12 @@ import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.RTarrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.HomozygousFilterFactory;
+import jacusa.filter.factory.MaxAlleleCountFilterFactory;
+import jacusa.filter.factory.distance.CombinedFilterFactory;
+import jacusa.filter.factory.distance.INDEL_FilterFactory;
+import jacusa.filter.factory.distance.ReadPositionDistanceFilterFactory;
+import jacusa.filter.factory.distance.SpliceSiteFilterFactory;
 import jacusa.io.writer.BED6rtArrestResultFormat;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import jacusa.worker.RTArrestWorker;
@@ -16,6 +22,7 @@ import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.DebugModusOption;
+import lib.cli.options.FilterModusOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
 import lib.cli.options.ResultFormatOption;
 import lib.cli.options.HelpOption;
@@ -64,7 +71,7 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 					getParameter(), getResultFormats()));
 		}
 		
-		// addACOption(new FilterModusOption(getParameter()));
+		addACOption(new FilterModusOption(getParameter()));
 		// addACOption(new BaseConfigOption(getParameter()));
 		
 		addACOption(new StatisticFilterOption(getParameter().getStatisticParameters()));
@@ -131,8 +138,17 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 		final Map<Character, AbstractFilterFactory<RTarrestData>> abstractPileupFilters = 
 				new HashMap<Character, AbstractFilterFactory<RTarrestData>>();
 
-		List<AbstractFilterFactory<RTarrestData>> filterFactories = 
-				new ArrayList<AbstractFilterFactory<RTarrestData>>(5);
+		final List<AbstractFilterFactory<RTarrestData>> filterFactories = 
+				new ArrayList<AbstractFilterFactory<RTarrestData>>(10);
+		
+		filterFactories.add(new CombinedFilterFactory<RTarrestData>());
+		filterFactories.add(new INDEL_FilterFactory<RTarrestData>());
+		filterFactories.add(new ReadPositionDistanceFilterFactory<RTarrestData>());
+		filterFactories.add(new SpliceSiteFilterFactory<RTarrestData>());
+		filterFactories.add(new HomozygousFilterFactory<RTarrestData>(getParameter()));
+		filterFactories.add(new MaxAlleleCountFilterFactory<RTarrestData>());
+		
+		// FIXME filterFactories.add(new HomopolymerFilterFactory<PileupData>());
 
 		for (final AbstractFilterFactory<RTarrestData> filterFactory : filterFactories) {
 			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
