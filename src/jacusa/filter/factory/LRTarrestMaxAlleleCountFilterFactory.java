@@ -28,14 +28,11 @@ extends AbstractFilterFactory<T> {
 	private static final int MAX_ALLELES = 2;
 	// chosen value
 	private int alleles;
-
-	private final Set<Integer> filteredRefPositions;
 	
 	public LRTarrestMaxAlleleCountFilterFactory() {
 		super('M', 
 				"Max allowed alleles per parallel pileup. Default: "+ MAX_ALLELES);
 		alleles = MAX_ALLELES;
-		filteredRefPositions = new HashSet<Integer>(5);
 	}
 
 	@Override
@@ -73,8 +70,11 @@ extends AbstractFilterFactory<T> {
 	 */
 	private class MaxAlleleFilter extends AbstractFilter<T> {
 		
+		private final Set<Integer> filteredRefPositions;
+		
 		public MaxAlleleFilter(final char c) {
 			super(c);
+			filteredRefPositions = new HashSet<Integer>(5);
 		}
 		
 		@Override

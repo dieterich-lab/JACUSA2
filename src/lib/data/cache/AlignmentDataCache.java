@@ -82,10 +82,9 @@ extends AbstractDataCache<T> {
 		
 		data.getRTarrestCount().setReadStart(readStartCount[windowPosition]);
 		data.getRTarrestCount().setReadEnd(readEndCount[windowPosition]);
-
-		final int inner = coverage[windowPosition] - (data.getRTarrestCount().getReadStart() + data.getRTarrestCount().getReadEnd());
+		final int inner	= coverage[windowPosition] - (data.getRTarrestCount().getReadStart() + data.getRTarrestCount().getReadEnd());
 		data.getRTarrestCount().setReadInternal(inner);
-
+		
 		int arrest = 0;
 		int through = 0;
 
@@ -94,17 +93,17 @@ extends AbstractDataCache<T> {
 		case UNSTRANDED:
 			arrest 	+= data.getRTarrestCount().getReadStart();
 			arrest 	+= data.getRTarrestCount().getReadEnd();
-			through += data.getRTarrestCount().getReadInternal();
+			through	+= coverage[windowPosition] - (data.getRTarrestCount().getReadStart() + data.getRTarrestCount().getReadEnd());
 			break;
 
 		case FR_FIRSTSTRAND:
 			arrest 	+= data.getRTarrestCount().getReadEnd();
-			through += data.getRTarrestCount().getReadInternal();
+			through	+= coverage[windowPosition] - (data.getRTarrestCount().getReadEnd());
 			break;
 
 		case FR_SECONDSTRAND:
 			arrest 	+= data.getRTarrestCount().getReadStart();
-			through += data.getRTarrestCount().getReadInternal();
+			through	+= coverage[windowPosition] - (data.getRTarrestCount().getReadStart());
 			break;
 			
 		case MIXED:

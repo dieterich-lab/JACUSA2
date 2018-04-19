@@ -107,7 +107,7 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 					break;
 				}
 				try {
-					this.wait(2 * 1000);
+					this.wait(60 * 1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

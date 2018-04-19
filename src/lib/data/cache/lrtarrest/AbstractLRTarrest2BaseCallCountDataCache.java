@@ -169,12 +169,10 @@ extends AbstractDataCache<T> {
 		
 		readArrestCount.setReadStart(start.getArrestCount(winArrestPos));
 		readArrestCount.setReadEnd(end.getArrestCount(winArrestPos));
-
-		// TODO TEST if coverage is calculated correctly
-		final int internal = coverageWithoutBQ[winArrestPos] - 
+		final int inner = coverageWithoutBQ[winArrestPos] - 
 				(readArrestCount.getReadStart() + readArrestCount.getReadEnd());
-		readArrestCount.setReadInternal(internal);
-
+		readArrestCount.setReadInternal(inner);
+		
 		boolean invert = false;
 		if (coordinate.getStrand() == STRAND.REVERSE) {
 			invert = true;
@@ -188,7 +186,8 @@ extends AbstractDataCache<T> {
 		case UNSTRANDED:
 			arrest 	+= readArrestCount.getReadStart();
 			arrest 	+= readArrestCount.getReadEnd();
-			through += readArrestCount.getReadInternal();
+			through += coverageWithoutBQ[winArrestPos] - 
+					(readArrestCount.getReadStart() + readArrestCount.getReadEnd());
 
 			start.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
 			end.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
@@ -196,14 +195,16 @@ extends AbstractDataCache<T> {
 
 		case FR_FIRSTSTRAND:
 			arrest 	+= readArrestCount.getReadEnd();
-			through += readArrestCount.getReadInternal();
+			through += coverageWithoutBQ[winArrestPos] - 
+					(readArrestCount.getReadEnd());
 
 			end.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
 			break;
 
 		case FR_SECONDSTRAND:
 			arrest 	+= readArrestCount.getReadStart();
-			through += readArrestCount.getReadInternal();
+			through += coverageWithoutBQ[winArrestPos] - 
+					(readArrestCount.getReadStart());
 
 			start.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
 			break;
@@ -223,7 +224,7 @@ extends AbstractDataCache<T> {
 				lrtArrestCount.getReference().put(baseCallRefPos, getCoordinateController().getReferenceProvider().getReference(tmpWindowPosition));
 			}
 		}
-		
+
 		// add base call data
 		System.arraycopy(baseCalls[winArrestPos], 0, 
 				data.getBaseCallCount().getBaseCallCount(), 0, baseCallConfig.getBases().length);

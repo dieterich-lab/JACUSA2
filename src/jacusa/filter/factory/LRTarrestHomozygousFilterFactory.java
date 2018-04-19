@@ -28,7 +28,7 @@ extends AbstractFilterFactory<T> {
 	// which condition is required to be homozygous
 	private int homozygousConditionIndex;
 	private final AbstractParameter<T, ?> parameters;
-	private final Set<Integer> filteredRefPositions;
+	
 	
 	public LRTarrestHomozygousFilterFactory(final AbstractParameter<T, ?> parameters) {
 		super('H', 
@@ -36,7 +36,6 @@ extends AbstractFilterFactory<T> {
 				"(MUST be set to H:1 or H:2). Default: none");
 		homozygousConditionIndex 	= -1;
 		this.parameters 			= parameters;
-		filteredRefPositions 		= new HashSet<Integer>(5);
 	}
 
 	@Override
@@ -80,8 +79,11 @@ extends AbstractFilterFactory<T> {
 	private class HomozygousFilter 
 	extends AbstractFilter<T> {
 
+		private final Set<Integer> filteredRefPositions;
+		
 		public HomozygousFilter(final char c) {
 			super(c);
+			filteredRefPositions 		= new HashSet<Integer>(5);
 		}
 
 		@Override

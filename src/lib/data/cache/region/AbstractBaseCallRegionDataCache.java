@@ -80,7 +80,7 @@ extends AbstractRegionDataCache<T> {
 		if (baseIndex < 0) {
 			return false;
 		}
-		// check base call qualitry
+		// check base call quality
 		if (bq < minBASQ) {
 			return false;
 		}
