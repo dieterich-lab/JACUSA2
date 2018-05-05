@@ -35,12 +35,8 @@ public class LRTarrestCount implements HasRTarrestCount {
 	 * @param lrtArrestCount
 	 */
 	public LRTarrestCount(final LRTarrestCount lrtArrestCount) {
-		rtArrestCount 		= lrtArrestCount.rtArrestCount.copy();
-
-		refPos2bc4arrest 	= new TreeMap<Integer, BaseCallCount>(lrtArrestCount.refPos2bc4arrest);
-		refPos2bc4through 	= new TreeMap<Integer, BaseCallCount>(lrtArrestCount.refPos2bc4through);
-		
-		reference			= new HashMap<Integer, Byte>(lrtArrestCount.reference);
+		this();
+		add(lrtArrestCount);
 	}
 	
 	public RTarrestCount getRTarrestCount() {

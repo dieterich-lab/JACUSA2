@@ -40,12 +40,6 @@ extends AbstractFilterCache<T> {
 		isHomopolymer = new boolean[coordinateController.getActiveWindowSize()];
 	}
 
-	/* TODO is this needed
-	public int getOverhang() {
-		return minLength;
-	}
-	*/
-
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		// TODO we only consider consecutively aligned regions of a read

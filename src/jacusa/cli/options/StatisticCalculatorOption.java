@@ -21,37 +21,38 @@ import org.apache.commons.cli.Option;
 public class StatisticCalculatorOption<T extends AbstractData> 
 extends AbstractACOption {
 
-
-	private final StatisticParameter<T> statisticParameter;
+	private final StatisticParameter<T> currentStatisticParameter;
 	// available statistics for a method
-	private final Map<String, AbstractStatisticCalculator<T>> statisticCalculator;
+	private final Map<String, AbstractStatisticCalculator<T>> availableStatisticCalculator;
 
-	public StatisticCalculatorOption(final StatisticParameter<T> statisticFactory, 
-			final Map<String, AbstractStatisticCalculator<T>> statisticCalculator) {
+	public StatisticCalculatorOption(final StatisticParameter<T> currentStatisticParameter, 
+			final Map<String, AbstractStatisticCalculator<T>> availableStatisticCalculator) {
 
 		super("u", "mode");
-		this.statisticParameter 		= statisticFactory;
-		this.statisticCalculator 	= statisticCalculator;
+		this.currentStatisticParameter  	= currentStatisticParameter;
+		this.availableStatisticCalculator 	= availableStatisticCalculator;
 	}
 
 	@Override
 	public Option getOption() {
 		final StringBuilder sb = new StringBuilder();
 
-		for (final String statName : statisticCalculator.keySet()) {
-			final AbstractStatisticCalculator<T> statistic = 
-					statisticCalculator.get(statName);
-
-			if (statisticParameter.newInstance() != null && 
-					statistic.getName().equals(statisticParameter.newInstance().getName())) {
-				sb.append("<*>");
+		for (final String statName : availableStatisticCalculator.keySet()) {
+			final AbstractStatisticCalculator<T> tmpStatisticCalculator = 
+					availableStatisticCalculator.get(statName);
+			final String tmpName = tmpStatisticCalculator.getName();
+			
+			if (currentStatisticParameter.newInstance() != null && 
+					tmpName.equals(currentStatisticParameter.getStatisticCalculatorName())) {
+				sb.append("<*>"); // pre-chosen option
 			} else {
-				sb.append("< >");
+				sb.append("< >"); // possible option
 			}
-			sb.append(" " + statName);
+			sb.append(' ');
+			sb.append(statName);
 			sb.append(" : ");
-			sb.append(statistic.getDescription());
-			sb.append("\n");
+			sb.append(tmpStatisticCalculator.getDescription());
+			sb.append('\n');
 		}
 
 		return Option.builder(getOpt())
@@ -62,6 +63,7 @@ extends AbstractACOption {
 				.build();
 	}
 
+	// FIXME statistic and calculator options
 	@Override
 	public void process(final CommandLine line) throws Exception {
 		if (line.hasOption(getOpt())) {
@@ -76,15 +78,13 @@ extends AbstractACOption {
 			}
 
 			// check if statName is a valid statistic name
-			if (! statisticCalculator.containsKey(statName)) {
+			if (! availableStatisticCalculator.containsKey(statName)) {
 				throw new IllegalArgumentException("Unknown statistic: " + statName);
 			}
 
-			// update statistic factory
-			statisticParameter.setStatisticCalculator(statisticCalculator.get(statName));
-			// create and process command line options
-			// FIXME what is done with the newInstance
-			statisticParameter.newInstance().processCLI(line.getOptionValue(getOpt()));
+			// update statistic factory and set command line options
+			currentStatisticParameter.setStatisticCalculator(line.getOptionValue(getOpt()), 
+					availableStatisticCalculator.get(statName));
 		}
 	}
 

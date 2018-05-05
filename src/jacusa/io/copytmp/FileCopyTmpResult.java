@@ -10,7 +10,6 @@ import java.util.List;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.result.Result;
-import lib.io.AbstractResultFileWriter;
 import lib.io.ResultFormat;
 import lib.io.ResultWriter;
 import lib.io.copytmp.CopyTmpResult;
@@ -27,7 +26,7 @@ public class FileCopyTmpResult<T extends AbstractData, R extends Result<T>>
 implements CopyTmpResult<T, R> {
 
 	// 
-	private final AbstractResultFileWriter<T, R> resultFileWriter;
+	private final ResultWriter<T, R> resultFileWriter;
 
 	// temporary result files are written by this object
 	private ResultWriter<T, R> tmpResultWriter;
@@ -39,7 +38,7 @@ implements CopyTmpResult<T, R> {
 	private final List<Integer> iteration2storedResults;
 	
 	public FileCopyTmpResult(final int threadId, 
-			final AbstractResultFileWriter<T, R> resultFileWriter, 
+			final ResultWriter<T, R> resultFileWriter, 
 			final ResultFormat<T, R> resultFormat) {
 	
 		this.resultFileWriter = resultFileWriter; 
@@ -69,11 +68,10 @@ implements CopyTmpResult<T, R> {
 		// default prefix
 		final String prefix = "jacusa2_" + threadId + "_";
 		// use OS to place temporary files
-		// TODO make this a CLI option
 		final File file = File.createTempFile(prefix, ".gz");
 
 		if (! AbstractTool.getLogger().isDebug()) {
-			// don't delete tmp files when is debug mode
+			// don't delete tmp files when in debug mode
 			file.deleteOnExit();
 		}
 		return file.getCanonicalPath();
@@ -117,7 +115,7 @@ implements CopyTmpResult<T, R> {
 		String line;
 		// FIXME 1 line corresponds to one result 
 		while (storedResults > copiedResults && (line = tmpResultReader.readLine()) != null) {
-			resultFileWriter.addLine(line);
+			resultFileWriter.writeLine(line);
 			copiedResults++;
 		}
 	}

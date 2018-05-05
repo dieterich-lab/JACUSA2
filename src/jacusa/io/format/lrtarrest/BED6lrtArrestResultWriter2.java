@@ -1,9 +1,8 @@
-package jacusa.io.writer;
+package jacusa.io.format.lrtarrest;
 
 import java.util.Map;
 
-
-import lib.cli.options.BaseCallConfig;
+import jacusa.io.format.BEDlikeResultWriter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
@@ -12,13 +11,10 @@ import lib.data.has.HasLRTarrestCount;
 import lib.data.has.HasReferenceBase;
 import lib.data.result.Result;
 import lib.data.result.hasStatistic;
+import lib.io.ResultWriterUtils;
 
 public class BED6lrtArrestResultWriter2<T extends AbstractData & HasReferenceBase & HasBaseCallCount & HasLRTarrestCount, R extends Result<T> & hasStatistic> 
 extends BEDlikeResultWriter<T, R> {
-	
-	public static final char SEP3 	= ':';
-	public static final char SEP4 	= ';';
-	public static final char SEP5 	= '=';
 	
 	// read start, trough, and end	
 	private static final String INFO = "reads";
@@ -76,43 +72,7 @@ extends BEDlikeResultWriter<T, R> {
 		sb.append(SEP);
 
 		final Map<Integer, BaseCallCount> ref2baseCallCount4arrest = data.getLRTarrestCount().getRefPos2bc4arrest();
-		addResultRefPos2baseChange(sb, ref2baseCallCount4arrest);
-	}
-
-	protected void addResultRefPos2baseChange(final StringBuilder sb, final Map<Integer, BaseCallCount> ref2baseCallCount) {
-		final int n = ref2baseCallCount.size();
-		if (n == 0) {
-			sb.append(EMPTY);
-			return;
-		}
-		int j = 0;
-		for (final int refPos : ref2baseCallCount.keySet()) {
-			final BaseCallCount baseCallCount = ref2baseCallCount.get(refPos);
-
-			sb.append(refPos);
-			sb.append(SEP3);
-
-			int baseIndex = 0;
-			int count = 0;
-			if (baseIndex >= 0) {
-				count = baseCallCount.getBaseCallCount(baseIndex);
-			}
-			sb.append(count);
-			++baseIndex;
-			for (; baseIndex < BaseCallConfig.BASES.length; ++baseIndex) {
-				count = 0;
-				if (baseIndex >= 0) {
-					count = baseCallCount.getBaseCallCount(baseIndex);
-				}
-				sb.append(SEP2);
-				sb.append(count);
-			}
-
-			++j;
-			if (j < n) {
-				sb.append(SEP4);
-			}
-		}		
+		ResultWriterUtils.addResultRefPos2baseChange(sb, ref2baseCallCount4arrest);
 	}
 
 	protected void addResultReadInfoCount(final StringBuilder sb, final T data) {

@@ -11,7 +11,7 @@ import jacusa.filter.factory.distance.CombinedFilterFactory;
 import jacusa.filter.factory.distance.INDEL_FilterFactory;
 import jacusa.filter.factory.distance.ReadPositionDistanceFilterFactory;
 import jacusa.filter.factory.distance.SpliceSiteFilterFactory;
-import jacusa.io.writer.BED6callResultFormat;
+import jacusa.io.format.call.BED6callResultFormat;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundError;
 import jacusa.worker.CallWorker;

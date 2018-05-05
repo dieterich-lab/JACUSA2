@@ -1,17 +1,17 @@
-package jacusa.io.writer;
-
+package jacusa.io.format.rtarrest;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.has.HasBaseCallCount;
+import lib.data.has.HasArrestBaseCallCount;
 import lib.data.has.HasRTarrestCount;
 import lib.data.has.HasReferenceBase;
+import lib.data.has.HasThroughBaseCallCount;
 import lib.data.result.Result;
 import lib.data.result.hasStatistic;
 import lib.io.AbstractResultFormat;
 import lib.io.ResultWriter;
 
-public class BED6rtArrestResultFormat<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasRTarrestCount, R extends Result<T> & hasStatistic> 
+public class BED6rtArrestResultFormat<T extends AbstractData & HasReferenceBase & HasRTarrestCount & HasArrestBaseCallCount & HasThroughBaseCallCount, R extends Result<T> & hasStatistic> 
 extends AbstractResultFormat<T, R> {
 
 	public static final char CHAR = 'D';

@@ -14,6 +14,7 @@ import htsjdk.samtools.SAMRecord;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
+import lib.data.BaseCallCount;
 import lib.data.LRTarrestCount;
 import lib.data.RTarrestCount;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
@@ -33,7 +34,7 @@ extends AbstractDataCache<T> {
 	private final LRTarrest2BaseCallCount start;
 	private final LRTarrest2BaseCallCount end;
 	
-	private final Map<Integer, Byte> ref2base;
+	private Map<Integer, Byte> ref2base;
 	
 	private final int[] coverageWithoutBQ;
 	private final int[][] baseCalls;
@@ -49,27 +50,26 @@ extends AbstractDataCache<T> {
 		this.minBASQ = minBASQ;
 		this.baseCallConfig = baseCallConfig;
 		
-		final int n 		= coordinateController.getActiveWindowSize();
-		start 				= new LRTarrest2BaseCallCount(coordinateController, n);
-		end 				= new LRTarrest2BaseCallCount(coordinateController, n);
-
-		coverageWithoutBQ	= new int[n];
+		final int activeWindowSize = coordinateController.getActiveWindowSize();
+		start 				= new LRTarrest2BaseCallCount(coordinateController);
+		end 				= new LRTarrest2BaseCallCount(coordinateController);
+		coverageWithoutBQ	= new int[activeWindowSize];
 		ref2base			= new HashMap<Integer, Byte>(100);
-		baseCalls 			= new int[n][baseCallConfig.getBases().length];
+		baseCalls 			= new int[activeWindowSize][baseCallConfig.getBases().length];
 	}
 
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
 
-		int windowPosition1 = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
-		if (windowPosition1 >= 0) {
-			start.addArrest(windowPosition1);
+		int alignmentStartWindowPosition = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
+		if (alignmentStartWindowPosition >= 0) {
+			start.addArrest(alignmentStartWindowPosition);
 		}
 
-		int windowPosition2 = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
-		if (windowPosition2 >= 0) {
-			end.addArrest(windowPosition2);
+		int alignmentEndWindowPosition = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
+		if (alignmentEndWindowPosition >= 0) {
+			end.addArrest(alignmentEndWindowPosition);
 		}
 
 		for (final AlignmentBlock alignmentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
@@ -92,8 +92,8 @@ extends AbstractDataCache<T> {
 		final int windowPosition = getCoordinateController().convert2windowPosition(referencePosition);
 		
 		final SAMRecord record = recordWrapper.getSAMRecord();
-		int windowArrestPosition1 = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
-		int windowArrestPosition2 = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
+		int alignmentStartWindowPosition = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
+		int alignmentEndWindowPosition = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
 
 		for (int j = 0; j < length; ++j) {
 			final int tmpReferencePosition 	= referencePosition + j;
@@ -117,15 +117,14 @@ extends AbstractDataCache<T> {
 			if (bq < minBASQ) {
 				continue;
 			}
-			// TODO count with or without BASQ
 			// count base call
 			baseCalls[tmpWindowPosition][baseIndex]++;
 			
-			add(windowArrestPosition1, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, start);
-			add(windowArrestPosition2, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, end);
+			add(alignmentStartWindowPosition, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, start);
+			add(alignmentEndWindowPosition, tmpReferencePosition, tmpReadPosition, baseIndex, recordWrapper, end);
 		}
 	}
-
+	
 	private void add(final int windowArrestPosition, final int baseCallReferencePosition, final int readPosition, final int baseIndex, 
 			final SAMRecordWrapper recordWrapper, LRTarrest2BaseCallCount dest) {
 
@@ -133,31 +132,14 @@ extends AbstractDataCache<T> {
 			return; 
 		}
 
-		byte refBase = 'N';
-
 		// check if we are outside of window
 		final int baseCallWindowPosition = getCoordinateController().convert2windowPosition(baseCallReferencePosition);
 		if (baseCallWindowPosition < 0) {
 			if (! ref2base.containsKey(baseCallReferencePosition)) {
 				ref2base.put(baseCallReferencePosition, recordWrapper.getReference()[readPosition]);
 			}
-			refBase = ref2base.get(baseCallReferencePosition);
-		} else {
-			// get reference base from common storage within window
-			refBase = getCoordinateController().getReferenceProvider().getReference(baseCallWindowPosition);
 		}
-		
-		boolean nonRef = false;
-		final int refBaseIndex = baseCallConfig.getBaseIndex(refBase);
-		if (refBaseIndex >= 0 && refBaseIndex != baseIndex) {
-			nonRef = true;
-		}
-		
-		if (nonRef) {
-			dest.addNonRefBaseCall(windowArrestPosition, baseCallReferencePosition, baseIndex);
-		} else {
-			dest.addBaseCall(windowArrestPosition, baseCallReferencePosition, baseIndex);
-		}
+		dest.addBaseCall(windowArrestPosition, baseCallReferencePosition, baseIndex);
 	}
 
 	@Override
@@ -177,20 +159,21 @@ extends AbstractDataCache<T> {
 		if (coordinate.getStrand() == STRAND.REVERSE) {
 			invert = true;
 		}
-		
+
 		int arrest = 0;
 		int through = 0;
 		
 		switch (libraryType) {
 
+		
 		case UNSTRANDED:
 			arrest 	+= readArrestCount.getReadStart();
 			arrest 	+= readArrestCount.getReadEnd();
 			through += coverageWithoutBQ[winArrestPos] - 
 					(readArrestCount.getReadStart() + readArrestCount.getReadEnd());
 
-			start.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
-			end.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
+			add(start, winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest(), lrtArrestCount.getReference());
+			add(end, winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest(), lrtArrestCount.getReference());
 			break;
 
 		case FR_FIRSTSTRAND:
@@ -198,7 +181,7 @@ extends AbstractDataCache<T> {
 			through += coverageWithoutBQ[winArrestPos] - 
 					(readArrestCount.getReadEnd());
 
-			end.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
+			add(end, winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest(), lrtArrestCount.getReference());
 			break;
 
 		case FR_SECONDSTRAND:
@@ -206,7 +189,7 @@ extends AbstractDataCache<T> {
 			through += coverageWithoutBQ[winArrestPos] - 
 					(readArrestCount.getReadStart());
 
-			start.copyNonRef(winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
+			add(start, winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest(), lrtArrestCount.getReference());
 			break;
 			
 		case MIXED:
@@ -215,15 +198,6 @@ extends AbstractDataCache<T> {
 
 		// FIXME this should be done somewhere else
 		data.setReferenceBase(getCoordinateController().getReferenceProvider().getReference(winArrestPos));
-		// copy reference bases
-		for (final int baseCallRefPos : lrtArrestCount.getRefPos2bc4arrest().keySet()) {
-			final int tmpWindowPosition = getCoordinateController().convert2windowPosition(baseCallRefPos);
-			if (tmpWindowPosition < 0) {
-				lrtArrestCount.getReference().put(baseCallRefPos, ref2base.get(baseCallRefPos));
-			} else {
-				lrtArrestCount.getReference().put(baseCallRefPos, getCoordinateController().getReferenceProvider().getReference(tmpWindowPosition));
-			}
-		}
 
 		// add base call data
 		System.arraycopy(baseCalls[winArrestPos], 0, 
@@ -235,6 +209,42 @@ extends AbstractDataCache<T> {
 		readArrestCount.setReadArrest(arrest);
 		readArrestCount.setReadThrough(through);
 	}
+
+	private void add(final LRTarrest2BaseCallCount lrtArrestbcc, final int winArrestPos, boolean invert, 
+			final Map<Integer, BaseCallCount> arrestRef2bc, final Map<Integer, Byte> reference) {
+		if (lrtArrestbcc.getRef2bc(winArrestPos) == null) {
+			return;
+		}
+
+		for (final int refPosition : lrtArrestbcc.getRef2bc(winArrestPos).keySet()) {
+			byte refBase = 'N';
+
+			// check if we are outside of window
+			final int baseCallWindowPosition = getCoordinateController().convert2windowPosition(refPosition);
+			if (baseCallWindowPosition < 0) {
+				refBase = ref2base.get(refPosition);
+			} else {
+				// get reference base from common storage within window
+				refBase = getCoordinateController().getReferenceProvider().getReference(baseCallWindowPosition);
+			}
+			if (refBase == 'N') {
+				continue;
+			}
+
+			if (! arrestRef2bc.containsKey(refPosition)) {
+				arrestRef2bc.put(refPosition, new BaseCallCount());
+			}
+
+			reference.put(refPosition, refBase);
+
+			final BaseCallCount baseCallCount = lrtArrestbcc.getRef2bc(winArrestPos).get(refPosition);
+			baseCallCount.set(BaseCallConfig.getInstance().getBaseIndex(refBase), 0);
+			if (invert) {
+				baseCallCount.invert();
+			}
+			arrestRef2bc.get(refPosition).add(baseCallCount);
+		}
+	}
 	
 	@Override
 	public void clear() {
@@ -242,7 +252,11 @@ extends AbstractDataCache<T> {
 		end.clear();
 
 		Arrays.fill(coverageWithoutBQ, 0);
-		ref2base.clear();
+		if (ref2base.size() < 100) {
+			ref2base.clear();
+		} else {
+			ref2base = new HashMap<Integer, Byte>(100);
+		}
 		for (int[] b : baseCalls) {
 			Arrays.fill(b, 0);	
 		}

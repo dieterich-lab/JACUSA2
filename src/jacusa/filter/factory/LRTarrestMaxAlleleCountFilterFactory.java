@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jacusa.filter.AbstractFilter;
+import jacusa.io.format.BEDlikeWriter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
@@ -20,9 +21,6 @@ import lib.util.coordinate.CoordinateController;
  */
 public class LRTarrestMaxAlleleCountFilterFactory<T extends AbstractData & HasLRTarrestCount> 
 extends AbstractFilterFactory<T> {
-
-	// FIXME use central SEP
-	public static final char SEP = ',';
 	
 	// default value for max alleles
 	private static final int MAX_ALLELES = 2;
@@ -99,7 +97,7 @@ extends AbstractFilterFactory<T> {
 
 		@Override
 		public void addInfo(Result<T> result) {
-			final String value = StringUtil.join(Character.toString(SEP), filteredRefPositions);
+			final String value = StringUtil.join(Character.toString(BEDlikeWriter.SEP2), filteredRefPositions);
 			// add position of artefact(s) to unique char id
 			result.getFilterInfo().add(Character.toString(getC()), value);
 		}
@@ -109,6 +107,11 @@ extends AbstractFilterFactory<T> {
 			return 0;
 		}
 
+	}
+
+	@Override
+	public void addFilteredData(StringBuilder sb, T data) {
+		sb.append(BEDlikeWriter.EMPTY);	
 	}
 	
 }

@@ -55,6 +55,7 @@ implements Iterator<ParallelData<T>> {
 
 		comparisons = 0;
 		status = STATUS.INIT;
+		setName("JACUSA Worker " + threadId);
 	}
 
 	protected boolean filter(final R result) {

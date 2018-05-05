@@ -34,11 +34,6 @@ implements UniqueRegionDataCache<T> {
 		
 	private boolean[] visited;
 	
-	/* TODO remove
-	private boolean s;
-	private boolean e;
-	*/
-	
 	public AbstractUniqueLRTarrest2BaseCallCountDataCache(final LIBRARY_TYPE libraryType, 
 			final byte minBASQ,
 			final BaseCallConfig baseCallConfig,
@@ -53,11 +48,6 @@ implements UniqueRegionDataCache<T> {
 		final int n = coordinateController.getActiveWindowSize();
 		start 		= new LRTarrest2FilteredBaseCallCount(coordinateController, n);
 		end 		= new LRTarrest2FilteredBaseCallCount(coordinateController, n);
-		
-		/* TODO remove
-		s = false;
-		e = false;
-		*/
 	}
 
 	@Override
@@ -68,17 +58,6 @@ implements UniqueRegionDataCache<T> {
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
 		final int winArrestPos = getCoordinateController().convert2windowPosition(coordinate);
-
-		/* TODO remove
-		if (! s) {
-			start.print();
-			s = true;
-		}
-		if (! e) {
-			end.print();
-			e = true;
-		}
-		*/
 		
 		boolean invert = false;
 		if (coordinate.getStrand() == STRAND.REVERSE) {

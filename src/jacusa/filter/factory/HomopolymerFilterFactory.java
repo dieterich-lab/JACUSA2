@@ -77,4 +77,13 @@ extends AbstractDataFilterFactory<T> {
 		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
 	}
 
+	@Override
+	public void addFilteredData(StringBuilder sb, T data) {
+		if (data.isHomopolymer()) {
+			sb.append('1');
+		} else {
+			sb.append('0');
+		}
+	}
+	
 }

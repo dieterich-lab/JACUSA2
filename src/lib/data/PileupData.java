@@ -34,7 +34,6 @@ implements HasPileupCount, HasPileupFilterData {
 	}
 	
 	public PileupData(final LIBRARY_TYPE libraryType, final Coordinate coordinate, final byte referenceBase) {
-
 		super(libraryType, coordinate);
 
 		pileupCount = new PileupCount();
@@ -102,7 +101,6 @@ implements HasPileupCount, HasPileupFilterData {
 	@Override
 	public void add(AbstractData abstractData) {
 		PileupData pileupData = (PileupData) abstractData;
-		// TODO this is not nice - this should be done in PileupCount
 		pileupCount.setReferenceBase(pileupData.getReferenceBase());
 		// TODO check strand information
 		pileupCount.add(pileupData.getPileupCount());

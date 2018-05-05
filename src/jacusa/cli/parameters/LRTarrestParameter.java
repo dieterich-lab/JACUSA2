@@ -1,6 +1,6 @@
 package jacusa.cli.parameters;
 
-import jacusa.io.writer.BED6lrtArrestResultFormat2;
+import jacusa.io.format.lrtarrest.BED6lrtArrestResultFormat2;
 import jacusa.method.rtarrest.BetaBinomial;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
@@ -19,12 +19,12 @@ implements HasStatisticParameters<LRTarrestData> {
 
 	public LRTarrestParameter(final int conditions) {
 		super(conditions);
-		statisticParameters = new StatisticParameter<LRTarrestData>();
+		// test-statistic related
+		statisticParameters = new StatisticParameter<LRTarrestData>(
+				new BetaBinomial<LRTarrestData>(), 1.0);
 		// default output format
 		setResultFormat(new BED6lrtArrestResultFormat2<LRTarrestData, StatisticResult<LRTarrestData>>(this));
-		// test-statistic related
-		statisticParameters.setStatisticCalculator(new BetaBinomial<LRTarrestData>());
-		statisticParameters.setThreshold(1.0);
+
 		setActiveWindowSize(1000);
 	}
 

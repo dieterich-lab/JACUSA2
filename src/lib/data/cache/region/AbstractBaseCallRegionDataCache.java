@@ -89,7 +89,6 @@ extends AbstractRegionDataCache<T> {
 	}
 
 	public void incrementBaseCall(final int windowPosition, final int readPosition, final int baseIndex, final byte bq) {
-		// System.out.println(windowPosition + "\t" + readPosition + "\t" + baseIndex);
 		coverage[windowPosition] += 1;
 		baseCalls[windowPosition][baseIndex] += 1;
 	}

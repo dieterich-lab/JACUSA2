@@ -1,4 +1,4 @@
-package jacusa.io.writer;
+package jacusa.io.format.lrtarrest;
 
 
 import lib.cli.parameter.AbstractParameter;

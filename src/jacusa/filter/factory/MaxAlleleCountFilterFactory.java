@@ -1,6 +1,7 @@
 package jacusa.filter.factory;
 
 import jacusa.filter.AbstractFilter;
+import jacusa.io.format.BEDlikeWriter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
@@ -76,6 +77,11 @@ extends AbstractFilterFactory<T> {
 			return 0;
 		}
 
+	}
+
+	@Override
+	public void addFilteredData(StringBuilder sb, T data) {
+		sb.append(BEDlikeWriter.EMPTY);
 	}
 	
 }

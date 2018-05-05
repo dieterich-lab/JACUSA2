@@ -7,12 +7,14 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.cache.AlignmentDataCache;
 import lib.data.cache.DataCache;
+import lib.data.has.HasArrestBaseCallCount;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasRTarrestCount;
 import lib.data.has.HasReferenceBase;
+import lib.data.has.HasThroughBaseCallCount;
 import lib.util.coordinate.CoordinateController;
 
-public class RTarrestDataBuilderFactory<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasRTarrestCount> 
+public class RTarrestDataBuilderFactory<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasArrestBaseCallCount & HasThroughBaseCallCount & HasRTarrestCount> 
 extends AbstractDataBuilderFactory<T> {
 
 	private AbstractDataBuilderFactory<T> dataBuilderFactory; 
@@ -28,7 +30,8 @@ extends AbstractDataBuilderFactory<T> {
 		dataCaches.add(
 				new AlignmentDataCache<T>(
 						conditionParameter.getLibraryType(), 
-						coordinateController));
+						conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), 
+						getParameter().getBaseConfig(), coordinateController));
 		return dataCaches;
 	}
 

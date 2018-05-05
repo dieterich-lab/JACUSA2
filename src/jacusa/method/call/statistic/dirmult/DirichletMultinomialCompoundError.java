@@ -17,12 +17,8 @@ extends AbstractDirichletStatistic<T> {
 	protected double estimatedError;
 	protected double priorError = 0d;
 
-	public DirichletMultinomialCompoundError(final CallParameter parameters) {
-		this(Double.NaN, parameters);
-	}
-
-	public DirichletMultinomialCompoundError(final double threshold, final CallParameter parameter) {
-		super(NAME, DESC, threshold, new MinkaEstimateDirMultParameters(), parameter);
+	public DirichletMultinomialCompoundError(final CallParameter parameter) {
+		super(NAME, DESC, new MinkaEstimateDirMultParameters(), parameter);
 	}
 
 	@Override
@@ -50,8 +46,8 @@ extends AbstractDirichletStatistic<T> {
 	}
 
 	@Override
-	public DirichletMultinomialCompoundError<T> newInstance(final double threshold) {
-		return new DirichletMultinomialCompoundError<T>(threshold, parameter);
+	public DirichletMultinomialCompoundError<T> newInstance() {
+		return new DirichletMultinomialCompoundError<T>(parameter);
 	}
 	
 	@Override

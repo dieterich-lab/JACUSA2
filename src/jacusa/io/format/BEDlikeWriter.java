@@ -1,4 +1,4 @@
-package jacusa.io.writer;
+package jacusa.io.format;
 
 import java.io.IOException;
 import java.util.List;
@@ -10,6 +10,7 @@ import lib.data.ParallelData;
 import lib.data.has.HasReferenceBase;
 import lib.data.result.Result;
 import lib.io.AbstractResultFileWriter;
+import lib.util.AbstractTool;
 
 /**
  * This abstract class implements a BED-like format writer.
@@ -30,7 +31,13 @@ extends AbstractResultFileWriter<T, R> {
 	public static final char SEP 	= '\t';
 	// TODO add comments.
 	public static final char SEP2 	= ',';
-
+	// TODO add comments.
+	public static final char SEP3 	= ':';
+	// TODO add comments.
+	public static final char SEP4 	= ';';
+	// TODO add comments.
+	public static final char SEP5 	= '=';
+	
 	// general parameters
 	private AbstractParameter<T, R> parameter;
 	
@@ -43,8 +50,8 @@ extends AbstractResultFileWriter<T, R> {
 	public void writeHeader(final List<AbstractConditionParameter<T>> conditionParameters) {
 		final StringBuilder sb = new StringBuilder();
 
-		// adds pre-header details about conditions
-		addHeaderConditionDetails(sb, conditionParameters);
+		// adds pre-header details about call
+		addHeaderDetails(sb, conditionParameters);
 
 		// adds default BED6 columns
 		addHeaderBED6(sb);
@@ -145,9 +152,16 @@ extends AbstractResultFileWriter<T, R> {
 	 * @param sb StringBuilder object that holds the current state of the header
 	 * @param conditionParameters
 	 */
-	protected void addHeaderConditionDetails(final StringBuilder sb, 
+	protected void addHeaderDetails(final StringBuilder sb, 
 			final List<AbstractConditionParameter<T>> conditionParameters) {
 
+		sb.append(COMMENT);
+		sb.append(COMMENT);
+		sb.append(' ');
+		sb.append(AbstractTool.getLogger().getTool().getCall());
+		sb.append('\n');
+		
+		/*
 		int conditionIndex = 1;
 		for (final AbstractConditionParameter<T> conditionParameter : conditionParameters) {
 			// pre-header is identified by 2x COMMENT char
@@ -174,6 +188,7 @@ extends AbstractResultFileWriter<T, R> {
 			conditionIndex++;
 			sb.append('\n');
 		}
+		*/
 	}
 
 	/**

@@ -9,22 +9,18 @@ extends AbstractDataFilterFactory<T> {
 
 	private int filterDistance;
 	private double filterMinRatio;
-	private int filterMinCount;
 		
 	public AbstractDistanceFilterFactory(final char c, final String desc, 
 			final int defaultFilterDistance, 
-			final double defaultFilterMinRatio, 
-			final int defaultFilterMinCount) {
+			final double defaultFilterMinRatio) {
 
 		super(c, desc + "\n   Default: " + 
 			defaultFilterDistance + ":" 
-			+ defaultFilterMinRatio + ":" 
-			+ defaultFilterMinCount + 
-			" (" + c+ ":distance:min_ratio:min_count)");
+			+ defaultFilterMinRatio + 
+			" (" + c+ ":distance:min_ratio)");
 
 		filterDistance = defaultFilterDistance;
 		filterMinRatio = defaultFilterMinRatio;
-		filterMinCount = defaultFilterMinCount;
 	}
 
 	@Override
@@ -35,7 +31,8 @@ extends AbstractDataFilterFactory<T> {
 
 		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
 
-		// format D:distance:minRatio:minCount
+		// format D:distance:minRatio
+		// :minCount
 		for (int i = 1; i < s.length; ++i) {
 			switch(i) {
 			case 1:
@@ -54,6 +51,7 @@ extends AbstractDataFilterFactory<T> {
 				this.filterMinRatio = filterMinRatio;
 				break;
 
+			/*
 			case 3:
 				final int filterMinCount = Integer.valueOf(s[i]);
 				if (filterMinCount < 0) {
@@ -61,6 +59,7 @@ extends AbstractDataFilterFactory<T> {
 				}
 				this.filterMinCount = filterMinCount;
 				break;
+				*/
 				
 			default:
 				throw new IllegalArgumentException("Invalid argument: " + line);
@@ -76,8 +75,10 @@ extends AbstractDataFilterFactory<T> {
 		return filterMinRatio;
 	}
 
+	/*
 	public int getMinCount() {
 		return filterMinCount;
 	}
+	*/
 
 }

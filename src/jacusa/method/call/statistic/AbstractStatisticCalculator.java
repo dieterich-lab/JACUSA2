@@ -14,17 +14,9 @@ public abstract class AbstractStatisticCalculator<T extends AbstractData> {
 	private final String name;
 	private final String desc;
 	
-	private final double threshold;
-	
 	public AbstractStatisticCalculator(final String name, final String desc) {
-		this(name, desc, Double.NaN);
-	}
-	
-	protected AbstractStatisticCalculator(final String name, final String desc, final double threshold) {
 		this.name = name;
 		this.desc = desc;
-		
-		this.threshold = threshold;
 	}
 	
 	/**
@@ -45,7 +37,7 @@ public abstract class AbstractStatisticCalculator<T extends AbstractData> {
 
 	public abstract boolean filter(double statistic, double threshold);
 	
-	public StatisticResult<T> filter(final ParallelData<T> parallelData) {
+	public StatisticResult<T> filter(final double threshold, final ParallelData<T> parallelData) {
 		final double statistic = getStatistic(parallelData);
 		if (! filter(statistic, threshold)) {
 			return null;
@@ -60,7 +52,7 @@ public abstract class AbstractStatisticCalculator<T extends AbstractData> {
 	 * @param threshold
 	 * @return
 	 */
-	public abstract AbstractStatisticCalculator<T> newInstance(final double threshold);
+	public abstract AbstractStatisticCalculator<T> newInstance();
 
 	/**
 	 * Return the short name of this StatisticCalculator.

@@ -231,10 +231,10 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 		final SamReader reader = SamReaderFactory
 				.make()
 				.setOption(Option.CACHE_FILE_BASED_INDEXES, true)
-				.setOption(Option.DONT_MEMORY_MAP_INDEX, false) // disable memory mapping
+				.setOption(Option.DONT_MEMORY_MAP_INDEX, false)
 				.validationStringency(ValidationStringency.LENIENT)
 				.open(file);
 		return reader;
 	}
-	
+
 }

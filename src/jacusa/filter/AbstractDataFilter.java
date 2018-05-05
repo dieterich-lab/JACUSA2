@@ -43,17 +43,15 @@ extends AbstractFilter<T> {
 	 */
 	private void addFilteredData(final ParallelData<T> parallelData) {
 		final int conditions = parallelData.getConditions();
-		// coordinate of parallelData - identifies linked data in filterCache
+		// coordinate of parallelData - corresponds to linked data in filterCache
 		final Coordinate coordinate = parallelData.getCoordinate();
 
 		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
-			// replicates for condition
-			int replicates = parallelData.getReplicates(conditionIndex);
+			// number of replicates for condition
+			final int replicates = parallelData.getReplicates(conditionIndex);
 
-			// add data from 
-			// filterCache(conditionIndex, replicateIndex) 
-			// to 
-			// ParallelData(conditionIndex, replicateIndex)
+			// add data from filterCache(conditionIndex, replicateIndex) 
+			// to ParallelData(conditionIndex, replicateIndex)
 			for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
 				// data from parallelData
 				final T data = parallelData.getData(conditionIndex, replicateIndex);

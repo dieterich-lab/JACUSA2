@@ -1,26 +1,21 @@
 package jacusa.method.call.statistic.dirmult;
 
 import jacusa.cli.parameters.CallParameter;
+import jacusa.method.call.statistic.AbstractDirichletStatistic;
+import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasPileupCount;
 
 public class DirichletMultinomialRobustCompoundError<T extends AbstractData & HasBaseCallCount & HasPileupCount>
-extends DirichletMultinomialCompoundError<T> {
+extends AbstractDirichletStatistic<T> {
 
+	private DirichletMultinomialCompoundError<T> o;
+	
 	public DirichletMultinomialRobustCompoundError(final CallParameter parameters) {
-		super(parameters);
-	}
-
-	@Override
-	public String getName() {
-		return "DirMult-RCE";
-	}
-
-	@Override
-	public String getDescription() {
-		return "Robust Compound Err.";  
+		super("DirMult-RCE", "Robust Compound Err.", parameters);
+		o = new DirichletMultinomialCompoundError<T>(parameters);
 	}
 
 	@Override
@@ -89,4 +84,14 @@ extends DirichletMultinomialCompoundError<T> {
 		return super.getStatistic(adjustedParallelPileup);
 	}
 
+	@Override
+	protected void populate(T data, int[] baseIndexs, double[] dataVector) {
+		o.populate(data, baseIndexs, dataVector);
+	}	
+	
+	@Override
+	public AbstractStatisticCalculator<T> newInstance() {
+		return new DirichletMultinomialRobustCompoundError<T>(parameter);
+	}
+	
 }

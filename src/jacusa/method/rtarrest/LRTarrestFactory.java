@@ -11,8 +11,9 @@ import jacusa.filter.factory.distance.LRTarrestCombinedFilterFactory;
 import jacusa.filter.factory.distance.LRTarrestINDEL_FilterFactory;
 import jacusa.filter.factory.distance.LRTarrestReadPositionFilterFactory;
 import jacusa.filter.factory.distance.LRTarrestSpliceSiteFilterFactory;
-import jacusa.io.writer.BED6lrtArrestResultFormat2;
-import jacusa.io.writer.BED6rtArrestResultFormat1;
+import jacusa.io.format.lrtarrest.BED6lrtArrestDebugFormat;
+import jacusa.io.format.lrtarrest.BED6lrtArrestResultFormat2;
+import jacusa.io.format.rtarrest.BED6rtArrestResultFormat1;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import jacusa.worker.LRTarrestWorker;
 
@@ -75,7 +76,7 @@ extends AbstractMethodFactory<LRTarrestData, StatisticResult<LRTarrestData>> {
 		}
 		
 		// result format option only if there is a choice		
-		if (getResultFormats().size() == 1 ) {
+		if (getResultFormats().size() > 1 ) {
 			addACOption(new ResultFormatOption<LRTarrestData, StatisticResult<LRTarrestData>>(
 					getParameter(), getResultFormats()));
 		}
@@ -172,7 +173,10 @@ extends AbstractMethodFactory<LRTarrestData, StatisticResult<LRTarrestData>> {
 		AbstractResultFormat<LRTarrestData, StatisticResult<LRTarrestData>> resultFormat = null;
 
 		resultFormat = new BED6rtArrestResultFormat1<LRTarrestData, StatisticResult<LRTarrestData>>(getParameter());
+		resultFormats.put(resultFormat.getC(), resultFormat);
 		resultFormat = new BED6lrtArrestResultFormat2<LRTarrestData, StatisticResult<LRTarrestData>>(getParameter());
+		resultFormats.put(resultFormat.getC(), resultFormat);
+		resultFormat = new BED6lrtArrestDebugFormat<LRTarrestData, StatisticResult<LRTarrestData>>(getParameter());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 		
 		return resultFormats;

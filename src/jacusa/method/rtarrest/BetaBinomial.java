@@ -20,10 +20,6 @@ extends AbstractStatisticCalculator<T> {
 		super(NAME, DESC);
 	}
 
-	private BetaBinomial(final double threshold) {
-		super(NAME, DESC, threshold);
-	}
-	
 	@Override
 	public boolean processCLI(final String line) {
 		return true;
@@ -42,10 +38,10 @@ extends AbstractStatisticCalculator<T> {
 	public boolean filter(final double statistic, final double threshold) {
 		return statistic <= threshold;
 	}
-
+	
 	@Override
-	public AbstractStatisticCalculator<T> newInstance(final double threshold) {
-		return new BetaBinomial<T>(threshold);
+	public final AbstractStatisticCalculator<T> newInstance() {
+		return new BetaBinomial<T>();
 	}
 	
 }

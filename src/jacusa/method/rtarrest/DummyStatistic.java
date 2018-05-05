@@ -19,10 +19,6 @@ extends AbstractStatisticCalculator<T> {
 	public DummyStatistic() {
 		super(NAME, DESC);
 	}
-
-	private DummyStatistic(final double threshold) {
-		super(NAME, DESC, threshold);
-	}
 	
 	@Override
 	public boolean processCLI(final String line) {
@@ -44,8 +40,8 @@ extends AbstractStatisticCalculator<T> {
 	}
 
 	@Override
-	public AbstractStatisticCalculator<T> newInstance(final double threshold) {
-		return new DummyStatistic<T>(threshold);
+	public AbstractStatisticCalculator<T> newInstance() {
+		return new DummyStatistic<T>();
 	}
 	
 }

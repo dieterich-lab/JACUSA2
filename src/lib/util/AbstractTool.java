@@ -71,15 +71,20 @@ public abstract class AbstractTool {
 		
 		sb.append(lineSep);
 		sb.append('\n');
-
+		sb.append(getCall());
+		sb.append('\n');
+		sb.append(lineSep);
+		return sb.toString();
+	}
+	
+	public String getCall() {
+		final StringBuilder sb = new StringBuilder();
 		sb.append(name);
 		sb.append(" Version: ");
 		sb.append(version);
 		for(final String arg : args) {
 			sb.append(" " + arg);
 		}
-		sb.append('\n');
-		sb.append(lineSep);
 		return sb.toString();
 	}
 	

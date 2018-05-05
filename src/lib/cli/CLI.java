@@ -45,16 +45,13 @@ public class CLI {
 			try {
 				CommandLine line = parser.parse(options, args);
 				showVersion.process(line);
-				if (showVersion.isPrinted()) {
-					System.exit(0);
-				}
 			} catch (ParseException e) {
-				e.printStackTrace();
+				// ignore
 			} catch (Exception e) {
-				e.printStackTrace();
-				return false;
+				// ignore
+				
 			}
-			printUsage();
+			AbstractTool.getLogger().addError("Unknown method: " + args[0]);
 			System.exit(0);
 		}
 		methodFactory = methodFactories.get(args[0].toLowerCase());
@@ -167,6 +164,18 @@ public class CLI {
 	 */
 	public void printUsage() {
 		final StringBuilder sb = new StringBuilder();
+
+		final String jar = "JACUSA.JAR"; // FIXME get real jar name
+		
+		sb.append("usage: ");
+		sb.append(jar);
+		sb.append(" <METHOD> <OPTIONs> <BAMs>");
+		sb.append('\n');
+		sb.append("  ");
+		sb.append("METHOD");
+		sb.append("\t\t");
+		sb.append("DESCRIPTION");
+		sb.append('\n');
 		
 		for (final AbstractMethodFactory<?, ?> methodFactory : methodFactories.values()) {
 			sb.append("  ");

@@ -47,13 +47,9 @@ implements ResultFormat<T, R>{
 	@Override
 	public CopyTmpResult<T, R> createCopyTmp(final int threadId) {
 		if (parameter.isSeparate()) {
-			// FIXME remove cast to AbstractResultFileWriter
-
-			final AbstractResultFileWriter<T, R> resultWriter = 
-					(AbstractResultFileWriter<T, R>)parameter.getResultWriter();
+			final ResultWriter<T, R> resultWriter = parameter.getResultWriter();
 			// add suffix to filename
-			final AbstractResultFileWriter<T, R> filteredResultWriter = 
-					(AbstractResultFileWriter<T, R>)parameter.getFilteredResultWriter();
+			final ResultWriter<T, R> filteredResultWriter = parameter.getFilteredResultWriter();
 
 			// result will be separated
 			return new FileCopyTmpSeparatedResult<T, R>(threadId, 
@@ -61,9 +57,7 @@ implements ResultFormat<T, R>{
 					filteredResultWriter,
 					this);
 		} else {
-			// FIXME remove cast to AbstractResultFileWriter
-			return new FileCopyTmpResult<T, R>(threadId, 
-					(AbstractResultFileWriter<T, R>)parameter.getResultWriter(), this);
+			return new FileCopyTmpResult<T, R>(threadId, parameter.getResultWriter(), this);
 		}
 	}
 	

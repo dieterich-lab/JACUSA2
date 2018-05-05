@@ -5,7 +5,9 @@ import java.util.Map;
 
 import java.util.List;
 
-import jacusa.filter.AbstractLRTarrestRef2BaseCallDataFilter;
+import jacusa.filter.FilterRatio;
+import jacusa.filter.basecall.AbstractLRTarrestRef2BaseCallDataFilter;
+import jacusa.filter.basecall.BaseCallCountFilter;
 import jacusa.filter.cache.UniqueFilterCacheWrapper;
 import jacusa.filter.cache.FilterCache;
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
@@ -15,6 +17,7 @@ import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallCount;
+import lib.data.BaseCallData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.lrtarrest.AbstractUniqueLRTarrest2BaseCallCountDataCache;
@@ -22,6 +25,7 @@ import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasLRTarrestCount;
 import lib.data.has.HasReferenceBase;
 import lib.data.has.filter.HasLRTarrestReadPositionFilteredData;
+import lib.io.ResultWriterUtils;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -35,7 +39,7 @@ extends AbstractDistanceFilterFactory<T> {
 	public LRTarrestReadPositionFilterFactory() {
 		super('B', 
 				"Filter artefacts in the vicinity of read start/end of read arrest reads.", 
-				6, 0.5, 1);
+				6, 0.5);
 	}
 
 	@Override
@@ -43,10 +47,12 @@ extends AbstractDistanceFilterFactory<T> {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
 		final List<List<FilterCache<T>>> conditionFilterCaches = createConditionFilterCaches(parameter, coordinateController, this);
-		final AbstractLRTarrestRef2BaseCallDataFilter<T> dataFilter = 
+		final FilterRatio filterRatio = new FilterRatio(getMinRatio());
+		final AbstractLRTarrestRef2BaseCallDataFilter<T> dataFilter =
 				new AbstractLRTarrestRef2BaseCallDataFilter<T>(getC(), 
-						getDistance(), getMinCount(), getMinRatio(), 
+						getDistance(), new BaseCallCountFilter<BaseCallData>(filterRatio), 
 						parameter, conditionFilterCaches) {
+
 			@Override
 			protected Map<Integer, BaseCallCount> getFilteredData(
 					ParallelData<T> parallelData,
@@ -89,6 +95,11 @@ extends AbstractDistanceFilterFactory<T> {
 		processRecords.add(new ProcessReadStartEnd(getDistance(), uniqueCache));
 
 		return new UniqueFilterCacheWrapper<T>(getC(), uniqueCache, processRecords);
+	}
+
+	@Override
+	public void addFilteredData(StringBuilder sb, T data) {
+		ResultWriterUtils.addResultRefPos2baseChange(sb, data.getLRTarrestReadPositionFilteredData());
 	}
 	
 }

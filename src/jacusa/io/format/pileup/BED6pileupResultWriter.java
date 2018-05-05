@@ -1,5 +1,6 @@
-package jacusa.io.writer;
+package jacusa.io.format.pileup;
 
+import jacusa.io.format.BEDlikeResultWriter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;

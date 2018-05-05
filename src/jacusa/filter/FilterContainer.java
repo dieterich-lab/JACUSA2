@@ -98,23 +98,6 @@ public class FilterContainer<T extends AbstractData> {
 		filters.put(dataFilter.getC(), dataFilter);
 		dataFilters.put(dataFilter.getC(), dataFilter);
 	}
-	
-	/**
-	 * Processes a recordWrapper and adds it to the 
-	 * 
-	 * @param c
-	 * @param conditionIndex
-	 * @param replicateIndex
-	 * @param recordWrapper
-	 */
-	/* FIXME is this needed?
-	public void addRecordWrapper(final char c, 
-			final int conditionIndex, final int replicateIndex, final SAMRecordWrapper recordWrapper) {
-		
-		final AbstractDataFilter<T> dataFilter = dataFilters.get(c);
-		dataFilter.getFilterCache(conditionIndex, replicateIndex).addRecordWrapper(recordWrapper);
-	}
-	*/
 
 	public List<FilterCache<?>> getFilterCaches(final int conditionIndex, final int replicateIndex) {
 		final List<FilterCache<?>> filterCaches = new ArrayList<FilterCache<?>>();

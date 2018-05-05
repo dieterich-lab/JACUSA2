@@ -61,4 +61,6 @@ public abstract class AbstractFilterFactory<T extends AbstractData> {
 	 */
 	public abstract void registerFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer);
 
+	public abstract void addFilteredData(StringBuilder sb, T data);
+	
 } 

@@ -55,7 +55,6 @@ public class FilterConfig<T extends AbstractData> implements Cloneable {
 	
 	/**
 	 * TODO add comments
-	 * FIXME add this to addFactory or createFilterInstance
 	 * 
 	 * @param coordinateController
 	 * @param conditionContainer

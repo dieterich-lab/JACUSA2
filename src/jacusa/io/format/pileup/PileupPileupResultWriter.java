@@ -1,4 +1,4 @@
-package jacusa.io.writer;
+package jacusa.io.format.pileup;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import htsjdk.samtools.SAMUtils;
  * @param <T>
  * @param <R>
  */
-public class PileupResultWriter<T extends AbstractData & HasPileupCount, R extends Result<T>> 
+public class PileupPileupResultWriter<T extends AbstractData & HasPileupCount, R extends Result<T>> 
 extends AbstractResultFileWriter<T, R> {
 
 	// empty field, e.g.: no filters, no infos etc.
@@ -35,7 +35,7 @@ extends AbstractResultFileWriter<T, R> {
 	// indicates if the reference base should be added as a column 
 	private final boolean showReferenceBase;
 
-	public PileupResultWriter(final String filename, 
+	public PileupPileupResultWriter(final String filename, 
 			final BaseCallConfig baseConfig, final boolean showReferenceBase) {
 
 		super(filename);
@@ -122,7 +122,7 @@ extends AbstractResultFileWriter<T, R> {
 
 	@Override
 	public void writeResult(R result) {
-		addLine(convert2String(result));
+		writeLine(convert2String(result));
 	}
 
 }

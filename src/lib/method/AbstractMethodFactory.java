@@ -294,14 +294,12 @@ implements DataGenerator<T> {
 		final File file = new File(recordFilename);
 		final SamReader reader = SamReaderFactory
 				.make()
-				.setOption(Option.CACHE_FILE_BASED_INDEXES, true)
-				.setOption(Option.DONT_MEMORY_MAP_INDEX, false) // disable memory mapping
+				.setOption(Option.CACHE_FILE_BASED_INDEXES, false)
+				.setOption(Option.DONT_MEMORY_MAP_INDEX, true) // disable memory mapping
 				.validationStringency(ValidationStringency.LENIENT)
 				.open(file);
-
 		final SAMSequenceDictionary sequenceDictionary = reader.getFileHeader().getSequenceDictionary();
 		reader.close();
-
 		return sequenceDictionary;
 	}
 	

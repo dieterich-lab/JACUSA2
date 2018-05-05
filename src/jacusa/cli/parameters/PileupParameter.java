@@ -1,6 +1,6 @@
 package jacusa.cli.parameters;
 
-import jacusa.io.writer.BED6pileupResultFormat;
+import jacusa.io.format.pileup.BED6pileupResultFormat;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.cli.parameter.JACUSAConditionParameter;

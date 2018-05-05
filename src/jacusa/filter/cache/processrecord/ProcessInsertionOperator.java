@@ -5,7 +5,6 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper.CigarElementWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapper.Position;
 import lib.data.cache.region.UniqueRegionDataCache;
 
-// FIXME test
 /**
  * 
  */

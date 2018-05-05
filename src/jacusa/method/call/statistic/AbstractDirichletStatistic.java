@@ -47,10 +47,10 @@ extends AbstractStatisticCalculator<T> {
 		this.parameter = parameter;
 	}
 
-	protected AbstractDirichletStatistic(final String name, final String desc, final double threshold, 
+	protected AbstractDirichletStatistic(final String name, final String desc,
 			final MinkaEstimateParameters estimateAlpha, final CallParameter parameter) {
 
-		super(name, desc, threshold);
+		super(name, desc);
 		this.parameter 		= parameter;
 		final int n 		= parameter.getBaseConfig().getBases().length;
 

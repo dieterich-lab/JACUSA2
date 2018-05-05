@@ -6,8 +6,8 @@ import java.util.List;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.result.Result;
-import lib.io.AbstractResultFileWriter;
 import lib.io.ResultFormat;
+import lib.io.ResultWriter;
 import lib.io.copytmp.CopyTmpResult;
 
 /**
@@ -26,12 +26,12 @@ implements CopyTmpResult<T, R> {
 	private FileCopyTmpResult<T, R> copyFilteredResult;
 	
 	public FileCopyTmpSeparatedResult(final int threadId, 
-			final AbstractResultFileWriter<T, R> resultFileWriter, 
-			final AbstractResultFileWriter<T, R> filteredResultFileWriter,
+			final ResultWriter<T, R> resultWriter, 
+			final ResultWriter<T, R> filteredResultWriter,
 			final ResultFormat<T, R> resultFormat) {
 
-		copyResult 			= new FileCopyTmpResult<T, R>(threadId, resultFileWriter, resultFormat);
-		copyFilteredResult 	= new FileCopyTmpResult<T, R>(threadId, filteredResultFileWriter, resultFormat);
+		copyResult 			= new FileCopyTmpResult<T, R>(threadId, resultWriter, resultFormat);
+		copyFilteredResult 	= new FileCopyTmpResult<T, R>(threadId, filteredResultWriter, resultFormat);
 	}
 	
 	@Override

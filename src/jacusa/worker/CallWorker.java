@@ -16,6 +16,7 @@ import lib.worker.WorkerDispatcher;
 public class CallWorker
 extends AbstractWorker<CallData, StatisticResult<CallData>> {
 
+	private final double threshold;
 	private final AbstractStatisticCalculator<CallData> statisticCalculator;
 
 	public CallWorker(
@@ -26,12 +27,13 @@ extends AbstractWorker<CallData, StatisticResult<CallData>> {
 			final CallParameter callParameter) {
 
 		super(workerDispatcher, threadId, copyTmpResult, parallelDataValidators, callParameter);
-		this.statisticCalculator = callParameter.getStatisticParameters().newInstance();
+		threshold = callParameter.getStatisticParameters().getThreshold();
+		statisticCalculator = callParameter.getStatisticParameters().newInstance();
 	}
 
 	@Override
 	protected StatisticResult<CallData> process(final ParallelData<CallData> parallelData) {
-		return statisticCalculator.filter(parallelData);
+		return statisticCalculator.filter(threshold, parallelData);
 	}
 
 }

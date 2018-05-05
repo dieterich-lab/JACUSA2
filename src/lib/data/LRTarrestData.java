@@ -7,15 +7,12 @@ import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasCoverage;
 import lib.data.has.HasLRTarrestCount;
 import lib.data.has.HasReferenceBase;
-import lib.data.has.filter.HasLRTarrestCombinedFilteredData;
-import lib.data.has.filter.HasLRTarrestINDEL_FilteredData;
-import lib.data.has.filter.HasLRTarrestReadPositionFilteredData;
-import lib.data.has.filter.HasLRTarrestSpliceSiteFilteredData;
+import lib.data.has.filter.HasLRTarrestFilterData;
 import lib.util.coordinate.Coordinate;
 
 public class LRTarrestData
 extends AbstractData
-implements HasCoverage, HasBaseCallCount, HasReferenceBase, HasLRTarrestCount, HasLRTarrestINDEL_FilteredData, HasLRTarrestReadPositionFilteredData, HasLRTarrestCombinedFilteredData, HasLRTarrestSpliceSiteFilteredData {
+implements HasCoverage, HasBaseCallCount, HasReferenceBase, HasLRTarrestCount, HasLRTarrestFilterData {
 
 	private byte referenceBase;
 	private final BaseCallCount baseCallCount;

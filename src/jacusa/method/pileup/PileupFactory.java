@@ -9,8 +9,9 @@ import jacusa.filter.factory.distance.CombinedFilterFactory;
 import jacusa.filter.factory.distance.INDEL_FilterFactory;
 import jacusa.filter.factory.distance.ReadPositionDistanceFilterFactory;
 import jacusa.filter.factory.distance.SpliceSiteFilterFactory;
-import jacusa.io.writer.BED6pileupResultFormat;
-import jacusa.io.writer.PileupFormat;
+import jacusa.io.format.pileup.BED6pileupDebugFormat;
+import jacusa.io.format.pileup.BED6pileupResultFormat;
+import jacusa.io.format.pileup.PileupLikeFormat;
 import jacusa.worker.PileupWorker;
 
 import java.util.ArrayList;
@@ -124,12 +125,15 @@ extends AbstractMethodFactory<PileupData, DefaultResult<PileupData>> {
 				new HashMap<Character, AbstractResultFormat<PileupData, DefaultResult<PileupData>>>();
 
 		AbstractResultFormat<PileupData, DefaultResult<PileupData>> outputFormat = 
-				new PileupFormat<PileupData>(getParameter());
+				new PileupLikeFormat<PileupData>(getParameter());
 		outputFormats.put(outputFormat.getC(), outputFormat);
 
 		outputFormat = new BED6pileupResultFormat<PileupData, DefaultResult<PileupData>>(getParameter());
 		outputFormats.put(outputFormat.getC(), outputFormat);
 
+		outputFormat = new BED6pileupDebugFormat<PileupData, DefaultResult<PileupData>>(getParameter());
+		outputFormats.put(outputFormat.getC(), outputFormat);
+		
 		return outputFormats;
 	}
 

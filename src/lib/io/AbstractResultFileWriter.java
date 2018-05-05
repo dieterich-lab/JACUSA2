@@ -31,7 +31,8 @@ implements ResultWriter<T, R> {
 	 * Helper
 	 * @param s Add one line "s" to BufferedWriter
 	 */
-	public void addLine(final String s) {
+	@Override
+	public void writeLine(final String s) {
 		try {
 			bw.write(s + '\n');
 		} catch (IOException e) {
@@ -39,6 +40,7 @@ implements ResultWriter<T, R> {
 		}
 	}
 	
+	@Override
 	public void close() {
 		try {
 			bw.close();

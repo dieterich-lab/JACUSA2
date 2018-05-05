@@ -15,6 +15,7 @@ import lib.worker.WorkerDispatcher;
 public class LRTarrestWorker
 extends AbstractWorker<LRTarrestData, StatisticResult<LRTarrestData>> {
 
+	private final double threshold;
 	private final AbstractStatisticCalculator<LRTarrestData> statisticCalculator;
 	
 	public LRTarrestWorker(final WorkerDispatcher<LRTarrestData, StatisticResult<LRTarrestData>> workerDispatcher,
@@ -24,13 +25,14 @@ extends AbstractWorker<LRTarrestData, StatisticResult<LRTarrestData>> {
 			final LRTarrestParameter lrtArrestParameter) {
 
 		super(workerDispatcher, threadId, copyTmpResult, parallelDataValidators, lrtArrestParameter);
+		threshold = lrtArrestParameter.getStatisticParameters().getThreshold();
 		statisticCalculator = lrtArrestParameter
 				.getStatisticParameters().newInstance();
 	}
 
 	@Override
 	protected StatisticResult<LRTarrestData> process(final ParallelData<LRTarrestData> parallelData) {
-		return statisticCalculator.filter(parallelData);
+		return statisticCalculator.filter(threshold, parallelData);
 	}
 	
 }

@@ -61,7 +61,7 @@ import lib.util.AbstractTool;
 public class JACUSA extends AbstractTool {
 	
 	public JACUSA(final String args[]) {
-		super("JACUSA", "2.0.0-BETA13", args);
+		super("JACUSA", "2.0.0-BETA15-test", args);
 	}
 
 	@Override
@@ -106,13 +106,17 @@ public class JACUSA extends AbstractTool {
 	@Override
 	protected String getEpilog() {
 		final StringBuilder sb = new StringBuilder();
-
+		
 		// number of threads
-		sb.append("Screening done using " + getCLI().getMethodFactory().getParameter().getMaxThreads() + " thread(s)");
+		final int maxThreads = getCLI().getMethodFactory().getParameter().getMaxThreads();
+		sb.append("Screening done using ");
+		sb.append(maxThreads);
+		sb.append(" thread(s)");
 		sb.append('\n');
 		
 		// location of result
-		sb.append("Results can be found in: " + getCLI().getMethodFactory().getParameter().getResultWriter().getInfo());
+		sb.append("Results can be found in: ");
+		sb.append(getCLI().getMethodFactory().getParameter().getResultWriter().getInfo());
 		sb.append('\n');
 		
 		final String lineSep = "--------------------------------------------------------------------------------";
@@ -120,9 +124,11 @@ public class JACUSA extends AbstractTool {
 		// # of result and total elapsd time
 		sb.append(lineSep);
 		sb.append('\n');
-		sb.append("Analyzed sites:\t" + getComparisons());
+		sb.append("Analyzed sites:\t");
+		sb.append(getComparisons());
 		sb.append('\n');
-		sb.append("Elapsed time:\t" + getLogger().getTimer().getTotalTimestring());
+		sb.append("Elapsed time:\t");
+		sb.append(getLogger().getTimer().getTotalTimestring());
 
 		return sb.toString();
 	}
@@ -138,6 +144,7 @@ public class JACUSA extends AbstractTool {
 			jacusa.run();
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 

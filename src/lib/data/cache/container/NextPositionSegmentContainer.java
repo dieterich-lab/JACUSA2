@@ -50,30 +50,7 @@ public class NextPositionSegmentContainer {
 				break;
 			
 			case NOT_COVERED:
-				try {
-					updateNotCovered2Covered(segment, tmpWindowPosition, tmpLength);
-				} catch (IllegalArgumentException e){
-					e.printStackTrace();
-					int i = 0;
-					for (NextPositionSegment s : segments) {
-						System.out.println("Segment: i");
-						System.out.println(s.toString());
-						++i;
-					}
-					System.out.println("Segment: " + segment.toString());
-					System.out.println("windowPosition: " + tmpWindowPosition);
-					System.out.println("length: " + length);
-
-					i = 0;
-					for (NextPositionSegment s : this.segments) {
-						System.out.println("Segment: i");
-						System.out.println(s.toString());
-					}
-
-					for (i = 0; i < winPos2id.length; ++i) {
-						System.out.println(i + " -> " + winPos2id[i]);
-					}
-				}
+				updateNotCovered2Covered(segment, tmpWindowPosition, tmpLength);
 				break;
 				
 			case COVERED:
@@ -152,7 +129,9 @@ public class NextPositionSegmentContainer {
 				createCovered(windowPosition, end, nextPosition);
 
 				// create notCovered
+				// if (end < tmpNotCoveredEnd) {
 				createNotCovered(end, tmpNotCoveredEnd, nextPosition);
+				//}
 			}
 		}
 	}
@@ -203,12 +182,6 @@ public class NextPositionSegmentContainer {
 		assert windowPosition != unknown.getStart();
 		
 		final int end = windowPosition + length;
-
-		/*
-		if (windowPosition != unknown.getStart()) {
-			throw new IllegalStateException("Cannot split an unknown segment: " + unknown.toString() + " w:" + windowPosition + " l:" + length);
-		}
-		*/
 
 		// shrink unknown
 		updateStart(unknown, windowPosition);
