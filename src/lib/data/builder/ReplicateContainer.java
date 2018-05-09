@@ -5,13 +5,14 @@ import java.util.List;
 
 import htsjdk.samtools.SamReader;
 
-import jacusa.filter.cache.FilterCache;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIterator;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIteratorProvider;
+import lib.data.cache.extractor.ReferenceSetter;
+import lib.data.cache.record.RecordDataCache;
 import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
@@ -28,6 +29,7 @@ public class ReplicateContainer<T extends AbstractData> {
 	
 	public ReplicateContainer(
 			final ConditionContainer<T> conditionContainer,
+			final ReferenceSetter<T> referenceSetter,
 			final CoordinateController coordinateController,
 			final AbstractConditionParameter<T> conditionParameter,
 			final AbstractParameter<T, ?> parameter) {
@@ -38,7 +40,7 @@ public class ReplicateContainer<T extends AbstractData> {
 		this.generalParameters = parameter;
 
 		iteratorProviders = createRecordIteratorProviders(conditionParameter);
-		dataBuilders = createDataBuilders(coordinateController, conditionParameter, parameter);
+		dataBuilders = createDataBuilders(referenceSetter, coordinateController, conditionParameter, parameter);
 	}
 
 	public List<SAMRecordWrapperIteratorProvider> getIteratorProviders() {
@@ -71,7 +73,7 @@ public class ReplicateContainer<T extends AbstractData> {
 	public T[] getData(final Coordinate coordinate) {
 		int replicateSize = conditionParameter.getReplicateSize();
 		// create new container array
-		T[] data = generalParameters.getMethodFactory().createReplicateData(replicateSize);
+		T[] data = generalParameters.getMethodFactory().getDataGenerator().createReplicateData(replicateSize);
 
 		for (int replicateIndex = 0; replicateIndex < replicateSize; ++replicateIndex) {
 			final DataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
@@ -82,6 +84,7 @@ public class ReplicateContainer<T extends AbstractData> {
 	}
 	
 	private List<DataBuilder<T>> createDataBuilders(
+			final ReferenceSetter<T> referenceSetter,
 			final CoordinateController coordinateController,
 			final AbstractConditionParameter<T> conditionParameter,
 			final AbstractParameter<T, ?> parameter) {
@@ -89,11 +92,11 @@ public class ReplicateContainer<T extends AbstractData> {
 		final List<DataBuilder<T>> dataBuilders = new ArrayList<DataBuilder<T>>(conditionParameter.getReplicateSize());
 
 		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); ++replicateIndex) {
-			final List<FilterCache<?>> filterCaches = 
+			final List<RecordDataCache<?>> filterCaches = 
 					conditionContainer.getFilterContainer().getFilterCaches(conditionParameter.getConditionIndex(), replicateIndex);
 
 			final DataBuilder<T> builder = 
-					parameter.getMethodFactory().getDataBuilderFactory().newInstance(replicateIndex, coordinateController, conditionParameter, filterCaches);
+					parameter.getMethodFactory().getDataBuilderFactory().newInstance(referenceSetter, replicateIndex, coordinateController, conditionParameter, filterCaches);
 			dataBuilders.add(builder);
 		}
 

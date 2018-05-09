@@ -9,6 +9,7 @@ import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.cache.extractor.ReferenceSetter;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
@@ -52,7 +53,7 @@ public class ConditionContainer<T extends AbstractData> {
 	public T[][] getData(final Coordinate coordinate) {
 		final int conditions = parameter.getConditionsSize();
 
-		final T[][] data = parameter.getMethodFactory().createContainerData(conditions);
+		final T[][] data = parameter.getMethodFactory().getDataGenerator().createContainerData(conditions);
 		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
 			data[conditionIndex] = getReplicatContainer(conditionIndex).getData(coordinate);
 		}
@@ -69,6 +70,7 @@ public class ConditionContainer<T extends AbstractData> {
 	}
 	
 	public void initReplicateContainer(
+			final ReferenceSetter<T> referenceSetter, 
 			final CoordinateController coordinateController,
 			final AbstractParameter<T, ?> parameter) {
 
@@ -80,7 +82,7 @@ public class ConditionContainer<T extends AbstractData> {
 
 		for (final AbstractConditionParameter<T> conditionParameter : parameter.getConditionParameters()) {
 			final ReplicateContainer<T> replicateContainer = 
-					new ReplicateContainer<T>(this, coordinateController, conditionParameter, parameter);
+					new ReplicateContainer<T>(this, referenceSetter, coordinateController, conditionParameter, parameter);
 			replicateContainers.add(replicateContainer);
 		}
 	}

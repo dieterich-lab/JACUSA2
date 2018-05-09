@@ -2,10 +2,10 @@ package jacusa.filter;
 
 import java.util.List;
 
-import jacusa.filter.cache.FilterCache;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
+import lib.data.cache.record.RecordDataCache;
 import lib.data.result.Result;
 import lib.util.coordinate.Coordinate;
 
@@ -18,12 +18,12 @@ public abstract class AbstractDataFilter<T extends AbstractData>
 extends AbstractFilter<T> {
 
 	// first list stores condition and each nested list the respective replicates
-	protected final List<List<FilterCache<T>>> filterCaches;
+	protected final List<List<RecordDataCache<T>>> filterCaches;
 
 	protected AbstractDataFilter(final char c, 
 			final int overhang, 
 			final AbstractParameter<T, ?> parameter,
-			final List<List<FilterCache<T>>> conditionFilterCaches) {
+			final List<List<RecordDataCache<T>>> conditionFilterCaches) {
 
 		super(c, overhang);
 		this.filterCaches = conditionFilterCaches;
@@ -56,7 +56,7 @@ extends AbstractFilter<T> {
 				// data from parallelData
 				final T data = parallelData.getData(conditionIndex, replicateIndex);
 				// data from filterFache
-				final FilterCache<T> filterCache = getFilterCache(conditionIndex, replicateIndex);
+				final RecordDataCache<T> filterCache = getFilterCache(conditionIndex, replicateIndex);
 				filterCache.addData(data, coordinate); 
 			}
 		}
@@ -66,8 +66,8 @@ extends AbstractFilter<T> {
 	 * Helper function. Clears conditionFilterFaches.
 	 */
 	public void clear() {
-		for (List<FilterCache<T>> replicateFilterCaches : filterCaches) {
-			for (FilterCache<T> replicateFilter : replicateFilterCaches) {
+		for (List<RecordDataCache<T>> replicateFilterCaches : filterCaches) {
+			for (RecordDataCache<T> replicateFilter : replicateFilterCaches) {
 				replicateFilter.clear();
 			}
 		}
@@ -80,7 +80,7 @@ extends AbstractFilter<T> {
 	 * @param replicateIndex identifies a specific replicate
 	 * @return a specific filterCache
 	 */
-	public FilterCache<T> getFilterCache(final int conditionIndex, final int replicateIndex) {
+	public RecordDataCache<T> getFilterCache(final int conditionIndex, final int replicateIndex) {
 		return filterCaches.get(conditionIndex).get(replicateIndex);
 	}
 

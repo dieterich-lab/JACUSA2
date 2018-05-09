@@ -6,6 +6,7 @@ import jacusa.cli.parameters.RTarrestParameter;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import lib.data.ParallelData;
 import lib.data.RTarrestData;
+import lib.data.cache.extractor.ReferenceSetter;
 import lib.data.result.StatisticResult;
 import lib.data.validator.ParallelDataValidator;
 import lib.io.copytmp.CopyTmpResult;
@@ -18,13 +19,15 @@ extends AbstractWorker<RTarrestData, StatisticResult<RTarrestData>> {
 	private final double threshold;
 	private final AbstractStatisticCalculator<RTarrestData> statisticCalculator;
 	
-	public RTArrestWorker(final WorkerDispatcher<RTarrestData, StatisticResult<RTarrestData>> workerDispatcher,
+	public RTArrestWorker(
+			final ReferenceSetter<RTarrestData> referenceSetter,
+			final WorkerDispatcher<RTarrestData, StatisticResult<RTarrestData>> workerDispatcher,
 			final int threadId,
 			final CopyTmpResult<RTarrestData, StatisticResult<RTarrestData>> copyTmpResult,
 			final List<ParallelDataValidator<RTarrestData>> parallelDataValidators, 
 			final RTarrestParameter rtArrestParameter) {
 
-		super(workerDispatcher, threadId, copyTmpResult, parallelDataValidators, rtArrestParameter);
+		super(referenceSetter, workerDispatcher, threadId, copyTmpResult, parallelDataValidators, rtArrestParameter);
 		threshold = rtArrestParameter.getStatisticParameters().getThreshold();
 		statisticCalculator = rtArrestParameter.getStatisticParameters().newInstance();
 	}

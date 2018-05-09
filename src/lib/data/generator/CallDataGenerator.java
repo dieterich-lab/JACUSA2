@@ -6,7 +6,7 @@ import lib.util.coordinate.Coordinate;
 
 public class CallDataGenerator
 extends AbstractDataGenerator<CallData> {
-
+		
 	@Override
 	public CallData createData(final LIBRARY_TYPE libraryType, final Coordinate coordinate) {
 		return new CallData(libraryType, coordinate);
@@ -26,5 +26,10 @@ extends AbstractDataGenerator<CallData> {
 	public CallData copyData(final CallData data) {
 		return new CallData(data);
 	}
-
+	
+	@Override
+	public void merge(final CallData dest, final CallData src) {
+		dest.merge(src);
+	}
+	
 }

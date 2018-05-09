@@ -1,16 +1,22 @@
 package lib.data;
 
+import lib.data.basecall.array.ArrayBaseCallCount;
+import lib.data.count.BaseCallCount;
+import lib.data.count.RTarrestCount;
+import lib.data.filter.BaseCallFilteredData;
+import lib.data.filter.BooleanFilteredData;
 import lib.data.has.HasArrestBaseCallCount;
 import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasRTarrestCount;
+import lib.data.has.HasRTcount;
 import lib.data.has.HasReferenceBase;
 import lib.data.has.HasThroughBaseCallCount;
-import lib.data.has.filter.HasRTarrestFilterData;
+import lib.data.has.filter.HasBaseCallCountFilterData;
+import lib.data.has.filter.HasBooleanFilterData;
 import lib.util.coordinate.Coordinate;
 
 public class RTarrestData
 extends AbstractData
-implements HasRTarrestCount, HasBaseCallCount, HasArrestBaseCallCount, HasThroughBaseCallCount, HasReferenceBase, HasRTarrestFilterData {
+implements HasRTcount, HasBaseCallCount, HasArrestBaseCallCount, HasThroughBaseCallCount, HasReferenceBase, HasBooleanFilterData, HasBaseCallCountFilterData {
 
 	private byte referenceBase;
 	
@@ -20,20 +26,22 @@ implements HasRTarrestCount, HasBaseCallCount, HasArrestBaseCallCount, HasThroug
 	
 	private final RTarrestCount rtArrestCount;
 	
-	private final RTarrestFilterData rtArrestFilterData;
+	private final AbstractFilteredData<BaseCallCount> baseCallCountFilterData;
+	private final AbstractFilteredData<Boolean> booleanFilterData;
 	
-	public RTarrestData(final RTarrestData rtArrestData) {
-		super(rtArrestData);
+	public RTarrestData(final RTarrestData src) {
+		super(src);
 
-		referenceBase = rtArrestData.referenceBase;
+		referenceBase = src.referenceBase;
 		
-		arrestBaseCallCount = rtArrestData.arrestBaseCallCount.copy();
-		throughBaseCallCount = rtArrestData.throughBaseCallCount.copy();
-		baseCallCount = rtArrestData.baseCallCount.copy();
+		arrestBaseCallCount = src.arrestBaseCallCount.copy();
+		throughBaseCallCount = src.throughBaseCallCount.copy();
+		baseCallCount = src.baseCallCount.copy();
 		
-		rtArrestCount = rtArrestData.rtArrestCount.copy();
+		rtArrestCount = src.rtArrestCount.copy();
 		
-		rtArrestFilterData = rtArrestData.rtArrestFilterData.copy();
+		baseCallCountFilterData = src.baseCallCountFilterData.copy();
+		booleanFilterData		= src.booleanFilterData.copy();
 	}
 	
 	public RTarrestData(final LIBRARY_TYPE libraryType, final Coordinate coordinate, byte referenceBase) {
@@ -41,33 +49,19 @@ implements HasRTarrestCount, HasBaseCallCount, HasArrestBaseCallCount, HasThroug
 		
 		referenceBase = 'N';
 		
-		arrestBaseCallCount = new BaseCallCount();
-		throughBaseCallCount = new BaseCallCount();
-		baseCallCount = new BaseCallCount();
+		arrestBaseCallCount 	= new ArrayBaseCallCount();
+		throughBaseCallCount 	= new ArrayBaseCallCount();
+		baseCallCount 			= new ArrayBaseCallCount();
 		
-		rtArrestCount = new RTarrestCount();
+		rtArrestCount 			= new RTarrestCount();
 		
-		rtArrestFilterData = new RTarrestFilterData();
+		baseCallCountFilterData	= new BaseCallFilteredData();
+		booleanFilterData		= new BooleanFilteredData();
 	}
 		
 	@Override
 	public RTarrestCount getRTarrestCount() {
 		return rtArrestCount;
-	}
-	
-	@Override
-	public void add(final AbstractData abstractData) {
-		final RTarrestData rtArrestData = (RTarrestData) abstractData;
-		
-		referenceBase = rtArrestData.referenceBase;
-		
-		arrestBaseCallCount.add(rtArrestData.arrestBaseCallCount);
-		throughBaseCallCount.add(rtArrestData.throughBaseCallCount);
-		baseCallCount.add(rtArrestData.baseCallCount);
-		
-		rtArrestCount.add(rtArrestData.rtArrestCount);
-		
-		rtArrestFilterData.add(rtArrestData.rtArrestFilterData);
 	}
 	
 	@Override
@@ -101,6 +95,16 @@ implements HasRTarrestCount, HasBaseCallCount, HasArrestBaseCallCount, HasThroug
 		return arrestBaseCallCount;
 	}
 
+	@Override
+	public AbstractFilteredData<BaseCallCount> getBaseCallCountFilterData() {
+		return baseCallCountFilterData;
+	}
+	
+	@Override
+	public AbstractFilteredData<Boolean> getBooleanFilterData() {
+		return booleanFilterData;
+	}
+	
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		final String sep = ", ";
@@ -124,35 +128,18 @@ implements HasRTarrestCount, HasBaseCallCount, HasArrestBaseCallCount, HasThroug
 	public BaseCallCount getBaseCallCount() {
 		return baseCallCount;
 	}
+
+	public void merge(final RTarrestData src) {
+		referenceBase = src.referenceBase;
+		
+		arrestBaseCallCount.add(src.arrestBaseCallCount);
+		throughBaseCallCount.add(src.throughBaseCallCount);
+		baseCallCount.add(src.baseCallCount);
+		
+		rtArrestCount.add(src.rtArrestCount);
+
+		baseCallCountFilterData.merge(src.baseCallCountFilterData);
+		booleanFilterData.merge(src.booleanFilterData);
+	}
 	
-	@Override
-	public boolean isHomopolymer() {
-		return rtArrestFilterData.isHomopolymer();
-	}
-
-	@Override
-	public void setHomopolymer(boolean b) {
-		rtArrestFilterData.setHomopolymer(b);
-	}
-
-	@Override
-	public BaseCallCount getINDEL_FilterData() {
-		return rtArrestFilterData.getINDEL_FilterData();
-	}
-
-	@Override
-	public void setINDEL_DistanceFilterData(BaseCallCount baseCallCount) {
-		rtArrestFilterData.setINDEL_DistanceFilterData(baseCallCount);
-	}
-
-	@Override
-	public BaseCallCount getSpliceSiteFilterData() {
-		return rtArrestFilterData.getSpliceSiteFilterData();
-	}
-
-	@Override
-	public void setSpliceSiteDistanceFilterData(BaseCallCount baseCallCount) {
-		rtArrestFilterData.setSpliceSiteDistanceFilterData(baseCallCount);
-	}
-
 }

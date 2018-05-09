@@ -7,7 +7,7 @@ import lib.util.coordinate.Coordinate;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.DataCache;
+import lib.data.cache.record.RecordDataCache;
 
 public abstract class AbstractStrandedCacheContainer<T extends AbstractData> 
 implements CacheContainer<T> {
@@ -15,11 +15,12 @@ implements CacheContainer<T> {
 	private final CacheContainer<T> forwardContainer; 
 	private final CacheContainer<T> reverseContainer;
 	
-	public AbstractStrandedCacheContainer(final CacheContainer<T> forwardContainer, 
+	public AbstractStrandedCacheContainer(
+			final CacheContainer<T> forwardContainer, 
 			final CacheContainer<T> reverseContainer) {
 
-		this.forwardContainer = forwardContainer;
-		this.reverseContainer = reverseContainer;
+		this.forwardContainer	= forwardContainer;
+		this.reverseContainer 	= reverseContainer;
 	}
 	
 	@Override
@@ -38,8 +39,8 @@ implements CacheContainer<T> {
 	}
 	
 	@Override
-	public List<DataCache<T>> getDataCaches() {
-		List<DataCache<T>> caches = new ArrayList<DataCache<T>>();
+	public List<RecordDataCache<T>> getDataCaches() {
+		List<RecordDataCache<T>> caches = new ArrayList<RecordDataCache<T>>();
 		caches.addAll(forwardContainer.getDataCaches());
 		caches.addAll(reverseContainer.getDataCaches());
 		return caches;
@@ -52,8 +53,8 @@ implements CacheContainer<T> {
 	}
 	
 	@Override
-	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
-		getCacheContainer(recordWrapper).addRecordWrapper(recordWrapper);
+	public void add(final SAMRecordWrapper recordWrapper) {
+		getCacheContainer(recordWrapper).add(recordWrapper);
 	}
 	
 	@Override

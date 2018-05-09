@@ -1,7 +1,7 @@
 package lib.data.validator;
 
-import lib.data.RTarrestData;
 import lib.data.ParallelData;
+import lib.data.RTarrestData;
 
 public class RTArrestDebugVariantParallelPileup<T extends RTarrestData> 
 implements ParallelDataValidator<T> {

@@ -1,11 +1,9 @@
 package jacusa.io.format.lrtarrest;
 
-import java.util.Map;
-
 import jacusa.io.format.BEDlikeResultWriter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.BaseCallCount;
+import lib.data.cache.lrtarrest.RefPos2BaseCallCount;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasLRTarrestCount;
 import lib.data.has.HasReferenceBase;
@@ -71,8 +69,8 @@ extends BEDlikeResultWriter<T, R> {
 		// output condition: Ax,Cx,Gx,Tx
 		sb.append(SEP);
 
-		final Map<Integer, BaseCallCount> ref2baseCallCount4arrest = data.getLRTarrestCount().getRefPos2bc4arrest();
-		ResultWriterUtils.addResultRefPos2baseChange(sb, ref2baseCallCount4arrest);
+		final RefPos2BaseCallCount refPos2BaseCallCount = data.getLRTarrestCount().getRefPos2bc4arrest();
+		ResultWriterUtils.addResultRefPos2baseChange(sb, refPos2BaseCallCount);
 	}
 
 	protected void addResultReadInfoCount(final StringBuilder sb, final T data) {

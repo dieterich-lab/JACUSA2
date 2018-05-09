@@ -69,7 +69,7 @@ extends AbstractFilterFactory<T> {
 		@Override
 		public boolean filter(final ParallelData<T> parallelData) {
 			return parallelData.getCombinedPooledData()
-					.getBaseCallCount().getAlleles().length > alleles;
+					.getBaseCallCount().getAlleles().size() > alleles;
 		}
 
 		@Override

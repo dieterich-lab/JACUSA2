@@ -27,4 +27,9 @@ extends AbstractDataGenerator<PileupData> {
 		return new PileupData(data);
 	}
 
+	@Override
+	public void merge(PileupData dest, PileupData src) {
+		dest.merge(src);
+	}
+
 }

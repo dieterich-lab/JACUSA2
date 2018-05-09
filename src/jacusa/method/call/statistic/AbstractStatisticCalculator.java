@@ -39,7 +39,7 @@ public abstract class AbstractStatisticCalculator<T extends AbstractData> {
 	
 	public StatisticResult<T> filter(final double threshold, final ParallelData<T> parallelData) {
 		final double statistic = getStatistic(parallelData);
-		if (! filter(statistic, threshold)) {
+		if (filter(statistic, threshold)) {
 			return null;
 		}
 		StatisticResult<T> result = new StatisticResult<T>(statistic, parallelData);

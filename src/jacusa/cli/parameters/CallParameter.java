@@ -19,10 +19,10 @@ implements HasStatisticParameters<CallData> {
 	
 	public CallParameter(final int conditionSize) {
 		super(conditionSize);
-		// set default DirMul and threshold to 1.0
+		// set default DirMul and threshold to NaN - display all
 		statisticParameter = new StatisticParameter<CallData>(
 				new DirichletMultinomialRobustCompoundError<CallData>(this), 
-				1.0);
+				Double.NaN);
 		// set default result
 		setResultFormat(new BED6callResultFormat<CallData, StatisticResult<CallData>>(this));
 	}

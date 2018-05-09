@@ -5,26 +5,30 @@ import java.util.List;
 
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
-import lib.data.AbstractData;
-import lib.data.cache.BaseCallDataCache;
-import lib.data.cache.DataCache;
-import lib.data.has.HasBaseCallCount;
+import lib.data.BaseCallData;
+import lib.data.cache.extractor.basecall.DefaultBaseCallCountExtractor;
+import lib.data.cache.record.AlignmentBlockWrapperDataCache;
+import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.region.ArrayBaseCallRegionDataCache;
 import lib.util.coordinate.CoordinateController;
 
-public class BaseCallDataBuilderFactory<T extends AbstractData & HasBaseCallCount> 
-extends AbstractDataBuilderFactory<T> {
+public class BaseCallDataBuilderFactory
+extends AbstractDataBuilderFactory<BaseCallData> {
 
-	public BaseCallDataBuilderFactory(final AbstractParameter<T, ?> generalParameter) {
+	public BaseCallDataBuilderFactory(final AbstractParameter<BaseCallData, ?> generalParameter) {
 		super(generalParameter);
 	}
 	
-	protected List<DataCache<T>> createDataCaches(final CoordinateController coordinateController, 
-			final AbstractConditionParameter<T> conditionParameter) {
+	protected List<RecordDataCache<BaseCallData>> createDataCaches(final CoordinateController coordinateController, 
+			final AbstractConditionParameter<BaseCallData> conditionParameter) {
 
-		final List<DataCache<T>> dataCaches = new ArrayList<DataCache<T>>(3);
+		final List<RecordDataCache<BaseCallData>> dataCaches = new ArrayList<RecordDataCache<BaseCallData>>(3);
 		dataCaches.add(
-				new BaseCallDataCache<T>(conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), 
-						getParameter().getBaseConfig(), coordinateController));
+				new AlignmentBlockWrapperDataCache<BaseCallData>(
+						new ArrayBaseCallRegionDataCache<BaseCallData>(
+								new DefaultBaseCallCountExtractor<BaseCallData>(),
+								conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(),
+								getParameter().getBaseConfig(), coordinateController)));
 		return dataCaches;
 	}
 	

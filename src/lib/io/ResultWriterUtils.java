@@ -1,11 +1,10 @@
 package lib.io;
 
-import java.util.Map;
-
 import jacusa.io.format.BEDlikeResultWriter;
 import jacusa.io.format.BEDlikeWriter;
 import lib.cli.options.BaseCallConfig;
-import lib.data.BaseCallCount;
+import lib.data.cache.lrtarrest.RefPos2BaseCallCount;
+import lib.data.count.BaseCallCount;
 
 public abstract class ResultWriterUtils {
 
@@ -23,7 +22,7 @@ public abstract class ResultWriterUtils {
 		int baseIndex = BaseCallConfig.getInstance().getBaseIndex(baseByte);
 		int count = 0;
 		if (baseIndex >= 0) {
-			count = baseCallCount.getBaseCallCount(baseIndex);
+			count = baseCallCount.getBaseCall(baseIndex);
 		}
 		sb.append(count);
 		++i;
@@ -32,19 +31,19 @@ public abstract class ResultWriterUtils {
 			baseIndex = BaseCallConfig.getInstance().getBaseIndex(baseByte);
 			count = 0;
 			if (baseIndex >= 0) {
-				count = baseCallCount.getBaseCallCount(baseIndex);
+				count = baseCallCount.getBaseCall(baseIndex);
 			}
 			sb.append(BEDlikeResultWriter.SEP2);
 			sb.append(count);
 		}
 	}
 
-	public static void addResultRefPos2baseChange(final StringBuilder sb, final Map<Integer, BaseCallCount> ref2baseCallCount) {
-		final int n = ref2baseCallCount.size();
+	public static void addResultRefPos2baseChange(final StringBuilder sb, final RefPos2BaseCallCount refPos2BaseCallCount) {
+		final int n = refPos2BaseCallCount.getRefPos().size();
 		int j = 0;
 		int i = 0;
-		for (final int refPos : ref2baseCallCount.keySet()) {
-			final BaseCallCount baseCallCount = ref2baseCallCount.get(refPos);
+		for (final int refPos : refPos2BaseCallCount.getRefPos()) {
+			final BaseCallCount baseCallCount = refPos2BaseCallCount.getBaseCallCount(refPos);
 			if (baseCallCount.getCoverage() == 0) {
 				continue;
 			}
@@ -56,14 +55,14 @@ public abstract class ResultWriterUtils {
 			int baseIndex = 0;
 			int count = 0;
 			if (baseIndex >= 0) {
-				count = baseCallCount.getBaseCallCount(baseIndex);
+				count = baseCallCount.getBaseCall(baseIndex);
 			}
 			sb.append(count);
 			++baseIndex;
 			for (; baseIndex < BaseCallConfig.BASES.length; ++baseIndex) {
 				count = 0;
 				if (baseIndex >= 0) {
-					count = baseCallCount.getBaseCallCount(baseIndex);
+					count = baseCallCount.getBaseCall(baseIndex);
 				}
 				sb.append(BEDlikeResultWriter.SEP2);
 				sb.append(count);

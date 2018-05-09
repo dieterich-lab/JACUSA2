@@ -4,18 +4,18 @@ import java.util.List;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.DataCache;
+import lib.data.cache.record.RecordDataCache;
 import lib.util.coordinate.Coordinate;
 
 public interface CacheContainer<T extends AbstractData> {
 
-	void addRecordWrapper(final SAMRecordWrapper recordWrapper);
+	void add(final SAMRecordWrapper recordWrapper);
 	
 	int getNext(final int windowPosition);
 
 	void addData(T data, final Coordinate coordinate);
 	
-	List<DataCache<T>> getDataCaches();
+	List<RecordDataCache<T>> getDataCaches();
 	void clear();
 	
 }

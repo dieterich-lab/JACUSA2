@@ -21,14 +21,16 @@ implements HasStatisticParameters<RTarrestData> {
 		super(conditions);
 		// related to test-statistic
 		statisticParameters = new StatisticParameter<RTarrestData>(
-				new BetaBinomial<RTarrestData>(), 1.0);
+				new BetaBinomial<RTarrestData>(), Double.NaN);
 		// default result format
 		setResultFormat(new BED6rtArrestResultFormat<RTarrestData, StatisticResult<RTarrestData>>(this));
 	}
 
 	@Override
 	public AbstractConditionParameter<RTarrestData> createConditionParameter(final int conditionIndex) {
-		return new JACUSAConditionParameter<RTarrestData>(conditionIndex);
+		final AbstractConditionParameter<RTarrestData> p = new JACUSAConditionParameter<RTarrestData>(conditionIndex);
+		p.setMinBASQ((byte)0);
+		return p;
 	}
 	
 	@Override

@@ -8,6 +8,7 @@ import jacusa.method.call.statistic.dirmult.initalpha.MinAlphaInit;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Set;
 
 import lib.data.AbstractData;
 import lib.data.ParallelData;
@@ -72,18 +73,18 @@ extends AbstractStatisticCalculator<T> {
 	
 	/**
 	 * 
-	 * @param data
+	 * @param replicateData
 	 * @param baseIndexs
-	 * @param pileupMatrix
+	 * @param matrix
 	 */
 	protected void populate(
 			final int[] baseIndexs,
-			final T[] data, 
-			double[][] pileupMatrix) {
-		for (int i = 0; i < data.length; ++i) {
-			T d = data[i];
+			final T[] replicateData, 
+			double[][] matrix) {
+		for (int i = 0; i < replicateData.length; ++i) {
+			T data = replicateData[i];
 	
-			populate(d, baseIndexs, pileupMatrix[i]);
+			populate(data, baseIndexs, matrix[i]);
 		}
 	}
 
@@ -141,22 +142,22 @@ extends AbstractStatisticCalculator<T> {
 			double[] initAlphaValues, 
 			final AbstractAlphaInit alphaInit,
 			final int[] baseIndexs,
-			final T[] dataMatrix,
+			final T[] replicateData,
 			final boolean backtrack ) {
 		// populate pileupMatrix with values to be modeled
-		final double[][] datamatrix  = new double[dataMatrix.length][alpha.length];
+		final double[][] dataMatrix  = new double[replicateData.length][alpha.length];
 
 		// populate dataMatrix with values to be modeled
-		populate(baseIndexs, dataMatrix, datamatrix);
+		populate(baseIndexs, replicateData, dataMatrix);
 		// perform an initial guess of alpha
-		System.arraycopy(alphaInit.init(baseIndexs, datamatrix), 0, initAlphaValues, 0, alpha.length);
+		System.arraycopy(alphaInit.init(baseIndexs, dataMatrix), 0, initAlphaValues, 0, alpha.length);
 
 		// store initial alpha guess
 		System.arraycopy(initAlphaValues, 0, alpha, 0, alpha.length);
 
 		// estimate alpha(s), capture and info(s), and store log-likelihood
-		// return estimateAlpha.maximizeLogLikelihood(alpha, baseIndexs, datamatrix, condition, estimateInfo, backtrack);
-		return estimateAlpha.maximizeLogLikelihood(condition, alpha, baseIndexs, datamatrix, estimateInfo, backtrack);
+		// return estimateAlpha.maximizeLogLikelihood(alpha, baseIndexs, dataMatrix, condition, estimateInfo, backtrack);
+		return estimateAlpha.maximizeLogLikelihood(condition, alpha, baseIndexs, dataMatrix, estimateInfo, backtrack);
 	}
 	
 	@Override
@@ -174,8 +175,10 @@ extends AbstractStatisticCalculator<T> {
 		
 		// parameters for distribution
 		alpha = new double[conditions + 1][baseN];
+		logLikelihood = new double[conditions + 1];
 		initAlpha = new double[conditions + 1][baseN];
-
+		iterations = new int[conditions + 1];
+		
 		// estimate alpha(s), capture and info(s), and store log-likelihood
 		boolean isReset = false;
 		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
@@ -187,8 +190,8 @@ extends AbstractStatisticCalculator<T> {
 		}
 		// pooled data
 		int pooledIndex = conditions;
-		logLikelihood[pooledIndex] = estimate("P", alpha[pooledIndex], 
-				initAlpha[pooledIndex], estimateAlpha.getAlphaInit(), 
+		logLikelihood[pooledIndex] = estimate("P", 
+				alpha[pooledIndex], initAlpha[pooledIndex], estimateAlpha.getAlphaInit(), 
 				baseIndexs, parallelData.getCombinedData(), false);
 		iterations[pooledIndex] = estimateAlpha.getIterations();
 		isReset |= estimateAlpha.isReset();
@@ -287,14 +290,14 @@ extends AbstractStatisticCalculator<T> {
 
 	@Override
 	public boolean filter(double value, double threshold) {
-		// if p-value interpret threshold as upper bound
-		if (calcPValue) {
-			return threshold < value;
-		}
-		
 		// if log-likelihood ratio and value not set give all results
 		if (parameter.getStatisticParameters().getThreshold() == Double.NaN) {
 			return false;
+		}
+		
+		// if p-value interpret threshold as upper bound
+		if (calcPValue) {
+			return threshold < value;
 		}
 		
 		// if log-likelihood ratio interpret threshold as lower bound 
@@ -355,7 +358,14 @@ extends AbstractStatisticCalculator<T> {
 	 */
 	protected int[] getBaseIndex(final ParallelData<T> parallelData) {
 		if (onlyObservedBases) {
-			return parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount().getAlleles();
+			final Set<Integer> tmp = parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount().getAlleles();
+			final int[] alleles = new int[tmp.size()];
+			int i = 0;
+			for (final int baseIndex : tmp) {
+				alleles[i] = baseIndex;
+				++i;
+			}
+			return alleles;
 		}
 
 		return parameter.getBaseConfig().getBaseIndex();

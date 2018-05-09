@@ -27,5 +27,5 @@ implements DataGenerator<T> {
 		
 		return ret;
 	}
-
+	
 }

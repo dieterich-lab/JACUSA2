@@ -1,6 +1,6 @@
 package jacusa.estimate;
 
-import lib.data.PileupCount;
+import lib.data.count.PileupCount;
 import lib.phred2prob.Phred2Prob;
 
 /**

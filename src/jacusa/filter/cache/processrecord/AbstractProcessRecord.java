@@ -1,6 +1,6 @@
 package jacusa.filter.cache.processrecord;
 
-import lib.data.cache.region.UniqueRegionDataCache;
+import lib.data.cache.region.RegionDataCache;
 
 /**
  * This class implements the ProcessRecord interface. 
@@ -10,13 +10,13 @@ public abstract class AbstractProcessRecord implements ProcessRecord {
 	// TODO add comments.
 	private final int distance;
 	// ensures that each position is only counted once
-	private final UniqueRegionDataCache<?> uniqueCache;
+	private final RegionDataCache<?> regionCache;
 	
 	public AbstractProcessRecord(final int distance, 
-			final UniqueRegionDataCache<?> uniqueCache) {
+			final RegionDataCache<?> regionCache) {
 
 		this.distance = distance;
-		this.uniqueCache = uniqueCache;
+		this.regionCache = regionCache;
 	}
 
 	/**
@@ -33,8 +33,8 @@ public abstract class AbstractProcessRecord implements ProcessRecord {
 	 * 
 	 * @return
 	 */
-	public UniqueRegionDataCache<?> getUniqueCache() {
-		return uniqueCache;
+	public RegionDataCache<?> getRegionCache() {
+		return regionCache;
 	}
 	
 }

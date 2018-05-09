@@ -1,13 +1,13 @@
 package lib.data.has;
 
-import lib.data.LRTarrestCount;
+import lib.data.count.LRTarrestCount;
 
 /**
  * 
  * @author Michael Piechotta
  *
  */
-public interface HasLRTarrestCount extends HasRTarrestCount {
+public interface HasLRTarrestCount extends HasRTcount {
 	
 	LRTarrestCount getLRTarrestCount();
 	

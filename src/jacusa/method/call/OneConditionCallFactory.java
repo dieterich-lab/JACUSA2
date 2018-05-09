@@ -3,10 +3,10 @@ package jacusa.method.call;
 import jacusa.cli.parameters.CallParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
-import jacusa.filter.factory.distance.CombinedFilterFactory;
-import jacusa.filter.factory.distance.INDEL_FilterFactory;
-import jacusa.filter.factory.distance.ReadPositionDistanceFilterFactory;
-import jacusa.filter.factory.distance.SpliceSiteFilterFactory;
+import jacusa.filter.factory.basecall.CombinedFilterFactory;
+import jacusa.filter.factory.basecall.INDEL_FilterFactory;
+import jacusa.filter.factory.basecall.ReadPositionDistanceFilterFactory;
+import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -3,19 +3,19 @@ package jacusa.filter.factory;
 import java.util.List;
 
 import jacusa.filter.HomopolymerDataFilter;
-import jacusa.filter.cache.FilterCache;
 import jacusa.filter.cache.HomopolymerFilterCache;
 import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
+import lib.data.cache.record.RecordDataCache;
 import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasHomopolymerInfo;
 import lib.data.has.HasReferenceBase;
+import lib.data.has.filter.HasBooleanFilterData;
 import lib.util.coordinate.CoordinateController;
 
-public class HomopolymerFilterFactory<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasHomopolymerInfo> 
+public class HomopolymerFilterFactory<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasBooleanFilterData> 
 extends AbstractDataFilterFactory<T> {
 
 	// default length of consecutive identical base call for
@@ -53,7 +53,7 @@ extends AbstractDataFilterFactory<T> {
 	}
 
 	@Override
-	protected FilterCache<T> createFilterCache(
+	protected RecordDataCache<T> createFilterCache(
 			AbstractConditionParameter<T> conditionParameter,
 			BaseCallConfig baseCallConfig,
 			CoordinateController coordinateController) {
@@ -68,7 +68,7 @@ extends AbstractDataFilterFactory<T> {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 
 		// TODO add comments.
-		final List<List<FilterCache<T>>> conditionFilterCaches = 
+		final List<List<RecordDataCache<T>>> conditionFilterCaches = 
 				createConditionFilterCaches(parameter, coordinateController, this);
 		// create filter 
 		final HomopolymerDataFilter<T> dataFilter = 
@@ -79,7 +79,7 @@ extends AbstractDataFilterFactory<T> {
 
 	@Override
 	public void addFilteredData(StringBuilder sb, T data) {
-		if (data.isHomopolymer()) {
+		if (data.getBooleanFilterData().get(getC())) {
 			sb.append('1');
 		} else {
 			sb.append('0');

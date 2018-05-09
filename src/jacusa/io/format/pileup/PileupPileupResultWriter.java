@@ -1,6 +1,8 @@
 package jacusa.io.format.pileup;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
@@ -9,7 +11,6 @@ import lib.data.ParallelData;
 import lib.data.has.HasPileupCount;
 import lib.data.result.Result;
 import lib.io.AbstractResultFileWriter;
-import lib.phred2prob.Phred2Prob;
 
 import htsjdk.samtools.SAMUtils;
 
@@ -90,10 +91,10 @@ extends AbstractResultFileWriter<T, R> {
 			sb.append(data.getPileupCount().getCoverage());
 			sb.append(SEP);
 			
-			final int[] alleles = data.getPileupCount().getBaseCallCount().getAlleles();
+			final Set<Integer> alleles = data.getPileupCount().getBaseCallCount().getAlleles();
 			// print bases
 			for (final int baseIndex : alleles) {
-				final int count = data.getPileupCount().getBaseCallCount().getBaseCallCount(baseIndex);
+				final int count = data.getPileupCount().getBaseCallCount().getBaseCall(baseIndex);
 				// repeat count times
 				for (int i = 0; i < count; ++i) {
 					sb.append(baseConfig.getBases()[baseIndex]);
@@ -103,12 +104,13 @@ extends AbstractResultFileWriter<T, R> {
 			sb.append(SEP);
 
 			// print quals
-			for (final int base : alleles) {
-				for (byte qual = 0; qual < Phred2Prob.MAX_Q; ++qual) {
-					final int count = data.getPileupCount().getQualCount(base, qual);
+			for (final int baseIndex : alleles) {
+				final Set<Byte> baseQuals = new TreeSet<Byte>(data.getPileupCount().getBaseCallQualityCount().getBaseCallQuality(baseIndex));
+				for (final byte baseQual : baseQuals) {
+					final int count = data.getPileupCount().getBaseCallQualityCount().getBaseCallQuality(baseIndex, baseQual);
 					// repeat count times
 					for (int j = 0; j < count; ++j) {
-						sb.append(SAMUtils.phredToFastq(qual));
+						sb.append(SAMUtils.phredToFastq(baseQual));
 					}
 				}
 			}

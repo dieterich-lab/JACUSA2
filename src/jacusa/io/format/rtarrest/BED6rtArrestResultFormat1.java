@@ -3,14 +3,14 @@ package jacusa.io.format.rtarrest;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.has.HasRTarrestCount;
+import lib.data.has.HasRTcount;
 import lib.data.has.HasReferenceBase;
 import lib.data.result.Result;
 import lib.data.result.hasStatistic;
 import lib.io.AbstractResultFormat;
 import lib.io.ResultWriter;
 
-public class BED6rtArrestResultFormat1<T extends AbstractData & HasReferenceBase & HasRTarrestCount, R extends Result<T> & hasStatistic> 
+public class BED6rtArrestResultFormat1<T extends AbstractData & HasReferenceBase & HasRTcount, R extends Result<T> & hasStatistic> 
 extends AbstractResultFormat<T, R> {
 
 	public static final char CHAR = 'A';

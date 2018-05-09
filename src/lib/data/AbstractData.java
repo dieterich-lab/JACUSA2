@@ -28,8 +28,7 @@ implements HasCoordinate, HasLibraryType {
 	public LIBRARY_TYPE getLibraryType() {
 		return libraryType;
 	}
-
-	public abstract void add(final AbstractData abstractData);
+	
 	public abstract AbstractData copy();
 	public abstract String toString();
 	

@@ -12,11 +12,11 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.factory.AbstractDataBuilderFactory;
 import lib.data.generator.DataGenerator;
+import lib.data.has.HasDataGenerator;
 import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 import lib.data.result.Result;
 import lib.data.validator.ParallelDataValidator;
 import lib.util.AbstractTool;
-import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.provider.BedCoordinateProvider;
 import lib.util.coordinate.provider.CoordinateProvider;
 import lib.util.coordinate.provider.SAMCoordinateProviderAdvanced;
@@ -36,7 +36,7 @@ import htsjdk.samtools.ValidationStringency;
 import htsjdk.samtools.SamReaderFactory.Option;
 
 public abstract class AbstractMethodFactory<T extends AbstractData, R extends Result<T>> 
-implements DataGenerator<T> {
+implements HasDataGenerator<T> {
 
 	private final String name;
 	private final String desc;
@@ -109,36 +109,6 @@ implements DataGenerator<T> {
 
 	public DataGenerator<T> getDataGenerator() {
 		return dataGenerator;
-	}
-	
-	@Override
-	public T createData(LIBRARY_TYPE libraryType, Coordinate coordinate) {
-		return getDataGenerator().createData(libraryType, coordinate);
-	}
-
-	@Override
-	public T[] createReplicateData(final int n) {
-		return dataGenerator.createReplicateData(n);
-	}
-
-	@Override
-	public T[][] createContainerData(final int n) {
-		return dataGenerator.createContainerData(n);
-	}
-
-	@Override
-	public T copyData(final T data) {
-		return dataGenerator.copyData(data);
-	}
-	
-	@Override
-	public T[] copyReplicateData(final T[] replicateData) {
-		return dataGenerator.copyReplicateData(replicateData);
-	}
-	
-	@Override
-	public T[][] copyContainerData(final T[][] containerData) {
-		return dataGenerator.copyContainerData(containerData);
 	}
 	
 	protected void addACOption(AbstractACOption newACOption) {
@@ -312,8 +282,7 @@ implements DataGenerator<T> {
 	}
 
 	public List<ParallelDataValidator<T>> getParallelDataValidators() {
-		final List<ParallelDataValidator<T>> parallelDataValidators = new ArrayList<ParallelDataValidator<T>>(5);
-		return parallelDataValidators;
+		return new ArrayList<ParallelDataValidator<T>>(5);
 	}
 	
 	/**

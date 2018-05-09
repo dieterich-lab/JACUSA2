@@ -77,7 +77,7 @@ extends AbstractFilterFactory<T> {
 		@Override
 		public boolean filter(final ParallelData<T> parallelData) {
 			final int alleles = parallelData.getPooledData(homozygousConditionIndex - 1)
-					.getBaseCallCount().getAlleles().length;
+					.getBaseCallCount().getAlleles().size();
 
 			return alleles > 1;
 		}

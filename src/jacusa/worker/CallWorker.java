@@ -7,6 +7,7 @@ import jacusa.method.call.statistic.AbstractStatisticCalculator;
 
 import lib.data.CallData;
 import lib.data.ParallelData;
+import lib.data.cache.extractor.ReferenceSetter;
 import lib.data.result.StatisticResult;
 import lib.data.validator.ParallelDataValidator;
 import lib.io.copytmp.CopyTmpResult;
@@ -20,13 +21,14 @@ extends AbstractWorker<CallData, StatisticResult<CallData>> {
 	private final AbstractStatisticCalculator<CallData> statisticCalculator;
 
 	public CallWorker(
+			final ReferenceSetter<CallData> referenceSetter,
 			final WorkerDispatcher<CallData, StatisticResult<CallData>> workerDispatcher,
 			final int threadId, 
 			final CopyTmpResult<CallData, StatisticResult<CallData>> copyTmpResult,
 			final List<ParallelDataValidator<CallData>> parallelDataValidators,
 			final CallParameter callParameter) {
 
-		super(workerDispatcher, threadId, copyTmpResult, parallelDataValidators, callParameter);
+		super(referenceSetter, workerDispatcher, threadId, copyTmpResult, parallelDataValidators, callParameter);
 		threshold = callParameter.getStatisticParameters().getThreshold();
 		statisticCalculator = callParameter.getStatisticParameters().newInstance();
 	}

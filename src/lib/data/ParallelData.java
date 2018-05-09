@@ -2,6 +2,7 @@ package lib.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.generator.DataGenerator;
@@ -134,7 +135,7 @@ implements HasCoordinate, HasLibraryType {
 		if (cachedPooledData[conditionIndex] == null && 
 				getReplicates(conditionIndex) > 0) {
 			
-			// use first replicate do infer coordinates and library type
+			// use first replicate to infer coordinates and library type
 			// should be all the same for all replicates from one condition
 			final T data = getData(conditionIndex, REPLICATE_INDEX);
 			final LIBRARY_TYPE libraryType = data.getLibraryType();
@@ -143,7 +144,7 @@ implements HasCoordinate, HasLibraryType {
 			final T tmpData = dataGenerator.createData(libraryType, new Coordinate(coordinate));
 
 			for (int replicateIndex = 0; replicateIndex < getReplicates(conditionIndex); replicateIndex++) {
-				tmpData.add(getData(conditionIndex, replicateIndex));
+				getDataGenerator().merge(tmpData, getData(conditionIndex, replicateIndex));
 			}
 			cachedPooledData[conditionIndex] = tmpData;
 		}
@@ -156,7 +157,7 @@ implements HasCoordinate, HasLibraryType {
 
 			cachedCombinedPooledData = dataGenerator.createData(getCommonLibraryType(data), getCommonCoordinate(data));
 			for (int conditionIndex = 0; conditionIndex < getConditions(); conditionIndex++) {
-				cachedCombinedPooledData.add(getPooledData(conditionIndex));
+				getDataGenerator().merge(cachedCombinedPooledData, getPooledData(conditionIndex));
 			}
 		}
 
@@ -165,14 +166,14 @@ implements HasCoordinate, HasLibraryType {
 	
 	public T[] getCombinedData() {
 		if (cachedCombinedData == null) {
-			cachedCombinedData = dataGenerator.createReplicateData(cachedTotalReplicates);
+			cachedCombinedData = dataGenerator.createReplicateData(getTotalReplicates());
 
 			int dest = 0;;
 			for (int conditionIndex = 0; conditionIndex < getConditions(); conditionIndex++) {
 				System.arraycopy(
 						data[conditionIndex], 
 						0, 
-						cachedCombinedData[conditionIndex], 
+						cachedCombinedData, 
 						dest, 
 						getReplicates(conditionIndex));
 				dest += getReplicates(conditionIndex);
@@ -219,7 +220,7 @@ implements HasCoordinate, HasLibraryType {
 			return new int[0];
 		}
 
-		final int[] allelesIndexs = parallelData
+		final Set<Integer> allelesIndexs = parallelData
 				.getCombinedPooledData()
 				.getBaseCallCount()
 				.getAlleles();
@@ -236,7 +237,7 @@ implements HasCoordinate, HasLibraryType {
 		
 		// find non-reference base(s)
 		int i = 0;
-		final int[] tmp = new int[allelesIndexs.length];
+		final int[] tmp = new int[allelesIndexs.size()];
 		for (final int baseIndex : allelesIndexs) {
 			if (baseIndex != referenceBaseIndex) {
 				tmp[i] = baseIndex;
@@ -253,13 +254,13 @@ implements HasCoordinate, HasLibraryType {
 			return getNonReferenceBaseIndexs(parallelData);
 		}
 
-		int[] alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
+		Set<Integer> alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
 		final List<Integer> baseIndexs = new ArrayList<Integer>(BaseCallConfig.BASES.length);
 
 		for (int baseIndex : alleles) {
 			int n = 0;
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
-				if (parallelData.getPooledData(conditionIndex).getBaseCallCount().getBaseCallCount(baseIndex) > 0) {
+				if (parallelData.getPooledData(conditionIndex).getBaseCallCount().getBaseCall(baseIndex) > 0) {
 					n++;
 				}
 			}
@@ -331,6 +332,7 @@ implements HasCoordinate, HasLibraryType {
 	public static <S extends AbstractData & HasPileupCount> S[] flat(final S[] data, 
 			final S[]ret, 
 			final int[] variantBaseIndexs, final int commonBaseIndex) {
+
 		for (int i = 0; i < data.length; ++i) {
 			ret[i] = data[i];
 
@@ -340,6 +342,7 @@ implements HasCoordinate, HasLibraryType {
 			}
 			
 		}
+
 		return ret;
 	}
 

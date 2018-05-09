@@ -14,9 +14,13 @@ extends AbstractDirichletStatistic<T> {
 	private static final double ESTIMATED_ERROR = 0.01;
 	private static final String DESC = "Compound Err. (estimated err.{" + ESTIMATED_ERROR + "} + phred score)";
 	
-	protected double estimatedError;
+	protected double estimatedError = ESTIMATED_ERROR;
 	protected double priorError = 0d;
 
+	protected DirichletMultinomialCompoundError(final String name, final String desc, final CallParameter parameter) {
+		super(name, desc, new MinkaEstimateDirMultParameters(), parameter);
+	}
+	
 	public DirichletMultinomialCompoundError(final CallParameter parameter) {
 		super(NAME, DESC, new MinkaEstimateDirMultParameters(), parameter);
 	}
@@ -46,7 +50,7 @@ extends AbstractDirichletStatistic<T> {
 	}
 
 	@Override
-	public DirichletMultinomialCompoundError<T> newInstance() {
+	public AbstractDirichletStatistic<T> newInstance() {
 		return new DirichletMultinomialCompoundError<T>(parameter);
 	}
 	

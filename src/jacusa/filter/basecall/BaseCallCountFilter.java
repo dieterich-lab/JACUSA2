@@ -1,14 +1,9 @@
 package jacusa.filter.basecall;
 
 import jacusa.filter.FilterRatio;
-import lib.data.AbstractData;
-import lib.data.BaseCallCount;
-import lib.data.BaseCallData;
-import lib.data.ParallelData;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasReferenceBase;
+import lib.data.count.BaseCallCount;
 
-public class BaseCallCountFilter<T extends AbstractData & HasBaseCallCount & HasReferenceBase> {
+public class BaseCallCountFilter {
 
 	private final FilterRatio filterRatio;
 	
@@ -16,25 +11,24 @@ public class BaseCallCountFilter<T extends AbstractData & HasBaseCallCount & Has
 		this.filterRatio = filterRatio;
 	}
 
-	public boolean filter(final ParallelData<T> parallelData, final ParallelData<BaseCallData> filteredParallelData) {
-		final int[] variantBaseIndexs = ParallelData.getVariantBaseIndexs(parallelData);
+	public boolean filter(final int[] variantBaseIndexs, 
+			final BaseCallCount[][] observed, final BaseCallCount[][] filtered) {
 
 		for (int variantBaseIndex : variantBaseIndexs) {
 			int count = 0;
 			int filteredCount = 0;
 
-			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
-				final int replicates = parallelData.getReplicates(conditionIndex);
+			for (int conditionIndex = 0; conditionIndex < observed.length; ++conditionIndex) {
+				final int replicates = observed[conditionIndex].length;
 				for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
 					// observed count
-					final T data = parallelData.getData(conditionIndex, replicateIndex);
-					final int tmpCount = data.getBaseCallCount().getBaseCallCount(variantBaseIndex);
+					final BaseCallCount o = observed[conditionIndex][replicateIndex];
+					final int tmpCount = o.getBaseCall(variantBaseIndex);
 					count += tmpCount;
 					// possible artefact count
-					final BaseCallCount filteredBaseCallCount = 
-							filteredParallelData.getData(conditionIndex, replicateIndex).getBaseCallCount();
-					if (filteredBaseCallCount != null) {
-						filteredCount += tmpCount - filteredBaseCallCount.getBaseCallCount(variantBaseIndex);						
+					final BaseCallCount f = filtered[conditionIndex][replicateIndex];
+					if (f != null) {
+						filteredCount += tmpCount - f.getBaseCall(variantBaseIndex);						
 					} else {
 						filteredCount += tmpCount;
 					}
@@ -49,6 +43,7 @@ public class BaseCallCountFilter<T extends AbstractData & HasBaseCallCount & Has
 		}
 
 		return false;
+
 	}
 	
 }

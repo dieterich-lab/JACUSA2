@@ -3,7 +3,7 @@ package lib.phred2prob;
 import java.util.Arrays;
 
 import lib.cli.options.BaseCallConfig;
-import lib.data.PileupCount;
+import lib.data.count.PileupCount;
 import lib.data.has.HasPileupCount;
 import lib.util.MathUtil;
 
@@ -46,7 +46,7 @@ public final class Phred2Prob {
 		final double[] c = new double[BaseCallConfig.BASES.length];
 
 		for (int baseIndex : baseIndexs) {
-			final int count = o.getPileupCount().getBaseCallCount().getBaseCallCount(baseIndex);
+			final int count = o.getPileupCount().getBaseCallCount().getBaseCall(baseIndex);
 			c[baseIndex] = count;
 		}
 		return c;		
@@ -60,15 +60,15 @@ public final class Phred2Prob {
 		final double[] p = new double[BaseCallConfig.BASES.length];
 		Arrays.fill(p, 0.0);
 
-		for (int baseIndex : baseIs) {
-			for (byte qual = 0 ; qual < Phred2Prob.MAX_Q; ++qual) {
+		for (final int baseIndex : baseIs) {
+			for (final byte baseQual : pileupCount.getBaseCallQualityCount().getBaseCallQuality(baseIndex)) {
 				// number of bases with specific quality 
-				final int count = pileupCount.getQualCount(baseIndex, qual);
+				final int count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(baseIndex, baseQual);
 				if (count > 0) {
-					final double baseP = convert2P(qual);
+					final double baseP = convert2P(baseQual);
 					p[baseIndex] += (double)count * baseP;
-
-					final double errorP = convert2errorP(qual) / (baseIs.length - 1);
+					
+					final double errorP = convert2errorP(baseQual) / (baseIs.length - 1);
 					// distribute error probability
 					for (int baseI2 : baseIs) {
 						if (baseI2 != baseIndex) {
@@ -87,14 +87,13 @@ public final class Phred2Prob {
 		final double[] p = new double[BaseCallConfig.BASES.length];
 		Arrays.fill(p, 0.0);
 
-		for (int baseIndex : baseIs) {
-			for (byte qual = 0 ; qual < Phred2Prob.MAX_Q; ++qual) {
+		for (final int baseIndex : baseIs) {
+			for (final byte baseQual : pileupCount.getBaseCallQualityCount().getBaseCallQuality(baseIndex)) {
 				// number of bases with specific quality 
-				final int count = pileupCount.getQualCount(baseIndex, qual);
+				final int count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(baseIndex, baseQual);
 
 				if (count > 0) {
-					final double errorP = convert2errorP(qual) / (double)(baseIs.length - 1);
-
+					final double errorP = convert2errorP(baseQual) / (double)(baseIs.length - 1);
 					// distribute error probability
 					for (int baseI2 : baseIs) {
 						if (baseI2 != baseIndex) {

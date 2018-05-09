@@ -26,5 +26,10 @@ extends AbstractDataGenerator<BaseCallData> {
 	public BaseCallData[] createReplicateData(int n) {
 		return new BaseCallData[n];
 	}
+
+	@Override
+	public void merge(BaseCallData dest, BaseCallData src) {
+		dest.merge(src);
+	}
 	
 }

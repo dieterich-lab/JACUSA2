@@ -1,6 +1,6 @@
 package lib.data.has;
 
-import lib.data.PileupCount;
+import lib.data.count.PileupCount;
 
 /**
  * 
@@ -10,5 +10,6 @@ import lib.data.PileupCount;
 public interface HasPileupCount extends HasBaseCallCount, HasReferenceBase {
 	
 	PileupCount getPileupCount();
+	void setPileupCount(PileupCount pileupCount);
 
 }

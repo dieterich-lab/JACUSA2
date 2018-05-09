@@ -4,14 +4,14 @@ import jacusa.io.format.BEDlikeWriter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.HasArrestBaseCallCount;
-import lib.data.has.HasRTarrestCount;
+import lib.data.has.HasRTcount;
 import lib.data.has.HasReferenceBase;
 import lib.data.has.HasThroughBaseCallCount;
 import lib.data.result.Result;
 import lib.data.result.hasStatistic;
 import lib.io.ResultWriterUtils;
 
-public class BED6rtArrestResultWriter<T extends AbstractData & HasReferenceBase & HasRTarrestCount & HasArrestBaseCallCount & HasThroughBaseCallCount, R extends Result<T> & hasStatistic> 
+public class BED6rtArrestResultWriter<T extends AbstractData & HasReferenceBase & HasRTcount & HasArrestBaseCallCount & HasThroughBaseCallCount, R extends Result<T> & hasStatistic> 
 extends BEDlikeWriter<T, R> {
 	
 	// read start, trough, and end	

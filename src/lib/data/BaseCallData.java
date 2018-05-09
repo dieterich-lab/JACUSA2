@@ -1,5 +1,7 @@
 package lib.data;
 
+import lib.data.basecall.array.ArrayBaseCallCount;
+import lib.data.count.BaseCallCount;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasReferenceBase;
 import lib.util.coordinate.Coordinate;
@@ -22,21 +24,14 @@ implements HasBaseCallCount, HasReferenceBase {
 		super(libraryType, coordinate);
 
 		this.referenceBase = referenceBase;
-		baseCallCount = new BaseCallCount();
+		baseCallCount = new ArrayBaseCallCount();
 	}
 
 	@Override
 	public BaseCallCount getBaseCallCount() {
 		return baseCallCount;
 	}
-	
-	public void add(AbstractData abstractData) {
-		BaseCallData pileupData = (BaseCallData) abstractData;
 
-		this.referenceBase = pileupData.referenceBase;
-		this.baseCallCount.add(pileupData.getBaseCallCount());
-	}
-	
 	@Override
 	public BaseCallData copy() {
 		return new BaseCallData(this);
@@ -68,5 +63,10 @@ implements HasBaseCallCount, HasReferenceBase {
 	public void setReferenceBase(byte referenceBase) {
 		this.referenceBase = referenceBase;
 	}
-	
+
+	public void merge(final BaseCallData src) {
+		referenceBase = src.referenceBase;
+		baseCallCount.add(src.getBaseCallCount());
+	}
+
 }

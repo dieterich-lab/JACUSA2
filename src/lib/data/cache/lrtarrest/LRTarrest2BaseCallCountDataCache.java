@@ -1,23 +1,275 @@
 package lib.data.cache.lrtarrest;
 
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import lib.util.coordinate.CoordinateController;
+import lib.util.coordinate.CoordinateController.WindowPositionGuard;
+import lib.util.coordinate.CoordinateUtil.STRAND;
+import lib.util.coordinate.Coordinate;
+
+import htsjdk.samtools.AlignmentBlock;
+import htsjdk.samtools.SAMRecord;
 
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasLRTarrestCount;
-import lib.data.has.HasReferenceBase;
+import lib.data.basecall.array.ArrayBaseCallCount;
+import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.cache.AbstractDataCache;
+import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
+import lib.data.cache.extractor.lrtarrest.RefPos2BaseCallCountExtractor;
+import lib.data.cache.extractor.lrtarrest.LRTarrestCountExtractor;
+import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.region.ArrayBaseCallRegionDataCache;
+import lib.data.cache.region.RegionDataCache;
+import lib.data.count.BaseCallCount;
+import lib.data.count.LRTarrestCount;
+import lib.data.count.RTarrestCount;
 import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 
-public class LRTarrest2BaseCallCountDataCache<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasLRTarrestCount> 
-extends AbstractLRTarrest2BaseCallCountDataCache<T> {
+public class LRTarrest2BaseCallCountDataCache<T extends AbstractData> 
+extends AbstractDataCache<T>
+implements RegionDataCache<T>, RecordDataCache<T> {
 
-	public LRTarrest2BaseCallCountDataCache(final LIBRARY_TYPE libraryType, 
-			final byte minBASQ,
+	private final RefPos2BaseCallCountExtractor<T> refPos2BaseCallCountExtractor;
+	private final LRTarrestCountExtractor<T> lrtArrestCountExtractor;
+	
+	private final LIBRARY_TYPE libraryType;
+	private final byte minBASQ;
+
+	private final ArrestPos2RefPos2BaseCallCount start;
+	private final ArrestPos2RefPos2BaseCallCount end;
+
+	private Map<Integer, Byte> ref2base;
+	
+	private final int[] coverageWithoutBQ;
+	private final ArrayBaseCallRegionDataCache<T> baseCallRegionDataCache;
+	
+	public LRTarrest2BaseCallCountDataCache(
+			final BaseCallCountExtractor<T> baseCallCountExtractor, 
+			final RefPos2BaseCallCountExtractor<T> refPos2BaseCallCountExtractor,
+			final LRTarrestCountExtractor<T> lrtArrestCountExtractor,
+			final LIBRARY_TYPE libraryType, final int maxDepth, final byte minBASQ,
 			final BaseCallConfig baseCallConfig,
 			final CoordinateController coordinateController) {
 		
-		super(libraryType, minBASQ, baseCallConfig, coordinateController);
+		super(coordinateController);
+		
+		this.refPos2BaseCallCountExtractor 	= refPos2BaseCallCountExtractor;
+		this.lrtArrestCountExtractor		= lrtArrestCountExtractor;
+		
+		this.libraryType 	= libraryType;
+		this.minBASQ 		= minBASQ;
+		
+		final int activeWindowSize = coordinateController.getActiveWindowSize();
+		start 				= new ArrestPos2RefPos2BaseCallCount(activeWindowSize);
+		end 				= new ArrestPos2RefPos2BaseCallCount(activeWindowSize);
+
+		ref2base			= new HashMap<Integer, Byte>(100);
+		
+		coverageWithoutBQ	= new int[activeWindowSize];
+		baseCallRegionDataCache = new ArrayBaseCallRegionDataCache<T>(
+				baseCallCountExtractor, 
+				maxDepth, minBASQ, 
+				baseCallConfig, coordinateController);
+	}
+
+	@Override
+	public void addRecord(final SAMRecordWrapper recordWrapper) {
+		final SAMRecord record = recordWrapper.getSAMRecord();
+
+		int alignmentStartWindowPosition = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
+		if (alignmentStartWindowPosition >= 0) {
+			start.addArrest(alignmentStartWindowPosition);
+		}
+
+		int alignmentEndWindowPosition = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
+		if (alignmentEndWindowPosition >= 0) {
+			end.addArrest(alignmentEndWindowPosition);
+		}
+
+		for (final AlignmentBlock alignmentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
+			final WindowPositionGuard windowPositionGuard = 
+					getCoordinateController().convert(alignmentBlock.getReferenceStart(), alignmentBlock.getReadStart() - 1, alignmentBlock.getLength());
+
+			addRegion(windowPositionGuard.getReferencePosition(), 
+					windowPositionGuard.getReadPosition(), 
+					windowPositionGuard.getLength(), recordWrapper);
+		}
+	}
+
+	@Override
+	public void addRegion(int referencePosition, int readPosition, int length, SAMRecordWrapper recordWrapper) {
+		if (referencePosition < 0) {
+			throw new IllegalArgumentException("Reference Position cannot be < 0! -> outside of alignmentBlock");
+		}
+		
+		final int windowPosition = getCoordinateController().convert2windowPosition(referencePosition);
+		
+		final SAMRecord record = recordWrapper.getSAMRecord();
+		int alignmentStartWindowPosition = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
+		int alignmentEndWindowPosition = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
+
+		for (int j = 0; j < length; ++j) {
+			final int refPosBC 	= referencePosition + j;
+			final int tmpWindowPosition 	= windowPosition < 0 ? -1 : windowPosition + j;
+			final int tmpReadPosition 		= readPosition + j;
+
+			// check baseCall is not "N"
+			final byte bc = record.getReadBases()[tmpReadPosition];
+			final int baseIndex = baseCallRegionDataCache.getBaseCallConfig().getBaseIndex(bc);
+			if (baseIndex < 0) {
+				continue;
+			}
+
+			if (tmpWindowPosition >= 0) {
+				// ignore base quality here 
+				coverageWithoutBQ[tmpWindowPosition]++;
+			}
+
+			// check baseCall quality
+			final byte baseQuality = record.getBaseQualities()[tmpReadPosition];
+			if (baseQuality < minBASQ) {
+				continue;
+			}
+			
+			// count base call
+			baseCallRegionDataCache.increment(tmpWindowPosition, tmpReadPosition, baseIndex, baseQuality);
+			
+			add(alignmentStartWindowPosition, refPosBC, tmpReadPosition, baseIndex, recordWrapper, start);
+			add(alignmentEndWindowPosition, refPosBC, tmpReadPosition, baseIndex, recordWrapper, end);
+		}
 	}
 	
+	private void add(final int winArrestPos, final int refPosBC, final int readPosition, final int baseIndex, 
+			final SAMRecordWrapper recordWrapper, ArrestPos2RefPos2BaseCallCount dest) {
+
+		if (winArrestPos < 0) {
+			return; 
+		}
+	
+		final int winPosBC = getCoordinateController().convert2windowPosition(refPosBC);
+		if (winPosBC < 0 && ! ref2base.containsKey(refPosBC)) {
+			final byte refBase = recordWrapper.getReference()[readPosition];
+			ref2base.put(refPosBC, refBase);
+		}
+	
+		dest.addBaseCall(winArrestPos, refPosBC, baseIndex);
+	}
+
+	@Override
+	public void addData(final T data, final Coordinate coordinate) {
+		baseCallRegionDataCache.addData(data, coordinate);
+		
+		final int winArrestPos = getCoordinateController().convert2windowPosition(coordinate);
+
+		if (refPos2BaseCallCountExtractor != null) {
+			return;
+		}
+
+		if (lrtArrestCountExtractor != null) {
+			final LRTarrestCount lrtArrestCount = lrtArrestCountExtractor.getLRTarrestCountExtractor(data);
+			final RTarrestCount rtArrestCount 	= lrtArrestCount.getRTarrestCount();
+			
+			rtArrestCount.setReadStart(start.getArrestCount(winArrestPos));
+			rtArrestCount.setReadEnd(end.getArrestCount(winArrestPos));
+			final int inner = coverageWithoutBQ[winArrestPos] - 
+					(rtArrestCount.getReadStart() + rtArrestCount.getReadEnd());
+			rtArrestCount.setReadInternal(inner);
+			
+			boolean invert = coordinate.getStrand() == STRAND.REVERSE ? true : false;
+			
+			int arrest 	= 0;
+			int through = 0;
+			
+			switch (libraryType) {
+			
+			case UNSTRANDED:
+				arrest 	+= rtArrestCount.getReadStart();
+				arrest 	+= rtArrestCount.getReadEnd();
+				through += coverageWithoutBQ[winArrestPos] - 
+						(rtArrestCount.getReadStart() + rtArrestCount.getReadEnd());
+
+				add(start, winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
+				add(end, winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
+				break;
+
+			case FR_FIRSTSTRAND:
+				arrest 	+= rtArrestCount.getReadEnd();
+				through += coverageWithoutBQ[winArrestPos] - 
+						(rtArrestCount.getReadEnd());
+
+				add(end, winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
+				break;
+
+			case FR_SECONDSTRAND:
+				arrest 	+= rtArrestCount.getReadStart();
+				through += coverageWithoutBQ[winArrestPos] - 
+						(rtArrestCount.getReadStart());
+
+				add(start, winArrestPos, invert, lrtArrestCount.getRefPos2bc4arrest());
+				break;
+				
+			case MIXED:
+				throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
+			}
+
+			rtArrestCount.setReadArrest(arrest);
+			rtArrestCount.setReadThrough(through);
+		}
+	}
+
+	private void add(final ArrestPos2RefPos2BaseCallCount src, 
+			final int winArrestPos, boolean invert, 
+			final RefPos2BaseCallCount dest) {
+		
+		if (src.getArrestCount(winArrestPos) == 0) {
+			return;
+		}
+
+		for (final int refPos : src.getRef2bc(winArrestPos).getRefPos()) {
+			byte refBase = 'N';
+
+			// check if we are outside of window
+			final int baseCallWindowPosition = getCoordinateController().convert2windowPosition(refPos);
+			if (baseCallWindowPosition < 0) {
+				refBase = ref2base.get(refPos);
+			} else {
+				// get reference base from common storage within window
+				refBase = getCoordinateController().getReferenceProvider().getReference(baseCallWindowPosition);
+			}
+			if (refBase == 'N') {
+				continue;
+			}
+
+			final BaseCallCount baseCallCount = new ArrayBaseCallCount();
+			baseCallCount.add(src.getRef2bc(winArrestPos).getBaseCallCount(refPos));
+			baseCallCount.set(BaseCallConfig.getInstance().getBaseIndex(refBase), 0);
+			if (invert) {
+				baseCallCount.invert();
+			}
+			dest.add(refPos, refBase, baseCallCount);
+		}
+	}
+	
+	@Override
+	public void clear() {
+		start.clear();
+		end.clear();
+
+		Arrays.fill(coverageWithoutBQ, 0);
+		int max = 100;
+		if (ref2base.size() < max) {
+			ref2base.clear();
+		} else {
+			ref2base = new HashMap<Integer, Byte>(max);
+		}
+	}
+
+	public LIBRARY_TYPE getLibraryType() {
+		return libraryType;
+	}
+
 }

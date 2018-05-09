@@ -18,4 +18,8 @@ extends PileupData {
 		return new CallData(this);
 	}
 
+	public void merge(final CallData src) {
+		super.merge(src);
+	}
+	
 }

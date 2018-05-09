@@ -1,112 +1,53 @@
 package lib.data;
 
+import lib.data.basecall.array.ArrayBaseCallCount;
+import lib.data.basecall.map.MapBaseCallQualitityCount;
+import lib.data.count.BaseCallCount;
+import lib.data.count.PileupCount;
+import lib.data.filter.BaseCallFilteredData;
+import lib.data.filter.BooleanFilteredData;
 import lib.data.has.HasPileupCount;
-import lib.data.has.filter.PileupFilterData;
-import lib.data.has.filter.HasPileupFilterData;
+import lib.data.has.filter.HasBaseCallCountFilterData;
+import lib.data.has.filter.HasBooleanFilterData;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
 public class PileupData
 extends AbstractData
-implements HasPileupCount, HasPileupFilterData {
+implements HasPileupCount, HasBooleanFilterData, HasBaseCallCountFilterData {
 
-	private final PileupCount pileupCount;
+	private PileupCount pileupCount;
 	private final STRAND effectiveStrand;
 
-	private final PileupFilterData pileupFilterData;
+	private AbstractFilteredData<BaseCallCount> baseCallCountFilterData;
+	private AbstractFilteredData<Boolean> booleanFilterData;
 	
 	public PileupData(final LIBRARY_TYPE libraryType, final Coordinate coordinate) {
 		super(libraryType, coordinate);
 
-		pileupCount 		= new PileupCount();
+		pileupCount 		= new PileupCount((byte)'N', new ArrayBaseCallCount(), new MapBaseCallQualitityCount());
 		effectiveStrand		= STRAND.UNKNOWN;
 
-		pileupFilterData	= new PileupFilterData();
+		baseCallCountFilterData	= new BaseCallFilteredData();
+		booleanFilterData		= new BooleanFilteredData();
 	}
 	
-	public PileupData(final PileupData pileupData) {
-		super(pileupData);
-
-		this.pileupCount 		= pileupData.pileupCount.copy();
-		this.effectiveStrand 	= pileupData.effectiveStrand;
+	public PileupData(final PileupData src) {
+		this(src.getLibraryType(), src.getCoordinate());
 		
-		this.pileupFilterData	= pileupData.pileupFilterData.copy();
+		pileupCount				= src.pileupCount.copy();
+		baseCallCountFilterData = src.baseCallCountFilterData.copy();
+		booleanFilterData		= src.booleanFilterData.copy();
 	}
 	
-	public PileupData(final LIBRARY_TYPE libraryType, final Coordinate coordinate, final byte referenceBase) {
-		super(libraryType, coordinate);
-
-		pileupCount = new PileupCount();
-		pileupCount.setReferenceBase(referenceBase);
-		
-		this.effectiveStrand	= STRAND.UNKNOWN;
-		pileupFilterData		= new PileupFilterData();
-	}
-		
 	@Override
 	public PileupCount getPileupCount() {
 		return pileupCount;
 	}
 	
 	@Override
-	public boolean isHomopolymer() {
-		return pileupFilterData.isHomopolymer();
-	}
-	
-	@Override
-	public void setHomopolymer(boolean isHomopolymer) {
-		pileupFilterData.setHomopolymer(isHomopolymer);
-	}
-	
-	@Override
-	public BaseCallCount getCombinedFilterData() {
-		return pileupFilterData.getCombinedFilterData();
-	}
-	
-	@Override
-	public void setCombinedDistanceFilterData(final BaseCallCount baseCallCount) {
-		pileupFilterData.setCombinedDistanceFilterData(baseCallCount);
-	}
-
-	@Override
-	public BaseCallCount getINDEL_FilterData() {
-		return pileupFilterData.getINDEL_FilterData();
-	}
-	
-	@Override
-	public BaseCallCount getReadPositionFilterData() {
-		return pileupFilterData.getReadPositionFilterData();
-	}
-	
-	@Override
-	public BaseCallCount getSpliceSiteFilterData() {
-		return pileupFilterData.getSpliceSiteFilterData();
-	}
-	
-	@Override
-	public void setINDEL_DistanceFilterData(final BaseCallCount baseCallCount) {
-		pileupFilterData.setINDEL_DistanceFilterData(baseCallCount);
-	}
-	
-	@Override
-	public void setReadPositionDistanceFilterData(final BaseCallCount baseCallCount) {
-		pileupFilterData.setReadPositionDistanceFilterData(baseCallCount);
-	}
-	
-	@Override
-	public void setSpliceSiteDistanceFilterData(final BaseCallCount baseCallCount) {
-		pileupFilterData.setSpliceSiteDistanceFilterData(baseCallCount);
-	}
-	
-	@Override
-	public void add(AbstractData abstractData) {
-		PileupData pileupData = (PileupData) abstractData;
-		pileupCount.setReferenceBase(pileupData.getReferenceBase());
-		// TODO check strand information
-		pileupCount.add(pileupData.getPileupCount());
-
-		// filter related
-		pileupFilterData.add(pileupData.pileupFilterData);
+	public void setPileupCount(PileupCount pileupCount) {
+		this.pileupCount = pileupCount;
 	}
 
 	/**
@@ -158,4 +99,23 @@ implements HasPileupCount, HasPileupFilterData {
 		getPileupCount().setReferenceBase(referenceBase);
 	}
 
+	@Override
+	public AbstractFilteredData<Boolean> getBooleanFilterData() {
+		return booleanFilterData;
+	}
+	
+	@Override
+	public AbstractFilteredData<BaseCallCount> getBaseCallCountFilterData() {
+		return baseCallCountFilterData;
+	}
+
+	// FIXME check strand information
+	public void merge(final PileupData src) {
+		pileupCount.setReferenceBase(src.getReferenceBase());
+		pileupCount.merge(src.getPileupCount());
+		// filter related
+		baseCallCountFilterData.merge(src.baseCallCountFilterData);
+		booleanFilterData.merge(src.booleanFilterData);
+	}
+	
 }

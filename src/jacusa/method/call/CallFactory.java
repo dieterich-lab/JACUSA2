@@ -7,10 +7,10 @@ import jacusa.cli.parameters.CallParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
-import jacusa.filter.factory.distance.CombinedFilterFactory;
-import jacusa.filter.factory.distance.INDEL_FilterFactory;
-import jacusa.filter.factory.distance.ReadPositionDistanceFilterFactory;
-import jacusa.filter.factory.distance.SpliceSiteFilterFactory;
+import jacusa.filter.factory.basecall.CombinedFilterFactory;
+import jacusa.filter.factory.basecall.INDEL_FilterFactory;
+import jacusa.filter.factory.basecall.ReadPositionDistanceFilterFactory;
+import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import jacusa.io.format.call.BED6callResultFormat;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundError;
@@ -42,7 +42,8 @@ import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.CallData;
-import lib.data.builder.factory.PileupDataBuilderFactory;
+import lib.data.builder.factory.CallDataBuilderFactory;
+import lib.data.cache.extractor.ReferenceBaseSetter;
 import lib.data.generator.CallDataGenerator;
 import lib.data.result.StatisticResult;
 import lib.data.validator.MinCoverageValidator;
@@ -63,7 +64,7 @@ extends AbstractMethodFactory<CallData, StatisticResult<CallData>> {
 						(callParameter.getConditionsSize() == -1 ? "n" : callParameter.getConditionsSize()) + 
 						(callParameter.getConditionsSize() == -1 || callParameter.getConditionsSize() == 2 ? " conditions" : " condition"), 
 				callParameter,
-				new PileupDataBuilderFactory<CallData>(callParameter),
+				new CallDataBuilderFactory(callParameter),
 				new CallDataGenerator());
 	}
 
@@ -212,7 +213,9 @@ extends AbstractMethodFactory<CallData, StatisticResult<CallData>> {
 
 	@Override
 	public CallWorker createWorker(final int threadId) {
-		return new CallWorker(getWorkerDispatcher(), threadId,
+		return new CallWorker(
+				new ReferenceBaseSetter<CallData>(),
+				getWorkerDispatcher(), threadId,
 				getParameter().getResultFormat().createCopyTmp(threadId),
 				getParallelDataValidators(), 
 				getParameter());

@@ -1,30 +1,15 @@
 package lib.data.cache.lrtarrest;
 
-import htsjdk.samtools.AlignmentBlock;
-import htsjdk.samtools.SAMRecord;
-
-import java.util.Map;
-
-import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.CoordinateController;
-import lib.util.coordinate.CoordinateController.WindowPositionGuard;
-import lib.util.coordinate.CoordinateUtil.STRAND;
-
-import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
-import lib.data.BaseCallCount;
-import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.AbstractDataCache;
-import lib.data.cache.region.UniqueRegionDataCache;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasLRTarrestCount;
 import lib.data.has.HasReferenceBase;
-import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 
-public abstract class AbstractUniqueLRTarrest2BaseCallCountDataCache<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasLRTarrestCount> 
-extends AbstractDataCache<T> 
-implements UniqueRegionDataCache<T> {
+// FIXME
+public abstract class AbstractUniqueLRTarrest2BaseCallCountDataCache<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasLRTarrestCount> {
+// extends AbstractDataCache<T> {
 
+	/*
 	private final LIBRARY_TYPE libraryType;
 	private final BaseCallConfig baseCallConfig;
 	private final byte minBASQ;
@@ -48,11 +33,6 @@ implements UniqueRegionDataCache<T> {
 		final int n = coordinateController.getActiveWindowSize();
 		start 		= new LRTarrest2FilteredBaseCallCount(coordinateController, n);
 		end 		= new LRTarrest2FilteredBaseCallCount(coordinateController, n);
-	}
-
-	@Override
-	public void resetVisited(final SAMRecordWrapper recordWrapper) {
-		visited = new boolean[recordWrapper.getSAMRecord().getReadLength()];
 	}
 
 	@Override
@@ -90,19 +70,18 @@ implements UniqueRegionDataCache<T> {
 		return libraryType;
 	}
 	
-	@Override
-	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
+	public void addRecord(final SAMRecordWrapper recordWrapper) {
 		for (final AlignmentBlock alignmentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
 			final WindowPositionGuard windowPositionGuard = 
 					getCoordinateController().convert(alignmentBlock.getReferenceStart(), alignmentBlock.getReadStart() - 1, alignmentBlock.getLength());
 
-			addRecordWrapperRegion(windowPositionGuard.getReferencePosition(), 
+			addRegion(windowPositionGuard.getReferencePosition(), 
 					windowPositionGuard.getReadPosition(), 
 					windowPositionGuard.getLength(), recordWrapper);
 		}
 	}
 
-	public void addRecordWrapperRegion(final int referencePosition, final int readPosition, int length, 
+	public void addRegion(final int referencePosition, final int readPosition, int length, 
 			final SAMRecordWrapper recordWrapper) {
 		
 		if (referencePosition < 0) {
@@ -154,5 +133,5 @@ implements UniqueRegionDataCache<T> {
 		start.clear();
 		end.clear();
 	}
-
+*/
 }

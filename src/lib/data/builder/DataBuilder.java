@@ -1,7 +1,5 @@
 package lib.data.builder;
 
-import jacusa.filter.cache.FilterCache;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +8,7 @@ import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.CacheContainer;
+import lib.data.cache.record.RecordDataCache;
 import lib.data.generator.DataGenerator;
 import lib.data.has.HasLibraryType;
 import lib.util.AbstractTool;
@@ -22,7 +21,7 @@ implements HasLibraryType {
 	
 	private final DataGenerator<T> dataGenerator;
 	private final AbstractConditionParameter<T> conditionParameter;
-	private final List<FilterCache<?>> filterCaches;
+	private final List<RecordDataCache<?>> filterCaches;
 
 	private LIBRARY_TYPE libraryType;
 	
@@ -35,7 +34,7 @@ implements HasLibraryType {
 			final AbstractConditionParameter<T> conditionParameter,
 			final LIBRARY_TYPE libraryType,
 			final CacheContainer<T> cacheContainer,
-			final List<FilterCache<?>> filterCaches) {
+			final List<RecordDataCache<?>> filterCaches) {
 		
 		this.replicateIndex = replicateIndex;
 		
@@ -50,6 +49,7 @@ implements HasLibraryType {
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
 	}
 
+	// TODO remove return list
 	public List<SAMRecordWrapper> buildCache(final Coordinate activeWindowCoordinate,
 			final Iterator<SAMRecordWrapper> iterator) {
 		
@@ -64,9 +64,9 @@ implements HasLibraryType {
 				recordWrapper = iterator.next();
 				// process filters and decode
 				recordWrapper.process();
-				cacheContainer.addRecordWrapper(recordWrapper);
-				for (FilterCache<?> filterCache : filterCaches) {
-					filterCache.addRecordWrapper(recordWrapper);
+				cacheContainer.add(recordWrapper);
+				for (RecordDataCache<?> filterCache : filterCaches) {
+					filterCache.addRecord(recordWrapper);
 				}
 				recordWrappers.add(recordWrapper);
 			}
@@ -78,7 +78,6 @@ implements HasLibraryType {
 			e.printStackTrace();
 		}
 
-
 		cacheStatus = recordWrappers.size() > 0 ? CACHE_STATUS.CACHED : CACHE_STATUS.NOT_FOUND; 
 		return recordWrappers;
 	}
@@ -86,7 +85,7 @@ implements HasLibraryType {
 	// Reset all caches in windows
 	public void clearCache() {
 		cacheContainer.clear();
-		for (FilterCache<?> filterCache : filterCaches) {
+		for (RecordDataCache<?> filterCache : filterCaches) {
 			filterCache.clear();
 		}
 	}

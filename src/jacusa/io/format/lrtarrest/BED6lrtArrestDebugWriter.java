@@ -6,12 +6,12 @@ import lib.data.AbstractData;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasLRTarrestCount;
 import lib.data.has.HasReferenceBase;
-import lib.data.has.filter.HasLRTarrestFilterData;
+import lib.data.has.filter.HasRefPos2BaseCallCountFilterData;
 import lib.data.result.Result;
 import lib.data.result.hasStatistic;
 import lib.io.ResultWriter;
 
-public class BED6lrtArrestDebugWriter<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasLRTarrestCount & HasLRTarrestFilterData, R extends Result<T> & hasStatistic>
+public class BED6lrtArrestDebugWriter<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasLRTarrestCount & HasRefPos2BaseCallCountFilterData, R extends Result<T> & hasStatistic>
 extends BED6lrtArrestResultWriter2<T, R> implements ResultWriter<T, R> {
 
 	protected BED6lrtArrestDebugWriter(final String filename,

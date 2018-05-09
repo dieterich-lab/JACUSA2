@@ -4,19 +4,21 @@ import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.RTarrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.filter.factory.HomozygousFilterFactory;
-import jacusa.filter.factory.MaxAlleleCountFilterFactory;
-import jacusa.filter.factory.distance.INDEL_FilterFactory;
-import jacusa.filter.factory.distance.SpliceSiteFilterFactory;
+import jacusa.filter.factory.distance.rtarrest.RTarrestINDEL_FilterFactory;
+import jacusa.filter.factory.distance.rtarrest.RTarrestSpliceSiteFilterFactory;
+import jacusa.filter.factory.rtarrest.RTarrestHomozygousFilterFactory;
+import jacusa.filter.factory.rtarrest.RTarrestMaxAlleleCountFilterFactory;
 import jacusa.io.format.rtarrest.BED6rtArrestResultFormat;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import jacusa.worker.RTArrestWorker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.Map;
+import java.util.Set;
 
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.DebugModusOption;
@@ -40,6 +42,7 @@ import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.LRTarrestData;
 import lib.data.RTarrestData;
 import lib.data.builder.factory.RTarrestDataBuilderFactory;
+import lib.data.cache.extractor.ReferenceBaseSetter;
 import lib.data.generator.RTarrestDataGenerator;
 import lib.data.result.StatisticResult;
 import lib.data.validator.MinCoverageValidator;
@@ -56,10 +59,11 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 
 	public final static String NAME = "rt-arrest";
 
+	
 	public RTArrestFactory(final RTarrestParameter rtArrestParameter) {
 		super(NAME, "Reverse Transcription Arrest - 2 conditions", 
 				rtArrestParameter, 
-				new RTarrestDataBuilderFactory<RTarrestData>(rtArrestParameter), 
+				new RTarrestDataBuilderFactory(rtArrestParameter), 
 				new RTarrestDataGenerator());
 	}
 
@@ -142,10 +146,10 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 				new ArrayList<AbstractFilterFactory<RTarrestData>>(10);
 		
 		// filterFactories.add(new CombinedFilterFactory<RTarrestData>());
-		filterFactories.add(new INDEL_FilterFactory<RTarrestData>());
-		filterFactories.add(new SpliceSiteFilterFactory<RTarrestData>());
-		filterFactories.add(new HomozygousFilterFactory<RTarrestData>(getParameter()));
-		filterFactories.add(new MaxAlleleCountFilterFactory<RTarrestData>());
+		filterFactories.add(new RTarrestINDEL_FilterFactory<RTarrestData>());
+		filterFactories.add(new RTarrestSpliceSiteFilterFactory<RTarrestData>());
+		filterFactories.add(new RTarrestHomozygousFilterFactory<RTarrestData>(getParameter()));
+		filterFactories.add(new RTarrestMaxAlleleCountFilterFactory<RTarrestData>());
 		// FIXME filterFactories.add(new HomopolymerFilterFactory<PileupData>());
 
 		for (final AbstractFilterFactory<RTarrestData> filterFactory : filterFactories) {
@@ -191,16 +195,40 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 	
 	@Override
 	public RTArrestWorker createWorker(final int threadId) {
-		return new RTArrestWorker(getWorkerDispatcher(), threadId,
+		return new RTArrestWorker(
+				new ReferenceBaseSetter<RTarrestData>(),
+				getWorkerDispatcher(), threadId,
 				getParameter().getResultFormat().createCopyTmp(threadId),
 				getParallelDataValidators(), getParameter());
 	}
-	
 	
 	@Override
 	public void debug() {
 		// set custom
 		AbstractTool.getLogger().addDebug("Add additional column(s) in output start,inner,end!");
+	}
+
+	public enum RT_READS {
+		ARREST,
+		THROUGH
+	}
+
+	public static Set<RT_READS> processApply2Reads(final int i, final String line) {
+		final Set<RT_READS> apply2reads = new HashSet<RT_READS>(2);
+		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
+		if (s.length < i) {
+			return apply2reads;
+		}
+		
+		final String[] options = s[i].toUpperCase().split("_AND_");
+		for (final String option : options) {
+			final RT_READS tmp = RT_READS.valueOf(option.toUpperCase());
+			if (tmp == null) {
+				throw new IllegalArgumentException("Invalid argument: " + line);						
+			}
+			apply2reads.add(tmp);
+		}
+		return apply2reads;
 	}
 	
 }

@@ -6,10 +6,10 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.HasPileupCount;
-import lib.data.has.filter.HasPileupFilterData;
+import lib.data.has.filter.HasBaseCallCountFilterData;
 import lib.data.result.Result;
 
-public class BED6pileupDebugWriter<T extends AbstractData & HasPileupCount & HasPileupFilterData, R extends Result<T>> 
+public class BED6pileupDebugWriter<T extends AbstractData & HasPileupCount & HasBaseCallCountFilterData, R extends Result<T>> 
 extends BEDlikeResultWriter<T, R> {
 
 	public BED6pileupDebugWriter(final String filename, final AbstractParameter<T, R> parameter) {

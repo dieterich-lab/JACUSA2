@@ -10,6 +10,7 @@ import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
+import lib.data.cache.extractor.ReferenceSetter;
 import lib.data.result.Result;
 import lib.data.validator.CompositeParallelDataValidator;
 import lib.data.validator.ParallelDataValidator;
@@ -38,7 +39,9 @@ implements Iterator<ParallelData<T>> {
 	private int comparisons;
 	private STATUS status;
 	
-	public AbstractWorker(final WorkerDispatcher<T, R> workerDispatcher,
+	public AbstractWorker(
+			final ReferenceSetter<T> referenceSetter,
+			final WorkerDispatcher<T, R> workerDispatcher,
 			final int threadId,
 			final CopyTmpResult<T, R> copyTmpResult,
 			final List<ParallelDataValidator<T>> parallelDataValidators,
@@ -49,7 +52,7 @@ implements Iterator<ParallelData<T>> {
 
 		conditionContainer = new ConditionContainer<T>(parameter);
 		coordinateController = new CoordinateController(conditionContainer);
-		conditionContainer.initReplicateContainer(coordinateController, parameter);
+		conditionContainer.initReplicateContainer(referenceSetter, coordinateController, parameter);
 
 		this.parallelDataValidator = new CompositeParallelDataValidator<T>(parallelDataValidators);
 
@@ -76,7 +79,7 @@ implements Iterator<ParallelData<T>> {
 		while (coordinateController.checkCoordinateAdvancerWithinActiveWindow()) {
 			final Coordinate coordinate = new Coordinate(coordinateController.getCoordinateAdvancer().getCurrentCoordinate());
 			final T[][] data = conditionContainer.getData(coordinate);
-			parallelData = new ParallelData<T>(workerDispatcher.getMethodFactory(), data);
+			parallelData = new ParallelData<T>(workerDispatcher.getMethodFactory().getDataGenerator(), data);
 
 			if (parallelData != null && parallelDataValidator.isValid(parallelData)) {
 				comparisons++;
@@ -163,8 +166,8 @@ implements Iterator<ParallelData<T>> {
 	protected void processReady() {
 		status = STATUS.BUSY;
 		copyTmpResult.newIteration();
-		while (hasNext()) {
-			final ParallelData<T> parallelData = next();
+		ParallelData<T> parallelData;
+		while ((parallelData = next()) != null) {
 			doWork(parallelData);	
 		}
 		status = STATUS.INIT;

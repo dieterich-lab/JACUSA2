@@ -3,15 +3,15 @@ package jacusa.filter.cache.processrecord;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapper.CigarElementWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapper.Position;
-import lib.data.cache.region.UniqueRegionDataCache;
+import lib.data.cache.region.RegionDataCache;
 
 /**
  * TODO add comments.
  */
 public class ProcessSkippedOperator extends AbstractProcessRecord {
 
-	public ProcessSkippedOperator(final int distance, final UniqueRegionDataCache<?> uniqueDataCache) {
-		super(distance, uniqueDataCache);
+	public ProcessSkippedOperator(final int distance, final RegionDataCache<?> regionDataCache) {
+		super(distance, regionDataCache);
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class ProcessSkippedOperator extends AbstractProcessRecord {
 		final int upstreamMatch = Math.min(getDistance(), recordWrapper.getUpstreamMatch(cigarElementWrapperIndex));
 		// mark region
 		if (upstreamMatch > 0) {
-			getUniqueCache().addRecordWrapperRegion(
+			getRegionCache().addRegion(
 					position.getReferencePosition() - upstreamMatch,
 					position.getReadPosition() - upstreamMatch, 
 					upstreamMatch, 
@@ -47,7 +47,7 @@ public class ProcessSkippedOperator extends AbstractProcessRecord {
 		final int downstreamMatch = Math.min(getDistance(), recordWrapper.getDownstreamMatch(cigarElementWrapperIndex));
 		// mark region
 		if (downstreamMatch > 0) {
-			getUniqueCache().addRecordWrapperRegion(
+			getRegionCache().addRegion(
 					position.getReferencePosition() + cigarElementWrapper.getCigarElement().getLength(),
 					position.getReadPosition(), 
 					downstreamMatch, 

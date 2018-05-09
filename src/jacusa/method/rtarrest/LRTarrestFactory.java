@@ -5,12 +5,11 @@ import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.LRTarrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.filter.factory.LRTarrestHomozygousFilterFactory;
-import jacusa.filter.factory.LRTarrestMaxAlleleCountFilterFactory;
-import jacusa.filter.factory.distance.LRTarrestCombinedFilterFactory;
-import jacusa.filter.factory.distance.LRTarrestINDEL_FilterFactory;
-import jacusa.filter.factory.distance.LRTarrestReadPositionFilterFactory;
-import jacusa.filter.factory.distance.LRTarrestSpliceSiteFilterFactory;
+import jacusa.filter.factory.distance.lrtarrest.LRTarrestCombinedFilterFactory;
+import jacusa.filter.factory.distance.lrtarrest.LRTarrestINDEL_FilterFactory;
+import jacusa.filter.factory.distance.lrtarrest.LRTarrestSpliceSiteFilterFactory;
+import jacusa.filter.factory.lrtarrest.LRTarrestHomozygousFilterFactory;
+import jacusa.filter.factory.lrtarrest.LRTarrestMaxAlleleCountFilterFactory;
 import jacusa.io.format.lrtarrest.BED6lrtArrestDebugFormat;
 import jacusa.io.format.lrtarrest.BED6lrtArrestResultFormat2;
 import jacusa.io.format.rtarrest.BED6rtArrestResultFormat1;
@@ -44,6 +43,7 @@ import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
 import lib.data.LRTarrestData;
 import lib.data.builder.factory.LRTarrestDataBuilderFactory;
+import lib.data.cache.extractor.ReferenceBaseSetter;
 import lib.data.generator.LRTarrestDataGenerator;
 import lib.data.result.StatisticResult;
 import lib.data.validator.LinkedRTArrestVariantParallelPileup;
@@ -63,7 +63,7 @@ extends AbstractMethodFactory<LRTarrestData, StatisticResult<LRTarrestData>> {
 	public LRTarrestFactory(final LRTarrestParameter rtArrestParameter) {
 		super(NAME, "Linkage arrest to base substitution - 2 conditions", 
 				rtArrestParameter, 
-				new LRTarrestDataBuilderFactory<LRTarrestData>(rtArrestParameter), 
+				new LRTarrestDataBuilderFactory(rtArrestParameter), 
 				new LRTarrestDataGenerator());
 	}
 
@@ -155,7 +155,6 @@ extends AbstractMethodFactory<LRTarrestData, StatisticResult<LRTarrestData>> {
 		filterFactories.add(new LRTarrestMaxAlleleCountFilterFactory<LRTarrestData>());
 		filterFactories.add(new LRTarrestHomozygousFilterFactory<LRTarrestData>(getParameter()));
 		filterFactories.add(new LRTarrestCombinedFilterFactory<LRTarrestData>());
-		filterFactories.add(new LRTarrestReadPositionFilterFactory<LRTarrestData>());
 		filterFactories.add(new LRTarrestINDEL_FilterFactory<LRTarrestData>());
 		filterFactories.add(new LRTarrestSpliceSiteFilterFactory<LRTarrestData>());
 		
@@ -206,7 +205,8 @@ extends AbstractMethodFactory<LRTarrestData, StatisticResult<LRTarrestData>> {
 	
 	@Override
 	public LRTarrestWorker createWorker(final int threadId) {
-		return new LRTarrestWorker(getWorkerDispatcher(), threadId,
+		return new LRTarrestWorker(new ReferenceBaseSetter<LRTarrestData>(),
+				getWorkerDispatcher(), threadId,
 				getParameter().getResultFormat().createCopyTmp(threadId),
 				getParallelDataValidators(), getParameter());
 	}

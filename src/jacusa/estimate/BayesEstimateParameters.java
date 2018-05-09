@@ -2,7 +2,7 @@ package jacusa.estimate;
 
 import java.util.Arrays;
 
-import lib.data.PileupCount;
+import lib.data.count.PileupCount;
 import lib.phred2prob.Phred2Prob;
 
 // posterior estimation

@@ -7,7 +7,9 @@ import htsjdk.samtools.SAMRecord;
 import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.has.HasHomopolymerInfo;
+import lib.data.cache.AbstractDataCache;
+import lib.data.cache.record.RecordDataCache;
+import lib.data.has.filter.HasBooleanFilterData;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 import lib.util.coordinate.Coordinate;
@@ -18,30 +20,35 @@ import lib.util.coordinate.Coordinate;
  * @param <T>
  */
 // FIXME make me more efficient - share homopolymer information between BAM(s)
-public class HomopolymerFilterCache<T extends AbstractData & HasHomopolymerInfo> 
-extends AbstractFilterCache<T> {
+public class HomopolymerFilterCache<T extends AbstractData & HasBooleanFilterData> 
+extends AbstractDataCache<T>
+implements RecordDataCache<T> {
+	
+	private final char c;
 	
 	// min length of identical base call to define homopolymer
 	private final int minLength;
 
 	private final BaseCallConfig baseCallConfig;
-	private final CoordinateController coordinateController;
 
 	// indices of position in window is a homopolymer
 	private final boolean[] isHomopolymer;
 	
-	public HomopolymerFilterCache(final char c, final int minLength, 
-			final BaseCallConfig baseCallConfig, final CoordinateController coordinateController) {
+	public HomopolymerFilterCache(final char c,
+			final int minLength, 
+			final BaseCallConfig baseCallConfig, 
+			final CoordinateController coordinateController) {
 
-		super(c);
-		this.minLength = minLength;
+		super(coordinateController);
+		
+		this.c				= c;
+		this.minLength 		= minLength;
 		this.baseCallConfig = baseCallConfig;
-		this.coordinateController = coordinateController;
-		isHomopolymer = new boolean[coordinateController.getActiveWindowSize()];
+		isHomopolymer 		= new boolean[coordinateController.getActiveWindowSize()];
 	}
 
 	@Override
-	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
+	public void addRecord(final SAMRecordWrapper recordWrapper) {
 		// TODO we only consider consecutively aligned regions of a read
 		// insertions are currently ignored
 		for (AlignmentBlock block : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
@@ -126,7 +133,7 @@ extends AbstractFilterCache<T> {
 	 * @param length					length of region (non-inclusive)
 	 */
 	private void markRegion(final int firstReferencePosition, final int length) {
-		final int windowPosition = coordinateController.convert2windowPosition(firstReferencePosition);
+		final int windowPosition = getCoordinateController().convert2windowPosition(firstReferencePosition);
 		for (int i = 0; i < length; ++i) {
 			isHomopolymer[windowPosition + i] = true;
 		}
@@ -144,13 +151,7 @@ extends AbstractFilterCache<T> {
 			return;
 		}
 
-		data.setHomopolymer(isHomopolymer[windowPosition]);
+		data.getBooleanFilterData().add(c, isHomopolymer[windowPosition]);
 	}
-
-	@Override
-	public CoordinateController getCoordinateController() {
-		return coordinateController;
-	}
-	
 	
 }

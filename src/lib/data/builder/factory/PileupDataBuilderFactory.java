@@ -5,28 +5,31 @@ import java.util.List;
 
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
-import lib.data.AbstractData;
-import lib.data.cache.DataCache;
-import lib.data.cache.PileupCountDataCache;
-import lib.data.has.HasPileupCount;
+import lib.data.PileupData;
+import lib.data.cache.PileupDataCache;
+import lib.data.cache.extractor.basecall.DefaultBaseCallCountExtractor;
+import lib.data.cache.record.AlignmentBlockWrapperDataCache;
+import lib.data.cache.record.RecordDataCache;
 import lib.util.coordinate.CoordinateController;
 
-public class PileupDataBuilderFactory<T extends AbstractData & HasPileupCount> 
-extends AbstractDataBuilderFactory<T> {
+public class PileupDataBuilderFactory 
+extends AbstractDataBuilderFactory<PileupData> {
 
-	public PileupDataBuilderFactory(final AbstractParameter<T, ?> generalParameter) {
+	public PileupDataBuilderFactory(final AbstractParameter<PileupData, ?> generalParameter) {
 		super(generalParameter);
 	}
 	
-	protected List<DataCache<T>> createDataCaches(final CoordinateController coordinateController, 
-			final AbstractConditionParameter<T> conditionParameter) {
+	protected List<RecordDataCache<PileupData>> createDataCaches(final CoordinateController coordinateController, 
+			final AbstractConditionParameter<PileupData> conditionParameter) {
 
-		final List<DataCache<T>> caches = new ArrayList<DataCache<T>>(1);
+		final List<RecordDataCache<PileupData>> caches = new ArrayList<RecordDataCache<PileupData>>(1);
 		caches.add(
-				new PileupCountDataCache<T>(
-						conditionParameter.getMaxDepth(), 
-						conditionParameter.getMinBASQ(), 
-						getParameter().getBaseConfig(), coordinateController));
+				new AlignmentBlockWrapperDataCache<PileupData>(
+					new PileupDataCache<PileupData>(
+							new DefaultBaseCallCountExtractor<PileupData>(),
+							conditionParameter.getMaxDepth(), 
+							conditionParameter.getMinBASQ(), 
+							getParameter().getBaseConfig(), coordinateController)));
 		return caches;
 	}
 	

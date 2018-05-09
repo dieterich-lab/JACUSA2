@@ -26,5 +26,10 @@ extends AbstractDataGenerator<LRTarrestData> {
 	public LRTarrestData copyData(final LRTarrestData dataContainer) {
 		return new LRTarrestData(dataContainer);
 	}
+
+	@Override
+	public void merge(final LRTarrestData dest, final LRTarrestData src) {
+		dest.merge(src);
+	}
 	
 }

@@ -6,12 +6,12 @@ import htsjdk.samtools.SAMRecord;
 import java.util.List;
 
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.region.UniqueRegionDataCache;
+import lib.data.cache.region.RegionDataCache;
 
 public class ProcessReadStartEnd extends AbstractProcessRecord {
 
-	public ProcessReadStartEnd(final int distance, final UniqueRegionDataCache<?> uniqueDataCache) {
-		super(distance, uniqueDataCache);
+	public ProcessReadStartEnd(final int distance, final RegionDataCache<?> regionDataCache) {
+		super(distance, regionDataCache);
 	}
 
 	public void processRecord(final SAMRecordWrapper recordWrapper) {
@@ -21,7 +21,7 @@ public class ProcessReadStartEnd extends AbstractProcessRecord {
 
 		// read start
 		final AlignmentBlock firstBlock = alignmentBlocks.get(0);
-		getUniqueCache().addRecordWrapperRegion(
+		getRegionCache().addRegion(
 				firstBlock.getReferenceStart(),
 				firstBlock.getReadStart() - 1, 
 				Math.min(getDistance(), firstBlock.getLength()), 
@@ -30,7 +30,7 @@ public class ProcessReadStartEnd extends AbstractProcessRecord {
 		// read end
 		final AlignmentBlock lastBlock = alignmentBlocks.get(alignmentBlocks.size() - 1);
 		final int length = Math.min(getDistance(), lastBlock.getLength());
-		getUniqueCache().addRecordWrapperRegion(
+		getRegionCache().addRegion(
 				lastBlock.getReferenceStart() + lastBlock.getLength() - length,
 				lastBlock.getReadStart() - 1 + lastBlock.getLength() - length, 
 				length, 
