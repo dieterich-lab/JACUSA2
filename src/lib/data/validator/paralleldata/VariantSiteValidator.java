@@ -1,4 +1,4 @@
-package lib.data.validator;
+package lib.data.validator.paralleldata;
 
 import java.util.Set;
 
@@ -7,6 +7,7 @@ import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasReferenceBase;
+import lib.util.coordinate.CoordinateUtil.STRAND;
 
 public class VariantSiteValidator<T extends AbstractData & HasBaseCallCount & HasReferenceBase> 
 implements ParallelDataValidator<T> {
@@ -16,7 +17,7 @@ implements ParallelDataValidator<T> {
 		final T data = parallelData.getCombinedPooledData();
 		final Set<Integer> alleles = data.getBaseCallCount().getAlleles();
 		// more than one non-reference allele
-		if (alleles.size()> 1) {
+		if (alleles.size() > 1) {
 			return true;
 		}
 
@@ -25,7 +26,10 @@ implements ParallelDataValidator<T> {
 		byte referenceBase = data.getReferenceBase();
 		if (referenceBase != 0 && referenceBase != 'N') {
 			
-			final int refBaseIndex = BaseCallConfig.getInstance().getBaseIndex(referenceBase);
+			int refBaseIndex = BaseCallConfig.getInstance().getBaseIndex(referenceBase);
+			if (parallelData.getCoordinate().getStrand() == STRAND.REVERSE) {
+				refBaseIndex = BaseCallConfig.BASES_COMPLEMENT[refBaseIndex];
+			}
 
 			// there has to be at least one non-reference base call in the data
 			return data.getBaseCallCount().getCoverage() - data.getBaseCallCount().getBaseCall(refBaseIndex) > 0;

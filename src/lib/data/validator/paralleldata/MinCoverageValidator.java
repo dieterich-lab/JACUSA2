@@ -1,4 +1,4 @@
-package lib.data.validator;
+package lib.data.validator.paralleldata;
 
 import java.util.List;
 

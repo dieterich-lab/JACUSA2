@@ -1,4 +1,4 @@
-package lib.data.validator;
+package lib.data.validator.paralleldata;
 
 import lib.data.ParallelData;
 import lib.data.RTarrestData;

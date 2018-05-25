@@ -105,15 +105,19 @@ implements BaseCallCount {
 	
 	@Override
 	public void invert() {
-		final int[] tmp = new int[baseCall.length];
-		for (final int baseIndex : getAlleles()) {
-			final int complementaryBaseIndex 	= baseCall.length - baseIndex - 1;
-			tmp[complementaryBaseIndex]			= baseCall[baseIndex];
-			tmp[baseIndex] 						= baseCall[complementaryBaseIndex];
-		}
-		baseCall = tmp;
-	}
+		// TODO make this nice 0 => A, 1 => C
+		for (final int baseIndex : new int[]{0, 1}) {
+			final int complementaryBaseIndex = baseCall.length - baseIndex - 1;
+			if (baseCall[baseIndex] == 0 && baseCall[complementaryBaseIndex] == 0) {
+				continue;
+			}
 
+			final int tmpCount					= baseCall[baseIndex];
+			baseCall[baseIndex] 				= baseCall[complementaryBaseIndex];
+			baseCall[complementaryBaseIndex] 	= tmpCount;
+		}
+	}
+	
 	@Override
 	public Set<Integer> getAlleles() {
 		final Set<Integer> alleles = new HashSet<Integer>(2);

@@ -15,7 +15,7 @@ import lib.data.generator.DataGenerator;
 import lib.data.has.HasDataGenerator;
 import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 import lib.data.result.Result;
-import lib.data.validator.ParallelDataValidator;
+import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.util.AbstractTool;
 import lib.util.coordinate.provider.BedCoordinateProvider;
 import lib.util.coordinate.provider.CoordinateProvider;

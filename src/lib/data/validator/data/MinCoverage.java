@@ -1,4 +1,4 @@
-package lib.data.validator;
+package lib.data.validator.data;
 
 import lib.data.AbstractData;
 import lib.data.has.HasCoverage;

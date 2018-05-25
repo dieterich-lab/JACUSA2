@@ -23,7 +23,7 @@ public interface BaseCallQualityCount {
 	void substract(int baseIndexDest, int baseIndexSrc, BaseCallQualityCount baseCallQualCount);
 	void substract(int[] alleles, BaseCallQualityCount baseCallQualCount);
 
-	void invert(Set<Integer> alleles);
+	void invert();
 	
 	public String toString();
 	

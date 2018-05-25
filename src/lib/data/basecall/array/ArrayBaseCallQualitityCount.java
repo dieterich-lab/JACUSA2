@@ -102,14 +102,16 @@ public class ArrayBaseCallQualitityCount implements BaseCallQualityCount {
 	}
 
 	@Override
-	public void invert(final Set<Integer> alleles) {
-		final int[][] tmp = new int[BaseCallConfig.BASES.length][Phred2Prob.MAX_Q];
-		for (final int baseIndex : alleles) {
-			final int complementaryBaseIndex 	= BaseCallConfig.BASES.length - baseIndex - 1;  
-			tmp[complementaryBaseIndex] 		= base2qual2count[baseIndex];
-			tmp[baseIndex]						= base2qual2count[complementaryBaseIndex];
+	public void invert() {
+		for (final int baseIndex : new int[] {0, 1}) {
+			final int complementaryBaseIndex 		= BaseCallConfig.BASES.length - baseIndex - 1;
+			if (getBaseCallQuality(baseIndex).size() == 0 && getBaseCallQuality(complementaryBaseIndex).size() == 0) {
+				continue;
+			}
+			final int[] tmpCount 					= base2qual2count[baseIndex];
+			base2qual2count[baseIndex]				= base2qual2count[complementaryBaseIndex];
+			base2qual2count[complementaryBaseIndex] = tmpCount;
 		}
-		base2qual2count = tmp;
 	}
 
 	@Override

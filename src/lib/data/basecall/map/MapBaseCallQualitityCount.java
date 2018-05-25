@@ -110,16 +110,17 @@ public class MapBaseCallQualitityCount implements BaseCallQualityCount {
 	}
 
 	@Override
-	public void invert(final Set<Integer> alleles) {
-		final Map<Integer, Map<Byte, Integer>> tmp = new HashMap<Integer, Map<Byte,Integer>>(BaseCallConfig.BASES.length);
-		
-		for (final int baseIndex : alleles) {
-			final int complementaryBaseIndex 	= BaseCallConfig.BASES.length - baseIndex - 1;
-			tmp.put(complementaryBaseIndex, base2qual2count.get(baseIndex));
-			tmp.put(baseIndex, base2qual2count.get(complementaryBaseIndex));
+	public void invert() {
+		for (final int baseIndex : new int[] {0, 1}) {
+			final int complementaryBaseIndex = BaseCallConfig.BASES.length - baseIndex - 1;
+			if (getBaseCallQuality(baseIndex).size() == 0 && getBaseCallQuality(complementaryBaseIndex).size() == 0) {
+				continue;
+			}
+			final Map<Byte, Integer> tmpCount = base2qual2count.get(baseIndex);
+			base2qual2count.put(baseIndex, base2qual2count.get(complementaryBaseIndex));
+			base2qual2count.put(complementaryBaseIndex, tmpCount);
+			
 		}
-
-		base2qual2count = tmp;
 	}
 
 	@Override

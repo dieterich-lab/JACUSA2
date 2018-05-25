@@ -1,8 +1,9 @@
-package lib.data.validator;
+package lib.data.validator.replicate;
 
 import java.util.List;
 
 import lib.data.AbstractData;
+import lib.data.validator.data.DataValidator;
 
 public class AggregatedReplicateDataValidator<T extends AbstractData> implements
 		ReplicateDataValidator<T> {

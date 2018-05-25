@@ -8,7 +8,7 @@ import lib.data.LRTarrestData;
 import lib.data.ParallelData;
 import lib.data.cache.extractor.ReferenceSetter;
 import lib.data.result.StatisticResult;
-import lib.data.validator.ParallelDataValidator;
+import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.io.copytmp.CopyTmpResult;
 import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;

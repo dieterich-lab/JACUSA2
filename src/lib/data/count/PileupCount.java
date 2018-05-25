@@ -78,7 +78,7 @@ implements HasBaseCallCount, HasBaseCallQualityCount, HasReferenceBase, HasCover
 
 	public void invert() {
 		baseCallCount.invert();
-		baseQualCount.invert(baseCallCount.getAlleles());
+		baseQualCount.invert();
 	}
 
 	public byte getReferenceBase() {

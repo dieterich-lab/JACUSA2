@@ -1,4 +1,4 @@
-package lib.data.validator;
+package lib.data.validator.paralleldata;
 
 import lib.data.AbstractData;
 import lib.data.ParallelData;

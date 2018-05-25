@@ -101,13 +101,15 @@ implements BaseCallCount {
 	
 	@Override
 	public void invert() {
-		final Map<Integer, Integer> tmp = new HashMap<Integer, Integer>(baseCall.size());
-		for (final int baseIndex : getAlleles()) {
-			final int complementaryBaseIndex 	= BaseCallConfig.BASES.length - baseIndex - 1;  
-			tmp.put(complementaryBaseIndex, getBaseCall(baseIndex));
-			tmp.put(baseIndex, getBaseCall(complementaryBaseIndex));
+		for (final int baseIndex : new int[] {0, 1}) {
+			final int complementaryBaseIndex 	= BaseCallConfig.BASES.length - baseIndex - 1;
+			if (baseCall.get(baseIndex) == 0 && baseCall.get(complementaryBaseIndex) == 0) {
+				continue;
+			}
+			final int tmpCount = getBaseCall(baseIndex);
+			baseCall.put(baseIndex, getBaseCall(complementaryBaseIndex)); 
+			baseCall.put(complementaryBaseIndex, tmpCount);
 		}
-		baseCall = tmp;
 	}
 
 	@Override
