@@ -29,7 +29,7 @@ extends AbstractDataBuilderFactory<PileupData> {
 							new DefaultBaseCallCountExtractor<PileupData>(),
 							conditionParameter.getMaxDepth(), 
 							conditionParameter.getMinBASQ(), 
-							getParameter().getBaseConfig(), coordinateController)));
+							coordinateController)));
 		return caches;
 	}
 	

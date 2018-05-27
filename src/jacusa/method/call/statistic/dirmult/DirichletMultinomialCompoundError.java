@@ -4,6 +4,7 @@ import jacusa.cli.parameters.CallParameter;
 import jacusa.estimate.MinkaEstimateDirMultParameters;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.AbstractDirichletStatistic;
+import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.has.HasPileupCount;
 
@@ -26,19 +27,19 @@ extends AbstractDirichletStatistic<T> {
 	}
 
 	@Override
-	protected void populate(final T data, final int[] baseIndexs, double[] pileupMatrix) {
-		double[] pileupCount = phred2Prob.colSumCount(baseIndexs, data);
-		double[] pileupError = phred2Prob.colMeanErrorProb(baseIndexs, data.getPileupCount());
+	protected void populate(final T data, final Base[] bases, double[] pileupMatrix) {
+		double[] pileupCount = phred2Prob.colSumCount(bases, data);
+		double[] pileupError = phred2Prob.colMeanErrorProb(bases, data.getPileupCount());
 
-		for (int baseI : baseIndexs) {
-			pileupMatrix[baseI] += priorError;
+		for (final Base base : bases) {
+			pileupMatrix[base.getIndex()] += priorError;
 
-			if (pileupCount[baseI] > 0.0) {
-				pileupMatrix[baseI] += pileupCount[baseI];
-				for (int baseI2 : baseIndexs) {
-					if (baseI != baseI2) {
-						double combinedError = (pileupError[baseI2] + estimatedError) * (double)pileupCount[baseI] / (double)(baseIndexs.length - 1);
-						pileupMatrix[baseI2] += combinedError;
+			if (pileupCount[base.getIndex()] > 0.0) {
+				pileupMatrix[base.getIndex()] += pileupCount[base.getIndex()];
+				for (final Base base2 : bases) {
+					if (base != base2) {
+						double combinedError = (pileupError[base2.getIndex()] + estimatedError) * (double)pileupCount[base.getIndex()] / (double)(bases.length - 1);
+						pileupMatrix[base2.getIndex()] += combinedError;
 					} else {
 						// pileupMatrix[pileupI][baseI2] -= (estimatedError) * (double)pileupCount[baseI];
 					}

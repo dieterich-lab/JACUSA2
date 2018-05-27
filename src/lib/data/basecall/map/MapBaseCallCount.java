@@ -5,25 +5,26 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import lib.cli.options.BaseCallConfig;
+import htsjdk.samtools.util.SequenceUtil;
+import lib.cli.options.Base;
 import lib.data.count.BaseCallCount;
 
 public class MapBaseCallCount 
 implements BaseCallCount {
 
 	// container
-	private Map<Integer, Integer> baseCall;
+	private Map<Base, Integer> baseCall;
 
 	public MapBaseCallCount() {
-		baseCall = new HashMap<Integer, Integer>(2);
+		baseCall = new HashMap<Base, Integer>(2);
 	}
 
-	public MapBaseCallCount(final Map<Integer, Integer> baseCall) {
-		this.baseCall = new HashMap<Integer, Integer>(baseCall);
+	public MapBaseCallCount(final Map<Base, Integer> baseCall) {
+		this.baseCall = new HashMap<Base, Integer>(baseCall);
 	}
 
 	public MapBaseCallCount(final MapBaseCallCount baseCallCount) {
-		this.baseCall = new HashMap<Integer, Integer>(baseCallCount.baseCall);
+		this.baseCall = new HashMap<Base, Integer>(baseCallCount.baseCall);
 	}
 
 	public MapBaseCallCount copy() {
@@ -41,14 +42,14 @@ implements BaseCallCount {
 	}
 	
 	@Override
-	public int getBaseCall(final int baseIndex) {
-		return baseCall.containsKey(baseIndex) ? baseCall.get(baseIndex) : 0;
+	public int getBaseCall(final Base base) {
+		return baseCall.containsKey(base) ? baseCall.get(base) : 0;
 	}
 
 	@Override
-	public void increment(final int baseIndex) {
-		final int count = getBaseCall(baseIndex);
-		set(baseIndex, count + 1);
+	public void increment(final Base base) {
+		final int count = getBaseCall(base);
+		set(base, count + 1);
 	}
 
 	@Override
@@ -58,67 +59,67 @@ implements BaseCallCount {
 
 	@Override
 	public void add(final BaseCallCount baseCallCount) {
-		for (final int baseIndex : baseCallCount.getAlleles()) {
-			add(baseIndex, baseCallCount);
+		for (final Base base : baseCallCount.getAlleles()) {
+			add(base, baseCallCount);
 		}
 	}
 
 	@Override
-	public void set(final int baseIndex, final int count) {
-		baseCall.put(baseIndex, count);
+	public void set(final Base base, final int count) {
+		baseCall.put(base, count);
 	}
 
 	@Override
-	public void add(final int baseIndex, final BaseCallCount baseQualCount) {
-		add(baseIndex, baseIndex, baseQualCount);
+	public void add(final Base base, final BaseCallCount baseQualCount) {
+		add(base, base, baseQualCount);
 	}
 
 	@Override
-	public void add(final int baseIndexDest, final int baseIndexSrc, final BaseCallCount src) {
-		final int countDest = getBaseCall(baseIndexDest);
-		final int countSrc = getBaseCall(baseIndexSrc);
-		set(baseIndexDest, countDest + countSrc);
+	public void add(final Base dest, final Base src, final BaseCallCount baseCallCount) {
+		final int countDest = getBaseCall(dest);
+		final int countSrc = baseCallCount.getBaseCall(src);
+		set(dest, countDest + countSrc);
 	}
 	
 	@Override
-	public void substract(final int baseIndex, final BaseCallCount src) {
-		substract(baseIndex, baseIndex, src);
+	public void substract(final Base base, final BaseCallCount baseCallCount) {
+		substract(base, base, baseCallCount);
 	}
 
 	@Override
-	public void substract(final int baseIndexDest, final int baseIndexSrc, final BaseCallCount src) {
-		final int countDest = getBaseCall(baseIndexDest);
-		final int countSrc = getBaseCall(baseIndexSrc);
-		set(baseIndexDest, countDest - countSrc);
+	public void substract(final Base dest, final Base src, final BaseCallCount baseCallCount) {
+		final int countDest = getBaseCall(dest);
+		final int countSrc = baseCallCount.getBaseCall(src);
+		set(dest, countDest - countSrc);
 	}
 	
 	@Override
-	public void substract(final BaseCallCount src) {
-		for (final int baseIndex : src.getAlleles()) {
-				substract(baseIndex, src);
+	public void substract(final BaseCallCount baseCallCount) {
+		for (final Base base : baseCallCount.getAlleles()) {
+				substract(base, baseCallCount);
 		}
 	}
 	
 	@Override
 	public void invert() {
-		for (final int baseIndex : new int[] {0, 1}) {
-			final int complementaryBaseIndex 	= BaseCallConfig.BASES.length - baseIndex - 1;
-			if (baseCall.get(baseIndex) == 0 && baseCall.get(complementaryBaseIndex) == 0) {
+		for (final Base base : new Base[] {Base.A, Base.C}) {
+			final Base complement = base.getComplement();
+			if (baseCall.get(base) == 0 && baseCall.get(complement) == 0) {
 				continue;
 			}
-			final int tmpCount = getBaseCall(baseIndex);
-			baseCall.put(baseIndex, getBaseCall(complementaryBaseIndex)); 
-			baseCall.put(complementaryBaseIndex, tmpCount);
+			final int tmpCount = getBaseCall(base);
+			baseCall.put(base, getBaseCall(complement)); 
+			baseCall.put(complement, tmpCount);
 		}
 	}
 
 	@Override
-	public Set<Integer> getAlleles() {
+	public Set<Base> getAlleles() {
 		// make this allele
-		Set<Integer> alleles = new HashSet<Integer>(2);
-		for (int baseIndex = 0; baseIndex < BaseCallConfig.BASES.length; ++baseIndex) {
-			if (getBaseCall(baseIndex) > 0) {
-				alleles.add(baseIndex);
+		Set<Base> alleles = new HashSet<Base>(2);
+		for (final Base base : baseCall.keySet()) {
+			if (getBaseCall(base) > 0) {
+				alleles.add(base);
 			}
 		}
 		return alleles;
@@ -128,22 +129,22 @@ implements BaseCallCount {
 		final StringBuilder sb = new StringBuilder();
 		
 		int baseIndex = 0;
-		final int n = BaseCallConfig.BASES.length;
+		final int n = SequenceUtil.VALID_BASES_UPPER.length;
 		sb.append("(");
-		sb.append(BaseCallConfig.BASES[baseIndex]);
+		sb.append(Base.valueOf(baseIndex));
 		++baseIndex;
 		for (; baseIndex < n; ++baseIndex) {
 			sb.append(", ");
-			sb.append(BaseCallConfig.BASES[baseIndex]);
+			sb.append(Base.valueOf(baseIndex));
 		}
 		sb.append(") (");
 		
 		baseIndex = 0;
-		sb.append(getBaseCall(baseIndex));
+		sb.append(getBaseCall(Base.valueOf(baseIndex)));
 		++baseIndex;
 		for (; baseIndex < n; ++baseIndex) {
 			sb.append(", ");
-			sb.append(getBaseCall(baseIndex));
+			sb.append(getBaseCall(Base.valueOf(baseIndex)));
 		}
 		sb.append(")");
 		

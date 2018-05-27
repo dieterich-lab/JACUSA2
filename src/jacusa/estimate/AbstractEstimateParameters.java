@@ -1,5 +1,6 @@
 package jacusa.estimate;
 
+import lib.cli.options.Base;
 import lib.data.count.PileupCount;
 import lib.phred2prob.Phred2Prob;
 
@@ -30,7 +31,7 @@ public abstract class AbstractEstimateParameters {
 		return phred2Prob;
 	}
 
-	public abstract double[] estimateAlpha(int[] baseIndexs, PileupCount[] pileupCounts);
-	public abstract double[][] probabilityMatrix(int[] baseIndexs, PileupCount[] pileupCounts);
+	public abstract double[] estimateAlpha(Base[] bases, PileupCount[] pileupCounts);
+	public abstract double[][] probabilityMatrix(Base[] bases, PileupCount[] pileupCounts);
 
 }

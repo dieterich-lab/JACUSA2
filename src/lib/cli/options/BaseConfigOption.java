@@ -5,6 +5,9 @@ import lib.cli.parameter.AbstractParameter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
+import htsjdk.samtools.util.SequenceUtil;
+
+@Deprecated
 public class BaseConfigOption extends AbstractACOption {
 
 	final private AbstractParameter<?, ?> parameters;
@@ -17,8 +20,8 @@ public class BaseConfigOption extends AbstractACOption {
 	@Override
 	public Option getOption() {
 		StringBuilder sb = new StringBuilder();
-		for(char c : parameters.getBases()) {
-			sb.append(c);
+		for (final byte c : parameters.getBases()) {
+			sb.append((byte)c);
 		}
 
 		return Option.builder(getOpt())
@@ -32,11 +35,13 @@ public class BaseConfigOption extends AbstractACOption {
 	@Override
 	public void process(final CommandLine line) throws IllegalArgumentException {
 		if (line.hasOption(getOpt())) {
-	    	final char[] values = line.getOptionValue(getOpt()).toCharArray();
-	    	if (values.length < 2 || values.length > BaseCallConfig.BASES.length) {
+	    	// FIXME byte to char
+			final char[] values = line.getOptionValue(getOpt()).toCharArray();
+	    	if (values.length < 2 || values.length > SequenceUtil.VALID_BASES_LOWER.length) {
 	    		throw new IllegalArgumentException("Possible values for " + getLongOpt().toUpperCase() + ": TC, AG, ACGT, AT...");
 	    	}
-	    	parameters.setBases(values);
+	    	// FIXME byte to char
+	    	// parameters.setBases(values);
 	    }
 	}
 

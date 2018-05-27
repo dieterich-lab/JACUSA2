@@ -1,6 +1,7 @@
 package lib.cli.parameter;
 
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
+import htsjdk.samtools.util.SequenceUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,7 +12,6 @@ import java.util.List;
 
 import jacusa.cli.parameters.HasConditionParameter;
 import jacusa.filter.FilterConfig;
-import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.result.Result;
 import lib.io.ResultFormat;
@@ -30,8 +30,7 @@ implements HasConditionParameter<T> {
 
 	private int maxThreads;
 	
-	private BaseCallConfig baseConfig;
-		private char[] bases;
+		private byte[] bases;
 		private boolean showReferenceBase;
 
 	private String referenceFilename;
@@ -62,8 +61,7 @@ implements HasConditionParameter<T> {
 		activeWindowSize 	= 10000;
 		reservedWindowSize	= 10 * activeWindowSize;
 		
-		baseConfig			= BaseCallConfig.getInstance();
-		bases				= BaseCallConfig.BASES.clone();
+		bases				= SequenceUtil.VALID_BASES_UPPER.clone();
 		showReferenceBase 	= false;
 
 		maxThreads			= 1;
@@ -176,14 +174,14 @@ implements HasConditionParameter<T> {
 	/**
 	 * @return the baseConfig
 	 */
-	public char[] getBases() {
+	public byte[] getBases() {
 		return bases;
 	}
 	
 	/**
 	 * @return the baseConfig
 	 */
-	public void setBases(final char[] bases) {
+	public void setBases(final byte[] bases) {
 		this.bases = bases.clone();
 	}
 	
@@ -285,10 +283,6 @@ implements HasConditionParameter<T> {
 	
 	public void setShowReferenceBase(boolean showReferenceBase) {
 		this.showReferenceBase = showReferenceBase;
-	}
-
-	public BaseCallConfig getBaseConfig() {
-		return baseConfig;
 	}
 	
 	public String getReferenceFilename() {

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import lib.cli.options.Base;
 import lib.data.basecall.array.ArrayBaseCallCount;
 import lib.data.count.BaseCallCount;
 
@@ -25,12 +26,12 @@ public class RefPos2BaseCallCount {
 		}
 	}
 	
-	public void addBaseCall(final int refPos, final int baseIndex) {
+	public void addBaseCall(final int refPos, final Base base) {
 		if (! refPos2bc.containsKey(refPos)) {
 			refPos2bc.put(refPos, new ArrayBaseCallCount());
 		}
 		
-		refPos2bc.get(refPos).increment(baseIndex);
+		refPos2bc.get(refPos).increment(base);
 	}
 
 	public void addRefBase(final int refPos, final byte refBase) {

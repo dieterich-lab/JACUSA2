@@ -1,5 +1,6 @@
 package lib.data.count;
 
+import lib.cli.options.Base;
 import lib.data.count.PileupCount;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasBaseCallQualityCount;
@@ -41,38 +42,38 @@ implements HasBaseCallCount, HasBaseCallQualityCount, HasReferenceBase, HasCover
 		return baseQualCount;
 	}
 
-	public void add(final int baseIndex, final byte baseQual) {
-		baseCallCount.increment(baseIndex);
-		baseQualCount.increment(baseIndex, baseQual);
+	public void add(final Base base, final byte baseQual) {
+		baseCallCount.increment(base);
+		baseQualCount.increment(base, baseQual);
 	}
 		
 	public void merge(final PileupCount pileupCount) {
-		for (int baseIndex : pileupCount.getBaseCallCount().getAlleles()) {
-			add(baseIndex, pileupCount);
+		for (final Base base : pileupCount.getBaseCallCount().getAlleles()) {
+			add(base, pileupCount);
 		}
 	}
 	
-	public void add(final int baseIndex, final PileupCount pileupCount) {
-		add(baseIndex, baseIndex, pileupCount);
+	public void add(final Base base, final PileupCount pileupCount) {
+		add(base, base, pileupCount);
 	}
 
-	public void add(final int baseIndexDest, final int baseIndexSrc, final PileupCount pileupCount) {
-		baseCallCount.add(baseIndexDest, baseIndexSrc, pileupCount.getBaseCallCount());
-		baseQualCount.add(baseIndexDest, baseIndexSrc, pileupCount.getBaseCallQualityCount());
+	public void add(final Base dest, final Base src, final PileupCount pileupCount) {
+		baseCallCount.add(dest, src, pileupCount.getBaseCallCount());
+		baseQualCount.add(dest, src, pileupCount.getBaseCallQualityCount());
 	}
 
-	public void substract(final int baseIndex, final PileupCount pileupCount) {
-		substract(baseIndex, baseIndex, pileupCount);
+	public void substract(final Base base, final PileupCount pileupCount) {
+		substract(base, base, pileupCount);
 	}
 
-	public void substract(final int baseIndexDest, final int baseIndexSrc, final PileupCount pileupCount) {
-		baseCallCount.add(baseIndexDest, baseIndexSrc, pileupCount.getBaseCallCount());
-		baseQualCount.add(baseIndexDest, baseIndexSrc, pileupCount.getBaseCallQualityCount());
+	public void substract(final Base dest, final Base src, final PileupCount pileupCount) {
+		baseCallCount.add(dest, src, pileupCount.getBaseCallCount());
+		baseQualCount.add(dest, src, pileupCount.getBaseCallQualityCount());
 	}
 
 	public void substract(final PileupCount pileupCount) {
-		for (int baseIndex : pileupCount.getBaseCallCount().getAlleles()) {
-			substract(baseIndex, pileupCount);
+		for (final Base base : pileupCount.getBaseCallCount().getAlleles()) {
+			substract(base, pileupCount);
 		}
 	}
 

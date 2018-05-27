@@ -5,7 +5,6 @@ import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
-import lib.cli.options.BaseCallConfig;
 import lib.data.AbstractData;
 import lib.data.basecall.array.ArrayBaseCallCount;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
@@ -40,7 +39,6 @@ implements RecordDataCache<T> {
 			final BaseCallCountExtractor<T> throughBaseCallCountExtractor,
 			final LIBRARY_TYPE libraryType,
 			final int maxDepth, final byte minBASQ, 
-			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
 		
 		super(coordinateController);
@@ -52,9 +50,9 @@ implements RecordDataCache<T> {
 		
 		this.libraryType = libraryType;
 		
-		startBC	= new ArrayBaseCallRegionDataCache<T>(maxDepth, minBASQ, baseCallConfig, coordinateController);
-		wholeBC	= new ArrayBaseCallRegionDataCache<T>(maxDepth, minBASQ, baseCallConfig, coordinateController);
-		endBC 	= new ArrayBaseCallRegionDataCache<T>(maxDepth, minBASQ, baseCallConfig, coordinateController);
+		startBC	= new ArrayBaseCallRegionDataCache<T>(maxDepth, minBASQ, coordinateController);
+		wholeBC	= new ArrayBaseCallRegionDataCache<T>(maxDepth, minBASQ, coordinateController);
+		endBC 	= new ArrayBaseCallRegionDataCache<T>(maxDepth, minBASQ, coordinateController);
 	}
 
 	@Override

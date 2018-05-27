@@ -4,8 +4,7 @@ import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 
 import htsjdk.samtools.SAMRecord;
-
-import lib.cli.options.BaseCallConfig;
+import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.AbstractDataCache;
@@ -14,13 +13,8 @@ public abstract class AbstractRestrictedRegionDataCache<X extends AbstractData>
 extends AbstractDataCache<X> 
 implements RestrictedRegionDataCache<X> {
 
-	private final BaseCallConfig baseCallConfig;
-
-	public AbstractRestrictedRegionDataCache(final BaseCallConfig baseCallConfig, 
-			final CoordinateController coordinateController) {
-
+	public AbstractRestrictedRegionDataCache(final CoordinateController coordinateController) {
 		super(coordinateController);
-		this.baseCallConfig = baseCallConfig;
 	}
 
 	@Override
@@ -37,20 +31,16 @@ implements RestrictedRegionDataCache<X> {
 
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		for (int offset = 0; offset < windowPositionGuard.getLength(); ++offset) {
-			final int baseIndex 	= baseCallConfig.getBaseIndex(record.getReadBases()[windowPositionGuard.getReadPosition() + offset]);
+			final Base base 		= Base.valueOf(record.getReadBases()[windowPositionGuard.getReadPosition() + offset]);
 			final byte baseQuality 	= record.getBaseQualities()[windowPositionGuard.getReadPosition() + offset];
 			if (isValid(windowPositionGuard.getWindowPosition() + offset, windowPositionGuard.getReadPosition() + offset , 
-					baseIndex, baseQuality)) {
+					base, baseQuality)) {
 
 				increment(windowPositionGuard.getWindowPosition() + offset,
 						windowPositionGuard.getReadPosition() + offset,
-						baseIndex, baseQuality);	
+						base, baseQuality);	
 			}
 		}
-	}
-	
-	public BaseCallConfig getBaseCallConfig() {
-		return baseCallConfig;
 	}
 	
 }

@@ -1,6 +1,9 @@
 package jacusa.filter.basecall;
 
+import java.util.Set;
+
 import jacusa.filter.FilterRatio;
+import lib.cli.options.Base;
 import lib.data.count.BaseCallCount;
 
 public class BaseCallCountFilter {
@@ -11,10 +14,10 @@ public class BaseCallCountFilter {
 		this.filterRatio = filterRatio;
 	}
 
-	public boolean filter(final int[] variantBaseIndexs, 
+	public boolean filter(final Set<Base> variantBases, 
 			final BaseCallCount[][] observed, final BaseCallCount[][] filtered) {
 
-		for (int variantBaseIndex : variantBaseIndexs) {
+		for (final Base variantBase : variantBases) {
 			int count = 0;
 			int filteredCount = 0;
 
@@ -23,12 +26,12 @@ public class BaseCallCountFilter {
 				for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
 					// observed count
 					final BaseCallCount o = observed[conditionIndex][replicateIndex];
-					final int tmpCount = o.getBaseCall(variantBaseIndex);
+					final int tmpCount = o.getBaseCall(variantBase);
 					count += tmpCount;
 					// possible artefact count
 					final BaseCallCount f = filtered[conditionIndex][replicateIndex];
 					if (f != null) {
-						filteredCount += tmpCount - f.getBaseCall(variantBaseIndex);						
+						filteredCount += tmpCount - f.getBaseCall(variantBase);						
 					} else {
 						filteredCount += tmpCount;
 					}

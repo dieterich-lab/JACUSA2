@@ -25,8 +25,7 @@ extends AbstractResultFormat<T, DefaultResult<T>> {
 
 	@Override
 	public ResultWriter<T, DefaultResult<T>> createWriter(String filename) {
-		return new PileupPileupResultWriter<T, DefaultResult<T>>(filename, 
-				getParameter().getBaseConfig(), getParameter().showReferenceBase());
+		return new PileupPileupResultWriter<T, DefaultResult<T>>(filename, getParameter().showReferenceBase());
 	}
 
 }

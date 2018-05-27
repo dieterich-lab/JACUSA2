@@ -1,10 +1,12 @@
 package lib.data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import lib.cli.options.BaseCallConfig;
+import htsjdk.samtools.util.SequenceUtil;
+import lib.cli.options.Base;
 import lib.data.generator.DataGenerator;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasCoordinate;
@@ -214,64 +216,47 @@ implements HasCoordinate, HasLibraryType {
 	}
 
 	// this will be according to STRAND
-	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> int[] getNonReferenceBaseIndexs(ParallelData<S> parallelData) {
-		final byte referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
-		if (referenceBase == 'N') {
-			return new int[0];
+	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> Set<Base> getNonReferenceBaseIndexs(ParallelData<S> parallelData) {
+		Base referenceBase = Base.valueOf(parallelData.getCombinedPooledData().getReferenceBase());
+		if (SequenceUtil.isValidBase(referenceBase.getC())) {
+			return new HashSet<Base>(0);
 		}
 
-		final Set<Integer> allelesIndexs = parallelData
-				.getCombinedPooledData()
-				.getBaseCallCount()
-				.getAlleles();
-
-		int referenceBaseIndex = BaseCallConfig.getInstance().getBaseIndex((byte)referenceBase);
 		switch (parallelData.getCoordinate().getStrand()) {
 		case REVERSE:
-			referenceBaseIndex = BaseCallConfig.BASES_COMPLEMENT[referenceBaseIndex];
+			referenceBase = referenceBase.getComplement();
 			break;
 
 		default:
 			break;
 		}
-		
-		// find non-reference base(s)
-		int i = 0;
-		final int[] tmp = new int[allelesIndexs.size()];
-		for (final int baseIndex : allelesIndexs) {
-			if (baseIndex != referenceBaseIndex) {
-				tmp[i] = baseIndex;
-				++i;
-			}
-		}
-		final int[] ret = new int[i];
-		System.arraycopy(tmp, 0, ret, 0, i);
-		return ret;
+
+		return Base.getNonRefBases(referenceBase);
 	}
 
-	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> int[] getVariantBaseIndexs(ParallelData<S> parallelData) {
+	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> Set<Base> getVariantBaseIndexs(ParallelData<S> parallelData) {
 		if (parallelData.getConditions() == 1) {
 			return getNonReferenceBaseIndexs(parallelData);
 		}
 
-		Set<Integer> alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
-		final List<Integer> baseIndexs = new ArrayList<Integer>(BaseCallConfig.BASES.length);
+		Set<Base> alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
+		final List<Base> bases = new ArrayList<Base>(alleles.size());
 
-		for (int baseIndex : alleles) {
+		for (final Base base : alleles) {
 			int n = 0;
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
-				if (parallelData.getPooledData(conditionIndex).getBaseCallCount().getBaseCall(baseIndex) > 0) {
+				if (parallelData.getPooledData(conditionIndex).getBaseCallCount().getBaseCall(base) > 0) {
 					n++;
 				}
 			}
 			if (n < parallelData.getConditions()) {
-				baseIndexs.add(baseIndex);
+				bases.add(base);
 			}
 		}
 
-		final int[] variantBaseIs = new int[baseIndexs.size()];
-		for (int i = 0; i < baseIndexs.size(); ++i) {
-			variantBaseIs[i] = baseIndexs.get(i);
+		final Set<Base> variantBaseIs = new HashSet<Base>(bases.size());
+		for (int i = 0; i < bases.size(); ++i) {
+			variantBaseIs.add(bases.get(i));
 		}
 
 		return variantBaseIs;
@@ -331,14 +316,14 @@ implements HasCoordinate, HasLibraryType {
 	
 	public static <S extends AbstractData & HasPileupCount> S[] flat(final S[] data, 
 			final S[]ret, 
-			final int[] variantBaseIndexs, final int commonBaseIndex) {
+			final Set<Base> variantBases, final Base commonBase) {
 
 		for (int i = 0; i < data.length; ++i) {
 			ret[i] = data[i];
 
-			for (int variantBaseIndex : variantBaseIndexs) {
-				ret[i].getPileupCount().add(commonBaseIndex, variantBaseIndex, data[i].getPileupCount());
-				ret[i].getPileupCount().substract(variantBaseIndex, variantBaseIndex, data[i].getPileupCount());
+			for (final Base variantBase : variantBases) {
+				ret[i].getPileupCount().add(commonBase, variantBase, data[i].getPileupCount());
+				ret[i].getPileupCount().substract(variantBase, variantBase, data[i].getPileupCount());
 			}
 			
 		}

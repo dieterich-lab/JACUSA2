@@ -8,7 +8,6 @@ import jacusa.filter.cache.RecordProcessDataCache;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.AbstractDataFilterFactory;
 import jacusa.filter.factory.AbstractFilterFactory;
-import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
@@ -118,7 +117,6 @@ extends AbstractDataFilterFactory<T> {
 
 	@Override
 	protected RecordDataCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
-			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
 
 		// save classes
@@ -127,7 +125,6 @@ extends AbstractDataFilterFactory<T> {
 					new ArrayBaseCallRegionDataCache<T>(
 							getFiltered(), 
 							conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), 
-							baseCallConfig, 
 							coordinateController));
 
 		return new RecordProcessDataCache<T>(uniqueBaseCallCache, createProcessRecord(uniqueBaseCallCache));

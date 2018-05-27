@@ -4,6 +4,7 @@ import java.util.Set;
 
 import jacusa.cli.parameters.CallParameter;
 import jacusa.method.call.statistic.AbstractDirichletStatistic;
+import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.HasBaseCallCount;
@@ -27,24 +28,24 @@ extends DirichletMultinomialCompoundError<T> {
 		final int a1 = parallelData.getPooledData(0).getPileupCount().getBaseCallCount().getAlleles().size();
 		final int a2 = parallelData.getPooledData(1).getPileupCount().getBaseCallCount().getAlleles().size();
 		// all observed alleles
-		final Set<Integer> alleles = parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount().getAlleles();
+		final Set<Base> alleles = parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount().getAlleles();
 		final int aP = alleles.size();
 
 		// get bases that are different between the samples
-		final int[] variantBaseIs = ParallelData.getVariantBaseIndexs(parallelData);
+		final Set<Base> variantBases = ParallelData.getVariantBaseIndexs(parallelData);
 		// if there are no variant bases than both samples are heteromorph; 
 		// use existing parallelPileup to calculate test-statistic
-		if (variantBaseIs.length == 0) {
+		if (variantBases.size() == 0) {
 			return super.getStatistic(parallelData);
 		}
 
 		// determine common base (shared by both conditions)
-		int commonBaseIndex = -1;
-		for (int baseIndex : alleles) {
-			int count1 = parallelData.getPooledData(0).getBaseCallCount().getBaseCall(baseIndex);
-			int count2 = parallelData.getPooledData(1).getBaseCallCount().getBaseCall(baseIndex);
+		Base commonBaseIndex = Base.N;
+		for (final Base base : alleles) {
+			int count1 = parallelData.getPooledData(0).getBaseCallCount().getBaseCall(base);
+			int count2 = parallelData.getPooledData(1).getBaseCallCount().getBaseCall(base);
 			if (count1 > 0 && count2  > 0) {
-				commonBaseIndex = baseIndex;
+				commonBaseIndex = base;
 				break;
 			}
 		}
@@ -63,7 +64,7 @@ extends DirichletMultinomialCompoundError<T> {
 					parallelData.getDataGenerator(), data);
 			// and replace pileups2 with pileups1 where the variant bases have been replaced with the common base
 			T[] newConditionData = parallelData.getDataGenerator().createReplicateData(adjustedParallelPileup.getData(0).length);
-			adjustedParallelPileup.setData(0, ParallelData.flat(adjustedParallelPileup.getData(0), newConditionData, variantBaseIs, commonBaseIndex));
+			adjustedParallelPileup.setData(0, ParallelData.flat(adjustedParallelPileup.getData(0), newConditionData, variantBases, commonBaseIndex));
 		} else if (a2 > 1 && a1 == 1 && aP == 2) { // condition2
 			
 			data[0] = parallelData.getDataGenerator().copyReplicateData(parallelData.getData(1));
@@ -72,7 +73,7 @@ extends DirichletMultinomialCompoundError<T> {
 			adjustedParallelPileup = new ParallelData<T>(
 					parallelData.getDataGenerator(), data);
 			T[] newConditionData = parallelData.getDataGenerator().createReplicateData(adjustedParallelPileup.getData(1).length);
-			adjustedParallelPileup.setData(1, ParallelData.flat(adjustedParallelPileup.getData(1), newConditionData, variantBaseIs, commonBaseIndex));
+			adjustedParallelPileup.setData(1, ParallelData.flat(adjustedParallelPileup.getData(1), newConditionData, variantBases, commonBaseIndex));
 		}
 		// aP > 3, just use the existing parallelPileup to calculate the test-statistic
 		if (adjustedParallelPileup == null) { 

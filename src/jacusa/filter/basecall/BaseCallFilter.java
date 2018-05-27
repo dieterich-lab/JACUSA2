@@ -1,9 +1,11 @@
 package jacusa.filter.basecall;
 
 import java.util.List;
+import java.util.Set;
 
 import jacusa.filter.AbstractDataFilter;
 import jacusa.filter.FilterRatio;
+import lib.cli.options.Base;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallData;
@@ -106,9 +108,9 @@ extends AbstractDataFilter<T> {
 				parallelData.getCoordinate(),
 				parallelData.getCombinedPooledData().getReferenceBase(),
 				observed); 
-		final int[] variantBaseIndexes = ParallelData.getVariantBaseIndexs(tmpParallelData);
+		final Set<Base> variantBases = ParallelData.getVariantBaseIndexs(tmpParallelData);
 		
-		return baseCallCountFilter.filter(variantBaseIndexes, observed, filtered);
+		return baseCallCountFilter.filter(variantBases, observed, filtered);
 	}
 	
 }

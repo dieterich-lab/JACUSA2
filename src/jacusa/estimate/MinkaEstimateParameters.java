@@ -2,6 +2,7 @@ package jacusa.estimate;
 
 import jacusa.method.call.statistic.dirmult.initalpha.AbstractAlphaInit;
 import jacusa.method.call.statistic.dirmult.initalpha.MeanAlphaInit;
+import lib.cli.options.Base;
 import lib.util.Info;
 
 import org.apache.commons.math3.special.Gamma;
@@ -38,14 +39,14 @@ public abstract class MinkaEstimateParameters {
 	public abstract double maximizeLogLikelihood(
 			final String condition,
 			final double[] alphaOld, 
-			final int[] baseIndexs,
+			final Base[] bases,
 			final double[][] dataMatrix,
 			final Info resultInfo,
 			final boolean backtrack);
 
 	protected double[] backtracking(
 			final double[] alpha, 
-			final int[] baseIndexs, 
+			final Base[] bases,
 			final double[] gradient, 
 			final double b, 
 			final double[] Q) {
@@ -61,10 +62,10 @@ public abstract class MinkaEstimateParameters {
 
 			boolean admissible = true;
 			// adjust alpha with smaller newton step
-			for (int baseI : baseIndexs) {
-				alphaNew[baseI] = alpha[baseI] - lamba * (gradient[baseI] - b) / Q[baseI];
+			for (final Base base : bases) {
+				alphaNew[base.getIndex()] = alpha[base.getIndex()] - lamba * (gradient[base.getIndex()] - b) / Q[base.getIndex()];
 				// check if admissible
-				if (alphaNew[baseI] < 0.0) {
+				if (alphaNew[base.getIndex()] < 0.0) {
 					admissible = false;
 					break;
 				}
@@ -82,7 +83,7 @@ public abstract class MinkaEstimateParameters {
 	// calculate likelihood
 	protected abstract double getLogLikelihood(
 			final double[] alpha, 
-			final int[] baseIndexs, 
+			final Base[] bases, 
 			final double[][] pileupMatrix);
 
 	protected double digamma(double x) {

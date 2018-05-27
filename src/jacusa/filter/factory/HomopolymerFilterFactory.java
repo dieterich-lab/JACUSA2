@@ -4,7 +4,6 @@ import java.util.List;
 
 import jacusa.filter.HomopolymerDataFilter;
 import jacusa.filter.cache.HomopolymerFilterCache;
-import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
@@ -55,10 +54,9 @@ extends AbstractDataFilterFactory<T> {
 	@Override
 	protected RecordDataCache<T> createFilterCache(
 			AbstractConditionParameter<T> conditionParameter,
-			BaseCallConfig baseCallConfig,
 			CoordinateController coordinateController) {
 		
-		return new HomopolymerFilterCache<T>(getC(), MIN_HOMOPOLYMER_LENGTH, baseCallConfig, coordinateController);
+		return new HomopolymerFilterCache<T>(getC(), MIN_HOMOPOLYMER_LENGTH, coordinateController);
 	}
 	
 	@Override

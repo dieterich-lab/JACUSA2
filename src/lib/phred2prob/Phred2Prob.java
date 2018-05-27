@@ -2,7 +2,8 @@ package lib.phred2prob;
 
 import java.util.Arrays;
 
-import lib.cli.options.BaseCallConfig;
+import htsjdk.samtools.util.SequenceUtil;
+import lib.cli.options.Base;
 import lib.data.count.PileupCount;
 import lib.data.has.HasPileupCount;
 import lib.util.MathUtil;
@@ -15,7 +16,7 @@ public final class Phred2Prob {
 
 	// phred capped at 41
 	public static final byte MAX_Q = 41 + 1; // some machines give phred score of 60 -> Prob of error: 10^-6 ?!
-	private static Phred2Prob[] singles = new Phred2Prob[BaseCallConfig.BASES.length + 1];
+	private static Phred2Prob[] singles = new Phred2Prob[SequenceUtil.VALID_BASES_UPPER.length + 1];
 
 	private Phred2Prob(int n) {
 		// pre-calculate probabilities
@@ -41,13 +42,13 @@ public final class Phred2Prob {
 		return phred2baseP[qual];
 	}
 
-	public double[] colSumCount(final int[] baseIndexs, final HasPileupCount o) {
+	public double[] colSumCount(final Base[] bases, final HasPileupCount o) {
 		// container for accumulated probabilities 
-		final double[] c = new double[BaseCallConfig.BASES.length];
+		final double[] c = new double[SequenceUtil.VALID_BASES_UPPER.length];
 
-		for (int baseIndex : baseIndexs) {
-			final int count = o.getPileupCount().getBaseCallCount().getBaseCall(baseIndex);
-			c[baseIndex] = count;
+		for (final Base base : bases) {
+			final int count = o.getPileupCount().getBaseCallCount().getBaseCall(base);
+			c[base.getIndex()] = count;
 		}
 		return c;		
 	}
@@ -55,24 +56,24 @@ public final class Phred2Prob {
 	/**
 	 * Calculate a probability vector P for the pileup. |P| = |bases| 
 	 */
-	public double[] colSumProb(final int[] baseIs, final PileupCount pileupCount) {
+	public double[] colSumProb(final Base[] bases, final PileupCount pileupCount) {
 		// container for accumulated probabilities 
-		final double[] p = new double[BaseCallConfig.BASES.length];
+		final double[] p = new double[SequenceUtil.VALID_BASES_UPPER.length];
 		Arrays.fill(p, 0.0);
 
-		for (final int baseIndex : baseIs) {
-			for (final byte baseQual : pileupCount.getBaseCallQualityCount().getBaseCallQuality(baseIndex)) {
+		for (final Base base: bases) {
+			for (final byte baseQual : pileupCount.getBaseCallQualityCount().getBaseCallQuality(base)) {
 				// number of bases with specific quality 
-				final int count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(baseIndex, baseQual);
+				final int count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, baseQual);
 				if (count > 0) {
 					final double baseP = convert2P(baseQual);
-					p[baseIndex] += (double)count * baseP;
+					p[base.getIndex()] += (double)count * baseP;
 					
-					final double errorP = convert2errorP(baseQual) / (baseIs.length - 1);
+					final double errorP = convert2errorP(baseQual) / (bases.length - 1);
 					// distribute error probability
-					for (int baseI2 : baseIs) {
-						if (baseI2 != baseIndex) {
-							p[baseI2] += (double)count * errorP;
+					for (final Base base2 : bases) {
+						if (base2 != base) {
+							p[base.getIndex()] += (double)count * errorP;
 						}
 					}
 				}
@@ -82,22 +83,22 @@ public final class Phred2Prob {
 		return p;
 	}
 
-	public double[] colSumErrorProb(final int[] baseIs, final PileupCount pileupCount) {
+	public double[] colSumErrorProb(final Base[] bases, final PileupCount pileupCount) {
 		// container for accumulated probabilities 
-		final double[] p = new double[BaseCallConfig.BASES.length];
+		final double[] p = new double[SequenceUtil.VALID_BASES_UPPER.length];
 		Arrays.fill(p, 0.0);
 
-		for (final int baseIndex : baseIs) {
-			for (final byte baseQual : pileupCount.getBaseCallQualityCount().getBaseCallQuality(baseIndex)) {
+		for (final Base base : bases) {
+			for (final byte baseQual : pileupCount.getBaseCallQualityCount().getBaseCallQuality(base)) {
 				// number of bases with specific quality 
-				final int count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(baseIndex, baseQual);
+				final int count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, baseQual);
 
 				if (count > 0) {
-					final double errorP = convert2errorP(baseQual) / (double)(baseIs.length - 1);
+					final double errorP = convert2errorP(baseQual) / (double)(bases.length - 1);
 					// distribute error probability
-					for (int baseI2 : baseIs) {
-						if (baseI2 != baseIndex) {
-							p[baseI2] += (double)count * errorP;
+					for (final Base base2 : bases) {
+						if (base2 != base) {
+							p[base2.getIndex()] += (double)count * errorP;
 						}
 					}
 				}
@@ -106,24 +107,24 @@ public final class Phred2Prob {
 		return p;		
 	}
 
-	public double[] colMeanErrorProb(final int[] baseIndexs, final PileupCount pileupCount) {
+	public double[] colMeanErrorProb(final Base[] bases, final PileupCount pileupCount) {
 		// container for accumulated probabilities 
-		final double[] p = colSumErrorProb(baseIndexs, pileupCount);
+		final double[] p = colSumErrorProb(bases, pileupCount);
 		
-		for (int baseI : baseIndexs) {
-			p[baseI] /= (double)pileupCount.getBaseCallCount().getCoverage();
+		for (final Base base : bases) {
+			p[base.getIndex()] /= (double)pileupCount.getBaseCallCount().getCoverage();
 		}
 		
 		return p;
 	}
 
-	public double[] colMeanProb(final int[] baseIs, final PileupCount pileupCount) {
+	public double[] colMeanProb(final Base[] bases, final PileupCount pileupCount) {
 		// container for accumulated probabilities 
-		final double[] p = colSumProb(baseIs, pileupCount);
+		final double[] p = colSumProb(bases, pileupCount);
 		double sum = MathUtil.sum(p);
 
-		for(int baseI : baseIs) {
-			p[baseI] /= sum;
+		for(final Base base : bases) {
+			p[base.getIndex()] /= sum;
 		}
 		
 		return p;

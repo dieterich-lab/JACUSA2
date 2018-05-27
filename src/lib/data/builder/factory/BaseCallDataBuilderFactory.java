@@ -28,7 +28,7 @@ extends AbstractDataBuilderFactory<BaseCallData> {
 						new ArrayBaseCallRegionDataCache<BaseCallData>(
 								new DefaultBaseCallCountExtractor<BaseCallData>(),
 								conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(),
-								getParameter().getBaseConfig(), coordinateController)));
+								coordinateController)));
 		return dataCaches;
 	}
 	

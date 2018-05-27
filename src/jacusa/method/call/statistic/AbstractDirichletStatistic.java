@@ -10,6 +10,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Set;
 
+import htsjdk.samtools.util.SequenceUtil;
+import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.HasPileupCount;
@@ -53,7 +55,7 @@ extends AbstractStatisticCalculator<T> {
 
 		super(name, desc);
 		this.parameter 		= parameter;
-		final int n 		= parameter.getBaseConfig().getBases().length;
+		final int n 		= SequenceUtil.VALID_BASES_UPPER.length;
 
 		phred2Prob 			= Phred2Prob.getInstance(n);
 		onlyObservedBases 	= false;
@@ -74,30 +76,30 @@ extends AbstractStatisticCalculator<T> {
 	/**
 	 * 
 	 * @param replicateData
-	 * @param baseIndexs
+	 * @param bases
 	 * @param matrix
 	 */
 	protected void populate(
-			final int[] baseIndexs,
+			final Base[] bases,
 			final T[] replicateData, 
 			double[][] matrix) {
 		for (int i = 0; i < replicateData.length; ++i) {
 			T data = replicateData[i];
 	
-			populate(data, baseIndexs, matrix[i]);
+			populate(data, bases, matrix[i]);
 		}
 	}
 
 	/**
 	 * 
 	 * @param data
-	 * @param baseIndexs
+	 * @param bases
 	 * @param pileupErrorVector
 	 * @param dataVector
 	 */
 	protected abstract void populate(
 			final T data, 
-			final int[] baseIndexs,
+			final Base[] bases,
 			double[] dataVector);
 
 	
@@ -141,31 +143,31 @@ extends AbstractStatisticCalculator<T> {
 			double[] alpha, 
 			double[] initAlphaValues, 
 			final AbstractAlphaInit alphaInit,
-			final int[] baseIndexs,
+			final Base[] bases,
 			final T[] replicateData,
 			final boolean backtrack ) {
 		// populate pileupMatrix with values to be modeled
 		final double[][] dataMatrix  = new double[replicateData.length][alpha.length];
 
 		// populate dataMatrix with values to be modeled
-		populate(baseIndexs, replicateData, dataMatrix);
+		populate(bases, replicateData, dataMatrix);
 		// perform an initial guess of alpha
-		System.arraycopy(alphaInit.init(baseIndexs, dataMatrix), 0, initAlphaValues, 0, alpha.length);
+		System.arraycopy(alphaInit.init(bases, dataMatrix), 0, initAlphaValues, 0, alpha.length);
 
 		// store initial alpha guess
 		System.arraycopy(initAlphaValues, 0, alpha, 0, alpha.length);
 
 		// estimate alpha(s), capture and info(s), and store log-likelihood
 		// return estimateAlpha.maximizeLogLikelihood(alpha, baseIndexs, dataMatrix, condition, estimateInfo, backtrack);
-		return estimateAlpha.maximizeLogLikelihood(condition, alpha, baseIndexs, dataMatrix, estimateInfo, backtrack);
+		return estimateAlpha.maximizeLogLikelihood(condition, alpha, bases, dataMatrix, estimateInfo, backtrack);
 	}
 	
 	@Override
 	public double getStatistic(final ParallelData<T> parallelData) {
 		// base index mask; can be ACGT or only observed bases in parallelPileup
-		final int baseIndexs[] = getBaseIndex(parallelData);
+		final Base bases[] = getBase(parallelData);
 		// number of globally considered bases, normally 4 : ACGT
-		int baseN = parameter.getBaseConfig().getBases().length;
+		int baseN = SequenceUtil.VALID_BASES_UPPER.length;
 
 		// flag to indicated numerical stability of parameter estimation
 		numericallyStable = true;
@@ -184,7 +186,7 @@ extends AbstractStatisticCalculator<T> {
 		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
 			logLikelihood[conditionIndex] = estimate(Integer.toString(conditionIndex + 1),  
 					alpha[conditionIndex], initAlpha[conditionIndex], estimateAlpha.getAlphaInit(), 
-					baseIndexs, parallelData.getData(conditionIndex), false);
+					bases, parallelData.getData(conditionIndex), false);
 			iterations[conditionIndex] = estimateAlpha.getIterations();
 			isReset |= estimateAlpha.isReset();
 		}
@@ -192,19 +194,19 @@ extends AbstractStatisticCalculator<T> {
 		int pooledIndex = conditions;
 		logLikelihood[pooledIndex] = estimate("P", 
 				alpha[pooledIndex], initAlpha[pooledIndex], estimateAlpha.getAlphaInit(), 
-				baseIndexs, parallelData.getCombinedData(), false);
+				bases, parallelData.getCombinedData(), false);
 		iterations[pooledIndex] = estimateAlpha.getIterations();
 		isReset |= estimateAlpha.isReset();
 
 		if (isReset) {
 			for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
 				logLikelihood[conditionIndex] = estimate(Integer.toString(conditionIndex + 1), 
-						alpha[conditionIndex], initAlpha[conditionIndex], fallbackAlphaInit, baseIndexs, parallelData.getData(conditionIndex), true);
+						alpha[conditionIndex], initAlpha[conditionIndex], fallbackAlphaInit, bases, parallelData.getData(conditionIndex), true);
 				iterations[conditionIndex] = estimateAlpha.getIterations();
 			}
 			
 			logLikelihood[pooledIndex] = estimate("P", 
-					alpha[pooledIndex], initAlpha[pooledIndex], fallbackAlphaInit, baseIndexs, parallelData.getCombinedData(), true);
+					alpha[pooledIndex], initAlpha[pooledIndex], fallbackAlphaInit, bases, parallelData.getCombinedData(), true);
 			iterations[pooledIndex] = estimateAlpha.getIterations();
 
 		}
@@ -356,19 +358,19 @@ extends AbstractStatisticCalculator<T> {
 	 * @param parallelData
 	 * @return
 	 */
-	protected int[] getBaseIndex(final ParallelData<T> parallelData) {
+	protected Base[] getBase(final ParallelData<T> parallelData) {
 		if (onlyObservedBases) {
-			final Set<Integer> tmp = parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount().getAlleles();
-			final int[] alleles = new int[tmp.size()];
+			final Set<Base> tmp = parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount().getAlleles();
+			final Base[] alleles = new Base[tmp.size()];
 			int i = 0;
-			for (final int baseIndex : tmp) {
-				alleles[i] = baseIndex;
+			for (final Base base : tmp) {
+				alleles[i] = base;
 				++i;
 			}
 			return alleles;
 		}
 
-		return parameter.getBaseConfig().getBaseIndex();
+		return Base.validValues();
 	}
 	
 	public MinkaEstimateParameters getEstimateAlpha() {

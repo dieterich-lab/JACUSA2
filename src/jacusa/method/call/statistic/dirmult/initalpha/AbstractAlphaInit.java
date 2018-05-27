@@ -1,5 +1,7 @@
 package jacusa.method.call.statistic.dirmult.initalpha;
 
+import lib.cli.options.Base;
+
 /**
  * 
  * @author Michael Piechotta
@@ -43,7 +45,7 @@ public abstract class AbstractAlphaInit {
 	 * @return
 	 */
 	public abstract double[] init(
-			final int[] baseIndexs,
+			final Base[] bases,
 			final double[][] dataMatrix);
 
 	/**
@@ -62,14 +64,14 @@ public abstract class AbstractAlphaInit {
 	 * @param dataMatrix
 	 * @return
 	 */
-	protected double[] getCoverages(final int[] baseIndexs, final double[][] dataMatrix) {
+	protected double[] getCoverages(final Base[] bases, final double[][] dataMatrix) {
 		int replicates = dataMatrix.length;
 		double[] coverages = new double[replicates];
 
 		for (int replicateIndex = 0; replicateIndex < replicates; ++replicateIndex) {
 			double rowSum = 0.0;
-			for (int baseIndex : baseIndexs) {
-				rowSum += dataMatrix[replicateIndex][baseIndex];
+			for (final Base base : bases) {
+				rowSum += dataMatrix[replicateIndex][base.getIndex()];
 			}
 			coverages[replicateIndex] = rowSum;
 		}

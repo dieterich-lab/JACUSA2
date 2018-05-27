@@ -1,6 +1,7 @@
 package lib.data.cache.region;
 
 import htsjdk.samtools.SAMRecord;
+import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.util.coordinate.Coordinate;
@@ -21,10 +22,10 @@ implements RestrictedRegionDataCache<T> {
 	
 	@Override
 	public void increment(final int windowPosition, final int readPosition, 
-			final int baseIndex, final byte baseQuality) {
+			final Base base, final byte baseQuality) {
 
 		if (! visited[readPosition]) {
-			dataCache.increment(windowPosition, readPosition, baseIndex, baseQuality);
+			dataCache.increment(windowPosition, readPosition, base, baseQuality);
 			visited[readPosition] = true;
 		}
 	}
@@ -57,8 +58,8 @@ implements RestrictedRegionDataCache<T> {
 	}
 
 	@Override
-	public boolean isValid(int windowPosition, int readPosition, int baseIndex, byte baseQuality) {
-		return dataCache.isValid(windowPosition, readPosition, baseIndex, baseQuality);
+	public boolean isValid(int windowPosition, int readPosition, Base base, byte baseQuality) {
+		return dataCache.isValid(windowPosition, readPosition, base, baseQuality);
 	}
 	
 }

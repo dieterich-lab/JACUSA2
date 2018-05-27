@@ -6,8 +6,7 @@ import java.util.Set;
 
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
-
-import lib.cli.options.BaseCallConfig;
+import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.basecall.map.MapBaseCallQualitityCount;
 import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
@@ -22,10 +21,9 @@ extends ArrayBaseCallRegionDataCache<T> {
 	
 	public PileupDataCache(final BaseCallCountExtractor<T> baseCallCountExtractor, 
 			final int maxDepth, final byte minBASQ, 
-			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
 
-		super(baseCallCountExtractor, maxDepth, minBASQ, baseCallConfig, coordinateController);
+		super(baseCallCountExtractor, maxDepth, minBASQ, coordinateController);
 
 		final int n  = coordinateController.getActiveWindowSize();
 		baseCallQualities = new HashMap<Integer, BaseCallQualityCount>(n / 2);
@@ -38,7 +36,7 @@ extends ArrayBaseCallRegionDataCache<T> {
 			return;
 		}
 
-		final Set<Integer> alleles = baseCallQualities.get(windowPosition).getAlleles();
+		final Set<Base> alleles = baseCallQualities.get(windowPosition).getAlleles();
 		data.getPileupCount().getBaseCallQualityCount().add(alleles, baseCallQualities.get(windowPosition));
 		
 		super.addData(data, coordinate);
@@ -46,14 +44,14 @@ extends ArrayBaseCallRegionDataCache<T> {
 	
 	@Override
 	public void increment(final int windowPosition, final int readPosition,
-			final int baseIndex, final byte baseQual) {
+			final Base base, final byte baseQual) {
 
-		super.increment(windowPosition, readPosition, baseIndex, baseQual);
+		super.increment(windowPosition, readPosition, base, baseQual);
 		if (! baseCallQualities.containsKey(windowPosition)) {
 			baseCallQualities.put(windowPosition, new MapBaseCallQualitityCount());
 		}
 		final BaseCallQualityCount base2qual2count = baseCallQualities.get(windowPosition);
-		base2qual2count.increment(baseIndex, baseQual);
+		base2qual2count.increment(base, baseQual);
 	}
 	
 	@Override

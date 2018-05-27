@@ -2,6 +2,7 @@ package lib.data.count;
 
 import java.util.Set;
 
+import lib.cli.options.Base;
 import lib.data.basecall.array.ArrayBaseCallCount;
 import lib.data.has.HasCoverage;
 
@@ -9,20 +10,20 @@ public interface BaseCallCount extends HasCoverage {
 
 	BaseCallCount copy();
 	
-	int getBaseCall(int baseIndex);
-	Set<Integer> getAlleles();
+	int getBaseCall(Base base);
+	Set<Base> getAlleles();
 	
-	void increment(int baseIndex);
+	void increment(Base base);
 
 	void clear();
 
-	void set(int baseIndex, int count);
-	void add(int baseIndex, BaseCallCount baseQualCount);
+	void set(Base base, int count);
+	void add(Base base, BaseCallCount baseQualCount);
 	void add(BaseCallCount baseCallCount);
-	void add(int baseIndexDest, int baseIndexSrc, BaseCallCount baseCallCount);
+	void add(Base dest, Base src, BaseCallCount baseCallCount);
 	
-	void substract(int baseIndex, BaseCallCount baseCallCount);
-	void substract(int baseIndexDest, int baseIndexSrc, BaseCallCount baseCallCount);
+	void substract(Base base, BaseCallCount baseCallCount);
+	void substract(Base dest, Base src, BaseCallCount baseCallCount);
 	void substract(BaseCallCount baseCallCount);
 
 	void invert();

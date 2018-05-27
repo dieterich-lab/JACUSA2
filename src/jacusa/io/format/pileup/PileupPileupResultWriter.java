@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import lib.cli.options.BaseCallConfig;
+import lib.cli.options.Base;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
@@ -32,15 +32,11 @@ extends AbstractResultFileWriter<T, R> {
 	// separate within columns by
 	public static final char SEP2 	= ',';
 
-	private final BaseCallConfig baseConfig;
 	// indicates if the reference base should be added as a column 
 	private final boolean showReferenceBase;
 
-	public PileupPileupResultWriter(final String filename, 
-			final BaseCallConfig baseConfig, final boolean showReferenceBase) {
-
+	public PileupPileupResultWriter(final String filename, final boolean showReferenceBase) {
 		super(filename);
-		this.baseConfig = baseConfig;
 		this.showReferenceBase = showReferenceBase;
 	}
 
@@ -91,23 +87,23 @@ extends AbstractResultFileWriter<T, R> {
 			sb.append(data.getPileupCount().getCoverage());
 			sb.append(SEP);
 			
-			final Set<Integer> alleles = data.getPileupCount().getBaseCallCount().getAlleles();
+			final Set<Base> alleles = data.getPileupCount().getBaseCallCount().getAlleles();
 			// print bases
-			for (final int baseIndex : alleles) {
-				final int count = data.getPileupCount().getBaseCallCount().getBaseCall(baseIndex);
+			for (final Base base : alleles) {
+				final int count = data.getPileupCount().getBaseCallCount().getBaseCall(base);
 				// repeat count times
 				for (int i = 0; i < count; ++i) {
-					sb.append(baseConfig.getBases()[baseIndex]);
+					sb.append(base.getC());
 				}
 			}
 
 			sb.append(SEP);
 
 			// print quals
-			for (final int baseIndex : alleles) {
-				final Set<Byte> baseQuals = new TreeSet<Byte>(data.getPileupCount().getBaseCallQualityCount().getBaseCallQuality(baseIndex));
+			for (final Base base : alleles) {
+				final Set<Byte> baseQuals = new TreeSet<Byte>(data.getPileupCount().getBaseCallQualityCount().getBaseCallQuality(base));
 				for (final byte baseQual : baseQuals) {
-					final int count = data.getPileupCount().getBaseCallQualityCount().getBaseCallQuality(baseIndex, baseQual);
+					final int count = data.getPileupCount().getBaseCallQualityCount().getBaseCallQuality(base, baseQual);
 					// repeat count times
 					for (int j = 0; j < count; ++j) {
 						sb.append(SAMUtils.phredToFastq(baseQual));

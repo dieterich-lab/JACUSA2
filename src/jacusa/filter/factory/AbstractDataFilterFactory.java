@@ -3,7 +3,6 @@ package jacusa.filter.factory;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.cli.options.BaseCallConfig;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
@@ -31,7 +30,6 @@ extends AbstractFilterFactory<T> {
 	 * @return
 	 */
 	protected abstract RecordDataCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
-			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController);
 	
 	/**
@@ -61,7 +59,6 @@ extends AbstractFilterFactory<T> {
 				// create filterCache 
 				final RecordDataCache<T> filterCache = createFilterCache(
 						parameter.getConditionParameter(conditionIndex),
-						parameter.getBaseConfig(),
 						coordinateContainer);
 				// add to list of replicates
 				list.add(filterCache);

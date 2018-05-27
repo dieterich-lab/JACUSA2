@@ -1,6 +1,5 @@
 package lib.data.cache.lrtarrest;
 
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +11,8 @@ import lib.util.coordinate.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
-
-import lib.cli.options.BaseCallConfig;
+import htsjdk.samtools.util.SequenceUtil;
+import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.basecall.array.ArrayBaseCallCount;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
@@ -52,7 +51,6 @@ implements RegionDataCache<T>, RecordDataCache<T> {
 			final RefPos2BaseCallCountExtractor<T> refPos2BaseCallCountExtractor,
 			final LRTarrestCountExtractor<T> lrtArrestCountExtractor,
 			final LIBRARY_TYPE libraryType, final int maxDepth, final byte minBASQ,
-			final BaseCallConfig baseCallConfig,
 			final CoordinateController coordinateController) {
 		
 		super(coordinateController);
@@ -73,7 +71,7 @@ implements RegionDataCache<T>, RecordDataCache<T> {
 		baseCallRegionDataCache = new ArrayBaseCallRegionDataCache<T>(
 				baseCallCountExtractor, 
 				maxDepth, minBASQ, 
-				baseCallConfig, coordinateController);
+				coordinateController);
 	}
 
 	@Override
@@ -119,10 +117,10 @@ implements RegionDataCache<T>, RecordDataCache<T> {
 
 			// check baseCall is not "N"
 			final byte bc = record.getReadBases()[tmpReadPosition];
-			final int baseIndex = baseCallRegionDataCache.getBaseCallConfig().getBaseIndex(bc);
-			if (baseIndex < 0) {
+			if (SequenceUtil.isValidBase(bc)) {
 				continue;
 			}
+			final Base base = Base.valueOf(bc);
 
 			if (tmpWindowPosition >= 0) {
 				// ignore base quality here 
@@ -136,14 +134,14 @@ implements RegionDataCache<T>, RecordDataCache<T> {
 			}
 			
 			// count base call
-			baseCallRegionDataCache.increment(tmpWindowPosition, tmpReadPosition, baseIndex, baseQuality);
+			baseCallRegionDataCache.increment(tmpWindowPosition, tmpReadPosition, base, baseQuality);
 			
-			add(alignmentStartWindowPosition, refPosBC, tmpReadPosition, baseIndex, recordWrapper, start);
-			add(alignmentEndWindowPosition, refPosBC, tmpReadPosition, baseIndex, recordWrapper, end);
+			add(alignmentStartWindowPosition, refPosBC, tmpReadPosition, base, recordWrapper, start);
+			add(alignmentEndWindowPosition, refPosBC, tmpReadPosition, base, recordWrapper, end);
 		}
 	}
 	
-	private void add(final int winArrestPos, final int refPosBC, final int readPosition, final int baseIndex, 
+	private void add(final int winArrestPos, final int refPosBC, final int readPosition, final Base base, 
 			final SAMRecordWrapper recordWrapper, ArrestPos2RefPos2BaseCallCount dest) {
 
 		if (winArrestPos < 0) {
@@ -156,7 +154,7 @@ implements RegionDataCache<T>, RecordDataCache<T> {
 			ref2base.put(refPosBC, refBase);
 		}
 	
-		dest.addBaseCall(winArrestPos, refPosBC, baseIndex);
+		dest.addBaseCall(winArrestPos, refPosBC, base);
 	}
 
 	@Override
@@ -246,7 +244,7 @@ implements RegionDataCache<T>, RecordDataCache<T> {
 
 			final BaseCallCount baseCallCount = new ArrayBaseCallCount();
 			baseCallCount.add(src.getRef2bc(winArrestPos).getBaseCallCount(refPos));
-			baseCallCount.set(BaseCallConfig.getInstance().getBaseIndex(refBase), 0);
+			baseCallCount.set(Base.valueOf(refBase), 0); // FIXME really set to zero???
 			if (invert) {
 				baseCallCount.invert();
 			}

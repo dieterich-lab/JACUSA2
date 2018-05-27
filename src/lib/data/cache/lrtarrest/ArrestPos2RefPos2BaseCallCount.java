@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import lib.cli.options.Base;
+
 public class ArrestPos2RefPos2BaseCallCount {
 
 	private final int n;
@@ -26,13 +28,13 @@ public class ArrestPos2RefPos2BaseCallCount {
 		arrest2count[winArrestPos]++;
 	}
 
-	public void addBaseCall(final int winArrestPos, final int refBCPos, final int baseIndex) {
+	public void addBaseCall(final int winArrestPos, final int refBCPos, final Base base) {
 		if (! arrest2ref2bc.containsKey(winArrestPos)) {
 			arrest2ref2bc.put(winArrestPos, new RefPos2BaseCallCount());
 		}
 
 		final RefPos2BaseCallCount tmp = arrest2ref2bc.get(winArrestPos);
-		tmp.addBaseCall(refBCPos, baseIndex);
+		tmp.addBaseCall(refBCPos, base);
 	}
 
 	public Set<Integer> getArrest() {

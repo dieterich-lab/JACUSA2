@@ -2,7 +2,7 @@ package lib.io;
 
 import jacusa.io.format.BEDlikeResultWriter;
 import jacusa.io.format.BEDlikeWriter;
-import lib.cli.options.BaseCallConfig;
+import lib.cli.options.Base;
 import lib.data.cache.lrtarrest.RefPos2BaseCallCount;
 import lib.data.count.BaseCallCount;
 
@@ -18,23 +18,11 @@ public abstract class ResultWriterUtils {
 		sb.append(BEDlikeResultWriter.SEP);
 		
 		int i = 0;
-		byte baseByte = (byte)BaseCallConfig.BASES[i];
-		int baseIndex = BaseCallConfig.getInstance().getBaseIndex(baseByte);
-		int count = 0;
-		if (baseIndex >= 0) {
-			count = baseCallCount.getBaseCall(baseIndex);
-		}
-		sb.append(count);
-		++i;
-		for (; i < BaseCallConfig.BASES.length; ++i) {
-			baseByte = (byte)BaseCallConfig.BASES[i];
-			baseIndex = BaseCallConfig.getInstance().getBaseIndex(baseByte);
-			count = 0;
-			if (baseIndex >= 0) {
-				count = baseCallCount.getBaseCall(baseIndex);
-			}
+		for (final Base base : Base.validValues()) {
+			sb.append(baseCallCount.getBaseCall(base));
+			if (i < Base.validValues().length - 1)
 			sb.append(BEDlikeResultWriter.SEP2);
-			sb.append(count);
+			++i;
 		}
 	}
 
@@ -52,20 +40,12 @@ public abstract class ResultWriterUtils {
 			sb.append(refPos);
 			sb.append(BEDlikeResultWriter.SEP3);
 
-			int baseIndex = 0;
-			int count = 0;
-			if (baseIndex >= 0) {
-				count = baseCallCount.getBaseCall(baseIndex);
-			}
-			sb.append(count);
-			++baseIndex;
-			for (; baseIndex < BaseCallConfig.BASES.length; ++baseIndex) {
-				count = 0;
-				if (baseIndex >= 0) {
-					count = baseCallCount.getBaseCall(baseIndex);
-				}
+			int k = 0;
+			for (final Base base : Base.validValues()) {
+				sb.append(baseCallCount.getBaseCall(base));
+				if (k < Base.validValues().length - 1)
 				sb.append(BEDlikeResultWriter.SEP2);
-				sb.append(count);
+				++k;
 			}
 
 			++j;

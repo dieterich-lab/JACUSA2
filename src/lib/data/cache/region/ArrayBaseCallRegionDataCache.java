@@ -2,11 +2,11 @@ package lib.data.cache.region;
 
 import java.util.Arrays;
 
+import htsjdk.samtools.util.SequenceUtil;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateUtil.STRAND;
-
-import lib.cli.options.BaseCallConfig;
+import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
 import lib.data.count.BaseCallCount;
@@ -24,18 +24,16 @@ extends AbstractRestrictedRegionDataCache<T> {
 
 	public ArrayBaseCallRegionDataCache(
 			final int maxDepth, final byte minBASQ, 
-			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
-		this(null, maxDepth, minBASQ, baseCallConfig, coordinateController);
+		this(null, maxDepth, minBASQ, coordinateController);
 	}
 	
 	public ArrayBaseCallRegionDataCache(
 			final BaseCallCountExtractor<T> baseCallCountExtractor,
 			final int maxDepth, final byte minBASQ, 
-			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
 
-		super(baseCallConfig, coordinateController);
+		super(coordinateController);
 
 		this.baseCallCountExtractor = baseCallCountExtractor;
 		
@@ -43,7 +41,7 @@ extends AbstractRestrictedRegionDataCache<T> {
 		this.minBASQ 	= minBASQ;
 
 		coverage = new int[coordinateController.getActiveWindowSize()];
-		baseCall = new int[coordinateController.getActiveWindowSize()][baseCallConfig.getBases().length];
+		baseCall = new int[coordinateController.getActiveWindowSize()][SequenceUtil.VALID_BASES_UPPER.length];
 	}
 	
 	@Override
@@ -57,9 +55,9 @@ extends AbstractRestrictedRegionDataCache<T> {
 	}
 	
 	public void add(final int windowPosition, final STRAND strand, final BaseCallCount dest) {
-		for (int baseIndex = 0; baseIndex < getBaseCallConfig().getBases().length; baseIndex++) {
-			if (baseCall[windowPosition][baseIndex] > 0) {
-				dest.set(baseIndex, baseCall[windowPosition][baseIndex]);
+		for (Base base : Base.validValues()) {
+			if (baseCall[windowPosition][base.getIndex()] > 0) {
+				dest.set(base, baseCall[windowPosition][base.getIndex()]);
 			}
 		}
 		
@@ -70,16 +68,18 @@ extends AbstractRestrictedRegionDataCache<T> {
 
 	@Override
 	public boolean isValid(final int windowPosition, final int readPosition, 
-			final int baseIndex, final byte baseQuality) {
+			final Base base, final byte baseQuality) {
 
+		// ignore 'N' base calls
+		if (SequenceUtil.isValidBase(base.getC())) {
+			return false;
+		}
+		
 		// ensure max depth
 		if (maxDepth > 0 && coverage[windowPosition] > maxDepth) {
 			return false;
 		}
-		// ignore 'N' base calls
-		if (baseIndex < 0) {
-			return false;
-		}
+		
 		// ensure base quality
 		if (baseQuality < minBASQ) {
 			return false;
@@ -90,10 +90,10 @@ extends AbstractRestrictedRegionDataCache<T> {
 
 	@Override
 	public void increment(final int windowPosition, final int readPosition, 
-			final int baseIndex, final byte baseQuality) {
+			final Base base, final byte baseQuality) {
 
-		coverage[windowPosition] 				+= 1;
-		baseCall[windowPosition][baseIndex] 	+= 1;
+		coverage[windowPosition] 					+= 1;
+		baseCall[windowPosition][base.getIndex()] 	+= 1;
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import java.util.TreeSet;
 
 import jacusa.filter.AbstractDataFilter;
 import jacusa.filter.FilterRatio;
+import lib.cli.options.Base;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallData;
@@ -84,9 +85,9 @@ extends AbstractDataFilter<T> {
 			coordinate.setPosition(refPos);;
 			ParallelData<BaseCallData> tmpParallelData = BaseCallFilter.createBaseCallData(
 					parallelData.getLibraryType(), coordinate, refBase, observedBaseCallCount);
-			final int[] variantBaseIndex = ParallelData.getVariantBaseIndexs(tmpParallelData);
+			final Set<Base> variantBases = ParallelData.getVariantBaseIndexs(tmpParallelData);
 			
-			if (baseCallCountFilter.filter(variantBaseIndex, observedBaseCallCount, filteredBaseCallCount)) {
+			if (baseCallCountFilter.filter(variantBases, observedBaseCallCount, filteredBaseCallCount)) {
 				artefact[refPositionIndex] = true;
 				// add to buffer
 				filteredRefPositions.add(refPos);

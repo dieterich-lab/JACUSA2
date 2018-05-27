@@ -2,6 +2,8 @@ package jacusa.method.call.statistic.dirmult.initalpha;
 
 import java.util.Arrays;
 
+import lib.cli.options.Base;
+
 public class MinAlphaInit extends AbstractAlphaInit {
 
 	public MinAlphaInit() {
@@ -15,19 +17,19 @@ public class MinAlphaInit extends AbstractAlphaInit {
 
 	@Override
 	public double[] init(
-			final int[] baseIndexs,
+			final Base[] bases,
 			final double[][] dataMatrix) {
 		final double[] alpha = new double[dataMatrix[0].length];
 		Arrays.fill(alpha, Double.MAX_VALUE);
 
-		double[] dataCoverages = getCoverages(baseIndexs, dataMatrix);
+		double[] dataCoverages = getCoverages(bases, dataMatrix);
 
 		double[][] dataProportionMatrix = new double[dataMatrix.length][alpha.length];
 		for (int replicateIndex = 0; replicateIndex < dataMatrix.length; ++replicateIndex) {
-			for (int baseIndex : baseIndexs) {
-				dataProportionMatrix[replicateIndex][baseIndex] = 
-						dataMatrix[replicateIndex][baseIndex] / dataCoverages[replicateIndex];
-				alpha[baseIndex] = Math.min(alpha[baseIndex], dataProportionMatrix[replicateIndex][baseIndex]);
+			for (final Base base: bases) {
+				dataProportionMatrix[replicateIndex][base.getIndex()] = 
+						dataMatrix[replicateIndex][base.getIndex()] / dataCoverages[replicateIndex];
+				alpha[base.getIndex()] = Math.min(alpha[base.getIndex()], dataProportionMatrix[replicateIndex][base.getIndex()]);
 			}
 		}
 

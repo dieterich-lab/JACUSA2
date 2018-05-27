@@ -34,7 +34,7 @@ extends AbstractDataBuilderFactory<RTarrestData> {
 						new ThroughBaseCallCountExtractor<RTarrestData>(),
 						conditionParameter.getLibraryType(), 
 						conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), 
-						getParameter().getBaseConfig(), coordinateController));
+						coordinateController));
 		return dataCaches;
 	}
 

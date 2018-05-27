@@ -4,7 +4,8 @@ import java.util.Arrays;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
-import lib.cli.options.BaseCallConfig;
+import htsjdk.samtools.util.SequenceUtil;
+import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.AbstractDataCache;
@@ -29,21 +30,18 @@ implements RecordDataCache<T> {
 	// min length of identical base call to define homopolymer
 	private final int minLength;
 
-	private final BaseCallConfig baseCallConfig;
-
 	// indices of position in window is a homopolymer
 	private final boolean[] isHomopolymer;
 	
 	public HomopolymerFilterCache(final char c,
 			final int minLength, 
-			final BaseCallConfig baseCallConfig, 
+
 			final CoordinateController coordinateController) {
 
 		super(coordinateController);
 		
 		this.c				= c;
 		this.minLength 		= minLength;
-		this.baseCallConfig = baseCallConfig;
 		isHomopolymer 		= new boolean[coordinateController.getActiveWindowSize()];
 	}
 
@@ -100,9 +98,8 @@ implements RecordDataCache<T> {
 		for (int j = 0; j < windowPositionGuard.getLength(); ++j) {
 			final int currentReadPosition = windowPositionGuard.getReadPosition() + j;
 			
-			final int baseIndex = baseCallConfig.getBaseIndex(record.getReadBases()[currentReadPosition]);
-
-			if (baseIndex < 0) { // base call = "N"
+			final Base base = Base.valueOf(record.getReadBases()[currentReadPosition]);
+			if (SequenceUtil.isValidBase(base.getC())) { // base call = "N"
 				// mark region if current PHR is long enough 
 				if (polymerLength >= minLength) {
 					markRegion(firstReferencePosition, polymerLength);
@@ -111,7 +108,7 @@ implements RecordDataCache<T> {
 				polymerLength = 0;
 				firstReferencePosition = -1;
 				lastBaseIndex = -1;
-			} else if (baseIndex == lastBaseIndex) { // base call match - enlarge current PHR
+			} else if (base.getIndex() == lastBaseIndex) { // base call match - enlarge current PHR
 				polymerLength++;
 			} else { // base call mismatch - end current PHR
 				// mark region if current PHR is long enough
@@ -121,7 +118,7 @@ implements RecordDataCache<T> {
 				// start new pHR
 				polymerLength = 1;
 				firstReferencePosition = windowPositionGuard.getReferencePosition() + j;
-				lastBaseIndex = baseIndex;
+				lastBaseIndex = base.getIndex();
 			}
 		}
 	}

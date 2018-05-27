@@ -1,6 +1,7 @@
 package jacusa.method.call.statistic.dirmult.initalpha;
 
-import lib.cli.options.BaseCallConfig;
+import htsjdk.samtools.util.SequenceUtil;
+import lib.cli.options.Base;
 
 public class MeanAlphaInit extends AbstractAlphaInit {
 
@@ -15,22 +16,23 @@ public class MeanAlphaInit extends AbstractAlphaInit {
 	
 	@Override
 	public double[] init(
-			final int[] baseIndexs,
+			final Base[] bases,
 			final double[][] dataMatrix) {
-		final double[] alpha = new double[BaseCallConfig.BASES.length];
-		final double[] mean = new double[BaseCallConfig.BASES.length];
+		final int n = SequenceUtil.VALID_BASES_UPPER.length;
+		final double[] alpha = new double[n];
+		final double[] mean = new double[n];
 
 		double total = 0.0;
 		for (int pileupI = 0; pileupI < dataMatrix.length; ++pileupI) {
-			for (int baseI : baseIndexs) {
-				mean[baseI] += dataMatrix[pileupI][baseI];
-				total += dataMatrix[pileupI][baseI];
+			for (final Base base : bases) {
+				mean[base.getIndex()] += dataMatrix[pileupI][base.getIndex()];
+				total += dataMatrix[pileupI][base.getIndex()];
 			}
 		}
 
-		for (int baseI : baseIndexs) {
-			mean[baseI] /= total;
-			alpha[baseI] = mean[baseI];
+		for (final Base base : bases) {
+			mean[base.getIndex()] /= total;
+			alpha[base.getIndex()] = mean[base.getIndex()];
 		}
 
 		return alpha;

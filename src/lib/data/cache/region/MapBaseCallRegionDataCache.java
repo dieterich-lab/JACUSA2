@@ -3,11 +3,11 @@ package lib.data.cache.region;
 import java.util.HashMap;
 import java.util.Map;
 
+import htsjdk.samtools.util.SequenceUtil;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateUtil.STRAND;
-
-import lib.cli.options.BaseCallConfig;
+import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.basecall.map.MapBaseCallCount;
 import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
@@ -26,18 +26,16 @@ extends AbstractRestrictedRegionDataCache<X> {
 
 	public MapBaseCallRegionDataCache(
 			final int maxDepth, final byte minBASQ, 
-			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
-		this(null, maxDepth, minBASQ, baseCallConfig, coordinateController);
+		this(null, maxDepth, minBASQ, coordinateController);
 	}
 	
 	public MapBaseCallRegionDataCache(
 			final BaseCallCountExtractor<X> baseCallCountExtractor,
 			final int maxDepth, final byte minBASQ, 
-			final BaseCallConfig baseCallConfig, 
 			final CoordinateController coordinateController) {
 
-		super(baseCallConfig, coordinateController);
+		super(coordinateController);
 
 		this.baseCallCountExtractor = baseCallCountExtractor;
 		
@@ -68,14 +66,14 @@ extends AbstractRestrictedRegionDataCache<X> {
 
 	@Override
 	public boolean isValid(final int windowPosition, final int readPosition, 
-			final int baseIndex, final byte baseQuality) {
+			final Base base, final byte baseQuality) {
 
 		// ensure max depty
 		if (maxDepth > 0 && winPos2coverage.get(windowPosition) > maxDepth) {
 			return false;
 		}
 		// ignore 'N' base calls
-		if (baseIndex < 0) {
+		if (SequenceUtil.isValidBase(base.getC())) {
 			return false;
 		}
 		// ensure base quality
@@ -88,7 +86,7 @@ extends AbstractRestrictedRegionDataCache<X> {
 
 	@Override
 	public void increment(final int windowPosition, final int readPosition, 
-			final int baseIndex, final byte baseQuality) {
+			final Base base, final byte baseQuality) {
 
 		int count = 0;
 		if (winPos2coverage.containsKey(windowPosition)) {
@@ -96,7 +94,7 @@ extends AbstractRestrictedRegionDataCache<X> {
 			winPos2baseCallCount.put(windowPosition, new MapBaseCallCount());
 		}
 		winPos2coverage.put(windowPosition, count + 1);
-		winPos2baseCallCount.get(windowPosition).increment(baseIndex);
+		winPos2baseCallCount.get(windowPosition).increment(base);
 	}
 
 	@Override
