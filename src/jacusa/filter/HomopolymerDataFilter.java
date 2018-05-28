@@ -1,9 +1,7 @@
 package jacusa.filter;
 
 import java.util.List;
-import java.util.Set;
 
-import lib.cli.options.Base;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
@@ -31,16 +29,10 @@ extends AbstractDataFilter<T> {
 
 	@Override
 	protected boolean filter(final ParallelData<T> parallelData) {
-		// get variants bases
-		final Set<Base> variantBases = ParallelData.getVariantBaseIndexs(parallelData);
-
-		// try to identify variants base calls within homopolymers
-		for (final Base variantBase : variantBases) {
-			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
-				for (int replicateIndex = 0; replicateIndex < parallelData.getReplicates(conditionIndex); replicateIndex++) {
-					if (parallelData.getData(conditionIndex, replicateIndex).getBooleanFilterData().get(getC())) {
-						return true;
-					}
+		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
+			for (int replicateIndex = 0; replicateIndex < parallelData.getReplicates(conditionIndex); replicateIndex++) {
+				if (parallelData.getData(conditionIndex, replicateIndex).getBooleanFilterData().get(getC())) {
+					return true;
 				}
 			}
 		}
