@@ -71,7 +71,7 @@ extends AbstractRestrictedRegionDataCache<T> {
 			final Base base, final byte baseQuality) {
 
 		// ignore 'N' base calls
-		if (SequenceUtil.isValidBase(base.getC())) {
+		if (! SequenceUtil.isValidBase(base.getC())) {
 			return false;
 		}
 		

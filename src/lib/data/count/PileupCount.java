@@ -67,8 +67,8 @@ implements HasBaseCallCount, HasBaseCallQualityCount, HasReferenceBase, HasCover
 	}
 
 	public void substract(final Base dest, final Base src, final PileupCount pileupCount) {
-		baseCallCount.add(dest, src, pileupCount.getBaseCallCount());
-		baseQualCount.add(dest, src, pileupCount.getBaseCallQualityCount());
+		baseCallCount.substract(dest, src, pileupCount.getBaseCallCount());
+		baseQualCount.substract(dest, src, pileupCount.getBaseCallQualityCount());
 	}
 
 	public void substract(final PileupCount pileupCount) {

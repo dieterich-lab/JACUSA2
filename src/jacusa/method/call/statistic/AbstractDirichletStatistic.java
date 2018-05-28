@@ -197,7 +197,7 @@ extends AbstractStatisticCalculator<T> {
 				bases, parallelData.getCombinedData(), false);
 		iterations[pooledIndex] = estimateAlpha.getIterations();
 		isReset |= estimateAlpha.isReset();
-
+ 	
 		if (isReset) {
 			for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
 				logLikelihood[conditionIndex] = estimate(Integer.toString(conditionIndex + 1), 
@@ -305,7 +305,6 @@ extends AbstractStatisticCalculator<T> {
 		// if log-likelihood ratio interpret threshold as lower bound 
 		return value < threshold;
 	}
-
 	
 	@Override
 	public boolean processCLI(String line) {
@@ -384,5 +383,5 @@ extends AbstractStatisticCalculator<T> {
 	public void setOnlyObservedBases(boolean onlyObservedBases) {
 		this.onlyObservedBases = onlyObservedBases;
 	}
-	
+
 }

@@ -218,7 +218,7 @@ implements HasCoordinate, HasLibraryType {
 	// this will be according to STRAND
 	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> Set<Base> getNonReferenceBases(ParallelData<S> parallelData) {
 		Base referenceBase = Base.valueOf(parallelData.getCombinedPooledData().getReferenceBase());
-		if (SequenceUtil.isValidBase(referenceBase.getC())) {
+		if (! SequenceUtil.isValidBase(referenceBase.getC())) {
 			return new HashSet<Base>(0);
 		}
 
@@ -314,21 +314,17 @@ implements HasCoordinate, HasLibraryType {
 	}
 	*/
 	
-	public static <S extends AbstractData & HasPileupCount> S[] flat(final S[] data, 
-			final S[]ret, 
+	public static <S extends AbstractData & HasPileupCount> void flat(
+			final S[] src, final S[] dest, 
 			final Set<Base> variantBases, final Base commonBase) {
-
-		for (int i = 0; i < data.length; ++i) {
-			ret[i] = data[i];
-
+		
+		for (int i = 0; i < src.length; ++i) {
 			for (final Base variantBase : variantBases) {
-				ret[i].getPileupCount().add(commonBase, variantBase, data[i].getPileupCount());
-				ret[i].getPileupCount().substract(variantBase, variantBase, data[i].getPileupCount());
+				dest[i].getPileupCount().add(commonBase, variantBase, src[i].getPileupCount());
+				dest[i].getPileupCount().substract(variantBase, src[i].getPileupCount());
 			}
 			
 		}
-
-		return ret;
 	}
 
 	public static <S extends AbstractData> Coordinate getCommonCoordinate(final S[][] data) {

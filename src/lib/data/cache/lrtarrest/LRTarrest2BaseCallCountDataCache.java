@@ -117,7 +117,7 @@ implements RegionDataCache<T>, RecordDataCache<T> {
 
 			// check baseCall is not "N"
 			final byte bc = record.getReadBases()[tmpReadPosition];
-			if (SequenceUtil.isValidBase(bc)) {
+			if (! SequenceUtil.isValidBase(bc)) {
 				continue;
 			}
 			final Base base = Base.valueOf(bc);

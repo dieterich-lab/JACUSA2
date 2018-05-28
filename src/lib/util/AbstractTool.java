@@ -2,8 +2,6 @@ package lib.util;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 import lib.cli.CLI;
@@ -120,7 +118,7 @@ public abstract class AbstractTool {
 
 	public File getFile() {
 		File f = null;
-		URI u;
+		// URI u;
 		/*
 		try {
 			u = getMainClass().getProtectionDomain().getCodeSource().getLocation().toURI();

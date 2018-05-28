@@ -7,32 +7,29 @@ import java.util.Set;
 
 public enum Base {
 	
-	A(0, (byte)'A'), 
-	C(1, (byte)'C'), 
-	G(2, (byte)'G'), 
-	T(3, (byte)'T'), 
-	N(3, (byte)'T');
+	A(0, 3, (byte)'A'), 
+	C(1, 2, (byte)'C'), 
+	G(2, 1, (byte)'G'), 
+	T(3, 0, (byte)'T'), 
+	N(4, 4, (byte)'N');
 
-	private static Base[] VALID;
-	private static Map<Byte, Base> BYTE2BASE;
-	private static Map<Base, Base> BASE2BASE;
-	private static Map<Base, Set<Base>> REF2NON_REF;
+	private static final Base[] VALID;
+	private static final Map<Byte, Base> BYTE2BASE;
+	private static final Map<Base, Set<Base>> REF2NON_REF;
+	
 	static {
 		VALID = new Base[] {A, C, G, T};
 		BYTE2BASE = new HashMap<Byte, Base>();
 		for (Base b : Base.values()) {
 			BYTE2BASE.put(b.c, b);
 		}
-		BASE2BASE = new HashMap<Base, Base>();
-		BASE2BASE.put(A, T);
-		BASE2BASE.put(C, G);
-		BASE2BASE.put(G, C);
-		BASE2BASE.put(T, A);
-		BASE2BASE.put(N, N);
-		
+
 		REF2NON_REF = new HashMap<Base, Set<Base>>(validValues().length);
 		for (final Base refBase : validValues()) {
-			final Set<Base> nonRefBases = new HashSet<Base>(BASE2BASE.keySet());
+			final Set<Base> nonRefBases = new HashSet<Base>(VALID.length);
+			for (final Base tmp : validValues()) {
+				nonRefBases.add(tmp);
+			}
 			nonRefBases.remove(refBase);
 			REF2NON_REF.put(refBase, nonRefBases);
 		}
@@ -40,12 +37,12 @@ public enum Base {
 
 	private final int index;
 	private final byte c;
-	private final Base complement;
+	private final int complementIndex;
 
-	private Base(final int index, final byte c) {
-		this.index 		= index;
-		this.c 			= c;
-		this.complement = Base.getComplement(this);
+	private Base(final int index, final int complementIndex, final byte c) {
+		this.index 				= index;
+		this.c 					= c;
+		this.complementIndex 	= complementIndex;
 	}
 	
 	public final byte getC() {
@@ -57,7 +54,7 @@ public enum Base {
 	}
 
 	public final Base getComplement() {
-		return complement;
+		return VALID[complementIndex];
 	}
 	
 	public static final Base valueOf(final byte c) {
@@ -78,10 +75,6 @@ public enum Base {
 
 	public static final Set<Base> getNonRefBases(final Base refBase) {
 		return REF2NON_REF.get(refBase);
-	}
-	
-	private static final Base getComplement(final Base base) {
-		return BASE2BASE.get(base);
 	}
 
 }

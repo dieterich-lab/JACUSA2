@@ -68,12 +68,13 @@ extends AbstractRestrictedRegionDataCache<X> {
 	public boolean isValid(final int windowPosition, final int readPosition, 
 			final Base base, final byte baseQuality) {
 
-		// ensure max depty
-		if (maxDepth > 0 && winPos2coverage.get(windowPosition) > maxDepth) {
+		
+		// ignore 'N' base calls
+		if (! SequenceUtil.isValidBase(base.getC())) {
 			return false;
 		}
-		// ignore 'N' base calls
-		if (SequenceUtil.isValidBase(base.getC())) {
+		// ensure max depty
+		if (maxDepth > 0 && winPos2coverage.get(windowPosition) > maxDepth) {
 			return false;
 		}
 		// ensure base quality

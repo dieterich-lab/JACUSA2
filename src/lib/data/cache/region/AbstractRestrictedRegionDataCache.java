@@ -31,7 +31,7 @@ implements RestrictedRegionDataCache<X> {
 
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		for (int offset = 0; offset < windowPositionGuard.getLength(); ++offset) {
-			final Base base 		= Base.valueOf(record.getReadBases()[windowPositionGuard.getReadPosition() + offset]);
+			final Base base = Base.valueOf(record.getReadBases()[windowPositionGuard.getReadPosition() + offset]);
 			final byte baseQuality 	= record.getBaseQualities()[windowPositionGuard.getReadPosition() + offset];
 			if (isValid(windowPositionGuard.getWindowPosition() + offset, windowPositionGuard.getReadPosition() + offset , 
 					base, baseQuality)) {

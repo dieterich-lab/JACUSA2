@@ -71,10 +71,8 @@ public final class Phred2Prob {
 					
 					final double errorP = convert2errorP(baseQual) / (bases.length - 1);
 					// distribute error probability
-					for (final Base base2 : bases) {
-						if (base2 != base) {
-							p[base.getIndex()] += (double)count * errorP;
-						}
+					for (final Base base2 : Base.getNonRefBases(base)) {
+						p[base2.getIndex()] += (double)count * errorP;
 					}
 				}
 			}
@@ -96,15 +94,14 @@ public final class Phred2Prob {
 				if (count > 0) {
 					final double errorP = convert2errorP(baseQual) / (double)(bases.length - 1);
 					// distribute error probability
-					for (final Base base2 : bases) {
-						if (base2 != base) {
-							p[base2.getIndex()] += (double)count * errorP;
-						}
+					for (final Base base2 : Base.getNonRefBases(base)) {
+						p[base2.getIndex()] += (double)count * errorP;
 					}
 				}
 			}
 		}
-		return p;		
+
+		return p;
 	}
 
 	public double[] colMeanErrorProb(final Base[] bases, final PileupCount pileupCount) {

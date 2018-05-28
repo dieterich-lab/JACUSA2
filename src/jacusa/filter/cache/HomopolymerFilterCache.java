@@ -99,7 +99,7 @@ implements RecordDataCache<T> {
 			final int currentReadPosition = windowPositionGuard.getReadPosition() + j;
 			
 			final Base base = Base.valueOf(record.getReadBases()[currentReadPosition]);
-			if (SequenceUtil.isValidBase(base.getC())) { // base call = "N"
+			if (! SequenceUtil.isValidBase(base.getC())) { // base call = "N"
 				// mark region if current PHR is long enough 
 				if (polymerLength >= minLength) {
 					markRegion(firstReferencePosition, polymerLength);
