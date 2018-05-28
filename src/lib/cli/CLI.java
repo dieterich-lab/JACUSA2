@@ -164,7 +164,7 @@ public class CLI {
 	 */
 	public void printUsage() {
 		final StringBuilder sb = new StringBuilder();
-
+		
 		final String jar = "JACUSA.JAR"; // FIXME get real jar name
 		
 		sb.append("usage: ");

@@ -133,6 +133,11 @@ public class JACUSA extends AbstractTool {
 		return sb.toString();
 	}
 
+	@Override
+	protected Class<?> getMainClass() {
+		return this.getClass();
+	}
+	
 	/**
 	 * Main method for JACUSA2.
 	 * 
@@ -147,5 +152,5 @@ public class JACUSA extends AbstractTool {
 			System.exit(1);
 		}
 	}
-
+	
 }

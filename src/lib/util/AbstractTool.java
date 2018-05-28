@@ -1,6 +1,9 @@
 package lib.util;
 
+import java.io.File;
 import java.io.PrintStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import lib.cli.CLI;
@@ -79,7 +82,12 @@ public abstract class AbstractTool {
 	
 	public String getCall() {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(name);
+		final File file = getFile(); 
+		if (file == null) {
+			sb.append(name);
+		} else {
+			sb.append(file.getPath());
+		}
 		sb.append(" Version: ");
 		sb.append(version);
 		for(final String arg : args) {
@@ -106,6 +114,23 @@ public abstract class AbstractTool {
 
 	public int getComparisons() {
 		return comparisons;
+	}
+
+	protected abstract Class<?> getMainClass();
+
+	public File getFile() {
+		File f = null;
+		URI u;
+		/*
+		try {
+			u = getMainClass().getProtectionDomain().getCodeSource().getLocation().toURI();
+			f = new File(u);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		 */		
+		
+		return f;
 	}
 	
 }

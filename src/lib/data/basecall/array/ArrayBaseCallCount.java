@@ -106,7 +106,6 @@ implements BaseCallCount {
 	
 	@Override
 	public void invert() {
-		// TODO make this nice 0 => A, 1 => C
 		for (final Base base : new Base[]{Base.A, Base.C}) {
 			final Base complement = base.getComplement();
 			if (baseCall[base.getIndex()] == 0 && baseCall[complement.getIndex()] == 0) {

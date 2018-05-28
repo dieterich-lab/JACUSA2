@@ -35,13 +35,15 @@ public class BaseConfigOption extends AbstractACOption {
 	@Override
 	public void process(final CommandLine line) throws IllegalArgumentException {
 		if (line.hasOption(getOpt())) {
-	    	// FIXME byte to char
 			final char[] values = line.getOptionValue(getOpt()).toCharArray();
 	    	if (values.length < 2 || values.length > SequenceUtil.VALID_BASES_LOWER.length) {
 	    		throw new IllegalArgumentException("Possible values for " + getLongOpt().toUpperCase() + ": TC, AG, ACGT, AT...");
 	    	}
-	    	// FIXME byte to char
-	    	// parameters.setBases(values);
+	    	final byte[] bases = new byte[values.length];
+	    	for (int i = 0; i < values.length; ++i) {
+	    		bases[i] = (byte)values[i];
+	    	}
+	    	parameters.setBases(bases);
 	    }
 	}
 
