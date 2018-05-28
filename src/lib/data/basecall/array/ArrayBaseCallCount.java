@@ -107,15 +107,15 @@ implements BaseCallCount {
 	@Override
 	public void invert() {
 		// TODO make this nice 0 => A, 1 => C
-		for (final int baseIndex : new int[]{0, 1}) {
-			final int complementaryBaseIndex = baseCall.length - baseIndex - 1;
-			if (baseCall[baseIndex] == 0 && baseCall[complementaryBaseIndex] == 0) {
+		for (final Base base : new Base[]{Base.A, Base.C}) {
+			final Base complement = base.getComplement();
+			if (baseCall[base.getIndex()] == 0 && baseCall[complement.getIndex()] == 0) {
 				continue;
 			}
 
-			final int tmpCount					= baseCall[baseIndex];
-			baseCall[baseIndex] 				= baseCall[complementaryBaseIndex];
-			baseCall[complementaryBaseIndex] 	= tmpCount;
+			final int tmpCount					= baseCall[base.getIndex()];
+			baseCall[base.getIndex()] 			= baseCall[complement.getIndex()];
+			baseCall[complement.getIndex()] 	= tmpCount;
 		}
 	}
 	

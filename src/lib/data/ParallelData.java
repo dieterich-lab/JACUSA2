@@ -216,7 +216,7 @@ implements HasCoordinate, HasLibraryType {
 	}
 
 	// this will be according to STRAND
-	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> Set<Base> getNonReferenceBaseIndexs(ParallelData<S> parallelData) {
+	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> Set<Base> getNonReferenceBases(ParallelData<S> parallelData) {
 		Base referenceBase = Base.valueOf(parallelData.getCombinedPooledData().getReferenceBase());
 		if (SequenceUtil.isValidBase(referenceBase.getC())) {
 			return new HashSet<Base>(0);
@@ -234,9 +234,9 @@ implements HasCoordinate, HasLibraryType {
 		return Base.getNonRefBases(referenceBase);
 	}
 
-	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> Set<Base> getVariantBaseIndexs(ParallelData<S> parallelData) {
+	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> Set<Base> getVariantBases(ParallelData<S> parallelData) {
 		if (parallelData.getConditions() == 1) {
-			return getNonReferenceBaseIndexs(parallelData);
+			return getNonReferenceBases(parallelData);
 		}
 
 		Set<Base> alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();

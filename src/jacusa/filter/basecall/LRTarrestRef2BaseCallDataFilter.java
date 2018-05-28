@@ -85,7 +85,7 @@ extends AbstractDataFilter<T> {
 			coordinate.setPosition(refPos);;
 			ParallelData<BaseCallData> tmpParallelData = BaseCallFilter.createBaseCallData(
 					parallelData.getLibraryType(), coordinate, refBase, observedBaseCallCount);
-			final Set<Base> variantBases = ParallelData.getVariantBaseIndexs(tmpParallelData);
+			final Set<Base> variantBases = ParallelData.getVariantBases(tmpParallelData);
 			
 			if (baseCallCountFilter.filter(variantBases, observedBaseCallCount, filteredBaseCallCount)) {
 				artefact[refPositionIndex] = true;

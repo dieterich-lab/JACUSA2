@@ -93,7 +93,7 @@ implements RecordDataCache<T> {
 		int firstReferencePosition = -1;
 		// base call of PHR
 		// next base call must identical to expand PHR
-		int lastBaseIndex = -1;
+		Base lastBase = Base.N;
 
 		for (int j = 0; j < windowPositionGuard.getLength(); ++j) {
 			final int currentReadPosition = windowPositionGuard.getReadPosition() + j;
@@ -107,8 +107,8 @@ implements RecordDataCache<T> {
 				// reset
 				polymerLength = 0;
 				firstReferencePosition = -1;
-				lastBaseIndex = -1;
-			} else if (base.getIndex() == lastBaseIndex) { // base call match - enlarge current PHR
+				lastBase = Base.N;
+			} else if (base == lastBase) { // base call match - enlarge current PHR
 				polymerLength++;
 			} else { // base call mismatch - end current PHR
 				// mark region if current PHR is long enough
@@ -118,7 +118,7 @@ implements RecordDataCache<T> {
 				// start new pHR
 				polymerLength = 1;
 				firstReferencePosition = windowPositionGuard.getReferencePosition() + j;
-				lastBaseIndex = base.getIndex();
+				lastBase = base;
 			}
 		}
 	}

@@ -32,7 +32,7 @@ extends DirichletMultinomialCompoundError<T> {
 		final int aP = alleles.size();
 
 		// get bases that are different between the samples
-		final Set<Base> variantBases = ParallelData.getVariantBaseIndexs(parallelData);
+		final Set<Base> variantBases = ParallelData.getVariantBases(parallelData);
 		// if there are no variant bases than both samples are heteromorph; 
 		// use existing parallelPileup to calculate test-statistic
 		if (variantBases.size() == 0) {
@@ -40,12 +40,12 @@ extends DirichletMultinomialCompoundError<T> {
 		}
 
 		// determine common base (shared by both conditions)
-		Base commonBaseIndex = Base.N;
+		Base commonBase = Base.N;
 		for (final Base base : alleles) {
 			int count1 = parallelData.getPooledData(0).getBaseCallCount().getBaseCall(base);
 			int count2 = parallelData.getPooledData(1).getBaseCallCount().getBaseCall(base);
 			if (count1 > 0 && count2  > 0) {
-				commonBaseIndex = base;
+				commonBase = base;
 				break;
 			}
 		}
@@ -64,7 +64,7 @@ extends DirichletMultinomialCompoundError<T> {
 					parallelData.getDataGenerator(), data);
 			// and replace pileups2 with pileups1 where the variant bases have been replaced with the common base
 			T[] newConditionData = parallelData.getDataGenerator().createReplicateData(adjustedParallelPileup.getData(0).length);
-			adjustedParallelPileup.setData(0, ParallelData.flat(adjustedParallelPileup.getData(0), newConditionData, variantBases, commonBaseIndex));
+			adjustedParallelPileup.setData(0, ParallelData.flat(adjustedParallelPileup.getData(0), newConditionData, variantBases, commonBase));
 		} else if (a2 > 1 && a1 == 1 && aP == 2) { // condition2
 			
 			data[0] = parallelData.getDataGenerator().copyReplicateData(parallelData.getData(1));
@@ -73,7 +73,7 @@ extends DirichletMultinomialCompoundError<T> {
 			adjustedParallelPileup = new ParallelData<T>(
 					parallelData.getDataGenerator(), data);
 			T[] newConditionData = parallelData.getDataGenerator().createReplicateData(adjustedParallelPileup.getData(1).length);
-			adjustedParallelPileup.setData(1, ParallelData.flat(adjustedParallelPileup.getData(1), newConditionData, variantBases, commonBaseIndex));
+			adjustedParallelPileup.setData(1, ParallelData.flat(adjustedParallelPileup.getData(1), newConditionData, variantBases, commonBase));
 		}
 		// aP > 3, just use the existing parallelPileup to calculate the test-statistic
 		if (adjustedParallelPileup == null) { 

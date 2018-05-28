@@ -108,7 +108,7 @@ extends AbstractDataFilter<T> {
 				parallelData.getCoordinate(),
 				parallelData.getCombinedPooledData().getReferenceBase(),
 				observed); 
-		final Set<Base> variantBases = ParallelData.getVariantBaseIndexs(tmpParallelData);
+		final Set<Base> variantBases = ParallelData.getVariantBases(tmpParallelData);
 		
 		return baseCallCountFilter.filter(variantBases, observed, filtered);
 	}
