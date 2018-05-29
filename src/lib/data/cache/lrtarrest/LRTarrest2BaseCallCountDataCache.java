@@ -14,14 +14,14 @@ import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.util.SequenceUtil;
 import lib.cli.options.Base;
 import lib.data.AbstractData;
+import lib.data.adder.AbstractDataAdder;
+import lib.data.adder.basecall.ArrayBaseCallAdder;
 import lib.data.basecall.array.ArrayBaseCallCount;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.AbstractDataCache;
 import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
 import lib.data.cache.extractor.lrtarrest.RefPos2BaseCallCountExtractor;
 import lib.data.cache.extractor.lrtarrest.LRTarrestCountExtractor;
-import lib.data.cache.record.RecordDataCache;
-import lib.data.cache.region.ArrayBaseCallRegionDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.cache.region.RegionDataCache;
 import lib.data.count.BaseCallCount;
 import lib.data.count.LRTarrestCount;
@@ -29,8 +29,8 @@ import lib.data.count.RTarrestCount;
 import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 
 public class LRTarrest2BaseCallCountDataCache<T extends AbstractData> 
-extends AbstractDataCache<T>
-implements RegionDataCache<T>, RecordDataCache<T> {
+extends AbstractDataAdder<T>
+implements RegionDataCache<T>, RecordWrapperDataCache<T> {
 
 	private final RefPos2BaseCallCountExtractor<T> refPos2BaseCallCountExtractor;
 	private final LRTarrestCountExtractor<T> lrtArrestCountExtractor;
@@ -44,7 +44,7 @@ implements RegionDataCache<T>, RecordDataCache<T> {
 	private Map<Integer, Byte> ref2base;
 	
 	private final int[] coverageWithoutBQ;
-	private final ArrayBaseCallRegionDataCache<T> baseCallRegionDataCache;
+	private final ArrayBaseCallAdder<T> baseCallRegionDataCache;
 	
 	public LRTarrest2BaseCallCountDataCache(
 			final BaseCallCountExtractor<T> baseCallCountExtractor, 
@@ -68,14 +68,18 @@ implements RegionDataCache<T>, RecordDataCache<T> {
 		ref2base			= new HashMap<Integer, Byte>(100);
 		
 		coverageWithoutBQ	= new int[activeWindowSize];
-		baseCallRegionDataCache = new ArrayBaseCallRegionDataCache<T>(
+		// FIXME 
+		baseCallRegionDataCache = null;
+		/* FIXME
+		baseCallRegionDataCache = new ArrayBaseCallAdder<T>(
 				baseCallCountExtractor, 
 				maxDepth, minBASQ, 
 				coordinateController);
+				*/
 	}
 
 	@Override
-	public void addRecord(final SAMRecordWrapper recordWrapper) {
+	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
 
 		int alignmentStartWindowPosition = getCoordinateController().convert2windowPosition(record.getAlignmentStart());
@@ -111,7 +115,7 @@ implements RegionDataCache<T>, RecordDataCache<T> {
 		int alignmentEndWindowPosition = getCoordinateController().convert2windowPosition(record.getAlignmentEnd());
 
 		for (int j = 0; j < length; ++j) {
-			final int refPosBC 	= referencePosition + j;
+			final int refPosBC 				= referencePosition + j;
 			final int tmpWindowPosition 	= windowPosition < 0 ? -1 : windowPosition + j;
 			final int tmpReadPosition 		= readPosition + j;
 
@@ -134,7 +138,7 @@ implements RegionDataCache<T>, RecordDataCache<T> {
 			}
 			
 			// count base call
-			baseCallRegionDataCache.increment(tmpWindowPosition, tmpReadPosition, base, baseQuality);
+			baseCallRegionDataCache.increment(refPosBC, tmpWindowPosition, tmpReadPosition, base, baseQuality, record);
 			
 			add(alignmentStartWindowPosition, refPosBC, tmpReadPosition, base, recordWrapper, start);
 			add(alignmentEndWindowPosition, refPosBC, tmpReadPosition, base, recordWrapper, end);

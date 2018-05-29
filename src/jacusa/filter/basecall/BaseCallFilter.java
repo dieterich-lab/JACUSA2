@@ -11,7 +11,7 @@ import lib.data.AbstractData;
 import lib.data.BaseCallData;
 import lib.data.ParallelData;
 import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.count.BaseCallCount;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
@@ -38,7 +38,7 @@ extends AbstractDataFilter<T> {
 			final int overhang, 
 			final FilterRatio filterRatio,
 			final AbstractParameter<T, ?> parameter,
-			final List<List<RecordDataCache<T>>> conditionFilterCaches) {
+			final List<List<RecordWrapperDataCache<T>>> conditionFilterCaches) {
 
 		super(c, overhang, parameter, conditionFilterCaches);
 		this.observed = observed;

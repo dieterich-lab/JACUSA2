@@ -1,12 +1,12 @@
-package lib.data.cache;
+package lib.data.adder;
 
 import lib.data.AbstractData;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
-public interface DataCache<X extends AbstractData> {
+public interface DataAdder<T extends AbstractData> {
 
-	void addData(X data, final Coordinate coordinate);
+	void addData(T data, final Coordinate coordinate);
 
 	CoordinateController getCoordinateController();
 

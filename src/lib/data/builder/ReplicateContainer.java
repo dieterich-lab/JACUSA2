@@ -12,7 +12,7 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIterator;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIteratorProvider;
 import lib.data.cache.extractor.ReferenceSetter;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
@@ -92,7 +92,7 @@ public class ReplicateContainer<T extends AbstractData> {
 		final List<DataBuilder<T>> dataBuilders = new ArrayList<DataBuilder<T>>(conditionParameter.getReplicateSize());
 
 		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); ++replicateIndex) {
-			final List<RecordDataCache<?>> filterCaches = 
+			final List<RecordWrapperDataCache<?>> filterCaches = 
 					conditionContainer.getFilterContainer().getFilterCaches(conditionParameter.getConditionIndex(), replicateIndex);
 
 			final DataBuilder<T> builder = 

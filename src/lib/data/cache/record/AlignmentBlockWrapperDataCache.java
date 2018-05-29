@@ -8,16 +8,16 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.region.RegionDataCache;
 
 public class AlignmentBlockWrapperDataCache<T extends AbstractData>
-implements RecordDataCache<T> {
+implements RecordWrapperDataCache<T> {
 
 	private final RegionDataCache<T> dataCache;
 	
-	public AlignmentBlockWrapperDataCache(final RegionDataCache<T> dataCache) {
-		this.dataCache = dataCache;
+	public AlignmentBlockWrapperDataCache(final RegionDataCache<T> regionDataCache) {
+		this.dataCache = regionDataCache;
 	}
 
 	@Override
-	public void addRecord(final SAMRecordWrapper recordWrapper) {
+	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		for (final AlignmentBlock alignmentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
 			final int referencePosition = alignmentBlock.getReferenceStart();
 			final int readPosition = alignmentBlock.getReadStart() - 1;
@@ -27,7 +27,7 @@ implements RecordDataCache<T> {
 	}
 	
 	@Override
-	public void addData(T data, Coordinate coordinate) {
+	public void addData(final T data, final Coordinate coordinate) {
 		dataCache.addData(data, coordinate);
 	}
 	

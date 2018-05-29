@@ -47,7 +47,7 @@ extends DirichletMultinomialCompoundError<T> {
 		if (a1 > 1 && a2 == 1 && aP == 2) { // condition1
 			// determine common base (shared by both conditions)
 			final Base commonBase = getCommonBase(parallelData, alleles);
-			
+
 			data[0] = parallelData.getDataGenerator().copyReplicateData(parallelData.getData(0));
 			data[1] = parallelData.getDataGenerator().copyReplicateData(parallelData.getData(0));
 
@@ -59,7 +59,7 @@ extends DirichletMultinomialCompoundError<T> {
 
 			data[0] = parallelData.getDataGenerator().copyReplicateData(parallelData.getData(1));
 			data[1] = parallelData.getDataGenerator().copyReplicateData(parallelData.getData(1));
-			
+
 			adjustedParallelPileup = new ParallelData<T>(parallelData.getDataGenerator(), data);
 			ParallelData.flat(adjustedParallelPileup.getData(0), adjustedParallelPileup.getData(1), variantBases, commonBase);
 		}

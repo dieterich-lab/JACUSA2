@@ -13,7 +13,7 @@ import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.extractor.lrtarrest.RefPos2BaseCallCountExtractor;
 import lib.data.cache.extractor.lrtarrest.RefPos2BaseCallCountFilterDataExtractor;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.cache.region.RegionDataCache;
 import lib.data.has.HasReferenceBase;
 import lib.data.has.filter.HasRefPos2BaseCallCountFilterData;
@@ -100,7 +100,7 @@ extends AbstractDataFilterFactory<T> {
 	public void registerFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
-		final List<List<RecordDataCache<T>>> conditionFilterCaches = 
+		final List<List<RecordWrapperDataCache<T>>> conditionFilterCaches = 
 				createConditionFilterCaches(parameter, coordinateController, this);
 		
 		final LRTarrestRef2BaseCallDataFilter<T> dataFilter = new LRTarrestRef2BaseCallDataFilter<T>(getC(),
@@ -113,7 +113,7 @@ extends AbstractDataFilterFactory<T> {
 	}
 
 	@Override
-	protected RecordDataCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
+	protected RecordWrapperDataCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
 			final CoordinateController coordinateController) {
 
 		/* FIXME

@@ -7,9 +7,9 @@ import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.util.SequenceUtil;
 import lib.cli.options.Base;
 import lib.data.AbstractData;
+import lib.data.adder.AbstractDataAdder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.AbstractDataCache;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.has.filter.HasBooleanFilterData;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
@@ -22,8 +22,8 @@ import lib.util.coordinate.Coordinate;
  */
 // FIXME make me more efficient - share homopolymer information between BAM(s)
 public class HomopolymerFilterCache<T extends AbstractData & HasBooleanFilterData> 
-extends AbstractDataCache<T>
-implements RecordDataCache<T> {
+extends AbstractDataAdder<T>
+implements RecordWrapperDataCache<T> {
 	
 	private final char c;
 	
@@ -46,7 +46,7 @@ implements RecordDataCache<T> {
 	}
 
 	@Override
-	public void addRecord(final SAMRecordWrapper recordWrapper) {
+	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		// TODO we only consider consecutively aligned regions of a read
 		// insertions are currently ignored
 		for (AlignmentBlock block : recordWrapper.getSAMRecord().getAlignmentBlocks()) {

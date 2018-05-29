@@ -2,23 +2,31 @@ package lib.data.cache;
 
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
-import lib.util.coordinate.CoordinateUtil.STRAND;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 import lib.data.AbstractData;
-import lib.data.basecall.array.ArrayBaseCallCount;
+import lib.data.adder.AbstractDataAdder;
+import lib.data.adder.basecall.ArrayBaseCallAdder;
+import lib.data.adder.basecall.BaseCallAdder;
+import lib.data.adder.region.ValidatedRegionDataCache;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
 import lib.data.cache.extractor.basecall.RTarrestCountExtractor;
-import lib.data.cache.record.RecordDataCache;
-import lib.data.cache.region.ArrayBaseCallRegionDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.region.isvalid.BaseCallValidator;
+import lib.data.cache.region.isvalid.DefaultBaseCallValidator;
+import lib.data.cache.region.isvalid.MinBASQBaseCallValidator;
 import lib.data.count.BaseCallCount;
 import lib.data.count.RTarrestCount;
 import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 
 public class ArrestThroughDataCache<T extends AbstractData> 
-extends AbstractDataCache<T> 
-implements RecordDataCache<T> {
+extends AbstractDataAdder<T> 
+implements RecordWrapperDataCache<T> {
 
 	// can be null
 	private final RTarrestCountExtractor<T> rtCountExtractor;
@@ -26,11 +34,14 @@ implements RecordDataCache<T> {
 	private final BaseCallCountExtractor<T> arrestBaseCallCountExtractor;
 	private final BaseCallCountExtractor<T> throughBaseCallCountExtractor;
 	
-	private final LIBRARY_TYPE libraryType;
+	private final BaseCallAdder<T> startBaseCallAdder;
+	private final ValidatedRegionDataCache<T> startValidated;
 	
-	private final ArrayBaseCallRegionDataCache<T> startBC;
-	private final ArrayBaseCallRegionDataCache<T> wholeBC;
-	private final ArrayBaseCallRegionDataCache<T> endBC;
+	private final BaseCallAdder<T> wholeBaseCallAdder;
+	private final ValidatedRegionDataCache<T> wholeValidated;
+	
+	private final BaseCallAdder<T> endBaseCallAdder;
+	private final ValidatedRegionDataCache<T> endValidated;
 
 	public ArrestThroughDataCache(
 			final RTarrestCountExtractor<T> rtCountExtractor,
@@ -38,7 +49,7 @@ implements RecordDataCache<T> {
 			final BaseCallCountExtractor<T> arrestBaseCallCountExtractor,
 			final BaseCallCountExtractor<T> throughBaseCallCountExtractor,
 			final LIBRARY_TYPE libraryType,
-			final int maxDepth, final byte minBASQ, 
+			final byte minBASQ, 
 			final CoordinateController coordinateController) {
 		
 		super(coordinateController);
@@ -47,16 +58,58 @@ implements RecordDataCache<T> {
 		this.baseCallCountExtractor 		= baseCallCountExtractor;
 		this.arrestBaseCallCountExtractor 	= arrestBaseCallCountExtractor;
 		this.throughBaseCallCountExtractor 	= throughBaseCallCountExtractor;
+
+		final List<BaseCallValidator> validators = new ArrayList<BaseCallValidator>();
+		validators.add(new DefaultBaseCallValidator());
+		if (minBASQ > 0) {
+			validators.add(new MinBASQBaseCallValidator(minBASQ));
+		}
+		startValidated		= new ValidatedRegionDataCache<T>(coordinateController);
+		wholeValidated		= new ValidatedRegionDataCache<T>(coordinateController);
+		endValidated 		= new ValidatedRegionDataCache<T>(coordinateController);
+
+		for (final BaseCallValidator validator : validators) {
+			startValidated.addValidator(validator);
+			wholeValidated.addValidator(validator);
+			endValidated.addValidator(validator);
+		}
 		
-		this.libraryType = libraryType;
+		switch (libraryType) {
+
+		case UNSTRANDED:
+			startBaseCallAdder = new ArrayBaseCallAdder<T>(arrestBaseCallCountExtractor, coordinateController);
+			startValidated.addAdder(startBaseCallAdder);
+			
+			endBaseCallAdder = new ArrayBaseCallAdder<T>(arrestBaseCallCountExtractor, coordinateController);
+			endValidated.addAdder(endBaseCallAdder);
+			break;
+
+		case FR_FIRSTSTRAND:
+			startBaseCallAdder = new ArrayBaseCallAdder<T>(null, coordinateController);
+			startValidated.addAdder(startBaseCallAdder);
+			
+			endBaseCallAdder = new ArrayBaseCallAdder<T>(arrestBaseCallCountExtractor, coordinateController);
+			endValidated.addAdder(endBaseCallAdder);
+			break;
+
+		case FR_SECONDSTRAND:
+			startBaseCallAdder = new ArrayBaseCallAdder<T>(arrestBaseCallCountExtractor, coordinateController);
+			startValidated.addAdder(startBaseCallAdder);
+			
+			endBaseCallAdder = new ArrayBaseCallAdder<T>(null, coordinateController);
+			endValidated.addAdder(endBaseCallAdder);
+			break;
+			
+		default:
+			throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
+		}
 		
-		startBC	= new ArrayBaseCallRegionDataCache<T>(maxDepth, minBASQ, coordinateController);
-		wholeBC	= new ArrayBaseCallRegionDataCache<T>(maxDepth, minBASQ, coordinateController);
-		endBC 	= new ArrayBaseCallRegionDataCache<T>(maxDepth, minBASQ, coordinateController);
+		wholeBaseCallAdder = new ArrayBaseCallAdder<T>(baseCallCountExtractor, coordinateController);
+		wholeValidated.addAdder(wholeBaseCallAdder);
 	}
 
 	@Override
-	public void addRecord(final SAMRecordWrapper recordWrapper) {
+	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		
 		final AlignmentBlock first = record.getAlignmentBlocks().get(0);
@@ -65,125 +118,49 @@ implements RecordDataCache<T> {
 		
 		int windowPosition1 = getCoordinateController().convert2windowPosition(first.getReferenceStart());
 		if (windowPosition1 >= 0) {
-			startBC.addRegion(first.getReferenceStart(), first.getReadStart() - 1, 1, recordWrapper);
+			startValidated.addRegion(first.getReferenceStart(), first.getReadStart() - 1, 1, recordWrapper);
 		}
 		
 		int windowPosition2 = getCoordinateController().convert2windowPosition(last.getReferenceStart());
 		if (windowPosition2 >= 0) {
 			final int length = last.getLength();
-			endBC.addRegion(last.getReferenceStart() + length - 1, last.getReadStart() + length - 2, 1, recordWrapper);
+			endValidated.addRegion(last.getReferenceStart() + length - 1, last.getReadStart() + length - 2, 1, recordWrapper);
 		}
 
 		for (final AlignmentBlock block : record.getAlignmentBlocks()) {
-			wholeBC.addRegion(block.getReferenceStart(), block.getReadStart() - 1, block.getLength(), recordWrapper);
+			wholeValidated.addRegion(block.getReferenceStart(), block.getReadStart() - 1, block.getLength(), recordWrapper);
 		}
 	}
 	
 	@Override
 	public void addData(T data, Coordinate coordinate) {
+		startValidated.addData(data, coordinate);
+		endValidated.addData(data, coordinate);
+		wholeValidated.addData(data, coordinate);
+
 		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
-		if (baseCallCountExtractor != null) {
-			final BaseCallCount baseCallCount = getBaseCallCount(windowPosition, libraryType);
-			add(windowPosition, coordinate.getStrand(), data, baseCallCount, baseCallCountExtractor);
+		final BaseCallCount throughBC = baseCallCountExtractor.getBaseCallCount(data).copy();
+		if (throughBC.getCoverage() == 0) {
+			return;
 		}
+		throughBC.substract(arrestBaseCallCountExtractor.getBaseCallCount(data));
+		throughBaseCallCountExtractor.getBaseCallCount(data).add(throughBC);
 
-		BaseCallCount arrestBC = null;
-		if (arrestBaseCallCountExtractor != null) {
-			arrestBC = getArrestBaseCallCount(windowPosition, libraryType);
-			add(windowPosition, coordinate.getStrand(), data, arrestBC, arrestBaseCallCountExtractor);
-		}
-
-		if (throughBaseCallCountExtractor != null) {
-			BaseCallCount throughBC = null;
-			if (arrestBC != null) {
-				throughBC = getThroughBaseCallCount(windowPosition, libraryType, arrestBC);
-			} else {
-				throughBC = getThroughBaseCallCount(windowPosition, libraryType);
-			}
-			add(windowPosition, coordinate.getStrand(), data, throughBC, throughBaseCallCountExtractor);
-		}
-
-		if (rtCountExtractor != null) {
-			final RTarrestCount rtCount = rtCountExtractor.getRTcount(data);
-			rtCount.setReadStart(startBC.getCoverage()[windowPosition]);
-			rtCount.setReadEnd(endBC.getCoverage()[windowPosition]);
-			rtCount.setReadInternal(wholeBC.getCoverage()[windowPosition] - 
-					startBC.getCoverage()[windowPosition] - 
-					endBC.getCoverage()[windowPosition]);
-			if (arrestBaseCallCountExtractor != null) {
-				rtCount.setReadArrest(arrestBaseCallCountExtractor.getBaseCallCount(data).getCoverage());
-			}
-			if (throughBaseCallCountExtractor != null) {
-				rtCount.setReadThrough(throughBaseCallCountExtractor.getBaseCallCount(data).getCoverage());
-			}
-		}
-	}
-	
-	public void add(final int windowPosition, final STRAND strand, final T data, final BaseCallCount src, final BaseCallCountExtractor<T> extractor) {
-		final BaseCallCount dest = extractor.getBaseCallCount(data);
-		dest.add(src);
-		if (strand == STRAND.REVERSE) {
-			dest.invert();
-		}		
-	} 
-	
-	protected BaseCallCount getBaseCallCount(final int windowPosition, final LIBRARY_TYPE libraryType) {
-		return new ArrayBaseCallCount(getWholeBC().getBaseCalls()[windowPosition]);
-	}
-		
-	protected BaseCallCount getArrestBaseCallCount(final int windowPosition, final LIBRARY_TYPE libraryType) {
-		final BaseCallCount arrestBC = new ArrayBaseCallCount();
-
-		switch (libraryType) {
-
-		case UNSTRANDED:
-			arrestBC.add(new ArrayBaseCallCount(getStartBC().getBaseCalls()[windowPosition]));
-			arrestBC.add(new ArrayBaseCallCount(getEndBC().getBaseCalls()[windowPosition]));
-			break;
-
-		case FR_FIRSTSTRAND:
-			arrestBC.add(new ArrayBaseCallCount(getEndBC().getBaseCalls()[windowPosition]));
-			
-			break;
-
-		case FR_SECONDSTRAND:
-			arrestBC.add(new ArrayBaseCallCount(getStartBC().getBaseCalls()[windowPosition]));
-			break;
-			
-		case MIXED:
-			throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
-		}
-
-		return arrestBC;
-	}
-
-	protected BaseCallCount getThroughBaseCallCount(final int windowPosition, final LIBRARY_TYPE libraryType) {
-		return getThroughBaseCallCount(windowPosition, libraryType, getArrestBaseCallCount(windowPosition, libraryType));
-	}
-	
-	protected BaseCallCount getThroughBaseCallCount(final int windowPosition, final LIBRARY_TYPE libraryType, final BaseCallCount arrestBC) {
-		final BaseCallCount throughBC = new ArrayBaseCallCount(getBaseCallCount(windowPosition, libraryType));
-		throughBC.substract(arrestBC);
-		return throughBC;
-	}
-
-	public ArrayBaseCallRegionDataCache<T> getStartBC() {
-		return startBC;
-	}
-	
-	public ArrayBaseCallRegionDataCache<T> getWholeBC() {
-		return wholeBC;
-	}
-	
-	public ArrayBaseCallRegionDataCache<T> getEndBC() {
-		return endBC;
+		final RTarrestCount rtCount = rtCountExtractor.getRTcount(data);
+		rtCount.setReadStart(startBaseCallAdder.getCoverage(windowPosition));
+		rtCount.setReadEnd(endBaseCallAdder.getCoverage(windowPosition));
+		rtCount.setReadInternal(wholeBaseCallAdder.getCoverage(windowPosition) - 
+				startBaseCallAdder.getCoverage(windowPosition) - 
+				endBaseCallAdder.getCoverage(windowPosition));
+		rtCount.setReadArrest(arrestBaseCallCountExtractor.getBaseCallCount(data).getCoverage());
+		rtCount.setReadThrough(throughBaseCallCountExtractor.getBaseCallCount(data).getCoverage());
 	}
 
 	@Override
 	public void clear() {
-		startBC.clear();
-		wholeBC.clear();
-		endBC.clear();
+		startValidated.clear();
+		wholeValidated.clear();
+		endValidated.clear();
 	}
 
 }

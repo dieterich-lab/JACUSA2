@@ -1,5 +1,6 @@
 package jacusa.filter.factory.basecall;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jacusa.filter.FilterRatio;
@@ -11,13 +12,20 @@ import jacusa.filter.factory.AbstractFilterFactory;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
+import lib.data.adder.IncrementAdder;
+import lib.data.adder.basecall.ArrayBaseCallAdder;
+import lib.data.adder.basecall.BaseCallAdder;
+import lib.data.adder.region.ValidatedRegionDataCache;
 import lib.data.builder.ConditionContainer;
 import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
 import lib.data.cache.extractor.basecall.BaseCallCountFilterDataExtractor;
-import lib.data.cache.record.RecordDataCache;
-import lib.data.cache.region.ArrayBaseCallRegionDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.cache.region.RegionDataCache;
 import lib.data.cache.region.UniqueTraverse;
+import lib.data.cache.region.isvalid.BaseCallValidator;
+import lib.data.cache.region.isvalid.DefaultBaseCallValidator;
+import lib.data.cache.region.isvalid.MaxDepthBaseCallValidator;
+import lib.data.cache.region.isvalid.MinBASQBaseCallValidator;
 import lib.data.has.HasReferenceBase;
 import lib.data.has.filter.HasBaseCallCountFilterData;
 import lib.io.ResultWriterUtils;
@@ -103,7 +111,7 @@ extends AbstractDataFilterFactory<T> {
 	public void registerFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 		
-		final List<List<RecordDataCache<T>>> conditionFilterCaches = 
+		final List<List<RecordWrapperDataCache<T>>> conditionFilterCaches = 
 				createConditionFilterCaches(parameter, coordinateController, this);
 		
 		final BaseCallFilter<T> dataFilter = new BaseCallFilter<T>(getC(),
@@ -116,16 +124,25 @@ extends AbstractDataFilterFactory<T> {
 	}
 
 	@Override
-	protected RecordDataCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
+	protected RecordWrapperDataCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
 			final CoordinateController coordinateController) {
 
-		// save classes
-		final UniqueTraverse<T> uniqueBaseCallCache = 
-			new UniqueTraverse<T>(
-					new ArrayBaseCallRegionDataCache<T>(
-							getFiltered(), 
-							conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), 
-							coordinateController));
+		final List<IncrementAdder<T>> adder = new ArrayList<IncrementAdder<T>>();
+		final BaseCallAdder<T> baseCallAdder = new ArrayBaseCallAdder<T>(getFiltered(), coordinateController);
+		adder.add(baseCallAdder);
+		
+		final List<BaseCallValidator> validator = new ArrayList<BaseCallValidator>();
+		validator.add(new DefaultBaseCallValidator());
+		if (conditionParameter.getMinBASQ() > 0) {
+			validator.add(new MinBASQBaseCallValidator(conditionParameter.getMinBASQ()));
+		}
+		if (conditionParameter.getMaxDepth() > 0) {
+			validator.add(new MaxDepthBaseCallValidator(conditionParameter.getMaxDepth(), baseCallAdder));
+		}
+
+		final ValidatedRegionDataCache<T> regionDataCache = new ValidatedRegionDataCache<T>(adder, validator, coordinateController);
+
+		final UniqueTraverse<T> uniqueBaseCallCache = new UniqueTraverse<T>(regionDataCache);
 
 		return new RecordProcessDataCache<T>(uniqueBaseCallCache, createProcessRecord(uniqueBaseCallCache));
 	}

@@ -4,7 +4,7 @@ import java.util.List;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.util.coordinate.Coordinate;
 
 public interface CacheContainer<T extends AbstractData> {
@@ -15,7 +15,7 @@ public interface CacheContainer<T extends AbstractData> {
 
 	void addData(T data, final Coordinate coordinate);
 	
-	List<RecordDataCache<T>> getDataCaches();
+	List<RecordWrapperDataCache<T>> getDataCaches();
 	void clear();
 	
 }

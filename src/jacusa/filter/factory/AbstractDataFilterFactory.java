@@ -6,7 +6,7 @@ import java.util.List;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -29,7 +29,7 @@ extends AbstractFilterFactory<T> {
 	 * @param coordinateController
 	 * @return
 	 */
-	protected abstract RecordDataCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
+	protected abstract RecordWrapperDataCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
 			final CoordinateController coordinateController);
 	
 	/**
@@ -40,24 +40,24 @@ extends AbstractFilterFactory<T> {
 	 * @param dataFilterFactory
 	 * @return
 	 */
-	protected List<List<RecordDataCache<T>>> createConditionFilterCaches(final AbstractParameter<T, ?> parameter,
+	protected List<List<RecordWrapperDataCache<T>>> createConditionFilterCaches(final AbstractParameter<T, ?> parameter,
 			final CoordinateController coordinateContainer,
 			final AbstractDataFilterFactory<T> dataFilterFactory) {
 
 		// container for the result - 
 		// outer list -> conditions
 		// inner list -> replicates
-		final List<List<RecordDataCache<T>>> filterCaches = 
-				new ArrayList<List<RecordDataCache<T>>>(parameter.getConditionsSize());
+		final List<List<RecordWrapperDataCache<T>>> filterCaches = 
+				new ArrayList<List<RecordWrapperDataCache<T>>>(parameter.getConditionsSize());
 
 		for (int conditionIndex = 0; conditionIndex < parameter.getConditionsSize(); conditionIndex++) {
 			// replicates for conditionIndex
 			final int replicates = parameter.getReplicates(conditionIndex);
-			final List<RecordDataCache<T>> list = new ArrayList<RecordDataCache<T>>(replicates);
+			final List<RecordWrapperDataCache<T>> list = new ArrayList<RecordWrapperDataCache<T>>(replicates);
 		
 			for (int replicateIndex = 0; replicateIndex < parameter.getConditionsSize(); replicateIndex++) {
 				// create filterCache 
-				final RecordDataCache<T> filterCache = createFilterCache(
+				final RecordWrapperDataCache<T> filterCache = createFilterCache(
 						parameter.getConditionParameter(conditionIndex),
 						coordinateContainer);
 				// add to list of replicates

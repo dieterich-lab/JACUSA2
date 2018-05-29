@@ -1,12 +1,13 @@
 package lib.data.cache.region;
 
 import lib.data.AbstractData;
+import lib.data.adder.DataAdder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.DataCache;
 
-public interface RegionDataCache<X extends AbstractData> 
-extends DataCache<X> {
+public interface RegionDataCache<T extends AbstractData> 
+extends DataAdder<T> {
 
-	void addRegion(final int referencePosition, int readPosition, int length, SAMRecordWrapper recordWrapper);
+	void addRegion(int referencePosition, int readPosition, int length, 
+			SAMRecordWrapper recordWrapper);
 		
 }

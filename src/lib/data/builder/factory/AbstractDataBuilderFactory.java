@@ -11,7 +11,7 @@ import lib.data.cache.container.FRPairedEnd1CacheContainer;
 import lib.data.cache.container.FRPairedEnd2CacheContainer;
 import lib.data.cache.container.UnstrandedCacheContainter;
 import lib.data.cache.extractor.ReferenceSetter;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.generator.DataGenerator;
 import lib.util.coordinate.CoordinateController;
 
@@ -27,7 +27,7 @@ public abstract class AbstractDataBuilderFactory<T extends AbstractData> {
 			final ReferenceSetter<T> referenceSetter,
 			final int replicateIndex, final CoordinateController coordinateController, 
 			final AbstractConditionParameter<T> conditionParameter,
-			final List<RecordDataCache<?>> filterCaches) throws IllegalArgumentException {
+			final List<RecordWrapperDataCache<?>> filterCaches) throws IllegalArgumentException {
 
 		final CacheContainer<T> cacheContainer = createContainer(referenceSetter, coordinateController, conditionParameter);
 		
@@ -83,7 +83,7 @@ public abstract class AbstractDataBuilderFactory<T extends AbstractData> {
 		return cacheContainer;
 	}
 	
-	protected abstract List<RecordDataCache<T>> createDataCaches(final CoordinateController coordinateController, 
+	protected abstract List<RecordWrapperDataCache<T>> createDataCaches(final CoordinateController coordinateController, 
 			final AbstractConditionParameter<T> conditionParameter);
 	
 	public AbstractParameter<T, ?> getParameter() {

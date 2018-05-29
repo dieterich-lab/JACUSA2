@@ -8,7 +8,7 @@ import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.CacheContainer;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.generator.DataGenerator;
 import lib.data.has.HasLibraryType;
 import lib.util.AbstractTool;
@@ -21,7 +21,7 @@ implements HasLibraryType {
 	
 	private final DataGenerator<T> dataGenerator;
 	private final AbstractConditionParameter<T> conditionParameter;
-	private final List<RecordDataCache<?>> filterCaches;
+	private final List<RecordWrapperDataCache<?>> filterCaches;
 
 	private LIBRARY_TYPE libraryType;
 	
@@ -34,7 +34,7 @@ implements HasLibraryType {
 			final AbstractConditionParameter<T> conditionParameter,
 			final LIBRARY_TYPE libraryType,
 			final CacheContainer<T> cacheContainer,
-			final List<RecordDataCache<?>> filterCaches) {
+			final List<RecordWrapperDataCache<?>> filterCaches) {
 		
 		this.replicateIndex = replicateIndex;
 		
@@ -65,8 +65,8 @@ implements HasLibraryType {
 				// process filters and decode
 				recordWrapper.process();
 				cacheContainer.add(recordWrapper);
-				for (RecordDataCache<?> filterCache : filterCaches) {
-					filterCache.addRecord(recordWrapper);
+				for (RecordWrapperDataCache<?> filterCache : filterCaches) {
+					filterCache.addRecordWrapper(recordWrapper);
 				}
 				recordWrappers.add(recordWrapper);
 			}
@@ -85,7 +85,7 @@ implements HasLibraryType {
 	// Reset all caches in windows
 	public void clearCache() {
 		cacheContainer.clear();
-		for (RecordDataCache<?> filterCache : filterCaches) {
+		for (RecordWrapperDataCache<?> filterCache : filterCaches) {
 			filterCache.clear();
 		}
 	}

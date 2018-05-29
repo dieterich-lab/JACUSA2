@@ -5,7 +5,7 @@ import java.util.List;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasReferenceBase;
 import lib.data.has.filter.HasBooleanFilterData;
@@ -22,7 +22,7 @@ extends AbstractDataFilter<T> {
 	public HomopolymerDataFilter(final char c, 
 			final int overhang,  
 			final AbstractParameter<T, ?> parameter,
-			final List<List<RecordDataCache<T>>> conditionFilterCaches) {
+			final List<List<RecordWrapperDataCache<T>>> conditionFilterCaches) {
 
 		super(c, overhang, parameter, conditionFilterCaches);
 	}

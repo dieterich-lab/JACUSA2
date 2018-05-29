@@ -8,7 +8,7 @@ import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasReferenceBase;
 import lib.data.has.filter.HasBooleanFilterData;
@@ -52,7 +52,7 @@ extends AbstractDataFilterFactory<T> {
 	}
 
 	@Override
-	protected RecordDataCache<T> createFilterCache(
+	protected RecordWrapperDataCache<T> createFilterCache(
 			AbstractConditionParameter<T> conditionParameter,
 			CoordinateController coordinateController) {
 		
@@ -66,7 +66,7 @@ extends AbstractDataFilterFactory<T> {
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
 
 		// TODO add comments.
-		final List<List<RecordDataCache<T>>> conditionFilterCaches = 
+		final List<List<RecordWrapperDataCache<T>>> conditionFilterCaches = 
 				createConditionFilterCaches(parameter, coordinateController, this);
 		// create filter 
 		final HomopolymerDataFilter<T> dataFilter = 

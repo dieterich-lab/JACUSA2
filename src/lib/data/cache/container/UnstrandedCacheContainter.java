@@ -3,10 +3,10 @@ package lib.data.cache.container;
 import java.util.List;
 
 import lib.data.AbstractData;
+import lib.data.adder.DataAdder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.DataCache;
 import lib.data.cache.extractor.ReferenceSetter;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
@@ -15,14 +15,14 @@ implements CacheContainer<T> {
 
 	private final ReferenceSetter<T> referenceSetter; 
 	private final CoordinateController coordinateController;
-	private final List<RecordDataCache<T>> dataCaches;
+	private final List<RecordWrapperDataCache<T>> dataCaches;
 	
 	private final GeneralCache generalCache;
 
 	public UnstrandedCacheContainter(
 			final ReferenceSetter<T> referenceSetter,
 			final CoordinateController coordinateController, 
-			final List<RecordDataCache<T>> dataCaches) {
+			final List<RecordWrapperDataCache<T>> dataCaches) {
 		this.referenceSetter  		= referenceSetter;
 		this.coordinateController	= coordinateController;
 		this.dataCaches 			= dataCaches;
@@ -39,28 +39,28 @@ implements CacheContainer<T> {
 	public void add(final SAMRecordWrapper recordWrapper) {
 		generalCache.addRecordWrapper(recordWrapper);
 
-		for (final RecordDataCache<T> dataCache : dataCaches) {
-			dataCache.addRecord(recordWrapper);
+		for (final RecordWrapperDataCache<T> dataCache : dataCaches) {
+			dataCache.addRecordWrapper(recordWrapper);
 		}
 	}
 	
 	@Override
 	public void addData(final T data, Coordinate coordinate) {
 		referenceSetter.setReference(coordinate, data, coordinateController.getReferenceProvider());
-		for (final DataCache<T> dataCache : dataCaches) {
+		for (final DataAdder<T> dataCache : dataCaches) {
 			dataCache.addData(data, coordinate);
 		}
 	}
 	
 	public void clear() {
 		generalCache.clear();
-		for (final DataCache<T> dataCache : dataCaches) {
+		for (final DataAdder<T> dataCache : dataCaches) {
 			dataCache.clear();
 		}
 	}
 
 	@Override
-	public List<RecordDataCache<T>> getDataCaches() {
+	public List<RecordWrapperDataCache<T>> getDataCaches() {
 		return dataCaches;
 	}
 

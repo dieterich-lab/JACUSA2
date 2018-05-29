@@ -51,7 +51,7 @@ extends AbstractResultFileWriter<T, R> {
 		final StringBuilder sb = new StringBuilder();
 
 		// adds pre-header details about call
-		addHeaderDetails(sb, conditionParameters);
+		// FIXME remove comment addHeaderDetails(sb, conditionParameters);
 
 		// adds default BED6 columns
 		addHeaderBED6(sb);

@@ -5,7 +5,7 @@ import java.util.List;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.LRTarrestData;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.util.coordinate.CoordinateController;
 
 // FIXME
@@ -17,7 +17,7 @@ extends AbstractDataBuilderFactory<LRTarrestData> {
 	}
 
 	@Override
-	public List<RecordDataCache<LRTarrestData>> createDataCaches(
+	public List<RecordWrapperDataCache<LRTarrestData>> createDataCaches(
 			final CoordinateController coordinateController, 
 			final AbstractConditionParameter<LRTarrestData> conditionParameter) {
 		

@@ -11,6 +11,7 @@ import jacusa.filter.factory.basecall.CombinedFilterFactory;
 import jacusa.filter.factory.basecall.INDEL_FilterFactory;
 import jacusa.filter.factory.basecall.ReadPositionDistanceFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
+import jacusa.io.format.call.BED6callDebugFormat;
 import jacusa.io.format.call.BED6callResultFormat;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import jacusa.method.call.statistic.dirmult.DirichletMultinomialRobustCompoundError;
@@ -179,6 +180,9 @@ extends AbstractMethodFactory<CallData, StatisticResult<CallData>> {
 		resultFormat = new BED6callResultFormat<CallData, StatisticResult<CallData>>(getParameter());
 		resultFormats.put(resultFormat.getC(), resultFormat);
 
+		resultFormat = new BED6callDebugFormat<CallData, StatisticResult<CallData>>(getParameter());
+		resultFormats.put(resultFormat.getC(), resultFormat);
+		
 		// FIXME VCF output 
 		/*
 		resultFormat = new VCFcall<T>(getParameter().getBaseConfig(), 

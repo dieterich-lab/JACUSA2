@@ -175,34 +175,19 @@ public class CoordinateController {
 	
 	
 	public WindowPositionGuard convert(int referencePosition, int length) {
-		int windowPosition = referencePosition - active.getStart();
-
-		if (windowPosition < 0) {
-			length = Math.max(0, length + windowPosition);
-			referencePosition += -windowPosition;
-			windowPosition += -windowPosition;
-		}
-
-		final int offset = activeWindowSize - (windowPosition + length);
-		if (offset < 0) {
-			length = Math.max(0, length + offset);
-		}
-
-		if (windowPosition < 0 || windowPosition > activeWindowSize) {
-			windowPosition = -1;
-		}
-
-		return new WindowPositionGuard(referencePosition, windowPosition, length);
+		WindowPositionGuard tmp = convert(referencePosition, -1 , length);
+		tmp.readPosition = -1;
+		return tmp;
 	}
 	
 	public WindowPositionGuard convert(int referencePosition, int readPosition, int length) {
 		int windowPosition = referencePosition - active.getStart();
 
 		if (windowPosition < 0) {
-			length = Math.max(0, length + windowPosition);
-			readPosition += -windowPosition;
-			referencePosition += -windowPosition;
-			windowPosition += -windowPosition;
+			length 				= Math.max(0, length + windowPosition);
+			readPosition 		+= -windowPosition;
+			referencePosition 	+= -windowPosition;
+			windowPosition 		+= -windowPosition;
 		}
 
 		final int offset = activeWindowSize - (windowPosition + length);
@@ -241,10 +226,10 @@ public class CoordinateController {
 		protected WindowPositionGuard(final int referencePosition, final int windowPosition, final int readPosition, 
 				final int length) {
 
-			this.referencePosition = referencePosition;
-			this.readPosition = readPosition;
-			this.length = length;
-			this.windowPosition = windowPosition;
+			this.referencePosition 	= referencePosition;
+			this.readPosition 		= readPosition;
+			this.length 			= length;
+			this.windowPosition 	= windowPosition;
 		}
 
 		public WindowPositionGuard transform(final int offset, final int length) {
@@ -278,7 +263,8 @@ public class CoordinateController {
 		public int getReferenceEndPosition() {
 			return referencePosition + length;
 		}
-		
+	
+		// FIXME isValid and error windowsPosition >=
 		public boolean isValid() {
 			return windowPosition >= 0 && length > 0;
 		}
@@ -286,8 +272,10 @@ public class CoordinateController {
 		@Override
 		public String toString() {
 			final StringBuilder sb = new StringBuilder();
-			sb.append("ref=" + referencePosition + " win=" + windowPosition + " read=" + readPosition + " length=" + length);
-			
+			sb.append("ref=" + referencePosition + 
+					" win=" + windowPosition + 
+					" read=" + readPosition + 
+					" length=" + length);
 			return sb.toString();
 		}
 	}

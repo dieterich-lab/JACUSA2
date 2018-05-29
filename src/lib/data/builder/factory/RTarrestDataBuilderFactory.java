@@ -11,7 +11,7 @@ import lib.data.cache.extractor.basecall.ArrestBaseCallCountExtractor;
 import lib.data.cache.extractor.basecall.DefaultBaseCallCountExtractor;
 import lib.data.cache.extractor.basecall.DefaultRTcountExtractor;
 import lib.data.cache.extractor.basecall.ThroughBaseCallCountExtractor;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.util.coordinate.CoordinateController;
 
 public class RTarrestDataBuilderFactory 
@@ -22,10 +22,10 @@ extends AbstractDataBuilderFactory<RTarrestData> {
 	}
 
 	@Override
-	public List<RecordDataCache<RTarrestData>> createDataCaches(final CoordinateController coordinateController, 
+	public List<RecordWrapperDataCache<RTarrestData>> createDataCaches(final CoordinateController coordinateController, 
 			final AbstractConditionParameter<RTarrestData> conditionParameter) {
 
-		final List<RecordDataCache<RTarrestData>> dataCaches = new ArrayList<RecordDataCache<RTarrestData>>(3);
+		final List<RecordWrapperDataCache<RTarrestData>> dataCaches = new ArrayList<RecordWrapperDataCache<RTarrestData>>(3);
 		dataCaches.add(
 				new ArrestThroughDataCache<RTarrestData>(
 						new DefaultRTcountExtractor<RTarrestData>(),
@@ -33,7 +33,7 @@ extends AbstractDataBuilderFactory<RTarrestData> {
 						new ArrestBaseCallCountExtractor<RTarrestData>(),
 						new ThroughBaseCallCountExtractor<RTarrestData>(),
 						conditionParameter.getLibraryType(), 
-						conditionParameter.getMaxDepth(), conditionParameter.getMinBASQ(), 
+						conditionParameter.getMinBASQ(), 
 						coordinateController));
 		return dataCaches;
 	}

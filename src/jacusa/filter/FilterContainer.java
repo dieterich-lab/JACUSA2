@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import lib.data.AbstractData;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -98,8 +98,8 @@ public class FilterContainer<T extends AbstractData> {
 		dataFilters.put(dataFilter.getC(), dataFilter);
 	}
 
-	public List<RecordDataCache<?>> getFilterCaches(final int conditionIndex, final int replicateIndex) {
-		final List<RecordDataCache<?>> filterCaches = new ArrayList<RecordDataCache<?>>();
+	public List<RecordWrapperDataCache<?>> getFilterCaches(final int conditionIndex, final int replicateIndex) {
+		final List<RecordWrapperDataCache<?>> filterCaches = new ArrayList<RecordWrapperDataCache<?>>();
 
 		for (final AbstractDataFilter<T> dataFilter : dataFilters.values()) {
 			filterCaches.add(dataFilter.getFilterCache(conditionIndex, replicateIndex));

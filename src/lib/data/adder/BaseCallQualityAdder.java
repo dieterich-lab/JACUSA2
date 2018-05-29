@@ -1,30 +1,26 @@
-package lib.data.cache;
+package lib.data.adder;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import htsjdk.samtools.SAMRecord;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.basecall.map.MapBaseCallQualitityCount;
-import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
-import lib.data.cache.region.ArrayBaseCallRegionDataCache;
 import lib.data.count.BaseCallQualityCount;
 import lib.data.has.HasPileupCount;
 
-public class PileupDataCache<T extends AbstractData & HasPileupCount>
-extends ArrayBaseCallRegionDataCache<T> {
+public class BaseCallQualityAdder<T extends AbstractData & HasPileupCount>
+extends AbstractDataAdder<T> 
+implements IncrementAdder<T> {
 
 	private Map<Integer, BaseCallQualityCount> baseCallQualities;
 	
-	public PileupDataCache(final BaseCallCountExtractor<T> baseCallCountExtractor, 
-			final int maxDepth, final byte minBASQ, 
-			final CoordinateController coordinateController) {
-
-		super(baseCallCountExtractor, maxDepth, minBASQ, coordinateController);
-
+	public BaseCallQualityAdder(final CoordinateController coordinateController) {
+		super(coordinateController);
 		final int n  = coordinateController.getActiveWindowSize();
 		baseCallQualities = new HashMap<Integer, BaseCallQualityCount>(n / 2);
 	}
@@ -32,21 +28,19 @@ extends ArrayBaseCallRegionDataCache<T> {
 	@Override
 	public void addData(final T data, final Coordinate coordinate) {
 		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
-		if (getCoverage()[windowPosition] == 0) {
+		if (! baseCallQualities.containsKey(windowPosition)) {
 			return;
 		}
 
 		final Set<Base> alleles = baseCallQualities.get(windowPosition).getAlleles();
 		data.getPileupCount().getBaseCallQualityCount().add(alleles, baseCallQualities.get(windowPosition));
-		
-		super.addData(data, coordinate);
 	}
 	
 	@Override
-	public void increment(final int windowPosition, final int readPosition,
-			final Base base, final byte baseQual) {
+	public void increment(final int referencePosition, final int windowPosition, final int readPosition,
+			final Base base, final byte baseQual,
+			final SAMRecord record) {
 
-		super.increment(windowPosition, readPosition, base, baseQual);
 		if (! baseCallQualities.containsKey(windowPosition)) {
 			baseCallQualities.put(windowPosition, new MapBaseCallQualitityCount());
 		}
@@ -56,8 +50,7 @@ extends ArrayBaseCallRegionDataCache<T> {
 	
 	@Override
 	public void clear() {
-		super.clear();
 		baseCallQualities.clear();
 	}
-	
+
 }

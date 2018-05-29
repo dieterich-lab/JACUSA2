@@ -7,7 +7,7 @@ import lib.util.coordinate.Coordinate;
 
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.record.RecordDataCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 
 public abstract class AbstractStrandedCacheContainer<T extends AbstractData> 
 implements CacheContainer<T> {
@@ -39,8 +39,8 @@ implements CacheContainer<T> {
 	}
 	
 	@Override
-	public List<RecordDataCache<T>> getDataCaches() {
-		List<RecordDataCache<T>> caches = new ArrayList<RecordDataCache<T>>();
+	public List<RecordWrapperDataCache<T>> getDataCaches() {
+		List<RecordWrapperDataCache<T>> caches = new ArrayList<RecordWrapperDataCache<T>>();
 		caches.addAll(forwardContainer.getDataCaches());
 		caches.addAll(reverseContainer.getDataCaches());
 		return caches;
