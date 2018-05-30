@@ -46,10 +46,6 @@ implements BaseCallCount {
 		return coverage;
 	}
 	
-	public int[] getArray() {
-		return baseCall;
-	}
-	
 	@Override
 	public int getBaseCall(final Base base) {
 		return baseCall[base.getIndex()];
@@ -66,9 +62,9 @@ implements BaseCallCount {
 	}
 
 	@Override
-	public void add(final BaseCallCount src) {
-		for (final Base base : src.getAlleles()) {
-			add(base, src);
+	public void add(final BaseCallCount baseCallCount) {
+		for (final Base base : baseCallCount.getAlleles()) {
+			add(base, baseCallCount);
 		}
 	}
 

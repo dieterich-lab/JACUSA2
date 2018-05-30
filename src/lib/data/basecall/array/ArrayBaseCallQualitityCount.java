@@ -96,7 +96,7 @@ public class ArrayBaseCallQualitityCount implements BaseCallQualityCount {
 	}
 
 	@Override
-	public void substract(final Base[] alleles, final BaseCallQualityCount baseCallQualCount) {
+	public void substract(final Set<Base> alleles, final BaseCallQualityCount baseCallQualCount) {
 		for (final Base base : alleles) {
 			substract(base, baseCallQualCount);
 		}

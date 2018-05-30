@@ -38,7 +38,7 @@ extends BED6callResultWriter<T, R> {
 	
 	@Override
 	protected String getFieldName() {
-		return "pileup";
+		return "call";
 	}
 	
 }

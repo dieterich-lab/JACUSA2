@@ -132,21 +132,18 @@ extends AbstractDataFilterFactory<T> {
 		adder.add(baseCallAdder);
 		
 		final List<BaseCallValidator> validator = new ArrayList<BaseCallValidator>();
+		if (conditionParameter.getMaxDepth() > 0) {
+			validator.add(new MaxDepthBaseCallValidator(conditionParameter.getMaxDepth(), baseCallAdder));
+		}
 		validator.add(new DefaultBaseCallValidator());
 		if (conditionParameter.getMinBASQ() > 0) {
 			validator.add(new MinBASQBaseCallValidator(conditionParameter.getMinBASQ()));
 		}
-		if (conditionParameter.getMaxDepth() > 0) {
-			validator.add(new MaxDepthBaseCallValidator(conditionParameter.getMaxDepth(), baseCallAdder));
-		}
-
+		
 		final ValidatedRegionDataCache<T> regionDataCache = new ValidatedRegionDataCache<T>(adder, validator, coordinateController);
-
 		final UniqueTraverse<T> uniqueBaseCallCache = new UniqueTraverse<T>(regionDataCache);
-
 		return new RecordProcessDataCache<T>(uniqueBaseCallCache, createProcessRecord(uniqueBaseCallCache));
 	}
-
 	
 	@Override
 	public void addFilteredData(StringBuilder sb, T data) {
@@ -184,7 +181,5 @@ extends AbstractDataFilterFactory<T> {
 	}
 	
 	protected abstract List<ProcessRecord> createProcessRecord(final RegionDataCache<T> regionDataCache);
-	
-	
 	
 }

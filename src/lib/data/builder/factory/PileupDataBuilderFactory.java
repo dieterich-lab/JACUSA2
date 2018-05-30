@@ -7,11 +7,10 @@ import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.PileupData;
 import lib.data.adder.IncrementAdder;
+import lib.data.adder.MapBaseCallQualityAdder;
 import lib.data.adder.basecall.ArrayBaseCallAdder;
 import lib.data.adder.basecall.BaseCallAdder;
-import lib.data.adder.basecall.MapBaseCallAdder;
 import lib.data.adder.region.ValidatedRegionDataCache;
-import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
 import lib.data.cache.extractor.basecall.DefaultBaseCallCountExtractor;
 import lib.data.cache.record.AlignmentBlockWrapperDataCache;
 import lib.data.cache.record.RecordWrapperDataCache;
@@ -31,14 +30,12 @@ extends AbstractDataBuilderFactory<PileupData> {
 	protected List<RecordWrapperDataCache<PileupData>> createDataCaches(final CoordinateController coordinateController, 
 			final AbstractConditionParameter<PileupData> conditionParameter) {
 
-	final BaseCallCountExtractor<PileupData> baseCallCountExtractor = new DefaultBaseCallCountExtractor<PileupData>();
-		
 		final List<IncrementAdder<PileupData>> adder = new ArrayList<IncrementAdder<PileupData>>();
 		final BaseCallAdder<PileupData> baseCallAdder = 
 				new ArrayBaseCallAdder<PileupData>(new DefaultBaseCallCountExtractor<PileupData>(), coordinateController);
 		adder.add(baseCallAdder);
 		final IncrementAdder<PileupData> baseCallQualityAdder = 
-				new MapBaseCallAdder<PileupData>(baseCallCountExtractor, coordinateController);
+				new MapBaseCallQualityAdder<PileupData>(coordinateController);
 		adder.add(baseCallQualityAdder);
 
 		final List<BaseCallValidator> validator = new ArrayList<BaseCallValidator>();

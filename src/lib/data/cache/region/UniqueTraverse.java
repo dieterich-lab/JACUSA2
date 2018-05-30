@@ -23,7 +23,7 @@ implements RegionDataCache<T> {
 		adder 			= new UniqueVisitBaseCallAdder<T>(dataCache.getCoordinateController());
 		validator		= new UniqueVisitBaseCallValidator(adder);
 		
-		dataCache.addAdder(adder);
+		dataCache.addVIPAdder(adder);
 		dataCache.addValidator(validator);
 	}
 

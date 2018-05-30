@@ -35,7 +35,7 @@ public class MapBaseCallQualitityCount implements BaseCallQualityCount {
 
 	@Override
 	public Set<Byte> getBaseCallQuality(final Base base) {
-		return base2qual2count.containsKey(base) ? new HashSet<Byte>(base2qual2count.get(base).keySet()) : new HashSet<Byte>(0);
+		return base2qual2count.containsKey(base) && base2qual2count.get(base) != null ? new TreeSet<Byte>(base2qual2count.get(base).keySet()) : new HashSet<Byte>(0);
 	}
 	
 	@Override
@@ -69,42 +69,42 @@ public class MapBaseCallQualitityCount implements BaseCallQualityCount {
 	}
 
 	@Override
-	public void add(final Base base, final BaseCallQualityCount src) {
-		add(base, base, src);
+	public void add(final Base base, final BaseCallQualityCount baseCallQualitityCount) {
+		add(base, base, baseCallQualitityCount);
 	}
 
 	@Override
-	public void add(final Set<Base> alleles, final BaseCallQualityCount mapBaseCallQualitityCount) {
+	public void add(final Set<Base> alleles, final BaseCallQualityCount baseCallQualitityCount) {
 		for (final Base base : alleles) {
-			add(base, mapBaseCallQualitityCount);
+			add(base, baseCallQualitityCount);
 		}
 	}
 
 	@Override
-	public void add(final Base dest, final Base src, final BaseCallQualityCount mapBaseCallQualitityCount) {
-		for (final byte baseQual : mapBaseCallQualitityCount.getBaseCallQuality(src)) {
+	public void add(final Base dest, final Base src, final BaseCallQualityCount baseCallQualitityCount) {
+		for (final byte baseQual : baseCallQualitityCount.getBaseCallQuality(src)) {
 			final int countDest = getBaseCallQuality(dest, baseQual);
-			final int countSrc = mapBaseCallQualitityCount.getBaseCallQuality(src, baseQual);
+			final int countSrc = baseCallQualitityCount.getBaseCallQuality(src, baseQual);
 			set(dest, baseQual, countDest + countSrc);
 		}
 	}
 
 	@Override
-	public void substract(final Base base, final BaseCallQualityCount mapBaseCallQualitityCount) {
-		substract(base, base, mapBaseCallQualitityCount);
+	public void substract(final Base base, final BaseCallQualityCount baseCallQualitityCount) {
+		substract(base, base, baseCallQualitityCount);
 	}
 
 	@Override
-	public void substract(final Base dest, final Base src, final BaseCallQualityCount mapBaseCallQualitityCount) {
-		for (final byte baseQual : mapBaseCallQualitityCount.getBaseCallQuality(src)) {
+	public void substract(final Base dest, final Base src, final BaseCallQualityCount baseCallQualitityCount) {
+		for (final byte baseQual : baseCallQualitityCount.getBaseCallQuality(src)) {
 			final int countDest = getBaseCallQuality(dest, baseQual);
-			final int countSrc = mapBaseCallQualitityCount.getBaseCallQuality(src, baseQual);
+			final int countSrc = baseCallQualitityCount.getBaseCallQuality(src, baseQual);
 			set(dest, baseQual, countDest - countSrc);
 		}
 	}
 
 	@Override
-	public void substract(final Base[] alleles, final BaseCallQualityCount mapBaseCallQualitityCount) {
+	public void substract(final Set<Base> alleles, final BaseCallQualityCount mapBaseCallQualitityCount) {
 		for (final Base base : alleles) {
 			substract(base, mapBaseCallQualitityCount);
 		}
@@ -120,7 +120,6 @@ public class MapBaseCallQualitityCount implements BaseCallQualityCount {
 			final Map<Byte, Integer> tmpCount = base2qual2count.get(base);
 			base2qual2count.put(base, base2qual2count.get(complement));
 			base2qual2count.put(complement, tmpCount);
-			
 		}
 	}
 

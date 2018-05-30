@@ -59,6 +59,7 @@ implements RecordWrapperDataCache<T> {
 		this.arrestBaseCallCountExtractor 	= arrestBaseCallCountExtractor;
 		this.throughBaseCallCountExtractor 	= throughBaseCallCountExtractor;
 
+		// add validators
 		final List<BaseCallValidator> validators = new ArrayList<BaseCallValidator>();
 		validators.add(new DefaultBaseCallValidator());
 		if (minBASQ > 0) {
@@ -67,13 +68,13 @@ implements RecordWrapperDataCache<T> {
 		startValidated		= new ValidatedRegionDataCache<T>(coordinateController);
 		wholeValidated		= new ValidatedRegionDataCache<T>(coordinateController);
 		endValidated 		= new ValidatedRegionDataCache<T>(coordinateController);
-
 		for (final BaseCallValidator validator : validators) {
 			startValidated.addValidator(validator);
 			wholeValidated.addValidator(validator);
 			endValidated.addValidator(validator);
 		}
-		
+	
+		// add adders
 		switch (libraryType) {
 
 		case UNSTRANDED:
@@ -138,8 +139,10 @@ implements RecordWrapperDataCache<T> {
 		endValidated.addData(data, coordinate);
 		wholeValidated.addData(data, coordinate);
 
-		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
-		final BaseCallCount throughBC = baseCallCountExtractor.getBaseCallCount(data).copy();
+		
+		final int windowPosition 		= getCoordinateController().convert2windowPosition(coordinate);
+		// through = whole - arrest
+		final BaseCallCount throughBC 	= baseCallCountExtractor.getBaseCallCount(data).copy();
 		if (throughBC.getCoverage() == 0) {
 			return;
 		}

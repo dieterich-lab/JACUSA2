@@ -35,15 +35,10 @@ public class ConditionContainer<T extends AbstractData> {
 		return recordWrappers;
 	}
 	
-	public List<List<List<SAMRecordWrapper>>> updateActiveWindowCoordinates(final Coordinate activeWindowCoordinate) {
-		final List<List<List<SAMRecordWrapper>>> recordWrappers = 
-				new ArrayList<List<List<SAMRecordWrapper>>>(parameter.getConditionsSize());
-
+	public void updateActiveWindowCoordinates(final Coordinate activeWindowCoordinate) {
 		for (ReplicateContainer<T> replicateContainer : replicateContainers) {
-			recordWrappers.add(replicateContainer.updateIterators(activeWindowCoordinate));
+			replicateContainer.updateIterators(activeWindowCoordinate);
 		}
-
-		return recordWrappers;
 	}
 	
 	public ReplicateContainer<T> getReplicatContainer(final int conditionIndex) {

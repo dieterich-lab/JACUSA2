@@ -8,7 +8,6 @@ import htsjdk.samtools.SamReader;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
-import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIterator;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIteratorProvider;
 import lib.data.cache.extractor.ReferenceSetter;
@@ -47,27 +46,21 @@ public class ReplicateContainer<T extends AbstractData> {
 		return iteratorProviders;
 	}
 	
-	public List<List<SAMRecordWrapper>> createIterators(final Coordinate activeWindowCoordinate,
+	public void createIterators(final Coordinate activeWindowCoordinate,
 			final Coordinate reservedWindowCoordinate) {
 
-		final List<List<SAMRecordWrapper>> recordWrappers = 
-				new ArrayList<List<SAMRecordWrapper>>(conditionParameter.getReplicateSize());
-		
 		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); replicateIndex++) {
 			final SAMRecordWrapperIteratorProvider iteratorProvider = iteratorProviders.get(replicateIndex);
 			final SAMRecordWrapperIterator iterator = 
 					iteratorProvider.createIterator(activeWindowCoordinate);
 			final DataBuilder<T> dataBuilder = dataBuilders.get(replicateIndex);
-
-			recordWrappers.add(dataBuilder.buildCache(activeWindowCoordinate, iterator));
+			dataBuilder.buildCache(activeWindowCoordinate, iterator);
 			iterator.close();
 		}
-
-		return recordWrappers; 
 	}
 
-	public List<List<SAMRecordWrapper>> updateIterators(final Coordinate activeWindowCoordinate) {
-		return createIterators(activeWindowCoordinate, null);
+	public void updateIterators(final Coordinate activeWindowCoordinate) {
+		createIterators(activeWindowCoordinate, null);
 	}
 	
 	public T[] getData(final Coordinate coordinate) {

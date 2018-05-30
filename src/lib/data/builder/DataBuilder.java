@@ -1,6 +1,5 @@
 package lib.data.builder;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -49,15 +48,13 @@ implements HasLibraryType {
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
 	}
 
-	// TODO remove return list
-	public List<SAMRecordWrapper> buildCache(final Coordinate activeWindowCoordinate,
+	public void buildCache(final Coordinate activeWindowCoordinate,
 			final Iterator<SAMRecordWrapper> iterator) {
 		
-		cacheContainer.clear();
-		cacheStatus	= CACHE_STATUS.NOT_CACHED;
-	
-		final List<SAMRecordWrapper> recordWrappers = new ArrayList<SAMRecordWrapper>();
+		clearCache();
 
+		int records = 0;
+		
 		SAMRecordWrapper recordWrapper = null;
 		try {
 			while (iterator.hasNext()) {
@@ -68,7 +65,7 @@ implements HasLibraryType {
 				for (RecordWrapperDataCache<?> filterCache : filterCaches) {
 					filterCache.addRecordWrapper(recordWrapper);
 				}
-				recordWrappers.add(recordWrapper);
+				records++;
 			}
 		} catch (Exception e){
 			if (recordWrapper != null) {
@@ -78,8 +75,7 @@ implements HasLibraryType {
 			e.printStackTrace();
 		}
 
-		cacheStatus = recordWrappers.size() > 0 ? CACHE_STATUS.CACHED : CACHE_STATUS.NOT_FOUND; 
-		return recordWrappers;
+		cacheStatus = records > 0 ? CACHE_STATUS.CACHED : CACHE_STATUS.NOT_FOUND; 
 	}
 	
 	// Reset all caches in windows
@@ -88,6 +84,7 @@ implements HasLibraryType {
 		for (RecordWrapperDataCache<?> filterCache : filterCaches) {
 			filterCache.clear();
 		}
+		cacheStatus	= CACHE_STATUS.NOT_CACHED;
 	}
 
 	public T getData(final Coordinate coordinate) {

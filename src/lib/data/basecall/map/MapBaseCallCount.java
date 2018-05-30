@@ -27,10 +27,12 @@ implements BaseCallCount {
 		this.baseCall = new HashMap<Base, Integer>(baseCallCount.baseCall);
 	}
 
+	@Override
 	public MapBaseCallCount copy() {
 		return new MapBaseCallCount(this);
 	}
 
+	@Override
 	public int getCoverage() {
 		int coverage = 0;
 		

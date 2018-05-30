@@ -9,10 +9,10 @@ import lib.data.has.HasReferenceBase;
 public class RTArrestVariantParallelPileup<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasRTcount>
 implements ParallelDataValidator<T> {
 	
-	private VariantSiteValidator<T> variantSite;
+	private ExtendedVariantSiteValidator<T> variantSite;
 	
 	public RTArrestVariantParallelPileup() {
-		variantSite = new VariantSiteValidator<T>();
+		variantSite = new ExtendedVariantSiteValidator<T>();
 	}
 
 	@Override

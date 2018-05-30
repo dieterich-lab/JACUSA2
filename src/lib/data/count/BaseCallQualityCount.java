@@ -23,7 +23,7 @@ public interface BaseCallQualityCount {
 	
 	void substract(Base base, BaseCallQualityCount baseCallQualCount);
 	void substract(Base dest, Base src, BaseCallQualityCount baseCallQualCount);
-	void substract(Base[] alleles, BaseCallQualityCount baseCallQualCount);
+	void substract(Set<Base> alleles, BaseCallQualityCount baseCallQualCount);
 
 	void invert();
 	

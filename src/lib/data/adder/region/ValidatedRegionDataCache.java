@@ -62,8 +62,10 @@ implements RegionDataCache<T> {
 			final int tmpWindowPosition 	= windowPositionGuard.getWindowPosition() + offset;
 			final int tmpReadPosition		= windowPositionGuard.getReadPosition() + offset;
 
-			final Base base = Base.valueOf(record.getReadBases()[tmpReadPosition]);
+			final Base base 		= Base.valueOf(record.getReadBases()[tmpReadPosition]);
 			final byte baseQuality 	= record.getBaseQualities()[tmpReadPosition];
+
+// System.out.println(tmpReferencePosition + " " + tmpWindowPosition + " " + tmpReadPosition + " " + (char)base.getC());
 
 			if (isValid(tmpReferencePosition, tmpWindowPosition, tmpReadPosition, 
 					base, baseQuality, 
@@ -115,6 +117,10 @@ implements RegionDataCache<T> {
 		}
 	}
 
+	public void addVIPAdder(final IncrementAdder<T> baseCallAdder) {
+		getAdder().add(0, baseCallAdder);
+	}
+	
 	public void addAdder(final IncrementAdder<T> baseCallAdder) {
 		getAdder().add(baseCallAdder);
 	}

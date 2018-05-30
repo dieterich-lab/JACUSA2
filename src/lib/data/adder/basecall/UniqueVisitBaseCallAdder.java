@@ -40,7 +40,7 @@ implements IncrementAdder<T>, VisitedReadPosition {
 
 	@Override
 	public boolean isVisited(int readPosition) {
-		return visited == null ? false : visited[readPosition];
+		return visited[readPosition];
 	}
 	
 	public void reset(final SAMRecordWrapper recordWrapper) {

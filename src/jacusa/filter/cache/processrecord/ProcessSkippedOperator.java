@@ -34,7 +34,6 @@ public class ProcessSkippedOperator extends AbstractProcessRecord {
 		
 		// add upstream
 		final int upstreamMatch = Math.min(getDistance(), recordWrapper.getUpstreamMatch(cigarElementWrapperIndex));
-		// mark region
 		if (upstreamMatch > 0) {
 			getRegionCache().addRegion(
 					position.getReferencePosition() - upstreamMatch,
@@ -45,7 +44,6 @@ public class ProcessSkippedOperator extends AbstractProcessRecord {
 
 		// add downstream
 		final int downstreamMatch = Math.min(getDistance(), recordWrapper.getDownstreamMatch(cigarElementWrapperIndex));
-		// mark region
 		if (downstreamMatch > 0) {
 			getRegionCache().addRegion(
 					position.getReferencePosition() + cigarElementWrapper.getCigarElement().getLength(),
