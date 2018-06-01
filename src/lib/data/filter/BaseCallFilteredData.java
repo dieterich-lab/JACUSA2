@@ -16,11 +16,10 @@ public class BaseCallFilteredData extends AbstractFilteredData<BaseCallCount> {
 	@Override
 	public void merge(final AbstractFilteredData<BaseCallCount> src) {
 		for (final char c : src.getFilters()) {
-			BaseCallCount dest;
-			if ((dest = get(c)) != null) {
-				dest.add(src.get(c));
+			if (! contains(c)) {
+				add(c, src.get(c).copy());
 			} else {
-				add(c, src.get(c));
+				get(c).add(src.get(c));
 			}
 		}
 	}

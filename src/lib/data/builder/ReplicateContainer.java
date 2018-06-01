@@ -4,21 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import htsjdk.samtools.SamReader;
-
+import jacusa.filter.FilterContainer;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIterator;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIteratorProvider;
 import lib.data.cache.extractor.ReferenceSetter;
-import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
 public class ReplicateContainer<T extends AbstractData> {
 
-	private final ConditionContainer<T> conditionContainer;
+	private final FilterContainer<T> filterContainer;
 	
 	private final AbstractConditionParameter<T> conditionParameter;
 	private final AbstractParameter<T, ?> generalParameters;
@@ -27,19 +26,18 @@ public class ReplicateContainer<T extends AbstractData> {
 	private final List<DataBuilder<T>> dataBuilders;
 	
 	public ReplicateContainer(
-			final ConditionContainer<T> conditionContainer,
 			final ReferenceSetter<T> referenceSetter,
+			final FilterContainer<T> filterContainer,
 			final CoordinateController coordinateController,
 			final AbstractConditionParameter<T> conditionParameter,
 			final AbstractParameter<T, ?> parameter) {
 
-		this.conditionContainer = conditionContainer;
-		
+		this.filterContainer 	= filterContainer;
 		this.conditionParameter = conditionParameter;
-		this.generalParameters = parameter;
+		this.generalParameters 	= parameter;
 
-		iteratorProviders = createRecordIteratorProviders(conditionParameter);
-		dataBuilders = createDataBuilders(referenceSetter, coordinateController, conditionParameter, parameter);
+		iteratorProviders 	= createRecordIteratorProviders(conditionParameter);
+		dataBuilders 		= createDataBuilders(referenceSetter, coordinateController, conditionParameter, parameter);
 	}
 
 	public List<SAMRecordWrapperIteratorProvider> getIteratorProviders() {
@@ -85,11 +83,9 @@ public class ReplicateContainer<T extends AbstractData> {
 		final List<DataBuilder<T>> dataBuilders = new ArrayList<DataBuilder<T>>(conditionParameter.getReplicateSize());
 
 		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); ++replicateIndex) {
-			final List<RecordWrapperDataCache<?>> filterCaches = 
-					conditionContainer.getFilterContainer().getFilterCaches(conditionParameter.getConditionIndex(), replicateIndex);
-
-			final DataBuilder<T> builder = 
-					parameter.getMethodFactory().getDataBuilderFactory().newInstance(referenceSetter, replicateIndex, coordinateController, conditionParameter, filterCaches);
+			final DataBuilder<T> builder = parameter.getMethodFactory()
+					.getDataBuilderFactory()
+					.newInstance(referenceSetter, filterContainer, coordinateController, conditionParameter, replicateIndex);
 			dataBuilders.add(builder);
 		}
 

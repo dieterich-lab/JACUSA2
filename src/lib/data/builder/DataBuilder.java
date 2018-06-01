@@ -1,13 +1,11 @@
 package lib.data.builder;
 
 import java.util.Iterator;
-import java.util.List;
 
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.CacheContainer;
-import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.generator.DataGenerator;
 import lib.data.has.HasLibraryType;
 import lib.util.AbstractTool;
@@ -20,7 +18,6 @@ implements HasLibraryType {
 	
 	private final DataGenerator<T> dataGenerator;
 	private final AbstractConditionParameter<T> conditionParameter;
-	private final List<RecordWrapperDataCache<?>> filterCaches;
 
 	private LIBRARY_TYPE libraryType;
 	
@@ -32,14 +29,12 @@ implements HasLibraryType {
 			final DataGenerator<T> dataGenerator, 
 			final AbstractConditionParameter<T> conditionParameter,
 			final LIBRARY_TYPE libraryType,
-			final CacheContainer<T> cacheContainer,
-			final List<RecordWrapperDataCache<?>> filterCaches) {
+			final CacheContainer<T> cacheContainer) {
 		
 		this.replicateIndex = replicateIndex;
 		
 		this.dataGenerator = dataGenerator;
 		this.conditionParameter	= conditionParameter;
-		this.filterCaches = filterCaches;
 
 		this.libraryType = libraryType;
 		
@@ -59,12 +54,8 @@ implements HasLibraryType {
 		try {
 			while (iterator.hasNext()) {
 				recordWrapper = iterator.next();
-				// process filters and decode
 				recordWrapper.process();
 				cacheContainer.add(recordWrapper);
-				for (RecordWrapperDataCache<?> filterCache : filterCaches) {
-					filterCache.addRecordWrapper(recordWrapper);
-				}
 				records++;
 			}
 		} catch (Exception e){
@@ -81,14 +72,11 @@ implements HasLibraryType {
 	// Reset all caches in windows
 	public void clearCache() {
 		cacheContainer.clear();
-		for (RecordWrapperDataCache<?> filterCache : filterCaches) {
-			filterCache.clear();
-		}
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
 	}
 
 	public T getData(final Coordinate coordinate) {
-		T data = dataGenerator.createData(getLibraryType(), coordinate);
+		final T data = dataGenerator.createData(getLibraryType(), coordinate);
 		cacheContainer.addData(data, coordinate);
 		return data;
 	}

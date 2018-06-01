@@ -3,32 +3,28 @@ package jacusa.filter.basecall;
 import htsjdk.samtools.util.StringUtil;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import jacusa.filter.AbstractDataFilter;
+import jacusa.filter.AbstractFilter;
 import jacusa.filter.FilterRatio;
 import lib.cli.options.Base;
-import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallData;
 import lib.data.ParallelData;
 import lib.data.basecall.array.ArrayBaseCallCount;
 import lib.data.cache.extractor.lrtarrest.RefPos2BaseCallCountExtractor;
-import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.count.BaseCallCount;
 import lib.data.has.HasReferenceBase;
 import lib.data.result.Result;
 import lib.util.coordinate.Coordinate;
 
-
 /**
  * 
  * @param <T>
  */
-public class LRTarrestRef2BaseCallDataFilter<T extends AbstractData & HasReferenceBase> 
-extends AbstractDataFilter<T> {
+public class LRTarrestRef2BaseCallFilter<T extends AbstractData & HasReferenceBase> 
+extends AbstractFilter<T> {
 
 	public static final char SEP = ',';
 
@@ -40,15 +36,14 @@ extends AbstractDataFilter<T> {
 	// container for artefacts
 	private final Set<Integer> filteredRefPositions;
 
-	public LRTarrestRef2BaseCallDataFilter(final char c, 
+	public LRTarrestRef2BaseCallFilter(final char c, 
 			final RefPos2BaseCallCountExtractor<T> observed,
 			final RefPos2BaseCallCountExtractor<T> filtered,
 			final int overhang, 
-			final FilterRatio filterRatio,
-			final AbstractParameter<T, ?> parameter,
-			final List<List<RecordWrapperDataCache<T>>> conditionFilterCaches) {
+			final FilterRatio filterRatio) {
 
-		super(c, overhang, parameter, conditionFilterCaches);
+		super(c, overhang);
+
 		this.observed = observed;
 		this.filtered = filtered;
 		baseCallCountFilter = new BaseCallCountFilter(filterRatio);

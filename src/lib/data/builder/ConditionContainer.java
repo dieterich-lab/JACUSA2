@@ -72,12 +72,11 @@ public class ConditionContainer<T extends AbstractData> {
 		filterContainer = parameter.getFilterConfig().createFilterInstances(coordinateController);
 		parameter.getFilterConfig().registerFilters(coordinateController, this);
 		
-		replicateContainers = 
-				new ArrayList<ReplicateContainer<T>>(parameter.getConditionsSize());
+		replicateContainers = new ArrayList<ReplicateContainer<T>>(parameter.getConditionsSize());
 
 		for (final AbstractConditionParameter<T> conditionParameter : parameter.getConditionParameters()) {
 			final ReplicateContainer<T> replicateContainer = 
-					new ReplicateContainer<T>(this, referenceSetter, coordinateController, conditionParameter, parameter);
+					new ReplicateContainer<T>(referenceSetter, getFilterContainer(), coordinateController, conditionParameter, parameter);
 			replicateContainers.add(replicateContainer);
 		}
 	}

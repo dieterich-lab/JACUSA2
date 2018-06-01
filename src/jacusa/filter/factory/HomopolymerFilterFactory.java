@@ -1,8 +1,7 @@
 package jacusa.filter.factory;
 
-import java.util.List;
-
-import jacusa.filter.HomopolymerDataFilter;
+import jacusa.filter.AbstractFilter;
+import jacusa.filter.HomopolymerFilter;
 import jacusa.filter.cache.HomopolymerFilterCache;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
@@ -52,7 +51,7 @@ extends AbstractDataFilterFactory<T> {
 	}
 
 	@Override
-	protected RecordWrapperDataCache<T> createFilterCache(
+	public RecordWrapperDataCache<T> createFilterCache(
 			AbstractConditionParameter<T> conditionParameter,
 			CoordinateController coordinateController) {
 		
@@ -60,19 +59,11 @@ extends AbstractDataFilterFactory<T> {
 	}
 	
 	@Override
-	public void registerFilter(final CoordinateController coordinateController, 
+	public AbstractFilter<T> createFilter(final CoordinateController coordinateController, 
 			final ConditionContainer<T> conditionContainer) {
 
 		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
-
-		// TODO add comments.
-		final List<List<RecordWrapperDataCache<T>>> conditionFilterCaches = 
-				createConditionFilterCaches(parameter, coordinateController, this);
-		// create filter 
-		final HomopolymerDataFilter<T> dataFilter = 
-				new HomopolymerDataFilter<T>(getC(), length, parameter, conditionFilterCaches);
-		// and propagate conditionFilterCache
-		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
+		return new HomopolymerFilter<T>(getC(), length, parameter);
 	}
 
 	@Override

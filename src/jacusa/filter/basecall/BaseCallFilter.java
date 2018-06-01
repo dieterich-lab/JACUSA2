@@ -1,17 +1,14 @@
 package jacusa.filter.basecall;
 
-import java.util.List;
 import java.util.Set;
 
-import jacusa.filter.AbstractDataFilter;
+import jacusa.filter.AbstractFilter;
 import jacusa.filter.FilterRatio;
 import lib.cli.options.Base;
-import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.BaseCallData;
 import lib.data.ParallelData;
 import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
-import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.count.BaseCallCount;
 import lib.data.generator.BaseCallDataGenerator;
 import lib.data.generator.DataGenerator;
@@ -25,7 +22,7 @@ import lib.data.has.HasLibraryType.LIBRARY_TYPE;
  * @param <T>
  */
 public class BaseCallFilter<T extends AbstractData & HasReferenceBase> 
-extends AbstractDataFilter<T> {
+extends AbstractFilter<T> {
 
 	private final BaseCallCountExtractor<T> observed;
 	private final BaseCallCountExtractor<T> filtered;
@@ -36,11 +33,9 @@ extends AbstractDataFilter<T> {
 			final BaseCallCountExtractor<T> observed,
 			final BaseCallCountExtractor<T> filtered,
 			final int overhang, 
-			final FilterRatio filterRatio,
-			final AbstractParameter<T, ?> parameter,
-			final List<List<RecordWrapperDataCache<T>>> conditionFilterCaches) {
+			final FilterRatio filterRatio) {
 
-		super(c, overhang, parameter, conditionFilterCaches);
+		super(c, overhang);
 		this.observed = observed;
 		this.filtered = filtered;
 		baseCallCountFilter 		= new BaseCallCountFilter(filterRatio);

@@ -15,7 +15,7 @@ public abstract class AbstractFilteredData<T> {
 	public AbstractFilteredData(final AbstractFilteredData<T> src) {
 		this();
 		
-		for (final char c : getFilters()) {
+		for (final char c : src.getFilters()) {
 			map.put(c, copy(src.get(c)));
 		}
 	}

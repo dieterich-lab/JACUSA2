@@ -3,6 +3,7 @@ package jacusa.filter.factory.basecall;
 import java.util.ArrayList;
 import java.util.List;
 
+import jacusa.filter.AbstractFilter;
 import jacusa.filter.FilterRatio;
 import jacusa.filter.basecall.BaseCallFilter;
 import jacusa.filter.cache.RecordProcessDataCache;
@@ -10,7 +11,6 @@ import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.AbstractDataFilterFactory;
 import jacusa.filter.factory.AbstractFilterFactory;
 import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.adder.IncrementAdder;
 import lib.data.adder.basecall.ArrayBaseCallAdder;
@@ -108,23 +108,15 @@ extends AbstractDataFilterFactory<T> {
 	}
 
 	@Override
-	public void registerFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
-		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
-		
-		final List<List<RecordWrapperDataCache<T>>> conditionFilterCaches = 
-				createConditionFilterCaches(parameter, coordinateController, this);
-		
-		final BaseCallFilter<T> dataFilter = new BaseCallFilter<T>(getC(),
+	public AbstractFilter<T> createFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
+		return new BaseCallFilter<T>(getC(),
 				getObserved(),
 				getFiltered(),	
-				getDistance(), new FilterRatio(getMinRatio()), 
-				parameter, conditionFilterCaches);
-
-		conditionContainer.getFilterContainer().addDataFilter(dataFilter);
+				getDistance(), new FilterRatio(getMinRatio()));
 	}
 
 	@Override
-	protected RecordWrapperDataCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
+	public RecordWrapperDataCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
 			final CoordinateController coordinateController) {
 
 		final List<IncrementAdder<T>> adder = new ArrayList<IncrementAdder<T>>();

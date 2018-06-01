@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jacusa.filter.factory.AbstractDataFilterFactory;
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.cache.record.RecordWrapperDataCache;
 import lib.util.coordinate.CoordinateController;
@@ -21,10 +23,11 @@ public class FilterContainer<T extends AbstractData> {
 	// reference to a specific window
 	private final CoordinateController coordinateController;
 
+	// map of filterFactories - contains ONLY 
+	private final Map<Character, AbstractDataFilterFactory<T>> dataFilterFactories;
+	
 	// map of filters - contains both: AbstractFilter and AbstractDataFilter 
 	private final Map<Character, AbstractFilter<T>> filters;
-	// map of filters that REQUIRE filterCache data -  only AbstractDataFilter
-	private final Map<Character, AbstractDataFilter<T>> dataFilters;
 
 	// max overhang that is required by some filter
 	private int overhang;
@@ -38,8 +41,8 @@ public class FilterContainer<T extends AbstractData> {
 		overhang 					= 0;
 
 		final int initialCapacity 	= 3;
+		dataFilterFactories			= new HashMap<Character, AbstractDataFilterFactory<T>>(initialCapacity);
 		filters						= new HashMap<Character, AbstractFilter<T>>(initialCapacity);
-		dataFilters					= new HashMap<Character, AbstractDataFilter<T>>(initialCapacity);
 	}
 
 	/**
@@ -70,15 +73,6 @@ public class FilterContainer<T extends AbstractData> {
 	}
 
 	/**
-	 * Helper method. Clears all dataFilters. Usually used after window switch.
-	 */
-	public void clear() {
-		for (final AbstractDataFilter<T> dataFilter : dataFilters.values()) {
-			dataFilter.clear();
-		}
-	}
-
-	/**
 	 * Adds a filter. AbstractDataFilter should be added by <code>addDataFilter()</code>. 
 	 * 
 	 * @param filter the filter to be added
@@ -86,26 +80,14 @@ public class FilterContainer<T extends AbstractData> {
 	public void addFilter(final AbstractFilter<T> filter) {
 		filters.put(filter.getC(), filter);
 	}
-
+	
 	/**
-	 * Adds a filter that REQUIRES filterCache data. Implicitly, 
-	 * the filter is added to the map of all filters. 
+	 * Adds a filter. AbstractDataFilter should be added by <code>addDataFilter()</code>. 
 	 * 
-	 * @param filter the filter to be added
+	 * @param dataFilterFactory the filter to be added
 	 */
-	public void addDataFilter(final AbstractDataFilter<T> dataFilter) {
-		filters.put(dataFilter.getC(), dataFilter);
-		dataFilters.put(dataFilter.getC(), dataFilter);
-	}
-
-	public List<RecordWrapperDataCache<?>> getFilterCaches(final int conditionIndex, final int replicateIndex) {
-		final List<RecordWrapperDataCache<?>> filterCaches = new ArrayList<RecordWrapperDataCache<?>>();
-
-		for (final AbstractDataFilter<T> dataFilter : dataFilters.values()) {
-			filterCaches.add(dataFilter.getFilterCache(conditionIndex, replicateIndex));
-		}
-
-		return filterCaches;
+	public void addDataFilterFactory(final AbstractDataFilterFactory<T> dataFilterFactory) {
+		dataFilterFactories.put(dataFilterFactory.getC(), dataFilterFactory);
 	}
 
 	/**
@@ -117,4 +99,15 @@ public class FilterContainer<T extends AbstractData> {
 		return new ArrayList<AbstractFilter<T>>(filters.values());
 	}
 
+	public List<RecordWrapperDataCache<T>> createFilterCaches(final AbstractConditionParameter<T> conditionParameter, final CoordinateController coordinateController) {
+		final List<RecordWrapperDataCache<T>> filterCaches = 
+				new ArrayList<RecordWrapperDataCache<T>>(dataFilterFactories.size());
+
+		for (final AbstractDataFilterFactory<T> dataFilterFactory : dataFilterFactories.values()) {
+			filterCaches.add(dataFilterFactory.createFilterCache(conditionParameter, coordinateController));
+		}
+		
+		return filterCaches;
+	}
+	
 }
