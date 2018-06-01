@@ -7,14 +7,14 @@ import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 
-public class SimpleGeneralCache implements GeneralCache {
+public class ComplexSharedCache implements SharedCache {
 
 	private final CoordinateController coordinateController;
 
 	private final ReferenceProvider referenceProvider;
 	private final NextPositionSegmentContainer segmentContainer;
 	
-	public SimpleGeneralCache(final ReferenceProvider referenceProvider, 
+	public ComplexSharedCache(final ReferenceProvider referenceProvider, 
 			final CoordinateController coordinateController) {
 		
 		this.coordinateController = coordinateController;
@@ -51,11 +51,20 @@ public class SimpleGeneralCache implements GeneralCache {
 	public byte getReference(int windowPosition) {
 		return referenceProvider.getReference(windowPosition);
 	}
-	
+
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
+		referenceProvider.addRecordWrapper(recordWrapper);
+		
+		/*
+		boolean right = false;
+		if (recordWrapper.getSAMRecord().getReadName().equals("HWI-ST999:294:C9LMJACXX:1:1206:5347:41258") || 
+				recordWrapper.getSAMRecord().getReadName().equals("HWI-ST999:294:C9LMJACXX:1:2206:6528:78416")) {
+			right = true;
+		}
+		*/
+		
 		AlignmentBlock previousBlock = null;
-
 		for (final AlignmentBlock currentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
 			
 			final int currentRefPos = currentBlock.getReferenceStart();	
@@ -69,7 +78,8 @@ public class SimpleGeneralCache implements GeneralCache {
 				
 			if (previousBlock != null) {
 				final int previousRefPos = previousBlock.getReferenceStart() + previousBlock.getLength();	
-				final int previousLen = currentRefPos - 1 - previousRefPos;
+				// final int previousLen = currentRefPos - 1 - previousRefPos;
+				final int previousLen = currentRefPos - previousRefPos;
 				final WindowPositionGuard previousWinPosGuard = coordinateController.convert(previousRefPos, previousLen);
 				
 				if (previousWinPosGuard.isValid()) {

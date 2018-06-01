@@ -6,11 +6,11 @@ import java.util.Map.Entry;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.builder.ConditionContainer;
-import lib.data.cache.container.ComplexGeneralCache;
+import lib.data.cache.container.ComplexSharedCache;
 import lib.data.cache.container.FileReferenceProvider;
-import lib.data.cache.container.GeneralCache;
+import lib.data.cache.container.SharedCache;
 import lib.data.cache.container.ReferenceProvider;
-import lib.data.cache.container.SimpleGeneralCache;
+import lib.data.cache.container.SimpleSharedCache;
 import lib.data.cache.container.SimpleMDReferenceProvider;
 import lib.data.has.HasLibraryType.LIBRARY_TYPE;
 import lib.location.CoordinateAdvancer;
@@ -151,12 +151,12 @@ public class CoordinateController {
 		return new SimpleEntry<Integer, STRAND>(windowPosition, coordinate.getStrand());
 	}
 
-	public GeneralCache getGeneralCache() {
+	public SharedCache getSharedCache() {
 		if (parameter.getReferenceFile() == null) {
-			return new ComplexGeneralCache(getReferenceProvider(), this);
+			return new ComplexSharedCache(getReferenceProvider(), this);
 		} 
 
-		return new SimpleGeneralCache(getReferenceProvider(), this);
+		return new SimpleSharedCache(getReferenceProvider(), this);
 	}
 	
 	public ReferenceProvider getReferenceProvider() {

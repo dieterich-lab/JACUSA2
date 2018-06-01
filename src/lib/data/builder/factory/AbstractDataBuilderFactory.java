@@ -54,10 +54,10 @@ public abstract class AbstractDataBuilderFactory<T extends AbstractData> {
 		case FR_FIRSTSTRAND: {
 			final CacheContainer<T> forwardCacheContainer = 
 				new UnstrandedCacheContainter<T>(
-						referenceSetter, coordinateController, createDataCaches(filterContainer, coordinateController, conditionParameter, replicateIndex));
+						referenceSetter, coordinateController, createCaches(filterContainer, coordinateController, conditionParameter, replicateIndex));
 			final CacheContainer<T> reverseCacheContainer = 
 					new UnstrandedCacheContainter<T>(
-							referenceSetter, coordinateController, createDataCaches(filterContainer, coordinateController, conditionParameter, replicateIndex));
+							referenceSetter, coordinateController, createCaches(filterContainer, coordinateController, conditionParameter, replicateIndex));
 
 			cacheContainer = new FRPairedEnd1CacheContainer<T>(forwardCacheContainer, reverseCacheContainer);
 			break;
@@ -66,10 +66,10 @@ public abstract class AbstractDataBuilderFactory<T extends AbstractData> {
 		case FR_SECONDSTRAND: {
 			final CacheContainer<T> forwardCacheContainer = 
 				new UnstrandedCacheContainter<T>(
-						referenceSetter, coordinateController, createDataCaches(filterContainer, coordinateController, conditionParameter, replicateIndex));
+						referenceSetter, coordinateController, createCaches(filterContainer, coordinateController, conditionParameter, replicateIndex));
 			final CacheContainer<T> reverseCacheContainer = 
 				new UnstrandedCacheContainter<T>(
-						referenceSetter, coordinateController, createDataCaches(filterContainer, coordinateController, conditionParameter, replicateIndex));
+						referenceSetter, coordinateController, createCaches(filterContainer, coordinateController, conditionParameter, replicateIndex));
 			
 			cacheContainer = new FRPairedEnd2CacheContainer<T>(forwardCacheContainer, reverseCacheContainer);
 			break;
@@ -77,7 +77,7 @@ public abstract class AbstractDataBuilderFactory<T extends AbstractData> {
 			
 		case UNSTRANDED: {
 			cacheContainer = new UnstrandedCacheContainter<T>(
-					referenceSetter, coordinateController, createDataCaches(filterContainer, coordinateController, conditionParameter, replicateIndex));
+					referenceSetter, coordinateController, createCaches(filterContainer, coordinateController, conditionParameter, replicateIndex));
 			break;
 		}
 			
@@ -88,17 +88,17 @@ public abstract class AbstractDataBuilderFactory<T extends AbstractData> {
 		return cacheContainer;
 	}
 	
-	protected abstract List<RecordWrapperDataCache<T>> createDataCaches(final CoordinateController coordinateController, 
+	protected abstract List<RecordWrapperDataCache<T>> createCaches(final CoordinateController coordinateController, 
 			final AbstractConditionParameter<T> conditionParameter);
 	
-	private List<RecordWrapperDataCache<T>> createDataCaches(
+	private List<RecordWrapperDataCache<T>> createCaches(
 			final FilterContainer<T> filterContainer, 
 			final CoordinateController coordinateController, 
 			final AbstractConditionParameter<T> conditionParameter,
 			final int replicateIndex) {
 
-		final List<RecordWrapperDataCache<T>> allCaches		= new ArrayList<RecordWrapperDataCache<T>>(3);
-		final List<RecordWrapperDataCache<T>> dataCaches 	= createDataCaches(coordinateController, conditionParameter);
+		final List<RecordWrapperDataCache<T>> allCaches		= new ArrayList<RecordWrapperDataCache<T>>(6);
+		final List<RecordWrapperDataCache<T>> dataCaches 	= createCaches(coordinateController, conditionParameter);
 		final List<RecordWrapperDataCache<T>> filterCaches 	= filterContainer.createFilterCaches(conditionParameter, coordinateController);
 		allCaches.addAll(dataCaches);
 		allCaches.addAll(filterCaches);

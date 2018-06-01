@@ -26,7 +26,7 @@ extends AbstractDataBuilderFactory<BaseCallData> {
 		super(generalParameter);
 	}
 	
-	protected List<RecordWrapperDataCache<BaseCallData>> createDataCaches(final CoordinateController coordinateController, 
+	protected List<RecordWrapperDataCache<BaseCallData>> createCaches(final CoordinateController coordinateController, 
 			final AbstractConditionParameter<BaseCallData> conditionParameter) {
 
 		final List<IncrementAdder<BaseCallData>> adder = new ArrayList<IncrementAdder<BaseCallData>>();

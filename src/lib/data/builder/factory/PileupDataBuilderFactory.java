@@ -27,7 +27,7 @@ extends AbstractDataBuilderFactory<PileupData> {
 		super(generalParameter);
 	}
 	
-	protected List<RecordWrapperDataCache<PileupData>> createDataCaches(final CoordinateController coordinateController, 
+	protected List<RecordWrapperDataCache<PileupData>> createCaches(final CoordinateController coordinateController, 
 			final AbstractConditionParameter<PileupData> conditionParameter) {
 
 		final List<IncrementAdder<PileupData>> adder = new ArrayList<IncrementAdder<PileupData>>();

@@ -15,7 +15,7 @@ public interface CacheContainer<T extends AbstractData> {
 
 	void addData(T data, final Coordinate coordinate);
 	
-	List<RecordWrapperDataCache<T>> getDataCaches();
+	List<RecordWrapperDataCache<T>> getCaches();
 	void clear();
 	
 }

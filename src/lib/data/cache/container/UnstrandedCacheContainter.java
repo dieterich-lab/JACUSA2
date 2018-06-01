@@ -15,9 +15,9 @@ implements CacheContainer<T> {
 
 	private final ReferenceSetter<T> referenceSetter; 
 	private final CoordinateController coordinateController;
-	private final List<RecordWrapperDataCache<T>> dataCaches;
+	private final List<RecordWrapperDataCache<T>> caches;
 	
-	private final GeneralCache generalCache;
+	private final SharedCache sharedCache;
 
 	public UnstrandedCacheContainter(
 			final ReferenceSetter<T> referenceSetter,
@@ -25,21 +25,21 @@ implements CacheContainer<T> {
 			final List<RecordWrapperDataCache<T>> dataCaches) {
 		this.referenceSetter  		= referenceSetter;
 		this.coordinateController	= coordinateController;
-		this.dataCaches 			= dataCaches;
+		this.caches 			= dataCaches;
 		
-		generalCache				= coordinateController.getGeneralCache();
+		sharedCache					= coordinateController.getSharedCache();
 	}
 	
 	@Override
 	public int getNext(final int windowPosition) {
-		return generalCache.getNext(windowPosition);
+		return sharedCache.getNext(windowPosition);
 	}
 	
 	@Override
 	public void add(final SAMRecordWrapper recordWrapper) {
-		generalCache.addRecordWrapper(recordWrapper);
+		sharedCache.addRecordWrapper(recordWrapper);
 
-		for (final RecordWrapperDataCache<T> dataCache : dataCaches) {
+		for (final RecordWrapperDataCache<T> dataCache : caches) {
 			dataCache.addRecordWrapper(recordWrapper);
 		}
 	}
@@ -47,21 +47,21 @@ implements CacheContainer<T> {
 	@Override
 	public void addData(final T data, Coordinate coordinate) {
 		referenceSetter.setReference(coordinate, data, coordinateController.getReferenceProvider());
-		for (final DataAdder<T> dataCache : dataCaches) {
+		for (final DataAdder<T> dataCache : caches) {
 			dataCache.addData(data, coordinate);
 		}
 	}
 	
 	public void clear() {
-		generalCache.clear();
-		for (final DataAdder<T> dataCache : dataCaches) {
+		sharedCache.clear();
+		for (final DataAdder<T> dataCache : caches) {
 			dataCache.clear();
 		}
 	}
 
 	@Override
-	public List<RecordWrapperDataCache<T>> getDataCaches() {
-		return dataCaches;
+	public List<RecordWrapperDataCache<T>> getCaches() {
+		return caches;
 	}
 
 }

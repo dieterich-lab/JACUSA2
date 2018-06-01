@@ -39,10 +39,10 @@ implements CacheContainer<T> {
 	}
 	
 	@Override
-	public List<RecordWrapperDataCache<T>> getDataCaches() {
+	public List<RecordWrapperDataCache<T>> getCaches() {
 		List<RecordWrapperDataCache<T>> caches = new ArrayList<RecordWrapperDataCache<T>>(10);
-		caches.addAll(forwardContainer.getDataCaches());
-		caches.addAll(reverseContainer.getDataCaches());
+		caches.addAll(forwardContainer.getCaches());
+		caches.addAll(reverseContainer.getCaches());
 		return caches;
 	}
 	
