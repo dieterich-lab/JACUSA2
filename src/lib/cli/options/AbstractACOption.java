@@ -18,7 +18,6 @@ public abstract class AbstractACOption {
 	public abstract void process(CommandLine line) throws Exception;
 	public abstract Option getOption();
 	
-	
 	public boolean isHidden() {
 		return hide;
 	}

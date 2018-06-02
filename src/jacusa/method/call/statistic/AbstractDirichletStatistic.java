@@ -2,13 +2,16 @@ package jacusa.method.call.statistic;
 
 import jacusa.cli.parameters.CallParameter;
 import jacusa.estimate.MinkaEstimateParameters;
-import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.dirmult.initalpha.AbstractAlphaInit;
 import jacusa.method.call.statistic.dirmult.initalpha.MinAlphaInit;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Set;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 
 import htsjdk.samtools.util.SequenceUtil;
 import lib.cli.options.Base;
@@ -305,51 +308,79 @@ extends AbstractStatisticCalculator<T> {
 		// if log-likelihood ratio interpret threshold as lower bound 
 		return value < threshold;
 	}
+
+	@Override
+	protected Options getOptions() {
+		final Options options = new Options();
+
+		options.addOption(Option.builder("epsilon")
+				.hasArg(true)
+				.desc("Default: " + estimateAlpha.getEpsilon())
+				.build());
+
+		options.addOption(Option.builder("maxIterations")
+				.hasArg(true)
+				.desc("Default: " + estimateAlpha.getMaxIterations())
+				.build());
+
+		options.addOption(Option.builder("onlyObserved")
+				.hasArg(true)
+				.desc("")
+				.build());
+		
+		options.addOption(Option.builder("calculateP-value")
+				.hasArg(true)
+				.desc("")
+				.build());
+		
+		options.addOption(Option.builder("showAlpha")
+				.hasArg(true)
+				.desc("")
+				.build());
+		
+		return options;
+	}
 	
 	@Override
-	public boolean processCLI(String line) {
+	public void processCLI(final CommandLine cmd) {
 		// format: -u DirMult:epsilon=<epsilon>:maxIterations=<maxIterions>:onlyObserved
-		String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
-		// indicates if a CLI has been successfully parsed
-		boolean r = false;
 
 		// ignore any first array element of s (e.g.: s[0] = "-u DirMult") 
-		for (int i = 1; i < s.length; ++i) {
-			// kv := "key[=value]" 
-			String[] kv = s[i].split("=");
-			String key = kv[0];
-			// value may be empty for options without arguments, e.g.: "onlyObserved"
-			String value = new String();
-			if (kv.length == 2) {
-				value = kv[1];
-			}
+		for (final Option option : cmd.getOptions()) {
+			final String opt = option.getOpt();
+			switch (opt) {
+			case "epsilon":
+				estimateAlpha.setEpsilon(Double.parseDouble(cmd.getOptionValue(opt)));
+				break;
+				
+			case "maxIterations":
+				estimateAlpha.setMaxIterations(Integer.parseInt(cmd.getOptionValue(opt)));
+				break;
+				
+			case "onlyObserved":
+				setOnlyObservedBases(true);
+				break;
 
-			// parse key and do something
-			if (key.equals("epsilon")) { 
-				estimateAlpha.setEpsilon(Double.parseDouble(value));
-				r = true;
-			} else if(key.equals("maxIterations")) {
-				estimateAlpha.setMaxIterations(Integer.parseInt(value));
-				r = true;
-			} else if(key.equals("onlyObserved")) {
-				onlyObservedBases = true;
-				r = true;
-			} else if(key.equals("calculateP-value")) {
-				calcPValue = true;
-				r = true;
-			} else if(key.equals("showAlpha")) {
-				showAlpha = true;
-				r = true;
-			} /*else if(key.equals("initAlpha")) {
+			case "calculateP-value":
+				setCalcPValue(true);
+				break;
+				
+			case "showAlpha":
+				setShowAlpha(true);
+				break;
+
+			 /*else if(key.equals("initAlpha")) {
 				// parse arguments by factory
 				AbstractAlphaInit alphaInit = alphaInitFactory.processCLI(value);
 				estimateAlpha.setAlphaInit(alphaInit);
 				r = true;
 				
 			}*/
-		}
 
-		return r;
+			default:
+				break;
+			}
+		}
 	}
 
 	/**
@@ -378,6 +409,10 @@ extends AbstractStatisticCalculator<T> {
 
 	public void setShowAlpha(boolean showAlpha) {
 		this.showAlpha = showAlpha;
+	}
+	
+	public void setCalcPValue(boolean calcPValue) {
+		this.calcPValue = calcPValue;
 	}
 
 	public void setOnlyObservedBases(boolean onlyObservedBases) {

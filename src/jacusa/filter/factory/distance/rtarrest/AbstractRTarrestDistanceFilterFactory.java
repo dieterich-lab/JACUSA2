@@ -3,6 +3,10 @@ package jacusa.filter.factory.distance.rtarrest;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
 import jacusa.filter.factory.basecall.AbstractBaseCallCountFilterFactory;
 import jacusa.method.rtarrest.RTArrestFactory;
 import jacusa.method.rtarrest.RTArrestFactory.RT_READS;
@@ -43,34 +47,49 @@ extends AbstractBaseCallCountFilterFactory<T> {
 	}
 
 	@Override
-	public void processCLI(String line) throws IllegalArgumentException {
-		if (line.length() == 1) {
-			return;
-		}
-		super.processCLI(line);
-		final Set<RT_READS> apply2reads = RTArrestFactory.processApply2Reads(3, line);
-		if (apply2reads.size() > 0) {
-			getApply2Reads().clear();
-			getApply2Reads().addAll(apply2reads);
-			
-			if (getApply2Reads().size() == 2) {
-				setObserved(new DefaultBaseCallCountExtractor<T>());	
-			} else {
-				if (getApply2Reads().contains(RT_READS.ARREST)) {
-					setObserved(new ArrestBaseCallCountExtractor<T>());	
-				} else if (getApply2Reads().contains(RT_READS.THROUGH)) {
-					setObserved(new ThroughBaseCallCountExtractor<T>());	
-				} else {
-					throw new IllegalStateException(); 
-				}
-			}
-		}	
+	protected Options getOptions() {
+		final Options options = super.getOptions();
+		options.addOption(RTArrestFactory.getOption());
+		return options;
 	}
 	
+	@Override
+	public void processCLI(final CommandLine cmd) throws IllegalArgumentException {
+		super.processCLI(cmd);
+		
+		// ignore any first array element of s (e.g.: s[0] = "-u DirMult") 
+		for (final Option option : cmd.getOptions()) {
+			final String opt = option.getOpt();
+			switch (opt) {
+				case "reads":
+					final String optionValue = cmd.getOptionValue(opt);
+					final Set<RT_READS> apply2reads = RTArrestFactory.processApply2Reads(optionValue);
+					if (apply2reads.size() > 0) {
+						getApply2Reads().clear();
+						getApply2Reads().addAll(apply2reads);
+						
+						if (getApply2Reads().size() == 2) {
+							setObserved(new DefaultBaseCallCountExtractor<T>());	
+						} else {
+							if (getApply2Reads().contains(RT_READS.ARREST)) {
+								setObserved(new ArrestBaseCallCountExtractor<T>());	
+							} else if (getApply2Reads().contains(RT_READS.THROUGH)) {
+								setObserved(new ThroughBaseCallCountExtractor<T>());	
+							} else {
+								throw new IllegalStateException(); 
+							}
+						}
+					}
+				break;
+	
+			default:
+				break;
+			}
+		}
+	}
+
 	protected Set<RT_READS> getApply2Reads() {
 		return apply2reads;
 	}
-
-	
 	
 }

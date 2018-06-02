@@ -1,5 +1,9 @@
 package jacusa.filter.factory;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.HomopolymerFilter;
 import jacusa.filter.cache.HomopolymerFilterCache;
@@ -24,28 +28,38 @@ extends AbstractDataFilterFactory<T> {
 		
 	public HomopolymerFilterFactory() {
 		super('Y', 
-				"Filter wrong variant calls within homopolymers. Default: " + MIN_HOMOPOLYMER_LENGTH + " (Y:length)");
+				"Filter wrong variant calls within homopolymers.");
 		length = MIN_HOMOPOLYMER_LENGTH;
+	}
+
+	@Override
+	protected Options getOptions() {
+		final Options options = new Options();
+		
+		options.addOption(Option.builder("length")
+				.hasArg(true)
+				.desc("Default: " + MIN_HOMOPOLYMER_LENGTH)
+				.build());
+		
+		return options;
 	}
 	
 	@Override
-	public void processCLI(final String line) throws IllegalArgumentException {
-		if(line.length() == 1) {
-			return;
-		}
-
+	public void processCLI(final CommandLine cmd) {
 		// format Y:length
-		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
-		for (int i = 1; i < s.length; ++i) {
-			int value = Integer.valueOf(s[i]);
-
-			switch(i) {
-			case 1:
-				this.length = value;
+		for (final Option option : cmd.getOptions()) {
+			final String opt = option.getOpt();
+			switch (opt) {
+			case "length":
+				final int length = Integer.valueOf(cmd.getOptionValue(opt));
+				if (length < 0) {
+					throw new IllegalArgumentException("Invalid length: " + opt);
+				}
+				this.length = length;
 				break;
-
+				
 			default:
-				throw new IllegalArgumentException("Invalid argument " + length);
+				break;
 			}
 		}
 	}

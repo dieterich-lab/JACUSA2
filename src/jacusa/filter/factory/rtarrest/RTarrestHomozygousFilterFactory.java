@@ -3,9 +3,14 @@ package jacusa.filter.factory.rtarrest;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.io.format.BEDlikeWriter;
+import jacusa.method.rtarrest.RTArrestFactory;
 import jacusa.method.rtarrest.RTArrestFactory.RT_READS;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
@@ -42,46 +47,39 @@ extends AbstractFilterFactory<T> {
 	}
 
 	@Override
-	public void processCLI(final String line) throws IllegalArgumentException {
-		if (line.length() == 1) {
-			throw new IllegalArgumentException("Invalid argument " + line + ". MUST be set to H:1 or H:2)");
-		}
-
-		// format of s: 	H:<condition>[:<arrest,through>]
-		// array content:	0:1			  :2
-		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
-		for (int i = 1; i < s.length; ++i) {
-			switch(i) {
-
-			case 1: // set homozygous conditionIndex
-				final int conditionIndex = Integer.parseInt(s[1]);
+	public void processCLI(final CommandLine cmd) throws IllegalArgumentException {
+		for (final Option option : cmd.getOptions()) {
+			final String opt = option.getOpt();
+			switch (opt) {
+			case "condition":
+				final int conditionIndex = Integer.parseInt(cmd.getOptionValue(opt));
 				// make sure conditionIndex is within provided conditions
 				if (conditionIndex >= 1 && conditionIndex <= parameters.getConditionsSize()) {
 					this.homozygousConditionIndex = conditionIndex;
 				} else {
-					throw new IllegalArgumentException("Invalid argument: " + line);
+					throw new IllegalArgumentException("Invalid argument: " + opt);
 				}
 				break;
 
-			case 2: // choose arrest, through or arrest&through
-				final String[] options = s[2].split("&");
+			case "reads": // choose arrest, through or arrest&through
+				final String optionValue = cmd.getOptionValue(opt);
 				apply2reads.clear();
-				for (final String option : options) {
-					final RT_READS tmp = RT_READS.valueOf(option);
-					if (tmp == null) {
-						throw new IllegalArgumentException("Invalid argument: " + line);						
-					}
-					apply2reads.add(tmp);
-				}
-
+				apply2reads.addAll(RTArrestFactory.processApply2Reads(optionValue));
 				break;
 
 			default:
-				throw new IllegalArgumentException("Invalid argument: " + line);
+				throw new IllegalArgumentException("Invalid argument: " + opt);
 			}
 		}
 	}
 
+	@Override
+	protected Options getOptions() {
+		final Options options = new Options();
+		options.addOption(RTArrestFactory.getOption());
+		return options;
+	}
+	
 	@Override
 	public void registerFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
 		// no caches are need

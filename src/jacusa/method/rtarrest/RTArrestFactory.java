@@ -52,13 +52,13 @@ import lib.io.AbstractResultFormat;
 import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
 
 public class RTArrestFactory 
 extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 
 	public final static String NAME = "rt-arrest";
-
 	
 	public RTArrestFactory(final RTarrestParameter rtArrestParameter) {
 		super(NAME, "Reverse Transcription Arrest - 2 conditions", 
@@ -213,14 +213,20 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 		THROUGH
 	}
 
-	public static Set<RT_READS> processApply2Reads(final int i, final String line) {
+	public static Option getOption() {
+		return Option.builder("reads")
+				.hasArg(true)
+				.desc("")
+				.build();
+	}
+
+	public static Set<RT_READS> processApply2Reads(final String line) {
 		final Set<RT_READS> apply2reads = new HashSet<RT_READS>(2);
-		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
-		if (s.length < i) {
+		if (line == null || line.isEmpty()) {
 			return apply2reads;
 		}
 		
-		final String[] options = s[i].toUpperCase().split("_AND_");
+		final String[] options = line.toUpperCase().split("&");
 		for (final String option : options) {
 			final RT_READS tmp = RT_READS.valueOf(option.toUpperCase());
 			if (tmp == null) {

@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 import lib.data.CallData;
+import lib.data.validator.paralleldata.ExtendedVariantSiteValidator;
+import lib.data.validator.paralleldata.MinCoverageValidator;
+import lib.data.validator.paralleldata.ParallelDataValidator;
 
 import org.apache.commons.cli.ParseException;
 
@@ -45,6 +48,13 @@ extends CallFactory {
 		return c2filterFactory;
 	}
 
+	public List<ParallelDataValidator<CallData>> getParallelDataValidators() {
+		final List<ParallelDataValidator<CallData>> validators = super.getParallelDataValidators();
+		validators.add(new MinCoverageValidator<CallData>(getParameter().getConditionParameters()));
+		validators.add(new ExtendedVariantSiteValidator<CallData>());
+		return validators;
+	}
+	
 	@Override
 	public boolean parseArgs(String[] args) throws Exception {
 		if (args == null || args.length != 1) {

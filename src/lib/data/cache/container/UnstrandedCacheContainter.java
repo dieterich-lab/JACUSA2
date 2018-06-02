@@ -23,6 +23,7 @@ implements CacheContainer<T> {
 			final ReferenceSetter<T> referenceSetter,
 			final CoordinateController coordinateController, 
 			final List<RecordWrapperDataCache<T>> dataCaches) {
+
 		this.referenceSetter  		= referenceSetter;
 		this.coordinateController	= coordinateController;
 		this.caches 			= dataCaches;

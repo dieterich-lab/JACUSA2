@@ -1,8 +1,11 @@
 package jacusa.method.call.statistic.dirmult;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
 import jacusa.cli.parameters.CallParameter;
 import jacusa.estimate.MinkaEstimateDirMultParameters;
-import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.AbstractDirichletStatistic;
 import lib.cli.options.Base;
 import lib.data.AbstractData;
@@ -56,31 +59,35 @@ extends AbstractDirichletStatistic<T> {
 	}
 	
 	@Override
-	public boolean processCLI(String line) {
-		boolean r = super.processCLI(line);
-		String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
+	protected Options getOptions() {
+		final Options options = super.getOptions();
+		options.addOption(Option.builder("estimatedError")
+				.hasArg(true)
+				.desc("")
+				.build());
+		return options; 
+	}
 
-		for (int i = 1; i < s.length; ++i) {
-			// key=value
-			String[] kv = s[i].split("=");
-			String key = kv[0];
-			String value = new String();
-			if (kv.length == 2) {
-				value = kv[1];
-			}
-
-			// set value
-			if (key.equals("estimatedError")) {
-				estimatedError = Double.parseDouble(value);
-				r = true;
-			} else if (!r){
-				throw new IllegalArgumentException("Invalid argument " + key + " in line: " + line);
+	
+	@Override
+	public void processCLI(final CommandLine cmd) {
+		// format: -u DirMult:epsilon=<epsilon>:maxIterations=<maxIterions>:onlyObserved
+	
+		// ignore any first array element of s (e.g.: s[0] = "-u DirMult") 
+		for (final Option option : cmd.getOptions()) {
+			final String opt = option.getOpt();
+			switch (opt) {
+				case "estimatedError":
+				estimatedError = Double.parseDouble(cmd.getOptionValue(opt));
+				break;
+	
+			default:
+				break;
 			}
 		}
-		
-		return r;
 	}
-	
+
+
 	public void setEstimatedError(double estimatedError) {
 		this.estimatedError = estimatedError;
 	}

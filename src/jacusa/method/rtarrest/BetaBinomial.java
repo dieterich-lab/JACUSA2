@@ -1,5 +1,8 @@
 package jacusa.method.rtarrest;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
+
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
@@ -21,13 +24,18 @@ extends AbstractStatisticCalculator<T> {
 	}
 
 	@Override
-	public boolean processCLI(final String line) {
-		return true;
+	public void processCLI(final String line) {}
+
+	@Override
+	public void processCLI(CommandLine cmd) {}
+	
+	@Override
+	protected Options getOptions() {
+		return new Options();
 	}
 
 	@Override
-	protected void addInfo(final Info info) {
-	}
+	protected void addInfo(final Info info) {}
 
 	@Override
 	public double getStatistic(ParallelData<T> parallelData) {

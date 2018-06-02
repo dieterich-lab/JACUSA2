@@ -1,5 +1,12 @@
 package jacusa.filter.factory;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
@@ -10,10 +17,6 @@ import lib.util.coordinate.CoordinateController;
  * @param <T>
  */
 public abstract class AbstractFilterFactory<T extends AbstractData> {
-
-	// add CLI options after OPTION_SEP, 
-	// e.g.: C:opt1=val1
-	public final static char OPTION_SEP = ':';
 
 	// unique char id - corresponds CLI
 	private final char c;
@@ -47,12 +50,30 @@ public abstract class AbstractFilterFactory<T extends AbstractData> {
 	 * TODO add comments.
 	 * 
 	 * @param line
-	 * @throws IllegalArgumentException
 	 */
-	public void processCLI(final String line) throws IllegalArgumentException {
-		// implement to change behavior via CLI
+	public void processCLI(final String line) {
+		final Options options = getOptions();
+		if (options.getOptions().size() == 0 || line == null || line.isEmpty()) {
+			return;
+		}
+
+		final String[] args = line.split(Character.toString(AbstractStatisticCalculator.SEP));
+		final CommandLineParser parser = new DefaultParser();
+		
+		CommandLine cmd = null;
+		try {
+			cmd = parser.parse(options, args);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return;
+		}
+		processCLI(cmd);
 	}
 
+	protected abstract void processCLI(CommandLine cmd);
+	
+	protected abstract Options getOptions();
+	
 	/**
 	 * TODO add comments.
 	 * 

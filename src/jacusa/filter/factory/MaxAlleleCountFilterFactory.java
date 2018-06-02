@@ -1,5 +1,9 @@
 package jacusa.filter.factory;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
 import jacusa.filter.AbstractFilter;
 import jacusa.io.format.BEDlikeWriter;
 import lib.data.AbstractData;
@@ -23,7 +27,7 @@ extends AbstractFilterFactory<T> {
 
 	public MaxAlleleCountFilterFactory() {
 		super('M', 
-				"Max allowed alleles per parallel pileup. Default: "+ MAX_ALLELES);
+				"Max allowed alleles per parallel pileup.");
 		alleles = MAX_ALLELES;
 	}
 
@@ -33,26 +37,29 @@ extends AbstractFilterFactory<T> {
 	}
 
 	@Override
-	public void processCLI(String line) throws IllegalArgumentException {
-		if (line.length() == 1) {
-			return;
-		}
-
+	protected Options getOptions() {
+		final Options options = new Options();
+		options.addOption(Option.builder("maxAlleles")
+				.desc("Default: " + MAX_ALLELES)
+				.build());
+		return options;
+	}
+	
+	@Override
+	public void processCLI(final CommandLine cmd) throws IllegalArgumentException {
 		// format: M:2
-		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
-		for (int i = 1; i < s.length; ++i) {
-			switch(i) {
-
-			case 1:
-				final int alleleCount = Integer.valueOf(s[i]);
+		for (final Option option : cmd.getOptions()) {
+			final String opt = option.getOpt();
+			switch (opt) {
+			case "maxAlleles":
+				final int alleleCount = Integer.valueOf(cmd.getOptionValue(opt));
 				if (alleleCount < 0) {
-					throw new IllegalArgumentException("Invalid allele count " + line);
+					throw new IllegalArgumentException("Invalid allele count: " + opt);
 				}
-				this.alleles = alleleCount;
 				break;
-
+				
 			default:
-				throw new IllegalArgumentException("Invalid argument: " + line);
+				break;
 			}
 		}
 	}

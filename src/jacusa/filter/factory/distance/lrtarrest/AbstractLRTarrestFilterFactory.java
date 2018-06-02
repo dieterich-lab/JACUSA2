@@ -2,12 +2,15 @@ package jacusa.filter.factory.distance.lrtarrest;
 
 import java.util.List;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.FilterRatio;
 import jacusa.filter.basecall.LRTarrestRef2BaseCallFilter;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.AbstractDataFilterFactory;
-import jacusa.filter.factory.AbstractFilterFactory;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
@@ -53,45 +56,41 @@ extends AbstractDataFilterFactory<T> {
 	}
 	
 	@Override
-	public void processCLI(String line) throws IllegalArgumentException {
-		if (line.length() == 1) {
-			return;
-		}
+	protected Options getOptions() {
+		final Options options = new Options();
 
-		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
+		options.addOption(Option.builder("distance")
+				.hasArg(true)
+				.desc("Default: " + getDistance())
+				.build());
 
+		options.addOption(Option.builder("minRatio")
+				.hasArg(true)
+				.desc("Default: " + getMinRatio())
+				.build());
+		
+		return options;
+	}
+	
+	@Override
+	public void processCLI(final CommandLine cmd) {
 		// format D:distance:minRatio
 		// :minCount
-		for (int i = 1; i < s.length; ++i) {
-			switch(i) {
-			case 1:
-				final int filterDistance = Integer.valueOf(s[i]);
-				if (filterDistance < 0) {
-					throw new IllegalArgumentException("Invalid distance " + line);
-				}
-				this.filterDistance = filterDistance;
-				break;
 
-			case 2:
-				final double filterMinRatio = Double.valueOf(s[i]);
-				if (filterMinRatio < 0.0 || filterMinRatio > 1.0) {
-					throw new IllegalArgumentException("Invalid minRatio " + line);
-				}
-				this.filterMinRatio = filterMinRatio;
+		// ignore any first array element of s (e.g.: s[0] = "-u DirMult") 
+		for (final Option option : cmd.getOptions()) {
+			final String opt = option.getOpt();
+			switch (opt) {
+			case "distance":
+				filterDistance = Integer.parseInt(cmd.getOptionValue(opt));
 				break;
-
-			/*
-			case 3:
-				final int filterMinCount = Integer.valueOf(s[i]);
-				if (filterMinCount < 0) {
-					throw new IllegalArgumentException("Invalid minCount " + line);
-				}
-				this.filterMinCount = filterMinCount;
-				break;
-				*/
 				
+			case "minRatio":
+				filterMinRatio = Double.parseDouble(cmd.getOptionValue(opt));
+				break;
+
 			default:
-				throw new IllegalArgumentException("Invalid argument: " + line);
+				break;
 			}
 		}
 	}

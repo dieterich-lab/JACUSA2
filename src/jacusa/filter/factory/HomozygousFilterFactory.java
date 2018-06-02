@@ -1,5 +1,9 @@
 package jacusa.filter.factory;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
 import jacusa.filter.AbstractFilter;
 import jacusa.io.format.BEDlikeWriter;
 import lib.cli.parameter.AbstractParameter;
@@ -30,29 +34,33 @@ extends AbstractFilterFactory<T> {
 	}
 
 	@Override
-	public void processCLI(final String line) throws IllegalArgumentException {
-		if (line.length() == 1) {
-			throw new IllegalArgumentException("Invalid argument " + line + ". MUST be set to H:1 or H:2)");
-		}
-
+	protected Options getOptions() {
+		final Options options = new Options();
+		options.addOption(Option.builder("condition")
+				.desc("Default: none")
+				.build());
+		return options;
+	}
+	
+	@Override
+	public void processCLI(final CommandLine cmd) throws IllegalArgumentException {
 		// format of s: 	H:<condition>[:strict]
 		// array content:	0:1			  :2
-		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
-		for (int i = 1; i < s.length; ++i) {
-			switch(i) {
-
-			case 1: // set homozygous conditionIndex
-				final int conditionIndex = Integer.parseInt(s[1]);
+		for (final Option option : cmd.getOptions()) {
+			final String opt = option.getOpt();
+			switch (opt) {
+			case "condition":
+				final int conditionIndex = Integer.parseInt(cmd.getOptionValue(opt));
 				// make sure conditionIndex is within provided conditions
 				if (conditionIndex >= 1 && conditionIndex <= parameters.getConditionsSize()) {
 					this.homozygousConditionIndex = conditionIndex;
 				} else {
-					throw new IllegalArgumentException("Invalid argument: " + line);
+					throw new IllegalArgumentException("Invalid argument: " + opt);
 				}
 				break;
-
+				
 			default:
-				throw new IllegalArgumentException("Invalid argument: " + line);
+				break;
 			}
 		}
 	}

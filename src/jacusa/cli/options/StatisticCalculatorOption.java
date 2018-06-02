@@ -1,7 +1,6 @@
 package jacusa.cli.options;
 
 import jacusa.cli.parameters.StatisticParameter;
-import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 
 import java.util.Map;
@@ -70,7 +69,7 @@ extends AbstractACOption {
 			// name of the statistic
 			String statName = line.getOptionValue(getOpt());
 			// separator for optional arguments
-			String str = Character.toString(AbstractFilterFactory.OPTION_SEP);
+			String str = Character.toString(AbstractStatisticCalculator.SEP);
 			// parse name and options
 			if (statName.indexOf(str) > -1) {
 				String[] cols = statName.split(str, 2);

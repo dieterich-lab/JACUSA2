@@ -5,9 +5,14 @@ import htsjdk.samtools.util.StringUtil;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.io.format.BEDlikeWriter;
+import jacusa.method.rtarrest.RTArrestFactory;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
@@ -41,28 +46,31 @@ extends AbstractFilterFactory<T> {
 	}
 
 	@Override
-	public void processCLI(String line) throws IllegalArgumentException {
-		if (line.length() == 1) {
-			return;
-		}
-
+	public void processCLI(final CommandLine cmd) throws IllegalArgumentException {
 		// format: M:2
-		final String[] s = line.split(Character.toString(AbstractFilterFactory.OPTION_SEP));
-		for (int i = 1; i < s.length; ++i) {
-			switch(i) {
-
-			case 1:
-				final int alleleCount = Integer.valueOf(s[i]);
+		for (final Option option : cmd.getOptions()) {
+			final String opt = option.getOpt();
+			switch (opt) {
+			case "maxAlleles":
+				final int alleleCount = Integer.valueOf(cmd.getOptionValue(opt));
 				if (alleleCount < 0) {
-					throw new IllegalArgumentException("Invalid allele count " + line);
+					throw new IllegalArgumentException("Invalid allele count: " + opt);
 				}
-				this.alleles = alleleCount;
 				break;
-
+				
 			default:
-				throw new IllegalArgumentException("Invalid argument: " + line);
+				throw new IllegalArgumentException("Invalid argument: " + opt);
 			}
 		}
+	}	
+	@Override
+	protected Options getOptions() {
+		final Options options = new Options();
+		options.addOption(Option.builder("maxAlleles")
+				.desc("Default: " + MAX_ALLELES)
+				.build());
+		options.addOption(RTArrestFactory.getOption());
+		return options;
 	}
 	
 	/**

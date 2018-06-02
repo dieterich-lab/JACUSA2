@@ -1,5 +1,11 @@
 package jacusa.method.call.statistic;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.result.StatisticResult;
@@ -13,10 +19,15 @@ public abstract class AbstractStatisticCalculator<T extends AbstractData> {
 
 	private final String name;
 	private final String desc;
+
+	// add CLI options after OPTION_SEP, 
+	// e.g.: C:opt1=val1
+	public static final char SEP = ':';
 	
 	public AbstractStatisticCalculator(final String name, final String desc) {
 		this.name = name;
 		this.desc = desc;
+		// TODO add help from HelpFormatter to desc
 	}
 	
 	/**
@@ -76,6 +87,26 @@ public abstract class AbstractStatisticCalculator<T extends AbstractData> {
 	 * @param line
 	 * @return
 	 */
-	public abstract boolean processCLI(final String line);
+	public abstract void processCLI(final CommandLine cmd);
+	
+	public void processCLI(final String line) {
+		final Options options = getOptions();
+		if (options.getOptions().size() == 0 || line == null || line.isEmpty()) {
+			return;
+		}
 
+		final String[] args = line.split(Character.toString(SEP));
+		final CommandLineParser parser = new DefaultParser();
+		
+		CommandLine cmd = null;
+		try {
+			cmd = parser.parse(options, args);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return;
+		}
+		processCLI(cmd);
+	}
+	
+	protected abstract Options getOptions();
 }
