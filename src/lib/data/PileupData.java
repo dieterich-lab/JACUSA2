@@ -10,14 +10,12 @@ import lib.data.has.HasPileupCount;
 import lib.data.has.filter.HasBaseCallCountFilterData;
 import lib.data.has.filter.HasBooleanFilterData;
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.CoordinateUtil.STRAND;
 
 public class PileupData
 extends AbstractData
 implements HasPileupCount, HasBooleanFilterData, HasBaseCallCountFilterData {
 
 	private PileupCount pileupCount;
-	private final STRAND effectiveStrand;
 
 	private AbstractFilteredData<BaseCallCount> baseCallCountFilterData;
 	private AbstractFilteredData<Boolean> booleanFilterData;
@@ -26,7 +24,6 @@ implements HasPileupCount, HasBooleanFilterData, HasBaseCallCountFilterData {
 		super(libraryType, coordinate);
 
 		pileupCount 		= new PileupCount((byte)'N', new ArrayBaseCallCount(), new MapBaseCallQualitityCount());
-		effectiveStrand		= STRAND.UNKNOWN;
 
 		baseCallCountFilterData	= new BaseCallFilteredData();
 		booleanFilterData		= new BooleanFilteredData();
@@ -48,14 +45,6 @@ implements HasPileupCount, HasBooleanFilterData, HasBaseCallCountFilterData {
 	@Override
 	public void setPileupCount(PileupCount pileupCount) {
 		this.pileupCount = pileupCount;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public STRAND getEffectiveStrand() {
-		return effectiveStrand;
 	}
 	
 	@Override
@@ -109,7 +98,6 @@ implements HasPileupCount, HasBooleanFilterData, HasBaseCallCountFilterData {
 		return baseCallCountFilterData;
 	}
 
-	// FIXME check strand information
 	public void merge(final PileupData src) {
 		pileupCount.setReferenceBase(src.getReferenceBase());
 		pileupCount.merge(src.getPileupCount());
