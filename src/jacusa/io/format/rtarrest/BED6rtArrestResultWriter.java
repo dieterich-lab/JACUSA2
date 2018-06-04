@@ -81,6 +81,7 @@ extends BEDlikeWriter<T, R> {
 	}
 	
 	protected void addResultBaseCallCount(final StringBuilder sb, final T data) {
+		sb.append(SEP);
 		ResultWriterUtils.addBaseCallCount(sb, data.getArrestBaseCallCount());
 		sb.append(SEP);
 		ResultWriterUtils.addBaseCallCount(sb, data.getThroughBaseCallCount());

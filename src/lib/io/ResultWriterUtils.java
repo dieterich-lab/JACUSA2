@@ -14,9 +14,6 @@ public abstract class ResultWriterUtils {
 			return;
 		}
 		
-		// output condition: Ax,Cx,Gx,Tx
-		sb.append(BEDlikeResultWriter.SEP);
-		
 		int i = 0;
 		for (final Base base : Base.validValues()) {
 			sb.append(baseCallCount.getBaseCall(base));
