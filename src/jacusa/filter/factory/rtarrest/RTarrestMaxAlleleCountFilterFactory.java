@@ -120,7 +120,7 @@ extends AbstractFilterFactory<T> {
 
 	@Override
 	public void addFilteredData(StringBuilder sb, T data) {
-		sb.append(BEDlikeWriter.EMPTY);
+		sb.append(BEDlikeWriter.EMPTY_FIELD);
 	}
 	
 }

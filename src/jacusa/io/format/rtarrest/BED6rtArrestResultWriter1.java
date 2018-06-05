@@ -40,17 +40,17 @@ extends BEDlikeWriter<T, R> {
 	}
 	
 	protected void addHeaderReadInfo(final StringBuilder sb, int conditionIndex, final int replicateIndex) {
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(RTinfo);
 		sb.append(conditionIndex + 1);
 		sb.append(replicateIndex + 1);
 		
 		if (getParameter().isDebug()) {
-			sb.append(SEP);
+			sb.append(FIELD_SEP);
 			sb.append("readStart");
-			sb.append(SEP2);
+			sb.append(VALUE_SEP);
 			sb.append("readInner");
-			sb.append(SEP2);
+			sb.append(VALUE_SEP);
 			sb.append("readEnd");
 		}
 	}
@@ -61,17 +61,17 @@ extends BEDlikeWriter<T, R> {
 	}
 	
 	protected void addResultReadInfoCount(final StringBuilder sb, final T data) {
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(data.getRTarrestCount().getReadArrest());
-		sb.append(SEP2);
+		sb.append(VALUE_SEP);
 		sb.append(data.getRTarrestCount().getReadThrough());
 		
 		if (getParameter().isDebug()) {
-			sb.append(SEP);
+			sb.append(FIELD_SEP);
 			sb.append(data.getRTarrestCount().getReadStart());
-			sb.append(SEP2);
+			sb.append(VALUE_SEP);
 			sb.append(data.getRTarrestCount().getReadInternal());
-			sb.append(SEP2);
+			sb.append(VALUE_SEP);
 			sb.append(data.getRTarrestCount().getReadEnd());
 		}
 	}

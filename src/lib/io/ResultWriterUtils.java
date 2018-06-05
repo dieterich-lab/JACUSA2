@@ -10,7 +10,7 @@ public abstract class ResultWriterUtils {
 
 	public static void addBaseCallCount(final StringBuilder sb, final BaseCallCount baseCallCount) {
 		if (baseCallCount == null) {
-			sb.append(BEDlikeWriter.EMPTY);
+			sb.append(BEDlikeWriter.EMPTY_FIELD);
 			return;
 		}
 		
@@ -18,7 +18,7 @@ public abstract class ResultWriterUtils {
 		for (final Base base : Base.validValues()) {
 			sb.append(baseCallCount.getBaseCall(base));
 			if (i < Base.validValues().length - 1)
-			sb.append(BEDlikeResultWriter.SEP2);
+			sb.append(BEDlikeResultWriter.VALUE_SEP);
 			++i;
 		}
 	}
@@ -41,7 +41,7 @@ public abstract class ResultWriterUtils {
 			for (final Base base : Base.validValues()) {
 				sb.append(baseCallCount.getBaseCall(base));
 				if (k < Base.validValues().length - 1)
-				sb.append(BEDlikeResultWriter.SEP2);
+				sb.append(BEDlikeResultWriter.VALUE_SEP);
 				++k;
 			}
 
@@ -51,7 +51,7 @@ public abstract class ResultWriterUtils {
 			}
 		}
 		if (n == 0 || i == 0) {
-			sb.append(BEDlikeResultWriter.EMPTY);
+			sb.append(BEDlikeResultWriter.EMPTY_FIELD);
 			return;
 		}
 	}

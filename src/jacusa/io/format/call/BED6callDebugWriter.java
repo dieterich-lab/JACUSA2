@@ -20,7 +20,7 @@ extends BED6callResultWriter<T, R> {
 		super.addHeaderConditionData(sb, conditionIndex, replicateIndex);
 
 		for (final AbstractFilterFactory<?> filterFactory : getParameter().getFilterConfig().getFilterFactories()) {
-			sb.append(SEP);
+			sb.append(FIELD_SEP);
 			sb.append(filterFactory.getC());
 			sb.append(conditionIndex + 1);
 			sb.append(replicateIndex + 1);
@@ -31,7 +31,7 @@ extends BED6callResultWriter<T, R> {
 	protected void addResultReplicateData(StringBuilder sb, T data) {
 		super.addResultReplicateData(sb, data);
 		for (final AbstractFilterFactory<T> filterFactory : getParameter().getFilterConfig().getFilterFactories()) {
-			sb.append(SEP);
+			sb.append(FIELD_SEP);
 			filterFactory.addFilteredData(sb, data);
 		}
 	}

@@ -24,19 +24,19 @@ public abstract class BEDlikeWriter<T extends AbstractData & HasReferenceBase, R
 extends AbstractResultFileWriter<T, R> {
 
 	// TODO add comments.
-	public static final char COMMENT= '#';
+	public static final char COMMENT		= '#';
 	// TODO add comments.
-	public static final char EMPTY 	= '*';
+	public static final char EMPTY_FIELD 	= '*';
 	// TODO add comments.
-	public static final char SEP 	= '\t';
+	public static final char FIELD_SEP 		= '\t';
 	// TODO add comments.
-	public static final char SEP2 	= ',';
+	public static final char VALUE_SEP 		= ',';
 	// TODO add comments.
-	public static final char SEP3 	= ':';
+	public static final char SEP3 			= ':';
 	// TODO add comments.
-	public static final char SEP4 	= ';';
+	public static final char SEP4 			= ';';
 	// TODO add comments.
-	public static final char SEP5 	= '=';
+	public static final char KEY_VALUE_SEP 	= '=';
 	
 	// general parameters
 	private AbstractParameter<T, R> parameter;
@@ -51,7 +51,7 @@ extends AbstractResultFileWriter<T, R> {
 		final StringBuilder sb = new StringBuilder();
 
 		// adds pre-header details about call
-		// FIXME remove comment addHeaderDetails(sb, conditionParameters);
+		addHeaderDetails(sb, conditionParameters);
 
 		// adds default BED6 columns
 		addHeaderBED6(sb);
@@ -78,18 +78,18 @@ extends AbstractResultFileWriter<T, R> {
 
 		// position (0-based)
 		sb.append("contig");
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append("start");
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append("end");
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 
 		sb.append("name");
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 
 		// name of statistic column can be customized
 		sb.append(getHeaderStat());
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 
 		sb.append("strand");
 	}
@@ -118,7 +118,7 @@ extends AbstractResultFileWriter<T, R> {
 				addHeaderConditionData(sb, conditionIndex, replicateIndex);
 			}
 		}
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 	}
 
 	/**
@@ -202,13 +202,13 @@ extends AbstractResultFileWriter<T, R> {
 
 		// add filtering info
 		if (getParameter().getFilterConfig().hasFiters()) {
-			sb.append(SEP);
+			sb.append(FIELD_SEP);
 			sb.append("filter_info");
 		}
 
 		// show reference base
 		if (getParameter().showReferenceBase()) {
-			sb.append(SEP);
+			sb.append(FIELD_SEP);
 			sb.append("refBase");
 		}
 	}
@@ -248,23 +248,27 @@ extends AbstractResultFileWriter<T, R> {
 
 		// coordinates
 		sb.append(parallelData.getCoordinate().getContig());
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(parallelData.getCoordinate().getStart() - 1);
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(parallelData.getCoordinate().getEnd());
 		
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(fieldName);
 		
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(getStatistic(result));
 
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(parallelData.getCombinedPooledData().getCoordinate().getStrand().character());
 	}
 
 	protected abstract String getStatistic(final R result);
-	protected abstract String getFieldName();
+
+	// TODO what to output
+	protected String getFieldName() {
+		return getParameter().getMethodFactory().getName();
+	}
 
 	protected void addResultData(final StringBuilder sb, final R result) {
 		final ParallelData<T> parallelData = result.getParellelData();
@@ -285,17 +289,17 @@ extends AbstractResultFileWriter<T, R> {
 	protected void addResultInfos(final StringBuilder sb, final R result) {
 		final ParallelData<T> parallelData = result.getParellelData();
 
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(result.getResultInfo().combine());
 		
 		// add filtering info
 		if (parameter.getFilterConfig().hasFiters()) {
-			sb.append(SEP);
+			sb.append(FIELD_SEP);
 			sb.append(result.getFilterInfo().combine());
 		}
 		
 		if (parameter.showReferenceBase()) {
-			sb.append(SEP);
+			sb.append(FIELD_SEP);
 			sb.append((char)parallelData.getCombinedPooledData().getReferenceBase());
 		}
 	}

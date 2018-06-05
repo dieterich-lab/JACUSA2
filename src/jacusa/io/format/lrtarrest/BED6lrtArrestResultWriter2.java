@@ -15,7 +15,7 @@ public class BED6lrtArrestResultWriter2<T extends AbstractData & HasReferenceBas
 extends BEDlikeResultWriter<T, R> {
 	
 	// read start, trough, and end	
-	private static final String INFO = "reads";
+	private static final String INFO 		= "reads";
 	private static final String REF2BC_INFO = "ref2bc";
 	
 	protected BED6lrtArrestResultWriter2(final String filename, final AbstractParameter<T, R> parameter) {
@@ -29,7 +29,7 @@ extends BEDlikeResultWriter<T, R> {
 
 	@Override
 	protected String getFieldName() {
-		return "arrest";
+		return "lrt-arrest";
 	}
 	
 	@Override
@@ -40,7 +40,7 @@ extends BEDlikeResultWriter<T, R> {
 
 	protected void addHeaderBases(final StringBuilder sb, final int conditionIndex, final int replicateIndex) {
 		super.addHeaderBases(sb, conditionIndex, replicateIndex);
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(REF2BC_INFO);
 		sb.append(conditionIndex + 1);
 		sb.append(replicateIndex + 1);
@@ -52,7 +52,7 @@ extends BEDlikeResultWriter<T, R> {
 	}
 	
 	protected void addHeaderReadInfo(final StringBuilder sb, int conditionIndex, final int replicateIndex) {
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(INFO);
 		sb.append(conditionIndex + 1);
 		sb.append(replicateIndex + 1);
@@ -67,16 +67,16 @@ extends BEDlikeResultWriter<T, R> {
 	protected void addResultBaseCallCount(final StringBuilder sb, final T data) {
 		super.addResultBaseCallCount(sb, data);
 		// output condition: Ax,Cx,Gx,Tx
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 
 		final RefPos2BaseCallCount refPos2BaseCallCount = data.getLRTarrestCount().getRefPos2bc4arrest();
 		ResultWriterUtils.addResultRefPos2baseChange(sb, refPos2BaseCallCount);
 	}
 
 	protected void addResultReadInfoCount(final StringBuilder sb, final T data) {
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(data.getLRTarrestCount().getRTarrestCount().getReadArrest());
-		sb.append(SEP2);
+		sb.append(VALUE_SEP);
 		sb.append(data.getLRTarrestCount().getRTarrestCount().getReadThrough());
 	}
 

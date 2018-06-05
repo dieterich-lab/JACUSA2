@@ -32,12 +32,12 @@ extends BEDlikeWriter<T, R> {
 	}
 	
 	protected void addHeaderBases(final StringBuilder sb, final int conditionIndex, final int replicateIndex) {
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(ARREST_BASES);
 		sb.append(conditionIndex + 1);
 		sb.append(replicateIndex + 1);
 
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		sb.append(THROUGH_BASES);
 		sb.append(conditionIndex + 1);
 		sb.append(replicateIndex + 1);
@@ -50,9 +50,9 @@ extends BEDlikeWriter<T, R> {
 
 	@Override
 	protected void addResultBaseCallCount(final StringBuilder sb, final T data) {
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		ResultWriterUtils.addBaseCallCount(sb, data.getArrestBaseCallCount());
-		sb.append(SEP);
+		sb.append(FIELD_SEP);
 		ResultWriterUtils.addBaseCallCount(sb, data.getThroughBaseCallCount());
 	}
 }

@@ -114,7 +114,7 @@ extends AbstractFilterFactory<T> {
 
 		@Override
 		public void addInfo(Result<T> result) {
-			final String value = StringUtil.join(Character.toString(BEDlikeWriter.SEP2), filteredRefPositions);
+			final String value = StringUtil.join(Character.toString(BEDlikeWriter.VALUE_SEP), filteredRefPositions);
 			// add position of artefact(s) to unique char id
 			result.getFilterInfo().add(Character.toString(getC()), value);
 		}
@@ -128,7 +128,7 @@ extends AbstractFilterFactory<T> {
 
 	@Override
 	public void addFilteredData(StringBuilder sb, T data) {
-		sb.append(BEDlikeWriter.EMPTY);
+		sb.append(BEDlikeWriter.EMPTY_FIELD);
 	}
 	
 }
