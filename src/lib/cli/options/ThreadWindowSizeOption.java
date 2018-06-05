@@ -19,7 +19,6 @@ public class ThreadWindowSizeOption extends AbstractACOption {
 	@Override
 	public Option getOption() {
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc("size of the window used per thread.\n default: " + parameter.getReservedWindowSize())

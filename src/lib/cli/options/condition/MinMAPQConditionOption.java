@@ -37,7 +37,6 @@ public class MinMAPQConditionOption<T extends AbstractData> extends AbstractCond
 				s + "\ndefault: " + minMapq;
 		
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 		        .desc(s)

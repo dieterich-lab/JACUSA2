@@ -2,13 +2,17 @@ package lib.cli.options;
 
 import jacusa.filter.factory.AbstractFilterFactory;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 
 public class FilterConfigOption<T extends AbstractData> extends AbstractACOption {
 
@@ -21,30 +25,41 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 
 	public FilterConfigOption(final AbstractParameter<T, ?> parameter, 
 			final Map<Character, AbstractFilterFactory<T>> filterFactories) {
-		super("a", "pileup-filter");
-		this.parameters = parameter;
 
-		this.filterFactories = filterFactories;
+		super("a", "apply-filter");
+		this.parameters 		= parameter;
+		this.filterFactories 	= filterFactories;
 	}
 
 	@Override
 	public Option getOption() {
-		StringBuffer sb = new StringBuffer();
-
+		final StringBuffer sb = new StringBuffer();
+		
+		final Options options = new Options(); 
 		for (final char c : filterFactories.keySet()) {
 			final AbstractFilterFactory<T> filterFactory = filterFactories.get(c);
-			sb.append(filterFactory.getC());
-			sb.append(" | ");
-			sb.append(filterFactory.getDesc());
-			sb.append("\n");
+
+			final String opt = "___REMOVE___" + Character.toString(c);
+			Option option = Option.builder(opt)
+					.desc(filterFactory.getDesc())
+					.build();
+
+			options.addOption(option);
 		}
 
+		final HelpFormatter helpFormatter = new HelpFormatter();
+		final StringWriter sw = new StringWriter();
+		final PrintWriter pw = new PrintWriter(sw);
+		helpFormatter.printOptions(pw, 80, options, 150, 3);
+		final String s = sw.toString();
+		sb.append(s.replaceAll("-___REMOVE___", ""));
+
+		final String argName = "FITLER";
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
-				.argName(getLongOpt().toUpperCase())
+				.argName(argName)
 				.hasArg(true)
 				.desc(
-					"chain of " + getLongOpt().toUpperCase() + " to apply to pileups:\n" + sb.toString() + 
+					"chain of " + argName + ":\n" + sb.toString() + 
 					"\nSeparate multiple " + getLongOpt().toUpperCase() + " with '" + OR + "' (e.g.: D,I)")
 				.build(); 
 	}

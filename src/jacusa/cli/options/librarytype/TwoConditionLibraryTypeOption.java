@@ -38,7 +38,6 @@ extends OneConditionLibraryTypeOption<T> {
 	@Override
 	public Option getOption() {
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc("Choose the library types for " +
@@ -49,10 +48,10 @@ extends OneConditionLibraryTypeOption<T> {
 	}
 
 	@Override
-	public void process(CommandLine line) throws Exception {
+	public void process(final CommandLine line) throws Exception {
 		if (line.hasOption(getOpt())) {
 			// get option as string
-	    	final String s = line.getOptionValue(getOpt());
+			final String s = line.getOptionValue(getOpt());
 	    	// expected format (L1=libraryType1, L2=...): L1,L2 -> ss[0]=L1,ss[1]=L2 
 	    	final String[] ss = s.split(Character.toString(SEP));
 
@@ -67,8 +66,8 @@ extends OneConditionLibraryTypeOption<T> {
 	    	}
 
 	    	// try to parse strings and get library types
-	    	LIBRARY_TYPE libraryType1 = parse(ss[0]);
-	    	LIBRARY_TYPE libraryType2 = parse(ss[1]);
+	    	final LIBRARY_TYPE libraryType1 = parse(ss[0]);
+	    	final LIBRARY_TYPE libraryType2 = parse(ss[1]);
 
 	    	// check that both library types were set
 	    	if (libraryType1 == null || libraryType2 == null) {

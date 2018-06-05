@@ -35,7 +35,6 @@ public class MinCoverageConditionOption<T extends AbstractData> extends Abstract
 				s + "\ndefault: " + minCoverage;
 
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 			    .desc(s)

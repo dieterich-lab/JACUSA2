@@ -55,7 +55,6 @@ extends AbstractACOption {
 		}
 
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc("Choose between different modes:\n" + sb.toString())

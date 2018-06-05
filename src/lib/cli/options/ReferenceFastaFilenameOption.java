@@ -20,7 +20,6 @@ public class ReferenceFastaFilenameOption extends AbstractACOption {
 	@Override
 	public Option getOption() {
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase()) 
 				.hasArg(true)
 				.desc(getLongOpt().toUpperCase() + " indexed reference FASTA")

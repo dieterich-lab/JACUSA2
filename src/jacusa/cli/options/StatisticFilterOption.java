@@ -22,7 +22,6 @@ public class StatisticFilterOption  extends AbstractACOption {
 	@Override
 	public Option getOption() {
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc("Filter positions based on test-statistic " + getLongOpt().toUpperCase() + "\n default: DO NOT FILTER")

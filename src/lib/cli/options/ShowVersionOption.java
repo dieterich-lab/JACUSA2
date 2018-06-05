@@ -17,7 +17,6 @@ public class ShowVersionOption extends AbstractACOption {
 	@Override
 	public Option getOption() {
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 		        .desc("show version")
 		        .build();
 	}

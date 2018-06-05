@@ -17,7 +17,6 @@ public class FilterModusOption extends AbstractACOption {
 	@Override
 	public Option getOption() {
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.hasArg(false)
 		        .desc("Put feature-filtered results in to a separate file (= RESULT-FILE" + 
 		        		AbstractParameter.FILE_SUFFIX + ")")

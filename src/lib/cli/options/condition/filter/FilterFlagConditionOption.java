@@ -36,7 +36,6 @@ public class FilterFlagConditionOption<T extends AbstractData> extends AbstractC
 				s + "\ndefault: " + filterFlags;
 
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 		        .desc(s)
@@ -46,8 +45,8 @@ public class FilterFlagConditionOption<T extends AbstractData> extends AbstractC
 	@Override
 	public void process(final CommandLine line) throws Exception {
 		if (line.hasOption(getOpt())) {
-	    	String value = line.getOptionValue(getOpt());
-	    	int filterFlags = Integer.parseInt(value);
+	    	final String value = line.getOptionValue(getOpt());
+	    	final int filterFlags = Integer.parseInt(value);
 	    	if (filterFlags <= 0) {
 	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + filterFlags + " not valid.");
 	    	}

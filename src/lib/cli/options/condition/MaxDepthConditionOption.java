@@ -34,7 +34,6 @@ public class MaxDepthConditionOption<T extends AbstractData> extends AbstractCon
 		s = "max read depth" + s + "\ndefault: " + maxDepth;
 				
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg()
 				.desc(s)

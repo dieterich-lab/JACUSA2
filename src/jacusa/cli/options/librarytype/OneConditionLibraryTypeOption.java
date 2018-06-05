@@ -33,7 +33,6 @@ extends AbstractLibraryTypeOption<T> {
 	@Override
 	public Option getOption() {
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc("Choose the library type:\n" + getPossibleValues() + 

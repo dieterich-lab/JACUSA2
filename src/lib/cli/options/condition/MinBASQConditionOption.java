@@ -35,7 +35,6 @@ public class MinBASQConditionOption<T extends AbstractData> extends AbstractCond
 				s + "\n default: " + minBasq;
 
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc(s)

@@ -41,7 +41,6 @@ extends AbstractACOption {
 		}
 		
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc("Choose output format:\n" + sb.toString())

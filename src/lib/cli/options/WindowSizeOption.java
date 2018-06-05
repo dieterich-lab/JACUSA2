@@ -17,7 +17,6 @@ public class WindowSizeOption extends AbstractACOption {
 	@Override
 	public Option getOption() {
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc("size of the window used for caching. Make sure this is greater than the read size \n default: " + 

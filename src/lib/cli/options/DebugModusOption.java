@@ -17,7 +17,6 @@ public class DebugModusOption extends AbstractACOption {
 	@Override
 	public Option getOption() {
 		return Option.builder(getOpt())
-				.longOpt(getLongOpt())
 		        .desc("turn on Debug modus")
 		        .build();
 	}
