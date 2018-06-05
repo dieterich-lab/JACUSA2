@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
@@ -32,20 +33,25 @@ extends AbstractDataFilterFactory<T> {
 	private int length;
 		
 	public HomopolymerFilterFactory() {
-		super('Y', 
-				"Filter wrong variant calls within homopolymers.");
+		super(getOptionBuilder().build());
 		length = MIN_HOMOPOLYMER_LENGTH;
 	}
 
+	public static Builder getOptionBuilder() {
+		return Option.builder(Character.toString('Y'))
+				.desc("Filter wrong variant calls within homopolymers.");
+	}
+	
+	public static Builder getHomopolymerOptionBuilder() {
+		return Option.builder("length")
+				.hasArg(true)
+				.desc("must be > 0. Default: " + MIN_HOMOPOLYMER_LENGTH);
+	}
+	
 	@Override
 	protected Options getOptions() {
 		final Options options = new Options();
-		
-		options.addOption(Option.builder("length")
-				.hasArg(true)
-				.desc("Default: " + MIN_HOMOPOLYMER_LENGTH)
-				.build());
-		
+		options.addOption(getHomopolymerOptionBuilder().build());
 		return options;
 	}
 	

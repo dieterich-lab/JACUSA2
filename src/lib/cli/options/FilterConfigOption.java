@@ -26,7 +26,7 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 	public FilterConfigOption(final AbstractParameter<T, ?> parameter, 
 			final Map<Character, AbstractFilterFactory<T>> filterFactories) {
 
-		super("a", "apply-filter");
+		super("a", "feature-filter");
 		this.parameters 		= parameter;
 		this.filterFactories 	= filterFactories;
 	}
@@ -50,17 +50,18 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 		final HelpFormatter helpFormatter = new HelpFormatter();
 		final StringWriter sw = new StringWriter();
 		final PrintWriter pw = new PrintWriter(sw);
-		helpFormatter.printOptions(pw, 80, options, 150, 3);
+		helpFormatter.printOptions(pw, 100, options, 0, 1);
 		final String s = sw.toString();
 		sb.append(s.replaceAll("-___REMOVE___", ""));
 
-		final String argName = "FITLER";
+		final String argName = "FEATURE-FILTER";
 		return Option.builder(getOpt())
 				.argName(argName)
 				.hasArg(true)
 				.desc(
-					"chain of " + argName + ":\n" + sb.toString() + 
-					"\nSeparate multiple " + getLongOpt().toUpperCase() + " with '" + OR + "' (e.g.: D,I)")
+					"chain of " + argName + "; Separate " + argName + " with '" + OR + "'; Add options with ':'\n" +
+					"e.g.: D,I:OPTION1:OPTION2=VALUE2\n" +
+					sb.toString())
 				.build(); 
 	}
 

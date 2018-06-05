@@ -6,6 +6,7 @@ import java.util.List;
 import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
 import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
 import jacusa.filter.cache.processrecord.ProcessRecord;
+import jacusa.filter.factory.basecall.INDEL_FilterFactory;
 import lib.data.AbstractData;
 import lib.data.cache.extractor.basecall.ArrestBaseCallCountExtractor;
 import lib.data.cache.region.RegionDataCache;
@@ -24,7 +25,7 @@ public class RTarrestINDEL_FilterFactory<T extends AbstractData & HasBaseCallCou
 extends AbstractRTarrestDistanceFilterFactory<T> {
 
 	public RTarrestINDEL_FilterFactory() {
-		super('I', "Filter potential false positive variants adjacent to INDEL position(s)",
+		super(INDEL_FilterFactory.getOptionBuilder().build(),
 				new ArrestBaseCallCountExtractor<T>(),
 				6, 0.5);
 	}

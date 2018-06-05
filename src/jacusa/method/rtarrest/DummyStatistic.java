@@ -1,6 +1,7 @@
 package jacusa.method.rtarrest;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
@@ -20,7 +21,9 @@ extends AbstractStatisticCalculator<T> {
 	private final static String DESC = "Does not do anything";
 	
 	public DummyStatistic() {
-		super(NAME, DESC);
+		super(Option.builder(NAME)
+				.desc(DESC)
+				.build());
 	}
 	
 	@Override

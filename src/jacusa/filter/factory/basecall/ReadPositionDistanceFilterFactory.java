@@ -3,6 +3,8 @@ package jacusa.filter.factory.basecall;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.cli.Option;
+
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import lib.data.AbstractData;
@@ -16,7 +18,9 @@ public class ReadPositionDistanceFilterFactory<T extends AbstractData & HasBaseC
 extends AbstractBaseCallCountFilterFactory<T> {
 
 	public ReadPositionDistanceFilterFactory() {
-		super('B', "Filter potential false positive variants adjacent to read start/end.", 
+		super(Option.builder(Character.toString('B'))
+				.desc("Filter potential false positive variants adjacent to read start/end.")
+				.build(), 
 				new DefaultBaseCallCountExtractor<T>(),
 				6, 0.5);
 	}

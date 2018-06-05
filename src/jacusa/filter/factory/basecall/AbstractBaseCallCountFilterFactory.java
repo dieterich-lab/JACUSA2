@@ -43,14 +43,11 @@ extends AbstractDataFilterFactory<T> {
 	private int filterDistance;
 	private double filterMinRatio;
 		
-	public AbstractBaseCallCountFilterFactory(final char c, final String desc,
+	public AbstractBaseCallCountFilterFactory(final Option option,
 			final BaseCallCountExtractor<T> observed, final BaseCallCountExtractor<T> filtered, 
 			final int defaultFilterDistance, final double defaultFilterMinRatio) {
 
-		super(c, desc + "\n   Default: " + 
-			defaultFilterDistance + ":" 
-			+ defaultFilterMinRatio + 
-			" (" + c+ ":distance:min_ratio)");
+		super(option);
 
 		this.observed = observed;
 		this.filtered = filtered;
@@ -59,24 +56,28 @@ extends AbstractDataFilterFactory<T> {
 		filterMinRatio = defaultFilterMinRatio;
 	}
 	
-	public AbstractBaseCallCountFilterFactory(final char c, final String desc,
+	public AbstractBaseCallCountFilterFactory(final Option option,
 			final BaseCallCountExtractor<T> observed, 
 			final int defaultFilterDistance, final double defaultFilterMinRatio) {
-		this(c, desc, observed, new BaseCallCountFilterDataExtractor<T>(c), defaultFilterDistance, defaultFilterMinRatio);
+		
+		this(option, 
+				observed, 
+				new BaseCallCountFilterDataExtractor<T>(option.getOpt().charAt(0)), 
+				defaultFilterDistance, defaultFilterMinRatio);
 	}
-
+	
 	@Override
 	protected Options getOptions() {
 		final Options options = new Options();
 
 		options.addOption(Option.builder("distance")
 				.hasArg(true)
-				.desc("Default: " + getDistance())
+				.desc("Filter base calls within distance to feature. Default: " + getDistance())
 				.build());
 
 		options.addOption(Option.builder("minRatio")
 				.hasArg(true)
-				.desc("Default: " + getMinRatio())
+				.desc("Minimal ratio of base calls to pass filtering. Default: " + getMinRatio())
 				.build());
 		
 		return options;
@@ -84,10 +85,6 @@ extends AbstractDataFilterFactory<T> {
 	
 	@Override
 	public void processCLI(final CommandLine cmd) {
-		// format D:distance:minRatio
-		// :minCount
-
-		// ignore any first array element of s (e.g.: s[0] = "-u DirMult") 
 		for (final Option option : cmd.getOptions()) {
 			final String opt = option.getOpt();
 			switch (opt) {

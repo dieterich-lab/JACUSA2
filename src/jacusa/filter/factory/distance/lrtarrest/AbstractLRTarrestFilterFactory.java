@@ -32,14 +32,11 @@ extends AbstractDataFilterFactory<T> {
 	private int filterDistance;
 	private double filterMinRatio;
 		
-	public AbstractLRTarrestFilterFactory(final char c, final String desc,
+	public AbstractLRTarrestFilterFactory(final Option option,
 			final RefPos2BaseCallCountExtractor<T> observed, final RefPos2BaseCallCountExtractor<T> filtered, 
 			final int defaultFilterDistance, final double defaultFilterMinRatio) {
 
-		super(c, desc + "\n   Default: " + 
-			defaultFilterDistance + ":" 
-			+ defaultFilterMinRatio + 
-			" (" + c+ ":distance:min_ratio)");
+		super(option);
 
 		this.observed = observed;
 		this.filtered = filtered;
@@ -48,11 +45,14 @@ extends AbstractDataFilterFactory<T> {
 		filterMinRatio = defaultFilterMinRatio;
 	}
 	
-	public AbstractLRTarrestFilterFactory(final char c, final String desc,
+	public AbstractLRTarrestFilterFactory(final Option option,
 			final RefPos2BaseCallCountExtractor<T> observed, 
 			final int defaultFilterDistance, final double defaultFilterMinRatio) {
 		
-		this(c, desc, observed, new RefPos2BaseCallCountFilterDataExtractor<T>(c), defaultFilterDistance, defaultFilterMinRatio);
+		this(option, 
+				observed, 
+				new RefPos2BaseCallCountFilterDataExtractor<T>(option.getOpt().charAt(0)), 
+				defaultFilterDistance, defaultFilterMinRatio);
 	}
 	
 	@Override

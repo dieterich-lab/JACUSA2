@@ -14,19 +14,23 @@ import lib.data.has.HasPileupCount;
 public class DirichletMultinomialCompoundError<T extends AbstractData & HasPileupCount>
 extends AbstractDirichletStatistic<T> {
 
-	private static final String NAME = "DirMult-CE";
+	private static final String NAME = "DirMultCE";
 	private static final double ESTIMATED_ERROR = 0.01;
 	private static final String DESC = "Compound Err. (estimated err.{" + ESTIMATED_ERROR + "} + phred score)";
 	
 	protected double estimatedError = ESTIMATED_ERROR;
 	protected double priorError = 0d;
 
-	protected DirichletMultinomialCompoundError(final String name, final String desc, final CallParameter parameter) {
-		super(name, desc, new MinkaEstimateDirMultParameters(), parameter);
+	protected DirichletMultinomialCompoundError(final Option option, final CallParameter parameter) {
+		super(option, new MinkaEstimateDirMultParameters(), parameter);
 	}
 	
 	public DirichletMultinomialCompoundError(final CallParameter parameter) {
-		super(NAME, DESC, new MinkaEstimateDirMultParameters(), parameter);
+		super(Option.builder(NAME)
+				.desc(DESC)
+				.build(), 
+				new MinkaEstimateDirMultParameters(), 
+				parameter);
 	}
 
 	@Override

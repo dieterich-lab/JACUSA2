@@ -1,6 +1,12 @@
 package lib.util;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 
 public abstract class Util {
 
@@ -16,4 +22,84 @@ public abstract class Util {
 		return sb.toString();
 	}
 	
+	public static void formatStr(final StringBuilder sb, final String str, final String prefix, final int width) {
+		// container for output lines - should be < width
+		final List<String> outputLines = new ArrayList<String>();
+		for (final String line : str.split("\n")) {
+			// builder for one output line - should be < width 
+			final StringBuilder lb = new StringBuilder();
+			for (final String word : line.split(" ")) {
+				if (lb.length() + word.length() < width) { // add new output line as long as < width
+					if (lb.length() > 0) {
+						lb.append(' ');
+					}
+					lb.append(word);
+				} else {
+					if (lb.length() > 0) { // add current line to output and reset line builder
+						outputLines.add(lb.toString());
+						lb.setLength(0);
+					}
+					if (word.length() > width) { // word does not fit in line -> split
+						// split and add to output
+						int index = 0;
+						while (index < word.length()) {
+							outputLines.add(word.substring(index, Math.min(word.length(), index + width)));
+							index += width;
+						}
+					} else { // just add word to line builder
+						lb.append(word);
+					}
+				}
+			}
+			if (lb.length() > 0) { // add current line to output and reset line builder
+				outputLines.add(lb.toString());
+				lb.setLength(0);
+			}
+		}
+
+		// add prefix and newline
+		boolean first = true;
+		for (final String l : outputLines) {
+			if (first) {
+				first = false;
+			} else {
+				sb.append(prefix);
+			}
+			sb.append(l);
+			sb.append('\n');
+		}
+	}
+
+	public static void adjustOption(final Option option, final Options options) {
+		adjustOption(option, options, 60);
+	}
+	
+	public static void adjustOption(final Option option, final Options options, final int width) {
+		final StringBuilder sb = new StringBuilder();
+
+		// add option description and wrap
+		Util.formatStr(sb, option.getDescription(), "| ", width);
+		
+		int max = 3;
+		for (final Option o : options.getOptions()) {
+			max = Math.max(max, o.getOpt().length());
+		}
+		
+		for (final Option o : options.getOptions()) {
+			sb.append("| :");
+			sb.append(o.getOpt());
+
+			char[] space = new char[max - o.getOpt().length() + 1];
+			Arrays.fill(space, ' ');		
+			sb.append(space);
+			
+			space = new char[max + 4];
+			Arrays.fill(space, ' ');
+			space[0] = '|';
+			
+			Util.formatStr(sb, o.getDescription(), new String(space), width);
+		}
+		option.setDescription(sb.toString());
+	}
+
 }

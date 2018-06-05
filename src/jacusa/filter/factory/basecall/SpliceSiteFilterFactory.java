@@ -3,6 +3,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Option.Builder;
+
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
 import lib.data.AbstractData;
@@ -19,7 +22,7 @@ public class SpliceSiteFilterFactory<T extends AbstractData & HasBaseCallCount &
 extends AbstractBaseCallCountFilterFactory<T> {
 
 	public SpliceSiteFilterFactory() {
-		super('S', "Filter potential false positive variants adjacent to splice site(s).",
+		super(getOptionBuilder().build(),
 				new DefaultBaseCallCountExtractor<T>(),
 				6, 0.5);
 	}
@@ -31,6 +34,10 @@ extends AbstractBaseCallCountFilterFactory<T> {
 		return processRecords;
 	}
 	
+	public static Builder getOptionBuilder() {
+		return Option.builder(Character.toString('S'))
+				.desc("Filter potential false positive variants adjacent to splice site(s).");
+	}
 	
 	
 	

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import java.util.List;
 
+import org.apache.commons.cli.Option;
+
 import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
 import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
@@ -25,7 +27,9 @@ public class LRTarrestCombinedFilterFactory<T extends AbstractData & HasBaseCall
 extends AbstractLRTarrestFilterFactory<T> {
 
 	public LRTarrestCombinedFilterFactory() {
-		super('D', "Filter artefacts (INDEL, read start/end, and splice site) of read arrest positions.",
+		super(Option.builder(Character.toString('D'))
+				.desc("Filter artefacts (INDEL, read start/end, and splice site) of read arrest positions.")
+				.build(),
 				null, null, // FIXME
 				6, 0.5);
 	}

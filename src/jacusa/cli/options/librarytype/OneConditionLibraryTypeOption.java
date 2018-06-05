@@ -35,7 +35,7 @@ extends AbstractLibraryTypeOption<T> {
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
-				.desc("Choose the library type:\n" + getPossibleValues() + 
+				.desc("Choose the library type for condition " + getConditionIndex() + ":\n" + getPossibleValues() + 
 	        		"\n default: " + LIBRARY_TYPE.UNSTRANDED)
 	        	.build();
 	}

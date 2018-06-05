@@ -11,8 +11,8 @@ import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.HomozygousFilterFactory;
 import jacusa.io.format.BEDlikeWriter;
-import jacusa.method.rtarrest.RTArrestFactory;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
@@ -36,9 +36,10 @@ extends AbstractFilterFactory<T> {
 	
 	
 	public LRTarrestHomozygousFilterFactory(final AbstractParameter<T, ?> parameters) {
-		super('H', 
-				"Filter non-homozygous pileup/BAM in condition 1 or 2 " +
-				"(MUST be set to H:1 or H:2). Default: none");
+		super(Option.builder(Character.toString('H'))
+				.desc("Filter non-homozygous sites in condition 1 or 2 " +
+						"(MUST be set to H:1 or H:2). Default: none")
+				.build());
 		homozygousConditionIndex 	= -1;
 		this.parameters 			= parameters;
 	}
@@ -74,7 +75,9 @@ extends AbstractFilterFactory<T> {
 	@Override
 	protected Options getOptions() {
 		final Options options = new Options();
-		options.addOption(RTArrestFactory.getOption());
+		options.addOption(HomozygousFilterFactory.getOptionBuilder().build());
+		// TODO do we need this?
+		// options.addOption(RTArrestFactory.getReadsOptionBuilder(appl).build());
 		return options;
 	}
 	

@@ -48,15 +48,15 @@ extends AbstractStatisticCalculator<T> {
 	
 	protected DecimalFormat decimalFormat;
 
-	public AbstractDirichletStatistic(final String name, final String desc, final CallParameter parameter) {
-		super(name, desc);
+	public AbstractDirichletStatistic(final Option option, final CallParameter parameter) {
+		super(option);
 		this.parameter = parameter;
 	}
 
-	protected AbstractDirichletStatistic(final String name, final String desc,
+	protected AbstractDirichletStatistic(final Option option,
 			final MinkaEstimateParameters estimateAlpha, final CallParameter parameter) {
 
-		super(name, desc);
+		super(option);
 		this.parameter 		= parameter;
 		final int n 		= SequenceUtil.VALID_BASES_UPPER.length;
 

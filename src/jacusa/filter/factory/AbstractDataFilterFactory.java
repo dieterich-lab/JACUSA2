@@ -1,5 +1,7 @@
 package jacusa.filter.factory;
 
+import org.apache.commons.cli.Option;
+
 import jacusa.filter.AbstractFilter;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
@@ -15,8 +17,8 @@ import lib.util.coordinate.CoordinateController;
 public abstract class AbstractDataFilterFactory<T extends AbstractData> 
 extends AbstractFilterFactory<T> {
 
-	public AbstractDataFilterFactory(final char c, final String desc) {
-		super(c, desc);
+	public AbstractDataFilterFactory(final Option option) {
+		super(option);
 	}
 	
 	@Override

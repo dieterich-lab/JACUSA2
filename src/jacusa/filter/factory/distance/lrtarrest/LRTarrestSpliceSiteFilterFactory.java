@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import java.util.List;
 
+import org.apache.commons.cli.Option;
+
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
 import lib.data.AbstractData;
@@ -23,7 +25,9 @@ public class LRTarrestSpliceSiteFilterFactory<T extends AbstractData & HasBaseCa
 extends AbstractLRTarrestFilterFactory<T> {
 
 	public LRTarrestSpliceSiteFilterFactory() {
-		super('S', "Filter artefacts around splice site of read arrest positions.",
+		super(Option.builder(Character.toString('S'))
+				.desc("Filter artefacts around splice site of read arrest positions.")
+				.build(),
 				new DefaultRefPos2BaseCallCountExtractor<T>(),
 				6, 0.5);
 	}

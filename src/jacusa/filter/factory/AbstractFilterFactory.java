@@ -3,12 +3,14 @@ package jacusa.filter.factory;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
+import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -18,14 +20,10 @@ import lib.util.coordinate.CoordinateController;
  */
 public abstract class AbstractFilterFactory<T extends AbstractData> {
 
-	// unique char id - corresponds CLI
-	private final char c;
-	// description of filter - shown in help
-	private final String desc;
+	private final Option option;
 
-	public AbstractFilterFactory(final char c, final String desc) {
-		this.c 		= c;
-		this.desc	= desc;
+	public AbstractFilterFactory(final Option option) {
+		this.option = option;
 	}
 
 	/**
@@ -34,7 +32,7 @@ public abstract class AbstractFilterFactory<T extends AbstractData> {
 	 * @return unique char id 
 	 */
 	public char getC() {
-		return c;
+		return option.getOpt().charAt(0);
 	}
 
 	/**
@@ -43,7 +41,10 @@ public abstract class AbstractFilterFactory<T extends AbstractData> {
 	 * @return string that describes this filter
 	 */
 	public String getDesc() {
-		return desc;
+		// HACK
+		Option tmp = (Option)option.clone();
+		Util.adjustOption(tmp, getOptions());
+		return tmp.getDescription();
 	}
 
 	/**
@@ -71,9 +72,8 @@ public abstract class AbstractFilterFactory<T extends AbstractData> {
 	}
 
 	protected abstract void processCLI(CommandLine cmd);
-	
 	protected abstract Options getOptions();
-	
+
 	/**
 	 * TODO add comments.
 	 * 

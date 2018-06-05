@@ -2,6 +2,7 @@ package jacusa.filter.factory;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
@@ -24,11 +25,10 @@ extends AbstractFilterFactory<T> {
 	// which condition is required to be homozygous
 	private int homozygousConditionIndex;
 	private final AbstractParameter<T, ?> parameters;
-
+	
 	public HomozygousFilterFactory(final AbstractParameter<T, ?> parameters) {
-		super('H', 
-				"Filter non-homozygous pileup/BAM in condition 1 or 2 " +
-				"(MUST be set to H:1 or H:2). Default: none");
+		super(getOptionBuilder().build());
+				
 		homozygousConditionIndex 	= -1;
 		this.parameters 			= parameters;
 	}
@@ -36,16 +36,12 @@ extends AbstractFilterFactory<T> {
 	@Override
 	protected Options getOptions() {
 		final Options options = new Options();
-		options.addOption(Option.builder("condition")
-				.desc("Default: none")
-				.build());
+		options.addOption(getConditionOptionBuilder().build());
 		return options;
 	}
 	
 	@Override
 	public void processCLI(final CommandLine cmd) throws IllegalArgumentException {
-		// format of s: 	H:<condition>[:strict]
-		// array content:	0:1			  :2
 		for (final Option option : cmd.getOptions()) {
 			final String opt = option.getOpt();
 			switch (opt) {
@@ -97,6 +93,17 @@ extends AbstractFilterFactory<T> {
 
 	}
 
+	public static Builder getOptionBuilder() {
+		return Option.builder(Character.toString('H'))
+				.desc("Filter non-homozygous sites in condition 1 or 2.");
+	}
+			 
+	public static Builder getConditionOptionBuilder() {
+		return Option.builder("condition")
+			.argName("CONDITION")
+			.desc("Possible values for condition: 1 or 2. Default: none");
+	}
+	
 	@Override
 	public void addFilteredData(StringBuilder sb, T data) {
 		sb.append(BEDlikeWriter.EMPTY_FIELD);	

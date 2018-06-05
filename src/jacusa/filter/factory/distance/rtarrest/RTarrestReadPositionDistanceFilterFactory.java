@@ -3,6 +3,8 @@ package jacusa.filter.factory.distance.rtarrest;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.cli.Option;
+
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import lib.data.AbstractData;
@@ -18,7 +20,9 @@ public class RTarrestReadPositionDistanceFilterFactory<T extends AbstractData & 
 extends AbstractRTarrestDistanceFilterFactory<T> {
 
 	public RTarrestReadPositionDistanceFilterFactory() {
-		super('B', "Filter potential false positive variants adjacent to read start/end in read through reads.",
+		super(Option.builder(Character.toString('B'))
+				.desc("Filter potential false positive variants adjacent to read start/end in read through reads.")
+				.build(),
 				new ArrestBaseCallCountExtractor<T>(),
 				6, 0.5);
 	}

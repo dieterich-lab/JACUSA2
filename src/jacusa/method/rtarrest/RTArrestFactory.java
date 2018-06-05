@@ -53,6 +53,7 @@ import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.ParseException;
 
 public class RTArrestFactory 
@@ -213,11 +214,20 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 		THROUGH
 	}
 
-	public static Option getOption() {
+	public static Builder getReadsOptionBuilder(final Set<RT_READS> defaultValue) {
+		final StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		for (final RT_READS r : defaultValue) {
+			if (! first) {
+				sb.append('&'); // FIXME
+				first = false;
+			}
+			sb.append(r.toString());
+		}
+
 		return Option.builder("reads")
 				.hasArg(true)
-				.desc("")
-				.build();
+				.desc("Apply filter to base calls from reads: ARREST or THROUGH or ARRESTt&THROUGH. Default: " + sb.toString());
 	}
 
 	public static Set<RT_READS> processApply2Reads(final String line) {

@@ -9,6 +9,7 @@ import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.HomozygousFilterFactory;
 import jacusa.io.format.BEDlikeWriter;
 import jacusa.method.rtarrest.RTArrestFactory;
 import jacusa.method.rtarrest.RTArrestFactory.RT_READS;
@@ -36,10 +37,8 @@ extends AbstractFilterFactory<T> {
 	private final AbstractParameter<T, ?> parameters;
 
 	public RTarrestHomozygousFilterFactory(final AbstractParameter<T, ?> parameters) {
-		super('H', 
-				"Filter non-homozygous pileup/BAM in condition 1 or 2.\n" +
-				"Apply filter to read arrest OR read through reads OR both.\n" +
-				"(H:[1|2]:[arrest|through|arrest&through]). Default: H[1|2]:arrest");
+		super(HomozygousFilterFactory.getOptionBuilder().build());
+
 		homozygousConditionIndex 	= -1;
 		apply2reads 				= new HashSet<RT_READS>(2);
 		apply2reads.add(RT_READS.ARREST);
@@ -76,7 +75,8 @@ extends AbstractFilterFactory<T> {
 	@Override
 	protected Options getOptions() {
 		final Options options = new Options();
-		options.addOption(RTArrestFactory.getOption());
+		options.addOption(HomozygousFilterFactory.getConditionOptionBuilder().build());
+		options.addOption(RTArrestFactory.getReadsOptionBuilder(apply2reads).build());
 		return options;
 	}
 	

@@ -3,6 +3,9 @@ package jacusa.filter.factory.basecall;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Option.Builder;
+
 import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
 import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
 import jacusa.filter.cache.processrecord.ProcessRecord;
@@ -22,11 +25,10 @@ public class INDEL_FilterFactory<T extends AbstractData & HasBaseCallCount & Has
 extends AbstractBaseCallCountFilterFactory<T> {
 
 	public INDEL_FilterFactory() {
-		super('I', "Filter potential false positive variants adjacent to INDEL position(s)",
+		super(getOptionBuilder().build(),
 				new DefaultBaseCallCountExtractor<T>(),
 				6, 0.5);
 	}
-
 
 	@Override
 	protected List<ProcessRecord> createProcessRecord(RegionDataCache<T> regionDataCache) {
@@ -35,5 +37,10 @@ extends AbstractBaseCallCountFilterFactory<T> {
 		processRecords.add(new ProcessDeletionOperator(getDistance(), regionDataCache));
 		return processRecords;
 	}
-		
+
+	public static Builder getOptionBuilder() {
+		return Option.builder(Character.toString('I'))
+				.desc("Filter potential false positive variants adjacent to INDEL position(s).");
+	}
+	
 }

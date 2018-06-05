@@ -2,6 +2,7 @@ package jacusa.filter.factory;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
@@ -26,8 +27,7 @@ extends AbstractFilterFactory<T> {
 	private int alleles;
 
 	public MaxAlleleCountFilterFactory() {
-		super('M', 
-				"Max allowed alleles per parallel pileup.");
+		super(getOptionBuilder().build());
 		alleles = MAX_ALLELES;
 	}
 
@@ -39,9 +39,7 @@ extends AbstractFilterFactory<T> {
 	@Override
 	protected Options getOptions() {
 		final Options options = new Options();
-		options.addOption(Option.builder("maxAlleles")
-				.desc("Default: " + MAX_ALLELES)
-				.build());
+		options.addOption(getMaxAlleleOptionBuilder(MAX_ALLELES).build());
 		return options;
 	}
 	
@@ -86,6 +84,16 @@ extends AbstractFilterFactory<T> {
 
 	}
 
+	public static Builder getOptionBuilder() {
+		return Option.builder(Character.toString('M'))
+				.desc("Max allowed alleles per site.");
+	}
+
+	public static Builder getMaxAlleleOptionBuilder(final int defaultValue) {
+		return Option.builder("maxAlleles")
+				.desc("must be > 0. Default: " + defaultValue);
+	}
+	
 	@Override
 	public void addFilteredData(StringBuilder sb, T data) {
 		sb.append(BEDlikeWriter.EMPTY_FIELD);

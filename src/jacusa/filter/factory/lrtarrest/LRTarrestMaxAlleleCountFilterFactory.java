@@ -11,8 +11,8 @@ import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.io.format.BEDlikeWriter;
-import jacusa.method.rtarrest.RTArrestFactory;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
@@ -35,8 +35,9 @@ extends AbstractFilterFactory<T> {
 	private int alleles;
 	
 	public LRTarrestMaxAlleleCountFilterFactory() {
-		super('M', 
-				"Max allowed alleles per parallel pileup. Default: "+ MAX_ALLELES);
+		super(Option.builder(Character.toString('M'))
+				.desc("Max allowed alleles per parallel pileup. Default: "+ MAX_ALLELES)
+				.build());
 		alleles = MAX_ALLELES;
 	}
 
@@ -66,10 +67,9 @@ extends AbstractFilterFactory<T> {
 	@Override
 	protected Options getOptions() {
 		final Options options = new Options();
-		options.addOption(Option.builder("maxAlleles")
-				.desc("Default: " + MAX_ALLELES)
-				.build());
-		options.addOption(RTArrestFactory.getOption());
+		options.addOption(MaxAlleleCountFilterFactory.getMaxAlleleOptionBuilder(MAX_ALLELES).build());
+		// do we need this
+		// options.addOption(RTArrestFactory.getReadsOptionBuilder().build());
 		return options;
 	}
 	

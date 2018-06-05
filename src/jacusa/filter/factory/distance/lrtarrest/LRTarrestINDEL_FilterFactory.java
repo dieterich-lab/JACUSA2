@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import java.util.List;
 
+import org.apache.commons.cli.Option;
+
 import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
 import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
 import jacusa.filter.cache.processrecord.ProcessRecord;
@@ -24,7 +26,9 @@ public class LRTarrestINDEL_FilterFactory<T extends AbstractData & HasBaseCallCo
 extends AbstractLRTarrestFilterFactory<T> {
 
 	public LRTarrestINDEL_FilterFactory() {
-		super('I', "Filter artefacts around INDELs of read arrest reads.",
+		super(Option.builder(Character.toString('I'))
+				.desc("Filter artefacts around INDELs of read arrest reads.")
+				.build(),
 				new DefaultRefPos2BaseCallCountExtractor<T>(),
 				6, 0.5);
 	}

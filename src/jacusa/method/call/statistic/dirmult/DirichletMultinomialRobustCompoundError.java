@@ -2,6 +2,8 @@ package jacusa.method.call.statistic.dirmult;
 
 import java.util.Set;
 
+import org.apache.commons.cli.Option;
+
 import jacusa.cli.parameters.CallParameter;
 import jacusa.method.call.statistic.AbstractDirichletStatistic;
 import lib.cli.options.Base;
@@ -14,7 +16,10 @@ public class DirichletMultinomialRobustCompoundError<T extends AbstractData & Ha
 extends DirichletMultinomialCompoundError<T> {
 
 	public DirichletMultinomialRobustCompoundError(final CallParameter parameters) {
-		super("DirMult-RCE", "Robust Compound Err.", parameters);
+		super(Option.builder("DirMultRCE")
+				.desc("Robust Compound Err.")
+				.build(), 
+				parameters);
 	}
 
 	@Override

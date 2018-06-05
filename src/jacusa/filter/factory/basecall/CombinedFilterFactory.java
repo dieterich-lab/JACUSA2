@@ -3,6 +3,9 @@ package jacusa.filter.factory.basecall;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Option.Builder;
+
 import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
 import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
@@ -24,7 +27,7 @@ public class CombinedFilterFactory<T extends AbstractData & HasBaseCallCount & H
 extends AbstractBaseCallCountFilterFactory<T> {
 
 	public CombinedFilterFactory() {
-		super('D', "Filter artefacts in the vicinity of read start/end, INDELs, and splice site position(s)",
+		super(getOptionBuilder().build(),
 				new DefaultBaseCallCountExtractor<T>(), 
 				6, 0.5);
 	}
@@ -42,4 +45,9 @@ extends AbstractBaseCallCountFilterFactory<T> {
 		return processRecords;
 	}
 
+	public static Builder getOptionBuilder() {
+		return Option.builder(Character.toString('D'))
+				.desc("Filter artefacts in the vicinity of read start/end, INDELs, and splice site position(s)");
+	}
+	
 }

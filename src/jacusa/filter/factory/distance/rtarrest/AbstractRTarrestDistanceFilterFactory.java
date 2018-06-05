@@ -27,11 +27,11 @@ extends AbstractBaseCallCountFilterFactory<T> {
 
 	private final Set<RT_READS> apply2reads;
 
-	public AbstractRTarrestDistanceFilterFactory(final char c, final String desc,
+	public AbstractRTarrestDistanceFilterFactory(final Option option,
 			final BaseCallCountExtractor<T> observed, final BaseCallCountExtractor<T> filtered, 
 			final int defaultFilterDistance, final double defaultFilterMinRatio) {
 
-		super(c, desc, 
+		super(option, 
 				observed, filtered,
 				defaultFilterDistance, 
 				defaultFilterMinRatio);
@@ -39,17 +39,20 @@ extends AbstractBaseCallCountFilterFactory<T> {
 		apply2reads = new HashSet<RT_READS>(2);
 	}
 	
-	public AbstractRTarrestDistanceFilterFactory(final char c, final String desc,
+	public AbstractRTarrestDistanceFilterFactory(final Option option,
 			final BaseCallCountExtractor<T> observed,
 			final int defaultFilterDistance, final double defaultFilterMinRatio) {
 		
-		this(c, desc, observed, new BaseCallCountFilterDataExtractor<T>(c), defaultFilterDistance, defaultFilterMinRatio);
+		this(option, 
+				observed, 
+				new BaseCallCountFilterDataExtractor<T>(option.getOpt().charAt(0)), 
+				defaultFilterDistance, defaultFilterMinRatio);
 	}
 
 	@Override
 	protected Options getOptions() {
 		final Options options = super.getOptions();
-		options.addOption(RTArrestFactory.getOption());
+		options.addOption(RTArrestFactory.getReadsOptionBuilder(apply2reads).build());
 		return options;
 	}
 	

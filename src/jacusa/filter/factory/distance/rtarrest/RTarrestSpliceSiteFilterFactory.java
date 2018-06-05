@@ -5,6 +5,7 @@ import java.util.List;
 
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
 import jacusa.filter.cache.processrecord.ProcessRecord;
+import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import jacusa.method.rtarrest.RTArrestFactory.RT_READS;
 import lib.data.AbstractData;
 import lib.data.cache.extractor.basecall.ArrestBaseCallCountExtractor;
@@ -22,8 +23,7 @@ public class RTarrestSpliceSiteFilterFactory<T extends AbstractData & HasBaseCal
 extends AbstractRTarrestDistanceFilterFactory<T> {
 
 	public RTarrestSpliceSiteFilterFactory() {
-		super('S', "Filter artefacts around splice site of read arrest positions.\n" +
-				   "Apply filter to read arrest OR read through reads OR both.\n",
+		super(SpliceSiteFilterFactory.getOptionBuilder().build(),
 				new ArrestBaseCallCountExtractor<T>(),
 				6, 0.5);
 		getApply2Reads().add(RT_READS.ARREST);

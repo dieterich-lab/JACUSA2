@@ -9,6 +9,7 @@ import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.io.format.BEDlikeWriter;
 import jacusa.method.rtarrest.RTArrestFactory;
 import jacusa.method.rtarrest.RTArrestFactory.RT_READS;
@@ -36,11 +37,7 @@ extends AbstractFilterFactory<T> {
 	private final Set<RT_READS> apply2reads;
 
 	public RTarrestMaxAlleleCountFilterFactory() {
-		super('M', 
-				"Max allowed alleles per parallel pileup.\n" +
-				"Apply filter to read arrest OR read through reads OR both.\n" +
-				"(M:<MAX_ALLELS>:[arrest|through|arrest&through])" +
-				"Default: "+ MAX_ALLELES + ":arrest");
+		super(MaxAlleleCountFilterFactory.getOptionBuilder().build());
 		alleles 	= MAX_ALLELES;
 		apply2reads = new HashSet<RT_READS>(2);
 		apply2reads.add(RT_READS.ARREST);
@@ -79,10 +76,8 @@ extends AbstractFilterFactory<T> {
 	@Override
 	protected Options getOptions() {
 		final Options options = new Options();
-		options.addOption(Option.builder("maxAlleles")
-				.desc("Default: " + MAX_ALLELES)
-				.build());
-		options.addOption(RTArrestFactory.getOption());
+		options.addOption(MaxAlleleCountFilterFactory.getMaxAlleleOptionBuilder(MAX_ALLELES).build());
+		options.addOption(RTArrestFactory.getReadsOptionBuilder(apply2reads).build());
 		return options;
 	}
 	

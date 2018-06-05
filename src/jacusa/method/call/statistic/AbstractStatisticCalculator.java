@@ -3,6 +3,7 @@ package jacusa.method.call.statistic;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
@@ -17,16 +18,15 @@ import lib.util.Info;
  */
 public abstract class AbstractStatisticCalculator<T extends AbstractData> {
 
-	private final String name;
-	private final String desc;
+	private final Option option;
 
 	// add CLI options after OPTION_SEP, 
 	// e.g.: C:opt1=val1
+	// FIXME
 	public static final char SEP = ':';
 	
-	public AbstractStatisticCalculator(final String name, final String desc) {
-		this.name = name;
-		this.desc = desc;
+	public AbstractStatisticCalculator(final Option option) {
+		this.option = option;
 		// TODO add help from HelpFormatter to desc
 	}
 	
@@ -70,7 +70,7 @@ public abstract class AbstractStatisticCalculator<T extends AbstractData> {
 	 * @return
 	 */
 	public String getName() {
-		return name;
+		return option.getOpt();
 	}
 	
 	/**
@@ -78,7 +78,7 @@ public abstract class AbstractStatisticCalculator<T extends AbstractData> {
 	 * @return
 	 */
 	public String getDescription() {
-		return desc;
+		return option.getDescription();
 	}
 
 	/**

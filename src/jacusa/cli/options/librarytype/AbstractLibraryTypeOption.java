@@ -19,7 +19,7 @@ extends AbstractConditionACOption<T> {
 	// short opt
 	private static final String OPT = "P";
 	// long opt
-	private static final String LONG_OPT = "build-pileup";
+	private static final String LONG_OPT = "library-type";
 
 	public AbstractLibraryTypeOption(final List<AbstractConditionParameter<T>> conditionParameter, 
 			final AbstractParameter<T, ?> generalParameter) {
@@ -67,28 +67,27 @@ extends AbstractConditionACOption<T> {
 			option = option.replace("_", "-");
 			String desc = "";
 
+			
 			switch (l) {
 			case FR_FIRSTSTRAND:
-				desc = "STRANDED library - first strand sequenced";
+				desc = "\tSTRANDED library - first strand sequenced";
 				break;
 				
 			case FR_SECONDSTRAND:
-				desc = "STRANDED library - second strand sequenced";
+				desc = "\tSTRANDED library - second strand sequenced";
 				break;
 
 			case UNSTRANDED:
-				desc = "UNSTRANDED library";
+				desc = "\t\tUNSTRANDED library";
 				break;
 
 			case MIXED:
 				continue;
-				
 			}
 
 			sb.append(option);
-			sb.append("\t\t");
 			sb.append(desc);
-			sb.append("\n");
+			sb.append('\n');
 		}
 		
 		return sb.toString();
