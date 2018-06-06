@@ -242,11 +242,11 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 		
 		final String[] options = line.toUpperCase().split(Character.toString(FilterConfigOption.AND));
 		for (final String option : options) {
-			final RT_READS tmp = RT_READS.valueOf(option.toUpperCase());
-			if (tmp == null) {
+			final RT_READS tmpOption = RT_READS.valueOf(option.toUpperCase());
+			if (tmpOption == null) {
 				throw new IllegalArgumentException("Invalid argument: " + line);						
 			}
-			apply2reads.add(tmp);
+			apply2reads.add(tmpOption);
 		}
 		return apply2reads;
 	}

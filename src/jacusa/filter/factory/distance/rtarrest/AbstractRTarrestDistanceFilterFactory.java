@@ -62,10 +62,10 @@ extends AbstractBaseCallCountFilterFactory<T> {
 		
 		// ignore any first array element of s (e.g.: s[0] = "-u DirMult") 
 		for (final Option option : cmd.getOptions()) {
-			final String opt = option.getOpt();
-			switch (opt) {
+			final String longOpt = option.getLongOpt();
+			switch (longOpt) {
 				case "reads":
-					final String optionValue = cmd.getOptionValue(opt);
+					final String optionValue = cmd.getOptionValue(longOpt);
 					final Set<RT_READS> apply2reads = RTArrestFactory.processApply2Reads(optionValue);
 					if (apply2reads.size() > 0) {
 						getApply2Reads().clear();

@@ -79,10 +79,10 @@ extends AbstractDirichletStatistic<T> {
 	
 		// ignore any first array element of s (e.g.: s[0] = "-u DirMult") 
 		for (final Option option : cmd.getOptions()) {
-			final String opt = option.getOpt();
-			switch (opt) {
+			final String longOpt = option.getLongOpt();
+			switch (longOpt) {
 				case "estimatedError":
-				estimatedError = Double.parseDouble(cmd.getOptionValue(opt));
+				estimatedError = Double.parseDouble(cmd.getOptionValue(longOpt));
 				break;
 	
 			default:

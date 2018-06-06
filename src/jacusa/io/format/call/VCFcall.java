@@ -1,19 +1,13 @@
 package jacusa.io.format.call;
 
 import jacusa.filter.FilterConfig;
-import jacusa.filter.factory.AbstractFilterFactory;
 
-import java.util.Calendar;
-import java.util.List;
-
-import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.has.HasPileupCount;
 import lib.data.result.Result;
 import lib.io.AbstractResultFormat;
 import lib.io.ResultWriter;
-import lib.util.AbstractTool;
 
 /**
  * TODO add comments.
@@ -28,21 +22,14 @@ extends AbstractResultFormat<T, R> {
 	// unique char id for CLI
 	public static final char CHAR 		= 'V';
 	
-	public static final char COMMENT 	= '#';
-	public static final char SEP 		= '\t';
-	public static final char SEP2 		= ';';
-	public static final char SEP3 		= ':';
-	public static final char EMPTY 		= '.';
-	
-	// private final BaseCallConfig baseConfig;
 	private final FilterConfig<T> filterConfig;
 	
 	public VCFcall(final AbstractParameter<T, R> parameter) {
 		super(CHAR, "VCF Output format. Option -P will be ignored (VCF is unstranded)", parameter);
-		// this.baseConfig 	= parameter.getBaseConfig();
 		this.filterConfig 	= parameter.getFilterConfig();
 	}
-	
+
+	/* remove
 	public String addHeader(final List<AbstractConditionParameter<T>> conditionParameters) {
 		final StringBuilder sb = new StringBuilder();
 
@@ -96,22 +83,23 @@ extends AbstractResultFormat<T, R> {
 		sb.append(COMMENT);
 		sb.append(cols[0]);
 		for (int i = 1; i < cols.length; ++i) {
-			sb.append(SEP);
+			sb.append(FIELD_SEP);
 			sb.append(cols[i]);
 		}
 
 		// filename of condition and replicate BAMs
 		for (final AbstractConditionParameter<T> conditionParameter : conditionParameters) {
 			for (String recordFilename : conditionParameter.getRecordFilenames())  {
-				sb.append(SEP);
+				sb.append(FIELD_SEP);
 				sb.append(recordFilename);
 			}
 		}
 
 		return sb.toString();
 	}
+	*/
 
-	// TODO what to do with this?
+	// remove
 	/*
 	private String convert2String(final R result) {
 		final StringBuilder sb = new StringBuilder();
@@ -204,8 +192,7 @@ extends AbstractResultFormat<T, R> {
 
 	@Override
 	public ResultWriter<T, R> createWriter(String filename) {
-		// TODO implement a writer...
-		return null;
+		return new VCFcallWriter<T, R>(filename, filterConfig); 
 	}
 	
 }

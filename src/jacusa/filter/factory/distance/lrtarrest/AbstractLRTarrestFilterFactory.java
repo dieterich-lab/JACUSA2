@@ -61,12 +61,12 @@ extends AbstractDataFilterFactory<T> {
 
 		options.addOption(Option.builder("distance")
 				.hasArg(true)
-				.desc("Default: " + getDistance())
+				.desc("Filter base calls within distance to feature. Default: " + getDistance())
 				.build());
 
 		options.addOption(Option.builder("minRatio")
 				.hasArg(true)
-				.desc("Default: " + getMinRatio())
+				.desc("Minimal ratio of base calls to pass filtering. Default: " + getMinRatio())
 				.build());
 		
 		return options;
@@ -79,14 +79,14 @@ extends AbstractDataFilterFactory<T> {
 
 		// ignore any first array element of s (e.g.: s[0] = "-u DirMult") 
 		for (final Option option : cmd.getOptions()) {
-			final String opt = option.getOpt();
-			switch (opt) {
+			final String longOpt = option.getLongOpt();
+			switch (longOpt) {
 			case "distance":
-				filterDistance = Integer.parseInt(cmd.getOptionValue(opt));
+				filterDistance = Integer.parseInt(cmd.getOptionValue(longOpt));
 				break;
 				
 			case "minRatio":
-				filterMinRatio = Double.parseDouble(cmd.getOptionValue(opt));
+				filterMinRatio = Double.parseDouble(cmd.getOptionValue(longOpt));
 				break;
 
 			default:

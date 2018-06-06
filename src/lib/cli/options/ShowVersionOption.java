@@ -30,8 +30,6 @@ public class ShowVersionOption extends AbstractACOption {
 		if(line.hasOption(getOpt())) {
 			final AbstractTool tool = AbstractTool.getLogger().getTool();
 			final StringBuilder sb = new StringBuilder();
-			sb.append(tool.getName());
-			sb.append(' ');
 			sb.append(tool.getVersion());
 			System.out.println(sb.toString());
 			printed = true;

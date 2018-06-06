@@ -43,15 +43,15 @@ extends AbstractFilterFactory<T> {
 	@Override
 	public void processCLI(final CommandLine cmd) throws IllegalArgumentException {
 		for (final Option option : cmd.getOptions()) {
-			final String opt = option.getOpt();
-			switch (opt) {
+			final String longOpt = option.getLongOpt();
+			switch (longOpt) {
 			case "condition":
-				final int conditionIndex = Integer.parseInt(cmd.getOptionValue(opt));
+				final int conditionIndex = Integer.parseInt(cmd.getOptionValue(longOpt));
 				// make sure conditionIndex is within provided conditions
 				if (conditionIndex >= 1 && conditionIndex <= parameters.getConditionsSize()) {
 					this.homozygousConditionIndex = conditionIndex;
 				} else {
-					throw new IllegalArgumentException("Invalid argument: " + opt);
+					throw new IllegalArgumentException("Invalid argument: " + longOpt);
 				}
 				break;
 				
@@ -99,9 +99,12 @@ extends AbstractFilterFactory<T> {
 	}
 			 
 	public static Builder getConditionOptionBuilder() {
-		return Option.builder("condition")
+		return Option.builder()
+			.longOpt("condition")
 			.argName("CONDITION")
-			.desc("Possible values for condition: 1 or 2. Default: none");
+			.hasArg()
+			.required()
+			.desc("Possible values for condition: 1 or 2.");
 	}
 	
 	@Override

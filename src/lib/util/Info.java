@@ -47,6 +47,10 @@ public class Info {
 		return sb.toString();
 	}
 
+	public boolean contains(final String key) {
+		return map.containsKey(key);
+	}
+	
 	public void addAll(Info info) {
 		map.putAll(info.map);
 	}

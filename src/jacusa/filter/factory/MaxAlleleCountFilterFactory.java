@@ -47,12 +47,12 @@ extends AbstractFilterFactory<T> {
 	public void processCLI(final CommandLine cmd) throws IllegalArgumentException {
 		// format: M:2
 		for (final Option option : cmd.getOptions()) {
-			final String opt = option.getOpt();
-			switch (opt) {
+			final String longOpt = option.getLongOpt();
+			switch (longOpt) {
 			case "maxAlleles":
-				final int alleleCount = Integer.valueOf(cmd.getOptionValue(opt));
+				final int alleleCount = Integer.valueOf(cmd.getOptionValue(longOpt));
 				if (alleleCount < 0) {
-					throw new IllegalArgumentException("Invalid allele count: " + opt);
+					throw new IllegalArgumentException("Invalid allele count: " + longOpt);
 				}
 				break;
 				
@@ -90,7 +90,8 @@ extends AbstractFilterFactory<T> {
 	}
 
 	public static Builder getMaxAlleleOptionBuilder(final int defaultValue) {
-		return Option.builder("maxAlleles")
+		return Option.builder()
+				.longOpt("maxAlleles")
 				.desc("must be > 0. Default: " + defaultValue);
 	}
 	

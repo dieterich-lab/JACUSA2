@@ -86,14 +86,14 @@ public abstract class Util {
 		
 		int max = 3;
 		for (final Option o : options.getOptions()) {
-			max = Math.max(max, o.getOpt().length());
+			max = Math.max(max, o.getLongOpt().length());
 		}
 		
 		for (final Option o : options.getOptions()) {
 			sb.append("| :");
-			sb.append(o.getOpt());
+			sb.append(o.getLongOpt());
 
-			space = new char[max - o.getOpt().length() + 1];
+			space = new char[max - o.getLongOpt().length() + 1];
 			Arrays.fill(space, ' ');		
 			sb.append(space);
 			
@@ -101,7 +101,11 @@ public abstract class Util {
 			Arrays.fill(space, ' ');
 			space[0] = '|';
 			
-			Util.formatStr(sb, o.getDescription(), new String(space), width);
+			String s = o.getDescription();
+			if (o.isRequired()) {
+				s += " (Required)";
+			}
+			Util.formatStr(sb, s, new String(space), width);
 		}
 		option.setDescription(sb.toString());
 	}

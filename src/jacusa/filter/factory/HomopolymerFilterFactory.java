@@ -43,7 +43,9 @@ extends AbstractDataFilterFactory<T> {
 	}
 	
 	public static Builder getHomopolymerOptionBuilder() {
-		return Option.builder("length")
+		return Option.builder()
+				.longOpt("length")
+				.argName("LENGTH")
 				.hasArg(true)
 				.desc("must be > 0. Default: " + MIN_HOMOPOLYMER_LENGTH);
 	}
@@ -59,12 +61,12 @@ extends AbstractDataFilterFactory<T> {
 	public void processCLI(final CommandLine cmd) {
 		// format Y:length
 		for (final Option option : cmd.getOptions()) {
-			final String opt = option.getOpt();
-			switch (opt) {
+			final String longOpt = option.getLongOpt();
+			switch (longOpt) {
 			case "length":
-				final int length = Integer.valueOf(cmd.getOptionValue(opt));
+				final int length = Integer.valueOf(cmd.getOptionValue(longOpt));
 				if (length < 0) {
-					throw new IllegalArgumentException("Invalid length: " + opt);
+					throw new IllegalArgumentException("Invalid length: " + longOpt);
 				}
 				this.length = length;
 				break;

@@ -117,13 +117,13 @@ implements RecordWrapperDataCache<T> {
 		final int size = record.getAlignmentBlocks().size();
 		final AlignmentBlock last = record.getAlignmentBlocks().get(size - 1);
 		
-		int windowPosition1 = getCoordinateController().convert2windowPosition(first.getReferenceStart());
-		if (windowPosition1 >= 0) {
+		final int alignmentStartWindowPosition = getCoordinateController().convert2windowPosition(first.getReferenceStart());
+		if (alignmentStartWindowPosition >= 0) {
 			startValidated.addRegion(first.getReferenceStart(), first.getReadStart() - 1, 1, recordWrapper);
 		}
 		
-		int windowPosition2 = getCoordinateController().convert2windowPosition(last.getReferenceStart());
-		if (windowPosition2 >= 0) {
+		final int alignmentEndWindowPosition = getCoordinateController().convert2windowPosition(last.getReferenceStart());
+		if (alignmentEndWindowPosition >= 0) {
 			final int length = last.getLength();
 			endValidated.addRegion(last.getReferenceStart() + length - 1, last.getReadStart() + length - 2, 1, recordWrapper);
 		}
@@ -138,12 +138,12 @@ implements RecordWrapperDataCache<T> {
 		startValidated.addData(data, coordinate);
 		endValidated.addData(data, coordinate);
 		wholeValidated.addData(data, coordinate);
-
 		
 		final int windowPosition 		= getCoordinateController().convert2windowPosition(coordinate);
 		// through = whole - arrest
 		final BaseCallCount throughBC 	= baseCallCountExtractor.getBaseCallCount(data).copy();
 		if (throughBC.getCoverage() == 0) {
+			// not covered at all
 			return;
 		}
 		throughBC.substract(arrestBaseCallCountExtractor.getBaseCallCount(data));

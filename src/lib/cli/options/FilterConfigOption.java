@@ -8,6 +8,7 @@ import java.util.Map;
 
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
+import lib.util.Util;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -41,7 +42,7 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 
 			final String opt = "___REMOVE___" + Character.toString(c);
 			Option option = Option.builder(opt)
-					.desc(": " + filterFactory.getDesc())
+					.desc(filterFactory.getDesc())
 					.build();
 
 			options.addOption(option);
@@ -69,15 +70,18 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 	public void process(final CommandLine line) throws Exception {
 		if (line.hasOption(getOpt())) {
 			final String s = line.getOptionValue(getOpt());
-			final String[] t = s.split(Character.toString(OR));
+			final String[] t = s.split(Character.toString(Util.VALUE_SEP));
 
-			for (final String a : t) {
+			for (String a : t) {
 				final char c = a.charAt(0);
 				if (! filterFactories.containsKey(c)) {
-					throw new IllegalArgumentException("Unknown filter: " + c);
+					throw new IllegalArgumentException("Unknown filter or wrong option: " + s);
 				}
 				final AbstractFilterFactory<T> filterFactory = filterFactories.get(c);
-				filterFactory.processCLI(a);
+				if (a.length() > 1) {
+					a = a.substring(1);
+					filterFactory.processCLI(a.replaceAll(":", "--"));
+				}
 				parameters.getFilterConfig().addFactory(filterFactory);
 			}
 		}

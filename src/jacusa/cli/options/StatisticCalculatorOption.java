@@ -50,7 +50,7 @@ extends AbstractACOption {
 
 			final String opt = "___REMOVE___" + statName;
 			Option option = Option.builder(opt)
-					.desc(": " + tmpStatisticCalculator.getDescription())
+					.desc(tmpStatisticCalculator.getDescription())
 					.build();
 
 			options.addOption(option);
@@ -70,6 +70,7 @@ extends AbstractACOption {
 				.build();
 	}
 
+	// FIXME
 	@Override
 	public void process(final CommandLine line) throws Exception {
 		if (line.hasOption(getOpt())) {
@@ -85,7 +86,7 @@ extends AbstractACOption {
 
 			// check if statName is a valid statistic name
 			if (! availableStatisticCalculator.containsKey(statName)) {
-				throw new IllegalArgumentException("Unknown statistic: " + statName);
+				throw new IllegalArgumentException("Unknown statistic or wrong option: " + statName);
 			}
 
 			// update statistic factory and set command line options

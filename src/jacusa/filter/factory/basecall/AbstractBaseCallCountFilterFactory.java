@@ -70,12 +70,16 @@ extends AbstractDataFilterFactory<T> {
 	protected Options getOptions() {
 		final Options options = new Options();
 
-		options.addOption(Option.builder("distance")
+		options.addOption(Option.builder()
+				.argName("DISTANCE")
+				.longOpt("distance")
 				.hasArg(true)
 				.desc("Filter base calls within distance to feature. Default: " + getDistance())
 				.build());
 
-		options.addOption(Option.builder("minRatio")
+		options.addOption(Option.builder()
+				.argName("MINRATIO")
+				.longOpt("minRatio")
 				.hasArg(true)
 				.desc("Minimal ratio of base calls to pass filtering. Default: " + getMinRatio())
 				.build());
@@ -86,14 +90,14 @@ extends AbstractDataFilterFactory<T> {
 	@Override
 	public void processCLI(final CommandLine cmd) {
 		for (final Option option : cmd.getOptions()) {
-			final String opt = option.getOpt();
-			switch (opt) {
+			final String longOpt = option.getLongOpt();
+			switch (longOpt) {
 			case "distance":
-				filterDistance = Integer.parseInt(cmd.getOptionValue(opt));
+				filterDistance = Integer.parseInt(cmd.getOptionValue(longOpt));
 				break;
 				
 			case "minRatio":
-				filterMinRatio = Double.parseDouble(cmd.getOptionValue(opt));
+				filterMinRatio = Double.parseDouble(cmd.getOptionValue(longOpt));
 				break;
 
 			default:

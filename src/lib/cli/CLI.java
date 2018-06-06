@@ -45,11 +45,13 @@ public class CLI {
 			try {
 				CommandLine line = parser.parse(options, args);
 				showVersion.process(line);
+				if (showVersion.isPrinted()) {
+					System.exit(0);					
+				}
 			} catch (ParseException e) {
 				// ignore
 			} catch (Exception e) {
 				// ignore
-				
 			}
 			AbstractTool.getLogger().addError("Unknown method: " + args[0]);
 			System.exit(0);

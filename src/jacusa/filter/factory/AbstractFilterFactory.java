@@ -63,7 +63,7 @@ public abstract class AbstractFilterFactory<T extends AbstractData> {
 		CommandLine cmd = null;
 		try {
 			cmd = parser.parse(options, args);
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			e.printStackTrace();
 			return;
 		}
