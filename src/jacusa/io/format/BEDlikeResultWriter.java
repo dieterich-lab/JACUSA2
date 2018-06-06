@@ -34,6 +34,7 @@ extends BEDlikeWriter<T, R> {
 
 	@Override
 	protected void addResultBaseCallCount(final StringBuilder sb, final T data) {
+		sb.append(Util.FIELD_SEP);
 		ResultWriterUtils.addBaseCallCount(sb, data.getBaseCallCount());
 	}
 	
