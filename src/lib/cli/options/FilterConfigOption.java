@@ -18,8 +18,8 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 
 	final private AbstractParameter<T, ?> parameters;
 
-	private static final char OR = ',';
-	//private static char AND = '&'; // Future Feature add logic
+	public static final char OR = '|';
+	public static char AND = '&';
 
 	final private Map<Character, AbstractFilterFactory<T>> filterFactories;
 

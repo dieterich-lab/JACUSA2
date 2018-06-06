@@ -223,7 +223,7 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 		boolean first = true;
 		for (final RT_READS r : defaultValue) {
 			if (! first) {
-				sb.append('&'); // FIXME
+				sb.append(FilterConfigOption.AND);
 				first = false;
 			}
 			sb.append(r.toString());
@@ -240,7 +240,7 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 			return apply2reads;
 		}
 		
-		final String[] options = line.toUpperCase().split("&");
+		final String[] options = line.toUpperCase().split(Character.toString(FilterConfigOption.AND));
 		for (final String option : options) {
 			final RT_READS tmp = RT_READS.valueOf(option.toUpperCase());
 			if (tmp == null) {
