@@ -7,6 +7,7 @@ import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
 import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.basecall.INDEL_FilterFactory;
+import jacusa.method.rtarrest.RTArrestFactory.RT_READS;
 import lib.data.AbstractData;
 import lib.data.cache.extractor.basecall.ArrestBaseCallCountExtractor;
 import lib.data.cache.region.RegionDataCache;
@@ -28,6 +29,7 @@ extends AbstractRTarrestDistanceFilterFactory<T> {
 		super(INDEL_FilterFactory.getOptionBuilder().build(),
 				new ArrestBaseCallCountExtractor<T>(),
 				6, 0.5);
+		getApply2Reads().add(RT_READS.ARREST);
 	}
 
 	@Override
