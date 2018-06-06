@@ -1,11 +1,11 @@
 package lib.data.count;
 
-import lib.cli.options.Base;
 import lib.data.count.PileupCount;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasBaseCallQualityCount;
 import lib.data.has.HasCoverage;
 import lib.data.has.HasReferenceBase;
+import lib.util.Base;
 
 public class PileupCount 
 implements HasBaseCallCount, HasBaseCallQualityCount, HasReferenceBase, HasCoverage {

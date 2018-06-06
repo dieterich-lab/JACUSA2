@@ -5,7 +5,6 @@ import java.util.Arrays;
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.util.SequenceUtil;
-import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.adder.AbstractDataAdder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
@@ -13,6 +12,7 @@ import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.has.filter.HasBooleanFilterData;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
+import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
 /**

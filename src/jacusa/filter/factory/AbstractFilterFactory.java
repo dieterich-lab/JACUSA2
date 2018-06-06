@@ -7,7 +7,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import jacusa.method.call.statistic.AbstractStatisticCalculator;
 import lib.data.AbstractData;
 import lib.data.builder.ConditionContainer;
 import lib.util.Util;
@@ -43,7 +42,7 @@ public abstract class AbstractFilterFactory<T extends AbstractData> {
 	public String getDesc() {
 		// HACK
 		Option tmp = (Option)option.clone();
-		Util.adjustOption(tmp, getOptions());
+		Util.adjustOption(tmp, getOptions(), tmp.getOpt().length());
 		return tmp.getDescription();
 	}
 
@@ -58,7 +57,7 @@ public abstract class AbstractFilterFactory<T extends AbstractData> {
 			return;
 		}
 
-		final String[] args = line.split(Character.toString(AbstractStatisticCalculator.SEP));
+		final String[] args = line.split(Character.toString(Util.WITHIN_FIELD_SEP));
 		final CommandLineParser parser = new DefaultParser();
 		
 		CommandLine cmd = null;

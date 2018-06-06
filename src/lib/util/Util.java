@@ -10,6 +10,8 @@ import org.apache.commons.cli.Options;
 
 public abstract class Util {
 
+	
+	
 	public static String printAlpha(double a[]) {
 		DecimalFormat df = new DecimalFormat("0.0000"); 
 		StringBuilder sb = new StringBuilder();
@@ -70,15 +72,17 @@ public abstract class Util {
 		}
 	}
 
-	public static void adjustOption(final Option option, final Options options) {
-		adjustOption(option, options, 60);
+	public static void adjustOption(final Option option, final Options options, final int padding) {
+		adjustOption(option, options, padding, 60);
 	}
 	
-	public static void adjustOption(final Option option, final Options options, final int width) {
+	public static void adjustOption(final Option option, final Options options, final int padding, final int width) {
 		final StringBuilder sb = new StringBuilder();
 
 		// add option description and wrap
-		Util.formatStr(sb, option.getDescription(), "| ", width);
+		char[] space = new char[padding];
+		Arrays.fill(space, ' ');
+		Util.formatStr(sb, option.getDescription(), "|" + new String(space), width);
 		
 		int max = 3;
 		for (final Option o : options.getOptions()) {
@@ -89,7 +93,7 @@ public abstract class Util {
 			sb.append("| :");
 			sb.append(o.getOpt());
 
-			char[] space = new char[max - o.getOpt().length() + 1];
+			space = new char[max - o.getOpt().length() + 1];
 			Arrays.fill(space, ' ');		
 			sb.append(space);
 			
@@ -101,5 +105,20 @@ public abstract class Util {
 		}
 		option.setDescription(sb.toString());
 	}
+
+	// TODO add comments.
+	public static final char COMMENT			= '#';
+	// TODO add comments.
+	public static final char EMPTY_FIELD 		= '*';
+	// TODO add comments.
+	public static final char FIELD_SEP 			= '\t';
+	// TODO add comments.
+	public static final char VALUE_SEP 			= ',';
+	// TODO add comments.
+	public static final char WITHIN_FIELD_SEP 	= ':';
+	// TODO add comments.
+	public static final char SEP4 				= ';';
+	// TODO add comments.
+	public static final char KEY_VALUE_SEP 		= '=';
 
 }

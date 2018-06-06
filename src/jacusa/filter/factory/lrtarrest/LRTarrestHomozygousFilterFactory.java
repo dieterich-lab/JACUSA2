@@ -12,7 +12,6 @@ import org.apache.commons.cli.Options;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
-import jacusa.io.format.BEDlikeWriter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
@@ -20,6 +19,7 @@ import lib.data.builder.ConditionContainer;
 import lib.data.count.BaseCallCount;
 import lib.data.has.HasLRTarrestCount;
 import lib.data.result.Result;
+import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -117,7 +117,7 @@ extends AbstractFilterFactory<T> {
 
 		@Override
 		public void addInfo(Result<T> result) {
-			final String value = StringUtil.join(Character.toString(BEDlikeWriter.VALUE_SEP), filteredRefPositions);
+			final String value = StringUtil.join(Character.toString(Util.VALUE_SEP), filteredRefPositions);
 			// add position of artefact(s) to unique char id
 			result.getFilterInfo().add(Character.toString(getC()), value);
 		}
@@ -131,7 +131,7 @@ extends AbstractFilterFactory<T> {
 
 	@Override
 	public void addFilteredData(StringBuilder sb, T data) {
-		sb.append(BEDlikeWriter.EMPTY_FIELD);
+		sb.append(Util.EMPTY_FIELD);
 	}
 	
 }

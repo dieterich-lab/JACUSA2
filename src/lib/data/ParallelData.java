@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Set;
 
 import htsjdk.samtools.util.SequenceUtil;
-import lib.cli.options.Base;
 import lib.data.generator.DataGenerator;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasCoordinate;
 import lib.data.has.HasLibraryType;
 import lib.data.has.HasPileupCount;
 import lib.data.has.HasReferenceBase;
+import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
 /**

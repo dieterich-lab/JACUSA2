@@ -1,7 +1,7 @@
 package jacusa.method.call.statistic.dirmult.initalpha;
 
 import htsjdk.samtools.util.SequenceUtil;
-import lib.cli.options.Base;
+import lib.util.Base;
 
 public class MeanAlphaInit extends AbstractAlphaInit {
 

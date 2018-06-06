@@ -70,11 +70,8 @@ extends AbstractMethodFactory<CallData, StatisticResult<CallData>> {
 	}
 
 	protected void initGlobalACOptions() {
-		// statistic option only if there is a choice
-		if (getStatistics().size() > 1 ) {
-			addACOption(new StatisticCalculatorOption<CallData>(
-					getParameter().getStatisticParameters(), getStatistics()));
-		}
+		addACOption(new StatisticCalculatorOption<CallData>(
+				getParameter().getStatisticParameters(), getStatistics()));
 
 		// result format option only if there is a choice
 		if (getResultFormats().size() > 1 ) {
@@ -142,7 +139,7 @@ extends AbstractMethodFactory<CallData, StatisticResult<CallData>> {
 		AbstractStatisticCalculator<CallData> statistic = null;
 
 		statistic = new DirichletMultinomialRobustCompoundError<CallData>(getParameter());
-		statistics.put("DirMult", statistic);
+		statistics.put(statistic.getName(), statistic);
 
 		return statistics;
 	}

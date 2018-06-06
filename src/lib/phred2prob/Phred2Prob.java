@@ -3,9 +3,9 @@ package lib.phred2prob;
 import java.util.Arrays;
 
 import htsjdk.samtools.util.SequenceUtil;
-import lib.cli.options.Base;
 import lib.data.count.PileupCount;
 import lib.data.has.HasPileupCount;
+import lib.util.Base;
 import lib.util.MathUtil;
 
 public final class Phred2Prob {

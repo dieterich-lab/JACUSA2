@@ -7,16 +7,16 @@ import org.apache.commons.cli.Options;
 import jacusa.cli.parameters.CallParameter;
 import jacusa.estimate.MinkaEstimateDirMultParameters;
 import jacusa.method.call.statistic.AbstractDirichletStatistic;
-import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.has.HasPileupCount;
+import lib.util.Base;
 
 public class DirichletMultinomialCompoundError<T extends AbstractData & HasPileupCount>
 extends AbstractDirichletStatistic<T> {
 
 	private static final String NAME = "DirMultCE";
-	private static final double ESTIMATED_ERROR = 0.01;
-	private static final String DESC = "Compound Err. (estimated err.{" + ESTIMATED_ERROR + "} + phred score)";
+	public static final double ESTIMATED_ERROR = 0.01;
+	public static final String DESC = "Compound Error (estimated error {" + ESTIMATED_ERROR + "} + phred score)";
 	
 	protected double estimatedError = ESTIMATED_ERROR;
 	protected double priorError = 0d;

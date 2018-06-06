@@ -4,14 +4,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import lib.cli.options.Base;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.HasPileupCount;
 import lib.data.result.Result;
 import lib.io.AbstractResultFileWriter;
-
+import lib.util.Base;
 import htsjdk.samtools.SAMUtils;
 
 /**

@@ -41,7 +41,7 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 
 			final String opt = "___REMOVE___" + Character.toString(c);
 			Option option = Option.builder(opt)
-					.desc(filterFactory.getDesc())
+					.desc(": " + filterFactory.getDesc())
 					.build();
 
 			options.addOption(option);
@@ -59,7 +59,7 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 				.argName(argName)
 				.hasArg(true)
 				.desc(
-					"chain of " + argName + "; Separate " + argName + " with '" + OR + "'; Add options with ':'\n" +
+					"chain of " + argName + "; Separate " + argName + " with '" + OR + "' and options with ':'\n" +
 					"e.g.: D,I:OPTION1:OPTION2=VALUE2\n" +
 					sb.toString())
 				.build(); 
@@ -74,7 +74,7 @@ public class FilterConfigOption<T extends AbstractData> extends AbstractACOption
 			for (final String a : t) {
 				final char c = a.charAt(0);
 				if (! filterFactories.containsKey(c)) {
-					throw new IllegalArgumentException("Unknown SAM processing: " + c);
+					throw new IllegalArgumentException("Unknown filter: " + c);
 				}
 				final AbstractFilterFactory<T> filterFactory = filterFactories.get(c);
 				filterFactory.processCLI(a);

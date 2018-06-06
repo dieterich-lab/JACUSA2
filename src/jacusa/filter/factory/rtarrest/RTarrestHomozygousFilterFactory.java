@@ -10,7 +10,6 @@ import org.apache.commons.cli.Options;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
-import jacusa.io.format.BEDlikeWriter;
 import jacusa.method.rtarrest.RTArrestFactory;
 import jacusa.method.rtarrest.RTArrestFactory.RT_READS;
 import lib.cli.parameter.AbstractParameter;
@@ -21,6 +20,7 @@ import lib.data.count.BaseCallCount;
 import lib.data.has.HasArrestBaseCallCount;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasThroughBaseCallCount;
+import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -122,7 +122,7 @@ extends AbstractFilterFactory<T> {
 
 	@Override
 	public void addFilteredData(StringBuilder sb, T data) {
-		sb.append(BEDlikeWriter.EMPTY_FIELD);	
+		sb.append(Util.EMPTY_FIELD);	
 	}
 	
 }

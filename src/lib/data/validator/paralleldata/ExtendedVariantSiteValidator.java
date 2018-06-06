@@ -3,11 +3,11 @@ package lib.data.validator.paralleldata;
 import java.util.Set;
 
 import htsjdk.samtools.util.SequenceUtil;
-import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasReferenceBase;
+import lib.util.Base;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
 public class ExtendedVariantSiteValidator<T extends AbstractData & HasBaseCallCount & HasReferenceBase> 

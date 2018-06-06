@@ -2,9 +2,9 @@ package jacusa.estimate;
 
 import java.util.Arrays;
 
-import lib.cli.options.Base;
 import lib.data.count.PileupCount;
 import lib.phred2prob.Phred2Prob;
+import lib.util.Base;
 
 // posterior estimation
 // p(p|D) ~ D(n + alpha)

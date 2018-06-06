@@ -7,12 +7,12 @@ import java.util.Map;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 import lib.util.coordinate.CoordinateUtil.STRAND;
+import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.util.SequenceUtil;
-import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.adder.AbstractDataAdder;
 import lib.data.adder.basecall.ArrayBaseCallAdder;

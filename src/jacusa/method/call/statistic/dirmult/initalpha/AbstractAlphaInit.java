@@ -1,6 +1,6 @@
 package jacusa.method.call.statistic.dirmult.initalpha;
 
-import lib.cli.options.Base;
+import lib.util.Base;
 
 /**
  * 

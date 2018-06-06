@@ -1,5 +1,6 @@
 package lib.data.adder.region;
 
+import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
@@ -8,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import htsjdk.samtools.SAMRecord;
-import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.adder.AbstractDataAdder;
 import lib.data.adder.IncrementAdder;

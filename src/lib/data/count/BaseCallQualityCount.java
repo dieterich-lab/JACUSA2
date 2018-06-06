@@ -2,7 +2,7 @@ package lib.data.count;
 
 import java.util.Set;
 
-import lib.cli.options.Base;
+import lib.util.Base;
 
 public interface BaseCallQualityCount {
 

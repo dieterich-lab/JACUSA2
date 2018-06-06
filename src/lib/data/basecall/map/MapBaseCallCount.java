@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import htsjdk.samtools.util.SequenceUtil;
-import lib.cli.options.Base;
 import lib.data.count.BaseCallCount;
+import lib.util.Base;
 
 public class MapBaseCallCount 
 implements BaseCallCount {

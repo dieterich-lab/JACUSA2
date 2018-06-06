@@ -8,6 +8,7 @@ import lib.data.has.HasReferenceBase;
 import lib.data.has.HasThroughBaseCallCount;
 import lib.data.result.Result;
 import lib.data.result.hasStatistic;
+import lib.util.Util;
 
 public class BED6rtArrestDebugWriter<T extends AbstractData & HasReferenceBase & HasRTcount & HasArrestBaseCallCount & HasThroughBaseCallCount, R extends Result<T> & hasStatistic> 
 extends BED6rtArrestResultWriter<T, R> {
@@ -23,20 +24,20 @@ extends BED6rtArrestResultWriter<T, R> {
 	}
 
 	protected void addHeaderReadInfo(final StringBuilder sb, int conditionIndex, final int replicateIndex) {
-		sb.append(FIELD_SEP);
+		sb.append(Util.FIELD_SEP);
 		sb.append("readStart");
-		sb.append(VALUE_SEP);
+		sb.append(Util.VALUE_SEP);
 		sb.append("readInner");
-		sb.append(VALUE_SEP);
+		sb.append(Util.VALUE_SEP);
 		sb.append("readEnd");
 	}
 
 	protected void addResultReadInfoCount(final StringBuilder sb, final T data) {
-		sb.append(FIELD_SEP);
+		sb.append(Util.FIELD_SEP);
 		sb.append(data.getRTarrestCount().getReadStart());
-		sb.append(VALUE_SEP);
+		sb.append(Util.VALUE_SEP);
 		sb.append(data.getRTarrestCount().getReadInternal());
-		sb.append(VALUE_SEP);
+		sb.append(Util.VALUE_SEP);
 		sb.append(data.getRTarrestCount().getReadEnd());
 	}
 

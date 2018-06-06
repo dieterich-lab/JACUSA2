@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import lib.cli.options.Base;
 import lib.data.basecall.array.ArrayBaseCallCount;
 import lib.data.count.BaseCallCount;
+import lib.util.Base;
 
 public class RefPos2BaseCallCount {
 

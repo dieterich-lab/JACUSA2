@@ -1,8 +1,8 @@
 package lib.data.cache.region.isvalid;
 
 import htsjdk.samtools.SAMRecord;
-import lib.cli.options.Base;
 import lib.data.cache.region.VisitedReadPosition;
+import lib.util.Base;
 
 public class UniqueVisitBaseCallValidator 
 implements BaseCallValidator {

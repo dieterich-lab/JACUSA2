@@ -2,7 +2,7 @@ package lib.data.cache.region.isvalid;
 
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.util.SequenceUtil;
-import lib.cli.options.Base;
+import lib.util.Base;
 
 public class DefaultBaseCallValidator implements BaseCallValidator {
 

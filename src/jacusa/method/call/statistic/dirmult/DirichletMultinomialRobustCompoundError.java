@@ -6,18 +6,19 @@ import org.apache.commons.cli.Option;
 
 import jacusa.cli.parameters.CallParameter;
 import jacusa.method.call.statistic.AbstractDirichletStatistic;
-import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasPileupCount;
+import lib.util.Base;
 
 public class DirichletMultinomialRobustCompoundError<T extends AbstractData & HasBaseCallCount & HasPileupCount>
 extends DirichletMultinomialCompoundError<T> {
 
 	public DirichletMultinomialRobustCompoundError(final CallParameter parameters) {
-		super(Option.builder("DirMultRCE")
-				.desc("Robust Compound Err.")
+		super(Option.builder("DirMult")
+				.desc(DirichletMultinomialCompoundError.DESC + "\n"+
+						"Adjusts variant condition")
 				.build(), 
 				parameters);
 	}

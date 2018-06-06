@@ -11,6 +11,7 @@ import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.result.StatisticResult;
 import lib.util.Info;
+import lib.util.Util;
 
 /**
  * 
@@ -19,11 +20,6 @@ import lib.util.Info;
 public abstract class AbstractStatisticCalculator<T extends AbstractData> {
 
 	private final Option option;
-
-	// add CLI options after OPTION_SEP, 
-	// e.g.: C:opt1=val1
-	// FIXME
-	public static final char SEP = ':';
 	
 	public AbstractStatisticCalculator(final Option option) {
 		this.option = option;
@@ -78,7 +74,10 @@ public abstract class AbstractStatisticCalculator<T extends AbstractData> {
 	 * @return
 	 */
 	public String getDescription() {
-		return option.getDescription();
+		// HACK
+		Option tmp = (Option)option.clone();
+		Util.adjustOption(tmp, getOptions(), tmp.getOpt().length());
+		return tmp.getDescription();
 	}
 
 	/**
@@ -95,7 +94,7 @@ public abstract class AbstractStatisticCalculator<T extends AbstractData> {
 			return;
 		}
 
-		final String[] args = line.split(Character.toString(SEP));
+		final String[] args = line.split(Character.toString(Util.WITHIN_FIELD_SEP));
 		final CommandLineParser parser = new DefaultParser();
 		
 		CommandLine cmd = null;

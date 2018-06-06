@@ -8,7 +8,6 @@ import java.util.TreeSet;
 
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.FilterRatio;
-import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.BaseCallData;
 import lib.data.ParallelData;
@@ -17,6 +16,7 @@ import lib.data.cache.extractor.lrtarrest.RefPos2BaseCallCountExtractor;
 import lib.data.count.BaseCallCount;
 import lib.data.has.HasReferenceBase;
 import lib.data.result.Result;
+import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
 /**

@@ -1,16 +1,15 @@
 package lib.io;
 
-import jacusa.io.format.BEDlikeResultWriter;
-import jacusa.io.format.BEDlikeWriter;
-import lib.cli.options.Base;
 import lib.data.cache.lrtarrest.RefPos2BaseCallCount;
 import lib.data.count.BaseCallCount;
+import lib.util.Base;
+import lib.util.Util;
 
 public abstract class ResultWriterUtils {
 
 	public static void addBaseCallCount(final StringBuilder sb, final BaseCallCount baseCallCount) {
 		if (baseCallCount == null) {
-			sb.append(BEDlikeWriter.EMPTY_FIELD);
+			sb.append(Util.EMPTY_FIELD);
 			return;
 		}
 		
@@ -18,7 +17,7 @@ public abstract class ResultWriterUtils {
 		for (final Base base : Base.validValues()) {
 			sb.append(baseCallCount.getBaseCall(base));
 			if (i < Base.validValues().length - 1)
-			sb.append(BEDlikeResultWriter.VALUE_SEP);
+			sb.append(Util.VALUE_SEP);
 			++i;
 		}
 	}
@@ -35,23 +34,23 @@ public abstract class ResultWriterUtils {
 			++i;
 
 			sb.append(refPos);
-			sb.append(BEDlikeResultWriter.SEP3);
+			sb.append(Util.WITHIN_FIELD_SEP);
 
 			int k = 0;
 			for (final Base base : Base.validValues()) {
 				sb.append(baseCallCount.getBaseCall(base));
 				if (k < Base.validValues().length - 1)
-				sb.append(BEDlikeResultWriter.VALUE_SEP);
+				sb.append(Util.VALUE_SEP);
 				++k;
 			}
 
 			++j;
 			if (j < n) {
-				sb.append(BEDlikeResultWriter.SEP4);
+				sb.append(Util.SEP4);
 			}
 		}
 		if (n == 0 || i == 0) {
-			sb.append(BEDlikeResultWriter.EMPTY_FIELD);
+			sb.append(Util.EMPTY_FIELD);
 			return;
 		}
 	}

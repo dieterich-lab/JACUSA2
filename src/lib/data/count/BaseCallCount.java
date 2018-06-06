@@ -2,9 +2,9 @@ package lib.data.count;
 
 import java.util.Set;
 
-import lib.cli.options.Base;
 import lib.data.basecall.array.ArrayBaseCallCount;
 import lib.data.has.HasCoverage;
+import lib.util.Base;
 
 public interface BaseCallCount extends HasCoverage {
 

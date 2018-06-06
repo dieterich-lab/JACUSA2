@@ -1,5 +1,6 @@
 package jacusa.method.rtarrest;
 
+import jacusa.cli.options.StatisticCalculatorOption;
 import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.RTarrestParameter;
@@ -39,7 +40,6 @@ import lib.cli.options.condition.MinMAPQConditionOption;
 import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.FilterNMsamTagOption;
-import lib.data.LRTarrestData;
 import lib.data.RTarrestData;
 import lib.data.builder.factory.RTarrestDataBuilderFactory;
 import lib.data.cache.extractor.ReferenceBaseSetter;
@@ -69,6 +69,10 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 	}
 
 	protected void initGlobalACOptions() {
+		addACOption(new StatisticCalculatorOption<RTarrestData>(
+				getParameter().getStatisticParameters(), getStatistics()));
+
+		
 		// result format option only if there is a choice
 		if (getResultFormats().size() > 1 ) {
 			addACOption(new ResultFormatOption<RTarrestData, StatisticResult<RTarrestData>>(
@@ -124,15 +128,15 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 		}
 	}
 	
-	public Map<String, AbstractStatisticCalculator<LRTarrestData>> getStatistics() {
-		final Map<String, AbstractStatisticCalculator<LRTarrestData>> statistics = 
-				new TreeMap<String, AbstractStatisticCalculator<LRTarrestData>>();
+	public Map<String, AbstractStatisticCalculator<RTarrestData>> getStatistics() {
+		final Map<String, AbstractStatisticCalculator<RTarrestData>> statistics = 
+				new TreeMap<String, AbstractStatisticCalculator<RTarrestData>>();
 
-		final List<AbstractStatisticCalculator<LRTarrestData>> tmpList = new ArrayList<AbstractStatisticCalculator<LRTarrestData>>(5);
-		tmpList.add(new DummyStatistic<LRTarrestData>());
-		tmpList.add(new BetaBinomial<LRTarrestData>());
+		final List<AbstractStatisticCalculator<RTarrestData>> tmpList = new ArrayList<AbstractStatisticCalculator<RTarrestData>>(5);
+		tmpList.add(new DummyStatistic<RTarrestData>());
+		tmpList.add(new BetaBinomial<RTarrestData>());
 		
-		for (final AbstractStatisticCalculator<LRTarrestData> statistic : tmpList) {
+		for (final AbstractStatisticCalculator<RTarrestData> statistic : tmpList) {
 			statistics.put(statistic.getName(), statistic);
 		}
 		

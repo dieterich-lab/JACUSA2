@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import htsjdk.samtools.SAMRecord;
+import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateUtil.STRAND;
-import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.adder.AbstractDataAdder;
 import lib.data.basecall.map.MapBaseCallCount;

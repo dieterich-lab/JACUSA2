@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import htsjdk.samtools.util.SequenceUtil;
-import lib.cli.options.Base;
 import lib.data.count.BaseCallQualityCount;
 import lib.phred2prob.Phred2Prob;
+import lib.util.Base;
 
 public class ArrayBaseCallQualitityCount implements BaseCallQualityCount {
 

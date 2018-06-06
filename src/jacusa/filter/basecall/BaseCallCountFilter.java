@@ -3,8 +3,8 @@ package jacusa.filter.basecall;
 import java.util.Set;
 
 import jacusa.filter.FilterRatio;
-import lib.cli.options.Base;
 import lib.data.count.BaseCallCount;
+import lib.util.Base;
 
 public class BaseCallCountFilter {
 

@@ -6,6 +6,7 @@ import lib.data.has.HasBaseCallCount;
 import lib.data.has.HasReferenceBase;
 import lib.data.result.Result;
 import lib.io.ResultWriterUtils;
+import lib.util.Util;
 
 /**
  * 
@@ -25,7 +26,7 @@ extends BEDlikeWriter<T, R> {
 	
 	@Override
 	protected void addHeaderBases(final StringBuilder sb, final int conditionIndex, final int replicateIndex) {
-		sb.append(FIELD_SEP);
+		sb.append(Util.FIELD_SEP);
 		sb.append(BASE_FIELD);
 		sb.append(conditionIndex + 1);
 		sb.append(replicateIndex + 1);

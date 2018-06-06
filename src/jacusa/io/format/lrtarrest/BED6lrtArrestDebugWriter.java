@@ -10,6 +10,7 @@ import lib.data.has.filter.HasRefPos2BaseCallCountFilterData;
 import lib.data.result.Result;
 import lib.data.result.hasStatistic;
 import lib.io.ResultWriter;
+import lib.util.Util;
 
 public class BED6lrtArrestDebugWriter<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasLRTarrestCount & HasRefPos2BaseCallCountFilterData, R extends Result<T> & hasStatistic>
 extends BED6lrtArrestResultWriter2<T, R> implements ResultWriter<T, R> {
@@ -24,7 +25,7 @@ extends BED6lrtArrestResultWriter2<T, R> implements ResultWriter<T, R> {
 		super.addHeaderConditionData(sb, conditionIndex, replicateIndex);
 
 		for (final AbstractFilterFactory<?> filterFactory : getParameter().getFilterConfig().getFilterFactories()) {
-			sb.append(FIELD_SEP);
+			sb.append(Util.FIELD_SEP);
 			sb.append(filterFactory.getC());
 			sb.append(conditionIndex + 1);
 			sb.append(replicateIndex + 1);
@@ -35,7 +36,7 @@ extends BED6lrtArrestResultWriter2<T, R> implements ResultWriter<T, R> {
 	protected void addResultReplicateData(StringBuilder sb, T data) {
 		super.addResultReplicateData(sb, data);
 		for (final AbstractFilterFactory<T> filterFactory : getParameter().getFilterConfig().getFilterFactories()) {
-			sb.append(FIELD_SEP);
+			sb.append(Util.FIELD_SEP);
 			filterFactory.addFilteredData(sb, data);
 		}
 	}

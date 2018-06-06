@@ -2,7 +2,7 @@ package jacusa.estimate;
 
 import java.util.Arrays;
 
-import lib.cli.options.Base;
+import lib.util.Base;
 import lib.util.Info;
 import lib.util.MathUtil;
 

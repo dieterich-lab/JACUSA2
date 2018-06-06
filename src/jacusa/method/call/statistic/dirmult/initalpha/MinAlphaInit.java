@@ -2,7 +2,7 @@ package jacusa.method.call.statistic.dirmult.initalpha;
 
 import java.util.Arrays;
 
-import lib.cli.options.Base;
+import lib.util.Base;
 
 public class MinAlphaInit extends AbstractAlphaInit {
 

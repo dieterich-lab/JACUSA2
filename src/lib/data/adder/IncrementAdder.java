@@ -1,8 +1,8 @@
 package lib.data.adder;
 
 import htsjdk.samtools.SAMRecord;
-import lib.cli.options.Base;
 import lib.data.AbstractData;
+import lib.util.Base;
 
 public interface IncrementAdder<T extends AbstractData> 
 extends DataAdder<T> {

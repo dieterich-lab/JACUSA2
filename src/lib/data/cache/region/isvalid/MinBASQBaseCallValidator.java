@@ -1,7 +1,7 @@
 package lib.data.cache.region.isvalid;
 
 import htsjdk.samtools.SAMRecord;
-import lib.cli.options.Base;
+import lib.util.Base;
 
 public class MinBASQBaseCallValidator implements BaseCallValidator {
 

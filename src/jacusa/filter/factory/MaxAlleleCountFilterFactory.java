@@ -6,11 +6,11 @@ import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
-import jacusa.io.format.BEDlikeWriter;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.builder.ConditionContainer;
 import lib.data.has.HasBaseCallCount;
+import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -96,7 +96,7 @@ extends AbstractFilterFactory<T> {
 	
 	@Override
 	public void addFilteredData(StringBuilder sb, T data) {
-		sb.append(BEDlikeWriter.EMPTY_FIELD);
+		sb.append(Util.EMPTY_FIELD);
 	}
 	
 }

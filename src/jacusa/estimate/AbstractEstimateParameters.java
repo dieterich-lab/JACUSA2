@@ -1,8 +1,8 @@
 package jacusa.estimate;
 
-import lib.cli.options.Base;
 import lib.data.count.PileupCount;
 import lib.phred2prob.Phred2Prob;
+import lib.util.Base;
 
 /**
  * TODO comments

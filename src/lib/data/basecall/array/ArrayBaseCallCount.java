@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import htsjdk.samtools.util.SequenceUtil;
-import lib.cli.options.Base;
 import lib.data.count.BaseCallCount;
+import lib.util.Base;
 
 public class ArrayBaseCallCount 
 implements BaseCallCount {

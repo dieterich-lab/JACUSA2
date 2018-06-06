@@ -2,6 +2,7 @@ package jacusa.method.call.statistic;
 
 import jacusa.cli.parameters.CallParameter;
 import jacusa.estimate.MinkaEstimateParameters;
+import jacusa.io.format.call.VCFcall;
 import jacusa.method.call.statistic.dirmult.initalpha.AbstractAlphaInit;
 import jacusa.method.call.statistic.dirmult.initalpha.MinAlphaInit;
 
@@ -14,11 +15,11 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import htsjdk.samtools.util.SequenceUtil;
-import lib.cli.options.Base;
 import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.has.HasPileupCount;
 import lib.phred2prob.Phred2Prob;
+import lib.util.Base;
 import lib.util.Info;
 
 public abstract class AbstractDirichletStatistic<T extends AbstractData & HasPileupCount>
@@ -315,27 +316,29 @@ extends AbstractStatisticCalculator<T> {
 
 		options.addOption(Option.builder("epsilon")
 				.hasArg(true)
-				.desc("Default: " + estimateAlpha.getEpsilon())
+				.desc("Fit achieved if |L1 - L2| < epsilon, where L1 and L2 correspond to old and new likelihood respectively.\nDefault: " + estimateAlpha.getEpsilon())
 				.build());
 
 		options.addOption(Option.builder("maxIterations")
 				.hasArg(true)
-				.desc("Default: " + estimateAlpha.getMaxIterations())
+				.desc("Maximum number of iterations for Newton's method.\nDefault: " + estimateAlpha.getMaxIterations())
 				.build());
 
+		/* FIXME do we need this
 		options.addOption(Option.builder("onlyObserved")
-				.hasArg(true)
+				.hasArg(false)
 				.desc("")
 				.build());
 		
-		options.addOption(Option.builder("calculateP-value")
-				.hasArg(true)
+		options.addOption(Option.builder("calculatePvalue")
+				.hasArg(false)
 				.desc("")
 				.build());
+				*/
 		
 		options.addOption(Option.builder("showAlpha")
-				.hasArg(true)
-				.desc("")
+				.hasArg(false)
+				.desc("Show detailed info of Newton's method in output (not in VCF output).")
 				.build());
 		
 		return options;
@@ -363,9 +366,13 @@ extends AbstractStatisticCalculator<T> {
 
 			case "calculateP-value":
 				setCalcPValue(true);
+				
 				break;
 				
 			case "showAlpha":
+				if (parameter.getResultFormat().getC() == VCFcall.CHAR) {
+					throw new IllegalStateException("VCF output format does not support showAlpha");
+				}
 				setShowAlpha(true);
 				break;
 

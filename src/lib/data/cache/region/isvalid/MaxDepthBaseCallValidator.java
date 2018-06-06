@@ -1,8 +1,8 @@
 package lib.data.cache.region.isvalid;
 
 import htsjdk.samtools.SAMRecord;
-import lib.cli.options.Base;
 import lib.data.adder.basecall.BaseCallAdder;
+import lib.util.Base;
 
 public class MaxDepthBaseCallValidator implements BaseCallValidator {
 
