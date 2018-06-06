@@ -233,7 +233,7 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 				.longOpt("reads")
 				.argName("READS")
 				.hasArg()
-				.desc("Apply filter to base calls from reads: ARREST or THROUGH or ARRESTt&THROUGH. Default: " + sb.toString());
+				.desc("Apply filter to base calls from reads: ARREST or THROUGH or ARREST&THROUGH. Default: " + sb.toString());
 	}
 
 	public static Set<RT_READS> processApply2Reads(final String line) {
