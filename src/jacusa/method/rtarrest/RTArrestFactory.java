@@ -229,8 +229,10 @@ extends AbstractMethodFactory<RTarrestData, StatisticResult<RTarrestData>> {
 			sb.append(r.toString());
 		}
 
-		return Option.builder("reads")
-				.hasArg(true)
+		return Option.builder()
+				.longOpt("reads")
+				.argName("READS")
+				.hasArg()
 				.desc("Apply filter to base calls from reads: ARREST or THROUGH or ARRESTt&THROUGH. Default: " + sb.toString());
 	}
 

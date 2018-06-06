@@ -1,6 +1,5 @@
 package jacusa.method.call;
 
-import jacusa.cli.options.StatisticCalculatorOption;
 import jacusa.cli.options.StatisticFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.CallParameter;
@@ -70,8 +69,10 @@ extends AbstractMethodFactory<CallData, StatisticResult<CallData>> {
 	}
 
 	protected void initGlobalACOptions() {
+		/* FIXME
 		addACOption(new StatisticCalculatorOption<CallData>(
 				getParameter().getStatisticParameters(), getStatistics()));
+				*/
 
 		// result format option only if there is a choice
 		if (getResultFormats().size() > 1 ) {

@@ -91,6 +91,8 @@ extends AbstractFilterFactory<T> {
 
 	public static Builder getMaxAlleleOptionBuilder(final int defaultValue) {
 		return Option.builder()
+				.argName("MAXALLELES")
+				.hasArg()
 				.longOpt("maxAlleles")
 				.desc("must be > 0. Default: " + defaultValue);
 	}

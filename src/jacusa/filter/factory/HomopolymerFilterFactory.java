@@ -46,7 +46,7 @@ extends AbstractDataFilterFactory<T> {
 		return Option.builder()
 				.longOpt("length")
 				.argName("LENGTH")
-				.hasArg(true)
+				.hasArg()
 				.desc("must be > 0. Default: " + MIN_HOMOPOLYMER_LENGTH);
 	}
 	

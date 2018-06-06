@@ -55,16 +55,21 @@ extends AbstractDataFilterFactory<T> {
 				defaultFilterDistance, defaultFilterMinRatio);
 	}
 	
+	// FIXME
 	@Override
 	protected Options getOptions() {
 		final Options options = new Options();
 
-		options.addOption(Option.builder("distance")
+		options.addOption(Option.builder()
+				.longOpt("distance")
+				.argName("DISTANCE")
 				.hasArg(true)
 				.desc("Filter base calls within distance to feature. Default: " + getDistance())
 				.build());
 
-		options.addOption(Option.builder("minRatio")
+		options.addOption(Option.builder()
+				.longOpt("minRatio")
+				.argName("MINRATIO")
 				.hasArg(true)
 				.desc("Minimal ratio of base calls to pass filtering. Default: " + getMinRatio())
 				.build());
