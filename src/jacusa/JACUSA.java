@@ -1,12 +1,10 @@
 package jacusa;
 
-import jacusa.cli.parameters.LRTarrestParameter;
 import jacusa.cli.parameters.PileupParameter;
 import jacusa.cli.parameters.RTarrestParameter;
 import jacusa.method.call.OneConditionCallFactory;
 import jacusa.method.call.TwoConditionCallFactory;
 import jacusa.method.pileup.PileupFactory;
-import jacusa.method.rtarrest.LRTarrestFactory;
 import jacusa.method.rtarrest.RTArrestFactory;
 
 import java.util.ArrayList;
