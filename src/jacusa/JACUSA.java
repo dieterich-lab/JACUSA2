@@ -61,7 +61,7 @@ import lib.util.AbstractTool;
 public class JACUSA extends AbstractTool {
 	
 	public JACUSA(final String args[]) {
-		super("JACUSA", "2.0.0-BETA-17", args);
+		super("JACUSA", "2.0.0-S-BETA-1", args);
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class JACUSA extends AbstractTool {
 		factories.add(new RTArrestFactory(new RTarrestParameter(2)));
 
 		// linked reverse transcription read arrest
-		factories.add(new LRTarrestFactory(new LRTarrestParameter(2)));
+		// factories.add(new LRTarrestFactory(new LRTarrestParameter(2)));
 
 		return factories; 
 	}
