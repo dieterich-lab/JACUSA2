@@ -4,17 +4,16 @@ import java.util.List;
 
 import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
 import lib.cli.parameter.AbstractConditionParameter;
-import lib.data.AbstractData;
 
-public class FilterNHsamTagOption<T extends AbstractData> extends FilterSamTagConditionOption<T> {
+public class FilterNHsamTagOption extends AbstractFilterSamTagConditionOption {
 
-	private static final String TAG = "NH";
+	public static final String TAG = "NH";
 	
-	public FilterNHsamTagOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameter) {
+	public FilterNHsamTagOption(final int conditionIndex, final AbstractConditionParameter conditionParameter) {
 		super(conditionIndex, conditionParameter, TAG);
 	}
 
-	public FilterNHsamTagOption(final List<AbstractConditionParameter<T>> conditionParameters) {
+	public FilterNHsamTagOption(final List<AbstractConditionParameter> conditionParameters) {
 		super(conditionParameters, TAG);
 	}
 	
@@ -22,5 +21,5 @@ public class FilterNHsamTagOption<T extends AbstractData> extends FilterSamTagCo
 	protected MaxValueSamTagFilter createSamTagFilter(int value) {
 		return new MaxValueSamTagFilter(TAG, value);
 	}
-
+	
 }

@@ -1,28 +1,24 @@
 package lib.cli.parameter;
 
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
-import htsjdk.samtools.util.SequenceUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.Collections;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import jacusa.cli.parameters.HasConditionParameter;
 import jacusa.filter.FilterConfig;
-import lib.data.AbstractData;
-import lib.data.result.Result;
+import lib.cli.options.has.HasReadSubstitution;
 import lib.io.ResultFormat;
-import lib.io.ResultWriter;
-import lib.method.AbstractMethodFactory;
 import lib.util.AbstractTool;
 
-public abstract class AbstractParameter<T extends AbstractData, R extends Result<T>>
-implements HasConditionParameter<T> {
-
-	public static final String FILE_SUFFIX = ".filtered";
+public abstract class AbstractParameter
+implements HasConditionParameter, HasReadSubstitution {
 	
 	// cache related
 	private int activeWindowSize;
@@ -30,8 +26,7 @@ implements HasConditionParameter<T> {
 
 	private int maxThreads;
 	
-		private byte[] bases;
-		private boolean showReferenceBase;
+	private boolean showReferenceBase;
 
 	private String referenceFilename;
 	private IndexedFastaSequenceFile referenceFile;
@@ -39,20 +34,16 @@ implements HasConditionParameter<T> {
 	// bed file to scan for variants
 	private String inputBedFilename;
 
-	// chosen method
-	private AbstractMethodFactory<T, R> methodFactory;
-
-	protected List<AbstractConditionParameter<T>> conditionParameters;
+	protected List<AbstractConditionParameter> conditionParameters;
 
 	private String resultFilename;
-	private ResultWriter<T, R> resultWriter;
-	private ResultFormat<T, R> resultFormat;
-
-	private ResultWriter<T, R> filteredResultWriter;
+	private ResultFormat resultFormat;
 	
-	private FilterConfig<T> filterConfig;
+	private FilterConfig filterConfig;
 
-		private boolean separate;
+	private boolean splitFiltered;
+	
+	private final SortedSet<BaseSubstitution> baseSubstitutions;
 	
 	// debug flag
 	private boolean debug;
@@ -61,17 +52,18 @@ implements HasConditionParameter<T> {
 		activeWindowSize 	= 10000;
 		reservedWindowSize	= 10 * activeWindowSize;
 		
-		bases				= SequenceUtil.VALID_BASES_UPPER.clone();
 		showReferenceBase 	= false;
 
 		maxThreads			= 1;
 		
 		inputBedFilename	= new String();
-		conditionParameters	= new ArrayList<AbstractConditionParameter<T>>(2);
+		conditionParameters	= new ArrayList<AbstractConditionParameter>(2);
 
-		filterConfig		= new FilterConfig<T>();
+		filterConfig		= new FilterConfig();
 		
-		separate			= false;
+		splitFiltered		= false;
+		
+		baseSubstitutions	= new TreeSet<>();
 		
 		debug				= false;
 	}
@@ -84,43 +76,21 @@ implements HasConditionParameter<T> {
 		}
 	}
 	
-	public abstract AbstractConditionParameter<T> createConditionParameter(final int conditionIndex);
+	public abstract AbstractConditionParameter createConditionParameter(final int conditionIndex);
 	
-	public ResultFormat<T, R> getResultFormat() {
+	public ResultFormat getResultFormat() {
 		return resultFormat;
 	}
 
-	public void setResultFormat(ResultFormat<T, R> resultFormat) {
+	public void setResultFormat(ResultFormat resultFormat) {
 		this.resultFormat = resultFormat;
 	}
 	
 	/**
 	 * @return the filterConfig
 	 */
-	public FilterConfig<T> getFilterConfig() {
+	public FilterConfig getFilterConfig() {
 		return filterConfig;
-	}
-	
-	/**
-	 * @return the output
-	 */
-	public ResultWriter<T, R> getResultWriter() {
-		// use default resultFormat 
-		if (resultWriter == null) {
-			resultWriter = resultFormat.createWriter(getResultFilename());
-		}
-
-		return resultWriter;
-	}
-
-	/**
-	 * @return the output
-	 */
-	public ResultWriter<T, R> getFilteredResultWriter() {
-		if (separate && filteredResultWriter == null) {
-			filteredResultWriter = resultFormat.createWriter(getResultFilename() + FILE_SUFFIX);
-		}
-		return filteredResultWriter;
 	}
 	
 	public void setResultFilename(final String resultFilename) {
@@ -130,34 +100,20 @@ implements HasConditionParameter<T> {
 	public String getResultFilename() {
 		return resultFilename;
 	}
-	
-	/**
-	 * @param output the output to set
-	 */
-	public void resetResultWriter() {
-		if (resultWriter != null) {
-			try {
-				resultWriter.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			resultWriter = null;
-		}
-	}
 
 	@Override
-	public List<AbstractConditionParameter<T>> getConditionParameters() {
+	public List<AbstractConditionParameter> getConditionParameters() {
 		return conditionParameters;
 	}
 	
 	@Override
 	public void setConditionParameters(
-			final List<AbstractConditionParameter<T>> conditionParameters) {
+			final List<AbstractConditionParameter> conditionParameters) {
 		this.conditionParameters = conditionParameters;
 	}
 	
 	@Override
-	public AbstractConditionParameter<T> getConditionParameter(int conditionIndex) {
+	public AbstractConditionParameter getConditionParameter(int conditionIndex) {
 		return conditionParameters.get(conditionIndex);
 	}
 	
@@ -172,20 +128,6 @@ implements HasConditionParameter<T> {
 	}
 	
 	/**
-	 * @return the baseConfig
-	 */
-	public byte[] getBases() {
-		return bases;
-	}
-	
-	/**
-	 * @return the baseConfig
-	 */
-	public void setBases(final byte[] bases) {
-		this.bases = bases.clone();
-	}
-	
-	/**
 	 * @return the windowSize
 	 */
 	public int getActiveWindowSize() {
@@ -193,10 +135,21 @@ implements HasConditionParameter<T> {
 	}
 
 	/**
-	 * @return the threadWindowSize
+	 * @return the reservedWindowSize
 	 */
 	public int getReservedWindowSize() {
 		return reservedWindowSize;
+	}
+	
+
+	@Override
+	public SortedSet<BaseSubstitution> getReadSubstitutions() {
+		return Collections.unmodifiableSortedSet(baseSubstitutions);
+	}
+	
+	@Override
+	public void addReadSubstition(BaseSubstitution baseSubstitution) {
+		baseSubstitutions.add(baseSubstitution);
 	}
 	
 	/**
@@ -242,20 +195,6 @@ implements HasConditionParameter<T> {
 	}
 
 	/**
-	 * @return the methodFactory
-	 */
-	public AbstractMethodFactory<T, R> getMethodFactory() {
-		return methodFactory;
-	}
-
-	/**
-	 * @param methodFactory the methodFactory to set
-	 */
-	public void setMethodFactory(final AbstractMethodFactory<T, R> methodFactory) {
-		this.methodFactory = methodFactory;
-	}
-
-	/**
 	 * @return the debug
 	 */
 	public boolean isDebug() {
@@ -273,8 +212,8 @@ implements HasConditionParameter<T> {
 	/**
 	 * @return the debug
 	 */
-	public boolean isSeparate() {
-		return separate;
+	public boolean splitFiltered() {
+		return splitFiltered;
 	}
 
 	public boolean showReferenceBase() {
@@ -318,10 +257,10 @@ implements HasConditionParameter<T> {
 	}
 	
 	/**
-	 * @param debug the debug to set
+	 * TOOD add comments
 	 */
-	public void setSeparate(boolean separate) {
-		this.separate = separate;
+	public void splitFiltered(boolean split) {
+		this.splitFiltered = split;
 	}
 	
 }

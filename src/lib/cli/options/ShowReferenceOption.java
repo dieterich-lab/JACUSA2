@@ -7,15 +7,15 @@ import org.apache.commons.cli.Option;
 
 public class ShowReferenceOption extends AbstractACOption {
 
-	final private AbstractParameter<?, ?> parameters;
+	final private AbstractParameter parameters;
 
-	public ShowReferenceOption(final AbstractParameter<?, ?> parameters) {
+	public ShowReferenceOption(final AbstractParameter parameter) {
 		super("S", "show-ref");
-		this.parameters = parameters;
+		this.parameters = parameter;
 	}
 
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(false)
@@ -25,9 +25,7 @@ public class ShowReferenceOption extends AbstractACOption {
 
 	@Override
 	public void process(CommandLine line) throws Exception {
-		if(line.hasOption(getOpt())) {
-	    	parameters.setShowReferenceBase(true);
-	    }
+    	parameters.setShowReferenceBase(true);
 	}
 
 }

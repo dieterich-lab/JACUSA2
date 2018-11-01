@@ -1,9 +1,8 @@
 package lib.data.validator.data;
 
-import lib.data.AbstractData;
 import lib.data.has.HasCoverage;
 
-public class MinCoverage<T extends AbstractData & HasCoverage> 
+public class MinCoverage<T extends HasCoverage> 
 implements DataValidator<T> {
 
 	private final int minCoverage;

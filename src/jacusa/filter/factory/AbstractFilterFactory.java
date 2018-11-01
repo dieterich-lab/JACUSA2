@@ -1,14 +1,19 @@
 package jacusa.filter.factory;
 
+import java.util.Set;
+
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
-import lib.data.AbstractData;
-import lib.data.builder.ConditionContainer;
+import jacusa.filter.AbstractFilter;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.data.DataTypeContainer;
+import lib.data.DataTypeContainer.AbstractBuilder;
+import lib.data.assembler.ConditionContainer;
+import lib.data.cache.container.SharedCache;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 
@@ -17,7 +22,7 @@ import lib.util.coordinate.CoordinateController;
  * 
  * @param <T>
  */
-public abstract class AbstractFilterFactory<T extends AbstractData> {
+public abstract class AbstractFilterFactory {
 
 	private final Option option;
 
@@ -51,36 +56,44 @@ public abstract class AbstractFilterFactory<T extends AbstractData> {
 	 * 
 	 * @param line
 	 */
-	public void processCLI(final String line) {
-		final Options options = getOptions();
-		if (options.getOptions().size() == 0 || line == null || line.isEmpty()) {
-			return;
-		}
-
-		final String[] args = line.split(Character.toString(Util.WITHIN_FIELD_SEP));
-		final CommandLineParser parser = new DefaultParser();
-		
-		CommandLine cmd = null;
-		try {
-			cmd = parser.parse(options, args);
-		} catch (final ParseException e) {
-			e.printStackTrace();
-			return;
-		}
-		processCLI(cmd);
+	public void processCLI(String line) throws MissingOptionException {
+		processCLI(Util.processCLI(line, getOptions()));
 	}
 
-	protected abstract void processCLI(CommandLine cmd);
-	protected abstract Options getOptions();
+	protected abstract Set<Option> processCLI(CommandLine cmd) throws MissingOptionException;
+	public abstract Options getOptions();
 
+	public abstract void addFilteredData(StringBuilder sb, DataTypeContainer filteredData);
+	
+	protected abstract AbstractFilter createFilter(
+			CoordinateController coordinateController, 
+			ConditionContainer conditionContainer);
+
+	/**
+	 * TODO add comments.
+	 * 
+	 * @param conditionParameter
+	 * @param baseCallConfig
+	 * @param coordinateController
+	 * @return
+	 */
+	public abstract RecordWrapperDataCache createFilterCache(
+			final AbstractConditionParameter conditionParameter, final SharedCache sharedCache);
+	
+	public abstract void inidDataTypeContainer(final AbstractBuilder builder);
+	
 	/**
 	 * TODO add comments.
 	 * 
 	 * @param coordinateController
 	 * @param conditionContainer
 	 */
-	public abstract void registerFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer);
+	public final void registerFilter(
+			final CoordinateController coordinateController, 
+			final ConditionContainer conditionContainer) {
 
-	public abstract void addFilteredData(StringBuilder sb, T data);
+		conditionContainer.getFilterContainer().addFilter(
+				createFilter(coordinateController, conditionContainer));
+	}
 	
-} 
+}

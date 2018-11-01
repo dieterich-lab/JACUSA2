@@ -3,20 +3,27 @@ package lib.data.validator.paralleldata;
 import java.util.Set;
 
 import htsjdk.samtools.util.SequenceUtil;
-import lib.data.AbstractData;
+import lib.data.DataTypeContainer;
 import lib.data.ParallelData;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasReferenceBase;
+import lib.data.cache.fetcher.Fetcher;
+import lib.data.count.basecall.BaseCallCount;
 import lib.util.Base;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
-public class ExtendedVariantSiteValidator<T extends AbstractData & HasBaseCallCount & HasReferenceBase> 
-implements ParallelDataValidator<T> {
+public class ExtendedVariantSiteValidator 
+implements ParallelDataValidator {
+	
+	private final Fetcher<BaseCallCount> bccFetcher;
+	
+	public ExtendedVariantSiteValidator(final Fetcher<BaseCallCount> bccFetcher) {
+		this.bccFetcher = bccFetcher;
+	}
 	
 	@Override
-	public boolean isValid(final ParallelData<T> parallelData) {
-		final T data = parallelData.getCombinedPooledData();
-		final Set<Base> alleles = data.getBaseCallCount().getAlleles();
+	public boolean isValid(final ParallelData parallelData) {
+		final DataTypeContainer container = parallelData.getCombinedPooledData();
+		final BaseCallCount bcc = bccFetcher.fetch(container);
+		final Set<Base> alleles = bcc.getAlleles();
 		// more than one non-reference allele
 		if (alleles.size() > 1) {
 			return true;
@@ -24,15 +31,16 @@ implements ParallelDataValidator<T> {
 
 		// pick reference base by MD or by majority.
 		// all other bases will be converted in pileup2 to refBaseI
-		Base referenceBase = Base.valueOf(data.getReferenceBase());
-		if (SequenceUtil.isValidBase(referenceBase.getC())) {
+		Base referenceBase = container.getReferenceBase();
+		if (SequenceUtil.isValidBase(referenceBase.getByte())) {
 			
 			if (parallelData.getCoordinate().getStrand() == STRAND.REVERSE) {
 				referenceBase = referenceBase.getComplement();
 			}
 
 			// there has to be at least one non-reference base call in the data
-			return data.getBaseCallCount().getCoverage() - data.getBaseCallCount().getBaseCall(referenceBase) > 0;
+			
+			return bcc.getCoverage() - bcc.getBaseCall(referenceBase) > 0;
 		}
 
 		return false;

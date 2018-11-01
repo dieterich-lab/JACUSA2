@@ -4,23 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.util.coordinate.Coordinate;
-
-import lib.data.AbstractData;
+import lib.data.DataTypeContainer;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.record.RecordWrapperDataCache;
 
-public abstract class AbstractStrandedCacheContainer<T extends AbstractData> 
-implements CacheContainer<T> {
+public abstract class AbstractStrandedCacheContainer 
+implements CacheContainer {
 
-	private final CacheContainer<T> forwardContainer; 
-	private final CacheContainer<T> reverseContainer;
+	private final CacheContainer forwardContainer; 
+	private final CacheContainer reverseContainer;
 	
 	public AbstractStrandedCacheContainer(
-			final CacheContainer<T> forwardContainer, 
-			final CacheContainer<T> reverseContainer) {
+			final CacheContainer forwardContainer, 
+			final CacheContainer reverseContainer) {
 
 		this.forwardContainer	= forwardContainer;
 		this.reverseContainer 	= reverseContainer;
+	}
+	
+	@Override
+	public ReferenceProvider getReferenceProvider() {
+		return forwardContainer.getReferenceProvider();
 	}
 	
 	@Override
@@ -39,8 +43,8 @@ implements CacheContainer<T> {
 	}
 	
 	@Override
-	public List<RecordWrapperDataCache<T>> getCaches() {
-		List<RecordWrapperDataCache<T>> caches = new ArrayList<RecordWrapperDataCache<T>>(10);
+	public List<RecordWrapperDataCache> getCaches() {
+		List<RecordWrapperDataCache> caches = new ArrayList<RecordWrapperDataCache>(10);
 		caches.addAll(forwardContainer.getCaches());
 		caches.addAll(reverseContainer.getCaches());
 		return caches;
@@ -53,19 +57,19 @@ implements CacheContainer<T> {
 	}
 	
 	@Override
-	public void add(final SAMRecordWrapper recordWrapper) {
-		getCacheContainer(recordWrapper).add(recordWrapper);
+	public void process(final SAMRecordWrapper recordWrapper) {
+		getCacheContainer(recordWrapper).process(recordWrapper);
 	}
 	
 	@Override
-	public void addData(final T data, final Coordinate coordinate) {
+	public void populateContainer(DataTypeContainer container, Coordinate coordinate) {
 		switch (coordinate.getStrand()) {
 		case FORWARD:
-			forwardContainer.addData(data, coordinate);
+			forwardContainer.populateContainer(container, coordinate);
 			break;
 
 		case REVERSE:
-			reverseContainer.addData(data, coordinate);
+			reverseContainer.populateContainer(container, coordinate);
 			break;
 
 		case UNKNOWN:
@@ -73,13 +77,13 @@ implements CacheContainer<T> {
 		}
 	}
 	
-	protected abstract CacheContainer<T> getCacheContainer(final SAMRecordWrapper recordWrapper);
+	protected abstract CacheContainer getCacheContainer(final SAMRecordWrapper recordWrapper);
 	
-	public CacheContainer<T> getForwardContainer() {
+	public CacheContainer getForwardContainer() {
 		return forwardContainer;
 	}
 
-	public CacheContainer<T> getReverseContainer() {
+	public CacheContainer getReverseContainer() {
 		return reverseContainer;
 	}
 	

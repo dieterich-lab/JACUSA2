@@ -1,48 +1,36 @@
 package jacusa.filter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import jacusa.filter.factory.AbstractDataFilterFactory;
 import lib.cli.parameter.AbstractConditionParameter;
-import lib.data.AbstractData;
+import lib.data.cache.container.SharedCache;
 import lib.data.cache.record.RecordWrapperDataCache;
-import lib.util.coordinate.CoordinateController;
 
 /**
  * This class holds the instance of filters.
  *
- * @param <T>
+ * @param 
  */
-public class FilterContainer<T extends AbstractData> {
+public class FilterContainer {
 
 	// reference to the filterConfig that created this FilterContainer
-	private final FilterConfig<T> filterConfig;
-	// reference to a specific window
-	private final CoordinateController coordinateController;
+	private final FilterConfig filterConfig;
 
-	// map of filterFactories - contains ONLY 
-	private final Map<Character, AbstractDataFilterFactory<T>> dataFilterFactories;
-	
 	// map of filters - contains both: AbstractFilter and AbstractDataFilter 
-	private final Map<Character, AbstractFilter<T>> filters;
+	private final Map<Character, AbstractFilter> filters;
 
 	// max overhang that is required by some filter
 	private int overhang;
 
-	public FilterContainer(final FilterConfig<T> filterConfig,
-			final CoordinateController coordinateController) {
-
-		this.filterConfig 			= filterConfig;
-		this.coordinateController 	= coordinateController;
-
-		overhang 					= 0;
-
-		final int initialCapacity 	= 3;
-		dataFilterFactories			= new HashMap<Character, AbstractDataFilterFactory<T>>(initialCapacity);
-		filters						= new HashMap<Character, AbstractFilter<T>>(initialCapacity);
+	public FilterContainer(final FilterConfig filterConfig) {
+		this.filterConfig 	= filterConfig;
+		overhang 			= 0;
+		filters				= new HashMap<Character, AbstractFilter>(filterConfig.getFilterFactories().size());
 	}
 
 	/**
@@ -59,17 +47,8 @@ public class FilterContainer<T extends AbstractData> {
 	 * 
 	 * @return filterConfig that created this FilterContainer.
 	 */
-	public FilterConfig<T> getFilterConfig() {
+	public FilterConfig getFilterConfig() {
 		return filterConfig;
-	}
-	
-	/**
-	 * Returns that coordinateController that defines a window within the BAM files.
-	 * 
-	 * @return coordinateController linked to this FilterContainer
-	 */
-	public CoordinateController getCoordinateController() {
-		return coordinateController;
 	}
 
 	/**
@@ -77,37 +56,25 @@ public class FilterContainer<T extends AbstractData> {
 	 * 
 	 * @param filter the filter to be added
 	 */
-	public void addFilter(final AbstractFilter<T> filter) {
+	public void addFilter(final AbstractFilter filter) {
 		filters.put(filter.getC(), filter);
-	}
-	
-	/**
-	 * Adds a filter. AbstractDataFilter should be added by <code>addDataFilter()</code>. 
-	 * 
-	 * @param dataFilterFactory the filter to be added
-	 */
-	public void addDataFilterFactory(final AbstractDataFilterFactory<T> dataFilterFactory) {
-		dataFilterFactories.put(dataFilterFactory.getC(), dataFilterFactory);
 	}
 
 	/**
-	 * Returns instances of the filters that are active.
+	 * Returns instances of filters that are active.
 	 * 
 	 * @return list of active filters
 	 */
-	public List<AbstractFilter<T>> getFilters() {
-		return new ArrayList<AbstractFilter<T>>(filters.values());
+	public List<AbstractFilter> getFilters() {
+		return Collections.unmodifiableList(new ArrayList<>(filters.values()));
 	}
-
-	public List<RecordWrapperDataCache<T>> createFilterCaches(final AbstractConditionParameter<T> conditionParameter, final CoordinateController coordinateController) {
-		final List<RecordWrapperDataCache<T>> filterCaches = 
-				new ArrayList<RecordWrapperDataCache<T>>(dataFilterFactories.size());
-
-		for (final AbstractDataFilterFactory<T> dataFilterFactory : dataFilterFactories.values()) {
-			filterCaches.add(dataFilterFactory.createFilterCache(conditionParameter, coordinateController));
-		}
-		
-		return filterCaches;
+	
+	public List<RecordWrapperDataCache> createFilterCaches(final AbstractConditionParameter conditionParameter, final SharedCache sharedCache) {
+		return Collections.unmodifiableList(
+			filterConfig.getFilterFactories().stream()
+				.map(filterFactory -> filterFactory.createFilterCache(conditionParameter, sharedCache))
+				.filter(filterCache -> filterCache != null)
+				.collect(Collectors.toList()) );
 	}
 	
 }

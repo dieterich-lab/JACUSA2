@@ -1,40 +1,55 @@
 package jacusa.filter.factory;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Option.Builder;
+
+import htsjdk.samtools.util.StringUtil;
+
 import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.HomopolymerFilter;
-import jacusa.filter.cache.HomopolymerFilterCache;
+import jacusa.filter.cache.HomopolymerRecordFilterCache;
+import jacusa.filter.cache.HomopolymerReferenceFilterCache;
 import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
-import lib.data.AbstractData;
-import lib.data.adder.AbstractDataAdder;
-import lib.data.builder.ConditionContainer;
+import lib.data.DataType;
+import lib.data.DataTypeContainer;
+import lib.data.DataTypeContainer.AbstractBuilder;
+import lib.data.assembler.ConditionContainer;
+import lib.data.cache.container.SharedCache;
+import lib.data.cache.fetcher.FilteredDataFetcher;
+import lib.data.cache.fetcher.SpecificFilteredDataFetcher;
 import lib.data.cache.record.RecordWrapperDataCache;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasReferenceBase;
-import lib.data.has.filter.HasBooleanFilterData;
-import lib.util.coordinate.Coordinate;
+import lib.data.filter.BooleanWrapperFilteredData;
+import lib.data.filter.BooleanWrapper;
 import lib.util.coordinate.CoordinateController;
 
-public class HomopolymerFilterFactory<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasBooleanFilterData> 
-extends AbstractDataFilterFactory<T> {
+public class HomopolymerFilterFactory 
+extends AbstractFilterFactory {
 
 	// default length of consecutive identical base call for
 	// a homopolymer
 	private static final int MIN_HOMOPOLYMER_LENGTH = 7;
+	private static final HomopolymerMethod HOMOPOLYMER_METHOD = HomopolymerMethod.REFERENCE;
+
 	// chosen length of homopolymer
 	private int length;
-		
-	public HomopolymerFilterFactory() {
+	private HomopolymerMethod homopolymerMethod;
+	
+	private final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredBooleanFetcher;
+	private final DataType<BooleanWrapperFilteredData> dataType;
+	
+	public HomopolymerFilterFactory(final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher) {
 		super(getOptionBuilder().build());
 		length = MIN_HOMOPOLYMER_LENGTH;
+		homopolymerMethod = HOMOPOLYMER_METHOD;
+		
+		this.filteredBooleanFetcher = filteredDataFetcher;
+		dataType = filteredDataFetcher.getDataType();
 	}
 
 	public static Builder getOptionBuilder() {
@@ -50,89 +65,102 @@ extends AbstractDataFilterFactory<T> {
 				.desc("must be > 0. Default: " + MIN_HOMOPOLYMER_LENGTH);
 	}
 	
+	public static Builder getHomopolymerMethodBuilder() {
+		final String s = StringUtil.join(", ", HomopolymerMethod.values());
+		final StringBuilder sb = new StringBuilder();
+		sb.append("Choose how to compute homopolymers: ");
+		sb.append(s);
+		sb.append(". Default: " + HOMOPOLYMER_METHOD);
+		return Option.builder()
+				.longOpt("method")
+				.argName("METHOD")
+				.hasArg()
+				.desc(sb.toString());
+	}
+	
 	@Override
-	protected Options getOptions() {
+	public Options getOptions() {
 		final Options options = new Options();
 		options.addOption(getHomopolymerOptionBuilder().build());
 		return options;
 	}
 	
 	@Override
-	public void processCLI(final CommandLine cmd) {
-		// format Y:length
+	public Set<Option> processCLI(final CommandLine cmd) {
+		final Set<Option> parsed = new HashSet<>();
 		for (final Option option : cmd.getOptions()) {
 			final String longOpt = option.getLongOpt();
 			switch (longOpt) {
 			case "length":
 				final int length = Integer.valueOf(cmd.getOptionValue(longOpt));
-				if (length < 0) {
+				if (length <= 0) {
 					throw new IllegalArgumentException("Invalid length: " + longOpt);
 				}
 				this.length = length;
-				break;
-				
-			default:
+				parsed.add(option);
 				break;
 			}
 		}
+		return parsed;
 	}
 
 	@Override
-	public RecordWrapperDataCache<T> createFilterCache(
-			AbstractConditionParameter<T> conditionParameter,
-			CoordinateController coordinateController) {
+	public RecordWrapperDataCache createFilterCache(
+			AbstractConditionParameter conditionParameter,
+			SharedCache sharedCache) {
 		
-		return new HomopolymerFilterCache<T>(getC(), MIN_HOMOPOLYMER_LENGTH, coordinateController);
+		switch (homopolymerMethod) {
+		case REFERENCE:
+			return new HomopolymerReferenceFilterCache(
+					getC(), 
+					filteredBooleanFetcher, 
+					length, 
+					sharedCache);
+
+		case READ:
+			return new HomopolymerRecordFilterCache(
+					getC(), 
+					filteredBooleanFetcher, 
+					length, 
+					sharedCache);
+			
+		default:
+			throw new IllegalArgumentException("Unknown Homopolymer method: " + homopolymerMethod.toString());
+		}
 	}
 	
 	@Override
-	public AbstractFilter<T> createFilter(final CoordinateController coordinateController, 
-			final ConditionContainer<T> conditionContainer) {
-
-		final AbstractParameter<T, ?> parameter = conditionContainer.getParameter(); 
-		return new HomopolymerFilter<T>(getC(), length, parameter);
+	public void inidDataTypeContainer(AbstractBuilder builder) {
+		if (! builder.contains(dataType)) { 
+			builder.with(dataType);
+		}
 	}
-
+	
 	@Override
-	public void addFilteredData(StringBuilder sb, T data) {
-		if (data.getBooleanFilterData().get(getC())) {
+	public AbstractFilter createFilter(final CoordinateController coordinateController,
+			final ConditionContainer conditionContainer) {
+ 
+		return new HomopolymerFilter(
+				getC(), 
+				length, 
+				new SpecificFilteredDataFetcher<>(getC(), filteredBooleanFetcher));
+	}
+	
+	@Override
+	public void addFilteredData(StringBuilder sb, DataTypeContainer container) {
+		if (filteredBooleanFetcher.fetch(container).contains(getC())) {
 			sb.append('1');
 		} else {
 			sb.append('0');
 		}
 	}
 	
-	// TODO
-	public class Homopolymer extends AbstractDataAdder<T> {
+	public int getLength() {
+		return length;
+	}
 
-		private final Map<Integer, Boolean> isHomopolymer;
-		
-		public Homopolymer(final CoordinateController coordinateController) {
-			super(coordinateController);
-
-			isHomopolymer				= new HashMap<Integer, Boolean>(coordinateController.getActiveWindowSize() / 2);
-		}
-		
-		public void clear() {
-			isHomopolymer.clear();
-		}
-		
-		public void addData(T data, final Coordinate coordinate) {
-			final int referencePosition = coordinate.getPosition();
-			
-			if (! isHomopolymer.containsKey(referencePosition)) {
-				checkHomopolymer(coordinate, length);
-			}
-			data.getBooleanFilterData().add(getC(), isHomopolymer.get(referencePosition));
-		}
-		
-		private void checkHomopolymer(final Coordinate coordinate, final int minLength) {
-			/* TODO
-			final ReferenceProvider referenceProvider = getCoordinateController().getReferenceProvider();
-			final Coordinate tmp = new Coordinate(coordinate);
-			 */
-		}
-		
+	private enum HomopolymerMethod {
+		REFERENCE, READ;
 	}
 	
 }

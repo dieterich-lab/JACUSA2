@@ -7,27 +7,27 @@ import org.apache.commons.cli.Option;
 
 public class HelpOption extends AbstractACOption {
 
+	private static final String OPT = "h";
+	public static final String SHORT_MSG = "[...] Use -" + OPT + " to see extended help";
+	
 	private CLI cli;
 	
 	public HelpOption(final CLI cli) {
-		super("h", "help");
+		super(OPT, "help");
 		this.cli = cli;
 	}
 
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
 				.hasArg(false)
-				.desc("Print usage information")
+				.desc("Print extended usage information")
 				.build();
 	}
 
 	@Override
 	public void process(CommandLine line) {
-		if (line.hasOption(getOpt())) {
-	    	cli.printUsage(); 
-	    	System.exit(0);
-	    }
+    	cli.setPrintExtendedHelp();
 	}
 
 }

@@ -1,41 +1,25 @@
 package jacusa.worker;
 
-import java.util.List;
-
-import jacusa.cli.parameters.LRTarrestParameter;
-import jacusa.method.call.statistic.AbstractStatisticCalculator;
-import lib.data.LRTarrestData;
+import jacusa.method.lrtarrest.LRTarrestMethod;
 import lib.data.ParallelData;
-import lib.data.cache.extractor.ReferenceSetter;
-import lib.data.result.StatisticResult;
-import lib.data.validator.paralleldata.ParallelDataValidator;
-import lib.io.copytmp.CopyTmpResult;
+import lib.data.result.Result;
+import lib.stat.AbstractStat;
 import lib.worker.AbstractWorker;
-import lib.worker.WorkerDispatcher;
 
 public class LRTarrestWorker
-extends AbstractWorker<LRTarrestData, StatisticResult<LRTarrestData>> {
+extends AbstractWorker {
 
-	private final double threshold;
-	private final AbstractStatisticCalculator<LRTarrestData> statisticCalculator;
-	
-	public LRTarrestWorker(
-			final ReferenceSetter<LRTarrestData> referenceSetter,
-			final WorkerDispatcher<LRTarrestData, StatisticResult<LRTarrestData>> workerDispatcher,
-			final int threadId,
-			final CopyTmpResult<LRTarrestData, StatisticResult<LRTarrestData>> copyTmpResult,
-			final List<ParallelDataValidator<LRTarrestData>> parallelDataValidators, 
-			final LRTarrestParameter lrtArrestParameter) {
+	private final AbstractStat stat;
 
-		super(referenceSetter, workerDispatcher, threadId, copyTmpResult, parallelDataValidators, lrtArrestParameter);
-		threshold = lrtArrestParameter.getStatisticParameters().getThreshold();
-		statisticCalculator = lrtArrestParameter
-				.getStatisticParameters().newInstance();
+	public LRTarrestWorker(final LRTarrestMethod method, final int threadId) {
+		super(method, threadId);
+		stat = method.getParameter().getStatParameter()
+				.newInstance(method.getParameter().getConditionsSize());
 	}
 
 	@Override
-	protected StatisticResult<LRTarrestData> process(final ParallelData<LRTarrestData> parallelData) {
-		return statisticCalculator.filter(threshold, parallelData);
+	protected Result process(final ParallelData parallelData) {
+		return stat.filter(parallelData);
 	}
 	
 }

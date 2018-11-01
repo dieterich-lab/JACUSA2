@@ -1,98 +1,66 @@
 package jacusa.filter.factory.distance.rtarrest;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import jacusa.filter.factory.basecall.AbstractBaseCallCountFilterFactory;
-import jacusa.method.rtarrest.RTArrestFactory;
-import jacusa.method.rtarrest.RTArrestFactory.RT_READS;
-import lib.data.AbstractData;
-import lib.data.cache.extractor.basecall.ArrestBaseCallCountExtractor;
-import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
-import lib.data.cache.extractor.basecall.BaseCallCountFilterDataExtractor;
-import lib.data.cache.extractor.basecall.DefaultBaseCallCountExtractor;
-import lib.data.cache.extractor.basecall.ThroughBaseCallCountExtractor;
-import lib.data.has.HasArrestBaseCallCount;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasReferenceBase;
-import lib.data.has.HasThroughBaseCallCount;
-import lib.data.has.filter.HasBaseCallCountFilterData;
+import jacusa.method.rtarrest.RTarrestMethod;
+import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
+import lib.data.cache.fetcher.FilteredDataFetcher;
+import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
+import lib.data.count.basecall.BaseCallCount;
+import lib.data.filter.BaseCallCountFilteredData;
 
-public abstract class AbstractRTarrestDistanceFilterFactory<T extends AbstractData & HasBaseCallCount & HasArrestBaseCallCount & HasThroughBaseCallCount & HasBaseCallCountFilterData & HasReferenceBase> 
-extends AbstractBaseCallCountFilterFactory<T> {
+public abstract class AbstractRTarrestDistanceFilterFactory 
+extends AbstractBaseCallCountFilterFactory {
 
-	private final Set<RT_READS> apply2reads;
-
-	public AbstractRTarrestDistanceFilterFactory(final Option option,
-			final BaseCallCountExtractor<T> observed, final BaseCallCountExtractor<T> filtered, 
-			final int defaultFilterDistance, final double defaultFilterMinRatio) {
-
-		super(option, 
-				observed, filtered,
-				defaultFilterDistance, 
-				defaultFilterMinRatio);
-		
-		apply2reads = new HashSet<RT_READS>(2);
-	}
+	private final Apply2readsBaseCallCountSwitch bccSwitch;
 	
-	public AbstractRTarrestDistanceFilterFactory(final Option option,
-			final BaseCallCountExtractor<T> observed,
+	public AbstractRTarrestDistanceFilterFactory(
+			final Option option,
+			final Apply2readsBaseCallCountSwitch bccSwitch, 
+			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher, 
 			final int defaultFilterDistance, final double defaultFilterMinRatio) {
-		
-		this(option, 
-				observed, 
-				new BaseCallCountFilterDataExtractor<T>(option.getOpt().charAt(0)), 
-				defaultFilterDistance, defaultFilterMinRatio);
+
+		super(option, bccSwitch, filteredDataFetcher, defaultFilterDistance, defaultFilterMinRatio);
+		this.bccSwitch = bccSwitch;
 	}
 
 	@Override
-	protected Options getOptions() {
-		final Options options = super.getOptions();
-		options.addOption(RTArrestFactory.getReadsOptionBuilder(apply2reads).build());
-		return options;
+	public Options getOptions() {
+		return super.getOptions();
 	}
 	
 	@Override
-	public void processCLI(final CommandLine cmd) throws IllegalArgumentException {
-		super.processCLI(cmd);
-		
-		// ignore any first array element of s (e.g.: s[0] = "-u DirMult") 
+	public Set<Option> processCLI(final CommandLine cmd) throws MissingOptionException {
+		final Set<Option> parsed = super.processCLI(cmd);
 		for (final Option option : cmd.getOptions()) {
 			final String longOpt = option.getLongOpt();
 			switch (longOpt) {
 				case "reads":
 					final String optionValue = cmd.getOptionValue(longOpt);
-					final Set<RT_READS> apply2reads = RTArrestFactory.processApply2Reads(optionValue);
-					if (apply2reads.size() > 0) {
-						getApply2Reads().clear();
-						getApply2Reads().addAll(apply2reads);
-						
-						if (getApply2Reads().size() == 2) {
-							setObserved(new DefaultBaseCallCountExtractor<T>());	
-						} else {
-							if (getApply2Reads().contains(RT_READS.ARREST)) {
-								setObserved(new ArrestBaseCallCountExtractor<T>());	
-							} else if (getApply2Reads().contains(RT_READS.THROUGH)) {
-								setObserved(new ThroughBaseCallCountExtractor<T>());	
-							} else {
-								throw new IllegalStateException(); 
-							}
-						}
+					if (optionValue.isEmpty()) {
+						throw new MissingOptionException("Missing value for " + longOpt);
 					}
-				break;
-	
-			default:
-				break;
+					final Set<RT_READS> tmpApply2reads = RTarrestMethod.processApply2Reads(optionValue);
+					if (tmpApply2reads.size() == 0) {
+						throw new IllegalArgumentException("Unknown value for " + longOpt);
+					}
+					bccSwitch.getApply2reads().clear();
+					bccSwitch.getApply2reads().addAll(tmpApply2reads);
+					parsed.add(option);
+					break;
 			}
 		}
+		return parsed;
 	}
-
+	
 	protected Set<RT_READS> getApply2Reads() {
-		return apply2reads;
+		return bccSwitch.getApply2reads();
 	}
 	
 }

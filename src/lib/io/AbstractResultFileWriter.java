@@ -5,11 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import lib.data.AbstractData;
-import lib.data.result.Result;
-
-public abstract class AbstractResultFileWriter<T extends AbstractData, R extends Result<T>> 
-implements ResultWriter<T, R> {
+public abstract class AbstractResultFileWriter implements ResultWriter {
 
 	private final String filename;
 	private BufferedWriter bw;
@@ -23,7 +19,7 @@ implements ResultWriter<T, R> {
 		}
 	}
 
-	public String getFilename() {
+	public String getInfo() {
 		return filename;
 	}
 
@@ -31,7 +27,6 @@ implements ResultWriter<T, R> {
 	 * Helper
 	 * @param s Add one line "s" to BufferedWriter
 	 */
-	@Override
 	public void writeLine(final String s) {
 		try {
 			bw.write(s + '\n');
@@ -41,22 +36,12 @@ implements ResultWriter<T, R> {
 	}
 	
 	@Override
-	public void close() {
-		try {
-			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void close() throws IOException {
+		bw.close();
 	}
 
 	protected BufferedWriter getBW() {
 		return bw;
-	}
-
-
-	@Override
-	public String getInfo() {
-		return getFilename();
 	}
 	
 }

@@ -5,26 +5,43 @@ import java.util.Iterator;
 
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
+import lib.cli.parameter.AbstractConditionParameter;
 
 public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 
-	private SAMRecordWrapperIteratorProvider provider;
-
+	private final AbstractConditionParameter conditionParameter;
+	
+	private int acceptedSAMRecords;
+	private int filteredSAMRecords;
+	
 	private int bufferSize;
 	private int bufferPosition;
 	private final SAMRecordWrapper[] buffer;
+	
 	private SAMRecordIterator iterator; 
 	
-	public SAMRecordWrapperIterator(final SAMRecordWrapperIteratorProvider provider, 
+	public SAMRecordWrapperIterator(
+			final AbstractConditionParameter conditionParameter, 
 			final SAMRecordIterator iterator) {
-		this.provider = provider;
 
+		this.conditionParameter = conditionParameter;
+		
+		acceptedSAMRecords = 0;
+		filteredSAMRecords = 0;
+		
 		bufferSize		= 0;
 		bufferPosition	= 0;
 		buffer			= new SAMRecordWrapper[40000];
+		
 		this.iterator   = iterator;
 	}
 
+	public void updateIterator(SAMRecordIterator iterator) {
+		reset();
+		close();
+		this.iterator = iterator;
+	}
+	
 	@Override
 	public boolean hasNext() {
 		if (bufferSize == 0 || bufferPosition >= bufferSize) { // if buffer empty or exhausted
@@ -77,15 +94,15 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 			final SAMRecord record = iterator.next();
 
 			boolean isValid = false; 
-			if(provider.getConditionParameter().isValid(record)) {
+			if(conditionParameter.isValid(record)) {
 				isValid = true;
-				provider.incrementAcceptedSAMRecords();
+				acceptedSAMRecords++;
 			} else {
-				provider.incrementFilteredSAMRecords();
+				filteredSAMRecords++;
 			}
 
 			if (isValid) {
-				final SAMRecordWrapper recordWrapper = new SAMRecordWrapper(isValid, record);
+				final SAMRecordWrapper recordWrapper = new SAMRecordWrapper(record);
 				buffer[bufferSize++] = recordWrapper;
 			}
 		}
@@ -95,6 +112,14 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 		}
 
 		return bufferSize;
+	}
+
+	public final int getAcceptedSAMRecords() {
+		return acceptedSAMRecords;
+	}
+	
+	public final int getFilteredSAMRecords() {
+		return filteredSAMRecords;
 	}
 	
 	public void close() {

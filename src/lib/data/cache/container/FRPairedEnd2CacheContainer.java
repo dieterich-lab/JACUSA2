@@ -1,20 +1,19 @@
 package lib.data.cache.container;
 
 import htsjdk.samtools.SAMRecord;
-import lib.data.AbstractData;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 
-public class FRPairedEnd2CacheContainer<T extends AbstractData> 
-extends AbstractStrandedCacheContainer<T> {
+public class FRPairedEnd2CacheContainer 
+extends AbstractStrandedCacheContainer {
 
-	public FRPairedEnd2CacheContainer(final CacheContainer<T> forwardContainer, 
-			final CacheContainer<T> reverseContainer) {
+	public FRPairedEnd2CacheContainer(final CacheContainer forwardContainer, 
+			final CacheContainer reverseContainer) {
 		
 		super(forwardContainer, reverseContainer);
 	}
 	
 	@Override
-	protected CacheContainer<T> getCacheContainer(SAMRecordWrapper recordWrapper) {
+	protected CacheContainer getCacheContainer(SAMRecordWrapper recordWrapper) {
 		final SAMRecord record = recordWrapper.getSAMRecord();
 		
 		// paired end

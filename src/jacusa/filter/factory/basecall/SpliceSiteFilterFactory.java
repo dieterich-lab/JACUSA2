@@ -8,29 +8,33 @@ import org.apache.commons.cli.Option.Builder;
 
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
-import lib.data.AbstractData;
-import lib.data.cache.extractor.basecall.DefaultBaseCallCountExtractor;
+import lib.data.cache.fetcher.Fetcher;
+import lib.data.cache.fetcher.FilteredDataFetcher;
 import lib.data.cache.region.RegionDataCache;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasReferenceBase;
-import lib.data.has.filter.HasBaseCallCountFilterData;
+import lib.data.count.basecall.BaseCallCount;
+import lib.data.filter.BaseCallCountFilteredData;
 
 /**
  * TODO add comments.
  */
-public class SpliceSiteFilterFactory<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasBaseCallCountFilterData>
-extends AbstractBaseCallCountFilterFactory<T> {
 
-	public SpliceSiteFilterFactory() {
-		super(getOptionBuilder().build(),
-				new DefaultBaseCallCountExtractor<T>(),
+public class SpliceSiteFilterFactory
+extends AbstractBaseCallCountFilterFactory {
+
+	public SpliceSiteFilterFactory(
+			final Fetcher<BaseCallCount> observedBccFetcher,
+			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
+		
+		super(
+				getOptionBuilder().build(),
+				observedBccFetcher, filteredDataFetcher,
 				6, 0.5);
 	}
 	
 	@Override
-	protected List<ProcessRecord> createProcessRecord(final RegionDataCache<T> regionDataCache) {
+	protected List<ProcessRecord> createProcessRecord(final RegionDataCache regionDataCache) {
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
-		processRecords.add(new ProcessSkippedOperator(getDistance(), regionDataCache));
+		processRecords.add(new ProcessSkippedOperator(getFilterDistance(), regionDataCache));
 		return processRecords;
 	}
 	

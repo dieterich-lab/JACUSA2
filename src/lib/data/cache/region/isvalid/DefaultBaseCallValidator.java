@@ -12,7 +12,7 @@ public class DefaultBaseCallValidator implements BaseCallValidator {
 			final Base base, final byte baseQuality,
 			final SAMRecord record) {
 			
-		return SequenceUtil.isValidBase(base.getC());
+		return SequenceUtil.isValidBase(base.getByte());
 	}
 
 }

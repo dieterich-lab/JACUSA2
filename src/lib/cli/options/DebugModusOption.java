@@ -1,21 +1,26 @@
 package lib.cli.options;
 
 import lib.cli.parameter.AbstractParameter;
+import lib.method.AbstractMethod;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 public class DebugModusOption extends AbstractACOption {
 
-	final private AbstractParameter<?, ?> parameter;
+	private final AbstractParameter parameter;
+	private final AbstractMethod method;
 	
-	public DebugModusOption(final AbstractParameter<?, ?> parameter) {
+	public DebugModusOption(final AbstractParameter parameter,
+			final AbstractMethod method) {
 		super("x", "debug");
+		hide();
 		this.parameter = parameter;
+		this.method = method;
 	}
 
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
 		        .desc("turn on Debug modus")
 		        .build();
@@ -23,10 +28,8 @@ public class DebugModusOption extends AbstractACOption {
 
 	@Override
 	public void process(final CommandLine line) throws Exception {
-		if(line.hasOption(getOpt())) {
-			parameter.setDebug(true);
-			parameter.getMethodFactory().debug();
-	    }
+		parameter.setDebug(true);
+		method.debug();
 	}
 	
 }

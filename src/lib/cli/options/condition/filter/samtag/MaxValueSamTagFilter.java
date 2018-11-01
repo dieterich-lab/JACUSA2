@@ -19,4 +19,11 @@ public class MaxValueSamTagFilter {
 		return samRecord.getIntegerAttribute(tag) > value;
 	}
 
+	public String getTag() {
+		return tag;
+	}
+	
+	public int getValue() {
+		return value;
+	}
 }

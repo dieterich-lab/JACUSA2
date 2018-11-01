@@ -1,9 +1,12 @@
 package lib.util;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Info {
+public class Info implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private static final char SEP = ';'; 
 	private Map<String, StringBuilder> map;
@@ -28,17 +31,17 @@ public class Info {
 	
 	public String combine() {
 		if (isEmpty()) {
-			return "*";
+			return Character.toString(Util.EMPTY_FIELD);
 		}
 		
 		final StringBuilder sb = new StringBuilder();
 		
-		for (String key : map.keySet()) {
+		for (final String key : map.keySet()) {
 			if (sb.length() > 0) {
 				sb.append(SEP);
 			}
 			sb.append(key);
-			if (map.get(key) != null) {
+			if (map.containsKey(key) && map.get(key) != null) {
 				sb.append('=');
 				sb.append(map.get(key).toString());
 			}
@@ -51,7 +54,7 @@ public class Info {
 		return map.containsKey(key);
 	}
 	
-	public void addAll(Info info) {
+	public void addAll(final Info info) {
 		map.putAll(info.map);
 	}
 

@@ -1,27 +1,34 @@
 package jacusa.filter.factory.basecall;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+import jacusa.JACUSA;
 import jacusa.filter.AbstractFilter;
-import jacusa.filter.FilterRatio;
-import jacusa.filter.basecall.BaseCallFilter;
+import jacusa.filter.FilterByRatio;
+import jacusa.filter.basecall.GenericBaseCallCountFilter;
 import jacusa.filter.cache.RecordProcessDataCache;
 import jacusa.filter.cache.processrecord.ProcessRecord;
-import jacusa.filter.factory.AbstractDataFilterFactory;
+import jacusa.filter.factory.AbstractFilterFactory;
 import lib.cli.parameter.AbstractConditionParameter;
-import lib.data.AbstractData;
+import lib.data.DataType;
+import lib.data.DataTypeContainer;
+import lib.data.DataTypeContainer.AbstractBuilder;
 import lib.data.adder.IncrementAdder;
 import lib.data.adder.basecall.ArrayBaseCallAdder;
-import lib.data.adder.basecall.BaseCallAdder;
 import lib.data.adder.region.ValidatedRegionDataCache;
-import lib.data.builder.ConditionContainer;
-import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
-import lib.data.cache.extractor.basecall.BaseCallCountFilterDataExtractor;
+import lib.data.assembler.ConditionContainer;
+import lib.data.cache.container.SharedCache;
+import lib.data.cache.fetcher.Fetcher;
+import lib.data.cache.fetcher.FilteredDataFetcher;
+import lib.data.cache.fetcher.SpecificFilteredDataFetcher;
 import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.cache.region.RegionDataCache;
 import lib.data.cache.region.UniqueTraverse;
@@ -29,97 +36,96 @@ import lib.data.cache.region.isvalid.BaseCallValidator;
 import lib.data.cache.region.isvalid.DefaultBaseCallValidator;
 import lib.data.cache.region.isvalid.MaxDepthBaseCallValidator;
 import lib.data.cache.region.isvalid.MinBASQBaseCallValidator;
-import lib.data.has.HasReferenceBase;
-import lib.data.has.filter.HasBaseCallCountFilterData;
-import lib.io.ResultWriterUtils;
+import lib.data.count.basecall.BaseCallCount;
+import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.data.filter.BaseCallCountFilteredData;
+import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 
-public abstract class AbstractBaseCallCountFilterFactory<T extends AbstractData & HasBaseCallCountFilterData & HasReferenceBase>
-extends AbstractDataFilterFactory<T> {
+public abstract class AbstractBaseCallCountFilterFactory
+extends AbstractFilterFactory {
 
-	private BaseCallCountExtractor<T> observed;
-	private BaseCallCountExtractor<T> filtered;
+	private Fetcher<BaseCallCount> observedBccFetcher;
+	private final Fetcher<BaseCallCount> filteredBccFetcher;
+	private final DataType<BaseCallCountFilteredData> dataType;
 	
 	private int filterDistance;
 	private double filterMinRatio;
-		
-	public AbstractBaseCallCountFilterFactory(final Option option,
-			final BaseCallCountExtractor<T> observed, final BaseCallCountExtractor<T> filtered, 
+
+	private final BaseCallCount.AbstractParser baseCallCountParser;
+	
+	public AbstractBaseCallCountFilterFactory(
+			final Option option,
+			final Fetcher<BaseCallCount> observedBccFetcher, 
+			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher, 
 			final int defaultFilterDistance, final double defaultFilterMinRatio) {
 
 		super(option);
-
-		this.observed = observed;
-		this.filtered = filtered;
+		
+		this.observedBccFetcher = observedBccFetcher;
+		filteredBccFetcher = new SpecificFilteredDataFetcher<>(getC(), filteredDataFetcher);
+		dataType = filteredDataFetcher.getDataType();
 		
 		filterDistance = defaultFilterDistance;
 		filterMinRatio = defaultFilterMinRatio;
-	}
-	
-	public AbstractBaseCallCountFilterFactory(final Option option,
-			final BaseCallCountExtractor<T> observed, 
-			final int defaultFilterDistance, final double defaultFilterMinRatio) {
-		
-		this(option, 
-				observed, 
-				new BaseCallCountFilterDataExtractor<T>(option.getOpt().charAt(0)), 
-				defaultFilterDistance, defaultFilterMinRatio);
+
+		baseCallCountParser = new DefaultBaseCallCount.Parser(Util.EMPTY_FIELD, Util.VALUE_SEP);
 	}
 	
 	@Override
-	protected Options getOptions() {
-		final Options options = new Options();
-
-		options.addOption(Option.builder()
-				.argName("DISTANCE")
-				.longOpt("distance")
-				.hasArg(true)
-				.desc("Filter base calls within distance to feature. Default: " + getDistance())
-				.build());
-
-		options.addOption(Option.builder()
-				.argName("MINRATIO")
-				.longOpt("minRatio")
-				.hasArg(true)
-				.desc("Minimal ratio of base calls to pass filtering. Default: " + getMinRatio())
-				.build());
-		
-		return options;
+	public Options getOptions() {
+		return new Options()
+				.addOption(getDistanceOptionBuilder(filterDistance).build())
+				.addOption(getMinRatioOptionBuilder(filterMinRatio).build());
 	}
 	
 	@Override
-	public void processCLI(final CommandLine cmd) {
+	public Set<Option> processCLI(final CommandLine cmd) throws MissingOptionException {
+		final Set<Option> parsed = new HashSet<>();
 		for (final Option option : cmd.getOptions()) {
 			final String longOpt = option.getLongOpt();
 			switch (longOpt) {
 			case "distance":
 				filterDistance = Integer.parseInt(cmd.getOptionValue(longOpt));
+				parsed.add(option);
 				break;
 				
 			case "minRatio":
 				filterMinRatio = Double.parseDouble(cmd.getOptionValue(longOpt));
-				break;
-
-			default:
+				parsed.add(option);
 				break;
 			}
 		}
+		return parsed;
 	}
 
 	@Override
-	public AbstractFilter<T> createFilter(final CoordinateController coordinateController, final ConditionContainer<T> conditionContainer) {
-		return new BaseCallFilter<T>(getC(),
-				getObserved(),
-				getFiltered(),	
-				getDistance(), new FilterRatio(getMinRatio()));
+	public void inidDataTypeContainer(AbstractBuilder builder) {
+		if (! builder.contains(dataType)) { 
+			builder.with(dataType);
+		}
+		final BaseCallCountFilteredData filteredData = builder.get(dataType);
+		if (! filteredData.contains(getC())) {
+			filteredData.add(getC(), JACUSA.bccFactory.create());
+		}
 	}
-
+	
 	@Override
-	public RecordWrapperDataCache<T> createFilterCache(final AbstractConditionParameter<T> conditionParameter,
-			final CoordinateController coordinateController) {
+	public AbstractFilter createFilter(
+			final CoordinateController coordinateController, 
+			final ConditionContainer conditionContainer) {
+		return new GenericBaseCallCountFilter(getC(),
+				observedBccFetcher,
+				filteredBccFetcher,	
+				filterDistance, new FilterByRatio(getFilterMinRatio()));
+	}
+	
+	@Override
+	public RecordWrapperDataCache createFilterCache(final AbstractConditionParameter conditionParameter,
+			final SharedCache sharedCache) {
 
-		final List<IncrementAdder<T>> adder = new ArrayList<IncrementAdder<T>>();
-		final BaseCallAdder<T> baseCallAdder = new ArrayBaseCallAdder<T>(getFiltered(), coordinateController);
+		final List<IncrementAdder> adder = new ArrayList<IncrementAdder>();
+		final IncrementAdder baseCallAdder = new ArrayBaseCallAdder(filteredBccFetcher, sharedCache);
 		adder.add(baseCallAdder);
 		
 		final List<BaseCallValidator> validator = new ArrayList<BaseCallValidator>();
@@ -131,21 +137,21 @@ extends AbstractDataFilterFactory<T> {
 			validator.add(new MinBASQBaseCallValidator(conditionParameter.getMinBASQ()));
 		}
 		
-		final ValidatedRegionDataCache<T> regionDataCache = new ValidatedRegionDataCache<T>(adder, validator, coordinateController);
-		final UniqueTraverse<T> uniqueBaseCallCache = new UniqueTraverse<T>(regionDataCache);
-		return new RecordProcessDataCache<T>(uniqueBaseCallCache, createProcessRecord(uniqueBaseCallCache));
+		final ValidatedRegionDataCache regionDataCache = new ValidatedRegionDataCache(adder, validator, sharedCache);
+		final UniqueTraverse uniqueBaseCallCache = new UniqueTraverse(regionDataCache);
+		return new RecordProcessDataCache(uniqueBaseCallCache, createProcessRecord(uniqueBaseCallCache));
 	}
 	
 	@Override
-	public void addFilteredData(StringBuilder sb, T data) {
-		ResultWriterUtils.addBaseCallCount(sb, getFiltered().getBaseCallCount(data));
+	public void addFilteredData(StringBuilder sb, DataTypeContainer filteredData) {
+		baseCallCountParser.wrap(filteredBccFetcher.fetch(filteredData));
 	}
 	
-	public int getDistance() {
+	public int getFilterDistance() {
 		return filterDistance;
 	}
 
-	public double getMinRatio() {
+	public double getFilterMinRatio() {
 		return filterMinRatio;
 	}
 
@@ -154,23 +160,23 @@ extends AbstractDataFilterFactory<T> {
 		return filterMinCount;
 	}
 	*/
-
-	protected BaseCallCountExtractor<T> getObserved() {
-		return observed;
+	
+	protected abstract List<ProcessRecord> createProcessRecord(final RegionDataCache regionDataCache);
+	
+	public static Option.Builder getDistanceOptionBuilder(final int filterDistance) {
+		return Option.builder()
+				.argName("DISTANCE")
+				.longOpt("distance")
+				.hasArg(true)
+				.desc("Filter base calls within distance to feature. Default: " + filterDistance);
 	}
 	
-	protected BaseCallCountExtractor<T> getFiltered() {
-		return filtered;
+	public static Option.Builder getMinRatioOptionBuilder(final double minRatio) {
+		return Option.builder()
+				.argName("MINRATIO")
+				.longOpt("minRatio")
+				.hasArg(true)
+				.desc("Minimal ratio of base calls to pass filtering. Default: " + minRatio);
 	}
-	
-	protected void setObserved(final BaseCallCountExtractor<T> observed) {
-		this.observed = observed;
-	}
-	
-	protected void setFiltered(final BaseCallCountExtractor<T> filtered) {
-		this.filtered = filtered;
-	}
-	
-	protected abstract List<ProcessRecord> createProcessRecord(final RegionDataCache<T> regionDataCache);
 	
 }

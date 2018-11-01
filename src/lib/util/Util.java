@@ -1,18 +1,63 @@
 package lib.util;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.cli.Option;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
-public abstract class Util {
+import htsjdk.samtools.SAMSequenceDictionary;
+import htsjdk.samtools.SamReader;
+import htsjdk.samtools.SamReaderFactory;
+import htsjdk.samtools.ValidationStringency;
 
+public final class Util {
 	
+	private Util() {
+		throw new AssertionError();
+	}
 	
-	public static String printAlpha(double a[]) {
+	/**
+	 * 
+	 * @param recordFilename
+	 * @return
+	 * @throws IOException 
+	 * @throws Exception
+	 */
+	public static SAMSequenceDictionary getSAMSequenceDictionary(final String recordFilename) throws IOException {
+		final File file = new File(recordFilename);
+		final SamReader reader = SamReaderFactory
+				.make()
+				.setOption(htsjdk.samtools.SamReaderFactory.Option.CACHE_FILE_BASED_INDEXES, false)
+				.setOption(htsjdk.samtools.SamReaderFactory.Option.DONT_MEMORY_MAP_INDEX, true) // disable memory mapping
+				.validationStringency(ValidationStringency.LENIENT)
+				.open(file);
+		final SAMSequenceDictionary sequenceDictionary = reader.getFileHeader().getSequenceDictionary();
+		reader.close();
+		return sequenceDictionary;
+	}
+	
+	public static String printAlpha(final double a[]) {
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < a.length; ++i) {
+			if (i > 0) {
+				sb.append('\t');
+			}
+			sb.append(a[i]);
+		}
+		return sb.toString();
+	}
+	
+	public static String printAlpha2(double a[]) {
 		DecimalFormat df = new DecimalFormat("0.0000"); 
 		StringBuilder sb = new StringBuilder();
 
@@ -21,6 +66,22 @@ public abstract class Util {
 			sb.append("  ");
 			sb.append(df.format(a[i]));
 		}
+		return sb.toString();
+	}
+	
+	public static String printMatrix(final double m[][]) {
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < m.length; ++i) {
+			for (int j = 0; j < m[i].length; ++j) {
+				if (j > 0) {
+					sb.append('\t');
+				}
+				sb.append(m[i][j]);
+			}
+			sb.append('\n');
+		}
+
 		return sb.toString();
 	}
 	
@@ -72,11 +133,29 @@ public abstract class Util {
 		}
 	}
 
-	public static void adjustOption(final Option option, final Options options, final int padding) {
+	static public CommandLine processCLI(String line, final Options options) throws MissingOptionException{
+		if (options.getOptions().size() == 0 || line == null || line.isEmpty()) {
+			return null;
+		}
+
+		line = line.replaceAll(Character.toString(Util.WITHIN_FIELD_SEP), Character.toString(Util.WITHIN_FIELD_SEP)+"--");
+		final String[] args = line.split(Character.toString(Util.WITHIN_FIELD_SEP));
+		final CommandLineParser parser = new DefaultParser();
+		
+		CommandLine cmd = null;
+		try {
+			cmd = parser.parse(options, args);
+		} catch (final ParseException e) {
+			e.printStackTrace();
+		}
+		return cmd;
+	}
+	
+	public static void adjustOption(final org.apache.commons.cli.Option option, final Options options, final int padding) {
 		adjustOption(option, options, padding, 60);
 	}
 	
-	public static void adjustOption(final Option option, final Options options, final int padding, final int width) {
+	public static void adjustOption(final org.apache.commons.cli.Option option, final Options options, final int padding, final int width) {
 		final StringBuilder sb = new StringBuilder();
 
 		// add option description and wrap
@@ -85,11 +164,11 @@ public abstract class Util {
 		Util.formatStr(sb, option.getDescription(), "|" + new String(space), width);
 		
 		int max = 3;
-		for (final Option o : options.getOptions()) {
+		for (final org.apache.commons.cli.Option o : options.getOptions()) {
 			max = Math.max(max, o.getLongOpt().length());
 		}
 		
-		for (final Option o : options.getOptions()) {
+		for (final org.apache.commons.cli.Option o : options.getOptions()) {
 			sb.append("| :");
 			sb.append(o.getLongOpt());
 
@@ -110,8 +189,13 @@ public abstract class Util {
 		option.setDescription(sb.toString());
 	}
 
+	public static final String BASE_FIELD 		= "bases";
+	public static final String ARREST_BASES 	= "arrest_bases";
+	public static final String THROUGH_BASES 	= "through_bases";
+	
 	// TODO add comments.
 	public static final char COMMENT			= '#';
+	public static final String HEADER			= "##";
 	// TODO add comments.
 	public static final char EMPTY_FIELD 		= '*';
 	// TODO add comments.
@@ -124,5 +208,7 @@ public abstract class Util {
 	public static final char SEP4 				= ';';
 	// TODO add comments.
 	public static final char KEY_VALUE_SEP 		= '=';
+	
+	public static final char AND 				= '&';
 
 }

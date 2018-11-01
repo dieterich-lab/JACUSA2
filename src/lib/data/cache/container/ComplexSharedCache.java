@@ -1,7 +1,7 @@
 package lib.data.cache.container;
 
 import htsjdk.samtools.AlignmentBlock;
-
+import lib.util.Base;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 
@@ -9,18 +9,13 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
 
 public class ComplexSharedCache implements SharedCache {
 
-	private final CoordinateController coordinateController;
-
 	private final ReferenceProvider referenceProvider;
 	private final NextPositionSegmentContainer segmentContainer;
 	
-	public ComplexSharedCache(final ReferenceProvider referenceProvider, 
-			final CoordinateController coordinateController) {
-		
-		this.coordinateController = coordinateController;
-		
+	public ComplexSharedCache(final ReferenceProvider referenceProvider) {
 		this.referenceProvider = referenceProvider;
-		segmentContainer = new NextPositionSegmentContainer(coordinateController.getActiveWindowSize());
+		segmentContainer = new NextPositionSegmentContainer(
+				getCoordinateController().getActiveWindowSize());
 	}
 	
 	@Override
@@ -48,29 +43,21 @@ public class ComplexSharedCache implements SharedCache {
 	}
 
 	@Override
-	public byte getReference(int windowPosition) {
-		return referenceProvider.getReference(windowPosition);
+	public Base getReferenceBase(int windowPosition) {
+		return referenceProvider.getReferenceBase(windowPosition);
 	}
 
 	@Override
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
 		referenceProvider.addRecordWrapper(recordWrapper);
-		
-		/*
-		boolean right = false;
-		if (recordWrapper.getSAMRecord().getReadName().equals("HWI-ST999:294:C9LMJACXX:1:1206:5347:41258") || 
-				recordWrapper.getSAMRecord().getReadName().equals("HWI-ST999:294:C9LMJACXX:1:2206:6528:78416")) {
-			right = true;
-		}
-		*/
-		
+
 		AlignmentBlock previousBlock = null;
 		for (final AlignmentBlock currentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
 			
 			final int currentRefPos = currentBlock.getReferenceStart();	
 			final int currentReadPos = currentBlock.getReadStart() - 1;
 			final int currentLen = currentBlock.getLength();
-			final WindowPositionGuard currentWinPosGuard = coordinateController.convert(currentRefPos, currentReadPos, currentLen);
+			final WindowPositionGuard currentWinPosGuard = getCoordinateController().convert(currentRefPos, currentReadPos, currentLen);
 			
 			if (currentWinPosGuard.isValid()) {
 				segmentContainer.markCovered(currentWinPosGuard.getWindowPosition(), currentWinPosGuard.getLength());
@@ -80,7 +67,7 @@ public class ComplexSharedCache implements SharedCache {
 				final int previousRefPos = previousBlock.getReferenceStart() + previousBlock.getLength();	
 				// final int previousLen = currentRefPos - 1 - previousRefPos;
 				final int previousLen = currentRefPos - previousRefPos;
-				final WindowPositionGuard previousWinPosGuard = coordinateController.convert(previousRefPos, previousLen);
+				final WindowPositionGuard previousWinPosGuard = getCoordinateController().convert(previousRefPos, previousLen);
 				
 				if (previousWinPosGuard.isValid()) {
 					segmentContainer.markNotCovered(previousWinPosGuard.getWindowPosition(), 
@@ -96,5 +83,14 @@ public class ComplexSharedCache implements SharedCache {
 		segmentContainer.clear();
 		referenceProvider.update();
 	}
+
+	@Override
+	public ReferenceProvider getReferenceProvider() {
+		return referenceProvider;
+	}
 	
+	@Override
+	public CoordinateController getCoordinateController() {
+		return referenceProvider.getCoordinateController();
+	}
 }

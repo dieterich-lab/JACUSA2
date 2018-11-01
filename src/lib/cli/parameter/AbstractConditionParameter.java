@@ -12,15 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
-import lib.data.AbstractData;
-import lib.data.has.HasLibraryType.LIBRARY_TYPE;
+import lib.data.has.LibraryType;
 import lib.util.AbstractTool;
 
-public abstract class AbstractConditionParameter<T extends AbstractData> {
+public abstract class AbstractConditionParameter {
 	
 	private int conditionIndex;
 	
-	private LIBRARY_TYPE libraryType;
+	private LibraryType libraryType;
 	
 	// cache related
 	private int maxDepth;
@@ -42,7 +41,7 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 	
 	public AbstractConditionParameter(final int conditionIndex) {
 		this.conditionIndex = conditionIndex; 
-		libraryType = LIBRARY_TYPE.UNSTRANDED;
+		libraryType = LibraryType.UNSTRANDED;
 
 		maxDepth 		= -1;
 		
@@ -218,11 +217,11 @@ public abstract class AbstractConditionParameter<T extends AbstractData> {
 		return conditionIndex;
 	}
 	
-	public LIBRARY_TYPE getLibraryType() {
+	public LibraryType getLibraryType() {
 		return libraryType;
 	}
 
-	public void setLibraryType(final LIBRARY_TYPE libraryType) {
+	public void setLibraryType(final LibraryType libraryType) {
 		this.libraryType = libraryType;
 	}
 

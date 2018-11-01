@@ -1,8 +1,6 @@
 package lib.data.validator.data;
 
-import lib.data.AbstractData;
-
-public interface DataValidator<T extends AbstractData> {
+public interface DataValidator<T> {
 
 	boolean isValid(T data);
 	

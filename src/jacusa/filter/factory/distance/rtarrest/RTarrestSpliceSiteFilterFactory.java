@@ -1,39 +1,38 @@
-	package jacusa.filter.factory.distance.rtarrest;
+package jacusa.filter.factory.distance.rtarrest;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
-import jacusa.method.rtarrest.RTArrestFactory.RT_READS;
-import lib.data.AbstractData;
-import lib.data.cache.extractor.basecall.ArrestBaseCallCountExtractor;
+import lib.data.cache.fetcher.FilteredDataFetcher;
+import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.cache.region.RegionDataCache;
-import lib.data.has.HasArrestBaseCallCount;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasReferenceBase;
-import lib.data.has.HasThroughBaseCallCount;
-import lib.data.has.filter.HasBaseCallCountFilterData;
+import lib.data.count.basecall.BaseCallCount;
+import lib.data.filter.BaseCallCountFilteredData;
 
 /**
  * TODO add comments.
  */
-public class RTarrestSpliceSiteFilterFactory<T extends AbstractData & HasBaseCallCount & HasArrestBaseCallCount & HasThroughBaseCallCount & HasReferenceBase & HasBaseCallCountFilterData>
-extends AbstractRTarrestDistanceFilterFactory<T> {
 
-	public RTarrestSpliceSiteFilterFactory() {
-		super(SpliceSiteFilterFactory.getOptionBuilder().build(),
-				new ArrestBaseCallCountExtractor<T>(),
+public class RTarrestSpliceSiteFilterFactory
+extends AbstractRTarrestDistanceFilterFactory {
+
+	public RTarrestSpliceSiteFilterFactory(
+			final Apply2readsBaseCallCountSwitch bccSwitch, 
+			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
+
+		super(
+				SpliceSiteFilterFactory.getOptionBuilder().build(),
+				bccSwitch, filteredDataFetcher,
 				6, 0.5);
-		getApply2Reads().add(RT_READS.ARREST);
 	}
 	
 	@Override
-	protected List<ProcessRecord> createProcessRecord(RegionDataCache<T> regionDataCache) {
-		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
-		processRecords.add(new ProcessReadStartEnd(getDistance(), regionDataCache));
-		return processRecords;
+	protected List<ProcessRecord> createProcessRecord(RegionDataCache regionDataCache) {
+		return Arrays.asList(
+				new ProcessReadStartEnd(getFilterDistance(), regionDataCache));
 	}
 
 }

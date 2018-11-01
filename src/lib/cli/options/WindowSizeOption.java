@@ -7,15 +7,15 @@ import org.apache.commons.cli.Option;
 
 public class WindowSizeOption extends AbstractACOption {
 
-	final private AbstractParameter<?, ?> parameters; 
+	final private AbstractParameter parameters; 
 	
-	public WindowSizeOption(AbstractParameter<?, ?> parameter) {
+	public WindowSizeOption(AbstractParameter parameter) {
 		super("w", "window-size");
 		this.parameters = parameter;
 	}
 
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
@@ -26,15 +26,13 @@ public class WindowSizeOption extends AbstractACOption {
 
 	@Override
 	public void process(CommandLine line) throws Exception {
-		if (line.hasOption(getOpt())) {
-	    	String value = line.getOptionValue(getOpt());
-	    	int windowSize = Integer.parseInt(value);
-	    	if (windowSize < 1) {
-	    		throw new IllegalArgumentException("WINDOW-SIZE too small: " + windowSize);
-	    	}
+    	String value = line.getOptionValue(getOpt());
+    	int windowSize = Integer.parseInt(value);
+    	if (windowSize < 1) {
+    		throw new IllegalArgumentException("WINDOW-SIZE too small: " + windowSize);
+    	}
 
-	    	parameters.setActiveWindowSize(windowSize);
-		}
+    	parameters.setActiveWindowSize(windowSize);
 	}
 
 }

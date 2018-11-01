@@ -2,21 +2,20 @@ package lib.data.validator.paralleldata;
 
 import java.util.List;
 
-import lib.data.AbstractData;
 import lib.data.ParallelData;
 
-public class CompositeParallelDataValidator<T extends AbstractData> 
-implements ParallelDataValidator<T> {
+public class CompositeParallelDataValidator 
+implements ParallelDataValidator {
 
-	private final List<ParallelDataValidator<T>> validators;
+	private final List<ParallelDataValidator> validators;
 	
-	public CompositeParallelDataValidator(final List<ParallelDataValidator<T>> validators) {
+	public CompositeParallelDataValidator(final List<ParallelDataValidator> validators) {
 		this.validators = validators;
 	}
 	
 	@Override
-	public boolean isValid(final ParallelData<T> parallelData) {
-		for (final ParallelDataValidator<T> validator : validators) {
+	public boolean isValid(final ParallelData parallelData) {
+		for (final ParallelDataValidator validator : validators) {
 			if (! validator.isValid(parallelData)) {
 				return false;
 			}

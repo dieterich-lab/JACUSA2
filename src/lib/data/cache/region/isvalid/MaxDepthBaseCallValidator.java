@@ -1,15 +1,15 @@
 package lib.data.cache.region.isvalid;
 
 import htsjdk.samtools.SAMRecord;
-import lib.data.adder.basecall.BaseCallAdder;
+import lib.data.adder.IncrementAdder;
 import lib.util.Base;
 
 public class MaxDepthBaseCallValidator implements BaseCallValidator {
 
 	private final int maxDepth;
-	private final BaseCallAdder<?> baseCallDataAdder;
+	private final IncrementAdder baseCallDataAdder;
 	
-	public MaxDepthBaseCallValidator(final int maxDepth, final BaseCallAdder<?> baseCallDataAdder) {
+	public MaxDepthBaseCallValidator(final int maxDepth, final IncrementAdder baseCallDataAdder) {
 		this.maxDepth 		= maxDepth;
 		this.baseCallDataAdder = baseCallDataAdder;
 	}

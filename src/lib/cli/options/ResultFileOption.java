@@ -15,15 +15,15 @@ import org.apache.commons.cli.Option;
  */
 public class ResultFileOption extends AbstractACOption {
 
-	final private AbstractParameter<?, ?> parameter;
+	final private AbstractParameter parameter;
 	
-	public ResultFileOption(AbstractParameter<?, ?> parameter) {
+	public ResultFileOption(AbstractParameter parameter) {
 		super("r", "result-file");
 		this.parameter = parameter;
 	}
 
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
 			.argName(getLongOpt().toUpperCase())
 			.hasArg(true)
@@ -33,15 +33,13 @@ public class ResultFileOption extends AbstractACOption {
 	}
 
 	@Override
-	public void process(CommandLine line) throws FileAlreadyExistsException {
-		if (line.hasOption(getOpt())) {
-	    	final String resultFilename = line.getOptionValue(getOpt());
-	    	final File file = new File(resultFilename);
-		 	if (file.exists()) {
-		 		// throw new FileAlreadyExistsException(resultFilename);
-		 	}
-	    	parameter.setResultFilename(resultFilename);
-	    }
+	public void process(final CommandLine line) throws FileAlreadyExistsException {
+    	final String resultFilename = line.getOptionValue(getOpt());
+    	final File file = new File(resultFilename);
+	 	if (file.exists()) {
+	 		// throw new FileAlreadyExistsException(resultFilename);
+	 	}
+    	parameter.setResultFilename(resultFilename);
 	}
 
 }

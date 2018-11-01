@@ -1,48 +1,68 @@
 package lib.data.cache.container;
 
 import htsjdk.samtools.AlignmentBlock;
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SAMRecordIterator;
+import htsjdk.samtools.SamReader;
+import htsjdk.samtools.util.SequenceUtil;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
+import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
 public class SimpleMDReferenceProvider implements ReferenceProvider {
 
+	private static final int READ_AHEAD = 10;
+	
 	private final CoordinateController coordinateController;
-
+	
 	private final byte[] reference;
 	private Coordinate window;
 
-	public SimpleMDReferenceProvider(final CoordinateController coordinateController) {
-		this.coordinateController = coordinateController;
-		
+	private final List<SamReader> samReaders;
+	
+	private Map<Integer, Byte> referenceBaseBuffer;
+	
+	public SimpleMDReferenceProvider(final CoordinateController coordinateController,
+			final List<String> recordFilenames) {
+
+		this.coordinateController = coordinateController;		
+
 		reference = new byte[coordinateController.getActiveWindowSize()];
 		Arrays.fill(reference, (byte)'N');
+
+		samReaders = createSamReaders(recordFilenames);
+
+		referenceBaseBuffer = new HashMap<Integer, Byte>(READ_AHEAD);
 	}
 
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {
-		int srcPos = 0;
 		for (final AlignmentBlock block : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
-			final int referencePosition = block.getReferenceStart();
-			final int readPosition = block.getReadStart() - 1;
+			final int refStart = block.getReferenceStart();
+			final int readStart = block.getReadStart() - 1;
 			final int length = block.getLength();
 			
-			final WindowPositionGuard windowPositionGuard = coordinateController.convert(referencePosition, readPosition, length);
+			final WindowPositionGuard windowPositionGuard = coordinateController.convert(refStart, readStart, length);
 			if (windowPositionGuard.isValid()) {
-				// hack - see method recordWrapper.getReference()
-				// adjust srcPos by offset from diff. of read position(s)
-				final int offset = windowPositionGuard.getReadPosition() - readPosition;
-				System.arraycopy(
-						recordWrapper.getReference(), 
-						srcPos + offset, 
-						reference, 
-						windowPositionGuard.getWindowPosition(), 
-						windowPositionGuard.getLength());
+				for (int i = 0; i < windowPositionGuard.getLength(); ++i) {
+					final int refPos = windowPositionGuard.getReferencePosition() + i;
+					reference[windowPositionGuard.getWindowPosition() + i] = 
+							recordWrapper
+								.getRecordReferenceProvider()
+								.getReferenceBase(refPos)
+								.getByte();
+				}
 			}
-			srcPos += length;
 		}
 	}
 
@@ -51,18 +71,99 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 		if (window == null || window != coordinateController.getActive()) {
 			window = coordinateController.getActive();
 			Arrays.fill(reference, (byte)'N');
+
+			if (referenceBaseBuffer.size() > 3 * READ_AHEAD) {
+				referenceBaseBuffer = new HashMap<Integer, Byte>(READ_AHEAD);
+			} else {
+				referenceBaseBuffer.clear();
+			}
 		}
 	}
 	
 	@Override
-	public byte getReference(final Coordinate coordinate) {
-		final int windowPosition = coordinateController.convert2windowPosition(coordinate);
-		return getReference(windowPosition);
+	public Base getReferenceBase(final Coordinate coordinate) {
+		final int windowPosition = coordinateController.getCoordinateTranslator().convert2windowPosition(coordinate);
+		if (windowPosition >= 0) {
+			return getReferenceBase(windowPosition);
+		}
+		
+		final int position = coordinate.getPosition();
+		if (! referenceBaseBuffer.containsKey(position)) {
+			for (SamReader samReader : samReaders) {
+				addReference(referenceBaseBuffer, samReader, coordinate, READ_AHEAD);
+				if (referenceBaseBuffer.containsKey(position) && 
+						SequenceUtil.isValidBase(referenceBaseBuffer.get(position))) {
+					return Base.valueOf(referenceBaseBuffer.get(position));
+				}
+			}
+
+			// FALLBACK - just return N
+			referenceBaseBuffer.put(position, Base.N.getByte());
+		}
+
+		return Base.valueOf(referenceBaseBuffer.get(position));
+	}
+
+	private void addReference(final Map<Integer, Byte> ref2base, 
+			final SamReader samReader, 
+			final Coordinate coordinate, 
+			final int readAhead) {
+
+		final String contig = coordinate.getContig();
+		final int start 	= coordinate.getPosition();
+		final int end 	   	= start + readAhead - 1;
+		final SAMRecordIterator it = samReader.query(contig, start, end, false);
+		while (it.hasNext()) {
+			final SAMRecord record = it.next();
+			final SAMRecordWrapper recordWrapper = new SAMRecordWrapper(record);
+			
+			for (final AlignmentBlock block : record.getAlignmentBlocks()) {
+				final int refStart= block.getReferenceStart();
+				for (int i = 0; i < block.getLength(); ++i) {
+					final int refPos = refStart + 0;
+					if (refPos > end) {
+						it.close();
+						return;
+					}
+					if (refPos >= start) {
+						ref2base.put(
+								refPos, 
+								recordWrapper
+									.getRecordReferenceProvider()
+									.getReferenceBase(refPos)
+									.getByte() );
+					}	
+				}
+	        }
+		}
+		it.close();
+	}
+	
+	private final List<SamReader> createSamReaders(final List<String> recordFilenames) {
+		return recordFilenames.stream()
+			.map(AbstractConditionParameter::createSamReader)
+			.collect(Collectors.toList());
 	}
 	
 	@Override
-	public byte getReference(final int windowPosition) {
-		return reference[windowPosition];
+	public Base getReferenceBase(final int windowPosition) {
+		return Base.valueOf(reference[windowPosition]);
+	}
+
+	@Override
+	public CoordinateController getCoordinateController() {
+		return coordinateController;
+	}
+	
+	public void close() {
+		for (final SamReader samReader : samReaders) {
+			try {
+				samReader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		samReaders.clear();
 	}
 	
 }

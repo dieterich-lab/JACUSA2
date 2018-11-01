@@ -1,9 +1,9 @@
 package lib.location;
 
-import lib.data.builder.ConditionContainer;
-import lib.data.builder.DataBuilder;
-import lib.data.builder.ReplicateContainer;
 import lib.util.coordinate.CoordinateController;
+import lib.data.assembler.ConditionContainer;
+import lib.data.assembler.DataAssembler;
+import lib.data.assembler.ReplicateContainer;
 import lib.util.coordinate.Coordinate;
 
 public class UnstrandedJumpingCoordinateAdvancer 
@@ -14,13 +14,13 @@ implements CoordinateAdvancer {
 	private UnstrandedCoordinateAdvancer defaultAdvancer;
 	
 	private final CoordinateController coordinateController;
-	private final ConditionContainer<?> conditionContainer;
+	private final ConditionContainer conditionContainer;
 	
 	private int missCounter;
 	
 	public UnstrandedJumpingCoordinateAdvancer( 
 			final CoordinateController coordinateController,
-			final ConditionContainer<?> conditionContainer) {
+			final ConditionContainer conditionContainer) {
 		
 		defaultAdvancer = new UnstrandedCoordinateAdvancer(new Coordinate());
 		
@@ -60,7 +60,7 @@ implements CoordinateAdvancer {
 
 	private void jumpingAdvance() {
 		final int referencePosition = getCurrentCoordinate().getPosition();
-		final int windowPosition = coordinateController.convert2windowPosition(referencePosition);
+		final int windowPosition = coordinateController.getCoordinateTranslator().convert2windowPosition(referencePosition);
 		
 		if (windowPosition < 0) {
 			return;
@@ -79,16 +79,16 @@ implements CoordinateAdvancer {
 		}
 		
 		if (newWindowPosition > windowPosition) {
-			getCurrentCoordinate().setPosition(coordinateController.convert2referencePosition(newWindowPosition));
+			getCurrentCoordinate().setPosition(coordinateController.getCoordinateTranslator().convert2referencePosition(newWindowPosition));
 		} else {
 			getCurrentCoordinate().setPosition(Integer.MAX_VALUE);
 		}
 	}
 
-	private int getNextWindowPosition(final int windowPosition, final ReplicateContainer<?> replicateContainer) {
+	private int getNextWindowPosition(final int windowPosition, final ReplicateContainer replicateContainer) {
 		int newWindowPosition = windowPosition;
 
-		for (final DataBuilder<?> dataBuilder : replicateContainer.getDataBuilder()) {
+		for (final DataAssembler dataBuilder : replicateContainer.getDataAssemblers()) {
 			final int tmpNextPosition = dataBuilder.getCacheContainer().getNext(windowPosition);
 			if (tmpNextPosition == -1) {
 				return -1;

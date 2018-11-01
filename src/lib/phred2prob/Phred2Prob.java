@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import htsjdk.samtools.util.SequenceUtil;
 import lib.data.count.PileupCount;
-import lib.data.has.HasPileupCount;
 import lib.util.Base;
 import lib.util.MathUtil;
 
@@ -42,12 +41,12 @@ public final class Phred2Prob {
 		return phred2baseP[qual];
 	}
 
-	public double[] colSumCount(final Base[] bases, final HasPileupCount o) {
-		// container for accumulated probabilities 
+	public double[] colSumCount(final Base[] bases, final PileupCount o) {
+		// container for accumulated counts 
 		final double[] c = new double[SequenceUtil.VALID_BASES_UPPER.length];
 
 		for (final Base base : bases) {
-			final int count = o.getPileupCount().getBaseCallCount().getBaseCall(base);
+			final int count = o.getBaseCallCount().getBaseCall(base);
 			c[base.getIndex()] = count;
 		}
 		return c;		
@@ -56,15 +55,15 @@ public final class Phred2Prob {
 	/**
 	 * Calculate a probability vector P for the pileup. |P| = |bases| 
 	 */
-	public double[] colSumProb(final Base[] bases, final PileupCount pileupCount) {
+	public double[] colSumProb(final Base[] bases, final PileupCount o) {
 		// container for accumulated probabilities 
 		final double[] p = new double[SequenceUtil.VALID_BASES_UPPER.length];
 		Arrays.fill(p, 0.0);
 
 		for (final Base base: bases) {
-			for (final byte baseQual : pileupCount.getBaseCallQualityCount().getBaseCallQuality(base)) {
+			for (final byte baseQual : o.getBaseCallQualityCount().getBaseCallQuality(base)) {
 				// number of bases with specific quality 
-				final int count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, baseQual);
+				final int count = o.getBaseCallQualityCount().getBaseCallQuality(base, baseQual);
 				if (count > 0) {
 					final double baseP = convert2P(baseQual);
 					p[base.getIndex()] += (double)count * baseP;
@@ -83,7 +82,7 @@ public final class Phred2Prob {
 
 	public double[] colSumErrorProb(final Base[] bases, final PileupCount pileupCount) {
 		// container for accumulated probabilities 
-		final double[] p = new double[SequenceUtil.VALID_BASES_UPPER.length];
+		final double[] p = new double[Base.validValues().length];
 		Arrays.fill(p, 0.0);
 
 		for (final Base base : bases) {
@@ -115,9 +114,9 @@ public final class Phred2Prob {
 		return p;
 	}
 
-	public double[] colMeanProb(final Base[] bases, final PileupCount pileupCount) {
+	public double[] colMeanProb(final Base[] bases, final PileupCount o) {
 		// container for accumulated probabilities 
-		final double[] p = colSumProb(bases, pileupCount);
+		final double[] p = colSumProb(bases, o);
 		double sum = MathUtil.sum(p);
 
 		for(final Base base : bases) {

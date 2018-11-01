@@ -3,26 +3,26 @@ package lib.cli.options.condition;
 import java.util.List;
 
 import lib.cli.parameter.AbstractConditionParameter;
-import lib.data.AbstractData;
+import lib.phred2prob.Phred2Prob;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class MinBASQConditionOption<T extends AbstractData> extends AbstractConditionACOption<T> {
+public class MinBASQConditionOption extends AbstractConditionACOption {
 
 	private static final String OPT = "q";
 	private static final String LONG_OPT = "min-basq";
 	
-	public MinBASQConditionOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameter) {
+	public MinBASQConditionOption(final int conditionIndex, final AbstractConditionParameter conditionParameter) {
 		super(OPT, LONG_OPT, conditionIndex, conditionParameter);
 	}
 	
-	public MinBASQConditionOption(final List<AbstractConditionParameter<T>> conditionParameters) {
+	public MinBASQConditionOption(final List<AbstractConditionParameter> conditionParameters) {
 		super(OPT, LONG_OPT, conditionParameters);
 	}
 	
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		String s = new String();
 		
 		byte minBasq = getConditionParameter().getMinBASQ();
@@ -46,10 +46,10 @@ public class MinBASQConditionOption<T extends AbstractData> extends AbstractCond
 		if(line.hasOption(getOpt())) {
 	    	String value = line.getOptionValue(getOpt());
 	    	byte minBASQ = Byte.parseByte(value);
-	    	if(minBASQ < 0) {
+	    	if(minBASQ < 0 || minBASQ > Phred2Prob.MAX_Q) {
 	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + minBASQ + " not valid.");
 	    	}
-	    	for (final AbstractConditionParameter<T> conditionParameter : getConditionParameters()) {
+	    	for (final AbstractConditionParameter conditionParameter : getConditionParameters()) {
 	    		conditionParameter.setMinBASQ(minBASQ);
 	    	}
 		}

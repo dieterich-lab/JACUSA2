@@ -1,59 +1,38 @@
 package jacusa.method.rtarrest;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-
-import jacusa.method.call.statistic.AbstractStatisticCalculator;
-import lib.data.AbstractData;
 import lib.data.ParallelData;
-import lib.util.Info;
+import lib.data.result.ResultFactory;
+import lib.data.result.Result;
+import lib.stat.AbstractStat;
 
 /**
  * This is a dummy statistic... TODO add comments
  *  
- * @param <T>
+ * @param 
  */
-public class DummyStatistic<T extends AbstractData> 
-extends AbstractStatisticCalculator<T> {
+public class DummyStatistic 
+extends AbstractStat {
 
-	private final static String NAME = "Dummy"; 
-	private final static String DESC = "Does not do anything";
-	
-	public DummyStatistic() {
-		super(Option.builder(NAME)
-				.desc(DESC)
-				.build());
-	}
-	
-	@Override
-	public void processCLI(final String line) {}
+	private final double defaultValue;
 
-	@Override
-	public void processCLI(CommandLine cmd) {}
-	
-	@Override
-	protected Options getOptions() {
-		return new Options();
-	}
-	
-	@Override
-	protected void addInfo(final Info info) {
+	public DummyStatistic(final DummyStatisticFactory factory) {
+		super(factory);
+
+		defaultValue = Double.NaN;
 	}
 
 	@Override
-	public double getStatistic(ParallelData<T> parallelData) {
-		return -1;
-	}
-
-	@Override
-	public boolean filter(final double statistic, final double threshold) {
+	protected boolean filter(final Result statResult) {
 		return false;
 	}
 
 	@Override
-	public AbstractStatisticCalculator<T> newInstance() {
-		return new DummyStatistic<T>();
+	public Result calculate(final ParallelData parallelData) {
+		return ResultFactory.createStatResult(defaultValue, parallelData);
 	}
+
+	@Override
+	protected void addStatResultInfo(final Result statResult) {}
+
 	
 }

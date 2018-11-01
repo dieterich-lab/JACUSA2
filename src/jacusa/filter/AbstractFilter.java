@@ -1,6 +1,5 @@
 package jacusa.filter;
 
-import lib.data.AbstractData;
 import lib.data.ParallelData;
 import lib.data.result.Result;
 
@@ -9,7 +8,7 @@ import lib.data.result.Result;
  * 
  * @param <T>
  */
-public abstract class AbstractFilter<T extends AbstractData> {
+public abstract class AbstractFilter {
 
 	// unique char char identifies a filter
 	private final char c;
@@ -41,7 +40,7 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	 * @param parallelData the data to investigate
 	 * @return true if site was filtered, or false otherwise
 	 */
-	protected abstract boolean filter(ParallelData<T> parallelData);
+	protected abstract boolean filter(ParallelData parallelData);
 
 	/**
 	 * Returns the region that this filter requires up- and downstream from current position.
@@ -51,7 +50,7 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	public int getOverhang() {
 		return overhang;
 	}
-	
+
 	/**
 	 * This method applies the filter to the data (ParallelData) stored within result object and 
 	 * adds info fields to the result object if the filter found any false positive variants.
@@ -59,17 +58,19 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	 * @param result the Result object to investigate and populate
 	 * @return true if filter found artefact, false otherwise
 	 */
-	public boolean applyFilter(final Result<T> result) {
+	public boolean applyFilter(final Result result) {
 		// get data to investigate
-		final ParallelData<T> parallelData = result.getParellelData();
+		final ParallelData parallelData = result.getParellelData();
 		// if filter finds artefact, add info to result and return true
-		if (filter(parallelData)) {
-			addInfo(result);
-			return true;
+		boolean filter = false;
+		for (int valueIndex = 0; valueIndex < result.getValues(); valueIndex++) {
+			if (filter(parallelData)) {
+				addInfo(valueIndex, result);
+				filter = true;
+			}
 		}
 
-		// no false variant found
-		return false;
+		return filter;
 	}
 
 	/**
@@ -77,8 +78,8 @@ public abstract class AbstractFilter<T extends AbstractData> {
 	 * 
 	 * @param result object to be marked by this filter 
 	 */
-	public void addInfo(final Result<T> result) {
-		result.getFilterInfo().add(Character.toString(getC()));
+	public void addInfo(final int valueIndex, final Result result) {
+		result.getFilterInfo(valueIndex).add(Character.toString(getC()));
 	}
 
 }

@@ -1,40 +1,25 @@
 package jacusa.worker;
 
-import java.util.List;
-
-import jacusa.cli.parameters.RTarrestParameter;
-import jacusa.method.call.statistic.AbstractStatisticCalculator;
+import jacusa.method.rtarrest.RTarrestMethod;
 import lib.data.ParallelData;
-import lib.data.RTarrestData;
-import lib.data.cache.extractor.ReferenceSetter;
-import lib.data.result.StatisticResult;
-import lib.data.validator.paralleldata.ParallelDataValidator;
-import lib.io.copytmp.CopyTmpResult;
+import lib.data.result.Result;
+import lib.stat.AbstractStat;
 import lib.worker.AbstractWorker;
-import lib.worker.WorkerDispatcher;
 
 public class RTArrestWorker
-extends AbstractWorker<RTarrestData, StatisticResult<RTarrestData>> {
+extends AbstractWorker {
 
-	private final double threshold;
-	private final AbstractStatisticCalculator<RTarrestData> statisticCalculator;
+	private final AbstractStat stat;
 	
-	public RTArrestWorker(
-			final ReferenceSetter<RTarrestData> referenceSetter,
-			final WorkerDispatcher<RTarrestData, StatisticResult<RTarrestData>> workerDispatcher,
-			final int threadId,
-			final CopyTmpResult<RTarrestData, StatisticResult<RTarrestData>> copyTmpResult,
-			final List<ParallelDataValidator<RTarrestData>> parallelDataValidators, 
-			final RTarrestParameter rtArrestParameter) {
-
-		super(referenceSetter, workerDispatcher, threadId, copyTmpResult, parallelDataValidators, rtArrestParameter);
-		threshold = rtArrestParameter.getStatisticParameters().getThreshold();
-		statisticCalculator = rtArrestParameter.getStatisticParameters().newInstance();
+	public RTArrestWorker(final RTarrestMethod method, final int threadId) {
+		super(method, threadId);
+		stat = method.getParameter().getStatParameter()
+				.newInstance(method.getParameter().getConditionsSize());
 	}
 
 	@Override
-	protected StatisticResult<RTarrestData> process(final ParallelData<RTarrestData> parallelData) {
-		return statisticCalculator.filter(threshold, parallelData);
+	protected Result process(final ParallelData parallelData) {
+		return stat.filter(parallelData);
 	}
 	
 }

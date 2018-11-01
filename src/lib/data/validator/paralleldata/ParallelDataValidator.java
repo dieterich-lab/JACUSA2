@@ -1,10 +1,9 @@
 package lib.data.validator.paralleldata;
 
-import lib.data.AbstractData;
 import lib.data.ParallelData;
 
-public interface ParallelDataValidator<T extends AbstractData>  {
+public interface ParallelDataValidator  {
 	
-	boolean isValid(final ParallelData<T> parallelData);
+	boolean isValid(final ParallelData parallelData);
 	
 }

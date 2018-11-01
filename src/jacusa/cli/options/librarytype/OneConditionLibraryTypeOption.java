@@ -4,8 +4,7 @@ import java.util.List;
 
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
-import lib.data.AbstractData;
-import lib.data.has.HasLibraryType.LIBRARY_TYPE;
+import lib.data.has.LibraryType;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -15,28 +14,35 @@ import org.apache.commons.cli.Option;
  * @author Michael Piechotta
  * @param <T>
  */
-public class OneConditionLibraryTypeOption<T extends AbstractData>
-extends AbstractLibraryTypeOption<T> {
+public class OneConditionLibraryTypeOption
+extends AbstractLibraryTypeOption {
 
-	public OneConditionLibraryTypeOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameter, 
-			final AbstractParameter<T, ?> generalParameter) {
+	public OneConditionLibraryTypeOption(final int conditionIndex, final AbstractConditionParameter conditionParameter, 
+			final AbstractParameter generalParameter) {
 
 		super(conditionIndex, conditionParameter, generalParameter);
 	}
 
-	public OneConditionLibraryTypeOption(final List<AbstractConditionParameter<T>> conditionParameters, 
-			final AbstractParameter<T, ?> generalParameter) {
+	public OneConditionLibraryTypeOption(final List<AbstractConditionParameter> conditionParameters, 
+			final AbstractParameter generalParameter) {
 
 		super(conditionParameters, generalParameter);
 	}
-	
+
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
+		String desc = "Choose the library type";
+		if (getGeneralParameter().getConditionsSize() >= 1 && getConditionIndex() == -1) {
+			desc += " for all conditions";
+		} else {
+			desc += " for condition " + getConditionIndex();
+		}
+		desc += ":\n" + getPossibleValues() + 
+        		"\n default: " + LibraryType.UNSTRANDED;
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
-				.desc("Choose the library type for condition " + getConditionIndex() + ":\n" + getPossibleValues() + 
-	        		"\n default: " + LIBRARY_TYPE.UNSTRANDED)
+				.desc(desc) 
 	        	.build();
 	}
 
@@ -46,14 +52,14 @@ extends AbstractLibraryTypeOption<T> {
 			// get option as string
 	    	final String s = line.getOptionValue(getOpt());
 	    	// try to get library for s
-	    	final LIBRARY_TYPE libraryType = parse(s);
+	    	final LibraryType libraryType = parse(s);
 	    	// error if no library type
 	    	if (libraryType == null) {
-	    		throw new IllegalArgumentException("Unknown Library Type for for -" + getOpt() + " --" + getLongOpt().toUpperCase());
+	    		throw new IllegalArgumentException("Unknown Library Type for -" + getOpt() + " " + s);
 	    	}
 
 	    	// set chosen library type
-	    	for (final AbstractConditionParameter<T> conditionParameter : getConditionParameters()) {
+	    	for (final AbstractConditionParameter conditionParameter : getConditionParameters()) {
 	    		conditionParameter.setLibraryType(libraryType);
 	    	}
 	    }

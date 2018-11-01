@@ -3,26 +3,25 @@ package lib.cli.options.condition;
 import java.util.List;
 
 import lib.cli.parameter.AbstractConditionParameter;
-import lib.data.AbstractData;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class MinCoverageConditionOption<T extends AbstractData> extends AbstractConditionACOption<T> {
+public class MinCoverageConditionOption extends AbstractConditionACOption {
 
 	private static final String OPT = "c";
 	private static final String LONG_OPT = "min-coverage";
 	
-	public MinCoverageConditionOption(final List<AbstractConditionParameter<T>> conditionParameter) {
+	public MinCoverageConditionOption(final List<AbstractConditionParameter> conditionParameter) {
 		super(OPT, LONG_OPT, conditionParameter);
 	}
 	
-	public MinCoverageConditionOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameters) {
+	public MinCoverageConditionOption(final int conditionIndex, final AbstractConditionParameter conditionParameters) {
 		super(OPT, LONG_OPT, conditionIndex, conditionParameters);
 	}
 	
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		String s = new String();
 		
 		int minCoverage = getConditionParameter().getMinCoverage();
@@ -49,7 +48,7 @@ public class MinCoverageConditionOption<T extends AbstractData> extends Abstract
 	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " must be > 0!");
 	    	}
 	    	
-	    	for (final AbstractConditionParameter<T> condition : getConditionParameters()) {
+	    	for (final AbstractConditionParameter condition : getConditionParameters()) {
 	    		condition.setMinCoverage(minCoverage);
 	    	}
 	    }

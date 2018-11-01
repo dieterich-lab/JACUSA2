@@ -6,51 +6,53 @@ import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.util.SequenceUtil;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateUtil.STRAND;
-import lib.data.AbstractData;
-import lib.data.adder.AbstractDataAdder;
-import lib.data.basecall.array.ArrayBaseCallCount;
-import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
-import lib.data.count.BaseCallCount;
+import lib.data.DataTypeContainer;
+import lib.data.adder.AbstractDataContainerAdder;
+import lib.data.adder.IncrementAdder;
+import lib.data.cache.container.SharedCache;
+import lib.data.cache.fetcher.Fetcher;
+import lib.data.count.basecall.BaseCallCount;
 
-public class ArrayBaseCallAdder<T extends AbstractData>
-extends AbstractDataAdder<T> 
-implements BaseCallAdder<T> {
-
-	private final BaseCallCountExtractor<T> baseCallCountExtractor;
+public class ArrayBaseCallAdder
+extends AbstractDataContainerAdder 
+implements IncrementAdder {
 
 	private final int[] coverage;
 	private final int[][] baseCall;
 
+	private final Fetcher<BaseCallCount> bccFetcher;
+	
 	public ArrayBaseCallAdder(
-			final BaseCallCountExtractor<T> baseCallCountExtractor,
-			final CoordinateController coordinateController) {
+			final Fetcher<BaseCallCount> bccFetcher,
+			final SharedCache sharedCache) {
 
-		super(coordinateController);
+		super(sharedCache);
 
-		this.baseCallCountExtractor = baseCallCountExtractor;
+		this.bccFetcher = bccFetcher;
 
-		coverage = new int[coordinateController.getActiveWindowSize()];
-		baseCall = new int[coordinateController.getActiveWindowSize()][SequenceUtil.VALID_BASES_UPPER.length];
+		coverage = new int[getCoordinateController().getActiveWindowSize()];
+		baseCall = new int[getCoordinateController().getActiveWindowSize()][SequenceUtil.VALID_BASES_UPPER.length];
 	}
 	
+	
 	@Override
-	public void addData(T data, Coordinate coordinate) {
-		if (baseCallCountExtractor == null) {
+	public void populate(DataTypeContainer container, Coordinate coordinate) {
+		if (bccFetcher == null) {
 			return;
 		}
 		
-		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
+		final int windowPosition = getCoordinateController().getCoordinateTranslator().convert2windowPosition(coordinate);
 		if (getCoverage(windowPosition) == 0) {
 			return;
 		}
 
-		add(windowPosition, coordinate.getStrand(), baseCallCountExtractor.getBaseCallCount(data));
+		final BaseCallCount dest = bccFetcher.fetch(container);
+		add(windowPosition, coordinate.getStrand(), dest);
 	}
 	
 	public void add(final int windowPosition, final STRAND strand, final BaseCallCount dest) {
-		for (Base base : Base.validValues()) {
+		for (final Base base : Base.validValues()) {
 			if (baseCall[windowPosition][base.getIndex()] > 0) {
 				dest.set(base, baseCall[windowPosition][base.getIndex()]);
 			}
@@ -81,11 +83,6 @@ implements BaseCallAdder<T> {
 	@Override
 	public int getCoverage(final int windowPosition) {
 		return coverage[windowPosition];
-	}
-	
-	@Override
-	public BaseCallCount getBaseCallCount(final int windowPosition) {
-		return new ArrayBaseCallCount(baseCall[windowPosition]);
 	}
 
 }

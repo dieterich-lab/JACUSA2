@@ -1,228 +1,224 @@
 package lib.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import htsjdk.samtools.util.SequenceUtil;
-import lib.data.generator.DataGenerator;
-import lib.data.has.HasBaseCallCount;
+import lib.data.count.basecall.BaseCallCount;
 import lib.data.has.HasCoordinate;
 import lib.data.has.HasLibraryType;
-import lib.data.has.HasPileupCount;
-import lib.data.has.HasReferenceBase;
+import lib.data.has.LibraryType;
 import lib.util.Base;
+import lib.util.Copyable;
 import lib.util.coordinate.Coordinate;
 
-/**
- * 
- * @author Michael Piechotta
- *
- */
-public class ParallelData<T extends AbstractData> 
-implements HasCoordinate, HasLibraryType {
+public class ParallelData 
+implements HasCoordinate, HasLibraryType, Copyable<ParallelData>, Serializable {
 
-	private final int REPLICATE_INDEX = 0;
+	private static final long serialVersionUID = 1L;
 	
-	private DataGenerator<T> dataGenerator;
-
-	private T[][] data;
-	private T[] cachedCombinedData;
+	private final List<List<DataTypeContainer>> data;
+	private List<DataTypeContainer> cachedCombinedData;
 	
-	private T[] cachedPooledData;
-	private T cachedCombinedPooledData;
+	private List<DataTypeContainer> cachedPooledData;
+	private DataTypeContainer cachedCombinedPooledData;
 
-	private int cachedTotalReplicates;
+	private Coordinate cachedCommonCoordinates;
+	private LibraryType cachedCommonLibraryType;
 	
-	public ParallelData(final DataGenerator<T> dataGenerator) {
-		this.dataGenerator = dataGenerator;
-		reset();
-	}
+	private final List<Integer> replicates;
+	private final int totalReplicates;
 
-	public ParallelData(final DataGenerator<T> dataGenerator, final T[][] data) {
-		this.dataGenerator 	= dataGenerator;
-		
-		int conditions 		= data.length;
-
-		this.data = data;
-		cachedTotalReplicates = 0;
-		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
-			cachedTotalReplicates += data[conditionIndex].length;
-		}
+	
+	private ParallelData(final Builder parallelDataBuilder) {
+		data = parallelDataBuilder.data;
+		replicates = parallelDataBuilder.replicates;
+		totalReplicates = parallelDataBuilder.totalReplicates;
 	}
 	
-	/**
-	 * Copy constructor
-	 * 
-	 * @param parallelData
-	 */
-	public ParallelData(final ParallelData<T> parallelData) {
-		dataGenerator = parallelData.dataGenerator;
-
-		// copy data
-		data = dataGenerator.copyContainerData(parallelData.data);
-		if (parallelData.cachedCombinedData != null) {
-			cachedCombinedData = dataGenerator.copyReplicateData(parallelData.cachedCombinedData);
-		}
-		cachedTotalReplicates = parallelData.cachedTotalReplicates;
-	}
-	
-	public void setData(T[][] data) {
-		this.data = data;
-		resetCache();
-	}
-
-	// make this faster remove data and add new
-	public void setData(int conditionIndex, T[] data) {
-		this.data[conditionIndex] = data;
-
-		if (cachedCombinedData != null) {
-			cachedCombinedData[conditionIndex] = null;
-		}
-
-		cachedCombinedPooledData = null;
-		
-		if (cachedPooledData != null) {
-			cachedPooledData[conditionIndex] = null;
-		}
-		
-		cachedTotalReplicates = -1;
-	}
-
-	public void reset() {
-		if (data != null) {
-			data = dataGenerator.createContainerData(data.length);
-		}
-		resetCache();
-	}
-	
-	protected void resetCache() {
-		cachedCombinedData 			= null;
-		cachedCombinedPooledData 	= null;
-		cachedPooledData 			= null;
-		cachedTotalReplicates		= -1;
-	}
-
 	public int getReplicates(int conditionIndex) {
-		return data[conditionIndex].length;
+		return data.get(conditionIndex).size();
+	}
+
+	public List<Integer> getReplicates() {
+		return replicates;
 	}
 
 	public int getTotalReplicates() {
-		if (cachedTotalReplicates == -1) {
-			cachedTotalReplicates = 0;
-			for (int conditionIndex = 0; conditionIndex < getConditions(); conditionIndex++) {
-				cachedTotalReplicates += data[conditionIndex].length;
-			}
-		}
-
-		return cachedTotalReplicates;
+		return totalReplicates;
 	}
 
-	public boolean isValid() {
-		for (int conditionIndex = 0; conditionIndex < getConditions(); conditionIndex++) {
-			if (data[conditionIndex].length <= 0) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	public T getPooledData(int conditionIndex) {
+	public List<DataTypeContainer> getPooledData() {
 		if (cachedPooledData == null) {
-			cachedPooledData = dataGenerator.createReplicateData(getConditions());
+			for (int conditionIndex = 0; conditionIndex < getConditions(); ++conditionIndex) {
+				getPooledData(conditionIndex);
+			}
+		}
+		return Collections.unmodifiableList(cachedPooledData);
+	}
+	
+	public DataTypeContainer getPooledData(int conditionIndex) {
+		if (cachedPooledData == null) {
+			cachedPooledData = new ArrayList<>(getConditions());
+			cachedPooledData.addAll(Collections.nCopies(getConditions(), null));
 		}
 		
-		if (cachedPooledData[conditionIndex] == null && 
+		if (cachedPooledData.get(conditionIndex) == null && 
 				getReplicates(conditionIndex) > 0) {
-			
-			// use first replicate to infer coordinates and library type
+
+			// coordinates and library type
 			// should be all the same for all replicates from one condition
-			final T data = getData(conditionIndex, REPLICATE_INDEX);
-			final LIBRARY_TYPE libraryType = data.getLibraryType();
-			final Coordinate coordinate = data.getCoordinate();
-
-			final T tmpData = dataGenerator.createData(libraryType, new Coordinate(coordinate));
-
-			for (int replicateIndex = 0; replicateIndex < getReplicates(conditionIndex); replicateIndex++) {
-				getDataGenerator().merge(tmpData, getData(conditionIndex, replicateIndex));
-			}
-			cachedPooledData[conditionIndex] = tmpData;
+			cachedPooledData.set(conditionIndex, merge(getData(conditionIndex)));
 		}
 
-		return cachedPooledData[conditionIndex];
+		return cachedPooledData.get(conditionIndex);
 	}
 
-	public T getCombinedPooledData() {
-		if (cachedCombinedPooledData == null && getPooledData(0) != null) {
-
-			cachedCombinedPooledData = dataGenerator.createData(getCommonLibraryType(data), getCommonCoordinate(data));
-			for (int conditionIndex = 0; conditionIndex < getConditions(); conditionIndex++) {
-				getDataGenerator().merge(cachedCombinedPooledData, getPooledData(conditionIndex));
-			}
+	public DataTypeContainer getCombinedPooledData() {
+		if (cachedCombinedPooledData == null && getConditions() > 0) {
+			cachedCombinedPooledData = merge(getPooledData());
 		}
 
 		return cachedCombinedPooledData;
 	}
 	
-	public T[] getCombinedData() {
+	public List<DataTypeContainer> getCombinedData() {
 		if (cachedCombinedData == null) {
-			cachedCombinedData = dataGenerator.createReplicateData(getTotalReplicates());
+			cachedCombinedData = new ArrayList<>(getTotalReplicates());
 
-			int dest = 0;;
-			for (int conditionIndex = 0; conditionIndex < getConditions(); conditionIndex++) {
-				System.arraycopy(
-						data[conditionIndex], 
-						0, 
-						cachedCombinedData, 
-						dest, 
-						getReplicates(conditionIndex));
-				dest += getReplicates(conditionIndex);
+			for (final List<DataTypeContainer> replicateData : data) {
+				cachedCombinedData.addAll(replicateData);
 			}
 		}
 		
-		return cachedCombinedData;
-	}
-
-	public DataGenerator<T> getDataGenerator() {
-		return dataGenerator;
+		return Collections.unmodifiableList(cachedCombinedData);
 	}
 	
 	@Override
 	public Coordinate getCoordinate() {
-		return getCommonCoordinate(data);
+		if (cachedCommonCoordinates == null) {
+			cachedCommonCoordinates = getCommonCoordinate(getCombinedData());
+		}
+		return cachedCommonCoordinates;
 	}
 
 	@Override
-	public LIBRARY_TYPE getLibraryType() {
-		return getCommonLibraryType(data);
+	public LibraryType getLibraryType() {
+		if (cachedCommonLibraryType == null) {
+			cachedCommonLibraryType = getCommonLibraryType(getCombinedData());
+		}
+		return cachedCommonLibraryType;
 	}
 	
-	public T getData(int conditionIndex, int replicateIndex) {
-		return data[conditionIndex][replicateIndex];
+	public DataTypeContainer getDataContainer(int conditionIndex, int replicateIndex) {
+		return data.get(conditionIndex).get(replicateIndex);
 	}
 
 	public int getConditions() {
-		return data.length;
+		return data.size();
 	}
 
-	public T[] getData(int conditionIndex) {
-		return data[conditionIndex];
+	public List<DataTypeContainer> getData(int conditionIndex) {
+		return data.get(conditionIndex);
 	}
 
-	public ParallelData<T> copy() {
-		return new ParallelData<T>(this);
+	@Override
+	public ParallelData copy() {
+		return new Builder(this).build();
 	}
 
+	public DataTypeContainer merge(final List<DataTypeContainer> dataList) {
+		final DataTypeContainer copy = dataList.get(0).copy();
+		for (int i = 1; i < dataList.size(); ++i) {
+			copy.merge(dataList.get(i));
+		}
+		return copy;
+	}
+	
+	public static class Builder implements lib.util.Builder<ParallelData> {
+		
+		private final List<List<DataTypeContainer>> data;
+		private final List<Integer> replicates;
+		private final int totalReplicates;
+		
+		public Builder(final ParallelData parallelData) {
+			this(parallelData.getConditions(), parallelData.getReplicates());
+			final int conditions = parallelData.getConditions();
+			final List<Integer> replicates = parallelData.getReplicates();
+			
+			for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
+				for (int replicateIndex = 0; replicateIndex < replicates.get(replicateIndex); ++replicateIndex) {
+					DataTypeContainer replicate = parallelData.getDataContainer(conditionIndex, replicateIndex).copy();
+					withReplicate(conditionIndex, replicateIndex, replicate);
+				}
+			}
+		}
+		
+		public Builder(final int conditions, final List<Integer> replicates) {
+			data = createEmptyContainer(conditions, replicates);
+			this.replicates = new ArrayList<>(replicates);
+			totalReplicates = replicates.stream()
+					.mapToInt(i -> i)
+					.sum();
+		}
+		
+		public Builder withReplicate(final int conditionIndex, final int replicateIndex, final DataTypeContainer dataContainer) {
+			data.get(conditionIndex).set(replicateIndex, dataContainer);
+			return this;
+		}
+		
+		public ParallelData build() {
+			if (data == null) {
+				throw new IllegalStateException("data cannot be null");
+			}
+			for (int conditionIndex = 0; conditionIndex < data.size(); ++conditionIndex) {
+				final List<DataTypeContainer> replicateData = data.get(conditionIndex);
+				if (replicateData == null) {
+					throw new IllegalStateException("replicateData for conditionIndex: " + conditionIndex + " cannot be null");
+				}
+				for (int replicateIndex = 0; replicateIndex < replicateData.size(); ++replicateIndex) {
+					if (replicateData.get(replicateIndex) == null) {
+						throw new IllegalStateException("replicate for conditionIndex: " + conditionIndex + " and replicateIndex: " + replicateIndex + " cannot be null");
+					}	
+				}
+			}
+			return new ParallelData(this);
+		}
+		
+		/*
+		 * Static methods
+		 */
+
+		public static List<DataTypeContainer> createEmptyContainer(final int n) {
+			return new ArrayList<>(Collections.nCopies(n, null));
+		}
+		
+		public static List<List<DataTypeContainer>> createEmptyContainer(final int conditions, List<Integer> replicates) {
+			if (conditions != replicates.size()) {
+				throw new IllegalStateException("conditions != replicates.size()");
+			}
+			final List<List<DataTypeContainer>> l = new ArrayList<>(conditions);
+			for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
+				l.add(createEmptyContainer(replicates.get(conditionIndex)));
+			}
+			return l;
+		}
+		
+	}
+	
 	// this will be according to STRAND
-	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> Set<Base> getNonReferenceBases(ParallelData<S> parallelData) {
-		Base referenceBase = Base.valueOf(parallelData.getCombinedPooledData().getReferenceBase());
-		if (! SequenceUtil.isValidBase(referenceBase.getC())) {
+	public static Set<Base> getNonReferenceBases(
+			final Coordinate coordinate, final LibraryType libraryType, Base referenceBase) {
+		
+		if (! SequenceUtil.isValidBase(referenceBase.getByte())) {
 			return new HashSet<Base>(0);
 		}
 
-		switch (parallelData.getCoordinate().getStrand()) {
+		switch (coordinate.getStrand()) {
 		case REVERSE:
 			referenceBase = referenceBase.getComplement();
 			break;
@@ -234,22 +230,24 @@ implements HasCoordinate, HasLibraryType {
 		return Base.getNonRefBases(referenceBase);
 	}
 
-	public static <S extends AbstractData & HasReferenceBase & HasBaseCallCount> Set<Base> getVariantBases(ParallelData<S> parallelData) {
-		if (parallelData.getConditions() == 1) {
-			return getNonReferenceBases(parallelData);
+	public static Set<Base> getVariantBases(
+			final Set<Base> alleles,
+			final List<BaseCallCount> bccs) {
+
+		if (bccs.size() == 1) {
+			throw new IllegalArgumentException();
 		}
 
-		Set<Base> alleles = parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
 		final List<Base> bases = new ArrayList<Base>(alleles.size());
 
 		for (final Base base : alleles) {
 			int n = 0;
-			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
-				if (parallelData.getPooledData(conditionIndex).getBaseCallCount().getBaseCall(base) > 0) {
+			for (final BaseCallCount bcc : bccs) {
+				if (bcc.getBaseCall(base) > 0) {
 					n++;
 				}
 			}
-			if (n < parallelData.getConditions()) {
+			if (n < bccs.size()) {
 				bases.add(base);
 			}
 		}
@@ -264,7 +262,7 @@ implements HasCoordinate, HasLibraryType {
 
 	@Override
 	public String toString() {
-		return prettyPrint(this);
+		return String.format("conditions: %s", getConditions()); 
 	}
 
 	// for RRDs RNA RNA differences
@@ -313,71 +311,31 @@ implements HasCoordinate, HasLibraryType {
 		return new int[0];
 	}
 	*/
-	
-	public static <S extends AbstractData & HasPileupCount> void flat(
-			final S[] src, final S[] dest, 
-			final Set<Base> variantBases, final Base commonBase) {
-		
-		for (int i = 0; i < src.length; ++i) {
-			for (final Base variantBase : variantBases) {
-				dest[i].getPileupCount().add(commonBase, variantBase, src[i].getPileupCount());
-				dest[i].getPileupCount().substract(variantBase, src[i].getPileupCount());
-			}
-			
-		}
-	}
 
-	public static <S extends AbstractData> Coordinate getCommonCoordinate(final S[][] data) {
-		Coordinate coordinate = null;
-		for (final S[] conditionData : data) {
-			coordinate = getCommonCoordinate(conditionData, coordinate);
-		}
-
-		return coordinate;
-	}
-	
-	private static <S extends AbstractData> Coordinate getCommonCoordinate(final S[] data, Coordinate coordinate) {
-		for (final S replicateData : data) {
-			if (coordinate == null) {
-				coordinate = replicateData.getCoordinate();
-			} else if (! coordinate.equal(replicateData.getCoordinate())) {
-				throw new IllegalStateException("Replicate data has different coordinates: " + coordinate.toString() + " != " + replicateData.getCoordinate().toString());
+	public static Coordinate getCommonCoordinate(final List<DataTypeContainer> containers) {
+		Coordinate commonCoordinate = null;
+		for (final DataTypeContainer container : containers) {
+			final Coordinate specificCoordinate = container.getCoordinate();
+			if (commonCoordinate == null) {
+				commonCoordinate = specificCoordinate;
+			} else if (! commonCoordinate.equals(specificCoordinate)) {
+				throw new IllegalStateException("Replicate data has different coordinates: " + commonCoordinate.toString() + " != " + specificCoordinate.toString());
 			}
 		}
 
-		return coordinate;
+		return commonCoordinate;
 	}
-	
-	public static <S extends AbstractData> LIBRARY_TYPE getCommonLibraryType(final S[][] data) {
-		LIBRARY_TYPE tmp = null;
-		for (final S[] conditionData : data) {
-			for (final S replicateData : conditionData) {
-				if (tmp == null) {
-					tmp = replicateData.getLibraryType();
-				} else if (tmp != replicateData.getLibraryType()) {
-					return LIBRARY_TYPE.MIXED;
-				}
+
+	public static LibraryType getCommonLibraryType(final List<DataTypeContainer> containers) {
+		LibraryType commonLibraryType = null;
+		for (final DataTypeContainer container : containers) {
+			final LibraryType specificLibraryType = container.getLibraryType();
+			if (commonLibraryType == null) {
+				commonLibraryType = specificLibraryType;
+			} else if (commonLibraryType != specificLibraryType) {
+				return LibraryType.MIXED;
 			}
 		}
-		
-		
-		return tmp;
+		return commonLibraryType;
 	}
-	
-	public static <S extends AbstractData> String prettyPrint(final ParallelData<S> parallelPileupData) {
-		final StringBuilder sb = new StringBuilder();
-
-		// coordinate
-		sb.append("Container Coordinate: ");
-		sb.append(parallelPileupData.getCombinedPooledData().getCoordinate().toString());
-		sb.append('\n');
-
-		// pooled
-		sb.append("Container combined pooled: \n");
-		sb.append(parallelPileupData.getCombinedPooledData().toString());
-		sb.append('\n');
-
-		return sb.toString();
-	}
-	
 }

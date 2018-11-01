@@ -1,13 +1,12 @@
 package lib.data.validator.paralleldata;
 
-import lib.data.AbstractData;
 import lib.data.ParallelData;
 
-public class DummyValidator<T extends AbstractData> 
-implements ParallelDataValidator<T> {
+public class DummyValidator 
+implements ParallelDataValidator {
 
 	@Override
-	public boolean isValid(ParallelData<T> parallelData) {
+	public boolean isValid(final ParallelData parallelData) {
 		return true;
 	}
 

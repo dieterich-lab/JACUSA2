@@ -1,10 +1,9 @@
 package lib.data.has;
 
-import lib.data.AbstractData;
 import lib.data.ParallelData;
 
-public interface HasParallelData<T extends AbstractData> {
+public interface HasParallelData {
 
-	ParallelData<T> getParellelData();
+	ParallelData getParellelData();
 	
 }

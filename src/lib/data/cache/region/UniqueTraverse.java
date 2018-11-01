@@ -1,29 +1,28 @@
 package lib.data.cache.region;
 
 import htsjdk.samtools.SAMRecord;
-import lib.data.AbstractData;
+import lib.data.DataTypeContainer;
 import lib.data.adder.basecall.UniqueVisitBaseCallAdder;
 import lib.data.adder.region.ValidatedRegionDataCache;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.region.isvalid.UniqueVisitBaseCallValidator;
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.CoordinateController;
 
-public class UniqueTraverse<T extends AbstractData> 
-implements RegionDataCache<T> {
+public class UniqueTraverse 
+implements RegionDataCache {
 
-	private final ValidatedRegionDataCache<T> dataCache;
+	private final ValidatedRegionDataCache dataCache;
 	private SAMRecord record;
 
-	private final UniqueVisitBaseCallAdder<T> adder;
+	private final UniqueVisitBaseCallAdder adder;
 	private final UniqueVisitBaseCallValidator validator;
 	
-	public UniqueTraverse(final ValidatedRegionDataCache<T> dataCache) {
+	public UniqueTraverse(final ValidatedRegionDataCache dataCache) {
 		this.dataCache 	= dataCache;
-		adder 			= new UniqueVisitBaseCallAdder<T>(dataCache.getCoordinateController());
+		adder 			= new UniqueVisitBaseCallAdder(dataCache.getShareCache());
 		validator		= new UniqueVisitBaseCallValidator(adder);
 		
-		dataCache.addVIPAdder(adder);
+		dataCache.addFirstAdder(adder);
 		dataCache.addValidator(validator);
 	}
 
@@ -36,13 +35,8 @@ implements RegionDataCache<T> {
 	}
 
 	@Override
-	public void addData(T data, Coordinate coordinate) {
-		dataCache.addData(data, coordinate);
-	}
-
-	@Override
-	public CoordinateController getCoordinateController() {
-		return dataCache.getCoordinateController();
+	public void populate(DataTypeContainer container, Coordinate coordinate) {
+		dataCache.populate(container, coordinate);
 	}
 
 	@Override

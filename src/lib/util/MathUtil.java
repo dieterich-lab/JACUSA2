@@ -11,10 +11,15 @@ public abstract class MathUtil {
 		return sum;
 	}
 
-	public static double Prob2Phred(final double prob) {
-		double q = -10.0 * Math.log10(prob);
-		q = Math.min(q, 40.0);
-		return (double)((int)(q * 100)) / 100d; 
+	public static double[] columnWiseSum(final int categories, final double[][] dataMatrix) {
+		final int replicates = dataMatrix.length;
+		final double[] sums = new double[replicates];
+		for (int replicateIndex = 0; replicateIndex < replicates; ++replicateIndex) {
+			for (int i = 0; i < categories; ++i) {
+				sums[replicateIndex] += dataMatrix[replicateIndex][i];
+			}
+		}
+		return sums;
 	}
 
 }

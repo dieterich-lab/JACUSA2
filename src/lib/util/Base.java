@@ -1,5 +1,6 @@
 package lib.util;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,10 +22,10 @@ public enum Base {
 		VALID = new Base[] {A, C, G, T};
 		BYTE2BASE = new HashMap<Byte, Base>();
 		for (Base b : Base.values()) {
-			BYTE2BASE.put(b.c, b);
+			BYTE2BASE.put(b.bite, b);
 		}
 
-		REF2NON_REF = new HashMap<Base, Set<Base>>(validValues().length);
+		REF2NON_REF = new HashMap<Base, Set<Base>>(validValues().length + 1);
 		for (final Base refBase : validValues()) {
 			final Set<Base> nonRefBases = new HashSet<Base>(VALID.length);
 			for (final Base tmp : validValues()) {
@@ -33,20 +34,21 @@ public enum Base {
 			nonRefBases.remove(refBase);
 			REF2NON_REF.put(refBase, nonRefBases);
 		}
+		REF2NON_REF.put(Base.N, new HashSet<>(Arrays.asList(Base.N)));
 	}
 
 	private final int index;
-	private final byte c;
+	private final byte bite;
 	private final int complementIndex;
 
-	private Base(final int index, final int complementIndex, final byte c) {
+	private Base(final int index, final int complementIndex, final byte bite) {
 		this.index 				= index;
-		this.c 					= c;
+		this.bite 				= bite;
 		this.complementIndex 	= complementIndex;
 	}
 	
-	public final byte getC() {
-		return c;
+	public final byte getByte() {
+		return bite;
 	}
 	
 	public final int getIndex() {
@@ -54,17 +56,25 @@ public enum Base {
 	}
 
 	public final Base getComplement() {
-		return VALID[complementIndex];
+		return values()[complementIndex];
+	}
+
+	public final char getChar() {
+		return (char)bite;
 	}
 	
-	public static final Base valueOf(final byte c) {
-		if (! BYTE2BASE.containsKey(c)) {
-			return N;
+	public static final Base valueOf(final byte bite) {
+		if (! BYTE2BASE.containsKey(bite)) {
+			throw new IllegalArgumentException("Byte " + bite + " unknown");
 		}
 
-		return BYTE2BASE.get(c);
+		return BYTE2BASE.get(bite);
 	}
-
+	
+	public static final Base valueOf(final char c) {
+		return BYTE2BASE.get((byte)c);
+	}
+	
 	public static final Base valueOf(final int index) {
 		return Base.values()[index];
 	}
@@ -75,6 +85,23 @@ public enum Base {
 
 	public static final Set<Base> getNonRefBases(final Base refBase) {
 		return REF2NON_REF.get(refBase);
+	}
+
+	public static final String wrap(final Base base) {
+		return base.toString();
+	}
+	
+	public static Base mergeBase(final Base base1, final Base base2) {
+		if (base1 == base2) {
+			return base1;
+		}
+		if(base1 == Base.N) {
+			return base2;
+		}
+		if(base2 == Base.N) {
+			return base1;
+		}
+		throw new IllegalStateException("Don't know how to merge " + base1.toString() + " and " + base2.toString());
 	}
 
 }

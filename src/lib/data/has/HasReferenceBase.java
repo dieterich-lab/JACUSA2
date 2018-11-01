@@ -1,5 +1,7 @@
 package lib.data.has;
 
+import lib.util.Base;
+
 /**
  * 
  * @author Michael Piechotta
@@ -7,7 +9,6 @@ package lib.data.has;
  */
 public interface HasReferenceBase {
 
-	byte getReferenceBase();
-	void setReferenceBase(final byte referenceBase);
+	Base getReferenceBase();
 
 }

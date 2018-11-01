@@ -2,33 +2,29 @@ package lib.data.cache.container;
 
 import java.util.List;
 
-import lib.data.AbstractData;
-import lib.data.adder.DataAdder;
+import lib.data.DataTypeContainer;
+import lib.data.adder.DataContainerAdder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.extractor.ReferenceSetter;
 import lib.data.cache.record.RecordWrapperDataCache;
-import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.Coordinate;
 
-public class UnstrandedCacheContainter<T extends AbstractData> 
-implements CacheContainer<T> {
+public class UnstrandedCacheContainter 
+implements CacheContainer {
 
-	private final ReferenceSetter<T> referenceSetter; 
-	private final CoordinateController coordinateController;
-	private final List<RecordWrapperDataCache<T>> caches;
-	
 	private final SharedCache sharedCache;
-
+	private final List<RecordWrapperDataCache> caches;
+	
 	public UnstrandedCacheContainter(
-			final ReferenceSetter<T> referenceSetter,
-			final CoordinateController coordinateController, 
-			final List<RecordWrapperDataCache<T>> dataCaches) {
+			final SharedCache sharedCache, 
+			final List<RecordWrapperDataCache> dataCaches) {
 
-		this.referenceSetter  		= referenceSetter;
-		this.coordinateController	= coordinateController;
-		this.caches 			= dataCaches;
-		
-		sharedCache					= coordinateController.getSharedCache();
+		this.sharedCache			= sharedCache;
+		this.caches 				= dataCaches;
+	}
+	
+	@Override
+	public ReferenceProvider getReferenceProvider() {
+		return sharedCache.getReferenceProvider();
 	}
 	
 	@Override
@@ -37,31 +33,31 @@ implements CacheContainer<T> {
 	}
 	
 	@Override
-	public void add(final SAMRecordWrapper recordWrapper) {
+	public void process(final SAMRecordWrapper recordWrapper) {
 		sharedCache.addRecordWrapper(recordWrapper);
 
-		for (final RecordWrapperDataCache<T> dataCache : caches) {
-			dataCache.addRecordWrapper(recordWrapper);
+		for (final RecordWrapperDataCache dataCache : caches) {
+			dataCache.processRecordWrapper(recordWrapper);
 		}
 	}
 	
+	
 	@Override
-	public void addData(final T data, Coordinate coordinate) {
-		referenceSetter.setReference(coordinate, data, coordinateController.getReferenceProvider());
-		for (final DataAdder<T> dataCache : caches) {
-			dataCache.addData(data, coordinate);
+	public void populateContainer(DataTypeContainer container, Coordinate coordinate) {
+		for (final DataContainerAdder cache : caches) {
+			cache.populate(container, coordinate);
 		}
 	}
 	
 	public void clear() {
 		sharedCache.clear();
-		for (final DataAdder<T> dataCache : caches) {
+		for (final DataContainerAdder dataCache : caches) {
 			dataCache.clear();
 		}
 	}
 
 	@Override
-	public List<RecordWrapperDataCache<T>> getCaches() {
+	public List<RecordWrapperDataCache> getCaches() {
 		return caches;
 	}
 

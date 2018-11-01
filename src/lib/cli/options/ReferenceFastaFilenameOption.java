@@ -10,15 +10,15 @@ import org.apache.commons.cli.Option;
 
 public class ReferenceFastaFilenameOption extends AbstractACOption {
 
-	final private AbstractParameter<?, ?> parameters;
+	final private AbstractParameter parameters;
 	
-	public ReferenceFastaFilenameOption(AbstractParameter<?, ?> parameters) {
+	public ReferenceFastaFilenameOption(AbstractParameter parameter) {
 		super("R", "ref-fasta");
-		this.parameters = parameters;
+		this.parameters = parameter;
 	}
 
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase()) 
 				.hasArg(true)
@@ -28,14 +28,12 @@ public class ReferenceFastaFilenameOption extends AbstractACOption {
 
 	@Override
 	public void process(CommandLine line) throws Exception {
-		if (line.hasOption(getOpt())) {
-	    	final String filename = line.getOptionValue(getOpt());
-	    	final File file = new File(filename);
-	    	if(! file.exists()) {
-	    		throw new FileNotFoundException("Reference FASTA file (" + filename + ") in not accessible!");
-	    	}
-    		parameters.setReferernceFilename(filename);
-	    }
+    	final String filename = line.getOptionValue(getOpt());
+    	final File file = new File(filename);
+    	if(! file.exists()) {
+    		throw new FileNotFoundException("Reference FASTA file (" + filename + ") in not accessible!");
+    	}
+		parameters.setReferernceFilename(filename);
 	}
 
 }

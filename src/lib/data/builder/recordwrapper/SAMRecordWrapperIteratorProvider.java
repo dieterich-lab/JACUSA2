@@ -11,49 +11,44 @@ import htsjdk.samtools.SAMRecordIterator;
 
 public class SAMRecordWrapperIteratorProvider {
 
-	private AbstractConditionParameter<?> conditionParameter;
-	private final SamReader reader;
+	private AbstractConditionParameter conditionParameter;
+	private SamReader reader;
+
+	private Coordinate current;
+	private SAMRecordWrapperIterator recordWrapperIterator;
 	
-	private int acceptedSAMRecords;
-	private int filteredSAMRecords;
-	
-	public SAMRecordWrapperIteratorProvider(final AbstractConditionParameter<?> conditionParameter,
+	public SAMRecordWrapperIteratorProvider(
+			final AbstractConditionParameter conditionParameter,
 			final SamReader reader) {
+
 		this.conditionParameter = conditionParameter;
 		this.reader = reader;
-		
-		acceptedSAMRecords = 0;
-		filteredSAMRecords = 0;
 	}
 
-	public SAMRecordWrapperIterator createIterator(final Coordinate activeWindowCoordinate) {
-		final SAMRecordIterator iterator = createSAMRecordIterator(activeWindowCoordinate);
-		return new SAMRecordWrapperIterator(this, iterator);
-	}
-	
-	public final void incrementAcceptedSAMRecords() {
-		acceptedSAMRecords++;
+	public SAMRecordWrapperIterator getIterator(final Coordinate activeWindowCoordinate) {
+		if (recordWrapperIterator == null) {
+			current = activeWindowCoordinate;
+			final SAMRecordIterator recordIterator = createSAMRecordIterator(activeWindowCoordinate);
+			recordWrapperIterator = new SAMRecordWrapperIterator(conditionParameter, recordIterator);
+		} else if (! current.equals(activeWindowCoordinate)) {
+			current = activeWindowCoordinate;
+			final SAMRecordIterator recordIterator = createSAMRecordIterator(activeWindowCoordinate);
+			recordWrapperIterator.updateIterator(recordIterator);
+		}
+
+		return recordWrapperIterator;
 	}
 
-	public final void incrementFilteredSAMRecords() {
-		filteredSAMRecords++;
-	}
-	
-	public final int getAcceptedSAMRecords() {
-		return acceptedSAMRecords;
-	}
-	
-	public final int getFilteredSAMRecords() {
-		return filteredSAMRecords;
-	}
-
-	public AbstractConditionParameter<?> getConditionParameter() {
+	public AbstractConditionParameter getConditionParameter() {
 		return conditionParameter;
 	}
 	
 	public void close() {
 		try {
-			reader.close();
+			if (reader != null) {
+				reader.close();
+				reader = null;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

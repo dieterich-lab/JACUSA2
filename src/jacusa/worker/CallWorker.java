@@ -1,41 +1,25 @@
 package jacusa.worker;
 
-import java.util.List;
-
-import jacusa.cli.parameters.CallParameter;
-import jacusa.method.call.statistic.AbstractStatisticCalculator;
-
-import lib.data.CallData;
+import jacusa.method.call.CallMethod;
 import lib.data.ParallelData;
-import lib.data.cache.extractor.ReferenceSetter;
-import lib.data.result.StatisticResult;
-import lib.data.validator.paralleldata.ParallelDataValidator;
-import lib.io.copytmp.CopyTmpResult;
+import lib.data.result.Result;
+import lib.stat.AbstractStat;
 import lib.worker.AbstractWorker;
-import lib.worker.WorkerDispatcher;
 
 public class CallWorker
-extends AbstractWorker<CallData, StatisticResult<CallData>> {
+extends AbstractWorker {
 
-	private final double threshold;
-	private final AbstractStatisticCalculator<CallData> statisticCalculator;
+	private final AbstractStat stat;
 
-	public CallWorker(
-			final ReferenceSetter<CallData> referenceSetter,
-			final WorkerDispatcher<CallData, StatisticResult<CallData>> workerDispatcher,
-			final int threadId, 
-			final CopyTmpResult<CallData, StatisticResult<CallData>> copyTmpResult,
-			final List<ParallelDataValidator<CallData>> parallelDataValidators,
-			final CallParameter callParameter) {
-
-		super(referenceSetter, workerDispatcher, threadId, copyTmpResult, parallelDataValidators, callParameter);
-		threshold = callParameter.getStatisticParameters().getThreshold();
-		statisticCalculator = callParameter.getStatisticParameters().newInstance();
+	public CallWorker(final CallMethod method, final int threadId) {
+		super(method, threadId);
+		stat = method.getParameter().getStatParameter()
+				.newInstance(method.getParameter().getConditionsSize());
 	}
 
 	@Override
-	protected StatisticResult<CallData> process(final ParallelData<CallData> parallelData) {
-		return statisticCalculator.filter(threshold, parallelData);
+	protected Result process(final ParallelData parallelData) {
+		return stat.filter(parallelData);
 	}
-
+	
 }

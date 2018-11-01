@@ -7,17 +7,18 @@ import org.apache.commons.cli.Option;
 
 public class ThreadWindowSizeOption extends AbstractACOption {
 
-	public final static int NO_WINDOWS= -1;
+	public final static int NO_WINDOWS = -1;
+	public final static int MIN_WINDOWS = 100;
 	
-	final private AbstractParameter<?, ?> parameter; 
+	final private AbstractParameter parameter; 
 	
-	public ThreadWindowSizeOption(AbstractParameter<?, ?> parameters) {
+	public ThreadWindowSizeOption(AbstractParameter parameter) {
 		super("W", "thread-window-size");
-		this.parameter = parameters;
+		this.parameter = parameter;
 	}
 
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
@@ -26,16 +27,14 @@ public class ThreadWindowSizeOption extends AbstractACOption {
 	}
 
 	@Override
-	public void process(CommandLine line) throws Exception {
-		if (line.hasOption(getOpt())) {
-	    	String value = line.getOptionValue(getOpt());
-	    	int windowSize = Integer.parseInt(value);
-	    	if (windowSize != NO_WINDOWS && windowSize < 100) {
-	    		throw new IllegalArgumentException("THREAD-WINDOW-SIZE too small: " + windowSize);
-	    	}
+	public void process(final CommandLine line) throws Exception {
+    	final String value = line.getOptionValue(getOpt());
+    	final int windowSize = Integer.parseInt(value);
+    	if (windowSize != NO_WINDOWS && windowSize < MIN_WINDOWS) {
+    		throw new IllegalArgumentException("THREAD-WINDOW-SIZE must be >= " + MIN_WINDOWS);
+    	}
 
-	    	parameter.setReservedWindowSize(windowSize);
-		}
+    	parameter.setReservedWindowSize(windowSize);
 	}
 
 }

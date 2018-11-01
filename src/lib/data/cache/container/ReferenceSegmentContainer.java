@@ -271,7 +271,7 @@ public class ReferenceSegmentContainer {
 	
 	private void setReference(final int windowStart, final int readStart, final int length, SAMRecordWrapper recordWrapper) {
 		//try{
-			System.arraycopy(recordWrapper.getReference(), readStart, reference, windowStart, length);
+			// FIXME System.arraycopy(recordWrapper.getReferenceBlocks(), readStart, reference, windowStart, length);
 		//} catch (ArrayIndexOutOfBoundsException e) {
 		//	int i = 0;
 		//	i++;

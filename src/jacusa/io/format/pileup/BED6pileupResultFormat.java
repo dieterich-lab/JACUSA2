@@ -1,26 +1,43 @@
 package jacusa.io.format.pileup;
 
 import lib.cli.parameter.AbstractParameter;
-import lib.data.AbstractData;
-import lib.data.has.HasPileupCount;
-import lib.data.result.Result;
-import lib.io.AbstractResultFormat;
+import lib.data.count.basecall.BaseCallCount;
+import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.io.AbstractResultFileFormat;
+import lib.io.BEDlikeResultFileWriter;
+import lib.io.BEDlikeResultFileWriter.BEDlikeResultFileWriterBuilder;
+import lib.io.format.bed.DefaultBED6adder;
+import lib.io.format.bed.DefaultInfoAdder;
+import lib.util.Util;
 
-public class BED6pileupResultFormat<T extends AbstractData & HasPileupCount, R extends Result<T>> 
-extends AbstractResultFormat<T, R> {
+public class BED6pileupResultFormat 
+extends AbstractResultFileFormat {
 
 	public static final char CHAR = 'B';
-	private AbstractParameter<T, R> parameter;
 	
-	public BED6pileupResultFormat(final AbstractParameter<T, R> parameter) {
-		super(CHAR, "Default", parameter);
+	public BED6pileupResultFormat(
+			final String methodName, 
+			final AbstractParameter parameter) {
 		
-		this.parameter = parameter;
+		super(CHAR, "Default", methodName, parameter);
 	}
 
 	@Override
-	public BED6pileupResultWriter<T, R> createWriter(final String filename) {
-		return new BED6pileupResultWriter<T, R>(filename, parameter);
+	public BEDlikeResultFileWriter createWriter(final String outputFileName) {
+		final BaseCallCount.AbstractParser bccParser = 
+				new DefaultBaseCallCount.Parser(Util.VALUE_SEP, Util.EMPTY_FIELD);
+		
+		return new BEDlikeResultFileWriterBuilder(outputFileName, getParameter())
+				.addBED6Adder(
+						new DefaultBED6adder(getMethodName(), "stat"))
+				.addDataAdder(
+						new PileupDataAdder(bccParser))
+				.addInfoAdder(
+						new DefaultInfoAdder(getParameter()))
+				.addBaseSubstition(bccParser)
+				.addFilterDebug()
+				.build();
+
 	}
 
 }

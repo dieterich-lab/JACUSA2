@@ -7,30 +7,34 @@ import org.apache.commons.cli.Option;
 
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
 import jacusa.filter.cache.processrecord.ProcessRecord;
-import lib.data.AbstractData;
-import lib.data.cache.extractor.basecall.ArrestBaseCallCountExtractor;
+import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
+import lib.data.cache.fetcher.FilteredDataFetcher;
+import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.cache.region.RegionDataCache;
-import lib.data.has.HasArrestBaseCallCount;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasReferenceBase;
-import lib.data.has.HasThroughBaseCallCount;
-import lib.data.has.filter.HasBaseCallCountFilterData;
+import lib.data.count.basecall.BaseCallCount;
+import lib.data.filter.BaseCallCountFilteredData;
 
-public class RTarrestReadPositionDistanceFilterFactory<T extends AbstractData & HasBaseCallCount & HasArrestBaseCallCount & HasThroughBaseCallCount & HasReferenceBase & HasBaseCallCountFilterData> 
-extends AbstractRTarrestDistanceFilterFactory<T> {
+public class RTarrestReadPositionDistanceFilterFactory 
+extends AbstractRTarrestDistanceFilterFactory {
 
-	public RTarrestReadPositionDistanceFilterFactory() {
-		super(Option.builder(Character.toString('B'))
-				.desc("Filter potential false positive variants adjacent to read start/end in read through reads.")
-				.build(),
-				new ArrestBaseCallCountExtractor<T>(),
+	public RTarrestReadPositionDistanceFilterFactory(
+			final Apply2readsBaseCallCountSwitch bccSwitch, 
+			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
+		
+		super(
+				Option.builder(Character.toString('B'))
+					.desc("Filter potential false positive variants adjacent to read start/end in read through reads.")
+					.build(),
+				bccSwitch, filteredDataFetcher,
 				6, 0.5);
+
+		getApply2Reads().add(RT_READS.ARREST);
 	}
 	
 	@Override
-	protected List<ProcessRecord> createProcessRecord(RegionDataCache<T> regionDataCache) {
+	protected List<ProcessRecord> createProcessRecord(RegionDataCache regionDataCache) {
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
-		processRecords.add(new ProcessReadStartEnd(getDistance(), regionDataCache));
+		processRecords.add(new ProcessReadStartEnd(getFilterDistance(), regionDataCache));
 		return processRecords;
 	}
 	

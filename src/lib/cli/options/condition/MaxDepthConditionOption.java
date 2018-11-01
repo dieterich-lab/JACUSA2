@@ -3,26 +3,28 @@ package lib.cli.options.condition;
 import java.util.List;
 
 import lib.cli.parameter.AbstractConditionParameter;
-import lib.data.AbstractData;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class MaxDepthConditionOption<T extends AbstractData> extends AbstractConditionACOption<T> {
+public class MaxDepthConditionOption extends AbstractConditionACOption {
 
+	public static final int MIN_DEPTH = 1;
+	public static final int UNLIMITED_DEPTH = -1;
+	
 	private static final String OPT = "d";
 	private static final String LONG_OPT = "max-depth";
 	
-	public MaxDepthConditionOption(final int conditionIndex, final AbstractConditionParameter<T> conditionParameter) {
+	public MaxDepthConditionOption(final int conditionIndex, final AbstractConditionParameter conditionParameter) {
 		super(OPT, LONG_OPT, conditionIndex, conditionParameter);
 	}
 	
-	public MaxDepthConditionOption(final List<AbstractConditionParameter<T>> conditionParameters) {
+	public MaxDepthConditionOption(final List<AbstractConditionParameter> conditionParameters) {
 		super(OPT, LONG_OPT, conditionParameters);
 	}
 	
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		String s = new String();
 
 		int maxDepth = getConditionParameter().getMaxDepth();
@@ -44,11 +46,11 @@ public class MaxDepthConditionOption<T extends AbstractData> extends AbstractCon
 	public void process(CommandLine line) throws Exception {
 		if(line.hasOption(getOpt())) {
 	    	int maxDepth = Integer.parseInt(line.getOptionValue(getOpt()));
-	    	if(maxDepth < 2 || maxDepth == 0) {
+	    	if(maxDepth != UNLIMITED_DEPTH && maxDepth < MIN_DEPTH ) {
 	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " must be > 0 or -1 (limited by memory)!");
 	    	}
 	    	
-	    	for (final AbstractConditionParameter<T> conditionParameter : getConditionParameters()) {
+	    	for (final AbstractConditionParameter conditionParameter : getConditionParameters()) {
 	    		conditionParameter.setMaxDepth(maxDepth);
 	    	}
 	    }

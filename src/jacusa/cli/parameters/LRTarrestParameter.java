@@ -1,41 +1,48 @@
 package jacusa.cli.parameters;
 
-import jacusa.io.format.lrtarrest.BED6lrtArrestResultFormat2;
-import jacusa.method.rtarrest.BetaBinomial;
+import jacusa.io.format.lrtarrest.BED6lrtArrestResultFormat;
+import jacusa.method.lrtarrest.LRTarrestMethod;
+import jacusa.method.rtarrest.BetaBinFactory;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.cli.parameter.JACUSAConditionParameter;
-import lib.data.LRTarrestData;
-import lib.data.result.StatisticResult;
 
 /**
  * Class defines parameters and default values that are need for Linked Reverse Transcription arrest (lrt-arrest).
  */
 public class LRTarrestParameter
-extends AbstractParameter<LRTarrestData, StatisticResult<LRTarrestData>> 
-implements HasStatisticParameters<LRTarrestData> {
+extends AbstractParameter
+implements HasStatParameter {
 
-	private StatisticParameter<LRTarrestData> statisticParameters;
+	private StatParameter statParameter;
 
 	public LRTarrestParameter(final int conditions) {
 		super(conditions);
+		// change window size
+		setActiveWindowSize(500);
+		
 		// test-statistic related
-		statisticParameters = new StatisticParameter<LRTarrestData>(
-				new BetaBinomial<LRTarrestData>(), 1.0);
+		setStatParameter(
+				new StatParameter(new BetaBinFactory(), 1.0));
 		// default output format
-		setResultFormat(new BED6lrtArrestResultFormat2<LRTarrestData, StatisticResult<LRTarrestData>>(this));
+		setResultFormat(
+				new BED6lrtArrestResultFormat(
+						LRTarrestMethod.Factory.NAME, this));
 
-		setActiveWindowSize(1000);
 	}
 
 	@Override
-	public AbstractConditionParameter<LRTarrestData> createConditionParameter(final int conditionIndex) {
-		return new JACUSAConditionParameter<LRTarrestData>(conditionIndex);
+	public AbstractConditionParameter createConditionParameter(final int conditionIndex) {
+		return new JACUSAConditionParameter(conditionIndex);
 	}
 	
 	@Override
-	public StatisticParameter<LRTarrestData> getStatisticParameters() {
-		return statisticParameters;
+	public StatParameter getStatParameter() {
+		return statParameter;
 	}
 
+	@Override
+	public void setStatParameter(final StatParameter statParameter) {
+		this.statParameter = statParameter;
+	}
 }

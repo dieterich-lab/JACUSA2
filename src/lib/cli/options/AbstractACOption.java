@@ -16,14 +16,14 @@ public abstract class AbstractACOption {
 	}
 
 	public abstract void process(CommandLine line) throws Exception;
-	public abstract Option getOption();
+	public abstract Option getOption(boolean printExtendedHelp);
 	
 	public boolean isHidden() {
 		return hide;
 	}
 
 	protected void hide() {
-		hide = false;
+		hide = true;
 	}
 	
 	protected void show() {
@@ -38,5 +38,4 @@ public abstract class AbstractACOption {
 		return longOpt;
 	}
 
-	
 }

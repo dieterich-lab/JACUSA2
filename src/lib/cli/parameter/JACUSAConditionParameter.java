@@ -1,10 +1,9 @@
 package lib.cli.parameter;
 
-import lib.data.AbstractData;
 import lib.data.has.HasLibraryType;
 
-public class JACUSAConditionParameter<T extends AbstractData>
-extends AbstractConditionParameter<T>
+public class JACUSAConditionParameter
+extends AbstractConditionParameter
 implements HasLibraryType {
 	
 	public JACUSAConditionParameter(final int conditionIndex) {

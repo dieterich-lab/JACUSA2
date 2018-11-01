@@ -11,37 +11,40 @@ import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
-import lib.data.AbstractData;
-import lib.data.cache.extractor.basecall.DefaultBaseCallCountExtractor;
+import lib.data.cache.fetcher.Fetcher;
+import lib.data.cache.fetcher.FilteredDataFetcher;
 import lib.data.cache.region.RegionDataCache;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasReferenceBase;
-import lib.data.has.filter.HasBaseCallCountFilterData;
+import lib.data.count.basecall.BaseCallCount;
+import lib.data.filter.BaseCallCountFilteredData;
 
 /**
  * TODO add comments.
  * 
- * @param <T>
+ * @param 
  */
-public class CombinedFilterFactory<T extends AbstractData & HasBaseCallCount & HasBaseCallCountFilterData & HasReferenceBase> 
-extends AbstractBaseCallCountFilterFactory<T> {
+public class CombinedFilterFactory
+extends AbstractBaseCallCountFilterFactory {
 
-	public CombinedFilterFactory() {
-		super(getOptionBuilder().build(),
-				new DefaultBaseCallCountExtractor<T>(), 
+	public CombinedFilterFactory(
+			final Fetcher<BaseCallCount> observedBccFetcher,
+			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
+		
+		super(
+				getOptionBuilder().build(),
+				observedBccFetcher, filteredDataFetcher,
 				6, 0.5);
 	}
 
 	@Override
-	protected List<ProcessRecord> createProcessRecord(RegionDataCache<T> regionDataCache) {
+	protected List<ProcessRecord> createProcessRecord(RegionDataCache regionDataCache) {
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
 		// INDELs
-		processRecords.add(new ProcessInsertionOperator(getDistance(), regionDataCache));
-		processRecords.add(new ProcessDeletionOperator(getDistance(), regionDataCache));
+		processRecords.add(new ProcessInsertionOperator(getFilterDistance(), regionDataCache));
+		processRecords.add(new ProcessDeletionOperator(getFilterDistance(), regionDataCache));
 		// read start end 
-		processRecords.add(new ProcessReadStartEnd(getDistance(), regionDataCache));
+		processRecords.add(new ProcessReadStartEnd(getFilterDistance(), regionDataCache));
 		// introns
-		processRecords.add(new ProcessSkippedOperator(getDistance(), regionDataCache));
+		processRecords.add(new ProcessSkippedOperator(getFilterDistance(), regionDataCache));
 		return processRecords;
 	}
 

@@ -39,7 +39,7 @@ public class SAMCoordinateProviderAdvanced implements CoordinateProvider {
 	 * 
 	 */
 	public SAMCoordinateProviderAdvanced(final boolean isStranded, final List<SAMSequenceRecord> sequenceRecords, 
-			final AbstractParameter<?, ?> parameter) {
+			final AbstractParameter parameter) {
 
 		this.isStranded = isStranded;
 		it = sequenceRecords.iterator();
@@ -54,7 +54,7 @@ public class SAMCoordinateProviderAdvanced implements CoordinateProvider {
 		
 		// create readers for conditions and replicate
 		readers = new ArrayList<List<SamReader>>(parameter.getConditionsSize());
-		for (final AbstractConditionParameter<?> condition : parameter.getConditionParameters()) {
+		for (final AbstractConditionParameter condition : parameter.getConditionParameters()) {
 			final List<SamReader> tmpReaders = new ArrayList<SamReader>(condition.getReplicateSize());
 			for (String fileName : condition.getRecordFilenames()) {
 				tmpReaders.add(AbstractConditionParameter.createSamReader(fileName));

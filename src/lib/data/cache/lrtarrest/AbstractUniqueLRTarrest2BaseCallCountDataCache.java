@@ -1,12 +1,7 @@
 package lib.data.cache.lrtarrest;
 
-import lib.data.AbstractData;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasLRTarrestCount;
-import lib.data.has.HasReferenceBase;
-
 // FIXME
-public abstract class AbstractUniqueLRTarrest2BaseCallCountDataCache<T extends AbstractData & HasBaseCallCount & HasReferenceBase & HasLRTarrestCount> {
+public abstract class AbstractUniqueLRTarrest2BaseCallCountDataCache {
 // extends AbstractDataCache<T> {
 
 	/*

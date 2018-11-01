@@ -5,6 +5,7 @@ import htsjdk.samtools.AlignmentBlock;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
+import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
 public class MDReferenceProvider implements ReferenceProvider {
@@ -47,14 +48,23 @@ public class MDReferenceProvider implements ReferenceProvider {
 	}
 	
 	@Override
-	public byte getReference(final Coordinate coordinate) {
-		final int windowPosition = coordinateController.convert2windowPosition(coordinate);
-		return getReference(windowPosition);
+	public Base getReferenceBase(final Coordinate coordinate) {
+		final int windowPosition = coordinateController.getCoordinateTranslator().convert2windowPosition(coordinate);
+		return getReferenceBase(windowPosition);
 	}
 	
 	@Override
-	public byte getReference(final int windowPosition) {
-		return refSegmentContainer.getReference(windowPosition);
+	public Base getReferenceBase(final int windowPosition) {
+		return Base.valueOf(refSegmentContainer.getReference(windowPosition));
+	}
+	
+	@Override
+	public CoordinateController getCoordinateController() {
+		return coordinateController;
+	}
+	
+	public void close() {
+		// nothing to be done
 	}
 	
 }

@@ -7,9 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.data.AbstractData;
 import lib.data.result.Result;
+import lib.io.AbstractResultFileWriter;
 import lib.io.ResultFormat;
 import lib.io.ResultWriter;
 import lib.io.copytmp.CopyTmpResult;
@@ -17,19 +16,17 @@ import lib.util.AbstractTool;
 
 /**
  * TODO add comments.
- * FIXME currently 1 line in tmp result file corresponds to one result
  *
- * @param <T>
- * @param <R>
+ * @param 
  */
-public class FileCopyTmpResult<T extends AbstractData, R extends Result<T>> 
-implements CopyTmpResult<T, R> {
+public class FileCopyTmpResult 
+implements CopyTmpResult {
 
 	// 
-	private final ResultWriter<T, R> resultFileWriter;
+	private final AbstractResultFileWriter resultFileWriter;
 
 	// temporary result files are written by this object
-	private ResultWriter<T, R> tmpResultWriter;
+	private ResultWriter tmpResultWriter;
 	// temporary result files are read by this object
 	private BufferedReader tmpResultReader;
 
@@ -38,9 +35,9 @@ implements CopyTmpResult<T, R> {
 	private final List<Integer> iteration2storedResults;
 	
 	public FileCopyTmpResult(final int threadId, 
-			final ResultWriter<T, R> resultFileWriter, 
-			final ResultFormat<T, R> resultFormat) {
-	
+			final AbstractResultFileWriter resultFileWriter, 
+			final ResultFormat resultFormat) {
+		
 		this.resultFileWriter = resultFileWriter; 
 		try {
 			// create temporary file for this thread
@@ -89,20 +86,20 @@ implements CopyTmpResult<T, R> {
 
 	@Override
 	public void newIteration() {
-		iteration2storedResults.add(0); // TODO why 0?
+		iteration2storedResults.add(0);
 	}
 
 	@Override
-	public void addResult(final R result, final List<AbstractConditionParameter<T>> conditionParameters) throws Exception {
+	public void addResult(final Result result) throws Exception {
 		tmpResultWriter.writeResult(result);
-		incrementStoredResults();
+		incrementStoredResults(result.getValues());
 	}
-
-	private void incrementStoredResults() {
+	
+	private void incrementStoredResults(final int lines) {
 		// get current iteration
 		final int iteration = iteration2storedResults.size() - 1;
 		// increment counter for current iteration
-		final int storedResults = iteration2storedResults.get(iteration) + 1;
+		final int storedResults = iteration2storedResults.get(iteration) + lines;
 		// and update iteration
 		iteration2storedResults.set(iteration, storedResults);
 	}
@@ -113,7 +110,6 @@ implements CopyTmpResult<T, R> {
 		final int storedResults = iteration2storedResults.get(iteration);
 
 		String line;
-		// FIXME 1 line corresponds to one result 
 		while (storedResults > copiedResults && (line = tmpResultReader.readLine()) != null) {
 			resultFileWriter.writeLine(line);
 			copiedResults++;

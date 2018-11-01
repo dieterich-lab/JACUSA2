@@ -1,34 +1,38 @@
 package lib.util;
 
-import java.io.File;
 import java.io.PrintStream;
-import java.util.Map;
+import java.util.List;
 
 import lib.cli.CLI;
-import lib.method.AbstractMethodFactory;
+import lib.method.AbstractMethod;
 import lib.worker.WorkerDispatcher;
 
 public abstract class AbstractTool {
 
+	public static final String CALL_PREFIX = "JACUSA2 Version: ";
+	
 	private final String name;
 	private final String version;
 	
 	private final String[] args;
-	
+
 	// command line interface
 	private final CLI cli;
-	private WorkerDispatcher<?, ?> workerDispatcher;
+	private WorkerDispatcher workerDispatcher;
 	
 	private int comparisons;
 	
 	private static Logger logger;
 
-	protected AbstractTool(final String name, final String version, final String[] args) {
-		this.name = name;
-		this.version = version;
-		this.args = args;
+	protected AbstractTool(
+			final String name, final String version, 
+			final String[] args,
+			final List<AbstractMethod.AbstractFactory> factories) {
+		this.name 		= name;
+		this.version 	= version;
+		this.args 		= args;
 
-		cli = new CLI(getMethodFactories());
+		cli = new CLI(factories);
 		
 		comparisons = 0;
 		
@@ -54,16 +58,15 @@ public abstract class AbstractTool {
 		getLogger().addProlog(getProlog());
 		
 		// instantiate chosen method
-		final AbstractMethodFactory<?, ?> methodFactory = cli.getMethodFactory();
+		final AbstractMethod methodFactory = cli.getMethodFactory();
 				
 		// run the method...
-		workerDispatcher = methodFactory.getWorkerDispatcher();
+		workerDispatcher = methodFactory.getWorkerDispatcherInstance();
 		comparisons = workerDispatcher.run();
 
 		getLogger().addEpilog(getEpilog());
 	}
 
-	protected abstract Map<String, AbstractMethodFactory<?, ?>> getMethodFactories();
 	protected abstract String getEpilog();
 
 	protected String getProlog() {
@@ -80,13 +83,7 @@ public abstract class AbstractTool {
 	
 	public String getCall() {
 		final StringBuilder sb = new StringBuilder();
-		final File file = getFile(); 
-		if (file == null) {
-			sb.append(name);
-		} else {
-			sb.append(file.getPath());
-		}
-		sb.append(" Version: ");
+		sb.append(CALL_PREFIX);
 		sb.append(version);
 		for(final String arg : args) {
 			sb.append(" " + arg);
@@ -114,21 +111,8 @@ public abstract class AbstractTool {
 		return comparisons;
 	}
 
-	protected abstract Class<?> getMainClass();
-
-	public File getFile() {
-		File f = null;
-		// URI u;
-		/*
-		try {
-			u = getMainClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-			f = new File(u);
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		 */		
-		
-		return f;
+	public WorkerDispatcher getWorkerDispatcher() {
+		return workerDispatcher;
 	}
-	
+
 }

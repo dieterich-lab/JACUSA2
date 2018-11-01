@@ -5,34 +5,33 @@ import java.util.List;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.parameter.AbstractConditionParameter;
-import lib.data.AbstractData;
 
-public abstract class AbstractConditionACOption<T extends AbstractData> 
+public abstract class AbstractConditionACOption 
 extends AbstractACOption {
 
 	private int conditionIndex;
-	private final List<AbstractConditionParameter<T>> conditionParameters;
+	private final List<AbstractConditionParameter> conditionParameters;
 		
-	public AbstractConditionACOption(final String opt, final String longOpt, final List<AbstractConditionParameter<T>> conditionParameters) {
+	public AbstractConditionACOption(final String opt, final String longOpt, final List<AbstractConditionParameter> conditionParameters) {
 		super(opt, longOpt);
 		conditionIndex 	= -1;
 		this.conditionParameters = conditionParameters;
 	}
 	
-	public AbstractConditionACOption(final String opt, final String longOpt, final int conditionIndex, final AbstractConditionParameter<T> conditionParameter) {
+	public AbstractConditionACOption(final String opt, final String longOpt, final int conditionIndex, final AbstractConditionParameter conditionParameter) {
 		super(opt != null ? opt + (conditionIndex + 1) : null,
 				longOpt != null ? longOpt + (conditionIndex + 1) : null);
 
 		this.conditionIndex = conditionIndex;
-		conditionParameters = new ArrayList<AbstractConditionParameter<T>>(1);
+		conditionParameters = new ArrayList<AbstractConditionParameter>(1);
 		conditionParameters.add(conditionParameter);
 	}
 
-	public List<AbstractConditionParameter<T>> getConditionParameters() {
+	public List<AbstractConditionParameter> getConditionParameters() {
 		return conditionParameters;
 	}
 	
-	public AbstractConditionParameter<T> getConditionParameter() {
+	public AbstractConditionParameter getConditionParameter() {
 		return conditionParameters.get(0);
 	}
 

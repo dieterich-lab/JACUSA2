@@ -1,10 +1,7 @@
 package jacusa.io.format.pileup;
 
 import lib.cli.parameter.AbstractParameter;
-import lib.data.AbstractData;
-import lib.data.has.HasPileupCount;
-import lib.data.result.DefaultResult;
-import lib.io.AbstractResultFormat;
+import lib.io.AbstractResultFileFormat;
 import lib.io.ResultWriter;
 
 /**
@@ -13,19 +10,24 @@ import lib.io.ResultWriter;
  *
  * @param <T>
  */
-public class PileupLikeFormat<T extends AbstractData & HasPileupCount> 
-extends AbstractResultFormat<T, DefaultResult<T>> {
+public class PileupLikeFormat 
+extends AbstractResultFileFormat {
 
 	// unique char id for CLI
 	public final static char CHAR = 'M';
-
-	public PileupLikeFormat(final AbstractParameter<T, DefaultResult<T>> parameter) {
-		super(CHAR, "samtools mpileup like format (base columns without: $ ^ < > *)", parameter);
+	
+	public PileupLikeFormat(
+			final String methodName, 
+			final AbstractParameter parameter) {
+		
+		super(CHAR, "samtools mpileup like format (base columns without: $ ^ < > *)", methodName, parameter);
 	}
 
 	@Override
-	public ResultWriter<T, DefaultResult<T>> createWriter(String filename) {
-		return new PileupPileupResultWriter<T, DefaultResult<T>>(filename, getParameter().showReferenceBase());
+	public ResultWriter createWriter(String outputFileName) {
+		return new PileupResultWriter(
+				outputFileName, 
+				getParameter().showReferenceBase());
 	}
 
 }

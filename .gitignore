@@ -1,6 +1,12 @@
+build_release.xml
+*.tmp
+*.swp
+*.log
+git_helper.sh
 /bin
 /test
 /build/
-/build_release.xml
 /git_helper.sh
 /jar-in-jar-loader.zip
+.Rhistory
+*.csv

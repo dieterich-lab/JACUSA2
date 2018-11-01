@@ -1,35 +1,52 @@
 package jacusa.io.format.rtarrest;
 
 import lib.cli.parameter.AbstractParameter;
-import lib.data.AbstractData;
-import lib.data.has.HasArrestBaseCallCount;
-import lib.data.has.HasRTcount;
-import lib.data.has.HasReferenceBase;
-import lib.data.has.HasThroughBaseCallCount;
-import lib.data.result.Result;
-import lib.data.result.hasStatistic;
-import lib.io.AbstractResultFormat;
-import lib.io.ResultWriter;
+import lib.data.count.basecall.BaseCallCount;
+import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.io.AbstractResultFileFormat;
+import lib.io.BEDlikeResultFileWriter;
+import lib.io.BEDlikeResultFileWriter.BEDlikeResultFileWriterBuilder;
+import lib.io.format.bed.DefaultBED6adder;
+import lib.io.format.bed.DefaultInfoAdder;
+import lib.util.Util;
 
-public class BED6rtArrestResultFormat<T extends AbstractData & HasReferenceBase & HasRTcount & HasArrestBaseCallCount & HasThroughBaseCallCount, R extends Result<T> & hasStatistic> 
-extends AbstractResultFormat<T, R> {
+public class BED6rtArrestResultFormat 
+extends AbstractResultFileFormat {
 
-	public static final char CHAR = 'D';
-
+	public static final char CHAR = 'A';
+	
 	protected BED6rtArrestResultFormat(
 			final char c,
 			final String desc,
-			final AbstractParameter<T, R> parameter) {
-		super(c, desc, parameter);
+			final String methodName,
+			final AbstractParameter parameter) {
+		
+		super(c, desc, methodName, parameter);
 	}
 
-	public BED6rtArrestResultFormat(final AbstractParameter<T, R> parameter) {
-		this(CHAR, "DEBUG", parameter);
+	public BED6rtArrestResultFormat(
+			final String methodName, 
+			final AbstractParameter parameter) {
+		
+		this(CHAR, "Arrest only", methodName, parameter);
 	}
 
 	@Override
-	public ResultWriter<T, R> createWriter(final String filename) {
-		return new BED6rtArrestResultWriter<T, R>(filename, getParameter());
+	public BEDlikeResultFileWriter createWriter(final String outputFileName) {
+		final BaseCallCount.AbstractParser bccParser = 
+				new DefaultBaseCallCount.Parser(Util.VALUE_SEP, Util.EMPTY_FIELD);
+		
+		return new BEDlikeResultFileWriterBuilder(outputFileName, getParameter())
+				.addBED6Adder(
+						new DefaultBED6adder(getMethodName(), "pvalue"))
+				.addDataAdder(
+						new RTarrestDataAdder(bccParser))
+				.addInfoAdder(
+						new DefaultInfoAdder(getParameter()))
+				.addBaseSubstition(bccParser)
+				.addFilterDebug()
+				.build();
+		
 	}
 
 }

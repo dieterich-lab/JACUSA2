@@ -1,50 +1,53 @@
 package lib.data.count;
 
+import jacusa.JACUSA;
 import lib.data.count.PileupCount;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasBaseCallQualityCount;
-import lib.data.has.HasCoverage;
-import lib.data.has.HasReferenceBase;
+import lib.data.count.basecall.BaseCallCount;
+import lib.data.count.basecall.UnmodifiableBaseCallCount;
+import lib.data.count.basecallquality.BaseCallQualityCount;
 import lib.util.Base;
+import lib.util.Data;
 
-public class PileupCount 
-implements HasBaseCallCount, HasBaseCallQualityCount, HasReferenceBase, HasCoverage {
+public class PileupCount implements Data<PileupCount> {
 
-	private byte referenceBase;
-	private BaseCallCount baseCallCount;
-	private BaseCallQualityCount baseQualCount;
+	private static final long serialVersionUID = 1L;
 
-	public PileupCount(final byte referenceBase, final BaseCallCount baseCallCount, final BaseCallQualityCount baseQualCount) {
-		this.referenceBase 	= referenceBase;
-		this.baseCallCount 	= baseCallCount;
-		this.baseQualCount	= baseQualCount;
+	private BaseCallQualityCount baseCallQualCount;
+
+	public PileupCount() {
+		this(JACUSA.bcqcFactory.create());
 	}
 	
-	public PileupCount(final BaseCallCount baseCallCount, final BaseCallQualityCount baseQualCount) {
-		this((byte)'N', baseCallCount, baseQualCount);
+	public PileupCount(final BaseCallQualityCount baseCallQualCount) {
+		this.baseCallQualCount = baseCallQualCount;
 	}
 	
 	public PileupCount(final PileupCount pileupCount) {
-		this(pileupCount.referenceBase, pileupCount.baseCallCount.copy(), pileupCount.baseQualCount.copy());
+		this.baseCallQualCount 	= pileupCount.baseCallQualCount.copy();
 	}
 
 	public PileupCount copy() {
 		return new PileupCount(this);
 	}
-
-	@Override
+	
 	public BaseCallCount getBaseCallCount() {
-		return baseCallCount;
+		final BaseCallCount bcc = JACUSA.bccFactory.create();
+		for (final Base base : baseCallQualCount.getAlleles()) {
+			int count = 0;
+			for (final byte baseQual : baseCallQualCount.getBaseCallQuality(base)) {
+				count += baseCallQualCount.getBaseCallQuality(base, baseQual);
+			}
+			bcc.set(base, count);
+		}
+		return new UnmodifiableBaseCallCount(bcc);
 	}
 	
-	@Override
 	public BaseCallQualityCount getBaseCallQualityCount() {
-		return baseQualCount;
+		return baseCallQualCount;
 	}
 
 	public void add(final Base base, final byte baseQual) {
-		baseCallCount.increment(base);
-		baseQualCount.increment(base, baseQual);
+		baseCallQualCount.increment(base, baseQual);
 	}
 		
 	public void merge(final PileupCount pileupCount) {
@@ -58,8 +61,7 @@ implements HasBaseCallCount, HasBaseCallQualityCount, HasReferenceBase, HasCover
 	}
 
 	public void add(final Base dest, final Base src, final PileupCount pileupCount) {
-		baseCallCount.add(dest, src, pileupCount.getBaseCallCount());
-		baseQualCount.add(dest, src, pileupCount.getBaseCallQualityCount());
+		baseCallQualCount.add(dest, src, pileupCount.getBaseCallQualityCount());
 	}
 
 	public void substract(final Base base, final PileupCount pileupCount) {
@@ -67,8 +69,7 @@ implements HasBaseCallCount, HasBaseCallQualityCount, HasReferenceBase, HasCover
 	}
 
 	public void substract(final Base dest, final Base src, final PileupCount pileupCount) {
-		baseCallCount.substract(dest, src, pileupCount.getBaseCallCount());
-		baseQualCount.substract(dest, src, pileupCount.getBaseCallQualityCount());
+		baseCallQualCount.subtract(dest, src, pileupCount.getBaseCallQualityCount());
 	}
 
 	public void substract(final PileupCount pileupCount) {
@@ -78,34 +79,64 @@ implements HasBaseCallCount, HasBaseCallQualityCount, HasReferenceBase, HasCover
 	}
 
 	public void invert() {
-		baseCallCount.invert();
-		baseQualCount.invert();
-	}
-
-	public byte getReferenceBase() {
-		return referenceBase;
-	}
-
-	@Override
-	public void setReferenceBase(final byte referenceBase) {
-		this.referenceBase = referenceBase;
-	}
-
-	@Override
-	public int getCoverage() {
-		return baseCallCount.getCoverage();
+		baseCallQualCount.invert();
 	}
 
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-
-		sb.append(baseCallCount.toString());
-		sb.append(" Ref.: ");
-		sb.append((char)referenceBase);
+		sb.append(baseCallQualCount.toString());
 		sb.append('\n');
-		sb.append(baseQualCount.toString());
-		
 		return sb.toString();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || ! (obj instanceof PileupCount)) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
 
+		final PileupCount pileupCount = (PileupCount)obj;
+		return baseCallQualCount.equals(pileupCount.baseCallQualCount);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = 31 * hash + baseCallQualCount.hashCode();
+		return hash;
+	}
+	
+	public static class Parser implements lib.util.Parser<PileupCount> {
+
+		private final BaseCallQualityCount.AbstractParser bcqcParser;
+		
+		public Parser(final BaseCallQualityCount.AbstractParser bcqcParser) {
+			this.bcqcParser	= bcqcParser;
+		}
+
+		public String wrap(final PileupCount pileupCount) {
+			final StringBuilder sb = new StringBuilder();
+			if (pileupCount.getBaseCallCount().getCoverage() == 0) {
+				sb.append(bcqcParser.getEmpty());	
+			} else {
+				sb.append(bcqcParser.wrap(pileupCount.getBaseCallQualityCount()));
+			}
+			return sb.toString();
+		}
+
+		@Override
+		public PileupCount parse(String s) {
+			if (s.equals(Character.toString(bcqcParser.getEmpty()))) {
+				return new PileupCount();	
+			}
+			
+			final BaseCallQualityCount bcqc = bcqcParser.parse(s);
+			return new PileupCount(bcqc);
+		}
+
+	}
+	
 }

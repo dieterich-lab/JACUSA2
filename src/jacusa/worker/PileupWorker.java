@@ -1,33 +1,25 @@
 package jacusa.worker;
 
-import java.util.List;
-
-import jacusa.cli.parameters.PileupParameter;
+import jacusa.method.pileup.PileupMethod;
 import lib.data.ParallelData;
-import lib.data.PileupData;
-import lib.data.cache.extractor.ReferenceSetter;
-import lib.data.result.DefaultResult;
-import lib.data.validator.paralleldata.ParallelDataValidator;
-import lib.io.copytmp.CopyTmpResult;
+import lib.data.result.Result;
+import lib.stat.AbstractStat;
 import lib.worker.AbstractWorker;
-import lib.worker.WorkerDispatcher;
 
 public class PileupWorker
-extends AbstractWorker<PileupData, DefaultResult<PileupData>> {
+extends AbstractWorker {
 	
-	public PileupWorker(
-			final ReferenceSetter<PileupData> referenceSetter,
-			final WorkerDispatcher<PileupData, DefaultResult<PileupData>> workerDispatcher, 
-			final int threadId,
-			final CopyTmpResult<PileupData, DefaultResult<PileupData>> copyTmpResult,
-			final List<ParallelDataValidator<PileupData>> parallelDataValidators, 
-			final PileupParameter pileupParameter) {
-
-		super(referenceSetter, workerDispatcher, threadId, copyTmpResult, parallelDataValidators, pileupParameter);
+	private final AbstractStat stat;
+	
+	public PileupWorker(final PileupMethod method, final int threadId) {
+		super(method, threadId);
+		stat = method.getParameter().getStatParameter()
+				.newInstance(method.getParameter().getConditionsSize());
 	}
 
 	@Override
-	protected DefaultResult<PileupData> process(final ParallelData<PileupData> parallelData) {
-		return new DefaultResult<PileupData>(parallelData);
-	}	
+	protected Result process(final ParallelData parallelData) {
+		return stat.filter(parallelData);
+	}
+		
 }

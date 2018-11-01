@@ -4,8 +4,7 @@ import java.util.ArrayList;
 
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
-import lib.data.AbstractData;
-import lib.data.has.HasLibraryType.LIBRARY_TYPE;
+import lib.data.has.LibraryType;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -15,18 +14,18 @@ import org.apache.commons.cli.Option;
  * @author Michael Piechotta
  * @param <T>
  */
-public class TwoConditionLibraryTypeOption<T extends AbstractData> 
-extends OneConditionLibraryTypeOption<T> {
+public class TwoConditionLibraryTypeOption 
+extends OneConditionLibraryTypeOption {
 
 	// separator for library type(s) in command line
-	private static final char SEP = ',';
+	public static final char SEP = ',';
 	
 	// enforce precisely two conditions
 	public TwoConditionLibraryTypeOption(
-			final AbstractConditionParameter<T> conditionParameter1, 
-			final AbstractConditionParameter<T> conditionParameter2,
-			final AbstractParameter<T, ?> generalParameter) {
-		super(new ArrayList<AbstractConditionParameter<T>>() {
+			final AbstractConditionParameter conditionParameter1, 
+			final AbstractConditionParameter conditionParameter2,
+			final AbstractParameter generalParameter) {
+		super(new ArrayList<AbstractConditionParameter>() {
 			private static final long serialVersionUID = 1L;
 			{
 				add(conditionParameter1);
@@ -36,14 +35,14 @@ extends OneConditionLibraryTypeOption<T> {
 	}
 
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc("Choose the library types for " +
 					"condition1(cond1) and condition2(cond2).\nFormat: cond1,cond2. \n" +
 					"Possible values for cond1 and cond2:\n" + getPossibleValues() + "\n" +
-					"default: " + LIBRARY_TYPE.UNSTRANDED + SEP + LIBRARY_TYPE.UNSTRANDED)
+					"default: " + LibraryType.UNSTRANDED + SEP + LibraryType.UNSTRANDED)
 				.build();
 	}
 
@@ -66,8 +65,8 @@ extends OneConditionLibraryTypeOption<T> {
 	    	}
 
 	    	// try to parse strings and get library types
-	    	final LIBRARY_TYPE libraryType1 = parse(ss[0]);
-	    	final LIBRARY_TYPE libraryType2 = parse(ss[1]);
+	    	final LibraryType libraryType1 = parse(ss[0]);
+	    	final LibraryType libraryType2 = parse(ss[1]);
 
 	    	// check that both library types were set
 	    	if (libraryType1 == null || libraryType2 == null) {

@@ -3,26 +3,25 @@ package lib.cli.options.condition;
 import java.util.List;
 
 import lib.cli.parameter.AbstractConditionParameter;
-import lib.data.AbstractData;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class MinMAPQConditionOption<T extends AbstractData> extends AbstractConditionACOption<T> {
+public class MinMAPQConditionOption extends AbstractConditionACOption {
 
 	private static final String OPT = "m";
 	private static final String LONG_OPT = "min-mapq";
 	
-	public MinMAPQConditionOption(final List<AbstractConditionParameter<T>> conditions) {
+	public MinMAPQConditionOption(final List<AbstractConditionParameter> conditions) {
 		super(OPT, LONG_OPT, conditions);
 	}
 	
-	public MinMAPQConditionOption(final int conditionIndex, final AbstractConditionParameter<T> condition) {
+	public MinMAPQConditionOption(final int conditionIndex, final AbstractConditionParameter condition) {
 		super(OPT, LONG_OPT, conditionIndex, condition);
 	}
 	
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		String s = new String();
 
 		int minMapq = -1;
@@ -48,11 +47,11 @@ public class MinMAPQConditionOption<T extends AbstractData> extends AbstractCond
 		if (line.hasOption(getOpt())) {
 	    	final String value = line.getOptionValue(getOpt());
 	    	final int minMapq = Integer.parseInt(value);
-	    	if(minMapq < 0) {
+	    	if(minMapq < 0 | minMapq > 255) {
 	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + minMapq + " not valid.");
 	    	}
 
-	    	for (final AbstractConditionParameter<T> condition : getConditionParameters()) {
+	    	for (final AbstractConditionParameter condition : getConditionParameters()) {
 	    		condition.setMinMAPQ(minMapq);
 	    	}
 	    }

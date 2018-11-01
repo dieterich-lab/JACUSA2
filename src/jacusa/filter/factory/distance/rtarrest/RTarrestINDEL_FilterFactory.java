@@ -7,36 +7,37 @@ import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
 import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.basecall.INDEL_FilterFactory;
-import jacusa.method.rtarrest.RTArrestFactory.RT_READS;
-import lib.data.AbstractData;
-import lib.data.cache.extractor.basecall.ArrestBaseCallCountExtractor;
+import lib.data.cache.fetcher.FilteredDataFetcher;
+import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.cache.region.RegionDataCache;
-import lib.data.has.HasArrestBaseCallCount;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasReferenceBase;
-import lib.data.has.HasThroughBaseCallCount;
-import lib.data.has.filter.HasBaseCallCountFilterData;
+import lib.data.count.basecall.BaseCallCount;
+import lib.data.filter.BaseCallCountFilteredData;
 
 /**
  * TODO add comments.
  * 
- * @param <T>
+ * @param 
  */
-public class RTarrestINDEL_FilterFactory<T extends AbstractData & HasBaseCallCount & HasArrestBaseCallCount & HasThroughBaseCallCount & HasBaseCallCountFilterData & HasReferenceBase> 
-extends AbstractRTarrestDistanceFilterFactory<T> {
 
-	public RTarrestINDEL_FilterFactory() {
-		super(INDEL_FilterFactory.getOptionBuilder().build(),
-				new ArrestBaseCallCountExtractor<T>(),
+public class RTarrestINDEL_FilterFactory 
+extends AbstractRTarrestDistanceFilterFactory {
+
+	public RTarrestINDEL_FilterFactory(
+			final Apply2readsBaseCallCountSwitch bccSwitch, 
+			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
+		
+		super(
+				INDEL_FilterFactory.getOptionBuilder().build(),
+				bccSwitch, filteredDataFetcher,
 				6, 0.5);
-		getApply2Reads().add(RT_READS.ARREST);
 	}
+	
 
 	@Override
-	protected List<ProcessRecord> createProcessRecord(RegionDataCache<T> regionDataCache) {
+	protected List<ProcessRecord> createProcessRecord(RegionDataCache regionDataCache) {
 		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
-		processRecords.add(new ProcessInsertionOperator(getDistance(), regionDataCache));
-		processRecords.add(new ProcessDeletionOperator(getDistance(), regionDataCache));
+		processRecords.add(new ProcessInsertionOperator(getFilterDistance(), regionDataCache));
+		processRecords.add(new ProcessDeletionOperator(getFilterDistance(), regionDataCache));
 		return processRecords;
 	}
 

@@ -12,14 +12,14 @@ public class SAMPathnameArg {
 	public static final char SEP = ',';
 
 	private int conditionIndex;
-	private AbstractConditionParameter<?> condition;
+	private AbstractConditionParameter condition;
 	
-	public SAMPathnameArg(final int conditionIndex, AbstractConditionParameter<?> paramteres) {
+	public SAMPathnameArg(final int conditionIndex, AbstractConditionParameter conditionParameter) {
 		this.conditionIndex = conditionIndex;
-		this.condition = paramteres;
+		this.condition = conditionParameter;
 	}
 
-	public void processArg(String arg) throws Exception {
+	public void processArg(String arg) throws FileNotFoundException {
 		final String[] recordFilenames = arg.split(Character.toString(SEP));
     	for (String recordFilename : recordFilenames) {
 	    	File file = new File(recordFilename);
@@ -28,11 +28,14 @@ public class SAMPathnameArg {
 	    	}
 
 	    	if (SamFiles.findIndex(file) == null) {
-	    		throw new FileNotFoundException("Index for BAM file" + conditionIndex + " is not accessible!");
+	    		throw new FileNotFoundException("Index for BAM file" + recordFilename + " is not accessible!");
 	    	}
     	}
-    	// beware of ugly code
 		condition.setRecordFilenames(recordFilenames);
 	}
 
+	public int getConditionIndex() {
+		return conditionIndex;
+	}
+	
 }

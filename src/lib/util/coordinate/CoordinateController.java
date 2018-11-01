@@ -4,15 +4,8 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 
 import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
-import lib.data.builder.ConditionContainer;
-import lib.data.cache.container.ComplexSharedCache;
-import lib.data.cache.container.FileReferenceProvider;
-import lib.data.cache.container.SharedCache;
-import lib.data.cache.container.ReferenceProvider;
-import lib.data.cache.container.SimpleSharedCache;
-import lib.data.cache.container.SimpleMDReferenceProvider;
-import lib.data.has.HasLibraryType.LIBRARY_TYPE;
+import lib.data.assembler.ConditionContainer;
+import lib.data.has.LibraryType;
 import lib.location.CoordinateAdvancer;
 import lib.location.StrandedJumpingCoordinateAdvancer;
 import lib.location.UnstrandedJumpingCoordinateAdvancer;
@@ -23,29 +16,33 @@ import lib.util.coordinate.provider.WindowedCoordinateProviderStatic;
 public class CoordinateController {
 
 	private final int activeWindowSize;
-	private final CoordinateAdvancer coordinateAdvancer;
-	
-	private final AbstractParameter<?, ?> parameter;
+	private CoordinateAdvancer coordinateAdvancer;
+
+	private CoordinateTranslator coordinateTranslator;
 	
 	private Coordinate reserved;
 	private WindowedCoordinateProviderStatic provider;
 	private Coordinate active;
-
-	private ReferenceProvider referenceProvider;
 	
-	public CoordinateController(final ConditionContainer<?> conditionContainer) {
-		this.activeWindowSize = conditionContainer.getParameter().getActiveWindowSize();
-		coordinateAdvancer = createCoordinateAdvancer(conditionContainer);
-
-		parameter = conditionContainer.getParameter();
+	private CoordinateController(final int activeWindowSize) {
+		this.active = null;
+		this.activeWindowSize = activeWindowSize;
 	}
-
-	private CoordinateAdvancer createCoordinateAdvancer(final ConditionContainer<?> conditionContainer) {
-		final Coordinate coordinate = new Coordinate();
-
-		for (final AbstractConditionParameter<?> conditionParameter : conditionContainer.getConditionParameter()) {
-			if (conditionParameter.getLibraryType() != LIBRARY_TYPE.UNSTRANDED) {
-				coordinate.setStrand(STRAND.FORWARD);
+	
+	public CoordinateController(final int activeWindowSize, final CoordinateAdvancer coordinateAdvancer) {
+		this(activeWindowSize);
+		this.coordinateAdvancer = coordinateAdvancer;
+	}
+	
+	public CoordinateController(final int activeWindowSize, final ConditionContainer conditionContainer) {
+		this(activeWindowSize);
+		coordinateAdvancer = createCoordinateAdvancer(conditionContainer);
+	}
+	
+	private CoordinateAdvancer createCoordinateAdvancer(
+			final ConditionContainer conditionContainer) {
+		for (final AbstractConditionParameter conditionParameter : conditionContainer.getConditionParameter()) {
+			if (conditionParameter.getLibraryType() != LibraryType.UNSTRANDED) {
 				return new StrandedJumpingCoordinateAdvancer(this, conditionContainer);
 			}
 		}
@@ -74,6 +71,7 @@ public class CoordinateController {
 		}
 
 		active = provider.next();
+		coordinateTranslator = new DynamicCoordinateTranslator(this);
 		updateCoordinateAdvancer(active);
 		return active;
 	}
@@ -116,7 +114,6 @@ public class CoordinateController {
 	}
 
 	private void updateCoordinateAdvancer(final Coordinate coordinate) {
-		coordinateAdvancer.getCurrentCoordinate().setContig(coordinate.getContig());
 		coordinateAdvancer.adjust(coordinate);
 	}
 	
@@ -131,49 +128,18 @@ public class CoordinateController {
 	}
 	
 	public boolean chechWindowPositionWithinActiveWindow(final int windowPosition) {
-		return Coordinate.makeRelativePosition(active, windowPosition) >= 0;
+		return CoordinateUtil.makeRelativePosition(active, windowPosition) >= 0;
 	}
 
-	public int convert2windowPosition(final Coordinate coordinate) {
-		return convert2windowPosition(coordinate.getPosition());
+	public CoordinateTranslator getCoordinateTranslator() {
+		return coordinateTranslator;
 	}
 	
-	public int convert2windowPosition(final int referencePosition) {
-		return Coordinate.makeRelativePosition(active, referencePosition);
-	}
-
-	public int convert2referencePosition(final int windowPosition) {
-		return active.getStart() + windowPosition;
-	}
-
 	public Entry<Integer, STRAND> getStrandedWindowPosition(final Coordinate coordinate) {
-		final int windowPosition = convert2windowPosition(coordinate);
+		final int windowPosition = coordinateTranslator.convert2windowPosition(coordinate);
 		return new SimpleEntry<Integer, STRAND>(windowPosition, coordinate.getStrand());
 	}
 
-	public SharedCache getSharedCache() {
-		if (parameter.getReferenceFile() == null) {
-			return new ComplexSharedCache(getReferenceProvider(), this);
-		} 
-
-		return new SimpleSharedCache(getReferenceProvider(), this);
-	}
-	
-	public ReferenceProvider getReferenceProvider() {
-		if (referenceProvider != null) {
-			return referenceProvider;
-		}
-		
-		if (parameter.getReferenceFile() == null) {
-			referenceProvider = new SimpleMDReferenceProvider(this);
-		} else {
-			referenceProvider = new FileReferenceProvider(parameter.getReferenceFile(), this);
-		}
-		
-		return referenceProvider;
-	}
-	
-	
 	public WindowPositionGuard convert(int referencePosition, int length) {
 		WindowPositionGuard tmp = convert(referencePosition, -1 , length);
 		tmp.readPosition = -1;
@@ -252,19 +218,18 @@ public class CoordinateController {
 			return windowPosition;
 		}
 		
-		public int getWindowEndPosition() {
+		public int getWindowEnd() {
 			return windowPosition + length;
 		}
 		
-		public int getReadEndPosition() {
+		public int getReadEnd() {
 			return readPosition + length;
 		}
 		
-		public int getReferenceEndPosition() {
+		public int getReferenceEnd() {
 			return referencePosition + length;
 		}
 	
-		// FIXME isValid and error windowsPosition >=
 		public boolean isValid() {
 			return windowPosition >= 0 && length > 0;
 		}

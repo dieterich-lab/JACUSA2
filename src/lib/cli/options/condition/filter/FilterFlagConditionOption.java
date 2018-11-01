@@ -4,26 +4,25 @@ import java.util.List;
 
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.parameter.AbstractConditionParameter;
-import lib.data.AbstractData;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class FilterFlagConditionOption<T extends AbstractData> extends AbstractConditionACOption<T> {
+public class FilterFlagConditionOption extends AbstractConditionACOption {
 
 	private static final String OPT = "F";
 	private static final String LONG_OPT = "filter-flags";
 	
-	public FilterFlagConditionOption(final List<AbstractConditionParameter<T>> conditionParameter) {
+	public FilterFlagConditionOption(final List<AbstractConditionParameter> conditionParameter) {
 		super(OPT, LONG_OPT, conditionParameter);
 	}
 
-	public FilterFlagConditionOption(final int conditionIndex, AbstractConditionParameter<T> conditionsParameters) {
-		super(OPT, LONG_OPT, conditionIndex, conditionsParameters);
+	public FilterFlagConditionOption(final int conditionIndex, AbstractConditionParameter conditionParameter) {
+		super(OPT, LONG_OPT, conditionIndex, conditionParameter);
 	}
 	
 	@Override
-	public Option getOption() {
+	public Option getOption(final boolean printExtendedHelp) {
 		String s = new String();
 		
 		int filterFlags = getConditionParameter().getFilterFlags();
@@ -50,8 +49,8 @@ public class FilterFlagConditionOption<T extends AbstractData> extends AbstractC
 	    	if (filterFlags <= 0) {
 	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + filterFlags + " not valid.");
 	    	}
-	    	
-	    	for (final AbstractConditionParameter<T> conditionParameter : getConditionParameters()) {
+
+	    	for (final AbstractConditionParameter conditionParameter : getConditionParameters()) {
 	    		conditionParameter.setFilterFlags(filterFlags);
 	    	}
 	    }

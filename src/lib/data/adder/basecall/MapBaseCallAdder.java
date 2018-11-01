@@ -4,46 +4,47 @@ import java.util.HashMap;
 import java.util.Map;
 
 import htsjdk.samtools.SAMRecord;
+import jacusa.JACUSA;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateUtil.STRAND;
-import lib.data.AbstractData;
-import lib.data.adder.AbstractDataAdder;
-import lib.data.basecall.map.MapBaseCallCount;
-import lib.data.cache.extractor.basecall.BaseCallCountExtractor;
-import lib.data.count.BaseCallCount;
+import lib.data.DataTypeContainer;
+import lib.data.adder.AbstractDataContainerAdder;
+import lib.data.adder.IncrementAdder;
+import lib.data.cache.container.SharedCache;
+import lib.data.cache.fetcher.Fetcher;
+import lib.data.count.basecall.BaseCallCount;
 
-public class MapBaseCallAdder<T extends AbstractData>
-extends AbstractDataAdder<T> 
-implements BaseCallAdder<T> {
+public class MapBaseCallAdder
+extends AbstractDataContainerAdder 
+implements IncrementAdder {
 
-	private final BaseCallCountExtractor<T> baseCallCountExtractor;
+	private final Fetcher<BaseCallCount> bccFetcher;
 	
 	private final Map<Integer, Integer> winPos2coverage;
 	private final Map<Integer, BaseCallCount> winPos2baseCallCount;
 
 	public MapBaseCallAdder(
-			final BaseCallCountExtractor<T> baseCallCountExtractor,
-			final CoordinateController coordinateController) {
+			final Fetcher<BaseCallCount> baseCallCountFetcher,
+			final SharedCache sharedCache) {
 
-		super(coordinateController);
+		super(sharedCache);
 
-		this.baseCallCountExtractor = baseCallCountExtractor;
+		this.bccFetcher = baseCallCountFetcher;
 
-		final int n 			= coordinateController.getActiveWindowSize();
+		final int n 			= getCoordinateController().getActiveWindowSize();
 		winPos2coverage 		= new HashMap<Integer, Integer>(n);
 		winPos2baseCallCount 	= new HashMap<Integer, BaseCallCount>(n);
 	}
 	
 	@Override
-	public void addData(T data, Coordinate coordinate) {
-		final int windowPosition = getCoordinateController().convert2windowPosition(coordinate);
+	public void populate(DataTypeContainer container, Coordinate coordinate) {
+		final int windowPosition = getCoordinateController().getCoordinateTranslator().convert2windowPosition(coordinate);
 		if (getCoverage(windowPosition) == 0) {
 			return;
 		}
 
-		add(windowPosition, coordinate.getStrand(), baseCallCountExtractor.getBaseCallCount(data));
+		add(windowPosition, coordinate.getStrand(), bccFetcher.fetch(container));
 	}
 	
 	protected void add(final int windowPosition, final STRAND strand, final BaseCallCount dest) {
@@ -60,7 +61,7 @@ implements BaseCallAdder<T> {
 
 		int count = 0;
 		if (! winPos2coverage.containsKey(windowPosition)) {
-			winPos2baseCallCount.put(windowPosition, new MapBaseCallCount());
+			winPos2baseCallCount.put(windowPosition, JACUSA.bccFactory.create());
 		} else {
 			count = winPos2coverage.get(windowPosition);
 		}
@@ -79,9 +80,11 @@ implements BaseCallAdder<T> {
 		return winPos2coverage.containsKey(windowPosition) ? winPos2coverage.get(windowPosition) : 0;
 	}
 	
+	/*
 	@Override
 	public BaseCallCount getBaseCallCount(final int windowPosition) {
 		return winPos2baseCallCount.get(windowPosition);
 	}
+	*/
 	
 }

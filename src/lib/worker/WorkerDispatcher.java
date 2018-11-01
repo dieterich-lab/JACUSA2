@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.data.AbstractData;
-import lib.data.result.Result;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.AbstractParameter;
+import lib.io.ResultWriter;
 import lib.io.copytmp.CopyTmpExecuter;
-import lib.method.AbstractMethodFactory;
+import lib.method.AbstractMethod;
 import lib.util.AbstractTool;
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.provider.CoordinateProvider;
 
 /**
  * 
@@ -18,48 +18,59 @@ import lib.util.coordinate.provider.CoordinateProvider;
  *
  * @param <T>
  */
-public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
+public class WorkerDispatcher {
 
-	private final AbstractMethodFactory<T, R> methodFactory;
-	private final CoordinateProvider coordinateProvider;
+	public static final String FILE_SUFFIX = ".filtered";
+	
+	private final AbstractMethod methodFactory;
 
-	private final List<AbstractWorker<T, ?>> workerContainer;
-	private final List<AbstractWorker<T, R>> runningWorkers;
+	private final List<AbstractWorker> workerContainer;
+	private final List<AbstractWorker> runningWorkers;
 
 	private Integer comparisons;
 	private List<Integer> threadIds;
 	
 	// private final ProgressIndicator progressIndicator;
-	private int currentCoordinateIndex;
+	// private int currentCoordinateIndex;
 	
-	public WorkerDispatcher(final AbstractMethodFactory<T, R> methodFactory) {
+	private ResultWriter resultWriter;
+	private ResultWriter filteredResultWriter;
+	
+	public WorkerDispatcher(final AbstractMethod methodFactory) {
 		this.methodFactory = methodFactory;
-		this.coordinateProvider = methodFactory.getCoordinateProvider();
 		
-		final int maxThreads = methodFactory.getParameter().getMaxThreads();
-		workerContainer = new ArrayList<AbstractWorker<T, ?>>(maxThreads);
-		runningWorkers = new ArrayList<AbstractWorker<T, R>>(maxThreads);
+		final AbstractParameter parameter = methodFactory.getParameter();
+		final int maxThreads = parameter.getMaxThreads();
+		workerContainer = new ArrayList<AbstractWorker>(maxThreads);
+		runningWorkers = new ArrayList<AbstractWorker>(maxThreads);
 
 		comparisons = 0;
 		threadIds = new ArrayList<Integer>(10000);
 
 		// progressIndicator = new ProgressIndicator(System.out);
-		currentCoordinateIndex = 0;
+		// currentCoordinateIndex = 0;
+		
+		resultWriter = parameter.getResultFormat().createWriter(parameter.getResultFilename());
+		if (parameter.splitFiltered()) {
+			filteredResultWriter = parameter.getResultFormat().createWriter(parameter.getResultFilename() + FILE_SUFFIX);
+		} else {
+			filteredResultWriter = resultWriter; 
+		}
 	}
 
-	protected synchronized AbstractWorker<T, R> createWorker() {
+	private synchronized AbstractWorker createWorker() {
 		return methodFactory.createWorker(workerContainer.size());
 	}
 	
 	public synchronized Coordinate next() {
-		currentCoordinateIndex++;
+		// currentCoordinateIndex++;
 		
-		Coordinate c = coordinateProvider.next();
+		Coordinate c = methodFactory.getCoordinateProvider().next();
 		return c;
 	}
 
 	public synchronized boolean hasNext() {
-		return coordinateProvider.hasNext();
+		return methodFactory.getCoordinateProvider().hasNext();
 	}
 
 	public int run() throws IOException {
@@ -68,7 +79,7 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 
 		while (hasNext() || ! runningWorkers.isEmpty()) {
 			for (int i = 0; i < runningWorkers.size(); ++i) {
-				final AbstractWorker<T, R> runningWorker = runningWorkers.get(i);
+				final AbstractWorker runningWorker = runningWorkers.get(i);
 				
 				switch (runningWorker.getStatus()) {
 				case FINISHED:
@@ -88,7 +99,7 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 			synchronized (this) {
 				// fill thread container
 				while (runningWorkers.size() < methodFactory.getParameter().getMaxThreads() && hasNext()) {
-					final AbstractWorker<T, R> worker = createWorker();
+					final AbstractWorker worker = createWorker();
 
 					workerContainer.add(worker);
 					runningWorkers.add(worker);
@@ -119,38 +130,57 @@ public class WorkerDispatcher<T extends AbstractData, R extends Result<T>> {
 		return comparisons;
 	}
 
-	protected List<AbstractWorker<T, ?>> getWorkerContainer() {
-		return workerContainer;
+	public ResultWriter getResultWriter() {
+		return resultWriter;
 	}
-
-	protected List<Integer> getThreadIds() {
+	
+	public ResultWriter getFilteredResultWriter() {
+		return filteredResultWriter;
+	}
+	
+	public List<Integer> getThreadIds() {
 		return threadIds;
 	}
 	
-	protected AbstractMethodFactory<T, R> getMethodFactory() {
-		return methodFactory;
+	private List<AbstractConditionParameter> getConditionParameters(){
+		return methodFactory.getParameter().getConditionParameters();
 	}
 	
-	protected void writeOutput() throws IOException {
-		getMethodFactory().getParameter()
-			.getResultWriter().writeHeader(getMethodFactory().getParameter().getConditionParameters());
+	private boolean splitFiltered() {
+		return methodFactory.getParameter().splitFiltered();
+	}
+	
+	private void writeOutput() throws IOException {
+		resultWriter.writeHeader(getConditionParameters());
 		// add header to filtered file
-		if (getMethodFactory().getParameter().isSeparate()) {
-			getMethodFactory().getParameter()
-			.getFilteredResultWriter().writeHeader(getMethodFactory().getParameter().getConditionParameters());
+		if (splitFiltered()) {
+			filteredResultWriter.writeHeader(getConditionParameters());
 		}
 
 		// progressIndicator.print("Merging tmp files:");
 		AbstractTool.getLogger().addInfo("Started merging tmp files...");
-		final CopyTmpExecuter<T> copyTmpExecuter = new CopyTmpExecuter<T>(threadIds, workerContainer);
+		final CopyTmpExecuter copyTmpExecuter = new CopyTmpExecuter(threadIds, workerContainer);
 		copyTmpExecuter.copy();
 		// progressIndicator.print("\nDone!");
 		AbstractTool.getLogger().addInfo("Finished merging tmp files!");
 
 		// close output
-		getMethodFactory().getParameter().getResultWriter().close();
-		if (getMethodFactory().getParameter().getFilteredResultWriter() != null) {
-			getMethodFactory().getParameter().getFilteredResultWriter().close();
+		if (resultWriter != null) {
+			try {
+				resultWriter.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			resultWriter = null;
+		}
+		
+		if (filteredResultWriter != null) {
+			try {
+				filteredResultWriter.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			filteredResultWriter = null;
 		}
 	}
 

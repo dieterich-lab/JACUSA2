@@ -1,121 +1,100 @@
 package jacusa.filter.factory.rtarrest;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
+import jacusa.filter.MaxAlleleFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
-import jacusa.method.rtarrest.RTArrestFactory;
-import jacusa.method.rtarrest.RTArrestFactory.RT_READS;
-import lib.data.AbstractData;
-import lib.data.ParallelData;
-import lib.data.builder.ConditionContainer;
-import lib.data.count.BaseCallCount;
-import lib.data.has.HasArrestBaseCallCount;
-import lib.data.has.HasBaseCallCount;
-import lib.data.has.HasThroughBaseCallCount;
-import lib.util.Util;
+import jacusa.method.rtarrest.RTarrestMethod;
+import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
+import lib.cli.parameter.AbstractConditionParameter;
+import lib.data.DataTypeContainer;
+import lib.data.DataTypeContainer.AbstractBuilder;
+import lib.data.assembler.ConditionContainer;
+import lib.data.cache.container.SharedCache;
+import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
+import lib.data.cache.record.RecordWrapperDataCache;
 import lib.util.coordinate.CoordinateController;
 
-/**
- * 
- * @author Michael Piechotta
- *
- */
-public class RTarrestMaxAlleleCountFilterFactory<T extends AbstractData & HasBaseCallCount & HasArrestBaseCallCount & HasThroughBaseCallCount> 
-extends AbstractFilterFactory<T> {
+public class RTarrestMaxAlleleCountFilterFactory 
+extends AbstractFilterFactory {
 
-	// default value for max alleles
-	private static final int MAX_ALLELES = 2;
-	// chosen value
-	private int alleles;
-	private final Set<RT_READS> apply2reads;
-
-	public RTarrestMaxAlleleCountFilterFactory() {
+	private MaxAlleleCountFilterFactory maxAlleleCountFilterFactory;
+	private final Apply2readsBaseCallCountSwitch bccSwitch;
+	
+	public RTarrestMaxAlleleCountFilterFactory(
+			final Apply2readsBaseCallCountSwitch bccSwitch) {
 		super(MaxAlleleCountFilterFactory.getOptionBuilder().build());
-		alleles 	= MAX_ALLELES;
-		apply2reads = new HashSet<RT_READS>(2);
-		apply2reads.add(RT_READS.ARREST);
+		maxAlleleCountFilterFactory = new MaxAlleleCountFilterFactory(bccSwitch);
+		this.bccSwitch = bccSwitch;
 	}
 
 	@Override
-	public void registerFilter(final CoordinateController coordinateController, ConditionContainer<T> conditionContainer) {
-		conditionContainer.getFilterContainer().addFilter(new MaxAlleleFilter(getC()));
+	public void inidDataTypeContainer(AbstractBuilder builder) {
+		// nothing to do
+	}
+	
+	public int getMaxAlleles() {
+		return maxAlleleCountFilterFactory.getMaxAlleles();
+	}
+	
+	public Set<RT_READS> getApply2Reads() {
+		return Collections.unmodifiableSet(bccSwitch.getApply2reads());
 	}
 
 	@Override
-	public void processCLI(final CommandLine cmd) throws IllegalArgumentException {
-		// format: M:2
+	protected AbstractFilter createFilter(
+			CoordinateController coordinateController,
+			ConditionContainer conditionContainer) {
+		
+		return new MaxAlleleFilter(
+				getC(), 
+				maxAlleleCountFilterFactory.getMaxAlleles(),
+				bccSwitch);
+	}
+	
+	@Override
+	public RecordWrapperDataCache createFilterCache(
+			AbstractConditionParameter conditionParameter,
+			SharedCache sharedCache) {
+
+		return maxAlleleCountFilterFactory.createFilterCache(conditionParameter, sharedCache);
+	}
+	
+	@Override
+	public Set<Option> processCLI(final CommandLine cmd) throws IllegalArgumentException, MissingOptionException {
+		final Set<Option> parsed = maxAlleleCountFilterFactory.processCLI(cmd);
 		for (final Option option : cmd.getOptions()) {
 			final String longOpt = option.getLongOpt();
 			switch (longOpt) {
-			case "maxAlleles":
-				final int alleleCount = Integer.valueOf(cmd.getOptionValue(longOpt));
-				if (alleleCount < 0) {
-					throw new IllegalArgumentException("Invalid allele count: " + longOpt);
-				}
-				break;
-				
 			case "reads": // choose arrest, through or arrest&through
-				final String optionValue = cmd.getOptionValue(longOpt);
-				apply2reads.clear();
-				apply2reads.addAll(RTArrestFactory.processApply2Reads(optionValue));
+				final String readsValue = cmd.getOptionValue(longOpt);
+				bccSwitch.getApply2reads().clear();
+				bccSwitch.getApply2reads().addAll(RTarrestMethod.processApply2Reads(readsValue));
+				parsed.add(option);
 				break;
-
-			default:
-				throw new IllegalArgumentException("Invalid argument: " + longOpt);
 			}
 		}
+		return parsed;
 	}
 	
 	@Override
-	protected Options getOptions() {
-		final Options options = new Options();
-		options.addOption(MaxAlleleCountFilterFactory.getMaxAlleleOptionBuilder(MAX_ALLELES).build());
-		options.addOption(RTArrestFactory.getReadsOptionBuilder(apply2reads).build());
+	public Options getOptions() {
+		final Options options = maxAlleleCountFilterFactory.getOptions();
+		options.addOption(RTarrestMethod.getReadsOptionBuilder(bccSwitch.getApply2reads()).build());
 		return options;
 	}
-	
-	/**
-	 * TODO add comments.
-	 */
-	private class MaxAlleleFilter extends AbstractFilter<T> {
-		
-		public MaxAlleleFilter(final char c) {
-			super(c);
-		}
-		
-		@Override
-		public boolean filter(final ParallelData<T> parallelData) {
-			BaseCallCount baseCallCount = null;
-			if (apply2reads.size() == 2) {
-				baseCallCount = parallelData.getCombinedPooledData().getBaseCallCount();
-			} else {
-				if (apply2reads.contains(RT_READS.ARREST)) {
-					baseCallCount = parallelData.getCombinedPooledData().getArrestBaseCallCount();	
-				} else if (apply2reads.contains(RT_READS.THROUGH)) {
-					baseCallCount = parallelData.getCombinedPooledData().getThroughBaseCallCount();	
-				}
-			}
-
-			return baseCallCount.getAlleles().size() > alleles;
-		}
-
-		@Override
-		public int getOverhang() { 
-			return 0;
-		}
-
-	}
 
 	@Override
-	public void addFilteredData(StringBuilder sb, T data) {
-		sb.append(Util.EMPTY_FIELD);
+	public void addFilteredData(StringBuilder sb, DataTypeContainer filteredData) {
+		maxAlleleCountFilterFactory.addFilteredData(sb, filteredData);
 	}
 	
 }

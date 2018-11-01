@@ -10,7 +10,7 @@ import lib.data.cache.region.RegionDataCache;
 
 public class ProcessReadStartEnd extends AbstractProcessRecord {
 
-	public ProcessReadStartEnd(final int distance, final RegionDataCache<?> regionDataCache) {
+	public ProcessReadStartEnd(final int distance, final RegionDataCache regionDataCache) {
 		super(distance, regionDataCache);
 	}
 

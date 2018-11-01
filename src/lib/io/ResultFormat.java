@@ -1,8 +1,7 @@
 package lib.io;
 
-import lib.data.AbstractData;
-import lib.data.result.Result;
 import lib.io.copytmp.CopyTmpResult;
+import lib.worker.WorkerDispatcher;
 
 /**
  * Interface 
@@ -10,7 +9,7 @@ import lib.io.copytmp.CopyTmpResult;
  * @param <T>
  * @param <R>
  */
-public interface ResultFormat<T extends AbstractData, R extends Result<T>> {
+public interface ResultFormat {
 
 	/**
 	 * TODO add comments.
@@ -32,7 +31,7 @@ public interface ResultFormat<T extends AbstractData, R extends Result<T>> {
 	 * @param filename
 	 * @return
 	 */
-	ResultWriter<T, R> createWriter(String filename);
+	ResultWriter createWriter(String filename);
 	
 	/**
 	 * TOOD add comments.
@@ -40,5 +39,6 @@ public interface ResultFormat<T extends AbstractData, R extends Result<T>> {
 	 * @param threadId
 	 * @return
 	 */
-	CopyTmpResult<T, R> createCopyTmp(int threadId);
+	CopyTmpResult createCopyTmp(int threadId, WorkerDispatcher workerDispatcher);
+
 }

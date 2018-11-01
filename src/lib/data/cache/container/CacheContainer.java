@@ -2,20 +2,21 @@ package lib.data.cache.container;
 
 import java.util.List;
 
-import lib.data.AbstractData;
+import lib.data.DataTypeContainer;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.record.RecordWrapperDataCache;
 import lib.util.coordinate.Coordinate;
 
-public interface CacheContainer<T extends AbstractData> {
+public interface CacheContainer {
 
-	void add(final SAMRecordWrapper recordWrapper);
+	void process(final SAMRecordWrapper recordWrapper);
 	
 	int getNext(final int windowPosition);
-
-	void addData(T data, final Coordinate coordinate);
+	ReferenceProvider getReferenceProvider();
 	
-	List<RecordWrapperDataCache<T>> getCaches();
+	void populateContainer(DataTypeContainer container, final Coordinate coordinate);
+	
+	List<RecordWrapperDataCache> getCaches();
 	void clear();
 	
 }
