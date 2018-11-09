@@ -332,7 +332,7 @@ extends AbstractMethod {
 			add(builder, DataType.ARREST_BCC);
 			add(builder, DataType.THROUGH_BCC);
 			if (parameter.getReadSubstitutions() != null) {
-				add(builder, DataType.BASE_SUBST);
+				addBaseSubstitution(builder);
 			}
 		}
 		

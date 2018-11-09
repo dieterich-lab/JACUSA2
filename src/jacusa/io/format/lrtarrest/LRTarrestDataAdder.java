@@ -5,7 +5,7 @@ import java.util.List;
 
 import htsjdk.samtools.util.StringUtil;
 import lib.data.DataTypeContainer;
-import lib.data.cache.lrtarrest.ArrestPos2BaseCallCount;
+import lib.data.cache.lrtarrest.Position2baseCallCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.result.Result;
 import lib.io.format.bed.DataAdder;
@@ -36,7 +36,7 @@ public class LRTarrestDataAdder implements DataAdder {
 	public void addData(StringBuilder sb, int valueIndex, int conditionIndex, int replicateIndex, Result result) {
 		final List<String> tmp = new ArrayList<String>(4);
 		final DataTypeContainer container = result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
-		final ArrestPos2BaseCallCount ap2bcc = container.getArrestPos2BaseCallCount();
+		final Position2baseCallCount ap2bcc = container.getArrestPos2BaseCallCount();
 		/*
 		if (isArrestPosition(data, valueIndex)) {
 			tmp.add(
@@ -47,10 +47,10 @@ public class LRTarrestDataAdder implements DataAdder {
 		} else {
 			*/
 			tmp.add(
-					bccParser.wrap(ap2bcc.getArrestBaseCallCount(valueIndex)) );
+					bccParser.wrap(ap2bcc.getBaseCallCount(valueIndex)) );
 						
 			tmp.add(
-					bccParser.wrap(ap2bcc.getThroughBaseCallCount(valueIndex)) );
+					bccParser.wrap(ap2bcc.getBaseCallCountDiff(container.getBaseCallCount())) );
 		// }
 		sb.append(Util.FIELD_SEP);
 		sb.append(

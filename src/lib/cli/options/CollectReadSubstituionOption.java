@@ -37,7 +37,7 @@ public class CollectReadSubstituionOption extends AbstractACOption {
 		final String v = line.getOptionValue(getOpt());
 		for (final String s : v.split(Character.toString(SEP))) {
 			final BaseSubstitution baseSubstitution = BaseSubstitution.string2enum(s);
-	    	hasReadReadSubstitution.addReadSubstition(baseSubstitution);
+	    	hasReadReadSubstitution.addReadSubstitution(baseSubstitution);
 		}
 	}
 

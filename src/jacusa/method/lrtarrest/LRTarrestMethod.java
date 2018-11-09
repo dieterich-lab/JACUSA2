@@ -50,11 +50,10 @@ import lib.data.builder.factory.LRTarrestDataAssemblerFactory;
 import lib.data.cache.fetcher.DefaultFilteredDataFetcher;
 import lib.data.cache.fetcher.Fetcher;
 import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.fetcher.TotalBaseCallCountAggregator;
 import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.cache.fetcher.basecall.ArrestBaseCallCountExtractor;
 import lib.data.cache.fetcher.basecall.ThroughBaseCallCountExtractor;
-import lib.data.cache.lrtarrest.ArrestPos2BaseCallCount;
+import lib.data.cache.lrtarrest.Position2baseCallCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
 import lib.data.validator.paralleldata.LRTarrestVariantParallelPileup;
@@ -70,8 +69,8 @@ import org.apache.commons.cli.ParseException;
 public class LRTarrestMethod 
 extends AbstractMethod {
 
-	private final Fetcher<ArrestPos2BaseCallCount> ap2bccFetcher;
-	private final Fetcher<BaseCallCount> totalBccAggregator;
+	private final Fetcher<Position2baseCallCount> ap2bccFetcher;
+	private final Fetcher<BaseCallCount> totalBccFetcher;
 	private final Fetcher<BaseCallCount> arrestBccExtractor;
 	private final Fetcher<BaseCallCount> throughBccExtractor;
 	
@@ -83,12 +82,9 @@ extends AbstractMethod {
 		
 		super(name, parameter, dataAssemblerFactory);
 		ap2bccFetcher = DataType.AP2BCC.getFetcher();
+		totalBccFetcher = DataType.BCC.getFetcher();
 		arrestBccExtractor = new ArrestBaseCallCountExtractor(ap2bccFetcher);
-		throughBccExtractor = new ThroughBaseCallCountExtractor(ap2bccFetcher);
-		totalBccAggregator = new TotalBaseCallCountAggregator(
-				Arrays.asList(
-						arrestBccExtractor, 
-						throughBccExtractor));
+		throughBccExtractor = new ThroughBaseCallCountExtractor(totalBccFetcher, ap2bccFetcher);
 	}
 
 	protected void initGlobalACOptions() {
@@ -172,7 +168,7 @@ extends AbstractMethod {
 		List<AbstractFilterFactory> filterFactories = 
 				new ArrayList<AbstractFilterFactory>(5);
 
-		final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, ArrestPos2BaseCallCount> filteredAp2bccFetcher = 
+		final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, Position2baseCallCount> filteredAp2bccFetcher = 
 				new DefaultFilteredDataFetcher<>(DataType.F_AP2BCC);
 		/* TODO implement homopolymer for LRT
 		final FilteredDataFetcher<BooleanFilteredData, BooleanWrapper> filteredBooleanFetcher =
@@ -183,7 +179,7 @@ extends AbstractMethod {
 				new RTarrestMaxAlleleCountFilterFactory(
 						new Apply2readsBaseCallCountSwitch(
 								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 
-								totalBccAggregator, 
+								totalBccFetcher, 
 								arrestBccExtractor, 
 								throughBccExtractor)));
 		filterFactories.add(
@@ -191,7 +187,7 @@ extends AbstractMethod {
 						getParameter().getConditionsSize(),
 						new Apply2readsBaseCallCountSwitch(
 								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 
-								totalBccAggregator, 
+								totalBccFetcher, 
 								arrestBccExtractor, 
 								throughBccExtractor)));
 
@@ -199,7 +195,7 @@ extends AbstractMethod {
 				new LRTarrestCombinedFilterFactory(
 						new Apply2readsBaseCallCountSwitch(
 								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 
-								totalBccAggregator, 
+								totalBccFetcher, 
 								arrestBccExtractor, 
 								throughBccExtractor),
 						filteredAp2bccFetcher));
@@ -207,7 +203,7 @@ extends AbstractMethod {
 				new LRTarrestINDEL_FilterFactory(
 						new Apply2readsBaseCallCountSwitch(
 								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 
-								totalBccAggregator, 
+								totalBccFetcher, 
 								arrestBccExtractor, 
 								throughBccExtractor),
 						filteredAp2bccFetcher));
@@ -215,7 +211,7 @@ extends AbstractMethod {
 				new LRTarrestSpliceSiteFilterFactory(
 						new Apply2readsBaseCallCountSwitch(
 								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 
-								totalBccAggregator, 
+								totalBccFetcher, 
 								arrestBccExtractor, 
 								throughBccExtractor),
 						filteredAp2bccFetcher));
@@ -258,7 +254,7 @@ extends AbstractMethod {
 	@Override
 	public List<ParallelDataValidator> createParallelDataValidators() {
 		return Arrays.asList(
-				new MinCoverageValidator(totalBccAggregator,
+				new MinCoverageValidator(totalBccFetcher,
 						getParameter().getConditionParameters()),
 				new LRTarrestVariantParallelPileup(ap2bccFetcher) );
 	}
@@ -285,6 +281,7 @@ extends AbstractMethod {
 		
 		@Override
 		protected void addRequired(final AbstractBuilder builder) {
+			add(builder, DataType.BCC);
 			add(builder, DataType.AP2BCC);
 		}
 		

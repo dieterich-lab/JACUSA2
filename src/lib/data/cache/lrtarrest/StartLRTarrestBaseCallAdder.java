@@ -9,7 +9,7 @@ public class StartLRTarrestBaseCallAdder
 extends AbstractLRTarrestBaseCallAdder {
 
 	public StartLRTarrestBaseCallAdder(
-			final Fetcher<ArrestPos2BaseCallCount> arrestPos2BaseCallCountFetcher,
+			final Fetcher<Position2baseCallCount> arrestPos2BaseCallCountFetcher,
 			final SharedCache sharedCache) {
 		
 		super(arrestPos2BaseCallCountFetcher, sharedCache);
@@ -22,7 +22,7 @@ extends AbstractLRTarrestBaseCallAdder {
 			final SAMRecord record) {
 
 		final int arrestPos = record.getAlignmentStart();
-		addBaseCall(referencePosition, arrestPos, base);
+		addBaseCall(referencePosition, windowPosition, arrestPos, base);
 	}
 	
 	

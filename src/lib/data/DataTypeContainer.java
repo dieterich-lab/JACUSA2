@@ -12,7 +12,7 @@ import jacusa.JACUSA;
 import jacusa.filter.factory.AbstractFilterFactory;
 import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.AbstractParameter;
-import lib.data.cache.lrtarrest.ArrestPos2BaseCallCount;
+import lib.data.cache.lrtarrest.Position2baseCallCount;
 import lib.data.count.BaseSubstitutionCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
@@ -35,6 +35,9 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	<T extends Data<T>> T get(DataType<T> dataType);
 	
 	PileupCount getPileupCount();
+	
+	BaseCallCount getBaseCallCount();
+	
 	BaseSubstitutionCount getBaseSubstitutionCount();
 	BaseCallCountFilteredData getBaseCallCountFilteredData();
 	BooleanWrapperFilteredData getBooleanFilteredData();
@@ -42,7 +45,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	BaseCallCount getArrestBaseCallCount();
 	BaseCallCount getThroughBaseCallCount();
 	
-	ArrestPos2BaseCallCount getArrestPos2BaseCallCount();
+	Position2baseCallCount getArrestPos2BaseCallCount();
 	ArrestPos2BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData();
 	
 	<T extends Data<T>> boolean contains(DataType<T> dataType);
@@ -130,6 +133,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		
 	}
 	
+	// FIXME
 	public static class DefaultBuilderFactory extends AbstractBuilderFactory {
 		
 		public DefaultBuilderFactory() {

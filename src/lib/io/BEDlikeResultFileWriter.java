@@ -3,8 +3,10 @@ package lib.io;
 import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.io.format.BaseSubstitutionAdder;
+import jacusa.io.format.BaseSubstitutionBED6adder;
+import jacusa.io.format.BaseSubstitutionDataAdder;
 import jacusa.io.format.FilterDebugAdder;
+import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.ParallelData;
@@ -49,19 +51,19 @@ public class BEDlikeResultFileWriter extends AbstractResultFileWriter {
 	
 	@Override
 	public void writeResult(Result result) {
-		final StringBuilder sb = new StringBuilder();
 		final ParallelData parallelData = result.getParellelData();
-		for (int valueIndex = 0; valueIndex < result.getValues(); ++valueIndex) {
-			bed6Adder.addData(sb, valueIndex, result);
+		for (final int value : result.getValues()) {
+			final StringBuilder sb = new StringBuilder();
+			bed6Adder.addData(sb, value, result);
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
 				final int replicateSize = parallelData.getReplicates(conditionIndex);
 				for (int replicateIndex = 0; replicateIndex < replicateSize; ++replicateIndex) {
-					dataAdder.addData(sb, valueIndex, conditionIndex, replicateIndex, result);
+					dataAdder.addData(sb, value, conditionIndex, replicateIndex, result);
 				}
 			}
-			infoAdder.addData(sb, valueIndex, result);
+			infoAdder.addData(sb, value, result);
+			writeLine(sb.toString());
 		}
-		writeLine(sb.toString());
 	}
 	
 	public static class BEDlikeResultFileWriterBuilder
@@ -108,10 +110,9 @@ public class BEDlikeResultFileWriter extends AbstractResultFileWriter {
 		
 		public BEDlikeResultFileWriterBuilder addBaseSubstition(BaseCallCount.AbstractParser bccParser) {
 			if (parameter.getReadSubstitutions().size() > 0) {
-				dataAdder = new BaseSubstitutionAdder(
-						bccParser, 
-						new ArrayList<>(parameter.getReadSubstitutions()),
-						dataAdder);
+				final List<BaseSubstitution> baseSubs = new ArrayList<>(parameter.getReadSubstitutions()); 
+				bed6adder = new BaseSubstitutionBED6adder(baseSubs, bed6adder);
+				dataAdder = new BaseSubstitutionDataAdder(bccParser, baseSubs, dataAdder);
 			}
 			return this;
 		}

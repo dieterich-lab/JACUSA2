@@ -124,11 +124,15 @@ public class CoordinateController {
 	
 	public boolean checkCoordinateAdvancerWithinActiveWindow() {
 		return checkCoordinateWithinActiveWindow(coordinateAdvancer.getCurrentCoordinate());
-		
 	}
 	
+	public boolean chechReferencePositionWithinActiveWindow(final int referencePosition) {
+		return CoordinateUtil.makeRelativePosition(active, referencePosition) >= 0;
+	}
+	
+	// TODO check
 	public boolean chechWindowPositionWithinActiveWindow(final int windowPosition) {
-		return CoordinateUtil.makeRelativePosition(active, windowPosition) >= 0;
+		return CoordinateUtil.makeRelativePosition(active, active.getStart() + windowPosition) >= 0;
 	}
 
 	public CoordinateTranslator getCoordinateTranslator() {

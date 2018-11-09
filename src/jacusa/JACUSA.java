@@ -1,7 +1,6 @@
 package jacusa;
 
 import jacusa.method.call.CallMethod;
-import jacusa.method.lrtarrest.LRTarrestMethod;
 import jacusa.method.pileup.PileupMethod;
 import jacusa.method.rtarrest.RTarrestMethod;
 
@@ -53,9 +52,9 @@ public class JACUSA extends AbstractTool {
 						// pileup
 						new PileupMethod.Factory(1),
 						// reverse transcription read arrest
-						new RTarrestMethod.Factory(),
+						new RTarrestMethod.Factory()) );
 						// linked reverse transcription read arrest
-						new LRTarrestMethod.Factory()) ); 
+						// new LRTarrestMethod.Factory()) ); 
 	}
 
 	@Override

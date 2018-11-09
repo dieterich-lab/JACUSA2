@@ -13,6 +13,9 @@ import lib.util.Util;
 
 public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Serializable {
 	
+	// empty 
+	static final BaseCallCount EMPTY = new UnmodifiableBaseCallCount(JACUSA.bccFactory.create());
+	
 	int getBaseCall(Base base);
 	Set<Base> getAlleles();
 	
@@ -43,7 +46,7 @@ public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Seriali
 	
 	String toString();
 
-	public static String toString(BaseCallCount baseCallCount) {
+	static String toString(BaseCallCount baseCallCount) {
 		return new ArrayBaseCallCount.Parser(Util.FIELD_SEP, Util.EMPTY_FIELD)
 				.wrap(baseCallCount);
 	}
@@ -52,7 +55,7 @@ public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Seriali
 	 * Parser
 	 */
 	
-	public static abstract class AbstractParser implements lib.util.Parser<BaseCallCount> {
+	static abstract class AbstractParser implements lib.util.Parser<BaseCallCount> {
 
 		public static final char BASE_CALL_SEP = ';';
 		public static final char EMPTY = '*';

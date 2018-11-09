@@ -253,7 +253,7 @@ implements Iterator<ParallelData> {
 		return method.getWorkerDispatcherInstance();
 	}
 	
-	private AbstractParameter getParameter() {
+	protected AbstractParameter getParameter() {
 		return method.getParameter();
 	}
 	

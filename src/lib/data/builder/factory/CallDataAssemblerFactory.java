@@ -37,19 +37,19 @@ extends AbstractSiteDataAssemblerFactory {
 
 		final List<IncrementAdder> adder = new ArrayList<IncrementAdder>();
 
-		final IncrementAdder baseCallQualityAdder = 
+		final IncrementAdder bcqAdder = 
 				new MapBaseCallQualityAdder(sharedCache, pcFetcher);
-		adder.add(baseCallQualityAdder);
+		adder.add(bcqAdder);
 
 		final List<BaseCallValidator> validator = new ArrayList<BaseCallValidator>();
 		validator.add(new DefaultBaseCallValidator());
-		final MinBASQBaseCallValidator minBASQBaseCallValidator = 
+		final MinBASQBaseCallValidator minBASQbcValidator = 
 				new MinBASQBaseCallValidator(conditionParameter.getMinBASQ());
 		if (conditionParameter.getMinBASQ() > 0) {
-			validator.add(minBASQBaseCallValidator);
+			validator.add(minBASQbcValidator);
 		}
 		if (conditionParameter.getMaxDepth() > 0) {
-			validator.add(new MaxDepthBaseCallValidator(conditionParameter.getMaxDepth(), baseCallQualityAdder));
+			validator.add(new MaxDepthBaseCallValidator(conditionParameter.getMaxDepth(), bcqAdder));
 		}
 
 		final ValidatedRegionDataCache regionDataCache = 

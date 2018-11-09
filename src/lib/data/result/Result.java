@@ -1,6 +1,7 @@
 package lib.data.result;
 
 import java.io.Serializable;
+import java.util.SortedSet;
 
 import lib.data.has.HasParallelData;
 import lib.util.Info;
@@ -11,15 +12,16 @@ extends HasParallelData, Serializable {
 	Info getResultInfo();
 	Info getFilterInfo();
 	
-	Info getResultInfo(int valueIndex);
-	Info getFilterInfo(int valueIndex);
+	Info getResultInfo(int value);
+	Info getFilterInfo(int value);
 
 	void setFiltered(boolean isFiltered);
 	boolean isFiltered();
 
-	int getValues();
+	SortedSet<Integer> getValues();
+	int getValueSize();
 	
 	double getStat();
-	double getStat(int valueIndex);
+	double getStat(int value);
 	
 }

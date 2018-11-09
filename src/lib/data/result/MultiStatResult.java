@@ -1,5 +1,11 @@
 package lib.data.result;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import lib.data.ParallelData;
 import lib.util.Info;
 
@@ -8,62 +14,76 @@ implements Result {
 
 	private static final long serialVersionUID = 1L;
 	
-	private final double[] stat;
-	private final Result result;
+	private final Map<Integer, Double> stat;
+	private final ParallelData parallelData;
+	
+	private boolean markedFiltered;
+	private final Map<Integer, Info> filterInfo;
+	private final Map<Integer, Info> resultInfo;
 
-	protected MultiStatResult(final double[] stat, final ParallelData parallelData) {
-		this.stat 	= stat;
-		this.result = ResultFactory.createResult(stat.length, parallelData);
+	protected MultiStatResult(final Map<Integer, Double> stat, final ParallelData parallelData) {
+		this.stat = stat;
+		this.parallelData = parallelData;
+		
+		final int n = stat.size();
+		markedFiltered = false;
+		filterInfo = new HashMap<>(n);
+		resultInfo = new HashMap<>(n);
 	}
 
 	@Override
-	public double getStat(final int valueIndex) {
-		return stat[valueIndex];
+	public double getStat(final int value) {
+		return stat.get(value);
 	}
 
 	@Override
 	public ParallelData getParellelData() {
-		return result.getParellelData();
+		return parallelData;
 	}
 
 	@Override
-	public Info getResultInfo(final int valueIndex) {
-		return result.getResultInfo(valueIndex);
+	public Info getResultInfo(final int value) {
+		return resultInfo.get(value);
 	}
 
 	@Override
-	public Info getFilterInfo(final int valueIndex) {
-		return result.getFilterInfo(valueIndex);
+	public Info getFilterInfo(final int value) {
+		return filterInfo.get(value);
 	}
 
 	@Override
 	public void setFiltered(boolean marked) {
-		result.setFiltered(marked);
+		markedFiltered = marked;
 	}
 
 	@Override
 	public boolean isFiltered() {
-		return result.isFiltered();
+		return markedFiltered;
 	}
 
 	@Override
-	public int getValues() {
-		return result.getValues();
+	public SortedSet<Integer> getValues() {
+		return Collections.unmodifiableSortedSet(new TreeSet<>(stat.keySet()));
 	}
 
+	@Override
+	public int getValueSize() {
+		return stat.size();
+	}
+	
 	@Override
 	public Info getFilterInfo() {
-		return result.getFilterInfo();
+		return null; // TODO
 	}
 	
 	@Override
 	public Info getResultInfo() {
-		return result.getResultInfo();
+		return null; // TODO
 	}
 
 	@Override
 	public double getStat() {
-		return stat[0];
+		return Double.NaN; // TODO
 	}
 	
 }

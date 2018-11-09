@@ -69,7 +69,9 @@ implements IncrementAdder {
 			final Base base, final byte baseQuality,
 			final SAMRecord record) {
 
-		getBaseCallStorage(base)[windowPosition] += 1;
+		if (base != Base.N) {
+			getBaseCallStorage(base)[windowPosition] += 1;
+		}
 	}
 
 	private int[] getBaseCallStorage(final Base base) {
@@ -86,7 +88,7 @@ implements IncrementAdder {
 			
 		case T:
 			return bcT;
-			
+		
 		default:
 			throw new IllegalStateException();
 		}

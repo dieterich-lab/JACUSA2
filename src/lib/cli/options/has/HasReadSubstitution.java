@@ -10,7 +10,7 @@ public interface HasReadSubstitution {
 	public static String READ_SUB_BASES = "read_sub_bases";
 	
 	SortedSet<BaseSubstitution> getReadSubstitutions();
-	void addReadSubstition(BaseSubstitution baseSubstitution);
+	void addReadSubstitution(BaseSubstitution baseSubstitution);
 	
 	public enum BaseSubstitution {
 		

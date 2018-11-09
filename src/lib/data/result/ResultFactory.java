@@ -8,6 +8,7 @@ public final class ResultFactory {
 		throw new AssertionError();
 	}
 	
+	/*
 	public static Result createResult(final ParallelData parallelData) {
 		return createResult(1, parallelData);
 	}
@@ -21,6 +22,7 @@ public final class ResultFactory {
 			throw new IllegalArgumentException("Values cannot to < 1 :" + values);
 		}
 	}
+	*/
 	
 	public static Result createStatResult(final double statValue, final ParallelData parallelData) {
 		return createStatResult(new double[] {statValue}, parallelData);

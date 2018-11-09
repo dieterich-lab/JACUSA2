@@ -92,7 +92,7 @@ implements CopyTmpResult {
 	@Override
 	public void addResult(final Result result) throws Exception {
 		tmpResultWriter.writeResult(result);
-		incrementStoredResults(result.getValues());
+		incrementStoredResults(result.getValues().size());
 	}
 	
 	private void incrementStoredResults(final int lines) {

@@ -148,7 +148,7 @@ implements HasConditionParameter, HasReadSubstitution {
 	}
 	
 	@Override
-	public void addReadSubstition(BaseSubstitution baseSubstitution) {
+	public void addReadSubstitution(BaseSubstitution baseSubstitution) {
 		baseSubstitutions.add(baseSubstitution);
 	}
 	
