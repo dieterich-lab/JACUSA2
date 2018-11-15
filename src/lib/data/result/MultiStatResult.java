@@ -1,8 +1,8 @@
 package lib.data.result;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -13,15 +13,16 @@ public class MultiStatResult
 implements Result {
 
 	private static final long serialVersionUID = 1L;
+	private static final int MAIN_VALUE_INDEX = -1;
 	
-	private final Map<Integer, Double> stat;
+	private final SortedMap<Integer, Double> stat;
 	private final ParallelData parallelData;
 	
 	private boolean markedFiltered;
 	private final Map<Integer, Info> filterInfo;
 	private final Map<Integer, Info> resultInfo;
 
-	protected MultiStatResult(final Map<Integer, Double> stat, final ParallelData parallelData) {
+	protected MultiStatResult(final SortedMap<Integer, Double> stat, final ParallelData parallelData) {
 		this.stat = stat;
 		this.parallelData = parallelData;
 		
@@ -29,11 +30,15 @@ implements Result {
 		markedFiltered = false;
 		filterInfo = new HashMap<>(n);
 		resultInfo = new HashMap<>(n);
+		for (final int valueIndex : stat.keySet()) {
+			filterInfo.put(valueIndex, new Info());
+			resultInfo.put(valueIndex, new Info());			
+		}
 	}
 
 	@Override
-	public double getStat(final int value) {
-		return stat.get(value);
+	public double getStat(final int valueIndex) {
+		return stat.get(valueIndex);
 	}
 
 	@Override
@@ -42,13 +47,13 @@ implements Result {
 	}
 
 	@Override
-	public Info getResultInfo(final int value) {
-		return resultInfo.get(value);
+	public Info getResultInfo(final int valueIndex) {
+		return resultInfo.get(valueIndex);
 	}
 
 	@Override
-	public Info getFilterInfo(final int value) {
-		return filterInfo.get(value);
+	public Info getFilterInfo(final int valueIndex) {
+		return filterInfo.get(valueIndex);
 	}
 
 	@Override
@@ -57,13 +62,13 @@ implements Result {
 	}
 
 	@Override
+	public SortedSet<Integer> getValueIndex() {
+		return new TreeSet<>(stat.keySet());
+	}
+	
+	@Override
 	public boolean isFiltered() {
 		return markedFiltered;
-	}
-
-	@Override
-	public SortedSet<Integer> getValues() {
-		return Collections.unmodifiableSortedSet(new TreeSet<>(stat.keySet()));
 	}
 
 	@Override
@@ -73,17 +78,17 @@ implements Result {
 	
 	@Override
 	public Info getFilterInfo() {
-		return null; // TODO
+		return filterInfo.get(MAIN_VALUE_INDEX);
 	}
 	
 	@Override
 	public Info getResultInfo() {
-		return null; // TODO
+		return resultInfo.get(MAIN_VALUE_INDEX);
 	}
-
+	
 	@Override
 	public double getStat() {
-		return Double.NaN; // TODO
+		return stat.get(MAIN_VALUE_INDEX);
 	}
 	
 }

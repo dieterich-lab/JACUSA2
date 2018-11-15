@@ -145,7 +145,7 @@ implements ResultWriter  {
 		
 		for (final AbstractFilterFactory filterFactory : filterConfig.getFilterFactories()) {
 			final String c = Character.toString(filterFactory.getC());
-			if (result.getFilterInfo().contains(c)) {
+			if (result.getFilterInfo(0).contains(c)) {
 				vcb.filter(c);
 			}
 		}

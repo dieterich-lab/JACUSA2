@@ -6,7 +6,6 @@ import lib.util.Base;
 
 public class DefaultBaseCallValidator implements BaseCallValidator {
 
-
 	@Override
 	public boolean isValid(final int referencePosition, final int windowPosition, final int readPosition, 
 			final Base base, final byte baseQuality,

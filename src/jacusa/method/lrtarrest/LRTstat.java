@@ -4,7 +4,7 @@ import jacusa.method.rtarrest.BetaBin;
 import jacusa.method.rtarrest.BetaBinFactory;
 import lib.data.ParallelData;
 import lib.data.result.Result;
-import lib.data.result.ResultFactory;
+import lib.data.result.OneStatResult;
 import lib.stat.AbstractStat;
 import lib.stat.dirmult.DirMult;
 
@@ -34,7 +34,7 @@ extends AbstractStat {
 	@Override
 	public Result calculate(final ParallelData parallelData) {
 		final double statValue = Double.NaN; 
-		return ResultFactory.createStatResult(statValue, parallelData);
+		return new OneStatResult(statValue, parallelData);
 	}
 	
 	@Override

@@ -32,25 +32,24 @@ public class BaseSubstitutionDataAdder implements DataAdder {
 
 	@Override
 	public void addData(StringBuilder sb, int valueIndex, int conditionIndex, int replicateIndex, Result result) {
-		if (valueIndex == 0) {
-			dataAdder.addData(sb, valueIndex, conditionIndex, replicateIndex, result);
-			return;
+		if (valueIndex >= 0 ) {
+			final BaseSubstitution baseSub = baseSubs.get(valueIndex);
+			final DataTypeContainer combinedPooled = 
+					result.getParellelData().getCombinedPooledData();
+			if (combinedPooled.getBaseSubstitutionCount().get(baseSub).getCoverage() == 0) {
+				return;
+			}
+				
+			final DataTypeContainer container = result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
+			BaseCallCount bcc = container.getBaseSubstitutionCount().get(baseSub);
+			if (bcc == null) {
+				bcc = BaseCallCount.EMPTY;
+			}
+			sb.append(Util.FIELD_SEP);
+			sb.append(bccParser.wrap(bcc));
+		} else {
+			dataAdder.addData(sb, valueIndex, conditionIndex, replicateIndex, result);	
 		}
-		
-		final BaseSubstitution baseSub = baseSubs.get(valueIndex - 1);
-		final DataTypeContainer combinedPooled = 
-				result.getParellelData().getCombinedPooledData();
-		if (combinedPooled.getBaseSubstitutionCount().get(baseSub).getCoverage() == 0) {
-			return;
-		}
-			
-		final DataTypeContainer container = result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
-		BaseCallCount bcc = container.getBaseSubstitutionCount().get(baseSub);
-		if (bcc == null) {
-			bcc = BaseCallCount.EMPTY;
-		}
-		sb.append(Util.FIELD_SEP);
-		sb.append(bccParser.wrap(bcc));
 	}
 	
 }

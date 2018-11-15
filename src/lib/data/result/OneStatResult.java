@@ -1,7 +1,7 @@
 package lib.data.result;
 
-import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import lib.data.ParallelData;
 import lib.util.Info;
@@ -18,13 +18,18 @@ implements Result {
 	private final Info filterInfo;
 	private final Info resultInfo;
 
-	protected OneStatResult(final double stat, final ParallelData parallelData) {
+	private final SortedSet<Integer> valueIndex;
+	
+	public OneStatResult(final double stat, final ParallelData parallelData) {
 		this.stat = stat;
 		this.parallelData = parallelData;
 		
 		markedFiltered = false;
 		filterInfo = new Info();
 		resultInfo = new Info();
+		
+		valueIndex = new TreeSet<>();
+		valueIndex.add(-1);
 	}
 	
 	@Override
@@ -56,15 +61,15 @@ implements Result {
 	public boolean isFiltered() {
 		return markedFiltered;
 	}
-
+	
 	@Override
-	public SortedSet<Integer> getValues() {
-		return null; // TODO
+	public SortedSet<Integer> getValueIndex() {
+		return valueIndex;
 	}
 	
 	@Override
 	public int getValueSize() {
-		return 1;
+		return valueIndex.size();
 	}
 
 	@Override

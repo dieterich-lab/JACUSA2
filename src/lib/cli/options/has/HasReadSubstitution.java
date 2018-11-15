@@ -34,7 +34,7 @@ public interface HasReadSubstitution {
 		private final Base to;
 	    private final String string;
 
-	    public static final String SEP = ">";
+	    public static final String SEP = "";
 	    
 		BaseSubstitution(Base from, Base to) {
 			this.from = from;

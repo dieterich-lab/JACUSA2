@@ -63,9 +63,9 @@ public abstract class AbstractFilter {
 		final ParallelData parallelData = result.getParellelData();
 		// if filter finds artefact, add info to result and return true
 		boolean filter = false;
-		for (final int value : result.getValues()) {
+		for (final int valueIndex : result.getValueIndex()) {
 			if (filter(parallelData)) {
-				addInfo(value, result);
+				addInfo(valueIndex, result);
 				filter = true;
 			}
 		}

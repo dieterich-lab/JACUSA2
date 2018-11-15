@@ -27,6 +27,9 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	public static final DataType<BaseCallCount> THROUGH_BCC = create("Through", BaseCallCount.class);
 	public static final DataType<Position2baseCallCount> AP2BCC = create("Default", Position2baseCallCount.class);
 	public static final DataType<BaseSubstitutionCount> BASE_SUBST = create("Default", BaseSubstitutionCount.class);
+	
+	public static final DataType<BaseSubstitutionCount> ARREST_BASE_SUBST = create("Arrest", BaseSubstitutionCount.class);
+	public static final DataType<BaseSubstitutionCount> THROUGH_BASE_SUBST = create("Through", BaseSubstitutionCount.class);
 
 	public static final DataType<BaseCallCountFilteredData> F_BCC = create("Default", BaseCallCountFilteredData.class);
 	public static final DataType<BooleanWrapperFilteredData> F_BOOLEAN = create("Default", BooleanWrapperFilteredData.class);

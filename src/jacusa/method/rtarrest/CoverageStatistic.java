@@ -2,7 +2,7 @@ package jacusa.method.rtarrest;
 
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
-import lib.data.result.ResultFactory;
+import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 
@@ -27,7 +27,7 @@ extends AbstractStat {
 	public Result calculate(final ParallelData parallelData) {
 		final PileupCount pileupCount = parallelData.getCombinedPooledData().getPileupCount();
 		final int coverage = pileupCount.getBaseCallCount().getCoverage();
-		return ResultFactory.createStatResult(coverage, parallelData);
+		return new OneStatResult(coverage, parallelData);
 	}
 
 	@Override

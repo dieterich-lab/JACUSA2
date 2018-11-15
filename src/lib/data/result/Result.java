@@ -10,18 +10,18 @@ public interface Result
 extends HasParallelData, Serializable {
 	
 	Info getResultInfo();
-	Info getFilterInfo();
+	Info getResultInfo(int valueIndex);
 	
-	Info getResultInfo(int value);
-	Info getFilterInfo(int value);
+	Info getFilterInfo();
+	Info getFilterInfo(int valueIndex);
 
 	void setFiltered(boolean isFiltered);
 	boolean isFiltered();
 
-	SortedSet<Integer> getValues();
+	SortedSet<Integer> getValueIndex();
 	int getValueSize();
 	
 	double getStat();
-	double getStat(int value);
+	double getStat(int valueIndex);
 	
 }

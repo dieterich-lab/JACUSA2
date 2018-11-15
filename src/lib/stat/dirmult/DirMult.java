@@ -8,7 +8,7 @@ import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 import jacusa.estimate.MinkaEstimateDirMultAlpha;
 import lib.stat.dirmult.initalpha.AbstractAlphaInit;
 import lib.data.ParallelData;
-import lib.data.result.ResultFactory;
+import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.stat.AbstractStatFactory;
@@ -148,9 +148,8 @@ extends AbstractStat {
 	
 	@Override
 	public Result calculate(ParallelData parallelData) {
-		final double value = getStatistic(parallelData);
-		final Result statResult = ResultFactory.createStatResult(value, parallelData);
-		return statResult;
+		final double stat = getStatistic(parallelData);
+		return new OneStatResult(stat, parallelData);
 	}
 	
 	@Override

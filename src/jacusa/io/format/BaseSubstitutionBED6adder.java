@@ -32,11 +32,10 @@ public class BaseSubstitutionBED6adder implements BED6adder {
 	public void addData(StringBuilder sb, int valueIndex, Result result) {
 		bed6adder.addData(sb, valueIndex, result);
 		sb.append(Util.FIELD_SEP);
-		sb.append(Util.FIELD_SEP);
-		if (valueIndex == 0) {
+		if (valueIndex == -1) {
 			sb.append(Util.EMPTY_FIELD);
-		} else {
-			sb.append(baseSubs.get(valueIndex - 1).toString());
+		} else if (valueIndex >= 0){
+			sb.append(baseSubs.get(valueIndex).toString());
 		}
 	}	
 }

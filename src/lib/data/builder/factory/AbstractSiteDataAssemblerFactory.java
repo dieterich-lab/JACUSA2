@@ -1,8 +1,13 @@
 package lib.data.builder.factory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 
 import jacusa.filter.FilterContainer;
+import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.DataType;
@@ -13,12 +18,16 @@ import lib.data.assembler.DataAssembler;
 import lib.data.assembler.SiteDataAssembler;
 import lib.data.cache.container.CacheContainer;
 import lib.data.cache.container.SharedCache;
+import lib.data.cache.fetcher.Fetcher;
 import lib.data.cache.fetcher.basecall.BaseCallCountExtractor;
-import lib.data.cache.readsubstitution.StrandedReadSubstitutionCache;
-import lib.data.cache.readsubstitution.UnstrandedReadSubstitutionCache;
+import lib.data.cache.readsubstitution.BaseCallInterpreter;
+import lib.data.cache.readsubstitution.ReadSubstitutionCache;
 import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.region.isvalid.BaseCallValidator;
+import lib.data.cache.region.isvalid.DefaultBaseCallValidator;
+import lib.data.cache.region.isvalid.IntegrateValidator;
 import lib.data.cache.region.isvalid.MinBASQBaseCallValidator;
-import lib.data.has.LibraryType;
+import lib.data.count.basecall.BaseCallCount;
 
 public abstract class AbstractSiteDataAssemblerFactory
 extends AbstractDataAssemblerFactory {
@@ -51,34 +60,38 @@ extends AbstractDataAssemblerFactory {
 			final AbstractConditionParameter conditionParameter,
 			final List<RecordWrapperDataCache> dataCaches) {
 
-		final int baseSubSize = parameter.getReadSubstitutions().size();
-		if (baseSubSize > 0) {
-			final MinBASQBaseCallValidator minBASQBaseCallValidator = 
-					new MinBASQBaseCallValidator(conditionParameter.getMinBASQ());
-			// create base substitution specific counters
-			final IncrementAdder[] substBccAdders = 
-					parameter.getReadSubstitutions().stream()
-					.map(
-							bs -> new DefaultBaseCallAdder(
-									sharedCache, 
-									new BaseCallCountExtractor(bs, DataType.BASE_SUBST.getFetcher())))
-					.toArray(IncrementAdder[]::new);
+		final SortedSet<BaseSubstitution> baseSubs = parameter.getReadSubstitutions();
+		if (baseSubs.size() > 0) {
+			final byte minBASQ = conditionParameter.getMinBASQ();
+			final List<BaseCallValidator> validators = new ArrayList<BaseCallValidator>();
+			validators.add(new DefaultBaseCallValidator());
+			if (minBASQ > 0) {
+				validators.add(new MinBASQBaseCallValidator(minBASQ));
+			}
 
-			if (conditionParameter.getLibraryType() == LibraryType.UNSTRANDED) {
-				dataCaches.add(
-						new UnstrandedReadSubstitutionCache(
-								sharedCache,
-								minBASQBaseCallValidator,
-								parameter.getReadSubstitutions(),
-								substBccAdders) );	
-			} else {
-				dataCaches.add(
-						new StrandedReadSubstitutionCache(
-								sharedCache,
-								minBASQBaseCallValidator,
-								parameter.getReadSubstitutions(),
-								substBccAdders) );
-			}	
+			final BaseCallInterpreter bci = 
+					BaseCallInterpreter.create(conditionParameter.getLibraryType());
+			
+			final Map<BaseSubstitution, IncrementAdder> sub2adder = new HashMap<>(baseSubs.size());
+			for (final BaseSubstitution baseSub : baseSubs) {
+				final Fetcher<BaseCallCount> bccFetcher = 
+						new BaseCallCountExtractor(
+								baseSub, 
+								DataType.BASE_SUBST.getFetcher());
+				final IncrementAdder adder = 
+						new DefaultBaseCallAdder(
+								sharedCache, 
+								bccFetcher);
+				sub2adder.put(baseSub, adder);
+			}
+			
+			dataCaches.add(
+					new ReadSubstitutionCache(
+						sharedCache, 
+						bci, 
+						new IntegrateValidator(validators), 
+						sub2adder) );
+			
 		}
 	}
 	

@@ -1,7 +1,7 @@
 package jacusa.method.rtarrest;
 
 import lib.data.ParallelData;
-import lib.data.result.ResultFactory;
+import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.stat.BetaBinParameter;
@@ -33,7 +33,7 @@ extends AbstractStat {
 		// TODO Auto-generated method stub
 		
 		final double statValue = Double.NaN; 
-		return ResultFactory.createStatResult(statValue, parallelData);
+		return new OneStatResult(statValue, parallelData);
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ extends AbstractStat {
 		if (betaBinParameter.getThreshold() == Double.NaN) {
 			return false;
 		}
-		return statResult.getStat() > betaBinParameter.getThreshold();
+		return statResult.getStat(0) > betaBinParameter.getThreshold();
 	}
 	
 }

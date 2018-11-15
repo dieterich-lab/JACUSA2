@@ -115,10 +115,12 @@ implements RegionDataCache {
 		}
 	}
 
+	// FIXME
 	public void addFirstAdder(final IncrementAdder baseCallAdder) {
 		getAdder().add(0, baseCallAdder);
 	}
 	
+	// FIXME
 	public void addAdder(final IncrementAdder baseCallAdder) {
 		getAdder().add(baseCallAdder);
 	}

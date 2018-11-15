@@ -25,6 +25,7 @@ public class LRTarrestBED6adder implements BED6adder {
 		sb.append("arrest_pos"); // 0-index
 	}
 
+	// FIXME
 	@Override
 	public void addData(StringBuilder sb, int valueIndex, Result result) {
 		bed6Adder.addData(sb, valueIndex, result);

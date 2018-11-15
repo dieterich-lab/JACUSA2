@@ -1,8 +1,5 @@
 package test.lib.data.cache;
 
-import java.util.Arrays;
-import java.util.TreeSet;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -11,17 +8,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.util.CloseableIterator;
-import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
-import lib.data.DataType;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.DefaultBuilderFactory;
-import lib.data.adder.IncrementAdder;
-import lib.data.adder.basecall.DefaultBaseCallAdder;
-import lib.data.cache.fetcher.basecall.BaseCallCountExtractor;
-import lib.data.cache.readsubstitution.AbstractReadSubstitutionCache;
-import lib.data.cache.readsubstitution.StrandedReadSubstitutionCache;
-import lib.data.cache.readsubstitution.UnstrandedReadSubstitutionCache;
-import lib.data.cache.region.isvalid.MinBASQBaseCallValidator;
+import lib.data.cache.readsubstitution.ReadSubstitutionCache;
 import lib.data.has.LibraryType;
 import lib.util.coordinate.Coordinate;
 import test.jacusa.filter.cache.AbstractRecordCacheTest;
@@ -29,12 +18,12 @@ import test.utlis.SAMRecordIterator;
 
 public class BaseSubstitutionPerReadCacheTest extends AbstractRecordCacheTest {
 	
-	private final TreeSet<BaseSubstitution> baseSubstitutions;
-	private final MinBASQBaseCallValidator validator;
+	// private final TreeSet<BaseSubstitution> baseSubstitutions;
+	// private final MinBASQBaseCallValidator validator;
 	
 	public BaseSubstitutionPerReadCacheTest() {
-		baseSubstitutions = new TreeSet<>(Arrays.asList(BaseSubstitution.CtoT));
-		validator = new MinBASQBaseCallValidator((byte)30);
+		// baseSubstitutions = new TreeSet<>(Arrays.asList(BaseSubstitution.CtoT));
+		// validator = new MinBASQBaseCallValidator((byte)30);
 	}
 
 	@BeforeEach
@@ -71,7 +60,8 @@ public class BaseSubstitutionPerReadCacheTest extends AbstractRecordCacheTest {
 		test();
 	}
 	
-	protected AbstractReadSubstitutionCache createTestInstance() {
+	protected ReadSubstitutionCache createTestInstance() {
+		/*
 		final IncrementAdder[] substBccAdders = 
 				baseSubstitutions.stream()
 				.map(
@@ -79,18 +69,21 @@ public class BaseSubstitutionPerReadCacheTest extends AbstractRecordCacheTest {
 								getShareCache(), 
 								new BaseCallCountExtractor(bs, DataType.BASE_SUBST.getFetcher())))
 				.toArray(IncrementAdder[]::new);
+		*/
+		return null; // FIXME
 		
+		/*
 		switch (getLibraryType()) {
 		case RF_FIRSTSTRAND:
 		case FR_SECONDSTRAND:
-			return new StrandedReadSubstitutionCache(
+			return new StrandedBaseCallInterpreter(
 					getShareCache(), 
 					validator, 
 					baseSubstitutions,
 					substBccAdders);
 
 		case UNSTRANDED:
-			return new UnstrandedReadSubstitutionCache(
+			return new UnstrandedBaseCallInterpreter(
 					getShareCache(), 
 					validator, 
 					baseSubstitutions,
@@ -99,6 +92,7 @@ public class BaseSubstitutionPerReadCacheTest extends AbstractRecordCacheTest {
 		default:
 			throw new IllegalArgumentException("Unsupported library type: " + getLibraryType().toString());
 		}
+		*/
 	}
 	
 	@Override

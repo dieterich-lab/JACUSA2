@@ -1,7 +1,7 @@
 package jacusa.method.rtarrest;
 
 import lib.data.ParallelData;
-import lib.data.result.ResultFactory;
+import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 
@@ -28,7 +28,7 @@ extends AbstractStat {
 
 	@Override
 	public Result calculate(final ParallelData parallelData) {
-		return ResultFactory.createStatResult(defaultValue, parallelData);
+		return new OneStatResult(defaultValue, parallelData);
 	}
 
 	@Override

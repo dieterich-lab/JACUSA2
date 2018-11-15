@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
@@ -22,37 +21,33 @@ import lib.data.cache.container.SharedCache;
 import lib.data.cache.record.RecordWrapperDataCache;
 import lib.data.cache.region.isvalid.BaseCallValidator;
 
-public abstract class AbstractReadSubstitutionCache 
+public class ReadSubstitutionCache 
 extends AbstractDataContainerAdder 
 implements RecordWrapperDataCache {
-	
+
+	private final BaseCallInterpreter bci;
 	private final BaseCallValidator validator;
 	
-	private final Map<BaseSubstitution, Integer> baseSub2int;
-	private final IncrementAdder[] substBccAdders;
+	private final Map<BaseSubstitution, IncrementAdder> sub2adder;
 	
 	private final Map<String, SAMRecordWrapper> internalRecordWrapperCache;
 	private final Set<SAMRecordWrapper> externalRecordWrapperCache;
 	
-	public AbstractReadSubstitutionCache(
+	public ReadSubstitutionCache(
 			final SharedCache sharedCache,
+			final BaseCallInterpreter baseCallInterpreter,
 			final BaseCallValidator validator,
-			final SortedSet<BaseSubstitution> baseSubs, 
-			final IncrementAdder[] substBccAdders) {
+			final Map<BaseSubstitution, IncrementAdder> sub2adder) {
 
 		super(sharedCache);
 		
+		bci = baseCallInterpreter;
 		this.validator = validator;
-		baseSub2int = new HashMap<>(baseSubs.size());
-		for (final BaseSubstitution baseSub : baseSubs) {
-			baseSub2int.put(baseSub, baseSub2int.size());
-		}
-		this.substBccAdders = substBccAdders;
+		this.sub2adder = sub2adder;
 
 		internalRecordWrapperCache = new HashMap<>(100);
 		externalRecordWrapperCache = new HashSet<>(100);
 	}
-
 	
 	protected void processSE(final Set<BaseSubstitution> queryBaseSubs, final SAMRecordWrapper recordWrapper) {
 		final Set<BaseSubstitution> observedBaseSubs = collectBaseSubstitutions(queryBaseSubs, recordWrapper);
@@ -77,8 +72,7 @@ implements RecordWrapperDataCache {
 					final Base base = Base.valueOf(record.getReadBases()[readPos]);
 					final byte baseQual = record.getBaseQualities()[readPos];
 					for (final BaseSubstitution observedBaseSub : observedBaseSubs) {
-						final int baseSubIndex = baseSub2int.get(observedBaseSub);
-						substBccAdders[baseSubIndex].increment(
+						sub2adder.get(observedBaseSub).increment(
 								refPos, winPos, readPos, 
 								base, baseQual, 
 								record);
@@ -140,7 +134,7 @@ implements RecordWrapperDataCache {
 	
 	@Override
 	public void processRecordWrapper(final SAMRecordWrapper recordWrapper) {
-		final Set<BaseSubstitution> queryBaseSubs = baseSub2int.keySet();
+		final Set<BaseSubstitution> queryBaseSubs = sub2adder.keySet();
 		if (recordWrapper.getSAMRecord().getReadPairedFlag()) {
 			processPE(queryBaseSubs, recordWrapper);
 		} else {
@@ -148,10 +142,10 @@ implements RecordWrapperDataCache {
 		}
 	}
 	
-	protected abstract Base getReadBase(final SAMRecordWrapper recordWrapper, final int refPos);
-	protected abstract Base getRefBase(final SAMRecordWrapper recordWrapper, final int refPos);
-	
-	protected Set<BaseSubstitution> collectBaseSubstitutions(final Set<BaseSubstitution> queryBaseSubs, final SAMRecordWrapper recordWrapper) {
+	protected Set<BaseSubstitution> collectBaseSubstitutions(
+			final Set<BaseSubstitution> queryBaseSubs, 
+			final SAMRecordWrapper recordWrapper) {
+		
 		final Set<BaseSubstitution> foundBaseSubs = new HashSet<>(queryBaseSubs.size());
 		final SAMRecord record = recordWrapper.getSAMRecord();
 
@@ -167,18 +161,14 @@ implements RecordWrapperDataCache {
 		for (final int refPos : recordWrapper.getRecordReferenceProvider().getMismatchRefPositions()) {			
 			// FIXME embed this information in recordWrapper
 			final int readMismatchPos = record.getReadPositionAtReferencePosition(refPos) - 1;
-			final Base readBase = getReadBase(recordWrapper, readMismatchPos);
+			final Base readBase = bci.getReadBase(recordWrapper, readMismatchPos);
 
-			if (readBase == Base.N) {
-				continue;
-			}
-			
 			final byte readBaseQuality = record.getBaseQualities()[readMismatchPos];
 			if (! validator.isValid(-1, -1, 
 					readMismatchPos, readBase, readBaseQuality, record)) {
 				continue;
 			}
-			final Base refBase = getRefBase(recordWrapper, refPos);
+			final Base refBase = bci.getRefBase(recordWrapper, refPos);
 			// recordWrapper.getRecordReferenceProvider().getReferenceBase(refPos);
 			if (refBase == Base.N) {
 				continue;
@@ -195,15 +185,14 @@ implements RecordWrapperDataCache {
 	
 	@Override
 	public void populate(DataTypeContainer container, Coordinate coordinate) {
-		for (final BaseSubstitution baseSub : baseSub2int.keySet()) {
-			final int baseSubIndex = baseSub2int.get(baseSub);
-			substBccAdders[baseSubIndex].populate(container, coordinate);	
+		for (final BaseSubstitution baseSub : sub2adder.keySet()) {
+			sub2adder.get(baseSub).populate(container, coordinate);	
 		}
 	}
 
 	@Override
 	public void clear() {
-		for (final IncrementAdder substBcc : substBccAdders) {
+		for (final IncrementAdder substBcc : sub2adder.values()) {
 			substBcc.clear();
 		}
 		internalRecordWrapperCache.clear();

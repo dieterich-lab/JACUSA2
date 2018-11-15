@@ -52,16 +52,16 @@ public class BEDlikeResultFileWriter extends AbstractResultFileWriter {
 	@Override
 	public void writeResult(Result result) {
 		final ParallelData parallelData = result.getParellelData();
-		for (final int value : result.getValues()) {
+		for (final int valueIndex : result.getValueIndex()) {
 			final StringBuilder sb = new StringBuilder();
-			bed6Adder.addData(sb, value, result);
+			bed6Adder.addData(sb, valueIndex, result);
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
 				final int replicateSize = parallelData.getReplicates(conditionIndex);
 				for (int replicateIndex = 0; replicateIndex < replicateSize; ++replicateIndex) {
-					dataAdder.addData(sb, value, conditionIndex, replicateIndex, result);
+					dataAdder.addData(sb, valueIndex, conditionIndex, replicateIndex, result);
 				}
 			}
-			infoAdder.addData(sb, value, result);
+			infoAdder.addData(sb, valueIndex, result);
 			writeLine(sb.toString());
 		}
 	}

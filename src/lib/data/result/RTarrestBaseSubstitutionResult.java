@@ -9,39 +9,32 @@ import lib.data.ParallelData;
 import lib.data.count.BaseSubstitutionCount;
 import lib.util.Info;
 
-public class BaseSubstitutionResult implements Result {
+public class RTarrestBaseSubstitutionResult implements Result {
 
 	private static final long serialVersionUID = 1L;
 
 	private final Result result;
-	
+
 	private SortedSet<Integer> valuesIndex;
 	
-	public BaseSubstitutionResult(
+	public RTarrestBaseSubstitutionResult(
 			final SortedSet<BaseSubstitution> baseSubs,
 			final Result result) {
 		
 		this.result = result;
-
+		
+		valuesIndex = new TreeSet<>();
+		valuesIndex.addAll(result.getValueIndex());
+		
 		final DataTypeContainer container = result.getParellelData().getCombinedPooledData();
 		final BaseSubstitutionCount bsc = container.getBaseSubstitutionCount();
-		valuesIndex = process(baseSubs, bsc);
-		valuesIndex.addAll(result.getValueIndex());
-	}
-	
-	private SortedSet<Integer> process(
-			final SortedSet<BaseSubstitution> baseSubs, 
-			final BaseSubstitutionCount baseSubstitutionCount) {
-		
-		final SortedSet<Integer> valuesIndex = new TreeSet<>();
 		int baseSubId = 0;
 		for (final BaseSubstitution baseSub : baseSubs) {
-			if (baseSubstitutionCount.get(baseSub).getCoverage() > 0) {
+			if (bsc.get(baseSub).getCoverage() > 0) {
 				valuesIndex.add(baseSubId);
 			}
 			baseSubId++;
 		}
-		return valuesIndex;
 	}
 	
 	@Override

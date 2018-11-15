@@ -80,11 +80,4 @@ implements IncrementAdder {
 		return winPos2coverage.containsKey(windowPosition) ? winPos2coverage.get(windowPosition) : 0;
 	}
 	
-	/*
-	@Override
-	public BaseCallCount getBaseCallCount(final int windowPosition) {
-		return winPos2baseCallCount.get(windowPosition);
-	}
-	*/
-	
 }

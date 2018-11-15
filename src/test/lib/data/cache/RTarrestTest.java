@@ -13,10 +13,7 @@ import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.util.CloseableIterator;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.DefaultBuilderFactory;
-import lib.data.cache.AbstractRTarrestDataCache;
-import lib.data.cache.FR_SECONDSTRAND_RTarrestDataCache;
-import lib.data.cache.RF_FIRSTSTRAND_RTarrestDataCache;
-import lib.data.cache.UNSTRANDED_RTarrestDataCache;
+import lib.data.cache.arrest.RTarrestDataCache;
 import lib.data.count.basecall.ArrayBaseCallCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.has.LibraryType;
@@ -108,7 +105,8 @@ public class RTarrestTest extends AbstractRecordCacheTest {
 		test();
 	}
 	
-	protected AbstractRTarrestDataCache createTestInstance() {
+	protected RTarrestDataCache createTestInstance() {
+		/*
 		switch (getLibraryType()) {
 		case UNSTRANDED:
 			return new UNSTRANDED_RTarrestDataCache((byte)0, getShareCache() );
@@ -122,6 +120,8 @@ public class RTarrestTest extends AbstractRecordCacheTest {
 		default:
 			throw new IllegalArgumentException("Unsupported library type: " + getLibraryType().toString());
 		}
+		*/
+		return null;
 	}
 	
 	private void add(final String s, List<BaseCallCount> bccs) {
