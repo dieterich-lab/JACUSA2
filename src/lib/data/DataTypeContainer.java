@@ -45,6 +45,9 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	BaseCallCount getArrestBaseCallCount();
 	BaseCallCount getThroughBaseCallCount();
 	
+	BaseSubstitutionCount getArrestBaseSubstitutionCount();
+	BaseSubstitutionCount getThroughBaseSubstitutionCount();
+	
 	Position2baseCallCount getArrestPos2BaseCallCount();
 	ArrestPos2BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData();
 	

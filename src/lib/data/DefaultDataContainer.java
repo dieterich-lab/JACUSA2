@@ -84,6 +84,16 @@ public class DefaultDataContainer implements DataTypeContainer {
 	}
 	
 	@Override
+	public BaseSubstitutionCount getArrestBaseSubstitutionCount() {
+		return get(DataType.ARREST_BASE_SUBST);
+	}
+	
+	@Override
+	public BaseSubstitutionCount getThroughBaseSubstitutionCount() {
+		return get(DataType.THROUGH_BASE_SUBST);
+	}
+	
+	@Override
 	public BooleanWrapperFilteredData getBooleanFilteredData() {
 		return get(DataType.F_BOOLEAN);
 	}

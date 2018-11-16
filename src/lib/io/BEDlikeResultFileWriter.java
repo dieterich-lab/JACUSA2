@@ -1,16 +1,11 @@
 package lib.io;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.io.format.BaseSubstitutionBED6adder;
-import jacusa.io.format.BaseSubstitutionDataAdder;
 import jacusa.io.format.FilterDebugAdder;
-import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.data.ParallelData;
-import lib.data.count.basecall.BaseCallCount;
 import lib.data.result.Result;
 import lib.io.format.bed.BED6adder;
 import lib.io.format.bed.DataAdder;
@@ -108,25 +103,12 @@ public class BEDlikeResultFileWriter extends AbstractResultFileWriter {
 			return this;
 		}
 		
-		public BEDlikeResultFileWriterBuilder addBaseSubstition(BaseCallCount.AbstractParser bccParser) {
-			if (parameter.getReadSubstitutions().size() > 0) {
-				final List<BaseSubstitution> baseSubs = new ArrayList<>(parameter.getReadSubstitutions()); 
-				bed6adder = new BaseSubstitutionBED6adder(baseSubs, bed6adder);
-				dataAdder = new BaseSubstitutionDataAdder(bccParser, baseSubs, dataAdder);
-			}
-			return this;
-		}
-		
-		public BEDlikeResultFileWriterBuilder addFilterDebug() {
+		public BEDlikeResultFileWriter build() {
 			if (parameter.isDebug()) {
 				dataAdder = new FilterDebugAdder(
 						parameter.getFilterConfig().getFilterFactories(),
 						dataAdder);
 			}
-			return this;
-		}
-		
-		public BEDlikeResultFileWriter build() {
 			return new BEDlikeResultFileWriter(this);
 		}
 		

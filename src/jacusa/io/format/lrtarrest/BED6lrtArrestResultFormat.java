@@ -45,8 +45,6 @@ extends AbstractResultFormat {
 						new LRTarrestDataAdder(bccParser))
 				.addInfoAdder(
 						new DefaultInfoAdder(getParameter()))
-				.addBaseSubstition(bccParser)
-				.addFilterDebug()
 				.build();
 	}
 
