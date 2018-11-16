@@ -29,7 +29,7 @@ import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.Fetcher;
 import lib.data.cache.fetcher.FilteredDataFetcher;
 import lib.data.cache.fetcher.SpecificFilteredDataFetcher;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.RegionDataCache;
 import lib.data.cache.region.UniqueTraverse;
 import lib.data.cache.region.isvalid.BaseCallValidator;
@@ -121,7 +121,7 @@ extends AbstractFilterFactory {
 	}
 	
 	@Override
-	public RecordWrapperDataCache createFilterCache(final AbstractConditionParameter conditionParameter,
+	public RecordWrapperProcessor createFilterCache(final AbstractConditionParameter conditionParameter,
 			final SharedCache sharedCache) {
 
 		final List<IncrementAdder> adder = new ArrayList<IncrementAdder>();

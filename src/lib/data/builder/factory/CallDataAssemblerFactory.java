@@ -13,7 +13,7 @@ import lib.data.adder.region.ValidatedRegionDataCache;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.Fetcher;
 import lib.data.cache.record.AlignmentBlockWrapperDataCache;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.isvalid.BaseCallValidator;
 import lib.data.cache.region.isvalid.DefaultBaseCallValidator;
 import lib.data.cache.region.isvalid.MaxDepthBaseCallValidator;
@@ -30,7 +30,7 @@ extends AbstractSiteDataAssemblerFactory {
 		pcFetcher = DataType.PILEUP_COUNT.getFetcher();
 	}
 	
-	protected List<RecordWrapperDataCache> createCaches(
+	protected List<RecordWrapperProcessor> createCaches(
 			final AbstractParameter parameter,
 			final SharedCache sharedCache, 
 			final AbstractConditionParameter conditionParameter) {
@@ -55,7 +55,7 @@ extends AbstractSiteDataAssemblerFactory {
 		final ValidatedRegionDataCache regionDataCache = 
 				new ValidatedRegionDataCache(adder, validator, sharedCache);
 		
-		final List<RecordWrapperDataCache> dataCaches = new ArrayList<RecordWrapperDataCache>(3);
+		final List<RecordWrapperProcessor> dataCaches = new ArrayList<RecordWrapperProcessor>(3);
 		dataCaches.add(new AlignmentBlockWrapperDataCache(regionDataCache));
 		
 		addBaseSubstitution(

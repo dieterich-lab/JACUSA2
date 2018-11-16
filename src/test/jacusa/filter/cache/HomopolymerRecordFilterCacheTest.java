@@ -18,7 +18,7 @@ import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.AbstractBuilderFactory;
 import lib.data.cache.fetcher.DefaultFilteredDataFetcher;
 import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.filter.BooleanWrapper;
 import lib.data.has.LibraryType;
@@ -49,7 +49,7 @@ class HomopolymerRecordFilterCacheTest extends AbstractRecordCacheTest {
 	}
 	
 	/**
-	 * Test method for {@link jacusa.filter.cache.HomopolymerRecordFilterCache#processRecordWrapper(lib.data.builder.recordwrapper.SAMRecordWrapper)}.
+	 * Test method for {@link jacusa.filter.cache.HomopolymerRecordFilterCache#process(lib.data.builder.recordwrapper.SAMRecordWrapper)}.
 	 */
 	@ParameterizedTest(name = "Seq.: {0}, readLength {1}, minLength {2}, and windowSize {3} should be {4}")
 	@CsvSource(delimiter = ' ', value = {
@@ -95,7 +95,7 @@ class HomopolymerRecordFilterCacheTest extends AbstractRecordCacheTest {
 	}
 
 	@Override
-	protected RecordWrapperDataCache createTestInstance() {
+	protected RecordWrapperProcessor createTestInstance() {
 		return new HomopolymerRecordFilterCache(
 				c, filteredDataFetcher, minLength, getShareCache());
 	}

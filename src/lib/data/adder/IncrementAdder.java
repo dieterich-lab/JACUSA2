@@ -4,7 +4,7 @@ import htsjdk.samtools.SAMRecord;
 import lib.util.Base;
 
 public interface IncrementAdder 
-extends DataContainerAdder {
+extends DataContainerPopulator {
 
 	void increment(int referencePosition, int windowPosition, int readPosition, 
 			Base base, byte baseQuality,

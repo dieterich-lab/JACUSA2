@@ -16,7 +16,7 @@ import lib.data.cache.lrtarrest.Position2baseCallCount;
 import lib.data.cache.lrtarrest.EndLRTarrestBaseCallAdder;
 import lib.data.cache.lrtarrest.StartLRTarrestBaseCallAdder;
 import lib.data.cache.record.AlignmentBlockWrapperDataCache;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.isvalid.BaseCallValidator;
 import lib.data.cache.region.isvalid.DefaultBaseCallValidator;
 import lib.data.cache.region.isvalid.MinBASQBaseCallValidator;
@@ -31,7 +31,7 @@ extends AbstractSiteDataAssemblerFactory {
 	}
 
 	@Override
-	public List<RecordWrapperDataCache> createCaches(
+	public List<RecordWrapperProcessor> createCaches(
 			final AbstractParameter parameter,
 			final SharedCache sharedCache, 
 			final AbstractConditionParameter conditionParameter) {
@@ -76,7 +76,7 @@ extends AbstractSiteDataAssemblerFactory {
 		final ValidatedRegionDataCache regionDataCache = 
 				new ValidatedRegionDataCache(adders, validator, sharedCache);
 		
-		final List<RecordWrapperDataCache> dataCaches = new ArrayList<RecordWrapperDataCache>(3);
+		final List<RecordWrapperProcessor> dataCaches = new ArrayList<RecordWrapperProcessor>(3);
 		dataCaches.add(new AlignmentBlockWrapperDataCache(regionDataCache));
 		return dataCaches;
 	}

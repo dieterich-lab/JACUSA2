@@ -20,7 +20,7 @@ import lib.data.DataTypeContainer.AbstractBuilder;
 import lib.data.assembler.ConditionContainer;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.util.coordinate.CoordinateController;
 
 public class RTarrestMaxAlleleCountFilterFactory 
@@ -61,7 +61,7 @@ extends AbstractFilterFactory {
 	}
 	
 	@Override
-	public RecordWrapperDataCache createFilterCache(
+	public RecordWrapperProcessor createFilterCache(
 			AbstractConditionParameter conditionParameter,
 			SharedCache sharedCache) {
 

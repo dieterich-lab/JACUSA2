@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.cache.container.SharedCache;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 
 /**
  * This class holds the instance of filters.
@@ -69,7 +69,7 @@ public class FilterContainer {
 		return Collections.unmodifiableList(new ArrayList<>(filters.values()));
 	}
 	
-	public List<RecordWrapperDataCache> createFilterCaches(final AbstractConditionParameter conditionParameter, final SharedCache sharedCache) {
+	public List<RecordWrapperProcessor> createFilterCaches(final AbstractConditionParameter conditionParameter, final SharedCache sharedCache) {
 		return Collections.unmodifiableList(
 			filterConfig.getFilterFactories().stream()
 				.map(filterFactory -> filterFactory.createFilterCache(conditionParameter, sharedCache))

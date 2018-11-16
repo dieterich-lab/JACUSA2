@@ -8,7 +8,7 @@ import jacusa.filter.cache.Homopolymer.HomopolymerBuilder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.filter.BooleanWrapper;
 import lib.util.Base;
@@ -21,7 +21,7 @@ import lib.util.Base;
 
 public class HomopolymerRecordFilterCache 
 extends AbstractHomopolymerFilterCache
-implements RecordWrapperDataCache {
+implements RecordWrapperProcessor {
 	
 	public HomopolymerRecordFilterCache(
 			final char c,
@@ -33,7 +33,12 @@ implements RecordWrapperDataCache {
 	}
 
 	@Override
-	public void processRecordWrapper(final SAMRecordWrapper recordWrapper) {
+	public void preProcess() {
+		// nothing to be done
+	}
+	
+	@Override
+	public void process(final SAMRecordWrapper recordWrapper) {
 		// we only consider consecutively aligned regions of a read
 		// insertions are currently ignored
 		for (final AlignmentBlock block : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
@@ -46,6 +51,11 @@ implements RecordWrapperDataCache {
 				processAlignmentBlock(referencePosition, readPosition, length, recordWrapper);
 			}
 		}
+	}
+	
+	@Override
+	public void postProcess() {
+		// nothing to be done
 	}
 	
 	/**

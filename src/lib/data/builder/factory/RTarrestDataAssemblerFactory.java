@@ -21,7 +21,7 @@ import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.basecall.BaseCallCountExtractor;
 import lib.data.cache.readsubstitution.BaseCallInterpreter;
 import lib.data.cache.readsubstitution.ReadSubstitutionCache;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.isvalid.BaseCallValidator;
 import lib.data.cache.region.isvalid.DefaultBaseCallValidator;
 import lib.data.cache.region.isvalid.IntegrateValidator;
@@ -36,12 +36,12 @@ extends AbstractSiteDataAssemblerFactory {
 	}
 	
 	@Override
-	public List<RecordWrapperDataCache> createCaches(
+	public List<RecordWrapperProcessor> createCaches(
 			final AbstractParameter parameter,
 			final SharedCache sharedCache, 
 			final AbstractConditionParameter conditionParameter) {
 
-		final List<RecordWrapperDataCache> dataCaches = new ArrayList<>(3);
+		final List<RecordWrapperProcessor> dataCaches = new ArrayList<>(3);
 
 		final byte minBASQ = conditionParameter.getMinBASQ();
 		final LibraryType libraryType = conditionParameter.getLibraryType();
@@ -76,7 +76,7 @@ extends AbstractSiteDataAssemblerFactory {
 		return dataCaches;
 	}
 
-	private RecordWrapperDataCache createDefault(
+	private RecordWrapperProcessor createDefault(
 			final SharedCache sharedCache,
 			final LocationInterpreter locInterpreter, 
 			final List<BaseCallValidator> validators) {
@@ -99,7 +99,7 @@ extends AbstractSiteDataAssemblerFactory {
 		return new RTarrestDataCache(locInterpreter, arrest, through, sharedCache);
 	}
 	
-	private RecordWrapperDataCache createStratifyByBaseSubstitution(
+	private RecordWrapperProcessor createStratifyByBaseSubstitution(
 			final SortedSet<BaseSubstitution> baseSubs,
 			final SharedCache sharedCache,
 			final LocationInterpreter locationInterpreter,

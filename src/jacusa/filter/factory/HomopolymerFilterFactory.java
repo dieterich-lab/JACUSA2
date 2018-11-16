@@ -23,7 +23,7 @@ import lib.data.assembler.ConditionContainer;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.FilteredDataFetcher;
 import lib.data.cache.fetcher.SpecificFilteredDataFetcher;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.filter.BooleanWrapper;
 import lib.util.coordinate.CoordinateController;
@@ -105,7 +105,7 @@ extends AbstractFilterFactory {
 	}
 
 	@Override
-	public RecordWrapperDataCache createFilterCache(
+	public RecordWrapperProcessor createFilterCache(
 			AbstractConditionParameter conditionParameter,
 			SharedCache sharedCache) {
 		

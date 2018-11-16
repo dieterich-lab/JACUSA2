@@ -12,6 +12,6 @@ public interface ProcessRecord {
 	 * 
 	 * @param recordWrapper the read to be processed
 	 */
-	public abstract void processRecord(SAMRecordWrapper recordWrapper);
+	void processRecord(SAMRecordWrapper recordWrapper);
 	
 }

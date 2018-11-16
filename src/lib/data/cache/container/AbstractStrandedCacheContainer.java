@@ -6,7 +6,7 @@ import java.util.List;
 import lib.util.coordinate.Coordinate;
 import lib.data.DataTypeContainer;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 
 public abstract class AbstractStrandedCacheContainer 
 implements CacheContainer {
@@ -43,8 +43,8 @@ implements CacheContainer {
 	}
 	
 	@Override
-	public List<RecordWrapperDataCache> getCaches() {
-		List<RecordWrapperDataCache> caches = new ArrayList<RecordWrapperDataCache>(10);
+	public List<RecordWrapperProcessor> getCaches() {
+		List<RecordWrapperProcessor> caches = new ArrayList<RecordWrapperProcessor>(10);
 		caches.addAll(forwardContainer.getCaches());
 		caches.addAll(reverseContainer.getCaches());
 		return caches;
@@ -57,8 +57,20 @@ implements CacheContainer {
 	}
 	
 	@Override
+	public void preProcess() {
+		forwardContainer.preProcess();
+		reverseContainer.preProcess();
+	}
+	
+	@Override
 	public void process(final SAMRecordWrapper recordWrapper) {
 		getCacheContainer(recordWrapper).process(recordWrapper);
+	}
+	
+	@Override
+	public void postProcess() {
+		forwardContainer.postProcess();
+		reverseContainer.postProcess();
 	}
 	
 	@Override

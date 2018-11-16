@@ -13,7 +13,7 @@ import lib.data.cache.container.RFPairedEnd1CacheContainer;
 import lib.data.cache.container.FRPairedEnd2CacheContainer;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.container.UnstrandedCacheContainter;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 
 public abstract class AbstractDataAssemblerFactory {
 	
@@ -87,21 +87,21 @@ public abstract class AbstractDataAssemblerFactory {
 		return cacheContainer;
 	}
 	
-	protected abstract List<RecordWrapperDataCache> createCaches(
+	protected abstract List<RecordWrapperProcessor> createCaches(
 			final AbstractParameter parameter,
 			final SharedCache sharedCache, 
 			final AbstractConditionParameter conditionParameter);
 	
-	private List<RecordWrapperDataCache> createCaches(
+	private List<RecordWrapperProcessor> createCaches(
 			final AbstractParameter parameter,
 			final FilterContainer filterContainer, 
 			final SharedCache sharedCache, 
 			final AbstractConditionParameter conditionParameter,
 			final int replicateIndex) {
 
-		final List<RecordWrapperDataCache> allCaches	= new ArrayList<RecordWrapperDataCache>(6);
-		final List<RecordWrapperDataCache> dataCaches 	= createCaches(parameter, sharedCache, conditionParameter);
-		final List<RecordWrapperDataCache> filterCaches = filterContainer.createFilterCaches(conditionParameter, sharedCache);
+		final List<RecordWrapperProcessor> allCaches	= new ArrayList<RecordWrapperProcessor>(6);
+		final List<RecordWrapperProcessor> dataCaches 	= createCaches(parameter, sharedCache, conditionParameter);
+		final List<RecordWrapperProcessor> filterCaches = filterContainer.createFilterCaches(conditionParameter, sharedCache);
 		allCaches.addAll(dataCaches);
 		allCaches.addAll(filterCaches);
 		return allCaches;

@@ -18,12 +18,12 @@ import lib.data.adder.AbstractDataContainerAdder;
 import lib.data.adder.IncrementAdder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.SharedCache;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.isvalid.BaseCallValidator;
 
 public class ReadSubstitutionCache 
 extends AbstractDataContainerAdder 
-implements RecordWrapperDataCache {
+implements RecordWrapperProcessor {
 
 	private final BaseCallInterpreter bci;
 	private final BaseCallValidator validator;
@@ -133,13 +133,23 @@ implements RecordWrapperDataCache {
 	}
 	
 	@Override
-	public void processRecordWrapper(final SAMRecordWrapper recordWrapper) {
+	public void preProcess() {
+		// nothing to be done
+	}
+	
+	@Override
+	public void process(final SAMRecordWrapper recordWrapper) {
 		final Set<BaseSubstitution> queryBaseSubs = sub2adder.keySet();
 		if (recordWrapper.getSAMRecord().getReadPairedFlag()) {
 			processPE(queryBaseSubs, recordWrapper);
 		} else {
 			processSE(queryBaseSubs, recordWrapper);
 		}
+	}
+	
+	@Override
+	public void postProcess() {
+		processExternalPE(sub2adder.keySet());
 	}
 	
 	protected Set<BaseSubstitution> collectBaseSubstitutions(

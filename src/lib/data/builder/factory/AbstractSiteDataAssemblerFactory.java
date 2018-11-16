@@ -22,7 +22,7 @@ import lib.data.cache.fetcher.Fetcher;
 import lib.data.cache.fetcher.basecall.BaseCallCountExtractor;
 import lib.data.cache.readsubstitution.BaseCallInterpreter;
 import lib.data.cache.readsubstitution.ReadSubstitutionCache;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.isvalid.BaseCallValidator;
 import lib.data.cache.region.isvalid.DefaultBaseCallValidator;
 import lib.data.cache.region.isvalid.IntegrateValidator;
@@ -58,7 +58,7 @@ extends AbstractDataAssemblerFactory {
 			final AbstractParameter parameter,
 			final SharedCache sharedCache, 
 			final AbstractConditionParameter conditionParameter,
-			final List<RecordWrapperDataCache> dataCaches) {
+			final List<RecordWrapperProcessor> dataCaches) {
 
 		final SortedSet<BaseSubstitution> baseSubs = parameter.getReadSubstitutions();
 		if (baseSubs.size() > 0) {

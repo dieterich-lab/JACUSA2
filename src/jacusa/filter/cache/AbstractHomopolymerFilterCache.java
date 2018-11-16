@@ -6,7 +6,7 @@ import lib.data.DataTypeContainer;
 import lib.data.adder.AbstractDataContainerAdder;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.filter.BooleanWrapper;
 import lib.util.coordinate.Coordinate;
@@ -20,7 +20,7 @@ import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 // <D extends AbstractData & HasBooleanFilterData> 
 public abstract class AbstractHomopolymerFilterCache
 extends AbstractDataContainerAdder
-implements RecordWrapperDataCache {
+implements RecordWrapperProcessor {
 
 	private final char c;
 	private final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher; 

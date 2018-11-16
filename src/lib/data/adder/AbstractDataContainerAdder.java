@@ -5,7 +5,7 @@ import lib.data.cache.container.SharedCache;
 import lib.util.coordinate.CoordinateController;
 
 public abstract class AbstractDataContainerAdder
-implements DataContainerAdder {
+implements DataContainerPopulator {
 	
 	private final SharedCache sharedCache;
 	

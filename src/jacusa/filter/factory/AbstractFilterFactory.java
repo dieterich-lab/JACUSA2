@@ -13,7 +13,7 @@ import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.AbstractBuilder;
 import lib.data.assembler.ConditionContainer;
 import lib.data.cache.container.SharedCache;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 
@@ -77,7 +77,7 @@ public abstract class AbstractFilterFactory {
 	 * @param coordinateController
 	 * @return
 	 */
-	public abstract RecordWrapperDataCache createFilterCache(
+	public abstract RecordWrapperProcessor createFilterCache(
 			final AbstractConditionParameter conditionParameter, final SharedCache sharedCache);
 	
 	public abstract void inidDataTypeContainer(final AbstractBuilder builder);

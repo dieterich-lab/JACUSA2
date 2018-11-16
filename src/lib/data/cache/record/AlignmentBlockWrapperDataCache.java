@@ -7,7 +7,7 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.region.RegionDataCache;
 
 public class AlignmentBlockWrapperDataCache
-implements RecordWrapperDataCache {
+implements RecordWrapperProcessor {
 
 	private final RegionDataCache dataCache;
 	
@@ -15,14 +15,24 @@ implements RecordWrapperDataCache {
 		this.dataCache = regionDataCache;
 	}
 
+	
 	@Override
-	public void processRecordWrapper(final SAMRecordWrapper recordWrapper) {
+	public void preProcess() {
+		// nothing to be done
+	}
+	@Override
+	public void process(final SAMRecordWrapper recordWrapper) {
 		for (final AlignmentBlock alignmentBlock : recordWrapper.getSAMRecord().getAlignmentBlocks()) {
 			final int referencePosition = alignmentBlock.getReferenceStart();
 			final int readPosition = alignmentBlock.getReadStart() - 1;
 			final int length = alignmentBlock.getLength();
 			dataCache.addRegion(referencePosition, readPosition, length, recordWrapper);
 		}
+	}
+	
+	@Override
+	public void postProcess() {
+		// nothing to be done
 	}
 
 	@Override

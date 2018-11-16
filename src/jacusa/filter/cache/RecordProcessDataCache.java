@@ -6,7 +6,7 @@ import java.util.List;
 
 import lib.data.DataTypeContainer;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.RegionDataCache;
 import lib.util.coordinate.Coordinate;
 
@@ -16,7 +16,7 @@ import lib.util.coordinate.Coordinate;
  * @param 
  */
 public class RecordProcessDataCache 
-implements RecordWrapperDataCache {
+implements RecordWrapperProcessor {
 
 	private final RegionDataCache regionDataCache;
 	private final List<ProcessRecord> processRecord;
@@ -30,12 +30,22 @@ implements RecordWrapperDataCache {
 	}
 
 	@Override
-	public void processRecordWrapper(final SAMRecordWrapper recordWrapper) {
+	public void preProcess() {
+		// nothing to be done
+	}
+	
+	@Override
+	public void process(final SAMRecordWrapper recordWrapper) {
 		for (final ProcessRecord p : processRecord) {
 			p.processRecord(recordWrapper);
 		}
 	}
 
+	@Override
+	public void postProcess() {
+		// nothing to be done
+	}
+	
 	@Override
 	public void clear() {
 		regionDataCache.clear();	

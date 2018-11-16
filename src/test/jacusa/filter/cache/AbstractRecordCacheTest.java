@@ -20,7 +20,7 @@ import lib.data.cache.container.ReferenceProvider;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.container.SimpleReferenceProvider;
 import lib.data.cache.container.UnstrandedCacheContainter;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.has.LibraryType;
 import lib.location.CoordinateAdvancer;
 import lib.location.StrandedCoordinateAdvancer;
@@ -72,7 +72,7 @@ public abstract class AbstractRecordCacheTest {
 		recordBuilder = null;
 	}
 	
-	private List<RecordWrapperDataCache> createCaches() {
+	private List<RecordWrapperProcessor> createCaches() {
 		return Arrays.asList(createTestInstance());
 	}
 	
@@ -232,7 +232,7 @@ public abstract class AbstractRecordCacheTest {
 	
 	protected abstract CloseableIterator<SAMRecord> createIterator(
 			final String contig, final int start, final int end);
-	protected abstract RecordWrapperDataCache createTestInstance();
+	protected abstract RecordWrapperProcessor createTestInstance();
 
 	protected abstract void assertEqual(final int windowIndex, final Coordinate current);
 	

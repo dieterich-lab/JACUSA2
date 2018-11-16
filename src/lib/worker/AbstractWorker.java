@@ -101,8 +101,6 @@ implements Iterator<ParallelData> {
 		return isFiltered;
 	}
 	
-	
-	
 	@Override
 	public boolean hasNext() {
 		while (coordinateController.checkCoordinateAdvancerWithinActiveWindow()) {

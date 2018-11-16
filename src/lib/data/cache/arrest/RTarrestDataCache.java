@@ -7,11 +7,11 @@ import lib.data.adder.AbstractDataContainerAdder;
 import lib.data.adder.region.ValidatedRegionDataCache;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.SharedCache;
-import lib.data.cache.record.RecordWrapperDataCache;
+import lib.data.cache.record.RecordWrapperProcessor;
 
 public class RTarrestDataCache 
 extends AbstractDataContainerAdder 
-implements RecordWrapperDataCache {
+implements RecordWrapperProcessor {
 
 	private final LocationInterpreter locInterpreter;
 	
@@ -32,7 +32,12 @@ implements RecordWrapperDataCache {
 	}
 	
 	@Override
-	public void processRecordWrapper(SAMRecordWrapper recordWrapper) {
+	public void preProcess() {
+		// nothing to be done
+	}
+	
+	@Override
+	public void process(SAMRecordWrapper recordWrapper) {
 		for (final Region region : locInterpreter.getArrestRegions(recordWrapper.getSAMRecord())) {
 			arrest.addRegion(
 					region.getReferenceStart(), 
@@ -47,6 +52,11 @@ implements RecordWrapperDataCache {
 					region.getLength(), 
 					recordWrapper);
 		}
+	}
+
+	@Override
+	public void postProcess() {
+		// nothing to be done
 	}
 	
 	@Override
