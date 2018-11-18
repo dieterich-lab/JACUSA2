@@ -61,14 +61,15 @@ extends AbstractDirMultPileupCountProvider {
 		
 		// determine which condition has the variant base
 		if (allelesSize1 > 1 && allelesSize2 == 1 && allelesSizePooled == 2) { // condition1
-			keepConditionIndex 		= 1;
-			changeConditionIndex 	= 0;
-		} else if (allelesSize2 > 1 && allelesSize1 == 1 && allelesSizePooled == 2) { // condition2
 			keepConditionIndex 		= 0;
 			changeConditionIndex 	= 1;
+		} else if (allelesSize2 > 1 && allelesSize1 == 1 && allelesSizePooled == 2) { // condition2
+			keepConditionIndex 		= 1;
+			changeConditionIndex 	= 0;
 		}
 		
-		if (keepConditionIndex >= 0 && changeConditionIndex >= 0) {
+		if (keepConditionIndex >= 0 && 
+				changeConditionIndex >= 0) {
 			// determine common base (shared by both conditions)
 			final Base commonBase = getCommonBase(allelesPooled, pileupCount1, pileupCount2);
 									

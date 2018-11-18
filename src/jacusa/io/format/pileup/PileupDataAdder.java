@@ -29,16 +29,5 @@ public class PileupDataAdder implements DataAdder {
 		final BaseCallCount bcc = container.getPileupCount().getBaseCallCount();
 		sb.append(bccParser.wrap(bcc));
 	}
-
-	/*
-	 * FIXME coverage as stat
-	@Override
-	public String getStatistic(final int valueIndex, final Result result) {
-		final ParallelData parallelData = result.getParellelData();
-		final PileupCount pileupCount = parallelData.getCombinedPooledData().getPileupCount();
-		final int coverage = pileupCount.getBaseCallCount().getCoverage();
-		return Integer.toString(coverage);
-	}
-	*/
 	
 }

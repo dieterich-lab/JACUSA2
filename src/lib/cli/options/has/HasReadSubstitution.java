@@ -7,7 +7,6 @@ import lib.util.Base;
 public interface HasReadSubstitution {
 
 	public static String READ_SUB 		= "read_sub";
-	public static String READ_SUB_BASES = "read_sub_bases";
 	
 	SortedSet<BaseSubstitution> getReadSubstitutions();
 	void addReadSubstitution(BaseSubstitution baseSubstitution);
@@ -34,7 +33,7 @@ public interface HasReadSubstitution {
 		private final Base to;
 	    private final String string;
 
-	    public static final String SEP = "";
+	    public static final String SEP = "2";
 	    
 		BaseSubstitution(Base from, Base to) {
 			this.from = from;
