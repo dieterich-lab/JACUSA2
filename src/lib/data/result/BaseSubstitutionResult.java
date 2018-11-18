@@ -25,11 +25,12 @@ public class BaseSubstitutionResult implements Result {
 
 		final DataTypeContainer container = result.getParellelData().getCombinedPooledData();
 		final BaseSubstitutionCount bsc = container.getBaseSubstitutionCount();
-		valuesIndex = process(baseSubs, bsc);
+		valuesIndex = new TreeSet<>();
 		valuesIndex.addAll(result.getValueIndex());
+		valuesIndex = process(baseSubs, bsc);
 	}
 	
-	private SortedSet<Integer> process(
+	public static SortedSet<Integer> process(
 			final SortedSet<BaseSubstitution> baseSubs, 
 			final BaseSubstitutionCount baseSubstitutionCount) {
 		

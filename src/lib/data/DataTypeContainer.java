@@ -118,9 +118,9 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 					dataType.newInstance());
 		}
 		
-		protected void addBaseSubstitution(final AbstractBuilder builder) {
-			add(builder, DataType.BASE_SUBST);
-			final BaseSubstitutionCount bsc = builder.get(DataType.BASE_SUBST);
+		protected void addBaseSubstitution(final AbstractBuilder builder, final DataType<BaseSubstitutionCount> dataType) {
+			add(builder, dataType);
+			final BaseSubstitutionCount bsc = builder.get(dataType);
 			for (final BaseSubstitution baseSub : parameter.getReadSubstitutions()) {
 				bsc.set(baseSub, JACUSA.bccFactory.create());
 			}

@@ -223,7 +223,7 @@ extends AbstractMethod {
 		protected void addRequired(final AbstractBuilder builder) {
 			add(builder, DataType.PILEUP_COUNT);
 			if (parameter.getReadSubstitutions() != null) {
-				addBaseSubstitution(builder);
+				addBaseSubstitution(builder, DataType.BASE_SUBST);
 			}
 		}
 		

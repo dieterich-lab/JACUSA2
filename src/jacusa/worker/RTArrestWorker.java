@@ -5,7 +5,7 @@ import java.util.SortedSet;
 import jacusa.method.rtarrest.RTarrestMethod;
 import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.ParallelData;
-import lib.data.result.BaseSubstitutionResult;
+import lib.data.result.RTarrestBaseSubstitutionResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.worker.AbstractWorker;
@@ -27,7 +27,7 @@ extends AbstractWorker {
 		
 		final SortedSet<BaseSubstitution> baseSubs = getParameter().getReadSubstitutions();
 		if (! getParameter().getReadSubstitutions().isEmpty()) {
-			return new BaseSubstitutionResult(baseSubs, result);
+			return new RTarrestBaseSubstitutionResult(baseSubs, result);
 		}
 		
 		return result;

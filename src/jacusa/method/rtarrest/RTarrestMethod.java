@@ -331,8 +331,9 @@ extends AbstractMethod {
 		protected void addRequired(final AbstractBuilder builder) {
 			add(builder, DataType.ARREST_BCC);
 			add(builder, DataType.THROUGH_BCC);
-			if (parameter.getReadSubstitutions() != null) {
-				addBaseSubstitution(builder);
+			if (parameter.getReadSubstitutions().size() > 0) {
+				addBaseSubstitution(builder, DataType.ARREST_BASE_SUBST);
+				addBaseSubstitution(builder, DataType.THROUGH_BASE_SUBST);
 			}
 		}
 		

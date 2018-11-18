@@ -6,7 +6,6 @@ import java.util.TreeSet;
 import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.DataTypeContainer;
 import lib.data.ParallelData;
-import lib.data.count.BaseSubstitutionCount;
 import lib.util.Info;
 
 public class RTarrestBaseSubstitutionResult implements Result {
@@ -27,14 +26,14 @@ public class RTarrestBaseSubstitutionResult implements Result {
 		valuesIndex.addAll(result.getValueIndex());
 		
 		final DataTypeContainer container = result.getParellelData().getCombinedPooledData();
-		final BaseSubstitutionCount bsc = container.getBaseSubstitutionCount();
-		int baseSubId = 0;
-		for (final BaseSubstitution baseSub : baseSubs) {
-			if (bsc.get(baseSub).getCoverage() > 0) {
-				valuesIndex.add(baseSubId);
-			}
-			baseSubId++;
-		}
+		valuesIndex.addAll(
+				BaseSubstitutionResult.process(
+						baseSubs, 
+						container.getArrestBaseSubstitutionCount()));
+		valuesIndex.addAll(
+				BaseSubstitutionResult.process(
+						baseSubs, 
+						container.getThroughBaseSubstitutionCount()));		
 	}
 	
 	@Override
