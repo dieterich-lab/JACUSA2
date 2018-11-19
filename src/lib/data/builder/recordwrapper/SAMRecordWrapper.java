@@ -26,8 +26,6 @@ public class SAMRecordWrapper {
 	private final List<Integer> insertions;
 	private final List<Integer> deletions;
 	private final List<Integer> INDELs;
-
-	// TODO private byte[] reference;
 	
 	private RecordReferenceProvider recordRefProvider;
 	
@@ -51,63 +49,6 @@ public class SAMRecordWrapper {
 		return referencePosition >= record.getAlignmentStart() && 
 				referencePosition <= record.getAlignmentEnd();
 	}
-
-	/* TODO remove
-	public byte[] getReferenceBlocks() {
-		if (reference != null) {
-			return reference;
-		}
-		// no MD field :-(
-		if (! record.hasAttribute(SAMTag.MD.name())) {
-			reference = new byte[0];
-			return reference; 
-		}
-		
-		// potential missing number(s)
-		final String MD = "0" + record.getStringAttribute(SAMTag.MD.name()).toUpperCase();
-	
-		// init container size with read length
-		reference = new byte[record.getReadLength()];
-		int destPos = 0;
-		// hack
-		// copy read sequence to reference container / CONCATENATE mapped segments ignore DELs
-		// some base calls, e.g.: insertions will be ignored
-		// reference is independent of read position 
-		for (final AlignmentBlock block : record.getAlignmentBlocks()) {
-			final int srcPos = block.getReadStart() - 1;
-			final int length = block.getLength();
-			System.arraycopy(
-					record.getReadBases(), 
-					srcPos, 
-					reference, 
-					destPos, 
-					length);
-			destPos += length;
-		}
-
-		int position = 0;
-		boolean nextInteger = true;
-		// change to reference base based on MD string
-		// FIXME use pattern
-		for (String e : MD.split("((?<=[0-9]+)(?=[^0-9]+))|((?<=[^0-9]+)(?=[0-9]+))")) {
-			if (nextInteger) { // match
-				// use read sequence
-				int matchLength = Integer.parseInt(e);
-				position += matchLength;
-				nextInteger = false;	
-			} else if (e.charAt(0) == '^') {
-				// ignore deletions from reference
-				nextInteger = true;
-			} else { // mismatch
-				reference[position] = (byte)e.toCharArray()[0];
-				position += 1;
-				nextInteger = true;
-			}
-		}
-
-		return reference;
-	}
-	*/
 
 	public RecordReferenceProvider getRecordReferenceProvider() {
 		if (recordRefProvider == null) {

@@ -36,7 +36,6 @@ import lib.cli.options.ResultFileOption;
 import lib.cli.options.ShowReferenceOption;
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.cli.options.WindowSizeOption;
-import lib.cli.options.condition.MaxDepthConditionOption;
 import lib.cli.options.condition.MinBASQConditionOption;
 import lib.cli.options.condition.MinCoverageConditionOption;
 import lib.cli.options.condition.MinMAPQConditionOption;
@@ -125,7 +124,7 @@ extends AbstractMethod {
 		addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters()));
 		addACOption(new MinBASQConditionOption(getParameter().getConditionParameters()));
 		addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters()));
-		addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters()));
+		// not needed addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters()));
 		addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters()));
 		
 		addACOption(new FilterNHsamTagOption(getParameter().getConditionParameters()));
@@ -138,7 +137,7 @@ extends AbstractMethod {
 			addACOption(new MinMAPQConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			addACOption(new MinBASQConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			addACOption(new MinCoverageConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MaxDepthConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+			// not needed addACOption(new MaxDepthConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			addACOption(new FilterFlagConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			
 			addACOption(new FilterNHsamTagOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
