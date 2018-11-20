@@ -25,7 +25,7 @@ public class UnstrandedLocationInterpreter implements LocationInterpreter {
 			regions.add(getInnerThroughRegion(record));
 		} else {
 			regions.add(getFirstThroughRegion(record));
-			regions.addAll(getThroughRegion(1, size - 1, record));
+			regions.addAll(getThroughRegion(1, size - 2, record));
 			regions.add(getLastThroughRegion(record));
 		}
 

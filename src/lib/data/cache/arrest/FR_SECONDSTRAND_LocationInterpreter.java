@@ -21,7 +21,7 @@ implements LocationInterpreter {
 		final int size = record.getAlignmentBlocks().size();
 		final List<Region> regions = new ArrayList<>(size);
 		regions.add(getFirstThroughRegion(record));
-		regions.addAll(getThroughRegion(1, size, record));
+		regions.addAll(getThroughRegion(1, size - 1, record));
 		return regions;
 	}
 
