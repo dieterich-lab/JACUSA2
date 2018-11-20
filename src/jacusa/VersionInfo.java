@@ -2,7 +2,7 @@ package jacusa;
 
 public final class VersionInfo {
 
-	public final static String BRANCH 	= "generic_container";
+	public final static String BRANCH 	= "master";
 	public final static String TAG 		= "2.0.0-BETA28";
 
 	private VersionInfo() {

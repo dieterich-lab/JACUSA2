@@ -82,7 +82,7 @@ public interface LocationInterpreter {
 			final int size, 
 			final SAMRecord record) {
 		
-		final int endIndex = startIndex + size + 1;
+		final int endIndex = startIndex + size;
 		final List<Region> regions = new ArrayList<>(size);
 		for (int i = startIndex; i < endIndex; ++i) {
 			final AlignmentBlock block = record.getAlignmentBlocks().get(i);
