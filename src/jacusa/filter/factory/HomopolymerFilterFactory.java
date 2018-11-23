@@ -42,7 +42,7 @@ extends AbstractFilterFactory {
 	
 	private final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredBooleanFetcher;
 	private final DataType<BooleanWrapperFilteredData> dataType;
-	
+
 	public HomopolymerFilterFactory(final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher) {
 		super(getOptionBuilder().build());
 		length = MIN_HOMOPOLYMER_LENGTH;
@@ -112,10 +112,10 @@ extends AbstractFilterFactory {
 		switch (homopolymerMethod) {
 		case REFERENCE:
 			return new HomopolymerReferenceFilterCache(
-					getC(), 
-					filteredBooleanFetcher, 
-					length, 
-					sharedCache);
+						getC(), 
+						filteredBooleanFetcher, 
+						length, 
+						sharedCache);
 
 		case READ:
 			return new HomopolymerRecordFilterCache(
@@ -130,7 +130,7 @@ extends AbstractFilterFactory {
 	}
 	
 	@Override
-	public void inidDataTypeContainer(AbstractBuilder builder) {
+	public void initDataTypeContainer(AbstractBuilder builder) {
 		if (! builder.contains(dataType)) { 
 			builder.with(dataType);
 		}

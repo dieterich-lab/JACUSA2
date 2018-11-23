@@ -67,10 +67,10 @@ public class FilterConfig implements Cloneable {
 	/**
 	 * Indicates if any filter has been configured.
 	 * 
-	 * @return true if any filter has been added
+	 * @return true if at least one filter has been added
 	 */
 	public boolean hasFiters() {
-		return c2factory.size() > 0;
+		return ! c2factory.isEmpty();
 	}
 
 	/**

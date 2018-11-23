@@ -77,7 +77,7 @@ extends AbstractFilterFactory {
 	}
 	
 	@Override
-	public void inidDataTypeContainer(AbstractBuilder builder) {
+	public void initDataTypeContainer(AbstractBuilder builder) {
 		// not needed
 	}
 	

@@ -71,10 +71,6 @@ implements RecordWrapperProcessor {
 	@Override
 	public void populate(DataTypeContainer container, Coordinate coordinate) {
 		final int windowPosition = getCoordinateController().getCoordinateTranslator().convert2windowPosition(coordinate);
-		if (windowPosition < 0) {
-			return;
-		}
-		
 		filteredDataFetcher.fetch(container).add(
 				c, 
 				new BooleanWrapper(isHomopolymer[windowPosition]));

@@ -80,7 +80,7 @@ public abstract class AbstractFilterFactory {
 	public abstract RecordWrapperProcessor createFilterCache(
 			final AbstractConditionParameter conditionParameter, final SharedCache sharedCache);
 	
-	public abstract void inidDataTypeContainer(final AbstractBuilder builder);
+	public abstract void initDataTypeContainer(final AbstractBuilder builder);
 	
 	/**
 	 * TODO add comments.

@@ -10,6 +10,7 @@ import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.filter.BooleanWrapper;
 import lib.util.Base;
+import lib.util.coordinate.Coordinate;
 
 /**
  * TODO add comments
@@ -37,12 +38,12 @@ implements RecordWrapperProcessor {
 
 	@Override
 	public void preProcess() {
-		final int windowLength = getCoordinateController().getActive().getEnd() - getCoordinateController().getActive().getStart() + 1; 
+		final int windowLength = getCoordinateController().getActive().getLength();
 		cacheWindowPosition(0, windowLength, getMinLength());
-		
+
 		// left of window
 		int referenceStart 	= getCoordinateController().getActive().getStart();
-		referenceStart 		= Math.min(1, referenceStart - (getMinLength() - 1));
+		referenceStart 		= Math.max(1, referenceStart - (getMinLength() - 1));
 		int referenceEnd 	= getCoordinateController().getActive().getStart() + getMinLength();
 		cacheReferencePosition(referenceStart, referenceEnd, getMinLength());
 		
@@ -61,7 +62,7 @@ implements RecordWrapperProcessor {
 		final HomopolymerBuilder builder = new HomopolymerBuilder(windowPositionStart, minLength);
 		
 		// within window
-		for (int position = windowPositionStart; position <= windowPositionEnd; position++) {
+		for (int position = windowPositionStart; position < windowPositionEnd; position++) {
 			final Base base = getReferenceProvider().getReferenceBase(position);
 			builder.add(base);
 		}
@@ -74,8 +75,10 @@ implements RecordWrapperProcessor {
 	private void cacheReferencePosition(final int referenceStart, final int referenceEnd, final int minLength) {
 		final HomopolymerBuilder builder = new HomopolymerBuilder(referenceStart, minLength);
 
+		final Coordinate coordinate = new Coordinate(getCoordinateController().getActive().getContig(), referenceStart, referenceStart);
 		for (int position = referenceStart; position <= referenceEnd; position++) {
-			final Base base = getReferenceProvider().getReferenceBase(position);
+			coordinate.setPosition(position);
+			final Base base = getReferenceProvider().getReferenceBase(coordinate);
 			builder.add(base);
 		}
 

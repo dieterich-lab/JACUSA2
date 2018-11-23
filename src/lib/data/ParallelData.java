@@ -238,8 +238,7 @@ implements HasCoordinate, HasLibraryType, Copyable<ParallelData>, Serializable {
 			throw new IllegalArgumentException();
 		}
 
-		final List<Base> bases = new ArrayList<Base>(alleles.size());
-
+		final Set<Base> variantBases = new HashSet<Base>(alleles.size());
 		for (final Base base : alleles) {
 			int n = 0;
 			for (final BaseCallCount bcc : bccs) {
@@ -248,16 +247,11 @@ implements HasCoordinate, HasLibraryType, Copyable<ParallelData>, Serializable {
 				}
 			}
 			if (n < bccs.size()) {
-				bases.add(base);
+				variantBases.add(base);
 			}
 		}
 
-		final Set<Base> variantBaseIs = new HashSet<Base>(bases.size());
-		for (int i = 0; i < bases.size(); ++i) {
-			variantBaseIs.add(bases.get(i));
-		}
-
-		return variantBaseIs;
+		return variantBases;
 	}
 
 	@Override

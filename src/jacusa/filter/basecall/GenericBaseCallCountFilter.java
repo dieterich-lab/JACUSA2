@@ -50,7 +50,7 @@ extends AbstractFilter {
 			final BaseCallCount bcc = observedBccFetcher.fetch(parallelData.getCombinedPooledData());
 			final Set<Base> alleles = bcc.getAlleles();
 			final List<BaseCallCount> bccs = Fetcher.apply(observedBccFetcher, parallelData.getCombinedData());
-			ParallelData.getVariantBases(alleles, bccs);
+			variantBases = ParallelData.getVariantBases(alleles, bccs);
 		}
 
 		return filter(variantBases, parallelData);

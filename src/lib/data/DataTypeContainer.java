@@ -108,6 +108,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			addRequired(builder);
 			if (parameter.getFilterConfig().hasFiters()) {
 				addFilters(builder);
+				initFilterDataTypes(builder);
 			}
 			return builder;
 		}
@@ -127,10 +128,11 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		}
 		
 		protected abstract void addRequired(final AbstractBuilder builder);
+		protected abstract void addFilters(final AbstractBuilder builder);
 		
-		protected void addFilters(final AbstractBuilder builder) {
+		private void initFilterDataTypes(final AbstractBuilder builder) {
 			for (final AbstractFilterFactory filterFactory : parameter.getFilterConfig().getFilterFactories()) {
-				filterFactory.inidDataTypeContainer(builder);
+				filterFactory.initDataTypeContainer(builder);
 			}
 		}
 		
