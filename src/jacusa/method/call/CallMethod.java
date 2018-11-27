@@ -5,6 +5,7 @@ import jacusa.cli.options.StatFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.CallParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.ExcludeSiteFilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
@@ -117,7 +118,7 @@ extends AbstractMethod {
 		addACOption(new MaxThreadOption(getParameter()));
 		addACOption(new WindowSizeOption(getParameter()));
 		addACOption(new ThreadWindowSizeOption(getParameter()));
-		
+
 		addACOption(new CollectReadSubstituionOption(getParameter()));
 		
 		addACOption(new BedCoordinatesOption(getParameter()));
@@ -181,6 +182,7 @@ extends AbstractMethod {
 				new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN);
 		
 		final List<AbstractFilterFactory> filterFactories = Arrays.asList(
+				new ExcludeSiteFilterFactory(),
 				new CombinedFilterFactory(
 						bccFetcher,
 						filteredBccData),

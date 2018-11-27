@@ -1,6 +1,7 @@
 package lib.cli;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lib.cli.options.AbstractACOption;
@@ -29,6 +30,10 @@ public class CLI {
 		printExtendedHelp = false;
 	}
 
+	public List<AbstractMethod.AbstractFactory> getMethodFactories() {
+		return Collections.unmodifiableList(methodFactories);
+	}
+	
 	private void printVersion(final String[] args) {
 		// check if version should be printed
 		final ShowVersionOption showVersion = new ShowVersionOption();

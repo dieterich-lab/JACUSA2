@@ -5,6 +5,7 @@ import jacusa.cli.options.StatFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.RTarrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.ExcludeSiteFilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.distance.rtarrest.RTarrestCombinedFilterFactory;
 import jacusa.filter.factory.distance.rtarrest.RTarrestINDEL_FilterFactory;
@@ -175,6 +176,7 @@ extends AbstractMethod {
 				new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN);
 		
 		final List<AbstractFilterFactory> filterFactories = Arrays.asList(
+				new ExcludeSiteFilterFactory(),
 				new RTarrestCombinedFilterFactory(
 						new Apply2readsBaseCallCountSwitch(
 								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 

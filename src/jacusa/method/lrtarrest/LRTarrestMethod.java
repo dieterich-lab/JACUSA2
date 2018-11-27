@@ -5,6 +5,7 @@ import jacusa.cli.options.StatFilterOption;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.LRTarrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.ExcludeSiteFilterFactory;
 import jacusa.filter.factory.distance.lrtarrest.LRTarrestCombinedFilterFactory;
 import jacusa.filter.factory.distance.lrtarrest.LRTarrestINDEL_FilterFactory;
 import jacusa.filter.factory.distance.lrtarrest.LRTarrestSpliceSiteFilterFactory;
@@ -174,6 +175,8 @@ extends AbstractMethod {
 		final FilteredDataFetcher<BooleanFilteredData, BooleanWrapper> filteredBooleanFetcher =
 				new DefaultFilteredDataFetcher<>(builderFactory.getBooleanCountFilteredData());
 		 */
+		
+		filterFactories.add(new ExcludeSiteFilterFactory());
 		
 		filterFactories.add(
 				new RTarrestMaxAlleleCountFilterFactory(

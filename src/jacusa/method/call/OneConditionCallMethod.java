@@ -2,6 +2,7 @@ package jacusa.method.call;
 
 import jacusa.cli.parameters.CallParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.ExcludeSiteFilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.basecall.CombinedFilterFactory;
@@ -51,6 +52,7 @@ extends CallMethod {
 				new DefaultFilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper>(DataType.F_BOOLEAN);
 		
 		final List<AbstractFilterFactory> filterFactories = Arrays.asList(
+				new ExcludeSiteFilterFactory(),
 				new CombinedFilterFactory(
 						getBaseCallCountFetcher(),
 						filteredBccData),

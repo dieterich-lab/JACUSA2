@@ -23,6 +23,9 @@ public class LRTarrestBED6adder implements BED6adder {
 		bed6Adder.addHeader(sb);
 		sb.append(Util.FIELD_SEP);
 		sb.append("arrest_pos"); // 0-index
+		// TODO
+		// arrest_pos
+		// subst_pos
 	}
 
 	// FIXME

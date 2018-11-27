@@ -3,6 +3,7 @@ package jacusa.method.pileup;
 import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.PileupParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.ExcludeSiteFilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
@@ -154,6 +155,7 @@ extends AbstractMethod {
 				new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN);
 		
 		final List<AbstractFilterFactory> filterFactories = Arrays.asList(
+				new ExcludeSiteFilterFactory(),
 				new CombinedFilterFactory(
 						bccFetcher,
 						filteredBccData),
