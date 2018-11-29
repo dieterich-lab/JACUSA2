@@ -138,8 +138,7 @@ public final class Util {
 			return null;
 		}
 
-		line = line.replaceAll(Character.toString(Util.WITHIN_FIELD_SEP), Character.toString(Util.WITHIN_FIELD_SEP)+"--");
-		final String[] args = line.split(Character.toString(Util.WITHIN_FIELD_SEP));
+		final String[] args = line.split("\\s+");
 		final CommandLineParser parser = new DefaultParser();
 		
 		CommandLine cmd = null;
@@ -152,7 +151,7 @@ public final class Util {
 	}
 	
 	public static void adjustOption(final org.apache.commons.cli.Option option, final Options options, final int padding) {
-		adjustOption(option, options, padding, 60);
+		adjustOption(option, options, padding, 70);
 	}
 	
 	public static void adjustOption(final org.apache.commons.cli.Option option, final Options options, final int padding, final int width) {

@@ -57,8 +57,8 @@ public class FilterConfigOption extends AbstractACOption {
 		final String argName = "FEATURE-FILTER";
 		String desc = new String();
 		if (printExtendedHelp) {
-			desc = "chain of " + argName + "; Separate " + argName + " with '" + OR + "' and options with ':'\n" +
-					"e.g.: D" + OR + "I:OPTION1:OPTION2=VALUE2\n" + 
+			desc = "Chain of " + argName + ". Join " + argName + " D and I with '" + OR + "' and add options with ':'\n" +
+					"e.g.: D" + OR + "I:I_OPTION1:I_OPTION2=I_VALUE2\n" + 
 					sb.toString();
 		} else {
 			desc = HelpOption.SHORT_MSG;
@@ -84,7 +84,7 @@ public class FilterConfigOption extends AbstractACOption {
 			final AbstractFilterFactory filterFactory = filterFactories.get(c);
 			if (a.length() > 1) {
 				a = a.substring(1);
-				filterFactory.processCLI(a.replaceAll(":", "--"));
+				filterFactory.processCLI(a.replaceAll(":", " --").trim());
 			}
 			parameters.getFilterConfig().addFactory(filterFactory);
 		}

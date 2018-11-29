@@ -24,11 +24,11 @@ public class CollectReadSubstituionOption extends AbstractACOption {
 				.hasArg(true)
 				.desc(
 						"Count non-reference base substitution per read.\n" +
-						"Requires that all conditions have stranded library type.\n" +
-						"(Format for T to C mismatches e.g.: " + 
+						"Requires stranded library type.\n" +
+						"(Format for T to C mismatch: " + 
 						"T" + HasReadSubstitution.BaseSubstitution.SEP + "C; " +
 						"use '" + SEP + "' to separate substitutions)\n"+
-						"default: none" )
+						"Default: none" )
 				.build();
 	}
 

@@ -38,7 +38,7 @@ extends AbstractFilterFactory {
 
 	// chosen length of homopolymer
 	private int length;
-	private HomopolymerMethod homopolymerMethod;
+	private HomopolymerMethod method;
 	
 	private final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredBooleanFetcher;
 	private final DataType<BooleanWrapperFilteredData> dataType;
@@ -46,7 +46,7 @@ extends AbstractFilterFactory {
 	public HomopolymerFilterFactory(final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher) {
 		super(getOptionBuilder().build());
 		length = MIN_HOMOPOLYMER_LENGTH;
-		homopolymerMethod = HOMOPOLYMER_METHOD;
+		method = HOMOPOLYMER_METHOD;
 		
 		this.filteredBooleanFetcher = filteredDataFetcher;
 		dataType = filteredDataFetcher.getDataType();
@@ -82,6 +82,7 @@ extends AbstractFilterFactory {
 	public Options getOptions() {
 		final Options options = new Options();
 		options.addOption(getHomopolymerOptionBuilder().build());
+		options.addOption(getHomopolymerMethodBuilder().build());
 		return options;
 	}
 	
@@ -94,9 +95,18 @@ extends AbstractFilterFactory {
 			case "length":
 				final int length = Integer.valueOf(cmd.getOptionValue(longOpt));
 				if (length <= 0) {
-					throw new IllegalArgumentException("Invalid length: " + longOpt);
+					throw new IllegalArgumentException("Invalid argument for " + longOpt + ": " + length);
 				}
 				this.length = length;
+				parsed.add(option);
+				break;
+
+			case "method":
+				final HomopolymerMethod method = HomopolymerMethod.valueOf(cmd.getOptionValue(longOpt));
+				if (method == null) {
+					throw new IllegalArgumentException("Invalid argument for " + longOpt + ": " + method);
+				}
+				this.method = method;
 				parsed.add(option);
 				break;
 			}
@@ -109,7 +119,7 @@ extends AbstractFilterFactory {
 			AbstractConditionParameter conditionParameter,
 			SharedCache sharedCache) {
 		
-		switch (homopolymerMethod) {
+		switch (method) {
 		case REFERENCE:
 			return new HomopolymerReferenceFilterCache(
 						getC(), 
@@ -125,7 +135,7 @@ extends AbstractFilterFactory {
 					sharedCache);
 			
 		default:
-			throw new IllegalArgumentException("Unknown Homopolymer method: " + homopolymerMethod.toString());
+			throw new IllegalArgumentException("Unknown Homopolymer method: " + method.toString());
 		}
 	}
 	

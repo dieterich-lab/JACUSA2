@@ -19,7 +19,7 @@ public class FilterModusOption extends AbstractACOption {
 	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
 				.hasArg(false)
-		        .desc("Put feature-filtered results in to an other file (= RESULT-FILE" + 
+		        .desc("Store feature-filtered results in another file (= RESULT-FILE" + 
 		        		WorkerDispatcher.FILE_SUFFIX + ")")
 		        .build();
 	}

@@ -46,7 +46,6 @@ extends AbstractFilterFactory {
 	
 	public ExcludeSiteFilterFactory() {
 		super(getOptionBuilder().build());
-
 		fileType = FileType.AUTO;
 	}
 
@@ -150,7 +149,7 @@ extends AbstractFilterFactory {
 	
 	public static Builder getOptionBuilder() {
 		return Option.builder(Character.toString('E'))
-				.desc("Exclude sites contained in file (VCF, BED, or JACUSA 2.x output");
+				.desc("Exclude sites contained in file (VCF, BED, or JACUSA 2.x output).");
 	}
 
 	public Builder getFileNameOptionBuilder() {
@@ -159,7 +158,7 @@ extends AbstractFilterFactory {
 			.argName("FILE")
 			.hasArg()
 			.required()
-			.desc("FILE that contains sites to be exclude from output. Supported file types: see type");
+			.desc("File that contains sites to be exclude from output. Supported file types: see type");
 	}
 	
 	public Builder getFileTypeOptionBuilder() {
@@ -174,10 +173,8 @@ extends AbstractFilterFactory {
 			.longOpt("type")
 			.argName("TYPE")
 			.hasArg()
-			.required()
-			.desc("TYPE of FILE to be exclude from output. Supported file types: \n" +
-					sb.toString() + "\n" + 
-					"Default: " + FileType.AUTO.getName());
+			.desc("File type: " +
+					sb.toString() + ". Default: " + FileType.AUTO.getName());
 	}
 	
 	@Override

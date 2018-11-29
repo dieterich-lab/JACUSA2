@@ -50,7 +50,7 @@ extends AbstractBaseCallCountFilterFactory {
 
 	public static Builder getOptionBuilder() {
 		return Option.builder(Character.toString('D'))
-				.desc("Filter artefacts in the vicinity of read start/end, INDELs, and splice site position(s)");
+				.desc("Filter artefacts in the vicinity of read start/end, INDELs, and splice site position(s).");
 	}
 	
 }

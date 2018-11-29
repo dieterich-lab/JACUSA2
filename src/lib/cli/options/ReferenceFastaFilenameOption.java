@@ -22,7 +22,7 @@ public class ReferenceFastaFilenameOption extends AbstractACOption {
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase()) 
 				.hasArg(true)
-				.desc(getLongOpt().toUpperCase() + " indexed reference FASTA")
+				.desc("use reference FASTA file (must be indexed)")
 				.build();
 	}
 

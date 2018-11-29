@@ -22,7 +22,8 @@ public class ThreadWindowSizeOption extends AbstractACOption {
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
-				.desc("size of the window used per thread.\n default: " + parameter.getReservedWindowSize())
+				.desc("size of the window used per thread\n" + 
+						"default: " + parameter.getReservedWindowSize())
 				.build();
 	}
 
