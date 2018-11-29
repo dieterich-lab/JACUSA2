@@ -4,12 +4,12 @@ import lib.data.cache.container.ReferenceProvider;
 import lib.data.cache.container.SharedCache;
 import lib.util.coordinate.CoordinateController;
 
-public abstract class AbstractDataContainerAdder
+public abstract class AbstractDataContainerPopulator
 implements DataContainerPopulator {
 	
 	private final SharedCache sharedCache;
 	
-	public AbstractDataContainerAdder(final SharedCache sharedCache) {
+	public AbstractDataContainerPopulator(final SharedCache sharedCache) {
 		this.sharedCache = sharedCache;
 	}
 	

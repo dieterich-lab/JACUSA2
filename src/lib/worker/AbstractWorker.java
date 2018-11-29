@@ -54,8 +54,6 @@ implements Iterator<ParallelData> {
 		
 		threadIdContainer = new ThreadIdContainer(threadId);
 
-		// get FilterFormat
-		// FIXME add result format to resultWriter
 		copyTmpResult = getParameter().getResultFormat().createCopyTmp(threadId, method.getWorkerDispatcherInstance());
 		
 		conditionContainer = new ConditionContainer(getParameter());

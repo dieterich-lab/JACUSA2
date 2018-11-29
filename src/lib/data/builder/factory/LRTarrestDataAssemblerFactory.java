@@ -1,5 +1,6 @@
 package lib.data.builder.factory;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +14,10 @@ import lib.data.adder.region.ValidatedRegionDataCache;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.Fetcher;
 import lib.data.cache.lrtarrest.Position2baseCallCount;
-import lib.data.cache.lrtarrest.EndLRTarrestBaseCallAdder;
-import lib.data.cache.lrtarrest.StartLRTarrestBaseCallAdder;
+import lib.data.cache.lrtarrest.StartArrestPosition;
+import lib.data.cache.lrtarrest.ArrestPositionCalculator;
+import lib.data.cache.lrtarrest.EndArrestPosition;
+import lib.data.cache.lrtarrest.LRTarrestBaseCallAdder;
 import lib.data.cache.record.AlignmentBlockWrapperDataCache;
 import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.isvalid.BaseCallValidator;
@@ -41,28 +44,26 @@ extends AbstractSiteDataAssemblerFactory {
 		final Fetcher<BaseCallCount> bccFetcher = DataType.BCC.getFetcher();
 		final Fetcher<Position2baseCallCount> ap2bccFetcher =
 				DataType.AP2BCC.getFetcher();
-		
-		IncrementAdder arrestPosAdder = null;
+
+		ArrestPositionCalculator apc = null;
 		
 		switch (libraryType) {
-		
-		case UNSTRANDED:
-			arrestPosAdder = new EndLRTarrestBaseCallAdder(ap2bccFetcher, sharedCache);
-			break;
 
 		case RF_FIRSTSTRAND:
-			arrestPosAdder = new EndLRTarrestBaseCallAdder(ap2bccFetcher, sharedCache);
+			apc = new EndArrestPosition();
 			break;
 
 		case FR_SECONDSTRAND:
-			arrestPosAdder = new StartLRTarrestBaseCallAdder(ap2bccFetcher, sharedCache);
+			apc = new StartArrestPosition();
 			break;
 			
 		default:
 			throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
 		}
+
+		final IncrementAdder arrestPosAdder = new LRTarrestBaseCallAdder(sharedCache, apc, ap2bccFetcher);
 		
-		IncrementAdder bccAdder = new DefaultBaseCallAdder(sharedCache, bccFetcher);
+		final IncrementAdder bccAdder = new DefaultBaseCallAdder(sharedCache, bccFetcher);
 		final List<IncrementAdder> adders = new ArrayList<IncrementAdder>(2);
 		adders.add(bccAdder);
 		adders.add(arrestPosAdder);

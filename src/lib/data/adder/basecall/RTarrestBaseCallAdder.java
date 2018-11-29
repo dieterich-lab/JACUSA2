@@ -4,13 +4,13 @@ import htsjdk.samtools.SAMRecord;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.data.DataTypeContainer;
-import lib.data.adder.AbstractDataContainerAdder;
+import lib.data.adder.AbstractDataContainerPopulator;
 import lib.data.adder.IncrementAdder;
 import lib.data.cache.arrest.LocationInterpreter;
 import lib.data.cache.container.SharedCache;
 
 public class RTarrestBaseCallAdder
-extends AbstractDataContainerAdder 
+extends AbstractDataContainerPopulator 
 implements IncrementAdder {
 
 	private final LocationInterpreter locInterpreter;

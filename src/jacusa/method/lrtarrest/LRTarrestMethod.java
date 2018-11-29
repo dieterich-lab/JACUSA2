@@ -6,6 +6,7 @@ import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
 import jacusa.cli.parameters.LRTarrestParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.ExcludeSiteFilterFactory;
+import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.distance.lrtarrest.LRTarrestCombinedFilterFactory;
 import jacusa.filter.factory.distance.lrtarrest.LRTarrestINDEL_FilterFactory;
 import jacusa.filter.factory.distance.lrtarrest.LRTarrestSpliceSiteFilterFactory;
@@ -57,6 +58,8 @@ import lib.data.cache.fetcher.basecall.ThroughBaseCallCountExtractor;
 import lib.data.cache.lrtarrest.Position2baseCallCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
+import lib.data.filter.BooleanWrapper;
+import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.validator.paralleldata.LRTarrestVariantParallelPileup;
 import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
@@ -171,10 +174,11 @@ extends AbstractMethod {
 
 		final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, Position2baseCallCount> filteredAp2bccFetcher = 
 				new DefaultFilteredDataFetcher<>(DataType.F_AP2BCC);
-		/* TODO implement homopolymer for LRT
-		final FilteredDataFetcher<BooleanFilteredData, BooleanWrapper> filteredBooleanFetcher =
-				new DefaultFilteredDataFetcher<>(builderFactory.getBooleanCountFilteredData());
-		 */
+		
+		final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredBooleanFetcher =
+				new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN);
+		
+		filterFactories.add(new HomopolymerFilterFactory(filteredBooleanFetcher));
 		
 		filterFactories.add(new ExcludeSiteFilterFactory());
 		

@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import htsjdk.samtools.util.CloseableIterator;
 import htsjdk.samtools.SAMRecord;
-import jacusa.filter.cache.HomopolymerRecordFilterCache;
+import jacusa.filter.cache.HomopolymerReadFilterCache;
 import lib.data.DataType;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.AbstractBuilderFactory;
@@ -49,7 +49,7 @@ class HomopolymerRecordFilterCacheTest extends AbstractRecordCacheTest {
 	}
 	
 	/**
-	 * Test method for {@link jacusa.filter.cache.HomopolymerRecordFilterCache#process(lib.data.builder.recordwrapper.SAMRecordWrapper)}.
+	 * Test method for {@link jacusa.filter.cache.HomopolymerReadFilterCache#process(lib.data.builder.recordwrapper.SAMRecordWrapper)}.
 	 */
 	@ParameterizedTest(name = "Seq.: {0}, readLength {1}, minLength {2}, and windowSize {3} should be {4}")
 	@CsvSource(delimiter = ' ', value = {
@@ -96,7 +96,7 @@ class HomopolymerRecordFilterCacheTest extends AbstractRecordCacheTest {
 
 	@Override
 	protected RecordWrapperProcessor createTestInstance() {
-		return new HomopolymerRecordFilterCache(
+		return new HomopolymerReadFilterCache(
 				c, filteredDataFetcher, minLength, getShareCache());
 	}
 	

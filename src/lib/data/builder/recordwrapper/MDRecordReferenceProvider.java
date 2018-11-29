@@ -72,6 +72,7 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
         		matches++;
             } else if ((matchGroup = match.group(3)) != null) {
             	/*
+            	 * FIXME
                 // It's a deletion, starting with a caret
                 // don't include caret
             	matchGroup = matchGroup.substring(1);
@@ -84,17 +85,9 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
             }
         }
 	}
-
 	
 	public List<Integer> getMismatchRefPositions() {
 		return Collections.unmodifiableList(mismatchRefPos);
 	}
-	
-	/*
-	@Override
-	public List<AlignmentPosition> getMismatchRefPositions() {
-		return Collections.unmodifiableList(mismatchRefPos);
-	}
-	*/
 	
 }

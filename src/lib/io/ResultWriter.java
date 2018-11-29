@@ -15,5 +15,5 @@ extends Closeable {
 	void writeHeader(List<AbstractConditionParameter> conditionParameter);
 	void writeResult(Result result);
 	void close() throws IOException;
-	
+
 }

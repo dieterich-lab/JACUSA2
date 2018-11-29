@@ -49,7 +49,6 @@ extends AbstractSiteDataAssemblerFactory {
 		final LocationInterpreter locInterpreter = LocationInterpreter.create(libraryType);
 		final SortedSet<BaseSubstitution> baseSubs = parameter.getReadSubstitutions();
 		
-		// TODO what other validators
 		final List<BaseCallValidator> validators = new ArrayList<BaseCallValidator>();
 		validators.add(new DefaultBaseCallValidator());
 		if (minBASQ > 0) {

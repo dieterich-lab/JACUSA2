@@ -5,11 +5,12 @@ import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import htsjdk.samtools.SAMRecord;
 import lib.data.DataTypeContainer;
-import lib.data.adder.AbstractDataContainerAdder;
+import lib.data.adder.AbstractDataContainerPopulator;
 import lib.data.adder.IncrementAdder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.SharedCache;
@@ -17,7 +18,7 @@ import lib.data.cache.region.RegionDataCache;
 import lib.data.cache.region.isvalid.BaseCallValidator;
 
 public class ValidatedRegionDataCache
-extends AbstractDataContainerAdder 
+extends AbstractDataContainerPopulator 
 implements RegionDataCache {
 
 	private final List<IncrementAdder> adder;
@@ -115,26 +116,24 @@ implements RegionDataCache {
 		}
 	}
 
-	// FIXME
-	public void addFirstAdder(final IncrementAdder baseCallAdder) {
-		getAdder().add(0, baseCallAdder);
+	public void addHeadAdder(final IncrementAdder baseCallAdder) {
+		adder.add(0, baseCallAdder);
 	}
 	
-	// FIXME
 	public void addAdder(final IncrementAdder baseCallAdder) {
-		getAdder().add(baseCallAdder);
+		adder.add(baseCallAdder);
 	}
 	
 	public void addValidator(final BaseCallValidator baseCallValidator) {
-		getValidator().add(baseCallValidator);
+		validator.add(baseCallValidator);
 	}
 	
 	protected List<IncrementAdder> getAdder() {
-		return adder;
+		return Collections.unmodifiableList(adder);
 	}
 	
 	protected List<BaseCallValidator> getValidator() {
-		return validator;
+		return Collections.unmodifiableList(validator);
 	}
 	
 }

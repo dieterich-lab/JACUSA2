@@ -22,7 +22,7 @@ implements RegionDataCache {
 		adder 			= new UniqueVisitBaseCallAdder(dataCache.getShareCache());
 		validator		= new UniqueVisitBaseCallValidator(adder);
 		
-		dataCache.addFirstAdder(adder);
+		dataCache.addHeadAdder(adder);
 		dataCache.addValidator(validator);
 	}
 

@@ -13,7 +13,7 @@ import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.HomopolymerFilter;
-import jacusa.filter.cache.HomopolymerRecordFilterCache;
+import jacusa.filter.cache.HomopolymerReadFilterCache;
 import jacusa.filter.cache.HomopolymerReferenceFilterCache;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.data.DataType;
@@ -118,7 +118,7 @@ extends AbstractFilterFactory {
 						sharedCache);
 
 		case READ:
-			return new HomopolymerRecordFilterCache(
+			return new HomopolymerReadFilterCache(
 					getC(), 
 					filteredBooleanFetcher, 
 					length, 

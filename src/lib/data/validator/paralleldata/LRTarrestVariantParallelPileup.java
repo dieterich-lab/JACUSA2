@@ -20,12 +20,12 @@ implements ParallelDataValidator {
 	public boolean isValid(final ParallelData parallelData) {
 		final DataTypeContainer combinedPooledContainer = parallelData.getCombinedPooledData();
 		
-		final Position2baseCallCount arrestPos2Bcc = 
+		final Position2baseCallCount ap2Bcc = 
 				arrestPos2BccFetcher.fetch(combinedPooledContainer);
 		
 		// TODO check
 		final BaseCallCount totalBcc = combinedPooledContainer.getBaseCallCount();
-		final BaseCallCount arrestBcc = arrestPos2Bcc.getTotalBaseCallCount();
+		final BaseCallCount arrestBcc = ap2Bcc.getTotalBaseCallCount();
 		final BaseCallCount throughBcc = totalBcc.copy().subtract(arrestBcc);
 
 		return arrestBcc.getCoverage() > 0 && throughBcc.getCoverage() > 0;

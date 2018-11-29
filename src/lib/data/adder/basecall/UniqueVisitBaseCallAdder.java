@@ -4,14 +4,14 @@ import htsjdk.samtools.SAMRecord;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.data.DataTypeContainer;
-import lib.data.adder.AbstractDataContainerAdder;
+import lib.data.adder.AbstractDataContainerPopulator;
 import lib.data.adder.IncrementAdder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.region.VisitedReadPosition;
 
 public class UniqueVisitBaseCallAdder
-extends AbstractDataContainerAdder 
+extends AbstractDataContainerPopulator 
 implements IncrementAdder, VisitedReadPosition {
 
 	private boolean[] visited;

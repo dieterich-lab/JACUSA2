@@ -44,6 +44,6 @@ public class ProcessInsertionOperator extends AbstractProcessRecord {
 					downstreamMatch, 
 					recordWrapper);
 		}
-	}	
+	}
 
 }

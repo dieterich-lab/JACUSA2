@@ -110,7 +110,7 @@ implements FilteredData<F, T> {
 	public int hashCode() {
 		return map.hashCode();
 	}
-
+	
 	public static abstract class AbstractParser<F extends FilteredData<F, T>, T extends Data<T>>
 	implements lib.util.Parser<F> {
 

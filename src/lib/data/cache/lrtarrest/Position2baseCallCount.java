@@ -170,7 +170,6 @@ implements Serializable, Data<Position2baseCallCount> {
 	 */
 	public void clear() {
 		pos2bcc.clear();
-		
 	}
 
 	@Override

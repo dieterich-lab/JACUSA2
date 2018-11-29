@@ -3,7 +3,7 @@ package jacusa.filter.cache;
 import java.util.Arrays;
 
 import lib.data.DataTypeContainer;
-import lib.data.adder.AbstractDataContainerAdder;
+import lib.data.adder.AbstractDataContainerPopulator;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.FilteredDataFetcher;
 import lib.data.cache.record.RecordWrapperProcessor;
@@ -19,7 +19,7 @@ import lib.util.coordinate.CoordinateController.WindowPositionGuard;
  */
 // <D extends AbstractData & HasBooleanFilterData> 
 public abstract class AbstractHomopolymerFilterCache
-extends AbstractDataContainerAdder
+extends AbstractDataContainerPopulator
 implements RecordWrapperProcessor {
 
 	private final char c;

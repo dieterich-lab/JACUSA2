@@ -32,7 +32,7 @@ public class BaseSubstitutionPerReadCacheTest extends AbstractRecordCacheTest {
 	}
 	
 	/**
-	 * Test method for {@link jacusa.filter.cache.HomopolymerRecordFilterCache#process(lib.data.builder.recordwrapper.SAMRecordWrapper)}.
+	 * Test method for {@link jacusa.filter.cache.HomopolymerReadFilterCache#process(lib.data.builder.recordwrapper.SAMRecordWrapper)}.
 	 */
 	@ParameterizedTest(name = "Seq.: {0}, length {1}, lib. {2}, and window {3}")
 	@CsvSource(delimiter = ' ', value = {

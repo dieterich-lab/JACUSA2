@@ -10,7 +10,7 @@ import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.data.DataTypeContainer;
-import lib.data.adder.AbstractDataContainerAdder;
+import lib.data.adder.AbstractDataContainerPopulator;
 import lib.data.adder.IncrementAdder;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.Fetcher;
@@ -18,7 +18,7 @@ import lib.data.count.PileupCount;
 import lib.data.count.basecallquality.BaseCallQualityCount;
 
 public class MapBaseCallQualityAdder
-extends AbstractDataContainerAdder 
+extends AbstractDataContainerPopulator 
 implements IncrementAdder {
 
 	private final Fetcher<PileupCount> pcFetcher;

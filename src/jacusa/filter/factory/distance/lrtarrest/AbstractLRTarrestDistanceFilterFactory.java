@@ -146,7 +146,8 @@ extends AbstractFilterFactory {
 	}
 	
 	@Override
-	public RecordWrapperProcessor createFilterCache(final AbstractConditionParameter conditionParameter,
+	public RecordWrapperProcessor createFilterCache(
+			final AbstractConditionParameter conditionParameter,
 			final SharedCache sharedCache) {
 
 		final List<IncrementAdder> adder = new ArrayList<IncrementAdder>();
@@ -162,8 +163,10 @@ extends AbstractFilterFactory {
 			validator.add(new MinBASQBaseCallValidator(conditionParameter.getMinBASQ()));
 		}
 		
-		final ValidatedRegionDataCache regionDataCache = new ValidatedRegionDataCache(adder, validator, sharedCache);
-		final UniqueTraverse uniqueBaseCallCache = new UniqueTraverse(regionDataCache);
+		final ValidatedRegionDataCache regionDataCache = 
+				new ValidatedRegionDataCache(adder, validator, sharedCache);
+		final UniqueTraverse uniqueBaseCallCache = 
+				new UniqueTraverse(regionDataCache);
 		return new RecordProcessDataCache(
 				uniqueBaseCallCache, 
 				createProcessRecord(uniqueBaseCallCache));

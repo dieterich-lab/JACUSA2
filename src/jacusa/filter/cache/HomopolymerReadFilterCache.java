@@ -19,11 +19,11 @@ import lib.util.Base;
  * @param 
  */
 
-public class HomopolymerRecordFilterCache 
+public class HomopolymerReadFilterCache 
 extends AbstractHomopolymerFilterCache
 implements RecordWrapperProcessor {
 	
-	public HomopolymerRecordFilterCache(
+	public HomopolymerReadFilterCache(
 			final char c,
 			final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher,
 			final int minLength,

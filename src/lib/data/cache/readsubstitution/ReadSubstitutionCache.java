@@ -14,7 +14,7 @@ import htsjdk.samtools.SAMTag;
 import htsjdk.samtools.SamReader;
 import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.DataTypeContainer;
-import lib.data.adder.AbstractDataContainerAdder;
+import lib.data.adder.AbstractDataContainerPopulator;
 import lib.data.adder.IncrementAdder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.SharedCache;
@@ -22,7 +22,7 @@ import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.isvalid.BaseCallValidator;
 
 public class ReadSubstitutionCache 
-extends AbstractDataContainerAdder 
+extends AbstractDataContainerPopulator 
 implements RecordWrapperProcessor {
 
 	private final BaseCallInterpreter bci;
@@ -174,12 +174,14 @@ implements RecordWrapperProcessor {
 			final Base readBase = bci.getReadBase(recordWrapper, readMismatchPos);
 
 			final byte readBaseQuality = record.getBaseQualities()[readMismatchPos];
-			if (! validator.isValid(-1, -1, 
-					readMismatchPos, readBase, readBaseQuality, record)) {
+			if (! validator.isValid(
+					-1, -1, readMismatchPos, 
+					readBase, readBaseQuality, 
+					record)) {
+
 				continue;
 			}
 			final Base refBase = bci.getRefBase(recordWrapper, refPos);
-			// recordWrapper.getRecordReferenceProvider().getReferenceBase(refPos);
 			if (refBase == Base.N) {
 				continue;
 			}

@@ -3,14 +3,14 @@ package lib.data.cache.arrest;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.Region;
 import lib.data.DataTypeContainer;
-import lib.data.adder.AbstractDataContainerAdder;
+import lib.data.adder.AbstractDataContainerPopulator;
 import lib.data.adder.region.ValidatedRegionDataCache;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.record.RecordWrapperProcessor;
 
 public class RTarrestDataCache 
-extends AbstractDataContainerAdder 
+extends AbstractDataContainerPopulator 
 implements RecordWrapperProcessor {
 
 	private final LocationInterpreter locInterpreter;

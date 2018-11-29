@@ -13,7 +13,7 @@ public class ArrestBaseCallCountExtractor implements Fetcher<BaseCallCount> {
 		this.fetcher = fetcher;
 	}
 
-	// TODO
+	// TODO position or total
 	@Override
 	public BaseCallCount fetch(DataTypeContainer container) {
 		final int position = container.getCoordinate().getPosition();

@@ -30,7 +30,6 @@ public class SAMRecordWrapper {
 	private RecordReferenceProvider recordRefProvider;
 	
 	public SAMRecordWrapper(final SAMRecord record) {
-
 		this.record = record;
 		
 		cigarElementWrappers = new ArrayList<CigarElementWrapper>(record.getCigarLength());
@@ -42,12 +41,6 @@ public class SAMRecordWrapper {
 
 	public SAMRecord getSAMRecord() {
 		return record;
-	}
-
-	// referencePosition needs to be 1-based
-	public boolean isWithinRead(final int referencePosition) {
-		return referencePosition >= record.getAlignmentStart() && 
-				referencePosition <= record.getAlignmentEnd();
 	}
 
 	public RecordReferenceProvider getRecordReferenceProvider() {
@@ -152,6 +145,7 @@ public class SAMRecordWrapper {
 		return downstream.getCigarElement().getLength();
 	}
 	
+	// FIXME
 	public int getReferencePos(final int matches) {
 		int tmp = 0;
 		for (final AlignmentBlock block : record.getAlignmentBlocks()) {

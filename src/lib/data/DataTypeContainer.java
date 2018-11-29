@@ -138,7 +138,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		
 	}
 	
-	// FIXME
 	public static class DefaultBuilderFactory extends AbstractBuilderFactory {
 		
 		public DefaultBuilderFactory() {
@@ -148,10 +147,14 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		@Override
 		protected void addRequired(final AbstractBuilder builder) {
 			add(builder, DataType.PILEUP_COUNT);
-			add(builder, DataType.BASE_SUBST);
+			add(builder, DataType.BCC);
 			add(builder, DataType.ARREST_BCC);
 			add(builder, DataType.THROUGH_BCC);
 			add(builder, DataType.AP2BCC);
+			
+			add(builder, DataType.BASE_SUBST);
+			add(builder, DataType.ARREST_BASE_SUBST);
+			add(builder, DataType.THROUGH_BASE_SUBST);
 		}
 		
 		@Override
