@@ -90,7 +90,7 @@ extends AbstractFilterFactory {
 				final String tmpFileName = cmd.getOptionValue(longOpt);
 				IOUtil.assertInputIsValid(tmpFileName);
 				fileName = tmpFileName;
-
+				processed.add(option);
 				break;
 
 			case "type":
@@ -137,7 +137,7 @@ extends AbstractFilterFactory {
 	protected AbstractFilter createFilter(
 			CoordinateController coordinateController,
 			ConditionContainer conditionContainer) {
-		return new ExcludeSiteFilter(getC());
+		return new ExcludeSiteFilter(getC(), fileName, codec);
 	}
 	
 	@Override
@@ -190,7 +190,10 @@ extends AbstractFilterFactory {
 
 		private final ContainedCoordinate containedCoordinate; 
 		
-		public ExcludeSiteFilter(final char c) {
+		public ExcludeSiteFilter(
+				final char c, 
+				final String fileName, 
+				final AbstractFeatureCodec<? extends Feature, LineIterator> codec) {
 			super(c);
 			containedCoordinate = new DefaultContainedCoordinate(fileName, codec);
 		}

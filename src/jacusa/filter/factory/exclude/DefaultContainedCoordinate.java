@@ -19,6 +19,13 @@ import htsjdk.tribble.readers.SynchronousLineReader;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil;
 
+
+/**
+ * TODO add comments
+ * 
+ * Each thread has its own instance. 
+ * 
+ */
 public class DefaultContainedCoordinate implements ContainedCoordinate {
 
 	private Map<String, List<Coordinate>> contig2coordinate;
@@ -26,8 +33,11 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 	private Coordinate current;
 	private Iterator<Coordinate> it;
 	
-	public DefaultContainedCoordinate(final String filename, AbstractFeatureCodec<? extends Feature, LineIterator> codec) {
-		contig2coordinate = init(filename, codec);
+	public DefaultContainedCoordinate(
+			final String fileName, 
+			AbstractFeatureCodec<? extends Feature, LineIterator> codec) {
+
+		contig2coordinate = init(fileName, codec);
 	}
 
 	@Override
@@ -40,10 +50,13 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 
 		if (current == null || ! current.getContig().equals(siteContig)) {
 			it = contig2coordinate.get(siteContig).iterator();
+			if (! it.hasNext()) {
+				return false;
+			}
+			current = it.next();
 		}
 
-		while (it.hasNext()) {
-			current = it.next();
+		while (true) {
 			final int orientation = CoordinateUtil.orientation(site, current);
 			switch (orientation) {
 			case -1:
@@ -53,14 +66,16 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 				return true;
 				
 			case 1:
+				if (! it.hasNext()) {
+					return false;
+				}
+				current = it.next();
 				break;
 
 			default:
 				throw new IllegalStateException("Orientation can only be -1, 0, 1 but was: " + Integer.toString(orientation));
 			}
 		}
-
-		return false;
 	}
 
 	private Map<String, List<Coordinate>> init(final String filename, 
@@ -83,8 +98,8 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 			try {
 				final Feature f = codec.decode(lit);
 				final String newContig 	= f.getContig();
-				final int newStart		= f.getStart() - 1;
-				final int newEnd		= f.getEnd() - 1;
+				final int newStart		= f.getStart();
+				final int newEnd		= f.getEnd();
 				final Coordinate newCoordinate = new Coordinate(newContig, newStart, newEnd);
 
 				if (currentCoordinate == null) { // init
