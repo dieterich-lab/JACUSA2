@@ -177,16 +177,16 @@ extends AbstractStat {
 			final double[] alpha 		= dirMultSample.getAlpha(iteration);
 			final double logLikelihood	= dirMultSample.getLogLikelihood(iteration);
 			
-			estimateInfo.add("alpha" + id, decimalFormat.format(alpha[0]));			
-			for (int i = 1; i < alpha.length; ++i) {
-				estimateInfo.add("alpha" + id, ":");
-				estimateInfo.add("alpha" + id, decimalFormat.format(alpha[i]));
-			}
-		
 			estimateInfo.add("initAlpha" + id, decimalFormat.format(initAlpha[0]));			
 			for (int i = 1; i < initAlpha.length; ++i) {
 				estimateInfo.add("initAlpha" + id, ":");
 				estimateInfo.add("initAlpha" + id, decimalFormat.format(initAlpha[i]));
+			}
+			
+			estimateInfo.add("alpha" + id, decimalFormat.format(alpha[0]));			
+			for (int i = 1; i < alpha.length; ++i) {
+				estimateInfo.add("alpha" + id, ":");
+				estimateInfo.add("alpha" + id, decimalFormat.format(alpha[i]));
 			}
 		
 			estimateInfo.add("iteration" + id, Integer.toString(iteration));
