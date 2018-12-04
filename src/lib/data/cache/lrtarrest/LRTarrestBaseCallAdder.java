@@ -21,17 +21,17 @@ implements IncrementAdder {
 
 	private final ArrestPositionCalculator apc;
 	
-	private final Fetcher<Position2baseCallCount> ap2bccExtractor;
+	private final Fetcher<ArrestPosition2baseCallCount> ap2bccExtractor;
 	
-	private final List<Position2baseCallCount> winPos2ap2bcc;
-	private final Map<Integer, Position2baseCallCount> refPos2ap2bcc;
+	private final List<ArrestPosition2baseCallCount> winPos2ap2bcc;
+	private final Map<Integer, ArrestPosition2baseCallCount> refPos2ap2bcc;
 	
 	private final int winSize;
 	
 	public LRTarrestBaseCallAdder(
 			final SharedCache sharedCache,
 			final ArrestPositionCalculator arrestPositionCalculator, 
-			final Fetcher<Position2baseCallCount> arrestPos2BaseCallCountExtractor) {
+			final Fetcher<ArrestPosition2baseCallCount> arrestPos2BaseCallCountExtractor) {
 		
 		super(sharedCache);
 		this.apc = arrestPositionCalculator;
@@ -47,7 +47,7 @@ implements IncrementAdder {
 		final int winPos = getCoordinateController().getCoordinateTranslator().convert2windowPosition(coordinate);
 		final int refPos = coordinate.getPosition();
 		
-		final Position2baseCallCount ap2bcc = ap2bccExtractor.fetch(container);
+		final ArrestPosition2baseCallCount ap2bcc = ap2bccExtractor.fetch(container);
 		if (winPos2ap2bcc.get(winPos) != null) {
 			ap2bcc.merge(winPos2ap2bcc.get(winPos));
 		}
@@ -72,12 +72,12 @@ implements IncrementAdder {
 
 		if (windowPosition >= 0) {
 			if (winPos2ap2bcc.get(windowPosition) == null) {
-				winPos2ap2bcc.set(windowPosition, new Position2baseCallCount());
+				winPos2ap2bcc.set(windowPosition, new ArrestPosition2baseCallCount());
 			}
 			winPos2ap2bcc.get(windowPosition).addBaseCall(arrestPosition, base);
 		} else {
 			if (! refPos2ap2bcc.containsKey(referencePosition)) {
-				refPos2ap2bcc.put(referencePosition, new Position2baseCallCount());
+				refPos2ap2bcc.put(referencePosition, new ArrestPosition2baseCallCount());
 			}
 			refPos2ap2bcc.get(referencePosition).addBaseCall(arrestPosition, base);
 		}
@@ -90,11 +90,11 @@ implements IncrementAdder {
 	
 	@Override
 	public void clear() {
-		for (final Position2baseCallCount ap2bcc : winPos2ap2bcc) {
-			ap2bcc.clear();
+		for (final ArrestPosition2baseCallCount ap2bcc : winPos2ap2bcc) {
+			if (ap2bcc != null) { 
+				ap2bcc.clear();
+			}
 		}
-		// winPos2ap2bcc.clear();
-		// winPos2arrestPos2bcc.addAll(new ArrayList<>(Collections.nCopies(N, null)));
 		refPos2ap2bcc.clear();
 	}
 	

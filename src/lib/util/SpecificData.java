@@ -1,7 +1,7 @@
 package lib.util;
 
 import lib.data.DataType;
-import lib.data.cache.lrtarrest.Position2baseCallCount;
+import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.count.BaseSubstitutionCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
@@ -22,8 +22,8 @@ public interface SpecificData<T extends Copyable<T> & Mergeable<T>> {
 	public static final DataType<BaseCallCount> THROUGH_BCC = 
 			DataType.create("Through", BaseCallCount.class);
 	
-	public static final DataType<Position2baseCallCount> AP2BCC = 
-			DataType.create("Default", Position2baseCallCount.class);
+	public static final DataType<ArrestPosition2baseCallCount> AP2BCC = 
+			DataType.create("Default", ArrestPosition2baseCallCount.class);
 	
 	public static final DataType<BaseSubstitutionCount> BASE_SUBST = 
 			DataType.create("Default", BaseSubstitutionCount.class);

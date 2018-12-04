@@ -2,10 +2,10 @@ package lib.data.filter;
 
 import java.util.Map;
 
-import lib.data.cache.lrtarrest.Position2baseCallCount;
+import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 
 public class ArrestPos2BaseCallCountFilteredData 
-extends AbstractFilteredData<ArrestPos2BaseCallCountFilteredData, Position2baseCallCount> {
+extends AbstractFilteredData<ArrestPos2BaseCallCountFilteredData, ArrestPosition2baseCallCount> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -13,12 +13,12 @@ extends AbstractFilteredData<ArrestPos2BaseCallCountFilteredData, Position2baseC
 		super();
 	}
 	
-	protected ArrestPos2BaseCallCountFilteredData(Map<Character, Position2baseCallCount> map) {
+	protected ArrestPos2BaseCallCountFilteredData(Map<Character, ArrestPosition2baseCallCount> map) {
 		super(map);
 	}
 	
 	@Override
-	protected ArrestPos2BaseCallCountFilteredData newInstance(Map<Character, Position2baseCallCount> map) {
+	protected ArrestPos2BaseCallCountFilteredData newInstance(Map<Character, ArrestPosition2baseCallCount> map) {
 		return new ArrestPos2BaseCallCountFilteredData(map);
 	}
 	

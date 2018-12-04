@@ -5,7 +5,7 @@ import java.util.List;
 
 import htsjdk.samtools.util.StringUtil;
 import lib.data.DataTypeContainer;
-import lib.data.cache.lrtarrest.Position2baseCallCount;
+import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.result.Result;
 import lib.io.format.bed.DataAdder;
@@ -34,27 +34,28 @@ public class LRTarrestDataAdder implements DataAdder {
 	
 	@Override
 	public void addData(StringBuilder sb, int valueIndex, int conditionIndex, int replicateIndex, Result result) {
-		final List<String> tmp = new ArrayList<String>(4);
 		final DataTypeContainer container = result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
-		final Position2baseCallCount ap2bcc = container.getArrestPos2BaseCallCount();
-		/*
-		if (isArrestPosition(data, valueIndex)) {
-			tmp.add(
-					baseCallCountParser.wrap(data.getArrestBaseCallCount()) );
-						
-			tmp.add(
-					baseCallCountParser.wrap(data.getThroughBaseCallCount()) );
+		final ArrestPosition2baseCallCount ap2bcc = container.getArrestPos2BaseCallCount();
+		
+		final List<String> tmp = new ArrayList<>(2);
+		
+		int position = -1; 
+		if (valueIndex == -1) {
+			position = result.getParellelData().getCoordinate().getPosition();
+			tmp.add(bccParser.wrap(ap2bcc.getArrestBaseCallCount(position)));
+			tmp.add(bccParser.wrap(ap2bcc.getThroughBaseCallCount(position)));
 		} else {
-			*/
-			tmp.add(
-					bccParser.wrap(ap2bcc.getBaseCallCount(valueIndex)) );
-						
-			tmp.add(
-					bccParser.wrap(ap2bcc.getBaseCallCountDiff(container.getBaseCallCount())) );
-		// }
+			position = 
+					result.getParellelData().getCombinedPooledData().getArrestPos2BaseCallCount().getPositions().get(valueIndex);
+			tmp.add(bccParser.wrap(ap2bcc.getArrestBaseCallCount(position)));
+			tmp.add(Character.toString(bccParser.getEmpty()));
+		}
+
 		sb.append(Util.FIELD_SEP);
 		sb.append(
-				StringUtil.join(Character.toString(Util.FIELD_SEP), tmp));
+				StringUtil.join(
+						Character.toString(Util.FIELD_SEP),
+						tmp) );
 	}
 	
 }

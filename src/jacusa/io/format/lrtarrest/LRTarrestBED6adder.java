@@ -1,14 +1,11 @@
 package jacusa.io.format.lrtarrest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lib.data.DataTypeContainer;
-import lib.data.has.HasCoordinate;
 import lib.data.result.Result;
 import lib.io.format.bed.BED6adder;
 import lib.util.Util;
-import lib.util.coordinate.Coordinate;
 
 public class LRTarrestBED6adder implements BED6adder {
 
@@ -23,29 +20,23 @@ public class LRTarrestBED6adder implements BED6adder {
 		bed6Adder.addHeader(sb);
 		sb.append(Util.FIELD_SEP);
 		sb.append("arrest_pos"); // 0-index
-		// TODO
-		// arrest_pos
-		// subst_pos
 	}
 
-	// FIXME
 	@Override
 	public void addData(StringBuilder sb, int valueIndex, Result result) {
 		bed6Adder.addData(sb, valueIndex, result);
 		sb.append(Util.FIELD_SEP);
 		final DataTypeContainer combinedPooledContainer = result.getParellelData().getCombinedPooledData();
-		final List<Integer> arrestPositions = new ArrayList<>(
-				combinedPooledContainer.getArrestPos2BaseCallCount().getPositions());
-		if (isArrestPosition(arrestPositions.get(valueIndex), combinedPooledContainer)) {
+		if (isArrestPosition(valueIndex)) {
 			sb.append(Util.EMPTY_FIELD);
 		} else {
-			sb.append(arrestPositions.get(valueIndex) - 1);
+			final List<Integer> arrestPositions = combinedPooledContainer.getArrestPos2BaseCallCount().getPositions();
+			sb.append(arrestPositions.get(valueIndex));
 		}
 	}
 	
-	private boolean isArrestPosition(final int position, final HasCoordinate object) {
-		final Coordinate currentCoord = object.getCoordinate();
-		return currentCoord.getPosition() == position;
+	private boolean isArrestPosition(final int valueIndex) {
+		return valueIndex == -1;
 	}
 	
 }

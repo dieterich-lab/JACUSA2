@@ -12,7 +12,7 @@ import jacusa.JACUSA;
 import jacusa.filter.factory.AbstractFilterFactory;
 import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.AbstractParameter;
-import lib.data.cache.lrtarrest.Position2baseCallCount;
+import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.count.BaseSubstitutionCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
@@ -48,7 +48,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	BaseSubstitutionCount getArrestBaseSubstitutionCount();
 	BaseSubstitutionCount getThroughBaseSubstitutionCount();
 	
-	Position2baseCallCount getArrestPos2BaseCallCount();
+	ArrestPosition2baseCallCount getArrestPos2BaseCallCount();
 	ArrestPos2BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData();
 	
 	<T extends Data<T>> boolean contains(DataType<T> dataType);

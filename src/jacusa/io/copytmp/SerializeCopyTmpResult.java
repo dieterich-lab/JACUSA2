@@ -83,12 +83,16 @@ implements CopyTmpResult {
 	
 	@Override
 	public void closeTmpReader() throws IOException {
-		objectInputStream.close();
+		if (objectInputStream != null) {
+			objectInputStream.close();
+		}
 	}
 	
 	@Override
 	public void closeTmpWriter() throws IOException {
-		objectOutputStream.close();
+		if (objectOutputStream != null) {
+			objectOutputStream.close();
+		}
 	}
 
 	@Override

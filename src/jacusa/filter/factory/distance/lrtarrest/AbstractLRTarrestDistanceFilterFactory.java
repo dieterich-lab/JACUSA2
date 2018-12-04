@@ -33,7 +33,7 @@ import lib.data.cache.fetcher.Fetcher;
 import lib.data.cache.fetcher.FilteredDataFetcher;
 import lib.data.cache.fetcher.SpecificFilteredDataFetcher;
 import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
-import lib.data.cache.lrtarrest.Position2baseCallCount;
+import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.RegionDataCache;
 import lib.data.cache.region.UniqueTraverse;
@@ -49,7 +49,7 @@ public abstract class AbstractLRTarrestDistanceFilterFactory
 extends AbstractFilterFactory {
 
 	private final Apply2readsBaseCallCountSwitch bccSwitch;
-	private final Fetcher<Position2baseCallCount> filteredAp2bccFetcher;
+	private final Fetcher<ArrestPosition2baseCallCount> filteredAp2bccFetcher;
 	private final Fetcher<BaseCallCount> filteredBccExtractor;
 	private final DataType<ArrestPos2BaseCallCountFilteredData> dataType;
 	
@@ -59,7 +59,7 @@ extends AbstractFilterFactory {
 	public AbstractLRTarrestDistanceFilterFactory(
 			final Option option,
 			final Apply2readsBaseCallCountSwitch bccSwitch, 
-			final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, Position2baseCallCount> filteredDataFetcher, 
+			final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, ArrestPosition2baseCallCount> filteredDataFetcher, 
 			final int defaultFilterDistance, final double defaultFilterMinRatio) {
 
 		super(option);
@@ -83,7 +83,7 @@ extends AbstractFilterFactory {
 		}
 		final ArrestPos2BaseCallCountFilteredData filteredData = builder.get(dataType);
 		if (! filteredData.contains(getC())) {
-			filteredData.add(getC(), new Position2baseCallCount());
+			filteredData.add(getC(), new ArrestPosition2baseCallCount());
 		}	
 	}
 	

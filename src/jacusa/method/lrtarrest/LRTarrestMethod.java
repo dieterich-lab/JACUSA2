@@ -13,7 +13,6 @@ import jacusa.filter.factory.distance.lrtarrest.LRTarrestSpliceSiteFilterFactory
 import jacusa.filter.factory.rtarrest.RTarrestHomozygousFilterFactory;
 import jacusa.filter.factory.rtarrest.RTarrestMaxAlleleCountFilterFactory;
 import jacusa.io.format.lrtarrest.BED6lrtArrestResultFormat;
-import jacusa.method.rtarrest.BetaBinFactory;
 import jacusa.method.rtarrest.DummyStatisticFactory;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
 import jacusa.worker.LRTarrestWorker;
@@ -55,7 +54,7 @@ import lib.data.cache.fetcher.FilteredDataFetcher;
 import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.cache.fetcher.basecall.ArrestBaseCallCountExtractor;
 import lib.data.cache.fetcher.basecall.ThroughBaseCallCountExtractor;
-import lib.data.cache.lrtarrest.Position2baseCallCount;
+import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
 import lib.data.filter.BooleanWrapper;
@@ -73,7 +72,7 @@ import org.apache.commons.cli.ParseException;
 public class LRTarrestMethod 
 extends AbstractMethod {
 
-	private final Fetcher<Position2baseCallCount> ap2bccFetcher;
+	private final Fetcher<ArrestPosition2baseCallCount> ap2bccFetcher;
 	private final Fetcher<BaseCallCount> totalBccFetcher;
 	private final Fetcher<BaseCallCount> arrestBccExtractor;
 	private final Fetcher<BaseCallCount> throughBccExtractor;
@@ -156,7 +155,7 @@ extends AbstractMethod {
 
 		final List<AbstractStatFactory> tmpFactory = new ArrayList<AbstractStatFactory>(5);
 		tmpFactory.add(new DummyStatisticFactory());
-		tmpFactory.add(new BetaBinFactory());
+		tmpFactory.add(new LRTarrestStatFactory());
 
 		for (final AbstractStatFactory factory : tmpFactory) {
 			factories.put(factory.getName(), factory);
@@ -172,7 +171,7 @@ extends AbstractMethod {
 		List<AbstractFilterFactory> filterFactories = 
 				new ArrayList<AbstractFilterFactory>(5);
 
-		final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, Position2baseCallCount> filteredAp2bccFetcher = 
+		final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, ArrestPosition2baseCallCount> filteredAp2bccFetcher = 
 				new DefaultFilteredDataFetcher<>(DataType.F_AP2BCC);
 		
 		final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredBooleanFetcher =

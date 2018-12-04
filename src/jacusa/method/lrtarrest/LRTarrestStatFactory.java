@@ -11,13 +11,13 @@ import lib.stat.AbstractStatFactory;
  * @author Michael Piechotta
  * @param 
  */
-public class LRTstatFactory 
+public class LRTarrestStatFactory 
 extends AbstractStatFactory {
 
 	private final static String NAME = "LRTstat"; 
 	private final static String DESC = "Combined BetaBin and DirMult";
 	
-	public LRTstatFactory() {
+	public LRTarrestStatFactory() {
 		super(Option.builder(NAME)
 				.desc(DESC)
 				.build());
@@ -35,8 +35,8 @@ extends AbstractStatFactory {
 	}
 
 	@Override
-	public LRTstat newInstance(final int conditions) {
-		return new LRTstat(this);
+	public LRTarrestStat newInstance(final int conditions) {
+		return new LRTarrestStat(this);
 	}
 
 }

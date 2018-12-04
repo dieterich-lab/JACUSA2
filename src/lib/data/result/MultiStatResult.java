@@ -22,7 +22,7 @@ implements Result {
 	private final Map<Integer, Info> filterInfo;
 	private final Map<Integer, Info> resultInfo;
 
-	protected MultiStatResult(final SortedMap<Integer, Double> stat, final ParallelData parallelData) {
+	public MultiStatResult(final SortedMap<Integer, Double> stat, final ParallelData parallelData) {
 		this.stat = stat;
 		this.parallelData = parallelData;
 		

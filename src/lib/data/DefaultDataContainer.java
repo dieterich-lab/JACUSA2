@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import lib.data.cache.lrtarrest.Position2baseCallCount;
+import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.count.BaseSubstitutionCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
@@ -64,7 +64,7 @@ public class DefaultDataContainer implements DataTypeContainer {
 	}
 	
 	@Override
-	public Position2baseCallCount getArrestPos2BaseCallCount() {
+	public ArrestPosition2baseCallCount getArrestPos2BaseCallCount() {
 		return get(DataType.AP2BCC);
 	}
 	

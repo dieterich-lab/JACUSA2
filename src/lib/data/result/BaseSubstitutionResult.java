@@ -27,7 +27,7 @@ public class BaseSubstitutionResult implements Result {
 		final BaseSubstitutionCount bsc = container.getBaseSubstitutionCount();
 		valuesIndex = new TreeSet<>();
 		valuesIndex.addAll(result.getValueIndex());
-		valuesIndex = process(baseSubs, bsc);
+		valuesIndex.addAll(process(baseSubs, bsc));
 	}
 	
 	public static SortedSet<Integer> process(

@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 
 import lib.data.cache.fetcher.DataTypeFetcher;
 import lib.data.cache.fetcher.Fetcher;
-import lib.data.cache.lrtarrest.Position2baseCallCount;
+import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.count.BaseSubstitutionCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
@@ -25,7 +25,7 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	public static final DataType<BaseCallCount> BCC = create("Default", BaseCallCount.class);
 	public static final DataType<BaseCallCount> ARREST_BCC = create("Arrest", BaseCallCount.class);
 	public static final DataType<BaseCallCount> THROUGH_BCC = create("Through", BaseCallCount.class);
-	public static final DataType<Position2baseCallCount> AP2BCC = create("Default", Position2baseCallCount.class);
+	public static final DataType<ArrestPosition2baseCallCount> AP2BCC = create("Default", ArrestPosition2baseCallCount.class);
 	
 	public static final DataType<BaseSubstitutionCount> BASE_SUBST = create("Default", BaseSubstitutionCount.class);
 	

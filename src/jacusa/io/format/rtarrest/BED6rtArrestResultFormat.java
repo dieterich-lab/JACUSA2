@@ -60,7 +60,6 @@ extends AbstractResultFileFormat {
 				.addDataAdder(dataAdder)
 				.addInfoAdder(new DefaultInfoAdder(getParameter()))
 				.build();
-		
 	}
 
 }

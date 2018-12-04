@@ -49,14 +49,16 @@ implements DataAssembler {
 		
 		SAMRecordWrapper recordWrapper = null;
 		try {
-			cacheContainer.preProcess();
-			while (iterator.hasNext()) {
-				recordWrapper = iterator.next();
-				recordWrapper.process();
-				cacheContainer.process(recordWrapper);
-				records++;
+			if (iterator.hasNext()) {
+				cacheContainer.preProcess();
+				while (iterator.hasNext()) {
+					recordWrapper = iterator.next();
+					recordWrapper.process();
+					cacheContainer.process(recordWrapper);
+					records++;
+				}
+				cacheContainer.postProcess();
 			}
-			cacheContainer.postProcess();
 		} catch (Exception e){
 			if (recordWrapper != null) {
 				AbstractTool.getLogger().addError("Problem with read: " + recordWrapper.getSAMRecord().getReadName() + 

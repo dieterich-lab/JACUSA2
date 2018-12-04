@@ -2,7 +2,7 @@ package jacusa.cli.parameters;
 
 import jacusa.io.format.lrtarrest.BED6lrtArrestResultFormat;
 import jacusa.method.lrtarrest.LRTarrestMethod;
-import jacusa.method.rtarrest.BetaBinFactory;
+import jacusa.method.lrtarrest.LRTarrestStatFactory;
 import lib.cli.parameter.AbstractConditionParameter;
 import lib.cli.parameter.AbstractParameter;
 import lib.cli.parameter.JACUSAConditionParameter;
@@ -23,7 +23,7 @@ implements HasStatParameter {
 		
 		// test-statistic related
 		setStatParameter(
-				new StatParameter(new BetaBinFactory(), 1.0));
+				new StatParameter(new LRTarrestStatFactory(), 1.0));
 		// default output format
 		setResultFormat(
 				new BED6lrtArrestResultFormat(

@@ -1,6 +1,5 @@
 package lib.data.builder.factory;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import lib.data.adder.basecall.DefaultBaseCallAdder;
 import lib.data.adder.region.ValidatedRegionDataCache;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.Fetcher;
-import lib.data.cache.lrtarrest.Position2baseCallCount;
+import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.cache.lrtarrest.StartArrestPosition;
 import lib.data.cache.lrtarrest.ArrestPositionCalculator;
 import lib.data.cache.lrtarrest.EndArrestPosition;
@@ -42,7 +41,7 @@ extends AbstractSiteDataAssemblerFactory {
 		final LibraryType libraryType = conditionParameter.getLibraryType();
 
 		final Fetcher<BaseCallCount> bccFetcher = DataType.BCC.getFetcher();
-		final Fetcher<Position2baseCallCount> ap2bccFetcher =
+		final Fetcher<ArrestPosition2baseCallCount> ap2bccFetcher =
 				DataType.AP2BCC.getFetcher();
 
 		ArrestPositionCalculator apc = null;
