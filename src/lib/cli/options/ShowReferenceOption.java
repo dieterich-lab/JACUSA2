@@ -1,15 +1,15 @@
 package lib.cli.options;
 
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 public class ShowReferenceOption extends AbstractACOption {
 
-	final private AbstractParameter parameters;
+	final private GeneralParameter parameters;
 
-	public ShowReferenceOption(final AbstractParameter parameter) {
+	public ShowReferenceOption(final GeneralParameter parameter) {
 		super("S", "show-ref");
 		this.parameters = parameter;
 	}

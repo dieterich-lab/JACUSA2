@@ -2,8 +2,8 @@ package jacusa.cli.options.librarytype;
 
 import java.util.ArrayList;
 
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.has.LibraryType;
 
 import org.apache.commons.cli.CommandLine;
@@ -22,10 +22,10 @@ extends OneConditionLibraryTypeOption {
 	
 	// enforce precisely two conditions
 	public TwoConditionLibraryTypeOption(
-			final AbstractConditionParameter conditionParameter1, 
-			final AbstractConditionParameter conditionParameter2,
-			final AbstractParameter generalParameter) {
-		super(new ArrayList<AbstractConditionParameter>() {
+			final ConditionParameter conditionParameter1, 
+			final ConditionParameter conditionParameter2,
+			final GeneralParameter generalParameter) {
+		super(new ArrayList<ConditionParameter>() {
 			private static final long serialVersionUID = 1L;
 			{
 				add(conditionParameter1);

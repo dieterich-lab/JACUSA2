@@ -8,7 +8,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.AbstractBuilder;
 import lib.data.assembler.ConditionContainer;
@@ -78,7 +78,7 @@ public abstract class AbstractFilterFactory {
 	 * @return
 	 */
 	public abstract RecordWrapperProcessor createFilterCache(
-			final AbstractConditionParameter conditionParameter, final SharedCache sharedCache);
+			final ConditionParameter conditionParameter, final SharedCache sharedCache);
 	
 	public abstract void initDataTypeContainer(final AbstractBuilder builder);
 	

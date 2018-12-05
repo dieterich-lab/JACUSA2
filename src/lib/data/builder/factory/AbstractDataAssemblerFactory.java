@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jacusa.filter.FilterContainer;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.DataTypeContainer.AbstractBuilderFactory;
 import lib.data.assembler.DataAssembler;
 import lib.data.cache.container.CacheContainer;
@@ -24,10 +24,10 @@ public abstract class AbstractDataAssemblerFactory {
 	}
 	
 	public abstract DataAssembler newInstance(
-			final AbstractParameter parameter,
+			final GeneralParameter parameter,
 			final FilterContainer filterContainer,
 			final SharedCache sharedCache, 
-			final AbstractConditionParameter conditionParameter,
+			final ConditionParameter conditionParameter,
 			final int replicateIndex) throws IllegalArgumentException;
 	
 	protected AbstractBuilderFactory getBuilderFactory() {
@@ -35,10 +35,10 @@ public abstract class AbstractDataAssemblerFactory {
 	}
 	
 	protected CacheContainer createContainer(
-			final AbstractParameter parameter,
+			final GeneralParameter parameter,
 			final FilterContainer filterContainer,
 			final SharedCache sharedCache, 
-			final AbstractConditionParameter conditionParameter,
+			final ConditionParameter conditionParameter,
 			final int replicateIndex) {
 
 		CacheContainer cacheContainer = null; 
@@ -49,11 +49,11 @@ public abstract class AbstractDataAssemblerFactory {
 			final CacheContainer forwardCacheContainer = 
 				new UnstrandedCacheContainter(
 						sharedCache, createCaches(
-								parameter, filterContainer, sharedCache, conditionParameter, replicateIndex) );
+								parameter, filterContainer, sharedCache, conditionParameter) );
 			final CacheContainer reverseCacheContainer = 
 					new UnstrandedCacheContainter(
 							sharedCache, createCaches(
-									parameter, filterContainer, sharedCache, conditionParameter, replicateIndex) );
+									parameter, filterContainer, sharedCache, conditionParameter) );
 
 			cacheContainer = new RFPairedEnd1CacheContainer(forwardCacheContainer, reverseCacheContainer);
 			break;
@@ -63,11 +63,11 @@ public abstract class AbstractDataAssemblerFactory {
 			final CacheContainer forwardCacheContainer = 
 				new UnstrandedCacheContainter(
 						sharedCache, 
-						createCaches(parameter, filterContainer, sharedCache, conditionParameter, replicateIndex) );
+						createCaches(parameter, filterContainer, sharedCache, conditionParameter) );
 			final CacheContainer reverseCacheContainer = 
 				new UnstrandedCacheContainter(
 						sharedCache, 
-						createCaches(parameter, filterContainer, sharedCache, conditionParameter, replicateIndex) );
+						createCaches(parameter, filterContainer, sharedCache, conditionParameter) );
 			
 			cacheContainer = new FRPairedEnd2CacheContainer(forwardCacheContainer, reverseCacheContainer);
 			break;
@@ -76,7 +76,7 @@ public abstract class AbstractDataAssemblerFactory {
 		case UNSTRANDED: {
 			cacheContainer = new UnstrandedCacheContainter(
 					sharedCache, 
-					createCaches(parameter, filterContainer, sharedCache, conditionParameter, replicateIndex));
+					createCaches(parameter, filterContainer, sharedCache, conditionParameter));
 			break;
 		}
 			
@@ -88,16 +88,15 @@ public abstract class AbstractDataAssemblerFactory {
 	}
 	
 	protected abstract List<RecordWrapperProcessor> createCaches(
-			final AbstractParameter parameter,
+			final GeneralParameter parameter,
 			final SharedCache sharedCache, 
-			final AbstractConditionParameter conditionParameter);
+			final ConditionParameter conditionParameter);
 	
 	private List<RecordWrapperProcessor> createCaches(
-			final AbstractParameter parameter,
+			final GeneralParameter parameter,
 			final FilterContainer filterContainer, 
 			final SharedCache sharedCache, 
-			final AbstractConditionParameter conditionParameter,
-			final int replicateIndex) {
+			final ConditionParameter conditionParameter) {
 
 		final List<RecordWrapperProcessor> allCaches	= new ArrayList<RecordWrapperProcessor>(6);
 		final List<RecordWrapperProcessor> dataCaches 	= createCaches(parameter, sharedCache, conditionParameter);

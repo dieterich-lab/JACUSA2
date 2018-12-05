@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import lib.cli.CLI;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.HelpOption;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import test.utlis.CLIUtils;
 
 @DisplayName("Test CLI processing of HelpOptionOption")
@@ -41,12 +41,12 @@ class HelpOptionTest extends AbstractACOptionTest<Boolean> {
 	 */
 
 	@Override
-	protected AbstractACOption create(AbstractParameter parameter) {
+	protected AbstractACOption create(GeneralParameter parameter) {
 		return new HelpOption(cli);
 	}
 
 	@Override
-	protected Boolean getActualValue(AbstractParameter parameter) {
+	protected Boolean getActualValue(GeneralParameter parameter) {
 		return cli.printExtendedHelp();
 	}
 	

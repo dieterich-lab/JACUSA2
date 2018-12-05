@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import test.utlis.CLIUtils;
 
 @DisplayName("Test CLI processing of ReferenceFastaFilenameOption")
@@ -40,12 +40,12 @@ class ReferenceFastaFilenameOptionTest extends AbstractACOptionTest<String> {
 	 */
 
 	@Override
-	protected AbstractACOption create(AbstractParameter parameter) {
+	protected AbstractACOption create(GeneralParameter parameter) {
 		return new ReferenceFastaFilenameOption(parameter);
 	}
 
 	@Override
-	protected String getActualValue(AbstractParameter parameter) {
+	protected String getActualValue(GeneralParameter parameter) {
 		return getParameter().getReferenceFilename();
 	}
 	

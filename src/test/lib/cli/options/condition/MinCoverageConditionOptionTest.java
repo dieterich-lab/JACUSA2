@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.options.condition.MinCoverageConditionOption;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import test.utlis.CLIUtils;
 
 @DisplayName("Test CLI processing of MinCoverageConditionOption")
@@ -34,7 +34,7 @@ class MinCoverageConditionOptionTest extends AbstractConditionACOptionTest<Integ
 	@Test
 	@DisplayName("Check general MinCoverageConditionOption fails on wrong input")
 	public void testProcessGeneralFail() throws Exception {
-		final List<AbstractConditionParameter> conditionParameters = createConditionParameters(2); 
+		final List<ConditionParameter> conditionParameters = createConditionParameters(2); 
 		final AbstractConditionACOption acOption = createACOption(conditionParameters);
 
 		// < 1
@@ -56,7 +56,7 @@ class MinCoverageConditionOptionTest extends AbstractConditionACOptionTest<Integ
 	 */
 	
 	static Stream<Arguments> testProcessIndividual() {
-		final AbstractConditionParameter conditionParameter = createConditionParameter(-1);
+		final ConditionParameter conditionParameter = createConditionParameter(-1);
 		final Integer d = conditionParameter.getMinCoverage();
 
 		return Stream.of(
@@ -75,17 +75,17 @@ class MinCoverageConditionOptionTest extends AbstractConditionACOptionTest<Integ
 	}
 	
 	@Override
-	protected Integer getActualValue(AbstractConditionParameter conditionParameter) {
+	protected Integer getActualValue(ConditionParameter conditionParameter) {
 		return conditionParameter.getMinCoverage();
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(List<AbstractConditionParameter> conditionParameters) {
+	protected AbstractConditionACOption createACOption(List<ConditionParameter> conditionParameters) {
 		return new MinCoverageConditionOption(conditionParameters);
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(int conditionIndex, AbstractConditionParameter conditionParameter) {
+	protected AbstractConditionACOption createACOption(int conditionIndex, ConditionParameter conditionParameter) {
 		return new MinCoverageConditionOption(conditionIndex, conditionParameter);
 	}
 	

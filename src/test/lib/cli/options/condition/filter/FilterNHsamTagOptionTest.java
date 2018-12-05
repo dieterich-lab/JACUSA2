@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.options.condition.filter.FilterNHsamTagOption;
 import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import test.lib.cli.options.condition.AbstractConditionACOptionTest;
 import test.utlis.CLIUtils;
 
@@ -35,7 +35,7 @@ public class FilterNHsamTagOptionTest extends AbstractConditionACOptionTest<Inte
 	@Test
 	@DisplayName("Check general FilterNHsamTagOption fails on wrong input")
 	public void testProcessGeneralFail() throws Exception {
-		final List<AbstractConditionParameter> conditionParameters = createConditionParameters(2); 
+		final List<ConditionParameter> conditionParameters = createConditionParameters(2); 
 		final AbstractConditionACOption acOption = createACOption(conditionParameters);
 
 		// < 1
@@ -70,7 +70,7 @@ public class FilterNHsamTagOptionTest extends AbstractConditionACOptionTest<Inte
 	 */
 	
 	@Override
-	protected Integer getActualValue(AbstractConditionParameter conditionParameter) {
+	protected Integer getActualValue(ConditionParameter conditionParameter) {
 		for (final MaxValueSamTagFilter filter : conditionParameter.getSamTagFilters()) {
 			if (filter.getTag().equals(FilterNHsamTagOption.TAG)) {
 				return filter.getValue();
@@ -86,13 +86,13 @@ public class FilterNHsamTagOptionTest extends AbstractConditionACOptionTest<Inte
 	
 	@Override
 	protected AbstractConditionACOption createACOption(int conditionIndex,
-			AbstractConditionParameter conditionParameter) {
+			ConditionParameter conditionParameter) {
 		
 		return new FilterNHsamTagOption(conditionIndex, conditionParameter);
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(List<AbstractConditionParameter> conditionParameters) {
+	protected AbstractConditionACOption createACOption(List<ConditionParameter> conditionParameters) {
 		return new FilterNHsamTagOption(conditionParameters);
 	}
 	

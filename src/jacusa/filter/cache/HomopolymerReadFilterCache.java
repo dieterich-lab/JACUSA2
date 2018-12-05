@@ -1,5 +1,6 @@
 package jacusa.filter.cache;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import htsjdk.samtools.AlignmentBlock;
@@ -22,6 +23,9 @@ import lib.util.Base;
 public class HomopolymerReadFilterCache 
 extends AbstractHomopolymerFilterCache
 implements RecordWrapperProcessor {
+
+	// indices of position in window is a homopolymer
+	private final boolean[] isHomopolymer;
 	
 	public HomopolymerReadFilterCache(
 			final char c,
@@ -30,6 +34,7 @@ implements RecordWrapperProcessor {
 			final SharedCache sharedCache) {
 
 		super(c, filteredDataFetcher, minLength, sharedCache);
+		isHomopolymer = new boolean[sharedCache.getCoordinateController().getActiveWindowSize()];
 	}
 
 	@Override
@@ -57,6 +62,16 @@ implements RecordWrapperProcessor {
 	public void postProcess() {
 		// nothing to be done
 	}
+
+	@Override
+	protected boolean[] getIsHomopolymer() {
+		return isHomopolymer;
+	}
+	
+	@Override
+	public void clear() {
+		Arrays.fill(isHomopolymer, false);
+	}
 	
 	/**
 	 * Helper method.
@@ -67,7 +82,9 @@ implements RecordWrapperProcessor {
 	 * @param length			length of block
 	 * @param recordWrapper		read to be processed
 	 */
-	private void processAlignmentBlock(final int referencePosition, final int readPosition, final int length, 
+	private void processAlignmentBlock(
+			final int referencePosition, final int readPosition, 
+			final int length, 
 			final SAMRecordWrapper recordWrapper) {
 
 		final SAMRecord record = recordWrapper.getSAMRecord();
@@ -84,5 +101,5 @@ implements RecordWrapperProcessor {
 			markRegion(homopolymer.getPosition(), homopolymer.getLength());
 		}
 	}
-
+	
 }

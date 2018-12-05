@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.DataTypeContainer;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
@@ -117,7 +117,7 @@ extends AbstractResultFileWriter {
 	}
 
 	@Override
-	public void writeHeader(List<AbstractConditionParameter> conditionParameter) {
+	public void writeHeader(List<ConditionParameter> conditionParameter) {
 		// pileup result format has to header
 	}
 

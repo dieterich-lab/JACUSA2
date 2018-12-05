@@ -2,7 +2,7 @@ package lib.data.validator.paralleldata;
 
 import java.util.List;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.DataTypeContainer;
 import lib.data.ParallelData;
 import lib.data.cache.fetcher.Fetcher;
@@ -12,11 +12,11 @@ public class MinCoverageValidator
 implements ParallelDataValidator {
 
 	private final Fetcher<BaseCallCount> bccFetcher;
-	private final List<AbstractConditionParameter> conditionParameters;
+	private final List<ConditionParameter> conditionParameters;
 	
 	public MinCoverageValidator(
 			final Fetcher<BaseCallCount> bccFetcher,
-			final List<AbstractConditionParameter> conditionParameters) {
+			final List<ConditionParameter> conditionParameters) {
 
 		this.bccFetcher = bccFetcher;
 		this.conditionParameters = conditionParameters;

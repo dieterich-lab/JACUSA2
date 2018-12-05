@@ -1,15 +1,15 @@
 package lib.cli.options;
 
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 public class MaxThreadOption extends AbstractACOption {
 
-	final private AbstractParameter parameter;
+	final private GeneralParameter parameter;
 	
-	public MaxThreadOption(AbstractParameter parameters) {
+	public MaxThreadOption(GeneralParameter parameters) {
 		super("p", "threads");
 		this.parameter = parameters;
 	}

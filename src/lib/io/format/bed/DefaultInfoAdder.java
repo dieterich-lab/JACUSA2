@@ -1,15 +1,15 @@
 package lib.io.format.bed;
 
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.ParallelData;
 import lib.data.result.Result;
 import lib.util.Util;
 
 public class DefaultInfoAdder implements InfoAdder {
 	
-	private final AbstractParameter parameter;
+	private final GeneralParameter parameter;
 	
-	public DefaultInfoAdder(final AbstractParameter parameter) {
+	public DefaultInfoAdder(final GeneralParameter parameter) {
 		this.parameter = parameter;
 	}
 	

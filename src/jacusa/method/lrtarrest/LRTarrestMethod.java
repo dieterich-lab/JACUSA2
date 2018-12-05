@@ -87,7 +87,7 @@ extends AbstractMethod {
 		ap2bccFetcher = DataType.AP2BCC.getFetcher();
 		totalBccFetcher = DataType.BCC.getFetcher();
 		arrestBccExtractor = new ArrestBaseCallCountExtractor(ap2bccFetcher);
-		throughBccExtractor = new ThroughBaseCallCountExtractor(totalBccFetcher, ap2bccFetcher);
+		throughBccExtractor = new ThroughBaseCallCountExtractor(ap2bccFetcher);
 	}
 
 	protected void initGlobalACOptions() {

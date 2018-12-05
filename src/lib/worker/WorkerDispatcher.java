@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.io.ResultWriter;
 import lib.io.copytmp.CopyTmpExecuter;
 import lib.method.AbstractMethod;
@@ -39,7 +39,7 @@ public class WorkerDispatcher {
 	public WorkerDispatcher(final AbstractMethod methodFactory) {
 		this.methodFactory = methodFactory;
 		
-		final AbstractParameter parameter = methodFactory.getParameter();
+		final GeneralParameter parameter = methodFactory.getParameter();
 		final int maxThreads = parameter.getMaxThreads();
 		workerContainer = new ArrayList<AbstractWorker>(maxThreads);
 		runningWorkers = new ArrayList<AbstractWorker>(maxThreads);
@@ -142,7 +142,7 @@ public class WorkerDispatcher {
 		return threadIds;
 	}
 	
-	private List<AbstractConditionParameter> getConditionParameters(){
+	private List<ConditionParameter> getConditionParameters(){
 		return methodFactory.getParameter().getConditionParameters();
 	}
 	

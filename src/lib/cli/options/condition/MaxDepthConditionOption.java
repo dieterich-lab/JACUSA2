@@ -2,7 +2,7 @@ package lib.cli.options.condition;
 
 import java.util.List;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -15,11 +15,11 @@ public class MaxDepthConditionOption extends AbstractConditionACOption {
 	private static final String OPT = "d";
 	private static final String LONG_OPT = "max-depth";
 	
-	public MaxDepthConditionOption(final int conditionIndex, final AbstractConditionParameter conditionParameter) {
+	public MaxDepthConditionOption(final int conditionIndex, final ConditionParameter conditionParameter) {
 		super(OPT, LONG_OPT, conditionIndex, conditionParameter);
 	}
 	
-	public MaxDepthConditionOption(final List<AbstractConditionParameter> conditionParameters) {
+	public MaxDepthConditionOption(final List<ConditionParameter> conditionParameters) {
 		super(OPT, LONG_OPT, conditionParameters);
 	}
 	
@@ -50,7 +50,7 @@ public class MaxDepthConditionOption extends AbstractConditionACOption {
 	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " must be > 0 or -1 (limited by memory)!");
 	    	}
 	    	
-	    	for (final AbstractConditionParameter conditionParameter : getConditionParameters()) {
+	    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
 	    		conditionParameter.setMaxDepth(maxDepth);
 	    	}
 	    }

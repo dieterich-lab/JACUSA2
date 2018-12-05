@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jacusa.method.lrtarrest.LRTarrestMethod.LRTarrestBuilderFactory;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
 import lib.data.adder.IncrementAdder;
 import lib.data.adder.basecall.DefaultBaseCallAdder;
@@ -34,9 +34,9 @@ extends AbstractSiteDataAssemblerFactory {
 
 	@Override
 	public List<RecordWrapperProcessor> createCaches(
-			final AbstractParameter parameter,
+			final GeneralParameter parameter,
 			final SharedCache sharedCache, 
-			final AbstractConditionParameter conditionParameter) {
+			final ConditionParameter conditionParameter) {
 		
 		final LibraryType libraryType = conditionParameter.getLibraryType();
 

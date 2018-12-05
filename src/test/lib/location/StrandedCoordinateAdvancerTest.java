@@ -22,7 +22,7 @@ class StrandedCoordinateAdvancerTest {
 	 */
 	
 	@DisplayName("Test advance gives correct results")
-	@ParameterizedTest(name = "Advance {0} {1}x and expect {1}")
+	@ParameterizedTest(name = "Advance {0} {1}x and expect {2}")
 	@MethodSource("testAdvance")
 	void testAdvance(Coordinate coordinate, int advance, Coordinate expected) {
 		strandedCoordinateAdvancer = new StrandedCoordinateAdvancer(coordinate);

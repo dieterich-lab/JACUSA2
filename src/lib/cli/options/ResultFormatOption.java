@@ -2,7 +2,7 @@ package lib.cli.options;
 
 import java.util.Map;
 
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.io.ResultFormat;
 
 import org.apache.commons.cli.CommandLine;
@@ -11,10 +11,10 @@ import org.apache.commons.cli.Option;
 public class ResultFormatOption 
 extends AbstractACOption {
 
-	private final AbstractParameter parameter;
+	private final GeneralParameter parameter;
 	private final Map<Character, ResultFormat> resultFormats;
 
-	public ResultFormatOption(final AbstractParameter parameter, 
+	public ResultFormatOption(final GeneralParameter parameter, 
 			final Map<Character, ResultFormat> resultFormats) {
 
 		super("f", "output-format");

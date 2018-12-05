@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import jacusa.cli.parameters.CallParameter;
 import lib.cli.options.AbstractACOption;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 
 public abstract class AbstractACOptionTest<T> {
 
@@ -16,7 +16,7 @@ public abstract class AbstractACOptionTest<T> {
 	
 	private ParserWrapper parserWrapper;
 	
-	private AbstractParameter parameter;
+	private GeneralParameter parameter;
 	private AbstractACOption testInstance;
 	
 	@BeforeEach
@@ -40,7 +40,7 @@ public abstract class AbstractACOptionTest<T> {
 		assertEquals(expected, actual);
 	}
 	
-	public AbstractParameter getParameter() {
+	public GeneralParameter getParameter() {
 		return parameter;
 	}
 
@@ -48,8 +48,8 @@ public abstract class AbstractACOptionTest<T> {
 	 * Abstract
 	 */
 	
-	protected abstract AbstractACOption create(AbstractParameter parameter);
-	protected abstract T getActualValue(AbstractParameter parameter);
+	protected abstract AbstractACOption create(GeneralParameter parameter);
+	protected abstract T getActualValue(GeneralParameter parameter);
 	protected abstract String createLine(T v);
 	
 	protected AbstractACOption getTestInstance() {

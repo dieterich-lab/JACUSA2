@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.ShowVersionOption;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.util.AbstractTool;
 
 // FIXME
@@ -59,12 +59,12 @@ class ShowVersionOptionTest extends AbstractACOptionTest<String> {
 	}
 	
 	@Override
-	protected AbstractACOption create(AbstractParameter parameter) {
+	protected AbstractACOption create(GeneralParameter parameter) {
 		return new ShowVersionOption();
 	}
 	
 	@Override
-	protected String getActualValue(AbstractParameter parameter) {
+	protected String getActualValue(GeneralParameter parameter) {
 		return myOut.toString().replaceAll("\n", "");
 	}
 	

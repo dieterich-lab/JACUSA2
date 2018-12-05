@@ -1,6 +1,6 @@
 package lib.cli.options;
 
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.CommandLine;
@@ -8,9 +8,9 @@ import org.apache.commons.cli.Option;
 
 public class FilterModusOption extends AbstractACOption {
 
-	final private AbstractParameter parameter;
+	final private GeneralParameter parameter;
 	
-	public FilterModusOption(final AbstractParameter parameter) {
+	public FilterModusOption(final GeneralParameter parameter) {
 		super("s", "split");
 		this.parameter = parameter;
 	}

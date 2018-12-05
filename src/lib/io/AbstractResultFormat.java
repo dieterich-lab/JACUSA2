@@ -1,6 +1,6 @@
 package lib.io;
 
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 
 /**
  * TODO add comments.
@@ -17,10 +17,10 @@ implements ResultFormat{
 	private final String desc;
 
 	private final String methodName;
-	private final AbstractParameter parameter;
+	private final GeneralParameter parameter;
 	
 	public AbstractResultFormat(final char c, final String desc, 
-			final String methodName, final AbstractParameter parameter) {
+			final String methodName, final GeneralParameter parameter) {
 		this.c = c;
 		this.desc = desc;
 		
@@ -42,7 +42,7 @@ implements ResultFormat{
 		return methodName;
 	}
 	
-	public AbstractParameter getParameter() {
+	public GeneralParameter getParameter() {
 		return parameter;
 	}
 	

@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.MaxThreadOption;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import test.utlis.CLIUtils;
 
 @DisplayName("Test CLI processing of MaxThreadOption")
@@ -38,12 +38,12 @@ class MaxThreadOptionTest extends AbstractACOptionTest<Integer> {
 	 */
 
 	@Override
-	protected AbstractACOption create(AbstractParameter parameter) {
+	protected AbstractACOption create(GeneralParameter parameter) {
 		return new MaxThreadOption(parameter);
 	}
 	
 	@Override
-	protected Integer getActualValue(AbstractParameter parameter) {
+	protected Integer getActualValue(GeneralParameter parameter) {
 		return parameter.getMaxThreads();
 	}
 	

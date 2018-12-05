@@ -16,6 +16,7 @@ import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.DataTypeContainer;
 import lib.data.adder.AbstractDataContainerPopulator;
 import lib.data.adder.IncrementAdder;
+import lib.data.builder.recordwrapper.CombinedPosition;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.record.RecordWrapperProcessor;
@@ -105,7 +106,6 @@ implements RecordWrapperProcessor {
 				throw new IllegalStateException();
 			}
 			final SAMRecordWrapper mateRecordWrapper = new SAMRecordWrapper(mateRecord);
-			mateRecordWrapper.process();
 			processPE(queryBaseSubs, recordWrapper, mateRecordWrapper);
 		}
 	}
@@ -168,9 +168,8 @@ implements RecordWrapperProcessor {
 			throw new IllegalStateException("No MD field for record: " + record.toString());
 		}
 		
-		for (final int refPos : recordWrapper.getRecordReferenceProvider().getMismatchRefPositions()) {			
-			// FIXME embed this information in recordWrapper
-			final int readMismatchPos = record.getReadPositionAtReferencePosition(refPos) - 1;
+		for (final CombinedPosition position : recordWrapper.getRecordReferenceProvider().getMismatchPositions()) {			
+			final int readMismatchPos = position.getReadPosition();
 			final Base readBase = bci.getReadBase(recordWrapper, readMismatchPos);
 
 			final byte readBaseQuality = record.getBaseQualities()[readMismatchPos];
@@ -181,6 +180,7 @@ implements RecordWrapperProcessor {
 
 				continue;
 			}
+			final int refPos = position.getReferencePosition();
 			final Base refBase = bci.getRefBase(recordWrapper, refPos);
 			if (refBase == Base.N) {
 				continue;

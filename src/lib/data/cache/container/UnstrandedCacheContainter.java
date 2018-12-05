@@ -19,7 +19,7 @@ implements CacheContainer {
 			final List<RecordWrapperProcessor> dataCaches) {
 
 		this.sharedCache			= sharedCache;
-		this.processors 				= dataCaches;
+		this.processors 			= dataCaches;
 	}
 	
 	@Override

@@ -15,7 +15,7 @@ import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
 import lib.data.has.LibraryType;
 import lib.util.AbstractTool;
 
-public abstract class AbstractConditionParameter {
+public class ConditionParameter {
 	
 	private int conditionIndex;
 	
@@ -39,7 +39,7 @@ public abstract class AbstractConditionParameter {
 	// path to BAM files
 	private String[] recordFilenames;
 	
-	public AbstractConditionParameter(final int conditionIndex) {
+	public ConditionParameter(final int conditionIndex) {
 		this.conditionIndex = conditionIndex; 
 		libraryType = LibraryType.UNSTRANDED;
 

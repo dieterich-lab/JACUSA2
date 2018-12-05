@@ -15,7 +15,7 @@ import jacusa.filter.AbstractFilter;
 import jacusa.filter.HomopolymerFilter;
 import jacusa.filter.cache.HomopolymerReadFilterCache;
 import jacusa.filter.cache.HomopolymerReferenceFilterCache;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.DataType;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.AbstractBuilder;
@@ -116,7 +116,7 @@ extends AbstractFilterFactory {
 
 	@Override
 	public RecordWrapperProcessor createFilterCache(
-			AbstractConditionParameter conditionParameter,
+			ConditionParameter conditionParameter,
 			SharedCache sharedCache) {
 		
 		switch (method) {

@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.util.Util;
 
 import org.apache.commons.cli.CommandLine;
@@ -16,14 +16,14 @@ import org.apache.commons.cli.Options;
 
 public class FilterConfigOption extends AbstractACOption {
 
-	final private AbstractParameter parameters;
+	final private GeneralParameter parameters;
 
 	public static final char OR = ',';
 	//public static char AND = '&';
 
 	final private Map<Character, AbstractFilterFactory> filterFactories;
 
-	public FilterConfigOption(final AbstractParameter parameter, 
+	public FilterConfigOption(final GeneralParameter parameter, 
 			final Map<Character, AbstractFilterFactory> filterFactories) {
 
 		super("a", "feature-filter");

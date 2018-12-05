@@ -9,7 +9,7 @@ import jacusa.JACUSA;
 import jacusa.method.call.CallMethod;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.DebugModusOption;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.method.AbstractMethod;
 import lib.util.AbstractTool;
 import test.utlis.CLIUtils;
@@ -46,12 +46,12 @@ class DebugModusOptionTest extends AbstractACOptionTest<Boolean> {
 	 */
 	
 	@Override
-	protected AbstractACOption create(AbstractParameter parameter) {
+	protected AbstractACOption create(GeneralParameter parameter) {
 		return new DebugModusOption(parameter, method);
 	}
 	
 	@Override
-	protected Boolean getActualValue(AbstractParameter parameter) {
+	protected Boolean getActualValue(GeneralParameter parameter) {
 		return parameter.isDebug();
 	}
 	

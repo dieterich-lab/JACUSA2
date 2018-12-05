@@ -2,7 +2,7 @@ package lib.cli.options.condition;
 
 import java.util.List;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -12,11 +12,11 @@ public class MinCoverageConditionOption extends AbstractConditionACOption {
 	private static final String OPT = "c";
 	private static final String LONG_OPT = "min-coverage";
 	
-	public MinCoverageConditionOption(final List<AbstractConditionParameter> conditionParameter) {
+	public MinCoverageConditionOption(final List<ConditionParameter> conditionParameter) {
 		super(OPT, LONG_OPT, conditionParameter);
 	}
 	
-	public MinCoverageConditionOption(final int conditionIndex, final AbstractConditionParameter conditionParameters) {
+	public MinCoverageConditionOption(final int conditionIndex, final ConditionParameter conditionParameters) {
 		super(OPT, LONG_OPT, conditionIndex, conditionParameters);
 	}
 	
@@ -48,7 +48,7 @@ public class MinCoverageConditionOption extends AbstractConditionACOption {
 	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " must be > 0!");
 	    	}
 	    	
-	    	for (final AbstractConditionParameter condition : getConditionParameters()) {
+	    	for (final ConditionParameter condition : getConditionParameters()) {
 	    		condition.setMinCoverage(minCoverage);
 	    	}
 	    }

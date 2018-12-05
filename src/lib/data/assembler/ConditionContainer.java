@@ -5,8 +5,8 @@ import jacusa.filter.FilterContainer;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.DataTypeContainer;
 import lib.data.cache.container.SharedCache;
 import lib.method.AbstractMethod;
@@ -14,14 +14,14 @@ import lib.util.coordinate.Coordinate;
 
 public class ConditionContainer {
 
-	private AbstractParameter parameter;
+	private GeneralParameter parameter;
 	private List<ReplicateContainer> replicateContainers;
 
 	private List<Integer> replicateSizes;
 	
 	private FilterContainer filterContainer;
 
-	public ConditionContainer(final AbstractParameter parameter) {
+	public ConditionContainer(final GeneralParameter parameter) {
 		this.parameter = parameter;
 	}
 
@@ -53,7 +53,7 @@ public class ConditionContainer {
 	
 	public void initReplicateContainer(
 			final SharedCache sharedCache,
-			final AbstractParameter parameter,
+			final GeneralParameter parameter,
 			final AbstractMethod method) {
 
 		filterContainer = parameter.getFilterConfig().createFilterInstances();
@@ -71,7 +71,7 @@ public class ConditionContainer {
 		return filterContainer;
 	}
 
-	public List<AbstractConditionParameter> getConditionParameter() {
+	public List<ConditionParameter> getConditionParameter() {
 		return parameter.getConditionParameters();
 	}
 	

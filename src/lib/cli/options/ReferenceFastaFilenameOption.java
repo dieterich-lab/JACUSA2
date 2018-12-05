@@ -3,16 +3,16 @@ package lib.cli.options;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 public class ReferenceFastaFilenameOption extends AbstractACOption {
 
-	final private AbstractParameter parameters;
+	final private GeneralParameter parameters;
 	
-	public ReferenceFastaFilenameOption(AbstractParameter parameter) {
+	public ReferenceFastaFilenameOption(GeneralParameter parameter) {
 		super("R", "ref-fasta");
 		this.parameters = parameter;
 	}

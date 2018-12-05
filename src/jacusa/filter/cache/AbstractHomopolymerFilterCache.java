@@ -1,7 +1,5 @@
 package jacusa.filter.cache;
 
-import java.util.Arrays;
-
 import lib.data.DataTypeContainer;
 import lib.data.adder.AbstractDataContainerPopulator;
 import lib.data.cache.container.SharedCache;
@@ -28,9 +26,6 @@ implements RecordWrapperProcessor {
 	// min length of identical base call to define homopolymer
 	private final int minLength;
 	
-	// indices of position in window is a homopolymer
-	private final boolean[] isHomopolymer;
-	
 	public AbstractHomopolymerFilterCache(
 			final char c,
 			final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher,
@@ -42,7 +37,6 @@ implements RecordWrapperProcessor {
 		this.c				= c;
 		this.filteredDataFetcher = filteredDataFetcher;
 		this.minLength 		= minLength;
-		isHomopolymer 		= new boolean[sharedCache.getCoordinateController().getActiveWindowSize()];
 	}
 	
 	/**
@@ -55,14 +49,11 @@ implements RecordWrapperProcessor {
 		final WindowPositionGuard windowPositionGuard = 
 				getCoordinateController().convert(firstReferencePosition, length);
 		for (int i = 0; i < windowPositionGuard.getLength(); ++i) {
-			isHomopolymer[windowPositionGuard.getWindowPosition() + i] = true;
+			getIsHomopolymer()[windowPositionGuard.getWindowPosition() + i] = true;
 		}
 	}
 
-	@Override
-	public void clear() {
-		Arrays.fill(isHomopolymer, false);
-	}
+	protected abstract boolean[] getIsHomopolymer();
 	
 	public int getMinLength() {
 		return minLength;
@@ -70,10 +61,14 @@ implements RecordWrapperProcessor {
 
 	@Override
 	public void populate(DataTypeContainer container, Coordinate coordinate) {
-		final int windowPosition = getCoordinateController().getCoordinateTranslator().convert2windowPosition(coordinate);
-		filteredDataFetcher.fetch(container).add(
-				c, 
-				new BooleanWrapper(isHomopolymer[windowPosition]));
+		final int windowPosition = getCoordinateController()
+				.getCoordinateTranslator()
+				.convert2windowPosition(coordinate);
+		if (getIsHomopolymer() != null) {
+			filteredDataFetcher.fetch(container).add(
+					c, 
+					new BooleanWrapper(getIsHomopolymer()[windowPosition]));
+		}
 	}
 	
 }

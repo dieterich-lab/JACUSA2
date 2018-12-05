@@ -26,7 +26,7 @@ import htsjdk.variant.vcf.VCFHeaderLineType;
 import htsjdk.variant.vcf.VCFStandardHeaderLines;
 import jacusa.filter.FilterConfig;
 import jacusa.filter.factory.AbstractFilterFactory;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.result.Result;
@@ -84,7 +84,7 @@ implements ResultWriter  {
 	}
 	
 	@Override
-	public void writeHeader(List<AbstractConditionParameter> conditionParameters) {
+	public void writeHeader(List<ConditionParameter> conditionParameters) {
 		final VCFHeader header = new VCFHeader();
 		header.setSequenceDictionary(dictionary);
 		header.addMetaDataLine(new VCFHeaderLine("source", AbstractTool.getLogger().getTool().getName() + "-" + AbstractTool.getLogger().getTool().getVersion()));
@@ -108,7 +108,7 @@ implements ResultWriter  {
 		}
 
 		// filename of condition and replicate BAMs
-		for (final AbstractConditionParameter conditionParameter : conditionParameters) {
+		for (final ConditionParameter conditionParameter : conditionParameters) {
 			for (String recordFilename : conditionParameter.getRecordFilenames())  {
 				header.getGenotypeSamples().add(recordFilename);
 			}

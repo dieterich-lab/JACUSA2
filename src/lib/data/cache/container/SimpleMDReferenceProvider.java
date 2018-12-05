@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
@@ -141,7 +141,7 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 	
 	private final List<SamReader> createSamReaders(final List<String> recordFilenames) {
 		return recordFilenames.stream()
-			.map(AbstractConditionParameter::createSamReader)
+			.map(ConditionParameter::createSamReader)
 			.collect(Collectors.toList());
 	}
 	

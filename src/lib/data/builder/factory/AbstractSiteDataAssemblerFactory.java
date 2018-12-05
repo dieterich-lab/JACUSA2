@@ -8,8 +8,8 @@ import java.util.SortedSet;
 
 import jacusa.filter.FilterContainer;
 import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
 import lib.data.DataTypeContainer.AbstractBuilderFactory;
 import lib.data.adder.IncrementAdder;
@@ -38,10 +38,10 @@ extends AbstractDataAssemblerFactory {
 	
 	@Override
 	public DataAssembler newInstance(
-			final AbstractParameter parameter,
+			final GeneralParameter parameter,
 			final FilterContainer filterContainer,
 			final SharedCache sharedCache, 
-			final AbstractConditionParameter conditionParameter, 
+			final ConditionParameter conditionParameter, 
 			final int replicateIndex)
 			throws IllegalArgumentException {
 		
@@ -55,9 +55,9 @@ extends AbstractDataAssemblerFactory {
 	}
 	
 	protected void addBaseSubstitution(
-			final AbstractParameter parameter,
+			final GeneralParameter parameter,
 			final SharedCache sharedCache, 
-			final AbstractConditionParameter conditionParameter,
+			final ConditionParameter conditionParameter,
 			final List<RecordWrapperProcessor> dataCaches) {
 
 		final SortedSet<BaseSubstitution> baseSubs = parameter.getReadSubstitutions();

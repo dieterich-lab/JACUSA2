@@ -3,15 +3,14 @@ package jacusa.cli.parameters;
 import jacusa.io.format.rtarrest.BED6rtArrestResultFormat;
 import jacusa.method.rtarrest.BetaBinFactory;
 import jacusa.method.rtarrest.RTarrestMethod;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
-import lib.cli.parameter.JACUSAConditionParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 
 /**
  * Class defines parameters and default values that are need for Reverse Transcription arrest (rt-arrest).
  */
 public class RTarrestParameter
-extends AbstractParameter 
+extends GeneralParameter 
 implements HasStatParameter {
 
 	private StatParameter statParameter;
@@ -29,8 +28,8 @@ implements HasStatParameter {
 	}
 
 	@Override
-	public AbstractConditionParameter createConditionParameter(final int conditionIndex) {
-		final AbstractConditionParameter p = new JACUSAConditionParameter(conditionIndex);
+	public ConditionParameter createConditionParameter(final int conditionIndex) {
+		final ConditionParameter p = super.createConditionParameter(conditionIndex);
 		p.setMinBASQ((byte)0);
 		return p;
 	}

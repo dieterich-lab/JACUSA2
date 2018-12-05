@@ -2,7 +2,7 @@ package lib.data.assembler;
 
 import java.util.Iterator;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.AbstractBuilderFactory;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
@@ -18,7 +18,7 @@ implements DataAssembler {
 	private final int replicateIndex;
 	
 	private final AbstractBuilderFactory builderFactory;
-	private final AbstractConditionParameter conditionParameter;
+	private final ConditionParameter conditionParameter;
 
 	private final CacheContainer cacheContainer; 
 	private CACHE_STATUS cacheStatus;
@@ -26,7 +26,7 @@ implements DataAssembler {
 	public SiteDataAssembler(
 			final int replicateIndex,
 			final AbstractBuilderFactory builderFactory, 
-			final AbstractConditionParameter conditionParameter,
+			final ConditionParameter conditionParameter,
 			final CacheContainer cacheContainer) {
 		
 		this.replicateIndex = replicateIndex;
@@ -53,7 +53,6 @@ implements DataAssembler {
 				cacheContainer.preProcess();
 				while (iterator.hasNext()) {
 					recordWrapper = iterator.next();
-					recordWrapper.process();
 					cacheContainer.process(recordWrapper);
 					records++;
 				}
@@ -94,7 +93,7 @@ implements DataAssembler {
 	}
 
 	@Override
-	public AbstractConditionParameter getConditionParameter() {
+	public ConditionParameter getConditionParameter() {
 		return conditionParameter;
 	}
 

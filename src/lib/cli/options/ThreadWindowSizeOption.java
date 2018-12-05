@@ -1,6 +1,6 @@
 package lib.cli.options;
 
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -10,9 +10,9 @@ public class ThreadWindowSizeOption extends AbstractACOption {
 	public final static int NO_WINDOWS = -1;
 	public final static int MIN_WINDOWS = 100;
 	
-	final private AbstractParameter parameter; 
+	final private GeneralParameter parameter; 
 	
-	public ThreadWindowSizeOption(AbstractParameter parameter) {
+	public ThreadWindowSizeOption(GeneralParameter parameter) {
 		super("W", "thread-window-size");
 		this.parameter = parameter;
 	}

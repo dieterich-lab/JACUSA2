@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.options.condition.MinBASQConditionOption;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.phred2prob.Phred2Prob;
 import test.utlis.CLIUtils;
 
@@ -35,7 +35,7 @@ class MinBASQConditionOptionTest extends AbstractConditionACOptionTest<Byte> {
 	@Test
 	@DisplayName("Check general MinBASQConditionOption fails on wrong input")
 	void testProcessGeneralFail() throws Exception {
-		final List<AbstractConditionParameter> conditionParameters = createConditionParameters(2); 
+		final List<ConditionParameter> conditionParameters = createConditionParameters(2); 
 		final AbstractConditionACOption acOption = createACOption(conditionParameters);
 
 		// < -1
@@ -59,7 +59,7 @@ class MinBASQConditionOptionTest extends AbstractConditionACOptionTest<Byte> {
 	 */
 	
 	static Stream<Arguments> testProcessIndividual() {
-		final AbstractConditionParameter conditionParameter = createConditionParameter(-1);
+		final ConditionParameter conditionParameter = createConditionParameter(-1);
 		// FIXME ugly
 		final Byte d = conditionParameter.getMinBASQ();
 
@@ -79,17 +79,17 @@ class MinBASQConditionOptionTest extends AbstractConditionACOptionTest<Byte> {
 	}
 	
 	@Override
-	protected Byte getActualValue(AbstractConditionParameter conditionParameter) {
+	protected Byte getActualValue(ConditionParameter conditionParameter) {
 		return conditionParameter.getMinBASQ();
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(int conditionIndex, AbstractConditionParameter conditionParameter) {
+	protected AbstractConditionACOption createACOption(int conditionIndex, ConditionParameter conditionParameter) {
 		return new MinBASQConditionOption(conditionIndex, conditionParameter);
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(List<AbstractConditionParameter> conditionParameter) {
+	protected AbstractConditionACOption createACOption(List<ConditionParameter> conditionParameter) {
 		return new MinBASQConditionOption(conditionParameter);
 	}
 	

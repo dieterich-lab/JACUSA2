@@ -3,7 +3,7 @@ package lib.cli.options.condition.filter;
 import java.util.List;
 
 import lib.cli.options.condition.AbstractConditionACOption;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -13,11 +13,11 @@ public class FilterFlagConditionOption extends AbstractConditionACOption {
 	private static final String OPT = "F";
 	private static final String LONG_OPT = "filter-flags";
 	
-	public FilterFlagConditionOption(final List<AbstractConditionParameter> conditionParameter) {
+	public FilterFlagConditionOption(final List<ConditionParameter> conditionParameter) {
 		super(OPT, LONG_OPT, conditionParameter);
 	}
 
-	public FilterFlagConditionOption(final int conditionIndex, AbstractConditionParameter conditionParameter) {
+	public FilterFlagConditionOption(final int conditionIndex, ConditionParameter conditionParameter) {
 		super(OPT, LONG_OPT, conditionIndex, conditionParameter);
 	}
 	
@@ -50,7 +50,7 @@ public class FilterFlagConditionOption extends AbstractConditionACOption {
 	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + filterFlags + " not valid.");
 	    	}
 
-	    	for (final AbstractConditionParameter conditionParameter : getConditionParameters()) {
+	    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
 	    		conditionParameter.setFilterFlags(filterFlags);
 	    	}
 	    }

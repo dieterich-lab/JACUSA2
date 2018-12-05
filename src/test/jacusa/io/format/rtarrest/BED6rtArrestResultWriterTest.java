@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.cli.parameters.RTarrestParameter;
 import jacusa.io.format.rtarrest.BED6rtArrestResultFormat;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.io.BEDlikeResultFileWriter;
 import test.jacusa.io.format.AbstractResultWriterTest;
 
@@ -35,14 +35,14 @@ class BED6rtArrestResultWriterTest extends AbstractResultWriterTest {
 	}
 
 	@Override
-	public AbstractParameter createParameter(int conditionSize) {
+	public GeneralParameter createParameter(int conditionSize) {
 		return new RTarrestParameter(conditionSize);
 	}
 
 	@Override
 	public BEDlikeResultFileWriter createTestInstance(
 			String outputFileName,
-			AbstractParameter parameter) {
+			GeneralParameter parameter) {
 
 		return new BED6rtArrestResultFormat("testRT", parameter).createWriter(outputFileName);
 	}

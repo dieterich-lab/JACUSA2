@@ -11,11 +11,15 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.util.CloseableIterator;
+import lib.data.DataType;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.DefaultBuilderFactory;
+import lib.data.adder.basecall.DefaultBaseCallAdder;
+import lib.data.adder.region.ValidatedRegionDataCache;
+import lib.data.cache.arrest.LocationInterpreter;
 import lib.data.cache.arrest.RTarrestDataCache;
-import lib.data.count.basecall.ArrayBaseCallCount;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.count.basecall.DefaultBaseCallCount;
 import lib.data.has.LibraryType;
 import lib.util.coordinate.Coordinate;
 import test.jacusa.filter.cache.AbstractRecordCacheTest;
@@ -29,7 +33,7 @@ public class RTarrestTest extends AbstractRecordCacheTest {
 	private List<BaseCallCount> expectedThroughBcc;
 	
 	public RTarrestTest() {
-		parser = new ArrayBaseCallCount.Parser(',', '*');
+		parser = new DefaultBaseCallCount.Parser(',', '*');
 		
 		expectedArrestBcc = new ArrayList<>();
 		expectedThroughBcc = new ArrayList<>(); 
@@ -106,22 +110,21 @@ public class RTarrestTest extends AbstractRecordCacheTest {
 	}
 	
 	protected RTarrestDataCache createTestInstance() {
-		/*
-		switch (getLibraryType()) {
-		case UNSTRANDED:
-			return new UNSTRANDED_RTarrestDataCache((byte)0, getShareCache() );
+		final LocationInterpreter locInterpreter = LocationInterpreter.create(getLibraryType());
 		
-		case RF_FIRSTSTRAND:
-			return new RF_FIRSTSTRAND_RTarrestDataCache((byte)0, getShareCache() );
+		final ValidatedRegionDataCache arrest = new ValidatedRegionDataCache(getShareCache());
+		arrest.addAdder(
+				new DefaultBaseCallAdder(
+					getShareCache(),
+					DataType.ARREST_BCC.getFetcher()));
+		
+		final ValidatedRegionDataCache through = new ValidatedRegionDataCache(getShareCache());
+		through.addAdder(
+				new DefaultBaseCallAdder(
+						getShareCache(),
+						DataType.THROUGH_BCC.getFetcher()));
 
-		case FR_SECONDSTRAND:
-			return new FR_SECONDSTRAND_RTarrestDataCache((byte)0, getShareCache() );
-		
-		default:
-			throw new IllegalArgumentException("Unsupported library type: " + getLibraryType().toString());
-		}
-		*/
-		return null;
+		return new RTarrestDataCache(locInterpreter, arrest, through, getShareCache());
 	}
 	
 	private void add(final String s, List<BaseCallCount> bccs) {
@@ -146,11 +149,9 @@ public class RTarrestTest extends AbstractRecordCacheTest {
 		assertEquals(
 				expectedArrestBcc.get(windowPosition), container.getArrestBaseCallCount(), 
 				"For arrest, window: " + windowIndex + " and coordinate: " + current.toString() );
-		/*
 		assertEquals(
-				expectedThroughBcc.get(windowPosition), data.getThroughBaseCallCount(), 
+				expectedThroughBcc.get(windowPosition), container.getThroughBaseCallCount(), 
 				"For through, window: " + windowIndex + " and coordinate: " + current.toString() );
-				*/
 	}
 
 	/*

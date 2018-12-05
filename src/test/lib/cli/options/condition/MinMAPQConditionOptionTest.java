@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.options.condition.MinMAPQConditionOption;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import test.utlis.CLIUtils;
 
 @DisplayName("Test CLI processing of MinMAPQConditionOption")
@@ -34,7 +34,7 @@ class MinMAPQConditionOptionTest extends AbstractConditionACOptionTest<Integer> 
 	@Test
 	@DisplayName("Check general MinMAPQConditionOption fails on wrong input")
 	void testProcessGeneralFail() throws Exception {
-		final List<AbstractConditionParameter> conditionParameters = createConditionParameters(2); 
+		final List<ConditionParameter> conditionParameters = createConditionParameters(2); 
 		final AbstractConditionACOption acOption = createACOption(conditionParameters);
 
 		// < 0
@@ -58,7 +58,7 @@ class MinMAPQConditionOptionTest extends AbstractConditionACOptionTest<Integer> 
 	 */
 	
 	static Stream<Arguments> testProcessIndividual() {
-		final AbstractConditionParameter conditionParameter = createConditionParameter(-1);
+		final ConditionParameter conditionParameter = createConditionParameter(-1);
 		// FIXME ugly
 		final Integer d = conditionParameter.getMinMAPQ();
 
@@ -73,17 +73,17 @@ class MinMAPQConditionOptionTest extends AbstractConditionACOptionTest<Integer> 
 	 */
 	
 	@Override
-	protected AbstractConditionACOption createACOption(int conditionIndex, AbstractConditionParameter conditionParameter) {
+	protected AbstractConditionACOption createACOption(int conditionIndex, ConditionParameter conditionParameter) {
 		return new MinMAPQConditionOption(conditionIndex, conditionParameter);
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(List<AbstractConditionParameter> conditionParameters) {
+	protected AbstractConditionACOption createACOption(List<ConditionParameter> conditionParameters) {
 		return new MinMAPQConditionOption(conditionParameters);
 	}
 	
 	@Override
-	protected Integer getActualValue(AbstractConditionParameter conditionParameter) {
+	protected Integer getActualValue(ConditionParameter conditionParameter) {
 		return conditionParameter.getMinMAPQ();
 	}
 	

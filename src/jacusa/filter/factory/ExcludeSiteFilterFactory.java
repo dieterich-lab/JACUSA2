@@ -18,7 +18,7 @@ import htsjdk.tribble.readers.LineIterator;
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.factory.exclude.ContainedCoordinate;
 import jacusa.filter.factory.exclude.DefaultContainedCoordinate;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.DataTypeContainer;
 import lib.data.ParallelData;
 import lib.data.DataTypeContainer.AbstractBuilder;
@@ -142,7 +142,7 @@ extends AbstractFilterFactory {
 	
 	@Override
 	public RecordWrapperProcessor createFilterCache(
-			AbstractConditionParameter conditionParameter,
+			ConditionParameter conditionParameter,
 			SharedCache sharedCache) {
 		return null;
 	}

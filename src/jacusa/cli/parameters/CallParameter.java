@@ -2,16 +2,14 @@ package jacusa.cli.parameters;
 
 import jacusa.io.format.call.BED6callResultFormat;
 import jacusa.method.call.CallMethod;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
-import lib.cli.parameter.JACUSAConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.stat.dirmult.DirMultRobustCompoundErrorFactory;
 
 /**
  * Parameters specific to call method(s).
  */
 public class CallParameter 
-extends AbstractParameter
+extends GeneralParameter
 implements HasStatParameter {
 	
 	private StatParameter statParameter;
@@ -29,11 +27,6 @@ implements HasStatParameter {
 						new DirMultRobustCompoundErrorFactory(
 								getResultFormat()),
 						Double.NaN));
-	}
-	
-	@Override
-	public AbstractConditionParameter createConditionParameter(final int conditionIndex) {
-		return new JACUSAConditionParameter(conditionIndex);
 	}
 	
 	@Override

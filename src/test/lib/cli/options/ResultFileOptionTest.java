@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.ResultFileOption;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import test.utlis.CLIUtils;
 
 class ResultFileOptionTest extends AbstractACOptionTest<String> {
@@ -37,12 +37,12 @@ class ResultFileOptionTest extends AbstractACOptionTest<String> {
 	 * Helper
 	 */
 
-	protected AbstractACOption create(final AbstractParameter parameter) {
+	protected AbstractACOption create(final GeneralParameter parameter) {
 		return new ResultFileOption(parameter);
 	}
 	
 	@Override
-	protected String getActualValue(AbstractParameter parameter) {
+	protected String getActualValue(GeneralParameter parameter) {
 		return parameter.getResultFilename();
 	}
 	

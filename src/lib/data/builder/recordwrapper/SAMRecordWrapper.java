@@ -1,15 +1,11 @@
 package lib.data.builder.recordwrapper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import lib.util.Base;
-import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.CoordinateUtil;
-import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
@@ -19,7 +15,7 @@ import htsjdk.samtools.util.StringUtil;
 public class SAMRecordWrapper {
 
 	private final SAMRecord record;
-	private List<CigarElementWrapper> cigarElementWrappers;
+	private final List<CigarElementWrapper> cigarElementWrappers;
 
 	// specific
 	private final List<Integer> skipped;
@@ -28,7 +24,7 @@ public class SAMRecordWrapper {
 	private final List<Integer> INDELs;
 	
 	private RecordReferenceProvider recordRefProvider;
-	
+
 	public SAMRecordWrapper(final SAMRecord record) {
 		this.record = record;
 		
@@ -37,6 +33,8 @@ public class SAMRecordWrapper {
 		insertions 	= new ArrayList<Integer>(2);
 		deletions 	= new ArrayList<Integer>(2);
 		INDELs 		= new ArrayList<Integer>(4);
+		
+		process();
 	}
 
 	public SAMRecord getSAMRecord() {
@@ -50,14 +48,17 @@ public class SAMRecordWrapper {
 		return recordRefProvider;
 	}
 	
+	/*
 	public boolean isProcessed () {
 		return cigarElementWrappers.size() > 0;
 	}
+	*/
 	
-	public void process() {
-		final CombinedPosition position = new CombinedPosition(0, record.getAlignmentStart());
+	private void process() {
+		final CombinedPosition position = new CombinedPosition(record.getAlignmentStart());
 
 		int index = 0;
+		
 		// process CIGAR -> SNP, INDELs
 		for (final CigarElement cigarElement : record.getCigar().getCigarElements()) {
 			
@@ -85,10 +86,11 @@ public class SAMRecordWrapper {
 			case N:
 				skipped.add(index);
 				break;
-			
+				
 			default:
 				break;
 			}
+		
 			cigarElementWrappers.add(new CigarElementWrapper(position.copy(), cigarElement));
 			index = cigarElementWrappers.size();
 			position.advance(cigarElement);
@@ -145,22 +147,6 @@ public class SAMRecordWrapper {
 		return downstream.getCigarElement().getLength();
 	}
 	
-	// FIXME
-	public int getReferencePos(final int matches) {
-		int tmp = 0;
-		for (final AlignmentBlock block : record.getAlignmentBlocks()) {
-			int refPos = block.getReferenceStart();
-			for (int i = 0; i < block.getLength(); ++i) {
-				if (tmp == matches) {
-					return refPos + i;
-				}
-				tmp += 1;
-			}
-		}
-		
-		return -1;
-	}
-	
 	public class CigarElementWrapper {
 		
 		private CombinedPosition position;
@@ -179,20 +165,6 @@ public class SAMRecordWrapper {
 		public int getReadBlockLength() {
 			return cigarElement.getOperator().consumesReadBases() ?
 					cigarElement.getLength() : 0;
-		}
-
-		public int convertReference2WindowPosition(final int referencePosition, final Coordinate activeWindowCoordinate) {
-			return CoordinateUtil.makeRelativePosition(activeWindowCoordinate, referencePosition);
-		}
-		
-		public int convertRead2WindowPosition(final int readPosition, final Coordinate activeWindowCoordinate) {
-			if (position.getReadPosition() < readPosition || position.getReadPosition() > readPosition) {
-				return -1;
-			}
-
-			final int offset = readPosition - position.getReadPosition();
-			int tmpReferencePosition = position.getReferencePosition() + offset;
-			return convertReference2WindowPosition(tmpReferencePosition, activeWindowCoordinate);
 		}
 
 		public CombinedPosition getPosition() {
@@ -240,9 +212,11 @@ public class SAMRecordWrapper {
 		sb.append("mismatch=");
 		final List<Integer> mismtachPositions = new ArrayList<>();
 		//for (final AlignmentPosition position : recordWrapper.getRecordReferenceProvider().getMismatchRefPositions()) {
-		for (final int position : recordWrapper.getRecordReferenceProvider().getMismatchRefPositions()) {	
+		/* FIXME
+		for (final int position : recordWrapper.getRecordReferenceProvider().getMismatchPositions()) {	
 			mismtachPositions.add(position);
 		}
+		*/
 		sb.append(StringUtil.join(",", mismtachPositions));
 		sb.append('\n');
 		
@@ -291,12 +265,13 @@ public class SAMRecordWrapper {
 		final int length = record.getAlignmentEnd() - AlignmentStart + 1;
 		
 		final char[] ref = new char[length];
+		/* FIXME
 		Arrays.fill(ref, ' ');
-		// for (final AlignmentPosition position : recordWrapper.getRecordReferenceProvider().getMismatchRefPositions()) {
-		for (final int refPos : recordWrapper.getRecordReferenceProvider().getMismatchRefPositions()) {
+		for (final CombinedPosition position : recordWrapper.getRecordReferenceProvider().getMismatchPositions()) {
 			int i = refPos - AlignmentStart;
 			ref[i] = recordWrapper.getRecordReferenceProvider().getReferenceBase(refPos).getChar();
 		}
+		*/
 		sb.append(new String(ref));
 		sb.append('\n');
 		

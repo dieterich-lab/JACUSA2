@@ -5,16 +5,16 @@ import htsjdk.samtools.SamFiles;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 
 public class SAMPathnameArg {
 
 	public static final char SEP = ',';
 
 	private int conditionIndex;
-	private AbstractConditionParameter condition;
+	private ConditionParameter condition;
 	
-	public SAMPathnameArg(final int conditionIndex, AbstractConditionParameter conditionParameter) {
+	public SAMPathnameArg(final int conditionIndex, ConditionParameter conditionParameter) {
 		this.conditionIndex = conditionIndex;
 		this.condition = conditionParameter;
 	}

@@ -7,7 +7,6 @@ import lib.util.Base;
 public interface RecordReferenceProvider {
 
 	Base getReferenceBase(int referencePosition);
-	// List<AlignmentPosition> getMismatchRefPositions();
-	List<Integer> getMismatchRefPositions();
+	List<CombinedPosition> getMismatchPositions();
 	
 }

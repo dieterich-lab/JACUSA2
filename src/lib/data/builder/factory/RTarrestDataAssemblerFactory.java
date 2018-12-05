@@ -8,8 +8,8 @@ import java.util.SortedSet;
 
 import jacusa.method.rtarrest.RTarrestMethod.RTarrestBuilderFactory;
 import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
 import lib.data.adder.IncrementAdder;
 import lib.data.adder.basecall.DefaultBaseCallAdder;
@@ -37,9 +37,9 @@ extends AbstractSiteDataAssemblerFactory {
 	
 	@Override
 	public List<RecordWrapperProcessor> createCaches(
-			final AbstractParameter parameter,
+			final GeneralParameter parameter,
 			final SharedCache sharedCache, 
-			final AbstractConditionParameter conditionParameter) {
+			final ConditionParameter conditionParameter) {
 
 		final List<RecordWrapperProcessor> dataCaches = new ArrayList<>(3);
 

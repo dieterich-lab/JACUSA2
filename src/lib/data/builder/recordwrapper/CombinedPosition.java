@@ -1,26 +1,43 @@
 package lib.data.builder.recordwrapper;
 
 import htsjdk.samtools.CigarElement;
+import htsjdk.samtools.CigarOperator;
 import lib.util.Copyable;
 
 public class CombinedPosition implements Copyable<CombinedPosition>{
 	
 	private int readPos;
 	private int refPos;
+	private int matches;
 	
-	public CombinedPosition(final int readPos, final int refPos) {
+	public CombinedPosition(final int referencePosition) {
+		this(0, referencePosition, 0);
+	}
+	
+	private CombinedPosition(final int readPos, final int refPos, final int matches) {
 		this.readPos = readPos;
 		this.refPos = refPos;
+		this.matches = matches;
 	}
 
 	public void advance(final CigarElement e) {
 		if (e.getOperator().consumesReferenceBases()) {
 			refPos += e.getLength();
+			if (e.getOperator() != CigarOperator.N) { 
+				matches += e.getLength();
+			}
 		}
 		
 		if (e.getOperator().consumesReadBases()) {
 			readPos += e.getLength();
 		}
+	}
+	
+	public CombinedPosition advance(final int offset) {
+		refPos += offset;
+		matches += offset;
+		readPos += offset;
+		return this;
 	}
 	
 	public int getReadPosition() {
@@ -31,9 +48,13 @@ public class CombinedPosition implements Copyable<CombinedPosition>{
 		return refPos;
 	}
 
+	public int getMatches() {
+		return matches;
+	}
+	
 	@Override
 	public CombinedPosition copy() {
-		return new CombinedPosition(readPos, refPos);
+		return new CombinedPosition(readPos, refPos, matches);
 	}
 	
 }

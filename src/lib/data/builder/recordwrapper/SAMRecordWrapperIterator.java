@@ -5,11 +5,11 @@ import java.util.Iterator;
 
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 
 public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 
-	private final AbstractConditionParameter conditionParameter;
+	private final ConditionParameter conditionParameter;
 	
 	private int acceptedSAMRecords;
 	private int filteredSAMRecords;
@@ -21,7 +21,7 @@ public class SAMRecordWrapperIterator implements Iterator<SAMRecordWrapper> {
 	private SAMRecordIterator iterator; 
 	
 	public SAMRecordWrapperIterator(
-			final AbstractConditionParameter conditionParameter, 
+			final ConditionParameter conditionParameter, 
 			final SAMRecordIterator iterator) {
 
 		this.conditionParameter = conditionParameter;

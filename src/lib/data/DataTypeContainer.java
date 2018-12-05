@@ -11,7 +11,7 @@ import htsjdk.samtools.util.StringUtil;
 import jacusa.JACUSA;
 import jacusa.filter.factory.AbstractFilterFactory;
 import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.count.BaseSubstitutionCount;
 import lib.data.count.PileupCount;
@@ -97,16 +97,16 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	
 	public static abstract class AbstractBuilderFactory implements BuilderFactory {
 		
-		private final AbstractParameter parameter;
+		private final GeneralParameter parameter;
 		
-		public AbstractBuilderFactory(final AbstractParameter parameter) {
+		public AbstractBuilderFactory(final GeneralParameter parameter) {
 			this.parameter = parameter;
 		}
 		
 		public AbstractBuilder createBuilder(Coordinate coordinate, LibraryType libraryType) {
 			final AbstractBuilder builder = new DefaultDataContainer.Builder(coordinate, libraryType);
 			addRequired(builder);
-			if (parameter.getFilterConfig().hasFiters()) {
+			if (parameter != null && parameter.getFilterConfig().hasFiters()) {
 				addFilters(builder);
 				initFilterDataTypes(builder);
 			}
@@ -138,10 +138,15 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		
 	}
 	
+	// FIXME add all available automatically
 	public static class DefaultBuilderFactory extends AbstractBuilderFactory {
 		
 		public DefaultBuilderFactory() {
 			super(null);
+		}
+		
+		public DefaultBuilderFactory(final GeneralParameter parameter) {
+			super(parameter);
 		}
 	
 		@Override

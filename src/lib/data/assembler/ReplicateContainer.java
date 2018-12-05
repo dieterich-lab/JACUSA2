@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jacusa.filter.FilterContainer;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.DataTypeContainer;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIterator;
 import lib.data.builder.recordwrapper.SAMRecordWrapperIteratorProvider;
@@ -18,16 +18,16 @@ import lib.util.coordinate.Coordinate;
 
 public class ReplicateContainer {
 
-	private final AbstractConditionParameter conditionParameter;
+	private final ConditionParameter conditionParameter;
 	
 	private final List<SAMRecordWrapperIteratorProvider> iteratorProviders;
 	private final List<DataAssembler> dataAssemblers;
 	
 	public ReplicateContainer(
-			final AbstractParameter parameter,
+			final GeneralParameter parameter,
 			final FilterContainer filterContainer,
 			final SharedCache sharedCache,
-			final AbstractConditionParameter conditionParameter,
+			final ConditionParameter conditionParameter,
 			final AbstractMethod method) {
 
 		this.conditionParameter = conditionParameter;
@@ -60,10 +60,10 @@ public class ReplicateContainer {
 	}
 	
 	private List<DataAssembler> createDataAssemblers(
-			final AbstractParameter parameter,
+			final GeneralParameter parameter,
 			final FilterContainer filterContainer,
 			final SharedCache sharedCache,
-			final AbstractConditionParameter conditionParameter,
+			final ConditionParameter conditionParameter,
 			final AbstractMethod method) {
 
 		final List<DataAssembler> dataAssemblers = new ArrayList<DataAssembler>(conditionParameter.getReplicateSize());
@@ -90,10 +90,10 @@ public class ReplicateContainer {
 	}
 	
 	private List<SAMRecordWrapperIteratorProvider> createRecordIteratorProviders(
-			final AbstractConditionParameter conditionParameter) {
+			final ConditionParameter conditionParameter) {
 
 		return Stream.of(conditionParameter.getRecordFilenames())
-				.map(AbstractConditionParameter::createSamReader)
+				.map(ConditionParameter::createSamReader)
 				.map(s -> new SAMRecordWrapperIteratorProvider(conditionParameter, s))
 				.collect(Collectors.toList());
 	}

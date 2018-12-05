@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.record.RecordWrapperProcessor;
 
@@ -69,7 +69,7 @@ public class FilterContainer {
 		return Collections.unmodifiableList(new ArrayList<>(filters.values()));
 	}
 	
-	public List<RecordWrapperProcessor> createFilterCaches(final AbstractConditionParameter conditionParameter, final SharedCache sharedCache) {
+	public List<RecordWrapperProcessor> createFilterCaches(final ConditionParameter conditionParameter, final SharedCache sharedCache) {
 		return Collections.unmodifiableList(
 			filterConfig.getFilterFactories().stream()
 				.map(filterFactory -> filterFactory.createFilterCache(conditionParameter, sharedCache))

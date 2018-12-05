@@ -7,7 +7,7 @@ import jacusa.io.format.BaseSubstitutionBED6adder;
 import jacusa.io.format.BaseSubstitutionDataAdder;
 import jacusa.io.format.StratifiedDataAdder;
 import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBaseCallCount;
 import lib.io.AbstractResultFileFormat;
@@ -26,7 +26,7 @@ extends AbstractResultFileFormat {
 	
 	public BED6pileupResultFormat(
 			final String methodName, 
-			final AbstractParameter parameter) {
+			final GeneralParameter parameter) {
 		
 		super(CHAR, "Default", methodName, parameter);
 	}

@@ -14,7 +14,7 @@ import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
 import jacusa.method.rtarrest.RTarrestMethod;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.AbstractBuilder;
 import lib.data.assembler.ConditionContainer;
@@ -93,7 +93,7 @@ extends AbstractFilterFactory {
 	
 	@Override
 	public RecordWrapperProcessor createFilterCache(
-			AbstractConditionParameter conditionParameter,
+			ConditionParameter conditionParameter,
 			SharedCache sharedCache) {
 
 		return null;

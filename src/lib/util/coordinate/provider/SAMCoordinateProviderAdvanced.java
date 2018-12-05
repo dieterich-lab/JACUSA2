@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
@@ -39,7 +39,7 @@ public class SAMCoordinateProviderAdvanced implements CoordinateProvider {
 	 * 
 	 */
 	public SAMCoordinateProviderAdvanced(final boolean isStranded, final List<SAMSequenceRecord> sequenceRecords, 
-			final AbstractParameter parameter) {
+			final GeneralParameter parameter) {
 
 		this.isStranded = isStranded;
 		it = sequenceRecords.iterator();
@@ -54,10 +54,10 @@ public class SAMCoordinateProviderAdvanced implements CoordinateProvider {
 		
 		// create readers for conditions and replicate
 		readers = new ArrayList<List<SamReader>>(parameter.getConditionsSize());
-		for (final AbstractConditionParameter condition : parameter.getConditionParameters()) {
+		for (final ConditionParameter condition : parameter.getConditionParameters()) {
 			final List<SamReader> tmpReaders = new ArrayList<SamReader>(condition.getReplicateSize());
 			for (String fileName : condition.getRecordFilenames()) {
-				tmpReaders.add(AbstractConditionParameter.createSamReader(fileName));
+				tmpReaders.add(ConditionParameter.createSamReader(fileName));
 			}
 			readers.add(tmpReaders);
 		}

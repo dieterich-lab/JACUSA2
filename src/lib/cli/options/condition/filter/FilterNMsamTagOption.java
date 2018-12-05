@@ -5,17 +5,17 @@ import java.util.List;
 import org.apache.commons.cli.CommandLine;
 
 import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 
 public class FilterNMsamTagOption extends AbstractFilterSamTagConditionOption {
 	
 	public static final String TAG = "NM";
 	
-	public FilterNMsamTagOption(final int conditionIndex, final AbstractConditionParameter conditionParameter) {
+	public FilterNMsamTagOption(final int conditionIndex, final ConditionParameter conditionParameter) {
 		super(conditionIndex, conditionParameter, TAG);
 	}
 
-	public FilterNMsamTagOption(final List<AbstractConditionParameter> conditionParameters) {
+	public FilterNMsamTagOption(final List<ConditionParameter> conditionParameters) {
 		super(conditionParameters, TAG);
 	}
 
@@ -25,7 +25,7 @@ public class FilterNMsamTagOption extends AbstractFilterSamTagConditionOption {
     	if (value < 0) {
     		throw new IllegalArgumentException(getLongOpt() + " cannot be < 0");
     	}
-    	for (final AbstractConditionParameter conditionParameter : getConditionParameters()) {
+    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
     		conditionParameter.getSamTagFilters().add(createSamTagFilter(value));
     	}
 	}

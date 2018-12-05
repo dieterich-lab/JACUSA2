@@ -2,7 +2,7 @@ package lib.data.assembler;
 
 import java.util.Iterator;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.DataTypeContainer;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.CacheContainer;
@@ -21,7 +21,7 @@ extends HasLibraryType {
 
 	CacheContainer getCacheContainer();
 
-	AbstractConditionParameter getConditionParameter();
+	ConditionParameter getConditionParameter();
 
 	CACHE_STATUS getCacheStatus();
 

@@ -26,7 +26,7 @@ import jacusa.filter.factory.basecall.ReadPositionDistanceFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.FilterConfigOption;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import test.utlis.CLIUtils;
 import test.utlis.TestUtils;
 
@@ -109,12 +109,12 @@ class FilterConfigOptionTest extends AbstractACOptionTest<Set<Character>> {
 	}
 	
 	@Override
-	protected AbstractACOption create(AbstractParameter parameter) {
+	protected AbstractACOption create(GeneralParameter parameter) {
 		return new FilterConfigOption(parameter, getFilterFactories());
 	}
 	
 	@Override
-	protected Set<Character> getActualValue(AbstractParameter parameter) {
+	protected Set<Character> getActualValue(GeneralParameter parameter) {
 		return getParameter().getFilterConfig().getFilterFactories().stream()
 				.map(f -> f.getC())
 				.collect(Collectors.toSet());

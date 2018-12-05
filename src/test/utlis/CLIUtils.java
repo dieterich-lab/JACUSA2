@@ -3,9 +3,6 @@ package test.utlis;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-
-import lib.util.Util;
-
 public abstract class CLIUtils {
 
 	public static Option getOptionSafe(final Options options, final String opt) {
@@ -50,7 +47,7 @@ public abstract class CLIUtils {
 	// FIXME move somewhere else
 	// FIXME give nice name
 	public static String pr(final String longOpt, final String value) {
-		return Util.WITHIN_FIELD_SEP + longOpt + "=" + value;
+		return " --" + longOpt + "=" + value;
 	}
 	
 }

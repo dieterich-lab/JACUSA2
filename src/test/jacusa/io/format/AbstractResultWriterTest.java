@@ -19,7 +19,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import jacusa.JACUSA;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.ParallelData;
 import lib.data.DataTypeContainer.AbstractBuilderFactory;
 import lib.data.DataTypeContainer.DefaultBuilderFactory;
@@ -75,7 +75,7 @@ public abstract class AbstractResultWriterTest {
 		// create actual file
 		actualFile = new File(actualFileName);
 		// create parameter dependent on conditionSize
-		final AbstractParameter parameter = createParameter(conditionSize);
+		final GeneralParameter parameter = createParameter(conditionSize);
 		// populate filename(s) to simulate replicates
 		for (int conditionIndex = 0; conditionIndex < conditionSize; ++conditionIndex) {
 			final int replicateSizes = condition2replicateSize.get(conditionIndex);
@@ -111,7 +111,7 @@ public abstract class AbstractResultWriterTest {
 		final ParallelData tmpParallelelData = tmpStatResult.getParellelData(); 
 		final int conditionSize = tmpParallelelData.getConditions();
 		// create parameter dependent on conditionSize
-		final AbstractParameter parameter = createParameter(conditionSize);
+		final GeneralParameter parameter = createParameter(conditionSize);
 		// populate filename(s) to simulate replicates
 		for (int conditionIndex = 0; conditionIndex < conditionSize; ++conditionIndex) {
 			final int replicateSizes = tmpParallelelData.getReplicates(conditionIndex);
@@ -143,8 +143,8 @@ public abstract class AbstractResultWriterTest {
 	
 	public abstract Stream<Arguments> testWriteResult();
 	public abstract Stream<Arguments> testWriteHeader();
-	public abstract AbstractParameter createParameter(int conditionSize);
-	public abstract BEDlikeResultFileWriter createTestInstance(String fileName, AbstractParameter parameter);
+	public abstract GeneralParameter createParameter(int conditionSize);
+	public abstract BEDlikeResultFileWriter createTestInstance(String fileName, GeneralParameter parameter);
 	
 	/*
 	 * Helper

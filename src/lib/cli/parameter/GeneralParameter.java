@@ -17,7 +17,7 @@ import lib.cli.options.has.HasReadSubstitution;
 import lib.io.ResultFormat;
 import lib.util.AbstractTool;
 
-public abstract class AbstractParameter
+public class GeneralParameter
 implements HasConditionParameter, HasReadSubstitution {
 	
 	// cache related
@@ -34,7 +34,7 @@ implements HasConditionParameter, HasReadSubstitution {
 	// bed file to scan for variants
 	private String inputBedFilename;
 
-	protected List<AbstractConditionParameter> conditionParameters;
+	protected List<ConditionParameter> conditionParameters;
 
 	private String resultFilename;
 	private ResultFormat resultFormat;
@@ -48,7 +48,7 @@ implements HasConditionParameter, HasReadSubstitution {
 	// debug flag
 	private boolean debug;
 	
-	protected AbstractParameter() {
+	protected GeneralParameter() {
 		activeWindowSize 	= 10000;
 		reservedWindowSize	= 10 * activeWindowSize;
 		
@@ -57,7 +57,7 @@ implements HasConditionParameter, HasReadSubstitution {
 		maxThreads			= 1;
 		
 		inputBedFilename	= new String();
-		conditionParameters	= new ArrayList<AbstractConditionParameter>(2);
+		conditionParameters	= new ArrayList<ConditionParameter>(2);
 
 		filterConfig		= new FilterConfig();
 		
@@ -67,16 +67,18 @@ implements HasConditionParameter, HasReadSubstitution {
 		
 		debug				= false;
 	}
-
-	public AbstractParameter(final int conditionSize) {
+	
+	public GeneralParameter(final int conditionSize) {
 		this();
 		
 		for (int conditionIndex = 0; conditionIndex < conditionSize; conditionIndex++) {
-			conditionParameters.add(createConditionParameter(conditionIndex));
+			conditionParameters.add(new ConditionParameter(conditionIndex));
 		}
 	}
 	
-	public abstract AbstractConditionParameter createConditionParameter(final int conditionIndex);
+	public ConditionParameter createConditionParameter(final int conditionIndex) {
+		return new ConditionParameter(conditionIndex);
+	}
 	
 	public ResultFormat getResultFormat() {
 		return resultFormat;
@@ -102,18 +104,18 @@ implements HasConditionParameter, HasReadSubstitution {
 	}
 
 	@Override
-	public List<AbstractConditionParameter> getConditionParameters() {
+	public List<ConditionParameter> getConditionParameters() {
 		return conditionParameters;
 	}
 	
 	@Override
 	public void setConditionParameters(
-			final List<AbstractConditionParameter> conditionParameters) {
+			final List<ConditionParameter> conditionParameters) {
 		this.conditionParameters = conditionParameters;
 	}
 	
 	@Override
-	public AbstractConditionParameter getConditionParameter(int conditionIndex) {
+	public ConditionParameter getConditionParameter(int conditionIndex) {
 		return conditionParameters.get(conditionIndex);
 	}
 	

@@ -19,7 +19,7 @@ import jacusa.io.format.call.BED6callResultFormat;
 import jacusa.io.format.call.VCFcallFormat;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.ResultFormatOption;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.io.ResultFormat;
 import test.utlis.CLIUtils;
 import test.utlis.TestUtils;
@@ -73,7 +73,7 @@ class ResultFormatOptionTest extends AbstractACOptionTest<Character> {
 				.map(Arguments::of);
 	}
 	
-	static Map<Character, ResultFormat> getResultFormats(AbstractParameter parameter) {
+	static Map<Character, ResultFormat> getResultFormats(GeneralParameter parameter) {
 		final Map<Character, ResultFormat> resultFormats = 
 				new HashMap<Character, ResultFormat>();
 
@@ -91,12 +91,12 @@ class ResultFormatOptionTest extends AbstractACOptionTest<Character> {
 
 	
 	@Override
-	protected AbstractACOption create(AbstractParameter parameter) {
+	protected AbstractACOption create(GeneralParameter parameter) {
 		return new ResultFormatOption(parameter, getResultFormats(parameter));
 	}
 
 	@Override
-	protected Character getActualValue(AbstractParameter parameter) {
+	protected Character getActualValue(GeneralParameter parameter) {
 		return parameter.getResultFormat().getC();
 	}
 

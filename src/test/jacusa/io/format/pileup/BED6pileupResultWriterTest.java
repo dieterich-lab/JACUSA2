@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.cli.parameters.PileupParameter;
 import jacusa.io.format.pileup.BED6pileupResultFormat;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.io.BEDlikeResultFileWriter;
 import test.jacusa.io.format.AbstractResultWriterTest;
 
@@ -39,14 +39,14 @@ class BED6pileupResultWriterTest extends AbstractResultWriterTest {
 	}
 
 	@Override
-	public AbstractParameter createParameter(int conditionSize) {
+	public GeneralParameter createParameter(int conditionSize) {
 		return new PileupParameter(conditionSize);
 	}
 
 	@Override
 	public BEDlikeResultFileWriter createTestInstance(
 			String outputFileName,
-			AbstractParameter parameter) {
+			GeneralParameter parameter) {
 
 		return new BED6pileupResultFormat("testPileup", parameter).createWriter(outputFileName);
 	}

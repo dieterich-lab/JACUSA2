@@ -1,6 +1,6 @@
 package jacusa.io.format.pileup;
 
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.io.AbstractResultFileFormat;
 import lib.io.ResultWriter;
 
@@ -18,7 +18,7 @@ extends AbstractResultFileFormat {
 	
 	public PileupLikeFormat(
 			final String methodName, 
-			final AbstractParameter parameter) {
+			final GeneralParameter parameter) {
 		
 		super(CHAR, "samtools mpileup like format (base columns without: $ ^ < > *)", methodName, parameter);
 	}

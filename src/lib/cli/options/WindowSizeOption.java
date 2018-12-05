@@ -1,15 +1,15 @@
 package lib.cli.options;
 
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 public class WindowSizeOption extends AbstractACOption {
 
-	final private AbstractParameter parameters; 
+	final private GeneralParameter parameters; 
 	
-	public WindowSizeOption(AbstractParameter parameter) {
+	public WindowSizeOption(GeneralParameter parameter) {
 		super("w", "window-size");
 		this.parameters = parameter;
 	}

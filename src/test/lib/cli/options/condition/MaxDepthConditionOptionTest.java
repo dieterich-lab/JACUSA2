@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.options.condition.MaxDepthConditionOption;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import test.utlis.CLIUtils;
 
 @DisplayName("Test CLI processing of MaxDepthConditionOption")
@@ -34,7 +34,7 @@ class MaxDepthConditionOptionTest extends AbstractConditionACOptionTest<Integer>
 	@Test
 	@DisplayName("Test general MaxDepthConditionOption fails on wrong input")
 	void testProcessGeneralFail() throws Exception {
-		final List<AbstractConditionParameter> conditionParameters = createConditionParameters(2); 
+		final List<ConditionParameter> conditionParameters = createConditionParameters(2); 
 		final AbstractConditionACOption acOption = createACOption(conditionParameters);
 		
 		// < 1
@@ -58,7 +58,7 @@ class MaxDepthConditionOptionTest extends AbstractConditionACOptionTest<Integer>
 	 */
 	
 	static Stream<Arguments> testProcessIndividual() {
-		final AbstractConditionParameter conditionParameter = createConditionParameter(-1);
+		final ConditionParameter conditionParameter = createConditionParameter(-1);
 		// FIXME ugly
 		final int d = conditionParameter.getMaxDepth();
 
@@ -78,17 +78,17 @@ class MaxDepthConditionOptionTest extends AbstractConditionACOptionTest<Integer>
 	}
 	
 	@Override
-	protected Integer getActualValue(AbstractConditionParameter conditionParameter) {
+	protected Integer getActualValue(ConditionParameter conditionParameter) {
 		return conditionParameter.getMaxDepth();
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(List<AbstractConditionParameter> conditionParameters) {
+	protected AbstractConditionACOption createACOption(List<ConditionParameter> conditionParameters) {
 		return new MaxDepthConditionOption(conditionParameters);
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(int conditionIndex, AbstractConditionParameter conditionParameter) {
+	protected AbstractConditionACOption createACOption(int conditionIndex, ConditionParameter conditionParameter) {
 		return new MaxDepthConditionOption(conditionIndex, conditionParameter);
 	}
 	

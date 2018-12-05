@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import htsjdk.samtools.SAMSequenceDictionary;
 import jacusa.io.copytmp.SerializeCopyTmpResult;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.io.AbstractResultFormat;
 import lib.io.ResultWriter;
 import lib.io.copytmp.CopyTmpResult;
@@ -24,7 +24,7 @@ extends AbstractResultFormat {
 	public static final char CHAR = 'V';
 	private SAMSequenceDictionary dictionary; 
 	
-	public VCFcallFormat(final AbstractParameter parameter) {
+	public VCFcallFormat(final GeneralParameter parameter) {
 		super(CHAR, "VCF Output format. Option -P will be ignored (VCF is unstranded)", new String(), parameter);
 	}
 

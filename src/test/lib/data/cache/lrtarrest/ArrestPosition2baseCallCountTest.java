@@ -24,11 +24,11 @@ import test.lib.data.count.basecall.ArrayBaseCallCountTest.ToArrayBaseCallCountA
 
 // TODO adjust to new class
 @TestInstance(Lifecycle.PER_CLASS)
-class Position2baseCallCountTest {
+class ArrestPosition2baseCallCountTest {
 
 	private final ArrestPosition2baseCallCount.Parser parser;
 	
-	public Position2baseCallCountTest() {
+	public ArrestPosition2baseCallCountTest() {
 		parser = new ArrestPosition2baseCallCount.Parser();
 	}
 
@@ -105,9 +105,8 @@ class Position2baseCallCountTest {
 			int pos,
 			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPosition2baseCallCount o,
 			@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBaseCallCount expected) {
-		// FIXME
-		// final BaseCallCount actual = o.getThroughBaseCallCount(pos); 
-		// assertEquals(expected, actual);
+		final BaseCallCount actual = o.getThroughBaseCallCount(pos); 
+		assertEquals(expected, actual);
 	}
 
 	@ParameterizedTest(name = "From Object {0} get total base call count: {1}")

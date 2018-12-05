@@ -19,12 +19,11 @@ import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.basecall.AbstractBaseCallCountFilterFactory;
 import jacusa.method.rtarrest.RTarrestMethod;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.DataType;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.AbstractBuilder;
 import lib.data.adder.IncrementAdder;
-import lib.data.adder.basecall.ArrayBaseCallAdder;
 import lib.data.adder.region.ValidatedRegionDataCache;
 import lib.data.assembler.ConditionContainer;
 import lib.data.cache.container.SharedCache;
@@ -34,15 +33,19 @@ import lib.data.cache.fetcher.FilteredDataFetcher;
 import lib.data.cache.fetcher.SpecificFilteredDataFetcher;
 import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.cache.lrtarrest.ArrestPositionCalculator;
+import lib.data.cache.lrtarrest.EndArrestPosition;
+import lib.data.cache.lrtarrest.LRTarrestBaseCallAdder;
+import lib.data.cache.lrtarrest.StartArrestPosition;
 import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.RegionDataCache;
 import lib.data.cache.region.UniqueTraverse;
 import lib.data.cache.region.isvalid.BaseCallValidator;
 import lib.data.cache.region.isvalid.DefaultBaseCallValidator;
-import lib.data.cache.region.isvalid.MaxDepthBaseCallValidator;
 import lib.data.cache.region.isvalid.MinBASQBaseCallValidator;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
+import lib.data.has.LibraryType;
 import lib.util.coordinate.CoordinateController;
 
 public abstract class AbstractLRTarrestDistanceFilterFactory 
@@ -147,30 +150,50 @@ extends AbstractFilterFactory {
 	
 	@Override
 	public RecordWrapperProcessor createFilterCache(
-			final AbstractConditionParameter conditionParameter,
+			final ConditionParameter conditionParameter,
 			final SharedCache sharedCache) {
 
-		final List<IncrementAdder> adder = new ArrayList<IncrementAdder>();
-		final IncrementAdder baseCallAdder = new ArrayBaseCallAdder(filteredBccExtractor, sharedCache);
-		adder.add(baseCallAdder);
+		final LibraryType libraryType = conditionParameter.getLibraryType();
+
+		final Fetcher<ArrestPosition2baseCallCount> ap2bccFetcher =
+				DataType.AP2BCC.getFetcher();
+
+		ArrestPositionCalculator apc = null;
 		
-		final List<BaseCallValidator> validator = new ArrayList<BaseCallValidator>();
-		if (conditionParameter.getMaxDepth() > 0) {
-			validator.add(new MaxDepthBaseCallValidator(conditionParameter.getMaxDepth(), baseCallAdder));
+		switch (libraryType) {
+
+		case RF_FIRSTSTRAND:
+			apc = new EndArrestPosition();
+			break;
+
+		case FR_SECONDSTRAND:
+			apc = new StartArrestPosition();
+			break;
+			
+		default:
+			throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
 		}
+
+		final IncrementAdder arrestPosAdder = new LRTarrestBaseCallAdder(sharedCache, apc, ap2bccFetcher);
+		final List<IncrementAdder> adders = new ArrayList<IncrementAdder>(2);
+		adders.add(arrestPosAdder);
+				
+		final List<BaseCallValidator> validator = new ArrayList<BaseCallValidator>();
 		validator.add(new DefaultBaseCallValidator());
 		if (conditionParameter.getMinBASQ() > 0) {
 			validator.add(new MinBASQBaseCallValidator(conditionParameter.getMinBASQ()));
 		}
 		
 		final ValidatedRegionDataCache regionDataCache = 
-				new ValidatedRegionDataCache(adder, validator, sharedCache);
+				new ValidatedRegionDataCache(adders, validator, sharedCache);
 		final UniqueTraverse uniqueBaseCallCache = 
 				new UniqueTraverse(regionDataCache);
 		return new RecordProcessDataCache(
 				uniqueBaseCallCache, 
 				createProcessRecord(uniqueBaseCallCache));
 	}
+	
+
 	
 	public int getFilterDistance() {
 		return filterDistance;

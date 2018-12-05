@@ -2,7 +2,7 @@ package lib.cli.options.condition;
 
 import java.util.List;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.phred2prob.Phred2Prob;
 
 import org.apache.commons.cli.CommandLine;
@@ -13,11 +13,11 @@ public class MinBASQConditionOption extends AbstractConditionACOption {
 	private static final String OPT = "q";
 	private static final String LONG_OPT = "min-basq";
 	
-	public MinBASQConditionOption(final int conditionIndex, final AbstractConditionParameter conditionParameter) {
+	public MinBASQConditionOption(final int conditionIndex, final ConditionParameter conditionParameter) {
 		super(OPT, LONG_OPT, conditionIndex, conditionParameter);
 	}
 	
-	public MinBASQConditionOption(final List<AbstractConditionParameter> conditionParameters) {
+	public MinBASQConditionOption(final List<ConditionParameter> conditionParameters) {
 		super(OPT, LONG_OPT, conditionParameters);
 	}
 	
@@ -49,7 +49,7 @@ public class MinBASQConditionOption extends AbstractConditionACOption {
 	    	if(minBASQ < 0 || minBASQ > Phred2Prob.MAX_Q) {
 	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + minBASQ + " not valid.");
 	    	}
-	    	for (final AbstractConditionParameter conditionParameter : getConditionParameters()) {
+	    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
 	    		conditionParameter.setMinBASQ(minBASQ);
 	    	}
 		}

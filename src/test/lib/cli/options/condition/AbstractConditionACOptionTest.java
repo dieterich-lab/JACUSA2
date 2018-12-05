@@ -12,8 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.provider.Arguments;
 
 import lib.cli.options.condition.AbstractConditionACOption;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.JACUSAConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import test.lib.cli.options.ParserWrapper;
 
 public abstract class AbstractConditionACOptionTest<T> {
@@ -33,14 +32,14 @@ public abstract class AbstractConditionACOptionTest<T> {
 	
 	public void testProcessGeneral(int conditions, T expected) throws Exception {
 		// get 
-		final List<AbstractConditionParameter> conditionParameters = createConditionParameters(conditions); 
+		final List<ConditionParameter> conditionParameters = createConditionParameters(conditions); 
 		final AbstractConditionACOption acOption = createACOption(conditionParameters);
 
 		// parse and process
 		getParserWrapper().process(acOption, createLine(acOption, expected));
 
 		// check
-		for (final AbstractConditionParameter conditionParameter : conditionParameters) {
+		for (final ConditionParameter conditionParameter : conditionParameters) {
 			final T actual = getActualValue(conditionParameter);
 			assertEquals(expected, actual);
 		}
@@ -48,7 +47,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 
 	public void testProcessIndividual(int conditions, List<Integer> conditionIndices, List<T> expected) throws Exception {
 		// create list of conditions
-		final List<AbstractConditionParameter> conditionParameters = createConditionParameters(conditions);
+		final List<ConditionParameter> conditionParameters = createConditionParameters(conditions);
 		
 		// create list of acOptions - size need not == conditionParameters
 		final List<AbstractConditionACOption> acOptions = conditionIndices.stream()
@@ -75,7 +74,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 		
 		// check over all conditions - only options provided via conditionIndex should be changed
 		for (int i = 0; i < conditions; ++i) {
-			final AbstractConditionParameter conditionParameter = conditionParameters.get(i);
+			final ConditionParameter conditionParameter = conditionParameters.get(i);
 			final T actual = getActualValue(conditionParameter);
 			final T e = expected.get(i);  
 			assertEquals(e, actual);
@@ -86,11 +85,11 @@ public abstract class AbstractConditionACOptionTest<T> {
 	 * Others
 	 */
 	
-	public static AbstractConditionParameter createConditionParameter(final int conditionIndex) {
-		return new JACUSAConditionParameter(conditionIndex);
+	public static ConditionParameter createConditionParameter(final int conditionIndex) {
+		return new ConditionParameter(conditionIndex);
 	}
 
-	public List<AbstractConditionParameter> createConditionParameters(final int conditions) {
+	public List<ConditionParameter> createConditionParameters(final int conditions) {
 		return IntStream.rangeClosed(1, conditions)
 			.mapToObj(i -> createConditionParameter(i))
 			.collect(Collectors.toList());
@@ -109,7 +108,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 		}
 	}
 
-	protected List<AbstractConditionACOption> createACOptions(List<AbstractConditionParameter> conditionParameter) {
+	protected List<AbstractConditionACOption> createACOptions(List<ConditionParameter> conditionParameter) {
 		return IntStream.rangeClosed(1, conditionParameter.size() + 1)
 				.mapToObj(i -> createACOption(i, conditionParameter.get(i - 1)))
 				.collect(Collectors.toList());
@@ -142,8 +141,8 @@ public abstract class AbstractConditionACOptionTest<T> {
 	 * Abstract
 	 */
 
-	protected abstract AbstractConditionACOption createACOption(List<AbstractConditionParameter> conditionParameters);
-	protected abstract AbstractConditionACOption createACOption(int conditionIndex, AbstractConditionParameter conditionParameter);
-	protected abstract T getActualValue(AbstractConditionParameter conditionParameter);
+	protected abstract AbstractConditionACOption createACOption(List<ConditionParameter> conditionParameters);
+	protected abstract AbstractConditionACOption createACOption(int conditionIndex, ConditionParameter conditionParameter);
+	protected abstract T getActualValue(ConditionParameter conditionParameter);
 	protected abstract String createLine(AbstractConditionACOption acOption, T v);
 }

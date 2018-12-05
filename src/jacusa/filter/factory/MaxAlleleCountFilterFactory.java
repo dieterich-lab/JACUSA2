@@ -10,7 +10,7 @@ import org.apache.commons.cli.Options;
 
 import jacusa.filter.AbstractFilter;
 import jacusa.filter.MaxAlleleFilter;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.AbstractBuilder;
 import lib.data.assembler.ConditionContainer;
@@ -53,7 +53,7 @@ extends AbstractFilterFactory {
 	
 	@Override
 	public RecordWrapperProcessor createFilterCache(
-			AbstractConditionParameter conditionParameter,
+			ConditionParameter conditionParameter,
 			SharedCache sharedCache) {
 
 		return null;
@@ -105,7 +105,6 @@ extends AbstractFilterFactory {
 
 	public static Builder getMaxAlleleOptionBuilder(final int defaultValue) {
 		return Option.builder()
-				.argName("MAXALLELES")
 				.hasArg()
 				.longOpt("maxAlleles")
 				.desc("must be > 0. Default: " + defaultValue);

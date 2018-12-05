@@ -3,7 +3,7 @@ package lib.cli.options;
 import java.io.File;
 import java.nio.file.FileAlreadyExistsException;
 
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -15,9 +15,9 @@ import org.apache.commons.cli.Option;
  */
 public class ResultFileOption extends AbstractACOption {
 
-	final private AbstractParameter parameter;
+	final private GeneralParameter parameter;
 	
-	public ResultFileOption(AbstractParameter parameter) {
+	public ResultFileOption(GeneralParameter parameter) {
 		super("r", "result-file");
 		this.parameter = parameter;
 	}

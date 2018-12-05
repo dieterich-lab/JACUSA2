@@ -17,7 +17,7 @@ import jacusa.filter.basecall.GenericBaseCallCountFilter;
 import jacusa.filter.cache.RecordProcessDataCache;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.AbstractFilterFactory;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.DataType;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.AbstractBuilder;
@@ -122,7 +122,7 @@ extends AbstractFilterFactory {
 	
 	@Override
 	public RecordWrapperProcessor createFilterCache(
-			final AbstractConditionParameter conditionParameter,
+			final ConditionParameter conditionParameter,
 			final SharedCache sharedCache) {
 
 		final List<IncrementAdder> adder = new ArrayList<IncrementAdder>();

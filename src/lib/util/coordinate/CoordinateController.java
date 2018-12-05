@@ -3,7 +3,7 @@ package lib.util.coordinate;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.data.assembler.ConditionContainer;
 import lib.data.has.LibraryType;
 import lib.location.CoordinateAdvancer;
@@ -41,7 +41,7 @@ public class CoordinateController {
 	
 	private CoordinateAdvancer createCoordinateAdvancer(
 			final ConditionContainer conditionContainer) {
-		for (final AbstractConditionParameter conditionParameter : conditionContainer.getConditionParameter()) {
+		for (final ConditionParameter conditionParameter : conditionContainer.getConditionParameter()) {
 			if (conditionParameter.getLibraryType() != LibraryType.UNSTRANDED) {
 				return new StrandedJumpingCoordinateAdvancer(this, conditionContainer);
 			}

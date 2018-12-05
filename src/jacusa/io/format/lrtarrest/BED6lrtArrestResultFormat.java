@@ -1,7 +1,7 @@
 package jacusa.io.format.lrtarrest;
 
 import jacusa.io.copytmp.SerializeCopyTmpResult;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBaseCallCount;
 import lib.io.AbstractResultFormat;
@@ -21,13 +21,13 @@ extends AbstractResultFormat {
 	protected BED6lrtArrestResultFormat(
 			final char c, final String desc,
 			final String methodName,
-			final AbstractParameter parameter) {
+			final GeneralParameter parameter) {
 		super(c, desc, methodName, parameter);
 	}
 
 	public BED6lrtArrestResultFormat(
 			final String methodName, 
-			final AbstractParameter parameter) {
+			final GeneralParameter parameter) {
 
 		this(CHAR, "Linkage arrest to base substitution", methodName, parameter);
 	}

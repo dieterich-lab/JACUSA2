@@ -4,34 +4,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.cli.options.AbstractACOption;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 
 public abstract class AbstractConditionACOption 
 extends AbstractACOption {
 
 	private int conditionIndex;
-	private final List<AbstractConditionParameter> conditionParameters;
+	private final List<ConditionParameter> conditionParameters;
 		
-	public AbstractConditionACOption(final String opt, final String longOpt, final List<AbstractConditionParameter> conditionParameters) {
+	public AbstractConditionACOption(final String opt, final String longOpt, final List<ConditionParameter> conditionParameters) {
 		super(opt, longOpt);
 		conditionIndex 	= -1;
 		this.conditionParameters = conditionParameters;
 	}
 	
-	public AbstractConditionACOption(final String opt, final String longOpt, final int conditionIndex, final AbstractConditionParameter conditionParameter) {
+	public AbstractConditionACOption(final String opt, final String longOpt, final int conditionIndex, final ConditionParameter conditionParameter) {
 		super(opt != null ? opt + (conditionIndex + 1) : null,
 				longOpt != null ? longOpt + (conditionIndex + 1) : null);
 
 		this.conditionIndex = conditionIndex;
-		conditionParameters = new ArrayList<AbstractConditionParameter>(1);
+		conditionParameters = new ArrayList<ConditionParameter>(1);
 		conditionParameters.add(conditionParameter);
 	}
 
-	public List<AbstractConditionParameter> getConditionParameters() {
+	public List<ConditionParameter> getConditionParameters() {
 		return conditionParameters;
 	}
 	
-	public AbstractConditionParameter getConditionParameter() {
+	public ConditionParameter getConditionParameter() {
 		return conditionParameters.get(0);
 	}
 

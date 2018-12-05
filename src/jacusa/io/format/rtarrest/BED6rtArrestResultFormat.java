@@ -7,7 +7,7 @@ import jacusa.io.format.BaseSubstitutionBED6adder;
 import jacusa.io.format.RTarrestBaseSubstitutionDataAdder;
 import jacusa.io.format.StratifiedDataAdder;
 import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBaseCallCount;
 import lib.io.AbstractResultFileFormat;
@@ -28,14 +28,14 @@ extends AbstractResultFileFormat {
 			final char c,
 			final String desc,
 			final String methodName,
-			final AbstractParameter parameter) {
+			final GeneralParameter parameter) {
 		
 		super(c, desc, methodName, parameter);
 	}
 
 	public BED6rtArrestResultFormat(
 			final String methodName, 
-			final AbstractParameter parameter) {
+			final GeneralParameter parameter) {
 		
 		this(CHAR, "Arrest only", methodName, parameter);
 	}

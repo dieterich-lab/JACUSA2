@@ -2,8 +2,8 @@ package jacusa.cli.options.librarytype;
 
 import java.util.List;
 
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.has.LibraryType;
 
 import org.apache.commons.cli.CommandLine;
@@ -17,14 +17,14 @@ import org.apache.commons.cli.Option;
 public class OneConditionLibraryTypeOption
 extends AbstractLibraryTypeOption {
 
-	public OneConditionLibraryTypeOption(final int conditionIndex, final AbstractConditionParameter conditionParameter, 
-			final AbstractParameter generalParameter) {
+	public OneConditionLibraryTypeOption(final int conditionIndex, final ConditionParameter conditionParameter, 
+			final GeneralParameter generalParameter) {
 
 		super(conditionIndex, conditionParameter, generalParameter);
 	}
 
-	public OneConditionLibraryTypeOption(final List<AbstractConditionParameter> conditionParameters, 
-			final AbstractParameter generalParameter) {
+	public OneConditionLibraryTypeOption(final List<ConditionParameter> conditionParameters, 
+			final GeneralParameter generalParameter) {
 
 		super(conditionParameters, generalParameter);
 	}
@@ -59,7 +59,7 @@ extends AbstractLibraryTypeOption {
 	    	}
 
 	    	// set chosen library type
-	    	for (final AbstractConditionParameter conditionParameter : getConditionParameters()) {
+	    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
 	    		conditionParameter.setLibraryType(libraryType);
 	    	}
 	    }

@@ -3,15 +3,13 @@ package jacusa.cli.parameters;
 import jacusa.io.format.pileup.BED6pileupResultFormat;
 import jacusa.method.pileup.PileupMethod;
 import jacusa.method.rtarrest.CoverageStatisticFactory;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
-import lib.cli.parameter.JACUSAConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 
 /**
  * Class defines parameters and default values that are need for pileup method.
  */
 public class PileupParameter
-extends AbstractParameter
+extends GeneralParameter
 implements HasStatParameter {
 
 	private StatParameter statParameter;
@@ -22,11 +20,6 @@ implements HasStatParameter {
 				new CoverageStatisticFactory(), Double.NaN));
 		setResultFormat(
 				new BED6pileupResultFormat(PileupMethod.Factory.NAME, this));
-	}
-	
-	@Override
-	public AbstractConditionParameter createConditionParameter(final int conditionIndex) {
-		return new JACUSAConditionParameter(conditionIndex);
 	}
 
 	@Override

@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.DataTypeContainer;
 import lib.data.ParallelData;
 import lib.data.assembler.ConditionContainer;
@@ -249,11 +249,11 @@ implements Iterator<ParallelData> {
 		return method.getWorkerDispatcherInstance();
 	}
 	
-	protected AbstractParameter getParameter() {
+	protected GeneralParameter getParameter() {
 		return method.getParameter();
 	}
 	
-	protected List<AbstractConditionParameter> getConditionParameter() {
+	protected List<ConditionParameter> getConditionParameter() {
 		return getParameter().getConditionParameters();
 	}
 

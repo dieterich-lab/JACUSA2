@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.options.condition.filter.FilterFlagConditionOption;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import test.lib.cli.options.condition.AbstractConditionACOptionTest;
 import test.utlis.CLIUtils;
 
@@ -34,7 +34,7 @@ public class FilterFlagConditionOptionTest extends AbstractConditionACOptionTest
 	@Test
 	@DisplayName("Check general FilterFlagConditionOption fails on wrong input")
 	public void testProcessGeneralFail() throws Exception {
-		final List<AbstractConditionParameter> conditionParameters = createConditionParameters(2); 
+		final List<ConditionParameter> conditionParameters = createConditionParameters(2); 
 		final AbstractConditionACOption acOption = createACOption(conditionParameters);
 
 		// < 0
@@ -56,7 +56,7 @@ public class FilterFlagConditionOptionTest extends AbstractConditionACOptionTest
 	 */
 
 	static Stream<Arguments> testProcessIndividual() {
-		final AbstractConditionParameter conditionParameter = createConditionParameter(-1);
+		final ConditionParameter conditionParameter = createConditionParameter(-1);
 		final Integer d = conditionParameter.getFilterFlags();
 
 		return Stream.of(
@@ -70,13 +70,13 @@ public class FilterFlagConditionOptionTest extends AbstractConditionACOptionTest
 	 */
 	@Override
 	protected AbstractConditionACOption createACOption(int conditionIndex,
-			AbstractConditionParameter conditionParameter) {
+			ConditionParameter conditionParameter) {
 		
 		return new FilterFlagConditionOption(conditionIndex, conditionParameter);
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(List<AbstractConditionParameter> conditionParameters) {
+	protected AbstractConditionACOption createACOption(List<ConditionParameter> conditionParameters) {
 		return new FilterFlagConditionOption(conditionParameters);
 	}
 	
@@ -86,7 +86,7 @@ public class FilterFlagConditionOptionTest extends AbstractConditionACOptionTest
 	}
 	
 	@Override
-	protected Integer getActualValue(AbstractConditionParameter conditionParameter) {
+	protected Integer getActualValue(ConditionParameter conditionParameter) {
 		return conditionParameter.getFilterFlags();
 	}
 	

@@ -3,15 +3,13 @@ package jacusa.cli.parameters;
 import jacusa.io.format.lrtarrest.BED6lrtArrestResultFormat;
 import jacusa.method.lrtarrest.LRTarrestMethod;
 import jacusa.method.lrtarrest.LRTarrestStatFactory;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
-import lib.cli.parameter.JACUSAConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 
 /**
  * Class defines parameters and default values that are need for Linked Reverse Transcription arrest (lrt-arrest).
  */
 public class LRTarrestParameter
-extends AbstractParameter
+extends GeneralParameter
 implements HasStatParameter {
 
 	private StatParameter statParameter;
@@ -29,11 +27,6 @@ implements HasStatParameter {
 				new BED6lrtArrestResultFormat(
 						LRTarrestMethod.Factory.NAME, this));
 
-	}
-
-	@Override
-	public AbstractConditionParameter createConditionParameter(final int conditionIndex) {
-		return new JACUSAConditionParameter(conditionIndex);
 	}
 	
 	@Override

@@ -89,7 +89,7 @@ public class Coordinate implements Locatable, Serializable {
 	 */
 	public void setPosition(int position) {
 		this.start = position;
-		this.end = position;
+		this.end = position + 1; // TODO test
 	}
 	
 	/**

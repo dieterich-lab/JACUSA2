@@ -3,8 +3,8 @@ package jacusa.cli.options.librarytype;
 import java.util.List;
 
 import lib.cli.options.condition.AbstractConditionACOption;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.has.LibraryType;
 
 /**
@@ -20,17 +20,17 @@ extends AbstractConditionACOption {
 	// long opt
 	private static final String LONG_OPT = "library-type";
 
-	private final AbstractParameter generalParameter;
+	private final GeneralParameter generalParameter;
 	
-	public AbstractLibraryTypeOption(final List<AbstractConditionParameter> conditionParameter, 
-			final AbstractParameter generalParameter) {
+	public AbstractLibraryTypeOption(final List<ConditionParameter> conditionParameter, 
+			final GeneralParameter generalParameter) {
 		
 		super(OPT, LONG_OPT, conditionParameter);
 		this.generalParameter = generalParameter;
 	}
 
-	public AbstractLibraryTypeOption(final int conditionIndex, final AbstractConditionParameter conditionParameter, 
-			final AbstractParameter generalParameter) {
+	public AbstractLibraryTypeOption(final int conditionIndex, final ConditionParameter conditionParameter, 
+			final GeneralParameter generalParameter) {
 
 		super(OPT, LONG_OPT, conditionIndex, conditionParameter);
 		this.generalParameter = generalParameter;
@@ -96,7 +96,7 @@ extends AbstractConditionACOption {
 		return sb.toString();
 	}
 
-	protected AbstractParameter getGeneralParameter() {
+	protected GeneralParameter getGeneralParameter() {
 		return generalParameter;
 	}
 

@@ -66,7 +66,6 @@ public abstract class AbstractProcessRecordTest {
 	void testProcessRecord(int distance, SAMRecord record, Map<Integer, BaseCallCount> expected, String msg, TestReporter testReporter) {
 		testInstance = createTestInstance(distance, regionDataCache);
 		SAMRecordWrapper recordWrapper = new SAMRecordWrapper(record);
-		recordWrapper.process();
 		testInstance.processRecord(recordWrapper);
 
 		// same reference positions

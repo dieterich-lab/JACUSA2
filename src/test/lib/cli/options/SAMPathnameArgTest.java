@@ -10,20 +10,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import lib.cli.options.SAMPathnameArg;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.JACUSAConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 import lib.util.Util;
 
 @DisplayName("Test CLI processing of SAMPathnameArg")
 class SAMPathnameArgTest {
 
-	private AbstractConditionParameter conditionParameter;
+	private ConditionParameter conditionParameter;
 	private SAMPathnameArg pathnameArg;
 	
 	@BeforeEach
 	void setUp() {
 		final int conditionIndex = 2;
-		conditionParameter = new JACUSAConditionParameter(conditionIndex);
+		conditionParameter = new ConditionParameter(conditionIndex);
 		pathnameArg = new SAMPathnameArg(conditionIndex, conditionParameter);
 	}
 

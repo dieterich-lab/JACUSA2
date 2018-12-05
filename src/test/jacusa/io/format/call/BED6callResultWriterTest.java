@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.cli.parameters.CallParameter;
 import jacusa.io.format.call.BED6callResultFormat;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.io.BEDlikeResultFileWriter;
 import test.jacusa.io.format.AbstractResultWriterTest;
 
@@ -43,13 +43,13 @@ class BED6callResultWriterTest extends AbstractResultWriterTest{
 	}
 
 	@Override
-	public AbstractParameter createParameter(int conditionSize) {
+	public GeneralParameter createParameter(int conditionSize) {
 		return new CallParameter(conditionSize);
 	}
 
 	@Override
 	public BEDlikeResultFileWriter createTestInstance(
-			String outputFileName, AbstractParameter parameter) {
+			String outputFileName, GeneralParameter parameter) {
 		
 		return new BED6callResultFormat("testCall", parameter).createWriter(outputFileName);
 	}

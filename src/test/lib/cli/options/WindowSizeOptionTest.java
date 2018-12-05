@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.WindowSizeOption;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import test.utlis.CLIUtils;
 
 @DisplayName("Test CLI processing of WindowSizeOption")
@@ -44,12 +44,12 @@ class WindowSizeOptionTest extends AbstractACOptionTest<Integer> {
 	}
 	
 	@Override
-	protected Integer getActualValue(AbstractParameter parameter) {
+	protected Integer getActualValue(GeneralParameter parameter) {
 		return parameter.getActiveWindowSize();
 	}
 	
 	@Override
-	protected AbstractACOption create(AbstractParameter parameter) {
+	protected AbstractACOption create(GeneralParameter parameter) {
 		return new WindowSizeOption(parameter);
 	}
 	

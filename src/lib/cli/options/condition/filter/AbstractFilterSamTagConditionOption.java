@@ -4,7 +4,7 @@ import java.util.List;
 
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -14,12 +14,12 @@ public abstract class AbstractFilterSamTagConditionOption extends AbstractCondit
 	private static final String LONG_OPT = "filter";
 	private String tag;
 
-	public AbstractFilterSamTagConditionOption(final int conditionIndex, final AbstractConditionParameter conditionParameter, final String tag) {
+	public AbstractFilterSamTagConditionOption(final int conditionIndex, final ConditionParameter conditionParameter, final String tag) {
 		super(null, LONG_OPT + tag, conditionIndex, conditionParameter);
 		this.tag = tag;
 	}
 
-	public AbstractFilterSamTagConditionOption(final List<AbstractConditionParameter> conditionParameters, final String tag) {
+	public AbstractFilterSamTagConditionOption(final List<ConditionParameter> conditionParameters, final String tag) {
 		super(null, LONG_OPT + tag, conditionParameters);
 		this.tag = tag;
 	}
@@ -48,7 +48,7 @@ public abstract class AbstractFilterSamTagConditionOption extends AbstractCondit
     	if (value < 1) {
     		throw new IllegalArgumentException(getLongOpt() + " cannot be < 1");
     	}
-    	for (final AbstractConditionParameter conditionParameter : getConditionParameters()) {
+    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
     		conditionParameter.getSamTagFilters().add(createSamTagFilter(value));
     	}
 	}

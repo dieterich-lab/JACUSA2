@@ -6,7 +6,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.ShowReferenceOption;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import test.utlis.CLIUtils;
 
 class ShowReferenceOptionTest extends AbstractACOptionTest<Boolean> {
@@ -28,12 +28,12 @@ class ShowReferenceOptionTest extends AbstractACOptionTest<Boolean> {
 	 */
 	
 	@Override
-	protected AbstractACOption create(AbstractParameter parameter) {
+	protected AbstractACOption create(GeneralParameter parameter) {
 		return new ShowReferenceOption(parameter);
 	}
 	
 	@Override
-	protected Boolean getActualValue(AbstractParameter parameter) {
+	protected Boolean getActualValue(GeneralParameter parameter) {
 		return parameter.showReferenceBase();
 	}
 	

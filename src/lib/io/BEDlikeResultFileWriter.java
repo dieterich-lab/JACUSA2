@@ -3,8 +3,8 @@ package lib.io;
 import java.util.List;
 
 import jacusa.io.format.FilterDebugAdder;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.ParallelData;
 import lib.data.result.Result;
 import lib.io.format.bed.BED6adder;
@@ -30,7 +30,7 @@ public class BEDlikeResultFileWriter extends AbstractResultFileWriter {
 	}
 
 	@Override
-	public void writeHeader(List<AbstractConditionParameter> conditionParameter) {
+	public void writeHeader(List<ConditionParameter> conditionParameter) {
 		final StringBuilder sb = new StringBuilder();
 		headerDetailAdder.add(sb, conditionParameter);
 		bed6Adder.addHeader(sb);
@@ -65,7 +65,7 @@ public class BEDlikeResultFileWriter extends AbstractResultFileWriter {
 	implements Builder<BEDlikeResultFileWriter> {
 
 		private final String fileName;
-		private final AbstractParameter parameter;
+		private final GeneralParameter parameter;
 		
 		private HeaderDetailAdder headerDetailAdder;
 		private BED6adder bed6adder;
@@ -74,7 +74,7 @@ public class BEDlikeResultFileWriter extends AbstractResultFileWriter {
 		
 		public BEDlikeResultFileWriterBuilder(
 				final String fileName, 
-				final AbstractParameter parameter) {
+				final GeneralParameter parameter) {
 			
 			this.fileName = fileName;
 			this.parameter = parameter;

@@ -2,7 +2,7 @@ package jacusa.cli.parameters;
 
 import java.util.List;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 
 /**
  * Interface to handle condition parameters.
@@ -16,7 +16,7 @@ public interface HasConditionParameter {
 	 *  
 	 * @return a list of AbstractConditionParameter objects
 	 */
-	List<AbstractConditionParameter> getConditionParameters();
+	List<ConditionParameter> getConditionParameters();
 	
 	/**
 	 * Returns a specific conditionParameter object.
@@ -24,14 +24,14 @@ public interface HasConditionParameter {
 	 * @param conditionIndex index identifies a specific condition
 	 * @return a specific condition parameter object
 	 */
-	AbstractConditionParameter getConditionParameter(int conditionIndex);
+	ConditionParameter getConditionParameter(int conditionIndex);
 	
 	/**
 	 * Updates 
 	 * 
 	 * @param conditionParameters the new list of condition parameters
 	 */
-	void setConditionParameters(List<AbstractConditionParameter> conditionParameters);
+	void setConditionParameters(List<ConditionParameter> conditionParameters);
 
 	/**
 	 * Returns the current number of stored condition.

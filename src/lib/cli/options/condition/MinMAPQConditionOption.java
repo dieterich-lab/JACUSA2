@@ -2,7 +2,7 @@ package lib.cli.options.condition;
 
 import java.util.List;
 
-import lib.cli.parameter.AbstractConditionParameter;
+import lib.cli.parameter.ConditionParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -12,11 +12,11 @@ public class MinMAPQConditionOption extends AbstractConditionACOption {
 	private static final String OPT = "m";
 	private static final String LONG_OPT = "min-mapq";
 	
-	public MinMAPQConditionOption(final List<AbstractConditionParameter> conditions) {
+	public MinMAPQConditionOption(final List<ConditionParameter> conditions) {
 		super(OPT, LONG_OPT, conditions);
 	}
 	
-	public MinMAPQConditionOption(final int conditionIndex, final AbstractConditionParameter condition) {
+	public MinMAPQConditionOption(final int conditionIndex, final ConditionParameter condition) {
 		super(OPT, LONG_OPT, conditionIndex, condition);
 	}
 	
@@ -51,7 +51,7 @@ public class MinMAPQConditionOption extends AbstractConditionACOption {
 	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + minMapq + " not valid.");
 	    	}
 
-	    	for (final AbstractConditionParameter condition : getConditionParameters()) {
+	    	for (final ConditionParameter condition : getConditionParameters()) {
 	    		condition.setMinMAPQ(minMapq);
 	    	}
 	    }

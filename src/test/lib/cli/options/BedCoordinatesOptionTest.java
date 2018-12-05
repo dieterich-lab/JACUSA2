@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.BedCoordinatesOption;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 
 class BedCoordinatesOptionTest extends AbstractACOptionTest<String> {
 	
@@ -36,12 +36,12 @@ class BedCoordinatesOptionTest extends AbstractACOptionTest<String> {
 	 */
 
 	@Override
-	protected AbstractACOption create(AbstractParameter parameter) {
+	protected AbstractACOption create(GeneralParameter parameter) {
 		return new BedCoordinatesOption(parameter);
 	}
 	
 	@Override
-	protected String getActualValue(AbstractParameter parameter) {
+	protected String getActualValue(GeneralParameter parameter) {
 		return parameter.getInputBedFilename();
 	}
 	

@@ -2,7 +2,7 @@ package lib.io;
 
 import jacusa.io.copytmp.FileCopyTmpResult;
 import jacusa.io.copytmp.FileCopyTmpSplitResult;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.io.copytmp.CopyTmpResult;
 import lib.worker.WorkerDispatcher;
 
@@ -21,10 +21,10 @@ implements ResultFormat {
 	private final String desc;
 
 	private final String methodName;
-	private final AbstractParameter parameter;
+	private final GeneralParameter parameter;
 	
 	public AbstractResultFileFormat(final char c, final String desc, 
-			final String methodName, final AbstractParameter parameter) {
+			final String methodName, final GeneralParameter parameter) {
 		this.c = c;
 		this.desc = desc;
 		
@@ -42,7 +42,7 @@ implements ResultFormat {
 		return desc;
 	}
 
-	public AbstractParameter getParameter() {
+	public GeneralParameter getParameter() {
 		return parameter;
 	}
 

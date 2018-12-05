@@ -5,8 +5,8 @@ import java.util.List;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.SAMPathnameArg;
-import lib.cli.parameter.AbstractConditionParameter;
-import lib.cli.parameter.AbstractParameter;
+import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.builder.factory.AbstractDataAssemblerFactory;
 import lib.data.has.LibraryType;
 import lib.data.validator.paralleldata.ParallelDataValidator;
@@ -30,7 +30,7 @@ public abstract class AbstractMethod {
 
 	private final String name;
 	
-	private final AbstractParameter parameter;
+	private final GeneralParameter parameter;
 	private final AbstractDataAssemblerFactory dataAssemblerFactory;
 	
 	private final List<AbstractACOption> acOptions;
@@ -40,7 +40,7 @@ public abstract class AbstractMethod {
 	
 	protected AbstractMethod(
 			final String name, 
-			final AbstractParameter parameter, 
+			final GeneralParameter parameter, 
 			final AbstractDataAssemblerFactory dataAssemblerFactory) {
 		
 		this.name = name;
@@ -54,7 +54,7 @@ public abstract class AbstractMethod {
 		return name;
 	}
 
-	public AbstractParameter getParameter() {
+	public GeneralParameter getParameter() {
 		return parameter;
 	}
 
@@ -182,7 +182,7 @@ public abstract class AbstractMethod {
 		}
 		
 		boolean isStranded = false;
-		for (final AbstractConditionParameter conditionParameter : parameter.getConditionParameters()) {
+		for (final ConditionParameter conditionParameter : parameter.getConditionParameters()) {
 			if (conditionParameter.getLibraryType() != LibraryType.UNSTRANDED) {
 				isStranded = true;
 				break;
