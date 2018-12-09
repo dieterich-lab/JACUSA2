@@ -3,7 +3,7 @@ package jacusa;
 public final class VersionInfo {
 
 	public final static String BRANCH 	= "master";
-	public final static String TAG 		= "2.0.0-BETA31-TEST1";
+	public final static String TAG 		= "2.0.0-BETA30";
 
 	private VersionInfo() {
 		throw new AssertionError();
