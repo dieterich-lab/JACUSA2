@@ -11,10 +11,10 @@ import htsjdk.samtools.util.StringUtil;
 
 import org.apache.commons.cli.Options;
 
-import jacusa.filter.AbstractFilter;
+import jacusa.filter.Filter;
 import jacusa.filter.HomopolymerFilter;
-import jacusa.filter.cache.HomopolymerReadFilterCache;
-import jacusa.filter.cache.HomopolymerReferenceFilterCache;
+import jacusa.filter.homopolymer.HomopolymerReadFilterCache;
+import jacusa.filter.homopolymer.HomopolymerReferenceFilterCache;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataType;
 import lib.data.DataTypeContainer;
@@ -147,7 +147,7 @@ extends AbstractFilterFactory {
 	}
 	
 	@Override
-	public AbstractFilter createFilter(final CoordinateController coordinateController,
+	public Filter createFilter(final CoordinateController coordinateController,
 			final ConditionContainer conditionContainer) {
  
 		return new HomopolymerFilter(

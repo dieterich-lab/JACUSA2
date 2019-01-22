@@ -13,8 +13,8 @@ public class MinBASQConditionOption extends AbstractConditionACOption {
 	private static final String OPT = "q";
 	private static final String LONG_OPT = "min-basq";
 	
-	public MinBASQConditionOption(final int conditionIndex, final ConditionParameter conditionParameter) {
-		super(OPT, LONG_OPT, conditionIndex, conditionParameter);
+	public MinBASQConditionOption(final ConditionParameter conditionParameter) {
+		super(OPT, LONG_OPT, conditionParameter);
 	}
 	
 	public MinBASQConditionOption(final List<ConditionParameter> conditionParameters) {

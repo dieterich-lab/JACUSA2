@@ -17,11 +17,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import htsjdk.samtools.util.SequenceUtil;
 import lib.util.Base;
 
+// JUNIT: ongoing A
 class BaseTest {
-
-	/*
-	 * Tests
-	 */
 
 	@DisplayName("Test getC")
 	@ParameterizedTest(name = "Base {0} should be {1}")

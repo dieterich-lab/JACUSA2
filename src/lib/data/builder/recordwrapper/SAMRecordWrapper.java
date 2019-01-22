@@ -48,12 +48,6 @@ public class SAMRecordWrapper {
 		return recordRefProvider;
 	}
 	
-	/*
-	public boolean isProcessed () {
-		return cigarElementWrappers.size() > 0;
-	}
-	*/
-	
 	private void process() {
 		final CombinedPosition position = new CombinedPosition(record.getAlignmentStart());
 

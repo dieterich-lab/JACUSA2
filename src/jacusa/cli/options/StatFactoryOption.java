@@ -24,6 +24,9 @@ import org.apache.commons.cli.Options;
 public class StatFactoryOption 
 extends AbstractACOption {
 
+	public static final String OPT = "u";
+	public static final String LONG_OPT = "mode";
+	
 	private final StatParameter statParameter;
 	// available statistics for a method
 	private final Map<String, AbstractStatFactory> factories;
@@ -31,7 +34,7 @@ extends AbstractACOption {
 	public StatFactoryOption(final StatParameter statParameter, 
 			final Map<String, AbstractStatFactory> factories) {
 
-		super("u", "mode");
+		super(OPT, LONG_OPT);
 		this.statParameter	= statParameter;
 		this.factories 		= factories;
 	}
@@ -77,6 +80,10 @@ extends AbstractACOption {
 				.build();
 	}
 
+
+	/**
+	 * Tested in @see test.jacusa.cli.options.StatFactoryOptionTest 
+	 */
 	@Override
 	public void process(final CommandLine line) throws Exception {
 		final String s = line.getOptionValue(getOpt());

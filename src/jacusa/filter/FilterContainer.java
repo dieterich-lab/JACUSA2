@@ -22,7 +22,7 @@ public class FilterContainer {
 	private final FilterConfig filterConfig;
 
 	// map of filters - contains both: AbstractFilter and AbstractDataFilter 
-	private final Map<Character, AbstractFilter> filters;
+	private final Map<Character, Filter> filters;
 
 	// max overhang that is required by some filter
 	private int overhang;
@@ -30,7 +30,8 @@ public class FilterContainer {
 	public FilterContainer(final FilterConfig filterConfig) {
 		this.filterConfig 	= filterConfig;
 		overhang 			= 0;
-		filters				= new HashMap<Character, AbstractFilter>(filterConfig.getFilterFactories().size());
+		filters				= 
+				new HashMap<Character, Filter>(filterConfig.getFilterFactories().size());
 	}
 
 	/**
@@ -56,7 +57,7 @@ public class FilterContainer {
 	 * 
 	 * @param filter the filter to be added
 	 */
-	public void addFilter(final AbstractFilter filter) {
+	public void addFilter(final Filter filter) {
 		filters.put(filter.getC(), filter);
 	}
 
@@ -65,11 +66,14 @@ public class FilterContainer {
 	 * 
 	 * @return list of active filters
 	 */
-	public List<AbstractFilter> getFilters() {
+	public List<Filter> getFilters() {
 		return Collections.unmodifiableList(new ArrayList<>(filters.values()));
 	}
 	
-	public List<RecordWrapperProcessor> createFilterCaches(final ConditionParameter conditionParameter, final SharedCache sharedCache) {
+	public List<RecordWrapperProcessor> createFilterCaches(
+			final ConditionParameter conditionParameter, 
+			final SharedCache sharedCache) {
+		
 		return Collections.unmodifiableList(
 			filterConfig.getFilterFactories().stream()
 				.map(filterFactory -> filterFactory.createFilterCache(conditionParameter, sharedCache))

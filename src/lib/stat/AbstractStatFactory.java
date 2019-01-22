@@ -76,4 +76,25 @@ public abstract class AbstractStatFactory {
 		processCLI(cmd);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || ! (obj instanceof AbstractStatFactory)) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		
+		final AbstractStatFactory asf = (AbstractStatFactory) obj;
+		return getName().equals(asf.getName()) && getDescription().equals(asf.getDescription()); 
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = 31 * hash + getName().hashCode();
+		hash = 31 * hash + getDescription().hashCode();
+		return hash;
+	}
+	
 }

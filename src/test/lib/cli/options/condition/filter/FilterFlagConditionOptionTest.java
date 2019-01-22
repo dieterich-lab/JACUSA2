@@ -69,10 +69,8 @@ public class FilterFlagConditionOptionTest extends AbstractConditionACOptionTest
 	 * Helper
 	 */
 	@Override
-	protected AbstractConditionACOption createACOption(int conditionIndex,
-			ConditionParameter conditionParameter) {
-		
-		return new FilterFlagConditionOption(conditionIndex, conditionParameter);
+	protected AbstractConditionACOption createACOption(ConditionParameter conditionParameter) {
+		return new FilterFlagConditionOption(conditionParameter);
 	}
 	
 	@Override

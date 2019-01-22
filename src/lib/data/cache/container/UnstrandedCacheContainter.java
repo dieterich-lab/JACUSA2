@@ -56,7 +56,7 @@ implements CacheContainer {
 	}
 	
 	@Override
-	public void populateContainer(DataTypeContainer container, Coordinate coordinate) {
+	public void populate(DataTypeContainer container, Coordinate coordinate) {
 		for (final DataContainerPopulator cache : processors) {
 			cache.populate(container, coordinate);
 		}

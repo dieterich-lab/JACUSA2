@@ -1,4 +1,4 @@
-package jacusa.filter.cache;
+package jacusa.filter.homopolymer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,11 +40,14 @@ public class Homopolymer {
 		return sb.toString();
 	}
 
+	/**
+	 * Tested in @see test.jacusa.filter.homopolymer.HomopolymerBuilderTest
+	 */
 	public static class HomopolymerBuilder {
 		
 		private Homopolymer current;
 		
-		private int minLength;
+		private final int minLength;
 		private final Collection<Homopolymer> homopolymers;	
 		
 		public HomopolymerBuilder(final int position, final int minLength) {

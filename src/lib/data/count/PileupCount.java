@@ -15,7 +15,7 @@ public class PileupCount implements Data<PileupCount> {
 	private BaseCallQualityCount baseCallQualCount;
 
 	public PileupCount() {
-		this(JACUSA.bcqcFactory.create());
+		this(JACUSA.BCQC_FACTORY.create());
 	}
 	
 	public PileupCount(final BaseCallQualityCount baseCallQualCount) {
@@ -31,7 +31,7 @@ public class PileupCount implements Data<PileupCount> {
 	}
 	
 	public BaseCallCount getBaseCallCount() {
-		final BaseCallCount bcc = JACUSA.bccFactory.create();
+		final BaseCallCount bcc = JACUSA.BCC_FACTORY.create();
 		for (final Base base : baseCallQualCount.getAlleles()) {
 			int count = 0;
 			for (final byte baseQual : baseCallQualCount.getBaseCallQuality(base)) {

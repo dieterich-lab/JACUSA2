@@ -8,7 +8,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 
-import jacusa.filter.AbstractFilter;
+import jacusa.filter.Filter;
 import jacusa.filter.HomozygousFilter;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataTypeContainer;
@@ -34,12 +34,14 @@ extends AbstractFilterFactory {
 	private final int conditionSize;
 	private final Fetcher<BaseCallCount> bccFetcher;
 	
-	public HomozygousFilterFactory(final int conditionSize, final Fetcher<BaseCallCount> bccFetcher) {
+	public HomozygousFilterFactory(
+			final int conditionSize, final Fetcher<BaseCallCount> bccFetcher) {
+		
 		super(getOptionBuilder().build());
 				
 		homozygousConditionIndex 	= -1;
-		this.conditionSize = conditionSize;
-		this.bccFetcher = bccFetcher;
+		this.conditionSize 			= conditionSize;
+		this.bccFetcher 			= bccFetcher;
 	}
 
 	@Override
@@ -59,7 +61,7 @@ extends AbstractFilterFactory {
 				final int conditionIndex = Integer.parseInt(cmd.getOptionValue(longOpt));
 				// make sure conditionIndex is within provided conditions
 				if (conditionIndex >= 1 && conditionIndex <= conditionSize) {
-					this.homozygousConditionIndex = conditionIndex;
+					this.homozygousConditionIndex = conditionIndex - 1;
 				} else {
 					throw new IllegalArgumentException("Invalid argument: " + longOpt);
 				}
@@ -76,7 +78,7 @@ extends AbstractFilterFactory {
 	}
 	
 	@Override
-	protected AbstractFilter createFilter(
+	protected Filter createFilter(
 			CoordinateController coordinateController, 
 			ConditionContainer conditionContainer) {
 		return new HomozygousFilter(getC(), homozygousConditionIndex, bccFetcher);

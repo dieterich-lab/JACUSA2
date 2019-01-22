@@ -1,13 +1,12 @@
 package lib.worker;
 
-import jacusa.filter.AbstractFilter;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
+import jacusa.filter.Filter;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.DataTypeContainer;
@@ -89,7 +88,7 @@ implements Iterator<ParallelData> {
 	protected boolean filter(final Result result) {
 		boolean isFiltered = false;
 		// apply each filter
-		for (final AbstractFilter filter : conditionContainer.getFilterContainer().getFilters()) {
+		for (final Filter filter : conditionContainer.getFilterContainer().getFilters()) {
 			if (filter.applyFilter(result)) {
 				isFiltered = true;
 			}

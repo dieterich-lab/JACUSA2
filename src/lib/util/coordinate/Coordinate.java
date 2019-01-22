@@ -8,8 +8,6 @@ import htsjdk.samtools.util.Locatable;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
 /**
- * 
- * @author Michael Piechotta
  *
  */
 public class Coordinate implements Locatable, Serializable {
@@ -152,7 +150,8 @@ public class Coordinate implements Locatable, Serializable {
 		hash = 31 * hash + strand.hashCode();
 		return hash;
 	}
-	
+
+	// has JUNIT tests
 	public static class Parser implements lib.util.Parser<Coordinate> {
 
 		public static final char CONTIG_POS_SEP = ':';
@@ -164,9 +163,7 @@ public class Coordinate implements Locatable, Serializable {
 		private final char posStrandSep;
 		
 		public Parser() {
-			contigPosSep 	= CONTIG_POS_SEP;
-			startEndSep		= START_END_SEP;
-			posStrandSep 	= POS_STRAND_SEP;
+			this(CONTIG_POS_SEP, START_END_SEP, POS_STRAND_SEP);
 		}
 		
 		public Parser(final char sepContigPos, final char sepStartEnd, final char sepPosStrand) {

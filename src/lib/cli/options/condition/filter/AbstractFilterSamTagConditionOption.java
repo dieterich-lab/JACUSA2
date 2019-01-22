@@ -14,8 +14,8 @@ public abstract class AbstractFilterSamTagConditionOption extends AbstractCondit
 	private static final String LONG_OPT = "filter";
 	private String tag;
 
-	public AbstractFilterSamTagConditionOption(final int conditionIndex, final ConditionParameter conditionParameter, final String tag) {
-		super(null, LONG_OPT + tag, conditionIndex, conditionParameter);
+	public AbstractFilterSamTagConditionOption(final ConditionParameter conditionParameter, final String tag) {
+		super(null, LONG_OPT + tag, conditionParameter);
 		this.tag = tag;
 	}
 

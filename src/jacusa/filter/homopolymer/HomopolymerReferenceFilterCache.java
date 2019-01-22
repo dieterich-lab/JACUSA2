@@ -1,10 +1,10 @@
-package jacusa.filter.cache;
+package jacusa.filter.homopolymer;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import jacusa.filter.cache.Homopolymer.HomopolymerBuilder;
+import jacusa.filter.homopolymer.Homopolymer.HomopolymerBuilder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.FilteredDataFetcher;
@@ -19,11 +19,11 @@ import lib.util.coordinate.Coordinate;
  * 
  * @param 
  */
-// <D extends AbstractData & HasBooleanFilterData> 
 public class HomopolymerReferenceFilterCache
 extends AbstractHomopolymerFilterCache
 implements RecordWrapperProcessor {
-	
+
+	// require only one instance for multiple threads
 	private static final Map<Coordinate, IsHomopolyerHelper> COORD2IS_HOMOPOLYMER;
 	
 	static {
@@ -147,6 +147,5 @@ implements RecordWrapperProcessor {
 		}
 		
 	}
-	
 	
 }

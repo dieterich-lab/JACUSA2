@@ -8,20 +8,29 @@ public interface BaseCallInterpreter {
 
 	Base getReadBase(SAMRecordWrapper recordWrapper, int readPosition);
 	Base getRefBase(SAMRecordWrapper recordWrapper, int referencePosition);
-	
-	static BaseCallInterpreter create(final LibraryType libraryType) { 
-		switch (libraryType) {
+		
+	public static class Builder implements lib.util.Builder<BaseCallInterpreter> {
 
-		case UNSTRANDED:
-			return new UnstrandedBaseCallInterpreter();
+		private final LibraryType libraryType;
+		
+		public Builder(final LibraryType libraryType) {
+			this.libraryType = libraryType;
+		}
+		
+		public BaseCallInterpreter build() { 
+			switch (libraryType) {
 
-		case RF_FIRSTSTRAND:
-		case FR_SECONDSTRAND:
-			return new StrandedBaseCallInterpreter();
-			
-		default:
-			throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
+			case UNSTRANDED:
+				return new UnstrandedBaseCallInterpreter();
 
+			case RF_FIRSTSTRAND:
+			case FR_SECONDSTRAND:
+				return new StrandedBaseCallInterpreter();
+				
+			default:
+				throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
+
+			}
 		}
 	}
 	

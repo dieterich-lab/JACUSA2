@@ -64,7 +64,7 @@ implements IncrementAdder {
 			final SAMRecord record) {
 
 		if (! baseCallQualities.containsKey(windowPosition)) {
-			baseCallQualities.put(windowPosition, JACUSA.bcqcFactory.create());
+			baseCallQualities.put(windowPosition, JACUSA.BCQC_FACTORY.create());
 		}
 		final BaseCallQualityCount base2qual2count = baseCallQualities.get(windowPosition);
 		base2qual2count.increment(base, baseQual);

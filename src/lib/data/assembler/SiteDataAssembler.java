@@ -83,7 +83,7 @@ implements DataAssembler {
 				builderFactory.createBuilder(coordinate, getLibraryType())
 					.withReferenceBase(referenceBase)
 					.build();
-		cacheContainer.populateContainer(container, coordinate);
+		cacheContainer.populate(container, coordinate);
 		return container;
 	}
 	

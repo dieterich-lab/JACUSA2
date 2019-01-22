@@ -1,11 +1,8 @@
-package jacusa.filter.basecall;
+package jacusa.filter;
 
 import java.util.List;
 import java.util.Set;
 
-
-import jacusa.filter.AbstractFilter;
-import jacusa.filter.FilterByRatio;
 import lib.data.DataTypeContainer;
 import lib.data.ParallelData;
 import lib.data.cache.fetcher.Fetcher;
@@ -13,12 +10,9 @@ import lib.data.count.basecall.BaseCallCount;
 import lib.util.Base;
 
 /**
- * Abstract class that enables filtering based on base call count data and some other filter chached data.
- * 
- * @param 
+ * Class that enables filtering based on base call count data and some other filter cached data.
  */
-public class GenericBaseCallCountFilter
-extends AbstractFilter {
+public class GenericBaseCallCountFilter extends AbstractFilter {
 	
 	private final Fetcher<BaseCallCount> observedBccFetcher;
 	private final Fetcher<BaseCallCount> filteredBccFetcher;
@@ -35,11 +29,17 @@ extends AbstractFilter {
 		this.observedBccFetcher 	= observedBccFetcher;
 		this.filteredBccFetcher 	= filteredBccFetcher;
 
-		this.filterByRatio = filterByRatio;
+		this.filterByRatio 			= filterByRatio;
 	}
 
+	/**
+	 * Tested in @see test.jacusa.filtering.GenericBaseCallCountFilterTest
+	 */
 	@Override
-	protected boolean filter(final ParallelData parallelData) {
+	public boolean filter(final ParallelData parallelData) {
+		final BaseCallCount bcc = observedBccFetcher.fetch(parallelData.getCombinedPooledData());
+		final Set<Base> alleles = bcc.getAlleles();
+		
 		Set<Base> variantBases = null;
 		if (parallelData.getConditions() == 1) {
 			variantBases = ParallelData.getNonReferenceBases(
@@ -47,12 +47,11 @@ extends AbstractFilter {
 					parallelData.getLibraryType(),
 					parallelData.getCombinedPooledData().getReferenceBase() );
 		} else {
-			final BaseCallCount bcc = observedBccFetcher.fetch(parallelData.getCombinedPooledData());
-			final Set<Base> alleles = bcc.getAlleles();
 			final List<BaseCallCount> bccs = Fetcher.apply(observedBccFetcher, parallelData.getCombinedData());
 			variantBases = ParallelData.getVariantBases(alleles, bccs);
 		}
 
+		variantBases.retainAll(alleles);
 		return filter(variantBases, parallelData);
 	}
 
@@ -72,7 +71,7 @@ extends AbstractFilter {
 					final BaseCallCount o = observedBccFetcher.fetch(container);
 					final int tmpCount = o.getBaseCall(variantBase);
 					count += tmpCount;
-					// artefacts
+					// artifacts
 					final BaseCallCount filteredBcc = filteredBccFetcher.fetch(container);
 					if (filteredBcc != null) {
 						filteredCount += tmpCount - filteredBcc.getBaseCall(variantBase);						
@@ -82,7 +81,6 @@ extends AbstractFilter {
 				}
 			}
 
-			// check if too much filteredCount
 			if (filterByRatio.filter(count, filteredCount)) {
 				return true;
 			}

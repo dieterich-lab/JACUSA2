@@ -11,12 +11,12 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import jacusa.JACUSA;
-import jacusa.filter.AbstractFilter;
+import jacusa.filter.Filter;
 import jacusa.filter.FilterByRatio;
-import jacusa.filter.basecall.GenericBaseCallCountFilter;
-import jacusa.filter.cache.RecordProcessDataCache;
+import jacusa.filter.GenericBaseCallCountFilter;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.homopolymer.RecordProcessDataCache;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataType;
 import lib.data.DataTypeContainer;
@@ -106,12 +106,12 @@ extends AbstractFilterFactory {
 		}
 		final BaseCallCountFilteredData filteredData = builder.get(dataType);
 		if (! filteredData.contains(getC())) {
-			filteredData.add(getC(), JACUSA.bccFactory.create());
+			filteredData.add(getC(), JACUSA.BCC_FACTORY.create());
 		}
 	}
 	
 	@Override
-	public AbstractFilter createFilter(
+	public Filter createFilter(
 			final CoordinateController coordinateController, 
 			final ConditionContainer conditionContainer) {
 		return new GenericBaseCallCountFilter(getC(),

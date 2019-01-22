@@ -74,14 +74,14 @@ implements CacheContainer {
 	}
 	
 	@Override
-	public void populateContainer(DataTypeContainer container, Coordinate coordinate) {
+	public void populate(DataTypeContainer container, Coordinate coordinate) {
 		switch (coordinate.getStrand()) {
 		case FORWARD:
-			forwardContainer.populateContainer(container, coordinate);
+			forwardContainer.populate(container, coordinate);
 			break;
 
 		case REVERSE:
-			reverseContainer.populateContainer(container, coordinate);
+			reverseContainer.populate(container, coordinate);
 			break;
 
 		case UNKNOWN:

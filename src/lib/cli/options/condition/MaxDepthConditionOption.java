@@ -15,8 +15,8 @@ public class MaxDepthConditionOption extends AbstractConditionACOption {
 	private static final String OPT = "d";
 	private static final String LONG_OPT = "max-depth";
 	
-	public MaxDepthConditionOption(final int conditionIndex, final ConditionParameter conditionParameter) {
-		super(OPT, LONG_OPT, conditionIndex, conditionParameter);
+	public MaxDepthConditionOption(final ConditionParameter conditionParameter) {
+		super(OPT, LONG_OPT, conditionParameter);
 	}
 	
 	public MaxDepthConditionOption(final List<ConditionParameter> conditionParameters) {

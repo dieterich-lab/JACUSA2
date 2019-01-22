@@ -1,43 +1,36 @@
 package test.lib.stat.dirmult;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import lib.stat.dirmult.DirMultData;
-import lib.util.Base;
 
-public class DirMultDataTest {
+// JUNIT: A
+class DirMultDataTest {
 
 	public static final double DELTA = 1e-15;
 
-	/**
-	 * Test method for {@link lib.stat.dirmult.DirMultData#getRowWiseSums()}.
-	 */
-	@DisplayName("Should calculate the correct row wise sums")
 	@ParameterizedTest(name = "DirMultData: {0} should have the following row wise sums {1}")
-	@MethodSource("testGetRowWiseSums")
-	void testGetRowWiseSums(DirMultData dirMultData, double[] expectedSums) {
-		final double[] calculatedSums = dirMultData.getRowWiseSums();
+	/*
+	 *  Format:
+	 *  1. int(# of categories),double[][](values)
+	 *  2. double[](expected rowSums)
+	 */
+	@CsvSource(
+			value = {
+					"4,1,1,1,1,2,2,2,2	4,8",
+					"2,0,0,1,2,3,4	4,6"
+			}, 
+			delimiter = '\t')
+	void testGetRowWiseSums(
+			@ConvertWith(DirMultDataArgumentConverter.class) DirMultData dirMultData, 
+			double[] expected) {
 		
-		assertEquals(expectedSums.length, calculatedSums.length);
-		for  (int i = 0; i < expectedSums.length; ++i) {
-			assertEquals(expectedSums[i], calculatedSums[i], DELTA);
-		}
-	}
-
-	static Stream<Arguments> testGetRowWiseSums() {
-		final int n = Base.validValues().length;
-		return Stream.of(
-				Arguments.of(
-						new DirMultData(n, new double[][] { {1d, 1d, 1d, 1d}, 
-															{2d, 2d, 2d, 2d} } ),
-						new double[] {4d, 8d}));
+		final double[] actual = dirMultData.getRowWiseSums();
+		assertArrayEquals(expected, actual, DELTA);
 	}
 
 }

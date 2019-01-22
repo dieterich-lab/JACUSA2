@@ -88,8 +88,8 @@ class MaxDepthConditionOptionTest extends AbstractConditionACOptionTest<Integer>
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(int conditionIndex, ConditionParameter conditionParameter) {
-		return new MaxDepthConditionOption(conditionIndex, conditionParameter);
+	protected AbstractConditionACOption createACOption(ConditionParameter conditionParameter) {
+		return new MaxDepthConditionOption(conditionParameter);
 	}
 	
 }

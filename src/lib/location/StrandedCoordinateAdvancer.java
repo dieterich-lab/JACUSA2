@@ -3,9 +3,10 @@ package lib.location;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
+// has JUNIT tests
 public class StrandedCoordinateAdvancer implements CoordinateAdvancer {
 
-	protected Coordinate coordinate;
+	private Coordinate coordinate;
 	
 	public StrandedCoordinateAdvancer(final Coordinate coordinate) {
 		this.coordinate = coordinate;
@@ -25,11 +26,12 @@ public class StrandedCoordinateAdvancer implements CoordinateAdvancer {
 	}
 
 	@Override
-	public void adjust(final Coordinate coordinate) {
+	public void adjustPosition(final Coordinate coordinate) {
 		this.coordinate.setPosition(coordinate.getPosition());
 		this.coordinate.setStrand(coordinate.getStrand());
 	}
 
+	@Override
 	public Coordinate getCurrentCoordinate() {
 		return coordinate;
 	}

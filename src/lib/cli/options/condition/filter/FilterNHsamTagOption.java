@@ -9,8 +9,8 @@ public class FilterNHsamTagOption extends AbstractFilterSamTagConditionOption {
 
 	public static final String TAG = "NH";
 	
-	public FilterNHsamTagOption(final int conditionIndex, final ConditionParameter conditionParameter) {
-		super(conditionIndex, conditionParameter, TAG);
+	public FilterNHsamTagOption(final ConditionParameter conditionParameter) {
+		super(conditionParameter, TAG);
 	}
 
 	public FilterNHsamTagOption(final List<ConditionParameter> conditionParameters) {

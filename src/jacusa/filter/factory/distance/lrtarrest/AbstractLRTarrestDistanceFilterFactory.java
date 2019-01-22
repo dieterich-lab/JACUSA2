@@ -10,13 +10,13 @@ import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-import jacusa.filter.AbstractFilter;
+import jacusa.filter.Filter;
 import jacusa.filter.FilterByRatio;
-import jacusa.filter.basecall.GenericBaseCallCountFilter;
-import jacusa.filter.cache.RecordProcessDataCache;
+import jacusa.filter.GenericBaseCallCountFilter;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.basecall.AbstractBaseCallCountFilterFactory;
+import jacusa.filter.homopolymer.RecordProcessDataCache;
 import jacusa.method.rtarrest.RTarrestMethod;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
 import lib.cli.parameter.ConditionParameter;
@@ -140,7 +140,7 @@ extends AbstractFilterFactory {
 	}
 	
 	@Override
-	protected AbstractFilter createFilter(CoordinateController coordinateController,
+	protected Filter createFilter(CoordinateController coordinateController,
 			ConditionContainer conditionContainer) {
 		return new GenericBaseCallCountFilter(getC(),
 			bccSwitch,

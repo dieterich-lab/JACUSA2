@@ -2,7 +2,7 @@ package jacusa.method.call;
 
 import jacusa.cli.options.StatFactoryOption;
 import jacusa.cli.options.StatFilterOption;
-import jacusa.cli.options.librarytype.OneConditionLibraryTypeOption;
+import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
 import jacusa.cli.parameters.CallParameter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.ExcludeSiteFilterFactory;
@@ -138,22 +138,21 @@ extends AbstractMethod {
 		addACOption(new FilterNHsamTagOption(getParameter().getConditionParameters()));
 		addACOption(new FilterNMsamTagOption(getParameter().getConditionParameters()));
 		
-		addACOption(new OneConditionLibraryTypeOption(getParameter().getConditionParameters(), getParameter()));
+		addACOption(new nConditionLibraryTypeOption(getParameter().getConditionParameters(), getParameter()));
 		
 		// only add contions specific options when there are more than 1 conditions
 		if (getParameter().getConditionsSize() > 1) {
 			for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-				addACOption(new MinMAPQConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MinBASQConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MinCoverageConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MaxDepthConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new FilterFlagConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 				
-				addACOption(new FilterNHsamTagOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new FilterNMsamTagOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterNHsamTagOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterNMsamTagOption(getParameter().getConditionParameters().get(conditionIndex)));
 				
-				addACOption(new OneConditionLibraryTypeOption(
-						conditionIndex, 
+				addACOption(new nConditionLibraryTypeOption(
 						getParameter().getConditionParameters().get(conditionIndex),
 						getParameter()));
 			}

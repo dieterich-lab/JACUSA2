@@ -16,8 +16,8 @@ public class MinCoverageConditionOption extends AbstractConditionACOption {
 		super(OPT, LONG_OPT, conditionParameter);
 	}
 	
-	public MinCoverageConditionOption(final int conditionIndex, final ConditionParameter conditionParameters) {
-		super(OPT, LONG_OPT, conditionIndex, conditionParameters);
+	public MinCoverageConditionOption(final ConditionParameter conditionParameters) {
+		super(OPT, LONG_OPT, conditionParameters);
 	}
 	
 	@Override

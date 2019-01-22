@@ -22,7 +22,16 @@ public class MinkaEstimateDirMultAlpha {
 		this.minkaEstimateParameter = minkaEstimateParameter;
 	}
 	
-	// estimate alpha and returns loglik
+	/**
+	 * estimate alpha and returns log-lik
+	 * TODO comments
+	 * @param dirMultSample
+	 * @param estimateInfo
+	 * @param backtrack
+	 * @return
+	 * 
+	 * Tested in test.jacusa.estimate.MinkaEstimateDirMultAlphaTest
+	 */
 	public boolean maximizeLogLikelihood(final DirMultSample dirMultSample, final Info estimateInfo, final boolean backtrack) {
 		final DirMultData dirMultData = dirMultSample.getDirMultData();
 		final int categories = dirMultData.getCategories();  
@@ -142,6 +151,14 @@ public class MinkaEstimateDirMultAlpha {
 	}
 	
 	// calculate likelihood
+	/**
+	 * 
+	 * @param alpha
+	 * @param dirMultData
+	 * @return
+	 * 
+	 * Tested in test.jacusa.estimate.MinkaEstimateDirMultAlphaTest
+	 */
 	public double getLogLikelihood(final double[] alpha, final DirMultData dirMultData) {
 		double logLikelihood 		= 0.0;
 		final double alphaSum 		= MathUtil.sum(alpha);

@@ -16,7 +16,7 @@ import htsjdk.tribble.AsciiFeatureCodec;
 import htsjdk.tribble.readers.LineIterator;
 import jacusa.JACUSA;
 import jacusa.filter.factory.ResultFeature;
-import lib.data.DefaultDataContainer;
+import lib.data.DefaultDataTypeContainer;
 import lib.data.ParallelData;
 import lib.data.has.LibraryType;
 import lib.data.result.OneStatResult;
@@ -106,7 +106,7 @@ public class JACUSA2codec extends AsciiFeatureCodec<ResultFeature> {
 		final Coordinate coordinate = decodeCoordinate(token);
 		
 		final ParallelData.Builder pdBuilder = new ParallelData.Builder(1, Arrays.asList(1));
-		DefaultDataContainer.Builder dcBuilder = new DefaultDataContainer.Builder(coordinate, LibraryType.MIXED);
+		DefaultDataTypeContainer.Builder dcBuilder = new DefaultDataTypeContainer.Builder(coordinate, LibraryType.MIXED);
 		
 		final ParallelData parallelData = 
 				pdBuilder.withReplicate(

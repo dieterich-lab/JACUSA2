@@ -23,7 +23,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final BaseCallCount EMPTY = JACUSA.bccFactory.create();
+	private static final BaseCallCount EMPTY = JACUSA.BCC_FACTORY.create();
 	
 	/**
 	 * stores base call count information for each position
@@ -56,7 +56,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	 */
 	public ArrestPosition2baseCallCount addBaseCall(final int arrestPosition, final Base base) {
 		if (! aPos2bcc.containsKey(arrestPosition)) {
-			aPos2bcc.put(arrestPosition, JACUSA.bccFactory.create());
+			aPos2bcc.put(arrestPosition, JACUSA.BCC_FACTORY.create());
 		}
 		aPos2bcc.get(arrestPosition).increment(base);
 		return this;
@@ -107,7 +107,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 
 	private BaseCallCount getTotalBaseCallCountHelper() {
 		if (cTotBcc == null) {
-			cTotBcc = JACUSA.bccFactory.create();
+			cTotBcc = JACUSA.BCC_FACTORY.create();
 			for (final BaseCallCount tmpBcc : aPos2bcc.values()) {
 				cTotBcc.add(tmpBcc);
 			}

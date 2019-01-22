@@ -9,10 +9,11 @@ public final class VersionInfo {
 		throw new AssertionError();
 	}
 	
-	public static String get() {
+	public static String format() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(TAG);
 
+		// only add branch when not on master
 		if (! BRANCH.equals("master")) {
 			sb.append(" (");
 			sb.append(VersionInfo.BRANCH);

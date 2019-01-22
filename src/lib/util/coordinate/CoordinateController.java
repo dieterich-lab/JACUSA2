@@ -114,7 +114,7 @@ public class CoordinateController {
 	}
 
 	private void updateCoordinateAdvancer(final Coordinate coordinate) {
-		coordinateAdvancer.adjust(coordinate);
+		coordinateAdvancer.adjustPosition(coordinate);
 	}
 	
 	public boolean checkCoordinateWithinActiveWindow(final Coordinate coordinate) {

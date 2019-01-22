@@ -1,22 +1,31 @@
 package test.lib.location;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-class StrandedJumpingCoordinateAdvancerTest {
+import lib.location.CoordinateAdvancer;
+import lib.util.coordinate.Coordinate;
 
-	// private StrandedJumpingCoordinateAdvancer strandedJumpingCoordinateAdvancer;
+public class StrandedJumpingCoordinateAdvancerTest extends AbstractCoordinateAdvancerTest {
+
+	private static final int CONDITION_SIZE = 1;
 	
-	@Test
-	void testAdvance() {
-		fail("Not yet implemented"); // TODO
+	@Override
+	protected Stream<Arguments> testAdvance() {
+		return null;
+	}
+	
+	@Override
+	protected CoordinateAdvancer createTestInstance(Coordinate coordinate) {
+		return null;
 		/*
-		final AbstractParameter parameter = new CallParameter(conditionSize);
+		final GeneralParameter parameter = new CallParameter(1);
 		final ConditionContainer conditionContainer = new ConditionContainer<>(parameter);
 		final CoordinateController coordinateController = new CoordinateController(conditionContainer);
-		// strandedJumpingCoordinateAdvancer = new StrandedJumpingCoordinateAdvancer(coordinateController, conditionContainer);
-		 * */
+		
+		return new StrandedJumpingCoordinateAdvancer(coordinateController, conditionContainer);
+		*/
 	}
 
 }

@@ -19,7 +19,6 @@ class DebugModusOptionTest extends AbstractACOptionTest<Boolean> {
 
 	@SuppressWarnings("unused")
 	private AbstractTool tool;
-
 	private AbstractMethod method;
 	
 	@BeforeEach

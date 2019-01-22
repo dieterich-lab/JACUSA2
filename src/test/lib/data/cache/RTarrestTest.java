@@ -22,10 +22,10 @@ import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBaseCallCount;
 import lib.data.has.LibraryType;
 import lib.util.coordinate.Coordinate;
-import test.jacusa.filter.cache.AbstractRecordCacheTest;
+import test.jacusa.filter.homopolymer.RecordWrapperProcessorTest;
 import test.utlis.SAMRecordIterator;
 
-public class RTarrestTest extends AbstractRecordCacheTest {
+public class RTarrestTest extends RecordWrapperProcessorTest {
 
 	private final BaseCallCount.AbstractParser parser;
 	
@@ -47,7 +47,7 @@ public class RTarrestTest extends AbstractRecordCacheTest {
 	}
 	
 	/**
-	 * Test method for {@link jacusa.filter.cache.HomopolymerReadFilterCache#process(lib.data.builder.recordwrapper.SAMRecordWrapper)}.
+	 * Test method for {@link jacusa.filter.homopolymer.HomopolymerReadFilterCache#process(lib.data.builder.recordwrapper.SAMRecordWrapper)}.
 	 */
 	@ParameterizedTest(name = "Seq.: {0}, length {1}, lib. {2}, and window {3}")
 	@CsvSource(delimiter = ' ', value = {
@@ -110,7 +110,7 @@ public class RTarrestTest extends AbstractRecordCacheTest {
 	}
 	
 	protected RTarrestDataCache createTestInstance() {
-		final LocationInterpreter locInterpreter = LocationInterpreter.create(getLibraryType());
+		final LocationInterpreter locInterpreter = LocationInterpreter.createTestInstance();
 		
 		final ValidatedRegionDataCache arrest = new ValidatedRegionDataCache(getShareCache());
 		arrest.addAdder(
@@ -144,7 +144,7 @@ public class RTarrestTest extends AbstractRecordCacheTest {
 		final DataTypeContainer container = new DefaultBuilderFactory()
 				.createBuilder(current, getLibraryType())
 				.build();
-		getCacheContainer().populateContainer(container, current);
+		getTestInstanceContainer().populate(container, current);
 		final int windowPosition = getWindowPosition(windowIndex, current);
 		assertEquals(
 				expectedArrestBcc.get(windowPosition), container.getArrestBaseCallCount(), 

@@ -68,7 +68,7 @@ class PileupDataTest extends AbstractDataTest {
 							.withReferenceBase(Base.A)
 							.with(
 									DataType.PILEUP_COUNT, 
-									new PileupCount(JACUSA.bcqcFactory.create()
+									new PileupCount(JACUSA.BCQC_FACTORY.create()
 										.set(Base.A, (byte)10, 4)
 										.set(Base.C, (byte)20, 3)
 										.set(Base.G, (byte)30, 2)
@@ -86,7 +86,7 @@ class PileupDataTest extends AbstractDataTest {
 							.withReferenceBase(Base.A)
 							.with(
 									DataType.PILEUP_COUNT, 
-									new PileupCount(JACUSA.bcqcFactory.create()
+									new PileupCount(JACUSA.BCQC_FACTORY.create()
 										.set(Base.A, (byte)10, 4)
 										.set(Base.C, (byte)20, 3)
 										.set(Base.G, (byte)30, 2)
@@ -105,7 +105,7 @@ class PileupDataTest extends AbstractDataTest {
 							.withReferenceBase(Base.A)
 							.with(
 									DataType.PILEUP_COUNT, 
-									new PileupCount(JACUSA.bcqcFactory.create()
+									new PileupCount(JACUSA.BCQC_FACTORY.create()
 										.set(Base.A, (byte)10, 4)
 										.set(Base.C, (byte)20, 3)
 										.set(Base.G, (byte)30, 2)
@@ -136,7 +136,7 @@ class PileupDataTest extends AbstractDataTest {
 							.withReferenceBase(Base.N)
 							.with(
 									DataType.PILEUP_COUNT, 
-									new PileupCount(JACUSA.bcqcFactory.create()
+									new PileupCount(JACUSA.BCQC_FACTORY.create()
 										.set(Base.A, (byte)10, 4)
 										.set(Base.C, (byte)20, 3)
 										.set(Base.G, (byte)30, 2)
@@ -161,7 +161,7 @@ class PileupDataTest extends AbstractDataTest {
 							.withReferenceBase(Base.A)
 							.with(
 									DataType.PILEUP_COUNT, 
-									new PileupCount(JACUSA.bcqcFactory.create()
+									new PileupCount(JACUSA.BCQC_FACTORY.create()
 										.set(Base.A, (byte)10, 1)
 										.set(Base.C, (byte)20, 2)
 										.set(Base.G, (byte)30, 3)
@@ -183,7 +183,7 @@ class PileupDataTest extends AbstractDataTest {
 							.withReferenceBase(Base.A)
 							.with(
 									DataType.PILEUP_COUNT, 
-									new PileupCount(JACUSA.bcqcFactory.create()
+									new PileupCount(JACUSA.BCQC_FACTORY.create()
 										.set(Base.A, (byte)10, 5)
 										.set(Base.C, (byte)20, 5)
 										.set(Base.G, (byte)30, 5)

@@ -61,7 +61,7 @@ implements IncrementAdder {
 
 		int count = 0;
 		if (! winPos2coverage.containsKey(windowPosition)) {
-			winPos2baseCallCount.put(windowPosition, JACUSA.bccFactory.create());
+			winPos2baseCallCount.put(windowPosition, JACUSA.BCC_FACTORY.create());
 		} else {
 			count = winPos2coverage.get(windowPosition);
 		}

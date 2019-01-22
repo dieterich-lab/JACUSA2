@@ -84,8 +84,8 @@ class MinBASQConditionOptionTest extends AbstractConditionACOptionTest<Byte> {
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(int conditionIndex, ConditionParameter conditionParameter) {
-		return new MinBASQConditionOption(conditionIndex, conditionParameter);
+	protected AbstractConditionACOption createACOption(ConditionParameter conditionParameter) {
+		return new MinBASQConditionOption(conditionParameter);
 	}
 	
 	@Override

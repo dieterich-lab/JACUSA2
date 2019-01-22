@@ -1,4 +1,4 @@
-package jacusa.filter.cache;
+package jacusa.filter.homopolymer;
 
 import lib.data.DataTypeContainer;
 import lib.data.adder.AbstractDataContainerPopulator;
@@ -15,7 +15,6 @@ import lib.util.coordinate.CoordinateController.WindowPositionGuard;
  * 
  * @param 
  */
-// <D extends AbstractData & HasBooleanFilterData> 
 public abstract class AbstractHomopolymerFilterCache
 extends AbstractDataContainerPopulator
 implements RecordWrapperProcessor {

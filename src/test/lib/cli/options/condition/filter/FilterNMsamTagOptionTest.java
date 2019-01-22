@@ -85,10 +85,8 @@ class FilterNMsamTagOptionTest extends AbstractConditionACOptionTest<Integer> {
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(int conditionIndex,
-			ConditionParameter conditionParameter) {
-		
-		return new FilterNMsamTagOption(conditionIndex, conditionParameter);
+	protected AbstractConditionACOption createACOption(ConditionParameter conditionParameter) {
+		return new FilterNMsamTagOption(conditionParameter);
 	}
 	
 	@Override

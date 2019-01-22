@@ -8,7 +8,7 @@ import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-import jacusa.filter.AbstractFilter;
+import jacusa.filter.Filter;
 import jacusa.filter.HomozygousFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
@@ -81,7 +81,7 @@ extends AbstractFilterFactory {
 	}
 	
 	@Override
-	protected AbstractFilter createFilter(
+	protected Filter createFilter(
 			CoordinateController coordinateController,
 			ConditionContainer conditionContainer) {
 		

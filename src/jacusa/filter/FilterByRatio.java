@@ -8,6 +8,14 @@ public class FilterByRatio {
 		this.minRatio = minRatio;
 	}
 
+	/**
+	 * TODO
+	 * @param count
+	 * @param filteredCount
+	 * @return
+	 * 
+	 * Tested in @see jacusa.filter.FilterByRatioTest
+	 */
 	public boolean filter(final int count, final int filteredCount) {
 		return (double)filteredCount / (double)count <= minRatio;
 	}

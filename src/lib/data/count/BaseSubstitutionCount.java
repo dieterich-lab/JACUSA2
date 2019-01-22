@@ -23,7 +23,7 @@ public class BaseSubstitutionCount implements Data<BaseSubstitutionCount> {
 	public BaseSubstitutionCount(SortedSet<BaseSubstitution> baseSubstitutions) {
 		count = new HashMap<>(baseSubstitutions.size());
 		for (final BaseSubstitution baseSub : baseSubstitutions) {
-			count.put(baseSub, JACUSA.bccFactory.create());
+			count.put(baseSub, JACUSA.BCC_FACTORY.create());
 		}
 	}
 	

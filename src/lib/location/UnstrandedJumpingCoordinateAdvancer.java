@@ -100,9 +100,10 @@ implements CoordinateAdvancer {
 	}
 
 	@Override
-	public void adjust(final Coordinate coordinate) {
+	public void adjustPosition(final Coordinate coordinate) {
 		// contig is set somewhere else
 		getCurrentCoordinate().setPosition(coordinate.getPosition());
+		// TODO
 		// getCurrentCoordinate().setStrand(coordinate.getStrand());
 	}
 	

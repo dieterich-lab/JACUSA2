@@ -20,6 +20,9 @@ public class MaxAlleleFilter extends AbstractFilter {
 		this.bccFetcher = bccFetcher;
 	}
 	
+	/**
+	 * Tested in test.jacusa.filter.MaxAlleleFilterTest
+	 */
 	@Override
 	public boolean filter(final ParallelData parallelData) {
 		final DataTypeContainer container = parallelData.getCombinedPooledData();

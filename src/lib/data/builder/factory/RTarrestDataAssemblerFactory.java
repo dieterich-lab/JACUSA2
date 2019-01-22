@@ -68,7 +68,7 @@ extends AbstractSiteDataAssemblerFactory {
 							baseSubs,
 							sharedCache, 
 							locInterpreter,
-							BaseCallInterpreter.create(libraryType),
+							new BaseCallInterpreter.Builder(libraryType).build(),
 							validators));
 		}
 

@@ -10,18 +10,24 @@ import lib.data.filter.BooleanWrapper;
  * 
  * @param 
  */
-public class HomopolymerFilter 
-extends AbstractFilter {
+public class HomopolymerFilter extends AbstractFilter {
 
 	private final Fetcher<BooleanWrapper> fetcher;
 	
-	public HomopolymerFilter(final char c, final int overhang, final Fetcher<BooleanWrapper> fetcher) {
+	public HomopolymerFilter(
+			final char c, 
+			final int overhang, 
+			final Fetcher<BooleanWrapper> fetcher) {
+		
 		super(c, overhang);
 		this.fetcher = fetcher;
 	}
 
+	/**
+	 * Tested in test.jacusa.filter.HomopolymerFilterTest
+	 */
 	@Override
-	protected boolean filter(final ParallelData parallelData) {
+	public boolean filter(final ParallelData parallelData) {
 		return fetcher.fetch(parallelData.getCombinedPooledData()).getValue();
 	}
 	

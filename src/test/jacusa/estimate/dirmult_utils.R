@@ -1,5 +1,8 @@
 require("dirmult")
 
+COLUMN_SEP = "\t"
+VALUE_SEP = ","
+
 # format of csv files:
 # data m
 # alpha
@@ -8,7 +11,7 @@ require("dirmult")
 # replicates categories data[replicates*categories] alpha[categories] LL
 
 # reads csv file with variable number of elements per row
-my_read.csv <- function(file, sep = ",") {
+my_read.csv <- function(file, column_sep = COLUMN_SEP, value_sep = VALUE_SEP) {
   con = file(file, "r")
   l <- list()
   while (TRUE) {
@@ -16,30 +19,27 @@ my_read.csv <- function(file, sep = ",") {
     if (length(line) == 0) {
       break
     }
-    cols <- strsplit(line, split = sep)[[1]]
-    values <-as.numeric(cols)
-    categories = values[1]
-    replicates = values[2]
-    data_size <- categories * replicates
+    cols <- strsplit(line, split = column_sep)[[1]]
+    cols_length <- length(cols)
+    values <- as.numeric(cols[1])
     values_length <- length(values)
-    
-    # add categories and replicates  
+    categories = values[1]
+    data <- as.numeric(strsplit(values[2:values_length], split = value_sep)[[1]])
+    replicates <- length(data) / categories
+
+        # add categories and replicates  
     row <- list(
       categories = categories,
       replicates = replicates)
     # add matrices
-    row$m <- matrix(values[3:(2 + data_size)], ncol = categories, byrow = T)
+    row$m <- matrix(data, ncol = categories, byrow = T)
     
     # add optional columns
-    if (2 + data_size == values_length) { # no alpha, no LL
+    if (cols_length == 1) { # no alpha, no LL
       # nothing to be done
-    } else if (2 + data_size + 1 == values_length) { # add LL
-      row$LL <- values[values_length]
-    } else if (2 + data_size + categories == values_length) { # add alpha
-      row$a <- values[(2 + data_size + 1):(2 + data_size + categories)]
-    } else if (2 + data_size + categories + 1 == values_length) { # add LL, categories
-      row$a <- values[(2 + data_size + 1):(2 + data_size + categories)]
-      row$LL <- values[values_length]
+    } else if (cols_length == 3) { # add LL
+      row$a <- as.numeric(strsplit(cols[2], split = value_sep)[[1]])
+      row$LL <- as.numeric(cols[3])
     } else {
       browser()
       stop("Wrong number of columns")
@@ -51,23 +51,21 @@ my_read.csv <- function(file, sep = ",") {
 }
 
 # write csv file with variable number of elements per row
-my_write.csv <- function(l, file, sep = ",") {
+my_write.csv <- function(l, file, column_sep = COLUMN_SEP, value_sep = VALUE_SEP) {
   cat("", file = file, append = F, fill = F)
   tmp <- lapply(l, function(row) {
-    line <-c(row$categories,
-             row$replicates,
-             c(t(row$m))) 
+    line <- paste(c(row$categories, t(row$m)), collapse = value_sep)
     if (! is.null(row$ia)) {
-      line <- c(line, row$ia)
+      line <- c(line, paste(row$ia, collapse = value_sep))
     }
     if (! is.null(row$a)) {
-      line <- c(line, row$a)
+      line <- c(line, paste(row$a, collapse = value_sep))
     }
     if (! is.null(row$LL)) {
       line <- c(line, row$LL)
     }
-    cat(line, file = file, append = T, sep = sep, fill = F)
-    cat("\n", file = file, append = T, sep = sep, fill = F)
+    cat(line, file = file, append = T, sep = column_sep, fill = F)
+    cat("\n", file = file, append = T, sep = column_sep, fill = F)
   })
 }
 

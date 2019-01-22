@@ -10,29 +10,37 @@ import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.util.CloseableIterator;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.DefaultBuilderFactory;
+import lib.data.cache.container.CacheContainer;
 import lib.data.cache.readsubstitution.ReadSubstitutionCache;
 import lib.data.has.LibraryType;
 import lib.util.coordinate.Coordinate;
-import test.jacusa.filter.cache.AbstractRecordCacheTest;
+import test.jacusa.filter.homopolymer.RecordWrapperProcessorTest;
+import test.jacusa.filter.homopolymer.RecordWrapperSimulator;
 import test.utlis.SAMRecordIterator;
 
-public class BaseSubstitutionPerReadCacheTest extends AbstractRecordCacheTest {
+public class BaseSubstitutionPerReadCacheTest implements RecordWrapperProcessorTest {
 	
 	// private final TreeSet<BaseSubstitution> baseSubstitutions;
 	// private final MinBASQBaseCallValidator validator;
 	
+	private final RecordWrapperSimulator simulator;
+	
+	private CacheContainer testInstanceContainer;
+	
 	public BaseSubstitutionPerReadCacheTest() {
 		// baseSubstitutions = new TreeSet<>(Arrays.asList(BaseSubstitution.CtoT));
 		// validator = new MinBASQBaseCallValidator((byte)30);
+		
+		simulator 			= new RecordWrapperSimulator();
 	}
 
 	@BeforeEach
 	public void beforeEach() {
-		super.beforeEach();
+		// TODO
 	}
 	
 	/**
-	 * Test method for {@link jacusa.filter.cache.HomopolymerReadFilterCache#process(lib.data.builder.recordwrapper.SAMRecordWrapper)}.
+	 * Test method for {@link jacusa.filter.homopolymer.HomopolymerReadFilterCache#process(lib.data.builder.recordwrapper.SAMRecordWrapper)}.
 	 */
 	@ParameterizedTest(name = "Seq.: {0}, length {1}, lib. {2}, and window {3}")
 	@CsvSource(delimiter = ' ', value = {
@@ -52,15 +60,15 @@ public class BaseSubstitutionPerReadCacheTest extends AbstractRecordCacheTest {
 		
 		// set sequences...
 		final String contig = "contig";
-		update(activeWindowSize, libraryType, contig, refSeq);
+		simulator.update(activeWindowSize, libraryType, contig, refSeq);
 
 		// create records		
-		getRecordBuilder().addRecords(false, readLength);
+		simulator.getRecordBuilder().addRecords(false, readLength);
 		
-		test();
+		runTest();
 	}
 	
-	protected ReadSubstitutionCache createTestInstance() {
+	public ReadSubstitutionCache createTestInstance() {
 		/*
 		final IncrementAdder[] substBccAdders = 
 				baseSubstitutions.stream()
@@ -71,41 +79,14 @@ public class BaseSubstitutionPerReadCacheTest extends AbstractRecordCacheTest {
 				.toArray(IncrementAdder[]::new);
 		*/
 		return null; // FIXME
-		
-		/*
-		switch (getLibraryType()) {
-		case RF_FIRSTSTRAND:
-		case FR_SECONDSTRAND:
-			return new StrandedBaseCallInterpreter(
-					getShareCache(), 
-					validator, 
-					baseSubstitutions,
-					substBccAdders);
-
-		case UNSTRANDED:
-			return new UnstrandedBaseCallInterpreter(
-					getShareCache(), 
-					validator, 
-					baseSubstitutions,
-					substBccAdders);
-			
-		default:
-			throw new IllegalArgumentException("Unsupported library type: " + getLibraryType().toString());
-		}
-		*/
 	}
 	
 	@Override
-	protected CloseableIterator<SAMRecord> createIterator(String contig, int start, int end) {
-		return new SAMRecordIterator(contig, start, end, getRecordBuilder().getRecords());
-	}
-	
-	@Override
-	protected void assertEqual(final int windowIndex, Coordinate current) {
+	public void assertEqual(final int windowIndex, Coordinate current) {
 		final DataTypeContainer container = new DefaultBuilderFactory()
-				.createBuilder(current, getLibraryType())
+				.createBuilder(current, simulator.getLibraryType())
 				.build();
-		getCacheContainer().populateContainer(container, current);
+		getTestInstanceContainer().populate(container, current);
 		/*
 		final int windowPosition = getWindowPosition(windowIndex, current);
 		

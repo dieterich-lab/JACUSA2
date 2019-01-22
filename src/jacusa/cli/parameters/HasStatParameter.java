@@ -9,6 +9,8 @@ public interface HasStatParameter {
 	 * Returns 
 	 * 
 	 * @return statistic parameters
+	 * 
+	 * Tested in @see test.jacusa.cli.parameters.HasStatParameterTest
 	 */
 	StatParameter getStatParameter();
 	void setStatParameter(StatParameter statParameter);

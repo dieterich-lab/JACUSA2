@@ -1,76 +1,62 @@
 package jacusa.filter;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import lib.data.ParallelData;
+import lib.data.result.Result;
 
-import jacusa.filter.factory.AbstractFilterFactory;
-import lib.method.AbstractMethod;
+public interface Filter {
 
-// TODO use at some point
-public class Filter {
+	/**
+	 * Return the unique char id of this filter.
+	 * 
+	 * @return unique char
+	 */
+	char getC();
 
-	private static final Map<AbstractMethod, Set<String>> MAP = new HashMap<>(10);
-	
-	private final String id;
-	private final String desc;
-	private final AbstractFilterFactory filterFactory;
-	
-	public Filter(
-			final AbstractMethod method,
-			final String id, 
-			final String desc,
-			final AbstractFilterFactory filterFactory) {
+	/**
+	 * Returns the region that this filter requires up- and downstream from current position.
+	 * 
+	 * @return the region that the filter requires 
+	 */
+	int getOverhang();
 
-		checkAndAdd(method, id);
-		this.id 	= id;
-		this.desc 	= desc;
-		this.filterFactory = filterFactory;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof Filter)) {
-			return false;
+	/**
+	 * This method applies the filter to the data (ParallelData) stored within result object and 
+	 * adds info fields to the result object if the filter found any false positive variants.
+	 * 
+	 * @param result the Result object to investigate and populate
+	 * @return true if filter found artefact, false otherwise
+	 * 
+	 * Tested in @see test.test.jacusa.filter.AbstractFilterTest
+	 */
+	default boolean applyFilter(Result result) {
+		// get data to investigate
+		final ParallelData parallelData = result.getParellelData();
+		// if filter finds artefact, add info to result and return true
+		boolean filter = false;
+		for (final int valueIndex : result.getValueIndex()) {
+			if (filter(parallelData)) {
+				addInfo(valueIndex, result);
+				filter = true;
+			}
 		}
-		if (obj == this) {
-			return true;
-		}
-		Filter filter = (Filter)obj;
-		
-		return 
-				id.equals(filter.id) &&
-				desc.equals(filter.desc) &&
-				filterFactory.equals(filter.filterFactory);
+
+		return filter;
 	}
 
-	@Override
-	public int hashCode() {
-		return id.hashCode();
-	}
+	/**
+	 * Return true or false if this filter identifies a site as an false position variant.
+	 * This method can only be called from within the filter. 
+	 * 
+	 * @param parallelData the data to investigate
+	 * @return true if site was filtered, or false otherwise
+	 */
+	boolean filter(ParallelData parallelData);
 	
-	public String getId() {
-		return id;
-	}
-	
-	public String getDesc() {
-		return desc;
-	}
+	/**
+	 * Adds unique id of filter to result object 
+	 * 
+	 * @param result object to be marked by this filter 
+	 */
+	void addInfo(int valueIndex, Result result);
 
-	public AbstractFilterFactory getInstance() {
-		return filterFactory;
-	}
-	
-	private void checkAndAdd(final AbstractMethod method, final String id) {
-		if (! MAP.containsKey(method)) {
-			MAP.put(method, new HashSet<>(10));
-		}
-		final Set<String> filters = MAP.get(method);
-		if (filters.contains(id)) {
-			throw new IllegalArgumentException("Duplicate ID for filter: " + id);
-		}
-		filters.add(id);
-	}
-	
 }

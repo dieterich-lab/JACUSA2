@@ -73,8 +73,8 @@ class MinMAPQConditionOptionTest extends AbstractConditionACOptionTest<Integer> 
 	 */
 	
 	@Override
-	protected AbstractConditionACOption createACOption(int conditionIndex, ConditionParameter conditionParameter) {
-		return new MinMAPQConditionOption(conditionIndex, conditionParameter);
+	protected AbstractConditionACOption createACOption(ConditionParameter conditionParameter) {
+		return new MinMAPQConditionOption(conditionParameter);
 	}
 	
 	@Override

@@ -51,7 +51,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 		
 		// create list of acOptions - size need not == conditionParameters
 		final List<AbstractConditionACOption> acOptions = conditionIndices.stream()
-				.map(i -> createACOption(i, conditionParameters.get(i - 1)))
+				.map(i -> createACOption(conditionParameters.get(i - 1)))
 				.collect(Collectors.toList());
 		
 		// container for command line options
@@ -110,7 +110,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 
 	protected List<AbstractConditionACOption> createACOptions(List<ConditionParameter> conditionParameter) {
 		return IntStream.rangeClosed(1, conditionParameter.size() + 1)
-				.mapToObj(i -> createACOption(i, conditionParameter.get(i - 1)))
+				.mapToObj(i -> createACOption(conditionParameter.get(i - 1)))
 				.collect(Collectors.toList());
 	}
 	
@@ -142,7 +142,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 	 */
 
 	protected abstract AbstractConditionACOption createACOption(List<ConditionParameter> conditionParameters);
-	protected abstract AbstractConditionACOption createACOption(int conditionIndex, ConditionParameter conditionParameter);
+	protected abstract AbstractConditionACOption createACOption(ConditionParameter conditionParameter);
 	protected abstract T getActualValue(ConditionParameter conditionParameter);
 	protected abstract String createLine(AbstractConditionACOption acOption, T v);
 }

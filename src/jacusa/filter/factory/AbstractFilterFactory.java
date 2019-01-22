@@ -7,7 +7,7 @@ import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-import jacusa.filter.AbstractFilter;
+import jacusa.filter.Filter;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.AbstractBuilder;
@@ -65,7 +65,7 @@ public abstract class AbstractFilterFactory {
 
 	public abstract void addFilteredData(StringBuilder sb, DataTypeContainer filteredData);
 	
-	protected abstract AbstractFilter createFilter(
+	protected abstract Filter createFilter(
 			CoordinateController coordinateController, 
 			ConditionContainer conditionContainer);
 

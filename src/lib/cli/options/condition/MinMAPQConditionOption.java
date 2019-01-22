@@ -16,8 +16,8 @@ public class MinMAPQConditionOption extends AbstractConditionACOption {
 		super(OPT, LONG_OPT, conditions);
 	}
 	
-	public MinMAPQConditionOption(final int conditionIndex, final ConditionParameter condition) {
-		super(OPT, LONG_OPT, conditionIndex, condition);
+	public MinMAPQConditionOption(final ConditionParameter condition) {
+		super(OPT, LONG_OPT, condition);
 	}
 	
 	@Override

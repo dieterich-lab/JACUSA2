@@ -85,10 +85,8 @@ public class FilterNHsamTagOptionTest extends AbstractConditionACOptionTest<Inte
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(int conditionIndex,
-			ConditionParameter conditionParameter) {
-		
-		return new FilterNHsamTagOption(conditionIndex, conditionParameter);
+	protected AbstractConditionACOption createACOption(ConditionParameter conditionParameter) {
+		return new FilterNHsamTagOption(conditionParameter);
 	}
 	
 	@Override

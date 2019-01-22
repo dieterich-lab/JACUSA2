@@ -16,7 +16,7 @@ public class TotalBaseCallCountAggregator implements Fetcher<BaseCallCount> {
 	
 	@Override
 	public BaseCallCount fetch(DataTypeContainer container) {
-		final BaseCallCount totalBcc = JACUSA.bccFactory.create();
+		final BaseCallCount totalBcc = JACUSA.BCC_FACTORY.create();
 		for (final Fetcher<BaseCallCount> bccFetcher : bccFetchers) {
 			totalBcc.add(bccFetcher.fetch(container));
 		}

@@ -17,8 +17,8 @@ public class FilterFlagConditionOption extends AbstractConditionACOption {
 		super(OPT, LONG_OPT, conditionParameter);
 	}
 
-	public FilterFlagConditionOption(final int conditionIndex, ConditionParameter conditionParameter) {
-		super(OPT, LONG_OPT, conditionIndex, conditionParameter);
+	public FilterFlagConditionOption(ConditionParameter conditionParameter) {
+		super(OPT, LONG_OPT, conditionParameter);
 	}
 	
 	@Override

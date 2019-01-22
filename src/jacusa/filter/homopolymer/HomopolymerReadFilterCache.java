@@ -1,11 +1,11 @@
-package jacusa.filter.cache;
+package jacusa.filter.homopolymer;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
-import jacusa.filter.cache.Homopolymer.HomopolymerBuilder;
+import jacusa.filter.homopolymer.Homopolymer.HomopolymerBuilder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.FilteredDataFetcher;

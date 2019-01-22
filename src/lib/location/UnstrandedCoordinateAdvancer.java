@@ -22,9 +22,10 @@ public class UnstrandedCoordinateAdvancer implements CoordinateAdvancer {
 	}
 
 	@Override
-	public void adjust(final Coordinate coordinate) {
+	public void adjustPosition(final Coordinate coordinate) {
 		this.coordinate.setPosition(coordinate.getPosition());
-		this.coordinate.setStrand(coordinate.getStrand());
+		// TODO test
+		// this.coordinate.setStrand(coordinate.getStrand());
 	}
 	
 }

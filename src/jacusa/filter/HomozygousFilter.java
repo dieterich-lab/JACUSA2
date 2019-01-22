@@ -22,9 +22,12 @@ extends AbstractFilter {
 		this.bccFetcher = bccFetcher;
 	}
 
+	/**
+	 * Tested in test.jacusa.filter.HomozygousFilterTest
+	 */
 	@Override
 	public boolean filter(final ParallelData parallelData) {
-		final DataTypeContainer container = parallelData.getPooledData(homozygousConditionIndex - 1);
+		final DataTypeContainer container = parallelData.getPooledData(homozygousConditionIndex);
 		final int alleles = bccFetcher.fetch(container).getAlleles().size();
 		return alleles > 1;
 	}

@@ -1,4 +1,4 @@
-package jacusa.filter.cache;
+package jacusa.filter.homopolymer;
 
 import jacusa.filter.cache.processrecord.ProcessRecord;
 

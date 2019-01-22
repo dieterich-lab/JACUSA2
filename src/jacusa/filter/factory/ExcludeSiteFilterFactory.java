@@ -15,19 +15,16 @@ import htsjdk.tribble.Feature;
 import htsjdk.tribble.bed.BEDCodec;
 import htsjdk.tribble.bed.BEDCodec.StartOffset;
 import htsjdk.tribble.readers.LineIterator;
-import jacusa.filter.AbstractFilter;
-import jacusa.filter.factory.exclude.ContainedCoordinate;
-import jacusa.filter.factory.exclude.DefaultContainedCoordinate;
+import jacusa.filter.ExcludeSiteFilter;
+import jacusa.filter.Filter;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataTypeContainer;
-import lib.data.ParallelData;
 import lib.data.DataTypeContainer.AbstractBuilder;
 import lib.data.assembler.ConditionContainer;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.record.RecordWrapperProcessor;
 import lib.io.codec.JACUSA2codec;
 import lib.util.Util;
-import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 
 // FIXME test, and finish ResultFeature.
@@ -134,7 +131,7 @@ extends AbstractFilterFactory {
 	}
 	
 	@Override
-	protected AbstractFilter createFilter(
+	protected Filter createFilter(
 			CoordinateController coordinateController,
 			ConditionContainer conditionContainer) {
 		return new ExcludeSiteFilter(getC(), fileName, codec);
@@ -182,35 +179,6 @@ extends AbstractFilterFactory {
 		sb.append(Util.EMPTY_FIELD);	
 	}
 	
-	/**
-	 * TODO add comments. 
-	 */
-	private class ExcludeSiteFilter 
-	extends AbstractFilter {
-
-		private final ContainedCoordinate containedCoordinate; 
-		
-		public ExcludeSiteFilter(
-				final char c, 
-				final String fileName, 
-				final AbstractFeatureCodec<? extends Feature, LineIterator> codec) {
-			super(c);
-			containedCoordinate = new DefaultContainedCoordinate(fileName, codec);
-		}
-
-		@Override
-		public boolean filter(final ParallelData parallelData) {
-			final Coordinate coordinate = parallelData.getCoordinate();
-			return containedCoordinate.isContained(coordinate);
-		}
-
-		@Override
-		public int getOverhang() { 
-			return 0; 
-		}
-
-	}
-
 	private enum FileType {
 		AUTO(
 				"auto", 

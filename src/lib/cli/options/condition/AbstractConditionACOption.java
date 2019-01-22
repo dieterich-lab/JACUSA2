@@ -18,11 +18,13 @@ extends AbstractACOption {
 		this.conditionParameters = conditionParameters;
 	}
 	
-	public AbstractConditionACOption(final String opt, final String longOpt, final int conditionIndex, final ConditionParameter conditionParameter) {
-		super(opt != null ? opt + (conditionIndex + 1) : null,
-				longOpt != null ? longOpt + (conditionIndex + 1) : null);
+	public AbstractConditionACOption(
+			final String opt, final String longOpt, 
+			final ConditionParameter conditionParameter) {
+		super(opt != null ? opt + (conditionParameter.getConditionIndex() + 1) : null,
+				longOpt != null ? longOpt + (conditionParameter.getConditionIndex() + 1) : null);
 
-		this.conditionIndex = conditionIndex;
+		this.conditionIndex = conditionParameter.getConditionIndex();
 		conditionParameters = new ArrayList<ConditionParameter>(1);
 		conditionParameters.add(conditionParameter);
 	}

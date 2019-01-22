@@ -259,7 +259,7 @@ implements HasConditionParameter, HasReadSubstitution {
 	}
 	
 	/**
-	 * TOOD add comments
+	 * TODO add comments
 	 */
 	public void splitFiltered(boolean split) {
 		this.splitFiltered = split;

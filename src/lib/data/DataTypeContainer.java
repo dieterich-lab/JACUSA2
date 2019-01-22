@@ -25,6 +25,7 @@ import lib.data.has.HasReferenceBase;
 import lib.data.has.LibraryType;
 import lib.util.Base;
 import lib.util.Data;
+import lib.util.Parser;
 import lib.util.coordinate.Coordinate;
 
 public interface DataTypeContainer 
@@ -86,7 +87,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		
 		@Override
 		public AbstractBuilder createBuilder(Coordinate coordinate, LibraryType libraryType) {
-			final AbstractBuilder builder = new DefaultDataContainer.Builder(coordinate, libraryType);
+			final AbstractBuilder builder = new DefaultDataTypeContainer.Builder(coordinate, libraryType);
 			for (final DataType<?> dataType : dataTypes) {
 				builder.with(dataType);
 			}
@@ -104,7 +105,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		}
 		
 		public AbstractBuilder createBuilder(Coordinate coordinate, LibraryType libraryType) {
-			final AbstractBuilder builder = new DefaultDataContainer.Builder(coordinate, libraryType);
+			final AbstractBuilder builder = new DefaultDataTypeContainer.Builder(coordinate, libraryType);
 			addRequired(builder);
 			if (parameter != null && parameter.getFilterConfig().hasFiters()) {
 				addFilters(builder);
@@ -123,7 +124,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			add(builder, dataType);
 			final BaseSubstitutionCount bsc = builder.get(dataType);
 			for (final BaseSubstitution baseSub : parameter.getReadSubstitutions()) {
-				bsc.set(baseSub, JACUSA.bccFactory.create());
+				bsc.set(baseSub, JACUSA.BCC_FACTORY.create());
 			}
 		}
 		
@@ -218,6 +219,14 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			}
 			map.put(dataType, dataType.getEnclosingClass().cast(data));
 			return this;
+		}
+		
+		public <T extends Data<T>> AbstractBuilder with(
+				final String s, final Parser<T> parser, 
+				final DataType<T> dataType) {
+			
+			final T data = parser.parse(s);
+			return with(dataType, data);
 		}
 
 		protected Coordinate getCoordinate() {

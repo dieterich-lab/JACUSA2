@@ -1,10 +1,18 @@
 package test.utlis;
 
+import java.util.List;
+
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-public abstract class CLIUtils {
+import lib.cli.options.AbstractACOption;
 
+public final class CLIUtils {
+
+	private CLIUtils() {
+		throw new AssertionError();
+	}
+	
 	public static Option getOptionSafe(final Options options, final String opt) {
 		final Option option = options.getOption(opt);
 		if (option == null) {
@@ -48,6 +56,20 @@ public abstract class CLIUtils {
 	// FIXME give nice name
 	public static String pr(final String longOpt, final String value) {
 		return " --" + longOpt + "=" + value;
+	}
+
+	public static Options getOptions(final AbstractACOption acOption) {
+		final Options options = new Options();
+		options.addOption(acOption.getOption(false));
+		return options;
+	}
+	
+	public static Options getOptions(final List<AbstractACOption> acOptions) {
+		final Options options = new Options();
+		for (final AbstractACOption acOption : acOptions) {
+			options.addOption(acOption.getOption(false));
+		}
+		return options;
 	}
 	
 }

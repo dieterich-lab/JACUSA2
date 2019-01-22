@@ -16,9 +16,9 @@ public abstract class AbstractLibraryTypeOption
 extends AbstractConditionACOption {
 
 	// short opt
-	private static final String OPT = "P";
+	public static final String OPT = "P";
 	// long opt
-	private static final String LONG_OPT = "library-type";
+	public static final String LONG_OPT = "library-type";
 
 	private final GeneralParameter generalParameter;
 	
@@ -29,10 +29,11 @@ extends AbstractConditionACOption {
 		this.generalParameter = generalParameter;
 	}
 
-	public AbstractLibraryTypeOption(final int conditionIndex, final ConditionParameter conditionParameter, 
+	public AbstractLibraryTypeOption(
+			final ConditionParameter conditionParameter, 
 			final GeneralParameter generalParameter) {
 
-		super(OPT, LONG_OPT, conditionIndex, conditionParameter);
+		super(OPT, LONG_OPT, conditionParameter);
 		this.generalParameter = generalParameter;
 	}
 
@@ -42,19 +43,15 @@ extends AbstractConditionACOption {
 	 * @return the library type that corresponds to String s or null 
 	 */
 	public LibraryType parse(String s) {
+		if (s == null) {
+			return null;
+		}
 		// auto upper case
 		s = s.toUpperCase();
 		// be kind to typos 
 		s = s.replace("-", "_");
 		
-		// find corresponding library type
-		for (final LibraryType l : LibraryType.values()) {
-			if (l.toString().equals(s)) {
-				return l;
-			}
-		}
-
-		return null;
+		return LibraryType.valueOf(s);
 	}
 
 	/**

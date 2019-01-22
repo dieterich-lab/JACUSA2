@@ -9,7 +9,7 @@ import jacusa.cli.parameters.CallParameter;
 import lib.cli.options.AbstractACOption;
 import lib.cli.parameter.GeneralParameter;
 
-public abstract class AbstractACOptionTest<T> {
+abstract class AbstractACOptionTest<T> {
 
 	public static final String PATH = "src/test/lib/cli/options/";
 	public static final int CONDITION_SIZE = 2;
@@ -40,7 +40,7 @@ public abstract class AbstractACOptionTest<T> {
 		assertEquals(expected, actual);
 	}
 	
-	public GeneralParameter getParameter() {
+	protected GeneralParameter getParameter() {
 		return parameter;
 	}
 

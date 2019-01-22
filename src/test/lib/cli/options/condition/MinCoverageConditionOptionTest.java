@@ -85,8 +85,8 @@ class MinCoverageConditionOptionTest extends AbstractConditionACOptionTest<Integ
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(int conditionIndex, ConditionParameter conditionParameter) {
-		return new MinCoverageConditionOption(conditionIndex, conditionParameter);
+	protected AbstractConditionACOption createACOption(ConditionParameter conditionParameter) {
+		return new MinCoverageConditionOption(conditionParameter);
 	}
 	
 	

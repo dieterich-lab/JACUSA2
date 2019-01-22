@@ -11,8 +11,8 @@ public class FilterNMsamTagOption extends AbstractFilterSamTagConditionOption {
 	
 	public static final String TAG = "NM";
 	
-	public FilterNMsamTagOption(final int conditionIndex, final ConditionParameter conditionParameter) {
-		super(conditionIndex, conditionParameter, TAG);
+	public FilterNMsamTagOption(final ConditionParameter conditionParameter) {
+		super(conditionParameter, TAG);
 	}
 
 	public FilterNMsamTagOption(final List<ConditionParameter> conditionParameters) {

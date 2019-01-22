@@ -6,6 +6,8 @@ import jacusa.method.pileup.PileupMethod;
 import jacusa.method.rtarrest.RTarrestMethod;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.BaseCallCountFactory;
@@ -15,7 +17,7 @@ import lib.data.count.basecallquality.BaseCallQualityCountFactory;
 import lib.data.count.basecallquality.MapBaseCallQualityCount;
 import lib.util.AbstractTool;
 
-/*
+/**
  * JACUSA2 TODO add text
  * Copyright (C) 2018  Michael Piechotta
  * <p>
@@ -37,14 +39,14 @@ import lib.util.AbstractTool;
  */
 public class JACUSA extends AbstractTool {
 
-	public static final BaseCallCountFactory<? extends BaseCallCount> bccFactory = 
+	public static final BaseCallCountFactory<? extends BaseCallCount> BCC_FACTORY = 
 			new DefaultBaseCallCount.Factory();
-	public static final BaseCallQualityCountFactory<? extends BaseCallQualityCount> bcqcFactory = 
+	public static final BaseCallQualityCountFactory<? extends BaseCallQualityCount> BCQC_FACTORY = 
 			new MapBaseCallQualityCount.Factory();
 		
 	public JACUSA(final String args[]) {
 		super(
-				"JACUSA", VersionInfo.get(), 
+				"JACUSA", VersionInfo.format(), 
 				args,
 				Arrays.asList(
 						// calling variants
@@ -73,10 +75,11 @@ public class JACUSA extends AbstractTool {
 		sb.append("Results can be found in: ");
 		sb.append(getCLI().getMethodFactory().getParameter().getResultFilename());
 		sb.append('\n');
-		
-		final String lineSep = "--------------------------------------------------------------------------------";
 
-		// # of result and total elapsd time
+		final String lineSep = Collections.nCopies(80, '-').stream()
+			.map(e->e.toString()).collect(Collectors.joining());
+
+		// # of results and total elapsed time
 		sb.append(lineSep);
 		sb.append('\n');
 		sb.append("Analyzed sites:\t");

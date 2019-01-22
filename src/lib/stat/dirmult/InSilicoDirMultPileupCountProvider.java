@@ -27,7 +27,7 @@ extends AbstractDirMultPileupCountProvider {
 		final int INSILICO_CONDITION_INDEX = 1;
 		
 		final Base refBase = parallelData.getCombinedPooledData().getReferenceBase();
-		final BaseCallCount bcc = JACUSA.bccFactory.create();
+		final BaseCallCount bcc = JACUSA.BCC_FACTORY.create();
 		bcc.merge(parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount());
 		final Set<Base> alleles = bcc.getAlleles();
 		alleles.remove(refBase);

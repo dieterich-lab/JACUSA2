@@ -1,4 +1,4 @@
-package test.jacusa.filter.cache;
+package test.jacusa.filter.homopolymer;
 
 import static org.junit.jupiter.api.Assertions.*;
 

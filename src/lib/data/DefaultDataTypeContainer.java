@@ -18,7 +18,7 @@ import lib.util.Data;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil;
 
-public class DefaultDataContainer implements DataTypeContainer {
+public class DefaultDataTypeContainer implements DataTypeContainer {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -28,14 +28,14 @@ public class DefaultDataContainer implements DataTypeContainer {
 	
 	private final Map<DataType<?>, Object> map;
 	
-	private DefaultDataContainer(final AbstractBuilder builder) {
-		coordinate = builder.getCoordinate();
-		libraryType = builder.getLibraryType();
-		referenceBase = builder.getReferenceBase();
-		map = builder.getMap();
+	private DefaultDataTypeContainer(final AbstractBuilder builder) {
+		coordinate 		= builder.getCoordinate();
+		libraryType 	= builder.getLibraryType();
+		referenceBase 	= builder.getReferenceBase();
+		map 			= builder.getMap();
 	}
 	
-	private DefaultDataContainer(DefaultDataContainer template) {
+	private DefaultDataTypeContainer(DefaultDataTypeContainer template) {
 		coordinate 		= new Coordinate(template.getCoordinate());
 		libraryType 	= template.getLibraryType();
 		referenceBase 	= template.getReferenceBase();
@@ -115,19 +115,19 @@ public class DefaultDataContainer implements DataTypeContainer {
 	
 	@Override
 	public DataTypeContainer copy() {
-		return new DefaultDataContainer(this);
+		return new DefaultDataTypeContainer(this);
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof DefaultDataContainer)) {
+		if (obj == null || ! (obj instanceof DefaultDataTypeContainer)) {
 			return false;
 		}
 		if (obj == this) {
 			return true;
 		}
 
-		final DefaultDataContainer container = (DefaultDataContainer)obj;
+		final DefaultDataTypeContainer container = (DefaultDataTypeContainer)obj;
 		return
 				referenceBase.equals(container.referenceBase) &&
 				libraryType.equals(container.libraryType) &&
@@ -147,9 +147,9 @@ public class DefaultDataContainer implements DataTypeContainer {
 	
 	@Override
 	public void merge(final DataTypeContainer provider) {
-		referenceBase = Base.mergeBase(referenceBase, provider.getReferenceBase());
-		libraryType = LibraryType.mergeLibraryType(libraryType, provider.getLibraryType());
-		coordinate = CoordinateUtil.mergeCoordinate(coordinate, provider.getCoordinate());
+		referenceBase 	= Base.mergeBase(referenceBase, provider.getReferenceBase());
+		libraryType 	= LibraryType.mergeLibraryType(libraryType, provider.getLibraryType());
+		coordinate 		= CoordinateUtil.mergeCoordinate(coordinate, provider.getCoordinate());
 		
 		for (final DataType<?> dataType : provider.getDataTypes()) {
 			if (! contains(dataType)) {
@@ -215,8 +215,8 @@ public class DefaultDataContainer implements DataTypeContainer {
 		}
 		
 		@Override
-		public DefaultDataContainer build() {
-			return new DefaultDataContainer(this);
+		public DefaultDataTypeContainer build() {
+			return new DefaultDataTypeContainer(this);
 		}
 
 	}

@@ -14,16 +14,16 @@ import org.apache.commons.cli.Option;
  * @author Michael Piechotta
  * @param <T>
  */
-public class OneConditionLibraryTypeOption
+public class nConditionLibraryTypeOption
 extends AbstractLibraryTypeOption {
 
-	public OneConditionLibraryTypeOption(final int conditionIndex, final ConditionParameter conditionParameter, 
+	public nConditionLibraryTypeOption(final ConditionParameter conditionParameter, 
 			final GeneralParameter generalParameter) {
 
-		super(conditionIndex, conditionParameter, generalParameter);
+		super(conditionParameter, generalParameter);
 	}
 
-	public OneConditionLibraryTypeOption(final List<ConditionParameter> conditionParameters, 
+	public nConditionLibraryTypeOption(final List<ConditionParameter> conditionParameters, 
 			final GeneralParameter generalParameter) {
 
 		super(conditionParameters, generalParameter);
@@ -48,21 +48,19 @@ extends AbstractLibraryTypeOption {
 
 	@Override
 	public void process(CommandLine line) throws Exception {
-		if (line.hasOption(getOpt())) {
-			// get option as string
-	    	final String s = line.getOptionValue(getOpt());
-	    	// try to get library for s
-	    	final LibraryType libraryType = parse(s);
-	    	// error if no library type
-	    	if (libraryType == null) {
-	    		throw new IllegalArgumentException("Unknown Library Type for -" + getOpt() + " " + s);
-	    	}
+		// get option as string
+    	final String s = line.getOptionValue(getOpt());
+    	// try to get library for s
+    	final LibraryType libraryType = parse(s);
+    	// error if no library type
+    	if (libraryType == null || libraryType == LibraryType.MIXED) {
+    		throw new IllegalArgumentException("Unknown Library Type for -" + getOpt() + " " + s);
+    	}
 
-	    	// set chosen library type
-	    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
-	    		conditionParameter.setLibraryType(libraryType);
-	    	}
-	    }
+    	// set chosen library type
+    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
+    		conditionParameter.setLibraryType(libraryType);
+    	}
 	}
 
 }

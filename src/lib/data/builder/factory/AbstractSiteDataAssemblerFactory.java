@@ -70,7 +70,7 @@ extends AbstractDataAssemblerFactory {
 			}
 
 			final BaseCallInterpreter bci = 
-					BaseCallInterpreter.create(conditionParameter.getLibraryType());
+					new BaseCallInterpreter.Builder(conditionParameter.getLibraryType()).build();
 			
 			final Map<BaseSubstitution, IncrementAdder> sub2adder = new HashMap<>(baseSubs.size());
 			for (final BaseSubstitution baseSub : baseSubs) {

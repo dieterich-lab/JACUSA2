@@ -14,7 +14,7 @@ import lib.util.Util;
 public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Serializable {
 	
 	// empty 
-	static final BaseCallCount EMPTY = new UnmodifiableBaseCallCount(JACUSA.bccFactory.create());
+	static final BaseCallCount EMPTY = new UnmodifiableBaseCallCount(JACUSA.BCC_FACTORY.create());
 	
 	int getBaseCall(Base base);
 	Set<Base> getAlleles();
@@ -35,7 +35,7 @@ public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Seriali
 	}
 	
 	static BaseCallCount newInstance() {
-		return JACUSA.bccFactory.create();
+		return JACUSA.BCC_FACTORY.create();
 	}
 	
 	BaseCallCount subtract(Base base, BaseCallCount baseCallCount);
