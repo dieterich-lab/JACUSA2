@@ -11,7 +11,7 @@ import lib.util.coordinate.Coordinate;
 public class SimpleReferenceProvider implements ReferenceProvider {
 
 	private final CoordinateController coordinateController;
-	private final Map<String, String> chr2refSeq;
+	private final Map<String, String> contig2refSeq;
 	
 	private Coordinate window;
 	
@@ -19,7 +19,7 @@ public class SimpleReferenceProvider implements ReferenceProvider {
 			final Map<String, String> chr2refSeq) {
 
 		this.coordinateController = coordinateController;
-		this.chr2refSeq = chr2refSeq;
+		this.contig2refSeq = chr2refSeq;
 	}
 
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {}
@@ -36,7 +36,7 @@ public class SimpleReferenceProvider implements ReferenceProvider {
 		final String contig = coordinate.getContig();
 		final int position = coordinate.getPosition();
 		
-		final char base = chr2refSeq.get(contig).charAt(position);
+		final char base = contig2refSeq.get(contig).charAt(position);
 		return Base.valueOf(base);
 	}
 	

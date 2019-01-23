@@ -26,8 +26,9 @@ public interface CoordinateAdvancer {
 			coordinate = new Coordinate();
 		}
 		
-		public void withCoordinate(final Coordinate coordinate) {
+		public Builder withCoordinate(final Coordinate coordinate) {
 			this.coordinate = coordinate;
+			return this;
 		}
 		
 		@Override

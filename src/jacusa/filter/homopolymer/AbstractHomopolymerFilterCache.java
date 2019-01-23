@@ -33,9 +33,9 @@ implements RecordWrapperProcessor {
 
 		super(sharedCache);
 
-		this.c				= c;
-		this.filteredDataFetcher = filteredDataFetcher;
-		this.minLength 		= minLength;
+		this.c						= c;
+		this.filteredDataFetcher 	= filteredDataFetcher;
+		this.minLength 				= minLength;
 	}
 	
 	/**

@@ -15,7 +15,7 @@ import lib.data.cache.readsubstitution.ReadSubstitutionCache;
 import lib.data.has.LibraryType;
 import lib.util.coordinate.Coordinate;
 import test.jacusa.filter.homopolymer.RecordWrapperProcessorTest;
-import test.jacusa.filter.homopolymer.RecordWrapperSimulator;
+import test.jacusa.filter.homopolymer.SharedCacheBuilder;
 import test.utlis.SAMRecordIterator;
 
 public class BaseSubstitutionPerReadCacheTest implements RecordWrapperProcessorTest {
@@ -23,7 +23,7 @@ public class BaseSubstitutionPerReadCacheTest implements RecordWrapperProcessorT
 	// private final TreeSet<BaseSubstitution> baseSubstitutions;
 	// private final MinBASQBaseCallValidator validator;
 	
-	private final RecordWrapperSimulator simulator;
+	private final SharedCacheBuilder simulator;
 	
 	private CacheContainer testInstanceContainer;
 	
@@ -31,7 +31,7 @@ public class BaseSubstitutionPerReadCacheTest implements RecordWrapperProcessorT
 		// baseSubstitutions = new TreeSet<>(Arrays.asList(BaseSubstitution.CtoT));
 		// validator = new MinBASQBaseCallValidator((byte)30);
 		
-		simulator 			= new RecordWrapperSimulator();
+		simulator 			= new SharedCacheBuilder();
 	}
 
 	@BeforeEach
