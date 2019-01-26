@@ -42,7 +42,7 @@ implements RecordWrapperProcessor {
 	 * Helper method. Marks a region within a window defined by firstReferencePosition and length. 
 	 * 
 	 * @param firstReferencePosition	start position of region
-	 * @param length					length of region (non-inclusive)
+	 * @param length					length of region
 	 */
 	protected void markRegion(final int firstReferencePosition, final int length) {
 		final WindowPositionGuard windowPositionGuard = 
@@ -62,7 +62,7 @@ implements RecordWrapperProcessor {
 	public void populate(DataTypeContainer container, Coordinate coordinate) {
 		final int windowPosition = getCoordinateController()
 				.getCoordinateTranslator()
-				.convert2windowPosition(coordinate);
+				.coordinate2windowPosition(coordinate);
 		if (getIsHomopolymer() != null) {
 			filteredDataFetcher.fetch(container).add(
 					c, 

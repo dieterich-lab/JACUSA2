@@ -13,7 +13,7 @@ import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
-
+import lib.util.coordinate.OneCoordinate;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
 import htsjdk.samtools.SAMSequenceRecord;
@@ -38,7 +38,9 @@ public class SAMCoordinateProviderAdvanced implements CoordinateProvider {
 	/**
 	 * 
 	 */
-	public SAMCoordinateProviderAdvanced(final boolean isStranded, final List<SAMSequenceRecord> sequenceRecords, 
+	public SAMCoordinateProviderAdvanced(
+			final boolean isStranded, 
+			final List<SAMSequenceRecord> sequenceRecords, 
 			final GeneralParameter parameter) {
 
 		this.isStranded = isStranded;
@@ -128,8 +130,11 @@ public class SAMCoordinateProviderAdvanced implements CoordinateProvider {
 		}
 		if (found > 0) {
 			final int end = Math.min(newPosition + reservedWindowSize, sequenceRecord.getSequenceLength());
-			final Coordinate coordinate = new Coordinate(sequenceRecord.getSequenceName(), newPosition, end, isStranded ? STRAND.FORWARD : STRAND.UNKNOWN);
-			return coordinate;
+			// TODO zero or one 
+			return new OneCoordinate(
+					sequenceRecord.getSequenceName(), 
+					newPosition, end, 
+					isStranded ? STRAND.FORWARD : STRAND.UNKNOWN);
 		}
 
 		// advance to next sequenceRecord

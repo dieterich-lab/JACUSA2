@@ -14,7 +14,7 @@ import lib.data.count.basecall.DefaultBaseCallCount;
 import lib.data.has.LibraryType;
 import lib.data.result.Result;
 import lib.util.Parser;
-import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.OneCoordinate;
 
 /**
  * Tests @see jacusa.filter.HomozygousFilter#filter(lib.data.ParallelData)
@@ -36,7 +36,7 @@ class HomozygousFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(0),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(1, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.build().getParellelData(),
@@ -44,7 +44,7 @@ class HomozygousFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(1),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(1, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.build().getParellelData(),
@@ -53,7 +53,7 @@ class HomozygousFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(0),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(1, 0, "1,1,0,0", bccParser, bccFetcher.getDataType())
 						.build().getParellelData(),
@@ -61,7 +61,7 @@ class HomozygousFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(1),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,1,0,0", bccParser, bccFetcher.getDataType())
 						.with(1, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.build().getParellelData(),
@@ -70,7 +70,7 @@ class HomozygousFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(0),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,1,0,0", bccParser, bccFetcher.getDataType())
 						.with(1, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.build().getParellelData(),
@@ -78,7 +78,7 @@ class HomozygousFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(1),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(1, 0, "1,1,0,0", bccParser, bccFetcher.getDataType())
 						.build().getParellelData(),
@@ -87,7 +87,7 @@ class HomozygousFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(0),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(0, 1, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(1, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
@@ -97,7 +97,7 @@ class HomozygousFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(1),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(0, 1, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(1, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
@@ -108,7 +108,7 @@ class HomozygousFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(0),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(0, 1, "1,1,0,0", bccParser, bccFetcher.getDataType())
 						.with(1, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
@@ -118,7 +118,7 @@ class HomozygousFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(1),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(0, 1, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(1, 0, "1,1,0,0", bccParser, bccFetcher.getDataType())

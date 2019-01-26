@@ -6,8 +6,8 @@ import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 
 import htsjdk.samtools.SAMRecord;
+import test.jacusa.filter.homopolymer.SAMRecordBuilder;
 
-// JUNIT: A
 public class SAMRecordArgumentConverter extends SimpleArgumentConverter {
 	
 	@Override
@@ -19,21 +19,11 @@ public class SAMRecordArgumentConverter extends SimpleArgumentConverter {
 		final int referenceStart 		= Integer.parseInt(s[1]); 
 		final String cigarStr 			= s[2];
 		final boolean negativeStrand 	= Boolean.parseBoolean(s[3]);
-
-		final String MD					= s[4]; // TODO make * possible
-		String[] seq 					= new String[0];
-		if (! s[5].equals("*")) {
-			seq 						= s[5].split(",");
-		} 
+		final String MD					= s[4];
 		
-		final String referenceSequence  = ReferenceSequence.getReferenceSequence(contig);
-		
-		return new CigarSAMRecordBuilder(
-				contig, referenceStart, negativeStrand,
-				referenceSequence,
-				ReferenceSequence.HEADER)
-				.withCigarStr(cigarStr, MD, seq)
-				.build();
+		return new SAMRecordBuilder()
+				.withSERead(contig, referenceStart, negativeStrand, cigarStr, MD)
+				.getRecords().iterator().next();
 	}
 
 }

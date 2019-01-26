@@ -18,6 +18,7 @@ import htsjdk.tribble.readers.LineReader;
 import htsjdk.tribble.readers.SynchronousLineReader;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil;
+import lib.util.coordinate.OneCoordinate;
 
 
 /**
@@ -100,7 +101,8 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 				final String newContig 	= f.getContig();
 				final int newStart		= f.getStart();
 				final int newEnd		= f.getEnd();
-				final Coordinate newCoordinate = new Coordinate(newContig, newStart, newEnd);
+				// feature returns one-based coords
+				final Coordinate newCoordinate = new OneCoordinate(newContig, newStart, newEnd);
 
 				if (currentCoordinate == null) { // init
 					currentCoordinate = newCoordinate;
@@ -113,7 +115,8 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 					currentCoordinate = newCoordinate;
 				} else if (currentCoordinate.getEnd() == newCoordinate.getStart()){ // extend existing
 					// extend current coordinates
-					currentCoordinate.setEnd(newCoordinate.getStart());
+					CoordinateUtil.mergeCoordinate(currentCoordinate, newCoordinate);
+					// TODO old code currentCoordinate.setEnd(newCoordinate.getStart());
 				} else { // same contig but not adjacent coords 
 					coordinates.add(currentCoordinate);
 					currentCoordinate = newCoordinate;

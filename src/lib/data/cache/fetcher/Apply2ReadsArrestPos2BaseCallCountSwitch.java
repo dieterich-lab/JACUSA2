@@ -28,11 +28,11 @@ public class Apply2ReadsArrestPos2BaseCallCountSwitch implements Fetcher<BaseCal
 			return container.getBaseCallCount();
 		}
 		
-		final int position = container.getCoordinate().getPosition();
+		final int onePosition = container.getCoordinate().get1Position();
 		if (apply2reads.contains(RT_READS.ARREST)) {
-			return ap2bcc.getArrestBaseCallCount(position);
+			return ap2bcc.getArrestBaseCallCount(onePosition);
 		} else if (apply2reads.contains(RT_READS.THROUGH)) {
-			return ap2bcc.getThroughBaseCallCount(position);	
+			return ap2bcc.getThroughBaseCallCount(onePosition);	
 		} else {
 			throw new IllegalStateException("apply2reads cannot be empty!");
 		}

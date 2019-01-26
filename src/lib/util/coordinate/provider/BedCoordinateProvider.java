@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
+import lib.util.coordinate.OneCoordinate;
 
 /**
  * @author mpiechotta
@@ -80,12 +81,11 @@ public class BedCoordinateProvider implements CoordinateProvider {
 				return null;
 			}
 
-			Coordinate coordinate = new Coordinate();
 			String[] cols = line.split("\t");
-
-			coordinate.setContig(cols[0]);
-			coordinate.setStart(Integer.parseInt(cols[1]) + 1);
-			coordinate.setEnd(Integer.parseInt(cols[2]));
+			final Coordinate coordinate = 
+					new OneCoordinate(
+							cols[0], 
+							Integer.parseInt(cols[1]) + 1, Integer.parseInt(cols[2]));
 
 			// try to get strand
 			if (cols.length >= 6) {

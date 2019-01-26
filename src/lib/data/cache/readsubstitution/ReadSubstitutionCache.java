@@ -67,7 +67,7 @@ implements RecordWrapperProcessor {
 				final int refPos = refStart + i;
 				final int winPos = getCoordinateController()
 						.getCoordinateTranslator()
-						.convert2windowPosition(refPos);
+						.reference2windowPosition(refPos);
 				if (winPos >= 0) {
 					final int readPos = block.getReadStart() - 1 + i;
 					final Base base = Base.valueOf(record.getReadBases()[readPos]);

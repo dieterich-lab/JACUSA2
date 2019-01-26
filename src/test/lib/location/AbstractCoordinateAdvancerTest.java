@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,11 +19,10 @@ import test.lib.util.coordinate.CoordinateArgumentConverter;
 @TestInstance(Lifecycle.PER_CLASS)
 abstract class AbstractCoordinateAdvancerTest {
 	
-	private Coordinate.Parser parser;
+	private final Coordinate.AbstractParser parser;
 	
-	@BeforeAll
-	void beforeAll() {
-		parser = new Coordinate.Parser();
+	public AbstractCoordinateAdvancerTest(final Coordinate.AbstractParser parser) {
+		this.parser = parser;
 	}
 	
 	@ParameterizedTest(name = "Advance {0} {1}x and expect {2}")
@@ -46,7 +44,7 @@ abstract class AbstractCoordinateAdvancerTest {
 	 * Helper: to set separating string correctly, e.g.: 1:10-12:+
 	 */
 	protected String c(final String contig, final int start, final int end, final STRAND strand) {
-		final Coordinate coordinate = new Coordinate(contig, start, end, strand);
+		final Coordinate coordinate = parser.create(contig, start, end, strand);
 		return parser.wrap(coordinate);
 	}
 	

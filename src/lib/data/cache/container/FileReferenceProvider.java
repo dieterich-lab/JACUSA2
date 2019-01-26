@@ -27,8 +27,8 @@ public class FileReferenceProvider implements ReferenceProvider {
 	public FileReferenceProvider(final IndexedFastaSequenceFile indexedFastaSequenceFile, 
 			final CoordinateController coordinateController) {
 
-		this.indexedFastaSequenceFile = indexedFastaSequenceFile;
-		this.coordinateController = coordinateController;
+		this.indexedFastaSequenceFile 	= indexedFastaSequenceFile;
+		this.coordinateController 		= coordinateController;
 
 		referenceBaseBuffer = new HashMap<Integer, Byte>(READ_AHEAD);
 	}
@@ -43,11 +43,12 @@ public class FileReferenceProvider implements ReferenceProvider {
 		if (window == null || window != coordinateController.getActive()) {
 			window = coordinateController.getActive();
 
-			final String contig = coordinateController.getActive().getContig();
-			final int start = coordinateController.getActive().getStart();
-			final int end = coordinateController.getActive().getEnd();
-			final ReferenceSequence refSeq = indexedFastaSequenceFile.getSubsequenceAt(contig, start, end);
-			reference = refSeq.getBases();
+			final String contig 			= coordinateController.getActive().getContig();
+			final int start 				= coordinateController.getActive().getStart();
+			final int end 					= coordinateController.getActive().getEnd();
+			final ReferenceSequence refSeq 	= indexedFastaSequenceFile
+					.getSubsequenceAt(contig, start, end);
+			reference 						= refSeq.getBases();
 			
 			if (referenceBaseBuffer.size() > 3 * READ_AHEAD) {
 				referenceBaseBuffer = new HashMap<Integer, Byte>(READ_AHEAD);
@@ -59,25 +60,25 @@ public class FileReferenceProvider implements ReferenceProvider {
 	
 	@Override
 	public Base getReferenceBase(final Coordinate coordinate) {
-		final int windowPosition = coordinateController.getCoordinateTranslator().convert2windowPosition(coordinate);
+		final int windowPosition = coordinateController.getCoordinateTranslator().coordinate2windowPosition(coordinate);
 		if (windowPosition >= 0 ) {
 			return getReferenceBase(windowPosition);
 		}
 
-		final int position = coordinate.getPosition();
-		if (! referenceBaseBuffer.containsKey(position)) {
+		final int onePosition = coordinate.get1Position();
+		if (! referenceBaseBuffer.containsKey(onePosition)) {
 			final String contig = coordinate.getContig();
 
 			final int length 	= indexedFastaSequenceFile.getSequenceDictionary().getSequence(contig).getSequenceLength();
-			final int end 		= Math.min(length, position + READ_AHEAD - 1);
+			final int end 		= Math.min(length, onePosition + READ_AHEAD - 1);
 
-			final ReferenceSequence refSeq = indexedFastaSequenceFile.getSubsequenceAt(contig, position, end);
-			for (int i = 0; end - position >= 0; i++) {
-				referenceBaseBuffer.put(position + i, refSeq.getBases()[i]);
+			final ReferenceSequence refSeq = indexedFastaSequenceFile.getSubsequenceAt(contig, onePosition, end);
+			for (int i = 0; end - onePosition >= 0; i++) {
+				referenceBaseBuffer.put(onePosition + i, refSeq.getBases()[i]);
 			}			
 		}
 
-		return Base.valueOf(referenceBaseBuffer.get(position));
+		return Base.valueOf(referenceBaseBuffer.get(onePosition));
 
 	}
 	

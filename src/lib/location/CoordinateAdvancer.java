@@ -2,6 +2,7 @@ package lib.location;
 
 import lib.data.has.LibraryType;
 import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.OneCoordinate;
 
 // has JUNIT tests
 public interface CoordinateAdvancer {
@@ -23,11 +24,15 @@ public interface CoordinateAdvancer {
 		public Builder(final LibraryType libraryType) {
 			this.libraryType = libraryType;
 			
-			coordinate = new Coordinate();
+			// stores reference specific coordinates
+			coordinate = new OneCoordinate();
 		}
 		
 		public Builder withCoordinate(final Coordinate coordinate) {
-			this.coordinate = coordinate;
+			this.coordinate = coordinate.copy();
+			// coordinate (start-end) may be 1-1 or 1-10 -> copy does not suffice
+			// this.coordinate should be 1-1 there we assign
+			this.coordinate.setPosition(coordinate);
 			return this;
 		}
 		

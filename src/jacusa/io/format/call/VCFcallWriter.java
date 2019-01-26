@@ -136,7 +136,7 @@ implements ResultWriter  {
 		
 		final VariantContextBuilder vcb = new VariantContextBuilder(
 						source, 
-						coordinate.getContig(), coordinate.getPosition(), coordinate.getPosition(),
+						coordinate.getContig(), coordinate.get1Start(), coordinate.get1End(),
 						alleles);
 		
 		if (! result.isFiltered()) {

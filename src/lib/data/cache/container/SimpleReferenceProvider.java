@@ -5,6 +5,7 @@ import java.util.Map;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateUtil.STRAND;
+import lib.util.coordinate.OneCoordinate;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
@@ -18,8 +19,8 @@ public class SimpleReferenceProvider implements ReferenceProvider {
 	public SimpleReferenceProvider(final CoordinateController coordinateController,
 			final Map<String, String> chr2refSeq) {
 
-		this.coordinateController = coordinateController;
-		this.contig2refSeq = chr2refSeq;
+		this.coordinateController 	= coordinateController;
+		this.contig2refSeq 			= chr2refSeq;
 	}
 
 	public void addRecordWrapper(final SAMRecordWrapper recordWrapper) {}
@@ -33,18 +34,23 @@ public class SimpleReferenceProvider implements ReferenceProvider {
 	
 	@Override
 	public Base getReferenceBase(final Coordinate coordinate) {
-		final String contig = coordinate.getContig();
-		final int position = coordinate.getPosition();
+		final String contig 	= coordinate.getContig();
+		final int zeroPosition 	= coordinate.get0Position();
+		final String refSeq		= contig2refSeq.get(contig);
 		
-		final char base = contig2refSeq.get(contig).charAt(position);
+		if (zeroPosition >= refSeq.length()) {
+			return Base.N;
+		}
+		
+		final char base = refSeq.charAt(zeroPosition);
 		return Base.valueOf(base);
 	}
 	
 	@Override
 	public Base getReferenceBase(final int windowPosition) {
 		final String contig = window.getContig();
-		final int position = coordinateController.getCoordinateTranslator().convert2referencePosition(windowPosition);
-		return getReferenceBase(new Coordinate(contig, position, STRAND.UNKNOWN));
+		final int position 	= coordinateController.getCoordinateTranslator().window2referencePosition(windowPosition);
+		return getReferenceBase(new OneCoordinate(contig, position, STRAND.UNKNOWN));
 	}
 
 	@Override

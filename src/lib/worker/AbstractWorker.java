@@ -101,7 +101,8 @@ implements Iterator<ParallelData> {
 	@Override
 	public boolean hasNext() {
 		while (coordinateController.checkCoordinateAdvancerWithinActiveWindow()) {
-			final Coordinate coordinate = new Coordinate(coordinateController.getCoordinateAdvancer().getCurrentCoordinate());
+			final Coordinate coordinate = coordinateController.getCoordinateAdvancer()
+					.getCurrentCoordinate().copy();
 			
 			final ParallelData.Builder parallelDataBuilder = new ParallelData.Builder(
 							conditionContainer.getConditionSize(), conditionContainer.getReplicateSizes());

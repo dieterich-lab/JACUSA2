@@ -15,7 +15,7 @@ import lib.data.count.basecall.BaseCallCount;
 import lib.data.has.LibraryType;
 import lib.data.validator.paralleldata.ExtendedVariantSiteValidator;
 import lib.util.Base;
-import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.OneCoordinate;
 
 class ExtendedVariantSiteValidatorTest extends AbstractParallelDataValidatorTest {
 
@@ -39,7 +39,7 @@ class ExtendedVariantSiteValidatorTest extends AbstractParallelDataValidatorTest
 				
 				Arguments.of(
 						new ParallelData.Builder(1, Arrays.asList(1))
-							.withReplicate(0, 0, builderFactory.createBuilder(new Coordinate(), LibraryType.UNSTRANDED)
+							.withReplicate(0, 0, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
@@ -50,13 +50,13 @@ class ExtendedVariantSiteValidatorTest extends AbstractParallelDataValidatorTest
 				
 				Arguments.of(
 						new ParallelData.Builder(2, Arrays.asList(1, 1))
-							.withReplicate(0, 0, builderFactory.createBuilder(new Coordinate(), LibraryType.UNSTRANDED)
+							.withReplicate(0, 0, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.A)
 									.with(	
 											bccFetcher.getDataType(),
 											JACUSA.BCC_FACTORY.create().set(Base.T, 10))
 									.build())
-							.withReplicate(1, 0, builderFactory.createBuilder(new Coordinate(), LibraryType.UNSTRANDED)
+							.withReplicate(1, 0, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
@@ -67,34 +67,34 @@ class ExtendedVariantSiteValidatorTest extends AbstractParallelDataValidatorTest
 				
 				Arguments.of(
 						new ParallelData.Builder(3, Arrays.asList(2, 2, 2))
-							.withReplicate(0, 0, builderFactory.createBuilder(new Coordinate(), LibraryType.UNSTRANDED)
+							.withReplicate(0, 0, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
 											JACUSA.BCC_FACTORY.create().set(Base.A, 10))
 									.build())
-							.withReplicate(0, 1, builderFactory.createBuilder(new Coordinate(), LibraryType.UNSTRANDED)
-									.withReferenceBase(Base.N)
-									.with(	
-											bccFetcher.getDataType(),
-											JACUSA.BCC_FACTORY.create().set(Base.A, 10))
-
-									.build())
-							.withReplicate(1, 0, builderFactory.createBuilder(new Coordinate(), LibraryType.UNSTRANDED)
+							.withReplicate(0, 1, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
 											JACUSA.BCC_FACTORY.create().set(Base.A, 10))
 
 									.build())
-							.withReplicate(1, 1, builderFactory.createBuilder(new Coordinate(), LibraryType.UNSTRANDED)
+							.withReplicate(1, 0, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
 											JACUSA.BCC_FACTORY.create().set(Base.A, 10))
 
 									.build())
-							.withReplicate(2, 0, builderFactory.createBuilder(new Coordinate(), LibraryType.UNSTRANDED)
+							.withReplicate(1, 1, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
+									.withReferenceBase(Base.N)
+									.with(	
+											bccFetcher.getDataType(),
+											JACUSA.BCC_FACTORY.create().set(Base.A, 10))
+
+									.build())
+							.withReplicate(2, 0, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
@@ -102,7 +102,7 @@ class ExtendedVariantSiteValidatorTest extends AbstractParallelDataValidatorTest
 												.set(Base.A, 10)
 												.set(Base.T, 10))
 									.build())
-							.withReplicate(2, 1, builderFactory.createBuilder(new Coordinate(), LibraryType.UNSTRANDED)
+							.withReplicate(2, 1, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),

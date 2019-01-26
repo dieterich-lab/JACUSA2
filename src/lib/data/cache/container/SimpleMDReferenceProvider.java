@@ -82,26 +82,26 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 	
 	@Override
 	public Base getReferenceBase(final Coordinate coordinate) {
-		final int windowPosition = coordinateController.getCoordinateTranslator().convert2windowPosition(coordinate);
+		final int windowPosition = coordinateController.getCoordinateTranslator().coordinate2windowPosition(coordinate);
 		if (windowPosition >= 0) {
 			return getReferenceBase(windowPosition);
 		}
 		
-		final int position = coordinate.getPosition();
-		if (! referenceBaseBuffer.containsKey(position)) {
+		final int onePosition = coordinate.get1Position();
+		if (! referenceBaseBuffer.containsKey(onePosition)) {
 			for (SamReader samReader : samReaders) {
 				addReference(referenceBaseBuffer, samReader, coordinate, READ_AHEAD);
-				if (referenceBaseBuffer.containsKey(position) && 
-						SequenceUtil.isValidBase(referenceBaseBuffer.get(position))) {
-					return Base.valueOf(referenceBaseBuffer.get(position));
+				if (referenceBaseBuffer.containsKey(onePosition) && 
+						SequenceUtil.isValidBase(referenceBaseBuffer.get(onePosition))) {
+					return Base.valueOf(referenceBaseBuffer.get(onePosition));
 				}
 			}
 
 			// FALLBACK - just return N
-			referenceBaseBuffer.put(position, Base.N.getByte());
+			referenceBaseBuffer.put(onePosition, Base.N.getByte());
 		}
 
-		return Base.valueOf(referenceBaseBuffer.get(position));
+		return Base.valueOf(referenceBaseBuffer.get(onePosition));
 	}
 
 	private void addReference(final Map<Integer, Byte> ref2base, 
@@ -110,7 +110,7 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 			final int readAhead) {
 
 		final String contig = coordinate.getContig();
-		final int start 	= coordinate.getPosition();
+		final int start 	= coordinate.get1Position();
 		final int end 	   	= start + readAhead - 1;
 		final SAMRecordIterator it = samReader.query(contig, start, end, false);
 		while (it.hasNext()) {
@@ -118,7 +118,7 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 			final SAMRecordWrapper recordWrapper = new SAMRecordWrapper(record);
 			
 			for (final AlignmentBlock block : record.getAlignmentBlocks()) {
-				final int refStart= block.getReferenceStart();
+				final int refStart = block.getReferenceStart();
 				for (int i = 0; i < block.getLength(); ++i) {
 					final int refPos = refStart + 0;
 					if (refPos > end) {

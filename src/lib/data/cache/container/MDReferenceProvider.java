@@ -49,7 +49,7 @@ public class MDReferenceProvider implements ReferenceProvider {
 	
 	@Override
 	public Base getReferenceBase(final Coordinate coordinate) {
-		final int windowPosition = coordinateController.getCoordinateTranslator().convert2windowPosition(coordinate);
+		final int windowPosition = coordinateController.getCoordinateTranslator().coordinate2windowPosition(coordinate);
 		return getReferenceBase(windowPosition);
 	}
 	

@@ -25,6 +25,8 @@ import htsjdk.samtools.util.SequenceUtil;
 import lib.data.builder.recordwrapper.CombinedPosition;
 import lib.util.Base;
 import test.utlis.MDtraverse;
+import test.utlis.ReferenceSequence;
+import test.utlis.SAMRecordBuilderStrategy;
 
 public class SAMRecordBuilder {
 
@@ -37,6 +39,10 @@ public class SAMRecordBuilder {
 	private final Collection<SAMRecord> records;
 
 	private Random random;
+
+	public SAMRecordBuilder() {
+		this(true, SAMFileHeader.SortOrder.coordinate, ReferenceSequence.get());
+	}
 	
 	public SAMRecordBuilder(
 			final boolean sortForMe, final SAMFileHeader.SortOrder sortOrder,
@@ -96,12 +102,9 @@ public class SAMRecordBuilder {
 							readBases[readPosition] = (byte)base;
 						}
 					} else {
-						final char refBase 		= refSeq.charAt(referencePosition);
+						final char refBase 		= refSeq.charAt(referencePosition - 1);
 						readBases[readPosition] = (byte)refBase;
 					}
-					
-					
-					
 				}
 				break;
 			
@@ -139,21 +142,25 @@ public class SAMRecordBuilder {
 		return readBases;
 	}
 	
-	public SAMRecordBuilder with(
-			final String contig, final int refPos, final boolean negativeStrand,
+	public SAMRecordBuilder withStrategy(final String contig, final SAMRecordBuilderStrategy strategy) {
+		strategy.useStrategy(contig, this);
+		return this;
+	}
+	
+	public SAMRecordBuilder withSERead(
+			final String contig, final int refStart, final boolean negativeStrand,
 			final String cigarStr, final String MD) {
 		
 		final SAMRecord record = new SAMRecord(header);
-        record.setReadName(getNextReadName(contig, refPos, negativeStrand));
+        record.setReadName(getNextReadName(contig, refStart, negativeStrand));
 
         final int seqId = getSequenceIndex(contig);
         record.setReferenceIndex(seqId);
-        record.setAlignmentStart(refPos);
+        record.setAlignmentStart(refStart);
         record.setReadNegativeStrandFlag(negativeStrand);
 
-        // TODO check that cigar and read bases match
         record.setCigarString(cigarStr);
-       	record.setReadBases(getReadBases(contig, refPos, negativeStrand, cigarStr, MD));
+       	record.setReadBases(getReadBases(contig, refStart, negativeStrand, cigarStr, MD));
 
        	record.setMappingQuality(255);
         record.setAttribute(SAMTag.RG.name(), READ_GROUP_ID);
@@ -207,5 +214,9 @@ public class SAMRecordBuilder {
         header.setSortOrder(sortOrder);
         return header;
 	}	
+
+	public Map<String, String> getContig2refSeq() {
+		return contig2refSeq;
+	}
 	
 }

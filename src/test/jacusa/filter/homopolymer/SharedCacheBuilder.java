@@ -8,9 +8,9 @@ import lib.data.cache.container.SharedCache;
 import lib.data.cache.container.SimpleReferenceProvider;
 import lib.data.has.LibraryType;
 import lib.location.CoordinateAdvancer;
-import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateUtil.STRAND;
+import lib.util.coordinate.OneCoordinate;
 
 public class SharedCacheBuilder implements lib.util.Builder<SharedCache> {
 	
@@ -38,11 +38,14 @@ public class SharedCacheBuilder implements lib.util.Builder<SharedCache> {
 		final CoordinateController coordinateController = 
 				new CoordinateController(activeWindowSize, coordinateAdvancer);
 		final String refSeq = contig2refSeq.get(contig);
+		
 		if (LibraryType.isStranded(libraryType)) {
-			coordinateController.updateReserved(new Coordinate(contig, 1, refSeq.length(), STRAND.FORWARD));
+			coordinateController.updateReserved(
+					new OneCoordinate(contig, 1, refSeq.length() - 1, STRAND.FORWARD));
 		} else {
-			coordinateController.updateReserved(new Coordinate(contig, 1, refSeq.length()));
+			coordinateController.updateReserved(new OneCoordinate(contig, 1, refSeq.length() - 1));
 		}
+		
 		final ReferenceProvider referenceProvider = 
 				new SimpleReferenceProvider(coordinateController, contig2refSeq);
 

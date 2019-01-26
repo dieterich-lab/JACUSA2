@@ -16,8 +16,8 @@ public class ThroughBaseCallCountExtractor implements Fetcher<BaseCallCount> {
 
 	@Override
 	public BaseCallCount fetch(DataTypeContainer container) {
-		final int position = container.getCoordinate().getPosition();
-		return pos2bccFetcher.fetch(container).getThroughBaseCallCount(position);
+		final int onePosition = container.getCoordinate().get1Position();
+		return pos2bccFetcher.fetch(container).getThroughBaseCallCount(onePosition);
 	}
 	
 }

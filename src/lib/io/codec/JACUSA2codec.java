@@ -26,6 +26,7 @@ import lib.util.AbstractTool;
 import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
+import lib.util.coordinate.ZeroCoordinate;
 
 public class JACUSA2codec extends AsciiFeatureCodec<ResultFeature> {
 
@@ -94,7 +95,8 @@ public class JACUSA2codec extends AsciiFeatureCodec<ResultFeature> {
 	}
 
 	public Coordinate decodeCoordinate(final String[] token) {
-		return new Coordinate(
+		// JACUSA stores zero-based coordinates
+		return new ZeroCoordinate(
 				token[CONTIG_INDEX], 
 				Integer.parseInt(token[START_INDEX]), 
 				Integer.parseInt(token[END_INDEX]), 

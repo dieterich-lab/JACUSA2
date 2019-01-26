@@ -12,9 +12,9 @@ public class Homopolymer {
 	private int length;
 	
 	private Homopolymer(final Base base, final int position, final int length) {
-		this.base = base;
-		this.position = position;
-		this.length = length;
+		this.base 		= base;
+		this.position 	= position;
+		this.length 	= length;
 	}
 
 	public int getLength() {
@@ -51,13 +51,14 @@ public class Homopolymer {
 		private final Collection<Homopolymer> homopolymers;	
 		
 		public HomopolymerBuilder(final int position, final int minLength) {
+			// position -1 because we simulate that we have observed Base.N 
 			this(Base.N, position - 1, minLength);
 		}
 		
 		public HomopolymerBuilder(final Base base, final int position, final int minLength) {
-			current = new Homopolymer(base, position, 1);
+			current 		= new Homopolymer(base, position, 1);
 			this.minLength 	= minLength;
-			homopolymers = new ArrayList<>();
+			homopolymers 	= new ArrayList<>();
 		}
 		
 		public HomopolymerBuilder add(Base base) {

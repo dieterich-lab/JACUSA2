@@ -23,9 +23,9 @@ implements ParallelDataValidator {
 		final ArrestPosition2baseCallCount ap2bcc = 
 				arrestPos2BccFetcher.fetch(combinedPooledContainer);
 		
-		final int position = parallelData.getCoordinate().getPosition();
-		final BaseCallCount arrestBcc = ap2bcc.getArrestBaseCallCount(position);
-		final BaseCallCount throughBcc = ap2bcc.getThroughBaseCallCount(position);
+		final int onePosition = parallelData.getCoordinate().get1Position();
+		final BaseCallCount arrestBcc = ap2bcc.getArrestBaseCallCount(onePosition);
+		final BaseCallCount throughBcc = ap2bcc.getThroughBaseCallCount(onePosition);
 
 		return arrestBcc.getCoverage() > 0 && throughBcc.getCoverage() > 0;
 	}

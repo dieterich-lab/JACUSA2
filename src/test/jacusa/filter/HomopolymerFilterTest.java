@@ -16,7 +16,7 @@ import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.has.LibraryType;
 import lib.data.result.Result;
 import lib.util.Parser;
-import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.OneCoordinate;
 
 /**
  * Tests @see jacusa.filter.HomopolymerFilter#filter(lib.data.ParallelData)
@@ -45,7 +45,7 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(false), parser, fetcher.getDataType())
 						.with(1, 0, h(false), parser, fetcher.getDataType())
 						.build().getParellelData(),
@@ -54,7 +54,7 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(true), parser, fetcher.getDataType())
 						.with(1, 0, h(false), parser, fetcher.getDataType())
 						.build().getParellelData(),
@@ -63,7 +63,7 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(false), parser, fetcher.getDataType())
 						.with(1, 0, h(true), parser, fetcher.getDataType())
 						.build().getParellelData(),
@@ -72,7 +72,7 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(true), parser, fetcher.getDataType())
 						.with(1, 0, h(true), parser, fetcher.getDataType())
 						.build().getParellelData(),
@@ -81,7 +81,7 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(false), parser, fetcher.getDataType())
 						.with(0, 1, h(false), parser, fetcher.getDataType())
 						.with(1, 0, h(false), parser, fetcher.getDataType())
@@ -92,7 +92,7 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(true), parser, fetcher.getDataType())
 						.with(0, 1, h(false), parser, fetcher.getDataType())
 						.with(1, 0, h(false), parser, fetcher.getDataType())
@@ -103,7 +103,7 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(false), parser, fetcher.getDataType())
 						.with(0, 1, h(false), parser, fetcher.getDataType())
 						.with(1, 0, h(true), parser, fetcher.getDataType())

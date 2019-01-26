@@ -8,6 +8,7 @@ import java.util.List;
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
+import lib.util.coordinate.OneCoordinate;
 
 public class WindowedCoordinateProviderStatic implements CoordinateProvider {
 
@@ -58,7 +59,7 @@ public class WindowedCoordinateProviderStatic implements CoordinateProvider {
 	private List<Coordinate> makeWindows(final boolean stranded, final Coordinate coordinate, final int windowSize) {
 		if (windowSize == ThreadWindowSizeOption.NO_WINDOWS) {
 			final List<Coordinate> coordinates = new ArrayList<Coordinate>(1);
-			final Coordinate tmp = new Coordinate(coordinate);
+			final Coordinate tmp = coordinate.copy();
 			if (stranded && coordinate.getStrand() == STRAND.UNKNOWN) {
 				tmp.setStrand(STRAND.FORWARD);
 			}
@@ -73,7 +74,8 @@ public class WindowedCoordinateProviderStatic implements CoordinateProvider {
 		int start = coordinate.getStart();
 		while (start < coordinate.getEnd()) {
 			final int end = Math.min(start + windowSize - 1, coordinate.getEnd());
-			final Coordinate tmp = new Coordinate(coordinate.getContig(), start, end, coordinate.getStrand());
+			final Coordinate tmp = new OneCoordinate(
+					coordinate.getContig(), start, end, coordinate.getStrand());
 			if (stranded && coordinate.getStrand() == STRAND.UNKNOWN) {
 				tmp.setStrand(STRAND.FORWARD);
 			}

@@ -1,27 +1,93 @@
 package test.jacusa.filter.cache.processrecord;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.params.provider.Arguments;
 
-import jacusa.filter.cache.processrecord.AbstractProcessRecord;
+import htsjdk.samtools.util.StringUtil;
+import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
+import lib.data.cache.region.RegionDataCache;
+import lib.data.has.LibraryType;
+import test.utlis.ReferenceSequence;
 
+/**
+ * Tests @see jacusa.filter.cache.processrecord.ProcessSkippedOperator
+ */
 class ProcessSkippedOperatorTest extends AbstractProcessRecordTest {
-
+	
 	@Override
-	protected AbstractProcessRecord createTestInstance(int distance, InspectRegioDataCache regionDataCache) {
-		return new ProcessSkippedOperator(distance, regionDataCache);
+	List<ProcessRecord> createTestInstances(int distance, RegionDataCache regionDataCache) {
+		return Arrays.asList(new ProcessSkippedOperator(distance, regionDataCache));
 	}
 
+	// ACGAACGT
+	// 12345678
+	// --**^^**
 	@Override
-	public Stream<Arguments> testProcessRecord() {
-		return Stream.of(
-				// TODO add more test
-				createArguments(5, addFrag(10, true, "20M"), Arrays.asList(), Arrays.asList()),
-				createArguments(2, addFrag(10, true, "10M100N10M"), Arrays.asList(9, 11), Arrays.asList(2, 2)) );
+	Stream<Arguments> testAddRecordWrapper() {
+		final List<LibraryType> libraryTypes = 
+				Arrays.asList(LibraryType.UNSTRANDED, LibraryType.RF_FIRSTSTRAND, LibraryType.FR_SECONDSTRAND);
+		
+		final List<Arguments> arguments = new ArrayList<Arguments>();
+		
+		final int refSeqLength 	= ReferenceSequence.getReferenceSequence(CONTIG).length();
+		final int refPosStart 	= 3;
+		
+		for (final int activeWindowSize : IntStream.range(8, 9).toArray()) {
+			for (final LibraryType libraryType : libraryTypes) { 
+				for (final boolean negativeStrand : Arrays.asList(true, false)) {
+					
+					/*
+					arguments.add(createArguments(
+							activeWindowSize, libraryType, 
+							2, 
+							refPosStart, negativeStrand, "4M", "", 
+							tokern(activeWindowSize, StringUtil.repeatCharNTimes('*', refSeqLength)), 
+							new StringBuilder().append("Auto, ")) );
+					 */
 
+					arguments.add(createArguments(
+							activeWindowSize, libraryType, 
+							2, 
+							refPosStart, negativeStrand, "2M2N2M", "", 
+							tokern(activeWindowSize, "**GA**GT"), 
+							new StringBuilder().append("Auto, ")) );
+					
+					/*
+					arguments.add(createArguments(
+							activeWindowSize, libraryType, 
+							3, 
+							refPosStart, negativeStrand, "2M2N2M", "", 
+							tokern(activeWindowSize, "***A**G*"), 
+							new StringBuilder().append("Auto, ")) );
+							*/
+				}
+			}
+		}
+		
+		return arguments.stream();
+	}
+	
+	List<String> tokern(final int activeWindowSize, final String expected) {
+		final List<String> token = new ArrayList<String>();
+		
+		String tmp = expected;
+		while (tmp.length() > 0) {
+			final int length = Math.min(activeWindowSize, tmp.length());
+			token.add(tmp.substring(0, length));
+			if (length == tmp.length()) {
+				tmp = "";
+			} else {
+				tmp = tmp.substring(length);
+			}
+		}
+		
+		return token;
 	}
 	
 }

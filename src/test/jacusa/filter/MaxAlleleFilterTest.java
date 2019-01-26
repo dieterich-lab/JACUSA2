@@ -1,6 +1,5 @@
 package test.jacusa.filter;
 
-
 import java.util.Collections;
 import java.util.stream.Stream;
 
@@ -15,7 +14,7 @@ import lib.data.count.basecall.DefaultBaseCallCount;
 import lib.data.has.LibraryType;
 import lib.data.result.Result;
 import lib.util.Parser;
-import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.OneCoordinate;
 
 /**
  * Tests @see jacusa.filter.MaxAlleleFilter#filter(lib.data.ParallelData)
@@ -37,7 +36,7 @@ class MaxAlleleFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(1),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(1, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(1, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(0, 1, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(0, 2, "1,0,0,0", bccParser, bccFetcher.getDataType())
@@ -48,7 +47,7 @@ class MaxAlleleFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(1),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(1, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(1, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(0, 1, "0,1,0,0", bccParser, bccFetcher.getDataType())
 						.with(0, 2, "0,0,1,0", bccParser, bccFetcher.getDataType())
@@ -59,7 +58,7 @@ class MaxAlleleFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(1),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(4, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(4, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(1, 0, "0,1,0,0", bccParser, bccFetcher.getDataType())
 						.with(2, 0, "0,0,1,0", bccParser, bccFetcher.getDataType())
@@ -70,7 +69,7 @@ class MaxAlleleFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(4),
 						new Result.ResultBuilder(
-								new Coordinate(), Collections.nCopies(4, LibraryType.UNSTRANDED))
+								new OneCoordinate(), Collections.nCopies(4, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
 						.with(1, 0, "0,1,0,0", bccParser, bccFetcher.getDataType())
 						.with(2, 0, "0,0,1,0", bccParser, bccFetcher.getDataType())

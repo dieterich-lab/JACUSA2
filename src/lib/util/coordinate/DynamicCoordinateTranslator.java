@@ -42,21 +42,11 @@ public class DynamicCoordinateTranslator implements CoordinateTranslator {
 	}
 	
 	@Override
-	public int convert2windowPosition(final int refPos) {
+	public int reference2windowPosition(final int refPos) {
 		if (refPos > getRefPosEnd() || refPos < getRefPosStart()){
 			return -1;
 		}
 		return refPos - getRefPosStart();
-	}
-	
-	@Override
-	public int convert2windowPosition(final Coordinate coordinate) {
-		return convert2windowPosition(coordinate.getPosition());
-	}
-	
-	@Override
-	public int convert2referencePosition(final int winPos) {
-		return getRefPosStart() + winPos;
 	}
 	
 }

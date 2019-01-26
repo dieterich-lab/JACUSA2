@@ -106,8 +106,15 @@ public final class CoordinateUtil {
 		if (! c1.equals(c2)) {
 			throw new IllegalStateException("data1 and data2 have different coordinates: " + c1.toString() + " != " + c2.toString());
 		}
-
-		return c1;
+		if (! c1.overlaps(c2)) {
+			return null;
+		}
+		
+		return new OneCoordinate(
+				c1.getContig(),
+				Math.min(c1.get1Start(), c2.get1Start()),
+				Math.max(c1.get1End(), c2.get1End()),
+				c1.getStrand() == c2.getStrand() ? c1.getStrand() : STRAND.UNKNOWN);
 	}
 	
 }

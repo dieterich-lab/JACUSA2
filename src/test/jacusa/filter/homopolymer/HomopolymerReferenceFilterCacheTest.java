@@ -1,19 +1,25 @@
 package test.jacusa.filter.homopolymer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import jacusa.filter.homopolymer.AbstractHomopolymerFilterCache;
+import jacusa.filter.homopolymer.HomopolymerReferenceFilterCache;
+import lib.data.cache.container.SharedCache;
 
-import org.junit.jupiter.api.Test;
 
-class HomopolymerReferenceFilterCacheTest {
+/**
+ * Test @see test.jacusa.filter.homopolymer.HomopolymerReferenceFilterCache
+ */
+class HomopolymerReferenceFilterCacheTest 
+extends AbstractHomopolymerFilterCacheTest {
 
-	@Test
-	void testAddRecordWrapper() {
-		fail("Not yet implemented"); // TODO
+	AbstractHomopolymerFilterCache createTestInstance(
+			final int minHomopolymerLength,
+			final SharedCache sharedCache) {
+		
+		return new HomopolymerReferenceFilterCache(
+				getC(), 
+				getFetcher(), 
+				minHomopolymerLength, 
+				sharedCache );
 	}
-
-	@Test
-	void testAddData() {
-		fail("Not yet implemented"); // TODO
-	}
-
+	
 }

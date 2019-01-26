@@ -11,9 +11,9 @@ public class DefaultCoordinateTranslator implements CoordinateTranslator {
 	}
 	
 	public DefaultCoordinateTranslator(final int refPosStart, final int length) {
-		this.refPosStart = refPosStart;
-		refPosEnd = refPosStart + length - 1;
-		this.length = length;
+		this.refPosStart 	= refPosStart;
+		refPosEnd 			= refPosStart + length - 1;
+		this.length 		= length;
 	}
 
 	@Override
@@ -56,21 +56,11 @@ public class DefaultCoordinateTranslator implements CoordinateTranslator {
 	}
 	
 	@Override
-	public int convert2windowPosition(final int refPos) {
+	public int reference2windowPosition(final int refPos) {
 		if (refPos > refPosEnd || refPos < refPosStart){
 			return -1;
 		}
 		return refPos - refPosStart;
-	}
-	
-	@Override
-	public int convert2windowPosition(final Coordinate coordinate) {
-		return convert2windowPosition(coordinate.getPosition());
-	}
-	
-	@Override
-	public int convert2referencePosition(final int winPos) {
-		return refPosStart + winPos;
 	}
 	
 }

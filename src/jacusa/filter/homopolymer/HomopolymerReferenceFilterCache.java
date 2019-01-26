@@ -8,20 +8,18 @@ import jacusa.filter.homopolymer.Homopolymer.HomopolymerBuilder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.filter.BooleanWrapper;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.OneCoordinate;
 
 /**
  * TODO add comments
  * 
  * @param 
  */
-public class HomopolymerReferenceFilterCache
-extends AbstractHomopolymerFilterCache
-implements RecordWrapperProcessor {
+public class HomopolymerReferenceFilterCache extends AbstractHomopolymerFilterCache {
 
 	// require only one instance for multiple threads
 	private static final Map<Coordinate, IsHomopolyerHelper> COORD2IS_HOMOPOLYMER;
@@ -59,9 +57,10 @@ implements RecordWrapperProcessor {
 
 	@Override
 	public void preProcess() {
-		final Coordinate active = new Coordinate(getCoordinateController().getActive());
+		final Coordinate active = getCoordinateController().getActive().copy();
 		if (! COORD2IS_HOMOPOLYMER.containsKey(active)) {
-			final IsHomopolyerHelper helper = new IsHomopolyerHelper(new boolean[getCoordinateController().getActiveWindowSize()]);
+			final IsHomopolyerHelper helper = new IsHomopolyerHelper(
+					new boolean[getCoordinateController().getActiveWindowSize()]);
 			COORD2IS_HOMOPOLYMER.put(active, helper);
 		}
 		isHomopolymer = COORD2IS_HOMOPOLYMER.get(active).get();
@@ -84,7 +83,7 @@ implements RecordWrapperProcessor {
 	
 	@Override
 	public void postProcess() {
-		final Coordinate active = new Coordinate(getCoordinateController().getActive());
+		final Coordinate active = getCoordinateController().getActive().copy();
 		if (COORD2IS_HOMOPOLYMER.containsKey(active)) {
 			COORD2IS_HOMOPOLYMER.remove(active);
 		}
@@ -106,8 +105,11 @@ implements RecordWrapperProcessor {
 		// and build homopolymers
 		final Collection<Homopolymer> homopolymers = builder.build();
 		// mark regions as homopolymers
+		final int refPositionStart = getCoordinateController().getActive().get1Start();
 		for (final Homopolymer homopolymer : homopolymers) {
-			markRegion(homopolymer.getPosition(), homopolymer.getLength());
+			markRegion(
+					refPositionStart + homopolymer.getPosition(), 
+					homopolymer.getLength());
 		}
 	}
 
@@ -120,9 +122,9 @@ implements RecordWrapperProcessor {
 	private void cacheReferencePosition(final int referenceStart, final int referenceEnd, final int minLength) {
 		final HomopolymerBuilder builder = new HomopolymerBuilder(referenceStart, minLength);
 		// needed to distinguish from window coordinates
-		final Coordinate coordinate = new Coordinate(getCoordinateController().getActive().getContig(), referenceStart, referenceStart);
+		final Coordinate coordinate = new OneCoordinate(getCoordinateController().getActive().getContig(), referenceStart, referenceStart);
 		for (int refPos = referenceStart; refPos <= referenceEnd; refPos++) {
-			coordinate.setPosition(refPos);
+			coordinate.set1Position(refPos);
 			final Base base = getReferenceProvider().getReferenceBase(coordinate);
 			builder.add(base);
 		}

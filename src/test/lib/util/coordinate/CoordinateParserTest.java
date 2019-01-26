@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,20 +16,21 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
+import lib.util.coordinate.OneCoordinate;
 
-// JUNIT: A 
-public class CoordinateParserTest {
+@TestInstance(Lifecycle.PER_CLASS)
+class CoordinateParserTest {
 
-	private Coordinate.Parser testInstance;
+	private Coordinate.AbstractParser testInstance;
 	
 	@BeforeEach
 	void beforeEach() {
-		testInstance = new Coordinate.Parser();
+		testInstance = new OneCoordinate.Parser();
 	}
 	
 	@ParameterizedTest(name = "Parse String {0} and expect Coord.: {1}")
 	@MethodSource("testParse")
-	public void testParse(String s, Coordinate expected) {
+	void testParse(String s, Coordinate expected) {
 		final Coordinate actual = testInstance.parse(s);
 		assertEquals(expected, actual);
 	}
@@ -37,17 +40,17 @@ public class CoordinateParserTest {
 	 * 1.	String(contig:start-end:strand)
 	 * 2.	Coordinate
 	 */
-	static Stream<Arguments> testParse() {
+	Stream<Arguments> testParse() {
 		return Stream.of(
 				Arguments.of(
 						"1:1-2:.", 
-						new Coordinate("1", 1, 2, STRAND.UNKNOWN)),
+						testInstance.create("1", 1, 2, STRAND.UNKNOWN)),
 				Arguments.of(
 						"test:100-200:+", 
-						new Coordinate("test", 100, 200, STRAND.FORWARD)),
+						testInstance.create("test", 100, 200, STRAND.FORWARD)),
 				Arguments.of(
 						"test:100-200:-", 
-						new Coordinate("test", 100, 200, STRAND.REVERSE)) );
+						testInstance.create("test", 100, 200, STRAND.REVERSE)) );
 	}
 
 	@ParameterizedTest(name = "Wrap Coord. {0} and expect String: {1}")
@@ -63,16 +66,16 @@ public class CoordinateParserTest {
 	 * 2.	String(contig:start-end:strand)
 	 * 
 	 */
-	static Stream<Arguments> testWrap() {
+	Stream<Arguments> testWrap() {
 		return Stream.of(
 				Arguments.of(
-						new Coordinate("1", 1, 2, STRAND.UNKNOWN), 
+						testInstance.create("1", 1, 2, STRAND.UNKNOWN), 
 						"1:1-2:."),
 				Arguments.of(
-						new Coordinate("test", 100, 200, STRAND.FORWARD), 
+						testInstance.create("test", 100, 200, STRAND.FORWARD), 
 						"test:100-200:+"),
 				Arguments.of(
-						new Coordinate("test", 100, 200, STRAND.REVERSE), 
+						testInstance.create("test", 100, 200, STRAND.REVERSE), 
 						"test:100-200:-") );
 	}
 	

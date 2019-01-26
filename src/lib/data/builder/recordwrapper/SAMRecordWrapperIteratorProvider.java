@@ -5,7 +5,7 @@ import java.io.IOException;
 import lib.cli.parameter.ConditionParameter;
 import lib.util.AbstractTool;
 import lib.util.coordinate.Coordinate;
-
+import lib.util.coordinate.OneCoordinate;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SAMRecordIterator;
 
@@ -70,8 +70,10 @@ public class SAMRecordWrapperIteratorProvider {
 				.getSequenceLength();
 	
 		if (windowCoordinate.getEnd() > sequenceLength) {
-			Coordinate samHeader = new Coordinate(windowCoordinate.getContig(), 1, sequenceLength);
-			AbstractTool.getLogger().addWarning("Coordinates in BED file (" + windowCoordinate.toString() + 
+			Coordinate samHeader = 
+					new OneCoordinate(windowCoordinate.getContig(), 1, sequenceLength - 1);
+			AbstractTool.getLogger().addWarning(
+					"Coordinates in BED file (" + windowCoordinate.toString() + 
 					") exceed SAM sequence header (" + samHeader.toString()+ ").");
 		}
 	}

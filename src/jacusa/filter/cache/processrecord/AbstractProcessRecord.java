@@ -12,7 +12,8 @@ public abstract class AbstractProcessRecord implements ProcessRecord {
 	// ensures that each position is only counted once
 	private final RegionDataCache regionCache;
 	
-	public AbstractProcessRecord(final int distance, 
+	public AbstractProcessRecord(
+			final int distance, 
 			final RegionDataCache regionCache) {
 
 		this.distance = distance;

@@ -36,7 +36,7 @@ public class DefaultDataTypeContainer implements DataTypeContainer {
 	}
 	
 	private DefaultDataTypeContainer(DefaultDataTypeContainer template) {
-		coordinate 		= new Coordinate(template.getCoordinate());
+		coordinate 		= template.getCoordinate().copy();
 		libraryType 	= template.getLibraryType();
 		referenceBase 	= template.getReferenceBase();
 		map 			= new HashMap<>(template.getDataTypes().size());

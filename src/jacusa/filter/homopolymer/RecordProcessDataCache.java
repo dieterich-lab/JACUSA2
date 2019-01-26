@@ -6,6 +6,7 @@ import java.util.List;
 
 import lib.data.DataTypeContainer;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.cache.container.SharedCache;
 import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.RegionDataCache;
 import lib.util.coordinate.Coordinate;
@@ -15,8 +16,7 @@ import lib.util.coordinate.Coordinate;
  * 
  * @param 
  */
-public class RecordProcessDataCache 
-implements RecordWrapperProcessor {
+public class RecordProcessDataCache implements RecordWrapperProcessor {
 
 	private final RegionDataCache regionDataCache;
 	private final List<ProcessRecord> processRecord;
@@ -56,4 +56,9 @@ implements RecordWrapperProcessor {
 		regionDataCache.populate(container, coordinate);
 	}
 
+	@Override
+	public SharedCache getShareCache() {
+		return regionDataCache.getShareCache();
+	}
+	
 }

@@ -51,14 +51,14 @@ public class CoordinateController {
 	}
 	
 	public void updateReserved(final Coordinate reservedWindowCoordinate) {
-		active = null;
-		reserved = reservedWindowCoordinate;
-		provider = new WindowedCoordinateProviderStatic(reservedWindowCoordinate.getStrand() != STRAND.UNKNOWN, 
+		active 		= null;
+		reserved 	= reservedWindowCoordinate;
+		provider 	= new WindowedCoordinateProviderStatic(
+				reservedWindowCoordinate.getStrand() != STRAND.UNKNOWN, 
 				reservedWindowCoordinate, activeWindowSize);
 
-		coordinateAdvancer.getCurrentCoordinate().setContig(reservedWindowCoordinate.getContig());
-		coordinateAdvancer.getCurrentCoordinate().setPosition(-1);
-		coordinateAdvancer.getCurrentCoordinate().setStrand(reservedWindowCoordinate.getStrand());
+		
+		coordinateAdvancer.getCurrentCoordinate().resetPosition(reservedWindowCoordinate);
 	}
 
 	public boolean hasNext() {
@@ -118,8 +118,11 @@ public class CoordinateController {
 	}
 	
 	public boolean checkCoordinateWithinActiveWindow(final Coordinate coordinate) {
-		final int position = coordinate.getPosition();
-		return position >= active.getStart() && position <= active.getEnd(); 		
+		return active.overlaps(coordinate);
+		
+		// old code
+		// final int position = coordinate.getPosition();
+		// return position >= active.getStart() && position <= active.getEnd(); 		
 	}
 	
 	public boolean checkCoordinateAdvancerWithinActiveWindow() {
@@ -140,7 +143,7 @@ public class CoordinateController {
 	}
 	
 	public Entry<Integer, STRAND> getStrandedWindowPosition(final Coordinate coordinate) {
-		final int windowPosition = coordinateTranslator.convert2windowPosition(coordinate);
+		final int windowPosition = coordinateTranslator.coordinate2windowPosition(coordinate);
 		return new SimpleEntry<Integer, STRAND>(windowPosition, coordinate.getStrand());
 	}
 

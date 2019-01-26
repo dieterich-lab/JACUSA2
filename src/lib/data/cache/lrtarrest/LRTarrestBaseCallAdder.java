@@ -44,8 +44,8 @@ implements IncrementAdder {
 	
 	@Override
 	public void populate(DataTypeContainer container, Coordinate coordinate) {
-		final int winPos = getCoordinateController().getCoordinateTranslator().convert2windowPosition(coordinate);
-		final int refPos = coordinate.getPosition();
+		final int winPos = getCoordinateController().getCoordinateTranslator().coordinate2windowPosition(coordinate);
+		final int refPos = coordinate.get1Position();
 		
 		final ArrestPosition2baseCallCount ap2bcc = ap2bccExtractor.fetch(container);
 		if (winPos2ap2bcc.get(winPos) != null) {

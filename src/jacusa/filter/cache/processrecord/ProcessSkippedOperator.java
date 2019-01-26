@@ -6,7 +6,7 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper.CigarElementWrapper;
 import lib.data.cache.region.RegionDataCache;
 
 /**
- * TODO add comments.
+ * Tested in @see test.jacusa.filter.cache.processrecord.ProcessSkippedOperatorTest
  */
 public class ProcessSkippedOperator extends AbstractProcessRecord {
 

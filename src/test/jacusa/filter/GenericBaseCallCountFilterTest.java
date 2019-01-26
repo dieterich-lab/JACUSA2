@@ -17,8 +17,8 @@ import lib.data.count.basecall.DefaultBaseCallCount;
 import lib.data.has.LibraryType;
 import lib.data.result.Result;
 import lib.util.Base;
-import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
+import lib.util.coordinate.OneCoordinate;
 
 /**
  * Tests @see jacusa.filter.GenericBaseCallCountFilter#filter(ParallelData)
@@ -57,7 +57,7 @@ class GenericBaseCallCountFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate(), 
+								new OneCoordinate(), 
 								Collections.nCopies(1, LibraryType.UNSTRANDED),
 								Base.A)
 						.with(0, 0, "10,10,0,0", parser, observedFetcher.getDataType())
@@ -68,7 +68,7 @@ class GenericBaseCallCountFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate(), 
+								new OneCoordinate(), 
 								Collections.nCopies(1, LibraryType.UNSTRANDED),
 								Base.A)
 						.with(0, 0, "10,10,0,0", parser, observedFetcher.getDataType())
@@ -79,7 +79,7 @@ class GenericBaseCallCountFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate("contig", 1, 2, STRAND.FORWARD), 
+								new OneCoordinate("contig", 1, 2, STRAND.FORWARD), 
 								Collections.nCopies(1, LibraryType.RF_FIRSTSTRAND),
 								Base.A)
 						.with(0, 0, "10,10,0,0", parser, observedFetcher.getDataType())
@@ -90,7 +90,7 @@ class GenericBaseCallCountFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate("contig", 1, 2, STRAND.FORWARD), 
+								new OneCoordinate("contig", 1, 2, STRAND.FORWARD), 
 								Collections.nCopies(1, LibraryType.FR_SECONDSTRAND),
 								Base.A)
 						.with(0, 0, "10,10,0,0", parser, observedFetcher.getDataType())
@@ -101,7 +101,7 @@ class GenericBaseCallCountFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate("contig", 1, 2, STRAND.FORWARD), 
+								new OneCoordinate("contig", 1, 2, STRAND.FORWARD), 
 								Collections.nCopies(1, LibraryType.RF_FIRSTSTRAND),
 								Base.C)
 						.with(0, 0, "10,10,0,0", parser, observedFetcher.getDataType())
@@ -112,7 +112,7 @@ class GenericBaseCallCountFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate("contig", 1, 2, STRAND.FORWARD), 
+								new OneCoordinate("contig", 1, 2, STRAND.FORWARD), 
 								Collections.nCopies(1, LibraryType.FR_SECONDSTRAND),
 								Base.C)
 						.with(0, 0, "10,10,0,0", parser, observedFetcher.getDataType())
@@ -123,7 +123,7 @@ class GenericBaseCallCountFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate(), 
+								new OneCoordinate(), 
 								Collections.nCopies(2, LibraryType.UNSTRANDED),
 								Base.C)
 						.with(0, 0, "10,10,0,0", parser, observedFetcher.getDataType())
@@ -136,7 +136,7 @@ class GenericBaseCallCountFilterTest extends AbstractFilterTest {
 				Arguments.of(
 						createTestInstance(),
 						new Result.ResultBuilder(
-								new Coordinate(), 
+								new OneCoordinate(), 
 								Collections.nCopies(2, LibraryType.UNSTRANDED),
 								Base.A)
 						.with(0, 0, "10,10,0,0", parser, observedFetcher.getDataType())

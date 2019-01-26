@@ -15,8 +15,8 @@ public class ArrestBaseCallCountExtractor implements Fetcher<BaseCallCount> {
 
 	@Override
 	public BaseCallCount fetch(DataTypeContainer container) {
-		final int position = container.getCoordinate().getPosition();
-		return fetcher.fetch(container).getArrestBaseCallCount(position);
+		final int onePosition = container.getCoordinate().get1Position();
+		return fetcher.fetch(container).getArrestBaseCallCount(onePosition);
 	}
 	
 }

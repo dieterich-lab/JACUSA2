@@ -42,7 +42,7 @@ implements IncrementAdder {
 			return;
 		}
 		
-		final int windowPosition = getCoordinateController().getCoordinateTranslator().convert2windowPosition(coordinate);
+		final int windowPosition = getCoordinateController().getCoordinateTranslator().coordinate2windowPosition(coordinate);
 		if (getCoverage(windowPosition) == 0) {
 			return;
 		}

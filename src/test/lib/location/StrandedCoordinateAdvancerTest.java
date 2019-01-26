@@ -8,9 +8,13 @@ import lib.location.CoordinateAdvancer;
 import lib.location.StrandedCoordinateAdvancer;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
+import lib.util.coordinate.ZeroCoordinate;
 
-// JUNIT: A
 class StrandedCoordinateAdvancerTest extends AbstractCoordinateAdvancerTest {
+
+	public StrandedCoordinateAdvancerTest() {
+		super(new ZeroCoordinate.Parser());
+	}
 
 	@Override
 	protected Stream<Arguments> testAdvance() {

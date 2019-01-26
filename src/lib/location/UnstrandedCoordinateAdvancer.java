@@ -17,13 +17,13 @@ public class UnstrandedCoordinateAdvancer implements CoordinateAdvancer {
 
 	@Override
 	public void advance() {
-		final int currentPosition = coordinate.getStart() + 1;
-		coordinate.setPosition(currentPosition);
+		final int onePosition = coordinate.get1Start() + 1;
+		coordinate.set1Position(onePosition);
 	}
 
 	@Override
 	public void adjustPosition(final Coordinate coordinate) {
-		this.coordinate.setPosition(coordinate.getPosition());
+		this.coordinate.setPosition(coordinate);
 		// TODO test
 		// this.coordinate.setStrand(coordinate.getStrand());
 	}

@@ -5,11 +5,11 @@ import lib.data.DataTypeContainer;
 import lib.data.adder.basecall.UniqueVisitBaseCallAdder;
 import lib.data.adder.region.ValidatedRegionDataCache;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.cache.container.SharedCache;
 import lib.data.cache.region.isvalid.UniqueVisitBaseCallValidator;
 import lib.util.coordinate.Coordinate;
 
-public class UniqueTraverse 
-implements RegionDataCache {
+public class UniqueTraverse implements RegionDataCache {
 
 	private final ValidatedRegionDataCache dataCache;
 	private SAMRecord record;
@@ -42,6 +42,11 @@ implements RegionDataCache {
 	@Override
 	public void clear() {
 		dataCache.clear();
+	}
+	
+	@Override
+	public SharedCache getShareCache() {
+		return dataCache.getShareCache();
 	}
 	
 }

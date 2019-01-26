@@ -45,7 +45,7 @@ implements IncrementAdder {
 	
 	@Override
 	public void populate(DataTypeContainer container, Coordinate coordinate) {
-		final int windowPosition = getCoordinateController().getCoordinateTranslator().convert2windowPosition(coordinate);
+		final int windowPosition = getCoordinateController().getCoordinateTranslator().coordinate2windowPosition(coordinate);
 		if (! baseCallQualities.containsKey(windowPosition)) {
 			return;
 		}

@@ -9,7 +9,6 @@ import jacusa.filter.homopolymer.Homopolymer.HomopolymerBuilder;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.filter.BooleanWrapper;
 import lib.util.Base;
@@ -20,9 +19,7 @@ import lib.util.Base;
  * @param 
  */
 
-public class HomopolymerReadFilterCache 
-extends AbstractHomopolymerFilterCache
-implements RecordWrapperProcessor {
+public class HomopolymerReadFilterCache extends AbstractHomopolymerFilterCache {
 
 	// indices of position in window is a homopolymer
 	private final boolean[] isHomopolymer;
@@ -87,13 +84,13 @@ implements RecordWrapperProcessor {
 			final int length, 
 			final SAMRecordWrapper recordWrapper) {
 
-		final SAMRecord record = recordWrapper.getSAMRecord();
-		final HomopolymerBuilder builder = new HomopolymerBuilder(referencePosition, getMinLength()); 
+		final SAMRecord record 				= recordWrapper.getSAMRecord();
+		final HomopolymerBuilder builder 	= new HomopolymerBuilder(referencePosition, getMinLength()); 
 		
 		// within window
 		for (int offset = 0; offset < length; ++offset) {
-			final int currentReadPosition = readPosition + offset;
-			final Base base = Base.valueOf(record.getReadBases()[currentReadPosition]);
+			final int currentReadPosition 	= readPosition + offset;
+			final Base base 				= Base.valueOf(record.getReadBases()[currentReadPosition]);
 			builder.add(base);
 		}
 		final Collection<Homopolymer> homopolymers = builder.build();

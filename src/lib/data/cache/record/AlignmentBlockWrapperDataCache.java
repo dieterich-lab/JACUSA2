@@ -4,6 +4,7 @@ import lib.util.coordinate.Coordinate;
 import htsjdk.samtools.AlignmentBlock;
 import lib.data.DataTypeContainer;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.cache.container.SharedCache;
 import lib.data.cache.region.RegionDataCache;
 
 public class AlignmentBlockWrapperDataCache
@@ -15,7 +16,6 @@ implements RecordWrapperProcessor {
 		this.dataCache = regionDataCache;
 	}
 
-	
 	@Override
 	public void preProcess() {
 		// nothing to be done
@@ -43,6 +43,11 @@ implements RecordWrapperProcessor {
 	@Override
 	public void clear() {
 		dataCache.clear();
+	}
+
+	@Override
+	public SharedCache getShareCache() {
+		return dataCache.getShareCache();
 	}
 	
 }

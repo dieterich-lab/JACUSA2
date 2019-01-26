@@ -6,6 +6,7 @@ import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 
 import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.OneCoordinate;
 
 // JUNIT: A
 public class CoordinateArgumentConverter extends SimpleArgumentConverter {
@@ -17,7 +18,7 @@ public class CoordinateArgumentConverter extends SimpleArgumentConverter {
 		}
 		assertEquals(Coordinate.class, arg1, "Can only convert to Coordinate");
 		final String s = String.valueOf(arg0);		
-		return new Coordinate.Parser().parse(s);
+		return new OneCoordinate.Parser().parse(s);
 	}
 
 }

@@ -27,6 +27,7 @@ import lib.util.Base;
 import lib.util.Data;
 import lib.util.Parser;
 import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.OneCoordinate;
 
 public interface DataTypeContainer 
 extends HasCoordinate, HasLibraryType, HasReferenceBase, 
@@ -254,13 +255,13 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	
 		private final char fieldSep;
 				
-		private final Coordinate.Parser coordinateParser;
+		private final Coordinate.AbstractParser coordinateParser;
 		
 		protected AbstractParser() {
-			this(FIELD_SEP, new Coordinate.Parser());
+			this(FIELD_SEP, new OneCoordinate.Parser());
 		}
 		
-		protected AbstractParser(final char fieldSep, final Coordinate.Parser coordinateParser) {
+		protected AbstractParser(final char fieldSep, final Coordinate.AbstractParser coordinateParser) {
 			this.fieldSep = fieldSep;
 			this.coordinateParser = coordinateParser;
 		}

@@ -3,194 +3,148 @@ package test.jacusa.filter.cache.processrecord;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestReporter;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
-import htsjdk.samtools.SAMRecord;
-import htsjdk.samtools.SAMRecordSetBuilder;
-import htsjdk.samtools.TextCigarCodec;
-import htsjdk.samtools.Cigar;
-import htsjdk.samtools.SAMFileHeader.SortOrder;
-import jacusa.filter.cache.processrecord.AbstractProcessRecord;
+import jacusa.filter.cache.processrecord.ProcessRecord;
+import jacusa.filter.homopolymer.RecordProcessDataCache;
+import lib.data.DataType;
 import lib.data.DataTypeContainer;
-import lib.data.builder.recordwrapper.SAMRecordWrapper;
+import lib.data.adder.IncrementAdder;
+import lib.data.adder.basecall.ArrayBaseCallAdder;
+import lib.data.adder.region.ValidatedRegionDataCache;
+import lib.data.cache.container.SharedCache;
+import lib.data.cache.fetcher.DefaultFilteredDataFetcher;
+import lib.data.cache.fetcher.FilteredDataFetcher;
+import lib.data.cache.fetcher.SpecificFilteredDataFetcher;
+import lib.data.cache.record.RecordWrapperProcessor;
 import lib.data.cache.region.RegionDataCache;
-import lib.data.count.basecall.ArrayBaseCallCount;
+import lib.data.cache.region.UniqueTraverse;
+import lib.data.cache.region.isvalid.BaseCallValidator;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.data.filter.BaseCallCountFilteredData;
+import lib.data.has.LibraryType;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
-import test.utlis.TestUtils;
+import test.jacusa.filter.homopolymer.RecordWrapperProcessorTest;
+import test.jacusa.filter.homopolymer.SAMRecordBuilder;
+import test.jacusa.filter.homopolymer.SharedCacheBuilder;
+import test.utlis.ReferenceSequence;
 
 @TestInstance(Lifecycle.PER_CLASS)
-public abstract class AbstractProcessRecordTest {
+abstract class AbstractProcessRecordTest 
+implements RecordWrapperProcessorTest<String> {
 
-	private int records;
-	private SAMRecordSetBuilder recordBuilder;
-	private AbstractProcessRecord testInstance;
-	private InspectRegioDataCache regionDataCache;
+	// recordBuilder.setUseNmFlag(true);
+	private final static char C = 'X';
+
+	public static final String CONTIG = "processRecordTest";
+	
+	private final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher;
 
 	public AbstractProcessRecordTest() {
-		records = 1;
-		recordBuilder = new SAMRecordSetBuilder(true, SortOrder.coordinate);
-		recordBuilder.setRandomSeed(1);
-		recordBuilder.setUseNmFlag(true);
-	}
-	
-	@BeforeEach
-	void beforeEach() {
-		regionDataCache = new InspectRegioDataCache();
-	}
-	
-	@AfterEach
-	void afterEach() {
-		recordBuilder = null;
+		filteredDataFetcher = new DefaultFilteredDataFetcher<>(DataType.F_BCC);
 	}
 
-	@DisplayName("Test processRecord")
-	@ParameterizedTest(name = "{3}")
-	@MethodSource("testProcessRecord")
-	void testProcessRecord(int distance, SAMRecord record, Map<Integer, BaseCallCount> expected, String msg, TestReporter testReporter) {
-		testInstance = createTestInstance(distance, regionDataCache);
-		SAMRecordWrapper recordWrapper = new SAMRecordWrapper(record);
-		testInstance.processRecord(recordWrapper);
-
-		// same reference positions
-		TestUtils.equalSets(expected.keySet(), regionDataCache.getRef2BaseCallCount().keySet());
+	abstract Stream<Arguments> testAddRecordWrapper();
+	
+	@Override
+	public DataTypeContainer createDataTypeContainer(
+			Coordinate coordinate, LibraryType libraryType, Base refBase) {
 		
-		Set<Integer> mergedReferencePositions = new TreeSet<>(expected.keySet());
-		mergedReferencePositions.addAll(regionDataCache.getRef2BaseCallCount().keySet());
-		// same base call counts
-
-		for (final int referencePosition : mergedReferencePositions) {
-			final BaseCallCount expectedBaseCallCount = expected.get(referencePosition);
-			final BaseCallCount actualBaseCallCount = regionDataCache.getRef2BaseCallCount().get(referencePosition);
-
-			assertEquals(expectedBaseCallCount, actualBaseCallCount, "Mismatch at reference position: " + referencePosition);
-		}
-	}
-
-	/*
-	 * Abstract
-	 */
-
-	protected abstract AbstractProcessRecord createTestInstance(int distance, InspectRegioDataCache regionDataCache);
-	public abstract Stream<Arguments> testProcessRecord();
-
-	/*
-	 * Helper
-	 */
-
-	protected SAMRecordSetBuilder getRecordBuilder() {
-		return recordBuilder;
-	}
-
-	protected SAMRecord addFrag(final int start, final boolean negativeStrand, final String cigarString) {
-		final Cigar cigar = TextCigarCodec.decode(cigarString);
-		final int readLength = cigar.getReadLength();
-		recordBuilder.setReadLength(readLength);
-		SAMRecord record = recordBuilder.addFrag("read" + records, 1, start, negativeStrand, false, cigarString, null, 40, false, false);
-		return record;
-	}
-
-	protected Arguments createArguments(final int distance, final SAMRecord record,
-			List<Integer> readPositions, List<Integer> lengths) {
-		return createArguments(distance, record, readPositions, lengths, "");
-	}
-
-	protected Arguments createArguments(final int distance, final SAMRecord record, 
-			List<Integer> readPositions, List<Integer> lengths, 
-			final String tmpMsg) {
-
-		if (readPositions.size() != lengths.size()) {
-			throw new IllegalStateException("Size of readPositions != lengths");
-		}
-		
-		final List<Integer> referencePositions = new ArrayList<>(); 
-		final List<BaseCallCount> baseCallCounts = new ArrayList<>(); 
-
-		for (int i = 0; i < readPositions.size(); ++i) {
-			final int readPosition = readPositions.get(i);
-			final int length = lengths.get(i);
-
-			for (int offset = 0; offset < length; ++offset) {
-				final int referencePosition = record.getReferencePositionAtReadPosition(readPosition + offset);
-				referencePositions.add(referencePosition);
-				final BaseCallCount baseCallCount = new ArrayBaseCallCount();
-				final Base base = Base.valueOf(record.getReadBases()[readPosition + offset - 1]);
-				baseCallCount.increment(base);
-				baseCallCounts.add(baseCallCount);
-			}
-		}
-		
-		return Arguments.of(distance, record, 
-				createExpected(referencePositions, baseCallCounts), 
-				tmpMsg + record.getCigarString());
+		// create data type container that will store filtered info
+		return createDataTypeContainerBuilder(coordinate, libraryType, refBase)
+				.with(
+						filteredDataFetcher.getDataType(), 
+						new BaseCallCountFilteredData().add(getC(), new DefaultBaseCallCount()))
+				.build();
 	}
 	
-	protected Map<Integer, BaseCallCount> createExpected(List<Integer> referencePositions, List<BaseCallCount> baseCallCounts) {
-		if (referencePositions.size() != baseCallCounts.size()) {
-			throw new IllegalStateException("Size of referencePositions != baseCalls");
-		}
-		final Map<Integer, BaseCallCount> ref2baseCallCount = new HashMap<>();
-		for (int i = 0; i < referencePositions.size(); ++i) {
-			ref2baseCallCount.put(referencePositions.get(i), baseCallCounts.get(i));
-		}
-		return ref2baseCallCount;
+	protected FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> getFetcher() {
+		return filteredDataFetcher;
 	}
 	
-	protected class InspectRegioDataCache implements RegionDataCache {
+	protected char getC() {
+		return C;
+	}
+	
+	abstract List<ProcessRecord> createTestInstances(int distance, RegionDataCache regionDataCache);
+	
+	RecordWrapperProcessor createRecordWrapperProcessor(final int distance, final SharedCache sharedCache) {
+		final List<IncrementAdder> adder 	= new ArrayList<IncrementAdder>();
+		final IncrementAdder baseCallAdder 	= new ArrayBaseCallAdder(
+				new SpecificFilteredDataFetcher<>(getC(), getFetcher()), sharedCache);
+		adder.add(baseCallAdder);
+		
+		final List<BaseCallValidator> validator = new ArrayList<BaseCallValidator>();
+		
+		final ValidatedRegionDataCache regionDataCache = 
+				new ValidatedRegionDataCache(adder, validator, sharedCache);
+		
+		final UniqueTraverse uniqueTraverse = new UniqueTraverse(regionDataCache);
+		return new RecordProcessDataCache(
+				uniqueTraverse, 
+				createTestInstances(distance, uniqueTraverse));		
+	}
 
-		private Map<Integer, BaseCallCount> ref2baseCallCount;
-
-		public InspectRegioDataCache() {
-			ref2baseCallCount = new HashMap<>(100);
+	@Override
+	public void assertEqual(
+			int windowPosition, Coordinate currentCoordinate, 
+			DataTypeContainer container,
+			String expectedStr) {
+		
+		final BaseCallCount expected 	= createBaseCallCount(expectedStr.charAt(windowPosition));
+		final BaseCallCount actual 		= filteredDataFetcher.fetch(container).get(C);
+		assertEquals(expected, actual, "Error in coord: " + currentCoordinate.toString());
+	}
+	
+	BaseCallCount createBaseCallCount(final char b) {
+		final BaseCallCount bcc = new DefaultBaseCallCount();
+		if (b == '*') {
+			return bcc;
 		}
+		final Base base = Base.valueOf(b);
+		bcc.increment(base);
+		return bcc;
+	}
 
-		@Override
-		public void populate(DataTypeContainer container, Coordinate coordinate) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public void clear() {
-			ref2baseCallCount.clear();
-		}
-
-		@Override
-		public void addRegion(int referencePosition, int readPosition, int length, SAMRecordWrapper recordWrapper) {
-			final SAMRecord record = recordWrapper.getSAMRecord();
-			for (int offset = 0; offset < length; ++offset) {
-				final Base base = Base.valueOf(record.getReadBases()[readPosition + offset]);
-				add(referencePosition + offset, base);
-			}			
-		}
-
-		private void add(final int referencePosition, final Base base) {
-			if (! ref2baseCallCount.containsKey(referencePosition)) {
-				ref2baseCallCount.put(referencePosition, new ArrayBaseCallCount());
-			}
-			final BaseCallCount baseCallCount = ref2baseCallCount.get(referencePosition);
-			baseCallCount.increment(base);
-		}
-
-		public Map<Integer, BaseCallCount> getRef2BaseCallCount() {
-			return ref2baseCallCount;
-		}
-
+	Arguments createArguments(
+			final int activeWindowSize,
+			final LibraryType libraryType,
+			final int distance, 
+			final int refStart,
+			final boolean negativeStrand,
+			final String cigarStr, 
+			final String MD,
+			final List<String> expected,
+			final StringBuilder infoBuilder) {
+		
+		final SharedCache sharedCache = new SharedCacheBuilder(
+				activeWindowSize, libraryType, 
+				CONTIG, ReferenceSequence.get())
+				.build();
+		
+		infoBuilder
+		.append("ActiveWindowSize: ").append(activeWindowSize).append(", ")
+		.append("Read: ")
+		.append(refStart).append(':')
+		.append(negativeStrand ? '-' : '+').append(':')
+		.append(cigarStr); // .append(", ");	
+			
+						
+		return Arguments.of(
+				createRecordWrapperProcessor(distance, sharedCache),
+				libraryType,
+				new SAMRecordBuilder()
+					.withSERead(CONTIG, refStart, negativeStrand, cigarStr, MD)
+					.getRecords(),
+				expected,
+				infoBuilder.toString());
 	}
 	
 }

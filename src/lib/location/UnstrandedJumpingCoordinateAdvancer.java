@@ -1,6 +1,7 @@
 package lib.location;
 
 import lib.util.coordinate.CoordinateController;
+import lib.util.coordinate.OneCoordinate;
 import lib.data.assembler.ConditionContainer;
 import lib.data.assembler.DataAssembler;
 import lib.data.assembler.ReplicateContainer;
@@ -22,10 +23,10 @@ implements CoordinateAdvancer {
 			final CoordinateController coordinateController,
 			final ConditionContainer conditionContainer) {
 		
-		defaultAdvancer = new UnstrandedCoordinateAdvancer(new Coordinate());
+		defaultAdvancer = new UnstrandedCoordinateAdvancer(new OneCoordinate());
 		
-		this.coordinateController = coordinateController;
-		this.conditionContainer = conditionContainer;
+		this.coordinateController 	= coordinateController;
+		this.conditionContainer 	= conditionContainer;
 		
 		missCounter = 0;
 	}
@@ -59,8 +60,9 @@ implements CoordinateAdvancer {
 	}
 
 	private void jumpingAdvance() {
-		final int referencePosition = getCurrentCoordinate().getPosition();
-		final int windowPosition = coordinateController.getCoordinateTranslator().convert2windowPosition(referencePosition);
+		final int referencePosition = getCurrentCoordinate().get1Position();
+		final int windowPosition = coordinateController.getCoordinateTranslator()
+				.reference2windowPosition(referencePosition);
 		
 		if (windowPosition < 0) {
 			return;
@@ -72,16 +74,17 @@ implements CoordinateAdvancer {
 			final int tmpNextPosition = getNextWindowPosition(windowPosition, conditionContainer.getReplicatContainer(conditionIndex));
 			if (tmpNextPosition == -1) {
 				// advance to the end
-				getCurrentCoordinate().setPosition(Integer.MAX_VALUE);
+				getCurrentCoordinate().setMaxPosition();
 				return;
 			}
 			newWindowPosition = Math.max(newWindowPosition, tmpNextPosition);
 		}
 		
 		if (newWindowPosition > windowPosition) {
-			getCurrentCoordinate().setPosition(coordinateController.getCoordinateTranslator().convert2referencePosition(newWindowPosition));
+			getCurrentCoordinate().set1Position(coordinateController.getCoordinateTranslator()
+					.window2referencePosition(newWindowPosition));
 		} else {
-			getCurrentCoordinate().setPosition(Integer.MAX_VALUE);
+			getCurrentCoordinate().setMaxPosition();
 		}
 	}
 
@@ -102,7 +105,7 @@ implements CoordinateAdvancer {
 	@Override
 	public void adjustPosition(final Coordinate coordinate) {
 		// contig is set somewhere else
-		getCurrentCoordinate().setPosition(coordinate.getPosition());
+		getCurrentCoordinate().setPosition(coordinate);
 		// TODO
 		// getCurrentCoordinate().setStrand(coordinate.getStrand());
 	}

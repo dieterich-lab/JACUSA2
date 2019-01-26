@@ -24,6 +24,7 @@ import lib.data.count.basecall.BaseCallCount;
 import lib.data.has.LibraryType;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
+import lib.util.coordinate.OneCoordinate;
 import test.lib.data.count.basecall.BaseCallCountListArgumentConverter;
 import test.lib.util.BaseSetArgumentConverter;
 import test.lib.util.coordinate.CoordinateArgumentConverter;
@@ -187,10 +188,20 @@ class ParallelDataTest {
 			.collect(Collectors.toList());
 	}
 	
-	static DataTypeContainer createDataTypeContainer(final String coordinateStr, final String libraryTypeStr) {
-		final Coordinate coordinate = new Coordinate.Parser().parse(coordinateStr);
-		final LibraryType libraryType = LibraryType.valueOf(libraryTypeStr);
+	
+	static DataTypeContainer createDataTypeContainer(
+			final Coordinate.AbstractParser parser, final String coordinateStr, 
+			final String libraryTypeStr) {
+		
+		final Coordinate coordinate 	= parser.parse(coordinateStr);
+		final LibraryType libraryType 	= LibraryType.valueOf(libraryTypeStr);
 		return new DefaultDataTypeContainer.Builder(coordinate, libraryType).build();
+	}
+	
+	static DataTypeContainer createDataTypeContainer(
+			final String coordinateStr, final String libraryTypeStr) {
+		
+		return createDataTypeContainer(new OneCoordinate.Parser(), coordinateStr, libraryTypeStr);
 	}
 	
 	@ParameterizedTest(name = "Expected common library type {1}")

@@ -1,28 +1,56 @@
 package test.lib.data;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.util.stream.Stream;
 
 import org.junit.jupiter.params.provider.Arguments;
 
-import jacusa.JACUSA;
-import jacusa.method.pileup.PileupMethod;
-import lib.data.DataType;
 import lib.data.DataTypeContainer;
-import lib.data.count.PileupCount;
-import lib.data.count.basecall.ArrayBaseCallCount;
-import lib.data.filter.BaseCallCountFilteredData;
-import lib.data.filter.BooleanWrapperFilteredData;
-import lib.data.filter.BooleanWrapper;
-import lib.data.has.LibraryType;
-import lib.util.Base;
-import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.CoordinateUtil.STRAND;
-import test.utlis.MyAssert;
 
 class PileupDataTest extends AbstractDataTest {
 
+	public PileupDataTest() {
+		super(null, null);
+	}
+	
+	@Override
+	void testParserParseFail() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	void testCopySpecific(DataTypeContainer data, DataTypeContainer copy) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	Stream<Arguments> testParserParse() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	Stream<Arguments> testParserWrap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	Stream<Arguments> testCopy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	Stream<Arguments> testMerge() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	
+	/*
 	public PileupDataTest() {
 		super(
 				new PileupMethod.PileupBuilderFactory(null),
@@ -33,7 +61,7 @@ class PileupDataTest extends AbstractDataTest {
 				new PileupCount.Parser(new ArrayBaseCallCount.Parser(), new MapBaseCallQualityCount.Parser()), 
 				new BaseCallCountFilteredData.Parser(new ArrayBaseCallCount.Parser()), 
 				new BooleanFilteredData.Parser()) );
-				*/
+				
 	}
 
 	@Override
@@ -203,4 +231,5 @@ class PileupDataTest extends AbstractDataTest {
 							.build()) );
 	}
 	
+	*/
 }

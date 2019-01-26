@@ -18,8 +18,8 @@ public class StrandedCoordinateAdvancer implements CoordinateAdvancer {
 			coordinate.setStrand(STRAND.REVERSE);
 		} else if (coordinate.getStrand() == STRAND.REVERSE){
 			coordinate.setStrand(STRAND.FORWARD);
-			final int currentPosition = coordinate.getStart() + 1;
-			coordinate.setPosition(currentPosition);
+			final int onePosition = coordinate.get1Start() + 1;
+			coordinate.set1Position(onePosition);
 		} else {
 			throw new IllegalStateException("Stranded coordinate cannot be: " + coordinate.getStrand());
 		}
@@ -27,7 +27,7 @@ public class StrandedCoordinateAdvancer implements CoordinateAdvancer {
 
 	@Override
 	public void adjustPosition(final Coordinate coordinate) {
-		this.coordinate.setPosition(coordinate.getPosition());
+		this.coordinate.setPosition(coordinate);
 		this.coordinate.setStrand(coordinate.getStrand());
 	}
 
