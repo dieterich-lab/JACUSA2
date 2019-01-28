@@ -8,12 +8,10 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.params.provider.Arguments;
 
-import htsjdk.samtools.util.StringUtil;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
 import lib.data.cache.region.RegionDataCache;
 import lib.data.has.LibraryType;
-import test.utlis.ReferenceSequence;
 
 /**
  * Tests @see jacusa.filter.cache.processrecord.ProcessSkippedOperator
@@ -31,11 +29,13 @@ class ProcessSkippedOperatorTest extends AbstractProcessRecordTest {
 	@Override
 	Stream<Arguments> testAddRecordWrapper() {
 		final List<LibraryType> libraryTypes = 
-				Arrays.asList(LibraryType.UNSTRANDED, LibraryType.RF_FIRSTSTRAND, LibraryType.FR_SECONDSTRAND);
+				Arrays.asList(
+						LibraryType.UNSTRANDED, 
+						LibraryType.RF_FIRSTSTRAND, 
+						LibraryType.FR_SECONDSTRAND);
 		
 		final List<Arguments> arguments = new ArrayList<Arguments>();
 		
-		final int refSeqLength 	= ReferenceSequence.getReferenceSequence(CONTIG).length();
 		final int refPosStart 	= 3;
 		
 		for (final int activeWindowSize : IntStream.range(8, 9).toArray()) {
@@ -50,7 +50,7 @@ class ProcessSkippedOperatorTest extends AbstractProcessRecordTest {
 							tokern(activeWindowSize, StringUtil.repeatCharNTimes('*', refSeqLength)), 
 							new StringBuilder().append("Auto, ")) );
 					 */
-
+					
 					arguments.add(createArguments(
 							activeWindowSize, libraryType, 
 							2, 
@@ -73,21 +73,6 @@ class ProcessSkippedOperatorTest extends AbstractProcessRecordTest {
 		return arguments.stream();
 	}
 	
-	List<String> tokern(final int activeWindowSize, final String expected) {
-		final List<String> token = new ArrayList<String>();
-		
-		String tmp = expected;
-		while (tmp.length() > 0) {
-			final int length = Math.min(activeWindowSize, tmp.length());
-			token.add(tmp.substring(0, length));
-			if (length == tmp.length()) {
-				tmp = "";
-			} else {
-				tmp = tmp.substring(length);
-			}
-		}
-		
-		return token;
-	}
+	
 	
 }

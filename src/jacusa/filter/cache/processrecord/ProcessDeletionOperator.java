@@ -5,6 +5,9 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.builder.recordwrapper.SAMRecordWrapper.CigarElementWrapper;
 import lib.data.cache.region.RegionDataCache;
 
+/**
+ * Tested in test.jacusa.filter.cache.processrecord.ProcessDeletionOperator
+ */
 public class ProcessDeletionOperator extends AbstractProcessRecord {
 
 	public ProcessDeletionOperator(final int distance, final RegionDataCache regionDataCache) {

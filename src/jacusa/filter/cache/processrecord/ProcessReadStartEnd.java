@@ -8,6 +8,9 @@ import java.util.List;
 import lib.data.builder.recordwrapper.SAMRecordWrapper;
 import lib.data.cache.region.RegionDataCache;
 
+/**
+ * Tested in test.jacusa.filter.cache.processrecord.ProcessReadStartEndTest
+ */
 public class ProcessReadStartEnd extends AbstractProcessRecord {
 
 	public ProcessReadStartEnd(final int distance, final RegionDataCache regionDataCache) {

@@ -23,11 +23,10 @@ import lib.util.coordinate.CoordinateController;
 
 /**
  * TODO add comments
- * @param 
+ * 
+ * Tested in 
  */
-
-public class HomozygousFilterFactory
-extends AbstractFilterFactory {
+public class HomozygousFilterFactory extends AbstractFilterFactory {
 
 	// which condition is required to be homozygous
 	private int homozygousConditionIndex;
@@ -61,6 +60,7 @@ extends AbstractFilterFactory {
 				final int conditionIndex = Integer.parseInt(cmd.getOptionValue(longOpt));
 				// make sure conditionIndex is within provided conditions
 				if (conditionIndex >= 1 && conditionIndex <= conditionSize) {
+					// convert to [0, conditionSize)
 					this.homozygousConditionIndex = conditionIndex - 1;
 				} else {
 					throw new IllegalArgumentException("Invalid argument: " + longOpt);
@@ -88,6 +88,7 @@ extends AbstractFilterFactory {
 	public RecordWrapperProcessor createFilterCache(
 			ConditionParameter conditionParameter,
 			SharedCache sharedCache) {
+		
 		return null;
 	}
 		

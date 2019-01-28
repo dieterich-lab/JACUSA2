@@ -6,7 +6,7 @@ import lib.data.builder.recordwrapper.SAMRecordWrapper.CigarElementWrapper;
 import lib.data.cache.region.RegionDataCache;
 
 /**
- * 
+ * Tested in test.jacusa.filter.cache.processrecord.ProcessInsertionOperatorTest
  */
 public class ProcessInsertionOperator extends AbstractProcessRecord {
 

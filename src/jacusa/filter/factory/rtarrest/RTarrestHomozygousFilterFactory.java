@@ -25,10 +25,9 @@ import lib.util.coordinate.CoordinateController;
 
 /**
  * TODO add comments
- * @param 
+ * Tested in 
  */
-public class RTarrestHomozygousFilterFactory 
-extends AbstractFilterFactory {
+public class RTarrestHomozygousFilterFactory extends AbstractFilterFactory {
 
 	private HomozygousFilterFactory homozygousFilterFactory;
 	

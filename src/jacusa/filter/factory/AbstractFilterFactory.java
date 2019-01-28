@@ -6,6 +6,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import jacusa.filter.Filter;
 import lib.cli.parameter.ConditionParameter;
@@ -55,8 +56,9 @@ public abstract class AbstractFilterFactory {
 	 * TODO add comments.
 	 * 
 	 * @param line
+	 * @throws ParseException 
 	 */
-	public void processCLI(String line) throws MissingOptionException {
+	public void processCLI(String line) throws ParseException {
 		processCLI(Util.processCLI(line, getOptions()));
 	}
 

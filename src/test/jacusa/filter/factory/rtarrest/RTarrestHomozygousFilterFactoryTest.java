@@ -28,13 +28,9 @@ import test.utlis.TestUtils;
 import test.jacusa.filter.factory.AbstractHomozygousFilterFactoryTest;
 
 @DisplayName("Test CLI processing of RTarrestHomozygousFilterFactory")
-public class RTarrestHomozygousFilterFactoryTest extends AbstractHomozygousFilterFactoryTest{
+public class RTarrestHomozygousFilterFactoryTest extends AbstractHomozygousFilterFactoryTest {
 	
 	private RTarrestHomozygousFilterFactory testInstance;
-	
-	/*
-	 * Tests
-	 */
 	
 	@DisplayName("Test processCLI sets apply2reads correctly")
 	@ParameterizedTest(name = "Parse line: {0} and expect apply2reads to be: {1}")
@@ -53,14 +49,14 @@ public class RTarrestHomozygousFilterFactoryTest extends AbstractHomozygousFilte
 		// not RT_READS
 		assertThrows(IllegalArgumentException.class,
 				() -> {
-					final String line1 = setHomozygousConditionIndex(1);
+					final String line1 = createLine(1);
 					final String line2 = setApply2Reads("wrong");
 					getTestInstance().processCLI(line1 + line2);								
 				});
 		// required missing
 		assertThrows(MissingOptionException.class,
 				() -> {
-					final String line1 = setHomozygousConditionIndex(1);
+					final String line1 = createLine(1);
 					final String line2 = setApply2Reads("");
 					getTestInstance().processCLI(line1 + line2);								
 				});
@@ -78,7 +74,7 @@ public class RTarrestHomozygousFilterFactoryTest extends AbstractHomozygousFilte
 
 		return data.stream().map(e -> {
 			// add conditionIndex
-			final String line1 = setHomozygousConditionIndex(1);
+			final String line1 = createLine(1);
 			// add apply2reads
 			final String line2 = setApply2Reads(e);
 			return Arguments.of(line1 + line2, e);

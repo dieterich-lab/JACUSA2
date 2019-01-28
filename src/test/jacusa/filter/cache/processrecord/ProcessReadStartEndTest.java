@@ -1,39 +1,57 @@
 package test.jacusa.filter.cache.processrecord;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.params.provider.Arguments;
 
-import jacusa.filter.cache.processrecord.AbstractProcessRecord;
 import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
+import jacusa.filter.cache.processrecord.ProcessRecord;
+import lib.data.cache.region.RegionDataCache;
+import lib.data.has.LibraryType;
 
+/**
+ * Tests @see jacusa.filter.cache.processrecord.ProcessReadStartEnd
+ */
 class ProcessReadStartEndTest extends AbstractProcessRecordTest {
 
 	@Override
-	protected AbstractProcessRecord createTestInstance(int distance, InspectRegioDataCache regionDataCache) {
-		return new ProcessReadStartEnd(distance, regionDataCache);
+	List<ProcessRecord> createTestInstances(int distance, RegionDataCache regionDataCache) {
+		return Arrays.asList(new ProcessReadStartEnd(distance, regionDataCache));
 	}
 
+	// ACGAACGT
+	// 12345678
 	@Override
-	public Stream<Arguments> testProcessRecord() {
-		return Stream.of(
-				createArguments(5, addFrag(10, true, "20M"), Arrays.asList(1, 16), Arrays.asList(5, 5)),
-				createArguments(2, addFrag(10, true, "20M"), Arrays.asList(1, 19), Arrays.asList(2, 2)) );
+	Stream<Arguments> testAddRecordWrapper() {
+		final List<LibraryType> libraryTypes = 
+				Arrays.asList(
+						LibraryType.UNSTRANDED, 
+						LibraryType.RF_FIRSTSTRAND, 
+						LibraryType.FR_SECONDSTRAND);
+		
+		final List<Arguments> arguments = new ArrayList<Arguments>();
 
-				/* FIXME
-			createArguments(5, addFrag(10, true, "5M10N2M2I10M"), Arrays.asList(6, 10), Arrays.asList(2, 5)),
-			createArguments(5, addFrag(10, true, "5M2D2M2I10M"), Arrays.asList(6, 10), Arrays.asList(2, 5)),
-			
-			createArguments(5, addFrag(10, true, "20M"), Arrays.asList(), Arrays.asList()),
-			createArguments(2, addFrag(10, true, "10M2I10M"), Arrays.asList(9, 13), Arrays.asList(2, 2)),
-			createArguments(5, addFrag(10, true, "10M2I10M"), Arrays.asList(6, 13), Arrays.asList(5, 5)),
-			createArguments(5, addFrag(10, true, "10S10M2I10M"), Arrays.asList(16, 23), Arrays.asList(5, 5)),
-			createArguments(5, addFrag(10, true, "10H10M2I10M"), Arrays.asList(6, 13), Arrays.asList(5, 5)),
-			createArguments(5, addFrag(10, false, "10M2I10M"), Arrays.asList(6, 13), Arrays.asList(5, 5)),
-			createArguments(5, addFrag(10, true, "1M2I10M"), Arrays.asList(1, 4), Arrays.asList(1, 5)),
-			createArguments(5, addFrag(10, true, "10M2I1M"), Arrays.asList(6, 13), Arrays.asList(5, 1)) );
-			*/
+		for (final int activeWindowSize : IntStream.range(8, 9).toArray()) {
+			for (final LibraryType libraryType : libraryTypes) { 
+				for (final boolean negativeStrand : Arrays.asList(true, false)) {
+					
+					// TODO more tests
+					arguments.add(createArguments(
+							activeWindowSize, libraryType, 
+							1, 
+							2, negativeStrand, "4M", "", 
+							tokern(activeWindowSize, "*C**A***"), 
+							new StringBuilder().append("Auto, ")) );
+					
+				}
+			}
+		}
+		
+		return arguments.stream();
 	}
 	
 }

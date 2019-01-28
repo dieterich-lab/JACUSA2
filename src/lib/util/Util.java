@@ -10,7 +10,6 @@ import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
@@ -133,20 +132,17 @@ public final class Util {
 		}
 	}
 
-	static public CommandLine processCLI(String line, final Options options) throws MissingOptionException{
-		if (options.getOptions().size() == 0 || line == null || line.isEmpty()) {
+	static public CommandLine processCLI(String line, final Options options) throws ParseException {
+		/*
+		if (options.getOptions().size() == 0) { // TODO do we need this|| line == null || line.isEmpty()
 			return null;
 		}
+		*/
 
 		final String[] args = line.split("\\s+");
 		final CommandLineParser parser = new DefaultParser();
 		
-		CommandLine cmd = null;
-		try {
-			cmd = parser.parse(options, args);
-		} catch (final ParseException e) {
-			e.printStackTrace();
-		}
+		CommandLine cmd = parser.parse(options, args);
 		return cmd;
 	}
 	

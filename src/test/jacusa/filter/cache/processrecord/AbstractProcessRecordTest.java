@@ -92,6 +92,23 @@ implements RecordWrapperProcessorTest<String> {
 				createTestInstances(distance, uniqueTraverse));		
 	}
 
+	protected List<String> tokern(final int activeWindowSize, final String expected) {
+		final List<String> token = new ArrayList<String>();
+		
+		String tmp = expected;
+		while (tmp.length() > 0) {
+			final int length = Math.min(activeWindowSize, tmp.length());
+			token.add(tmp.substring(0, length));
+			if (length == tmp.length()) {
+				tmp = "";
+			} else {
+				tmp = tmp.substring(length);
+			}
+		}
+		
+		return token;
+	}
+	
 	@Override
 	public void assertEqual(
 			int windowPosition, Coordinate currentCoordinate, 
