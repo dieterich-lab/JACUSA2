@@ -3,6 +3,9 @@ package lib.cli;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.HelpOption;
@@ -291,4 +294,12 @@ public class CLI {
 		return method;
 	}
 
+	public final Map<String, AbstractMethod.AbstractFactory> getName2methodFactory() {
+		return getMethodFactories().stream()
+				.collect(
+						Collectors.toMap(
+								AbstractMethod.AbstractFactory::getName,
+								Function.identity()) );
+	}
+	
 }

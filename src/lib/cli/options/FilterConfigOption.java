@@ -1,6 +1,7 @@
 package lib.cli.options;
 
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.FilterFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -37,7 +38,7 @@ public class FilterConfigOption extends AbstractACOption {
 		
 		final Options options = new Options(); 
 		for (final char c : filterFactories.keySet()) {
-			final AbstractFilterFactory filterFactory = filterFactories.get(c);
+			final FilterFactory filterFactory = filterFactories.get(c);
 
 			final String opt = "___REMOVE___" + Character.toString(c);
 			Option option = Option.builder(opt)

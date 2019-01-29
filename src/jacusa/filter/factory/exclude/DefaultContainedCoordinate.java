@@ -10,8 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import htsjdk.tribble.AbstractFeatureCodec;
 import htsjdk.tribble.Feature;
+import htsjdk.tribble.FeatureCodec;
 import htsjdk.tribble.readers.LineIterator;
 import htsjdk.tribble.readers.LineIteratorImpl;
 import htsjdk.tribble.readers.LineReader;
@@ -19,7 +19,6 @@ import htsjdk.tribble.readers.SynchronousLineReader;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil;
 import lib.util.coordinate.OneCoordinate;
-
 
 /**
  * TODO add comments
@@ -36,7 +35,7 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 	
 	public DefaultContainedCoordinate(
 			final String fileName, 
-			AbstractFeatureCodec<? extends Feature, LineIterator> codec) {
+			FeatureCodec<? extends Feature, LineIterator> codec) {
 
 		contig2coordinate = init(fileName, codec);
 	}
@@ -80,7 +79,7 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 	}
 
 	private Map<String, List<Coordinate>> init(final String filename, 
-			final AbstractFeatureCodec<? extends Feature, LineIterator> codec) {
+			final FeatureCodec<? extends Feature, LineIterator> codec) {
 
 		final Map<String, List<Coordinate>> contig2coordinate = new HashMap<String, List<Coordinate>>();
 

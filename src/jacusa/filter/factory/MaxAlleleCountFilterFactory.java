@@ -24,11 +24,9 @@ import lib.util.coordinate.CoordinateController;
 /**
  * 
  * @author Michael Piechotta
- *
+ * Tested in @see test.jacusa.filter.factory.MaxAlleleCountFilterFactoryTest
  */
-// <D extends AbstractData & HasBaseCallCount> 
-public class MaxAlleleCountFilterFactory
-extends AbstractFilterFactory {
+public class MaxAlleleCountFilterFactory extends AbstractFilterFactory {
 
 	// default value for max alleles
 	public static final int MAX_ALLELES = 2;

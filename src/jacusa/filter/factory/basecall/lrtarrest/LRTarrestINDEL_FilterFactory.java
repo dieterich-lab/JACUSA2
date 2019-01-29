@@ -1,4 +1,4 @@
-package jacusa.filter.factory.distance.lrtarrest;
+package jacusa.filter.factory.basecall.lrtarrest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
  */
 
 public class LRTarrestINDEL_FilterFactory 
-extends AbstractLRTarrestDistanceFilterFactory {
+extends AbstractLRTarrestBaseCallCountFilterFactory {
 
 	public LRTarrestINDEL_FilterFactory(
 			final Apply2readsBaseCallCountSwitch bccSwitch, 

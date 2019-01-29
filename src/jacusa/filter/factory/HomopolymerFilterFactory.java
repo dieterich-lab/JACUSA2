@@ -28,8 +28,10 @@ import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.filter.BooleanWrapper;
 import lib.util.coordinate.CoordinateController;
 
-public class HomopolymerFilterFactory 
-extends AbstractFilterFactory {
+/**
+ * Tested in @see jacusa.filter.factory.HomopolymerFilterFactoryTest
+ */
+public class HomopolymerFilterFactory extends AbstractFilterFactory {
 
 	// default length of consecutive identical base call for
 	// a homopolymer

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
@@ -42,6 +41,9 @@ import lib.data.filter.BaseCallCountFilteredData;
 import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 
+/**
+ * Tested in @see test.jacusa.filter.factory.basecall.BaseCallCountFilterFactoryTest
+ */
 public abstract class AbstractBaseCallCountFilterFactory
 extends AbstractFilterFactory {
 
@@ -63,8 +65,8 @@ extends AbstractFilterFactory {
 		super(option);
 		
 		this.observedBccFetcher = observedBccFetcher;
-		filteredBccFetcher = new SpecificFilteredDataFetcher<>(getC(), filteredDataFetcher);
-		dataType = filteredDataFetcher.getDataType();
+		filteredBccFetcher 		= new SpecificFilteredDataFetcher<>(getC(), filteredDataFetcher);
+		dataType 				= filteredDataFetcher.getDataType();
 		
 		filterDistance = defaultFilterDistance;
 		filterMinRatio = defaultFilterMinRatio;
@@ -80,18 +82,18 @@ extends AbstractFilterFactory {
 	}
 	
 	@Override
-	public Set<Option> processCLI(final CommandLine cmd) throws MissingOptionException {
+	public Set<Option> processCLI(final CommandLine cmd) {
 		final Set<Option> parsed = new HashSet<>();
 		for (final Option option : cmd.getOptions()) {
 			final String longOpt = option.getLongOpt();
 			switch (longOpt) {
 			case "distance":
-				filterDistance = Integer.parseInt(cmd.getOptionValue(longOpt));
+				filterDistance = parseDistance(cmd, longOpt);
 				parsed.add(option);
 				break;
 				
 			case "minRatio":
-				filterMinRatio = Double.parseDouble(cmd.getOptionValue(longOpt));
+				filterMinRatio = parseMinRatio(cmd, longOpt);
 				parsed.add(option);
 				break;
 			}
@@ -99,6 +101,22 @@ extends AbstractFilterFactory {
 		return parsed;
 	}
 
+	public static int parseDistance(final CommandLine cmd, final String longOpt) {
+		final int tmpDistance = Integer.parseInt(cmd.getOptionValue(longOpt));
+		if (tmpDistance <= 0) {
+			throw new IllegalArgumentException(longOpt + " needs to be > 0");
+		}
+		return tmpDistance;
+	}
+
+	public static double parseMinRatio(final CommandLine cmd, final String longOpt) {
+		final double tmpMinRatio = Double.parseDouble(cmd.getOptionValue(longOpt)); 
+		if (tmpMinRatio < 0.0 || tmpMinRatio > 1.0) {
+			throw new IllegalArgumentException(longOpt + " needs to be within [0.0, 1.0]");
+		}
+		return tmpMinRatio;
+	}
+	
 	@Override
 	public void initDataTypeContainer(AbstractBuilder builder) {
 		if (! builder.contains(dataType)) { 
@@ -114,6 +132,7 @@ extends AbstractFilterFactory {
 	public Filter createFilter(
 			final CoordinateController coordinateController, 
 			final ConditionContainer conditionContainer) {
+		
 		return new GenericBaseCallCountFilter(getC(),
 				observedBccFetcher,
 				filteredBccFetcher,	
@@ -166,6 +185,11 @@ extends AbstractFilterFactory {
 	}
 	*/
 	
+	@Override
+	public String toString() {
+		return Character.toString(getC());
+	}
+	
 	protected abstract List<ProcessRecord> createProcessRecord(final RegionDataCache regionDataCache);
 	
 	public static Option.Builder getDistanceOptionBuilder(final int filterDistance) {
@@ -183,5 +207,6 @@ extends AbstractFilterFactory {
 				.hasArg(true)
 				.desc("Minimal ratio of base calls to pass filtering. Default: " + minRatio);
 	}
+	
 	
 }

@@ -5,16 +5,9 @@ import java.util.Set;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
 import jacusa.filter.Filter;
-import lib.cli.parameter.ConditionParameter;
-import lib.data.DataTypeContainer;
-import lib.data.DataTypeContainer.AbstractBuilder;
 import lib.data.assembler.ConditionContainer;
-import lib.data.cache.container.SharedCache;
-import lib.data.cache.record.RecordWrapperProcessor;
 import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 
@@ -23,7 +16,7 @@ import lib.util.coordinate.CoordinateController;
  * 
  * @param <T>
  */
-public abstract class AbstractFilterFactory {
+public abstract class AbstractFilterFactory implements FilterFactory {
 
 	private final Option option;
 
@@ -31,20 +24,12 @@ public abstract class AbstractFilterFactory {
 		this.option = option;
 	}
 
-	/**
-	 * Gets unique char id of this filter.
-	 * 
-	 * @return unique char id 
-	 */
+	@Override
 	public char getC() {
 		return option.getOpt().charAt(0);
 	}
 
-	/**
-	 * Gets the description for this filter.
-	 * 
-	 * @return string that describes this filter
-	 */
+	@Override
 	public String getDesc() {
 		// HACK
 		Option tmp = (Option)option.clone();
@@ -52,50 +37,6 @@ public abstract class AbstractFilterFactory {
 		return tmp.getDescription();
 	}
 
-	/**
-	 * TODO add comments.
-	 * 
-	 * @param line
-	 * @throws ParseException 
-	 */
-	public void processCLI(String line) throws ParseException {
-		processCLI(Util.processCLI(line, getOptions()));
-	}
-
 	protected abstract Set<Option> processCLI(CommandLine cmd) throws MissingOptionException;
-	public abstract Options getOptions();
-
-	public abstract void addFilteredData(StringBuilder sb, DataTypeContainer filteredData);
-	
-	protected abstract Filter createFilter(
-			CoordinateController coordinateController, 
-			ConditionContainer conditionContainer);
-
-	/**
-	 * TODO add comments.
-	 * 
-	 * @param conditionParameter
-	 * @param baseCallConfig
-	 * @param coordinateController
-	 * @return
-	 */
-	public abstract RecordWrapperProcessor createFilterCache(
-			final ConditionParameter conditionParameter, final SharedCache sharedCache);
-	
-	public abstract void initDataTypeContainer(final AbstractBuilder builder);
-	
-	/**
-	 * TODO add comments.
-	 * 
-	 * @param coordinateController
-	 * @param conditionContainer
-	 */
-	public final void registerFilter(
-			final CoordinateController coordinateController, 
-			final ConditionContainer conditionContainer) {
-
-		conditionContainer.getFilterContainer().addFilter(
-				createFilter(coordinateController, conditionContainer));
-	}
 	
 }

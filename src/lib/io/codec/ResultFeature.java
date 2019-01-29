@@ -1,4 +1,4 @@
-package jacusa.filter.factory;
+package lib.io.codec;
 
 import htsjdk.tribble.Feature;
 import lib.data.result.Result;

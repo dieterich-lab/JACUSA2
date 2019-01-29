@@ -1,6 +1,5 @@
 package jacusa.filter.factory;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,20 +9,18 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.Option.Builder;
 
 import htsjdk.samtools.util.IOUtil;
-import htsjdk.tribble.AbstractFeatureCodec;
 import htsjdk.tribble.Feature;
-import htsjdk.tribble.bed.BEDCodec;
-import htsjdk.tribble.bed.BEDCodec.StartOffset;
+import htsjdk.tribble.FeatureCodec;
 import htsjdk.tribble.readers.LineIterator;
 import jacusa.filter.ExcludeSiteFilter;
 import jacusa.filter.Filter;
+import jacusa.io.FileType;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataTypeContainer;
 import lib.data.DataTypeContainer.AbstractBuilder;
 import lib.data.assembler.ConditionContainer;
 import lib.data.cache.container.SharedCache;
 import lib.data.cache.record.RecordWrapperProcessor;
-import lib.io.codec.JACUSA2codec;
 import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 
@@ -33,37 +30,37 @@ import lib.util.coordinate.CoordinateController;
  * the rest(e.g.: BaseCallCount, filters etc.) is ignored!
  * 
  */
-public class ExcludeSiteFilterFactory 
-extends AbstractFilterFactory {
+/**
+ * Tested in test.jacusa.filter.factory.ExcludeSiteFilterFactoryTest;
+ */
+public class ExcludeSiteFilterFactory extends AbstractFilterFactory {
 
 	private String fileName;
 	private FileType fileType;
 	
-	private AbstractFeatureCodec<? extends Feature, LineIterator> codec;
+	private FeatureCodec<? extends Feature, LineIterator> codec;
 	
 	public ExcludeSiteFilterFactory() {
 		super(getOptionBuilder().build());
-		fileType = FileType.AUTO;
 	}
 
+	/* TODO implement auto
 	private AbstractFeatureCodec<? extends Feature, LineIterator> initBySuffix(final String fileName) {
-		for (final FileType fileType : FileType.values()) {
-			for (final String suffix : fileType.getSuffix()) {
-				if (fileName.endsWith(suffix)) {
-					final AbstractFeatureCodec<?, LineIterator> tmpCodec = fileType.getCodec();
-					if (tmpCodec.canDecode(fileName)) {
-						return tmpCodec;
-					}
-				}
+		final FileType fileType = FileType.valueOfFileName(fileName);
+		if (fileType != null) {
+			final AbstractFeatureCodec<?, LineIterator> tmpCodec = fileType.getCodec();
+			if (tmpCodec.canDecode(fileName)) {
+				return tmpCodec;
 			}
 		}
-
+		
 		return null;
 	}
+	*/
 	
-	private AbstractFeatureCodec<? extends Feature, LineIterator> initByBruteForce(final String filename) {
+	public FeatureCodec<? extends Feature, LineIterator> initByBruteForce(final String filename) {
 		for (final FileType fileType : FileType.values()) {
-			final AbstractFeatureCodec<?, LineIterator> tmpCodec = fileType.getCodec();
+			final FeatureCodec<?, LineIterator> tmpCodec = fileType.getCodec();
 			if (tmpCodec.canDecode(fileName)) {
 				return tmpCodec;
 			}
@@ -103,6 +100,7 @@ extends AbstractFilterFactory {
 
 		switch (fileType) {
 		
+		/* TODO implement AUTO
 		case AUTO:
 			// first - try by suffix
 			codec = initBySuffix(fileName);
@@ -113,6 +111,7 @@ extends AbstractFilterFactory {
 				}
 			}	
 			break;
+			*/
 
 		default:
 			codec = fileType.getCodec();
@@ -134,6 +133,7 @@ extends AbstractFilterFactory {
 	protected Filter createFilter(
 			CoordinateController coordinateController,
 			ConditionContainer conditionContainer) {
+		
 		return new ExcludeSiteFilter(getC(), fileName, codec);
 	}
 	
@@ -144,12 +144,24 @@ extends AbstractFilterFactory {
 		return null;
 	}
 	
+	public String getFileName() {
+		return fileName;
+	}
+	
+	public FileType getFileType() {
+		return fileType;
+	}
+	
+	public FeatureCodec<? extends Feature, LineIterator> getCodec() {
+		return codec;
+	}
+	
 	public static Builder getOptionBuilder() {
 		return Option.builder(Character.toString('E'))
 				.desc("Exclude sites contained in file (VCF, BED, or JACUSA 2.x output).");
 	}
 
-	public Builder getFileNameOptionBuilder() {
+	public static Builder getFileNameOptionBuilder() {
 		return Option.builder()
 			.longOpt("file")
 			.argName("FILE")
@@ -158,74 +170,28 @@ extends AbstractFilterFactory {
 			.desc("File that contains sites to be exclude from output. Supported file types: see type");
 	}
 	
-	public Builder getFileTypeOptionBuilder() {
+	public static Builder getFileTypeOptionBuilder() {
 		final StringBuilder sb = new StringBuilder();
+		
 		for (final FileType fileType : FileType.values()) {
 			if (sb.length() > 0) {
 				sb.append(", ");
 			}
 			sb.append(fileType.getName());
 		}
+
 		return Option.builder()
 			.longOpt("type")
 			.argName("TYPE")
+			.required()
 			.hasArg()
 			.desc("File type: " +
-					sb.toString() + ". Default: " + FileType.AUTO.getName());
+					sb.toString() + ". Default: " + "TODO AUTO");
 	}
 	
 	@Override
 	public void addFilteredData(StringBuilder sb, DataTypeContainer data) {
 		sb.append(Util.EMPTY_FIELD);	
-	}
-	
-	private enum FileType {
-		AUTO(
-				"auto", 
-				new HashSet<>(),
-				null),
-		BED(
-				"BED", 
-				new HashSet<>(Arrays.asList(
-						BEDCodec.BED_EXTENSION)),
-				new BEDCodec(StartOffset.ZERO)),
-		VCF(
-				"VCF", 
-				new HashSet<>(Arrays.asList(
-						IOUtil.VCF_FILE_EXTENSION,
-						"vcf4")),
-				new BEDCodec(StartOffset.ZERO)),
-		JACUSA2(
-				"JACUSA2", 
-				new HashSet<>(),
-				new JACUSA2codec());
-		
-		private final String name;
-		private final Set<String> suffix;
-		private final AbstractFeatureCodec<? extends Feature, LineIterator> codec;
-		
-		private FileType(
-				final String name, 
-				final Set<String> suffix, 
-				final AbstractFeatureCodec<? extends Feature, LineIterator> codec) {
-			
-			this.name = name;
-			this.suffix = suffix;
-			this.codec = codec;
-		}
-		
-		public String getName() {
-			return name;
-		}
-		
-		public Set<String> getSuffix() {
-			return suffix;
-		}
-		
-		public AbstractFeatureCodec<? extends Feature, LineIterator> getCodec() {
-			return codec;
-		}
-
 	}
 	
 }

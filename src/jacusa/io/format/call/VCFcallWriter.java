@@ -25,7 +25,7 @@ import htsjdk.variant.vcf.VCFHeaderLine;
 import htsjdk.variant.vcf.VCFHeaderLineType;
 import htsjdk.variant.vcf.VCFStandardHeaderLines;
 import jacusa.filter.FilterConfig;
-import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.FilterFactory;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
@@ -103,7 +103,7 @@ implements ResultWriter  {
 		header.addMetaDataLine(new VCFFormatHeaderLine("BC", 4, VCFHeaderLineType.Integer, "Base call counts A,C,G,T"));
 
 		// add filter descriptions to header
-		for (final AbstractFilterFactory filterFactory : filterConfig.getFilterFactories()) {
+		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {
 			header.addMetaDataLine(new VCFFilterHeaderLine(Character.toString(filterFactory.getC()), filterFactory.getDesc()));
 		}
 
@@ -143,7 +143,7 @@ implements ResultWriter  {
 			vcb.passFilters();
 		}
 		
-		for (final AbstractFilterFactory filterFactory : filterConfig.getFilterFactories()) {
+		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {
 			final String c = Character.toString(filterFactory.getC());
 			if (result.getFilterInfo(0).contains(c)) {
 				vcb.filter(c);

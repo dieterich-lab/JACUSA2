@@ -1,4 +1,4 @@
-package jacusa.filter.factory.distance.lrtarrest;
+package jacusa.filter.factory.basecall.rtarrest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,20 +8,20 @@ import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import lib.data.cache.fetcher.FilteredDataFetcher;
 import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
-import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.cache.region.RegionDataCache;
-import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
+import lib.data.count.basecall.BaseCallCount;
+import lib.data.filter.BaseCallCountFilteredData;
 
 /**
  * TODO add comments.
  */
 
-public class LRTarrestSpliceSiteFilterFactory
-extends AbstractLRTarrestDistanceFilterFactory {
+public class RTarrestSpliceSiteFilterFactory
+extends AbstractRTarrestBaseCallcountFilterFactory {
 
-	public LRTarrestSpliceSiteFilterFactory(
+	public RTarrestSpliceSiteFilterFactory(
 			final Apply2readsBaseCallCountSwitch bccSwitch, 
-			final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, ArrestPosition2baseCallCount> filteredDataFetcher) {
+			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
 
 		super(
 				SpliceSiteFilterFactory.getOptionBuilder().build(),

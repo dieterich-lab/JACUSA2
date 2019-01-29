@@ -1,10 +1,10 @@
-package test.jacusa.filter.factory.distance.rtarrest;
+package test.jacusa.filter.factory.basecall.rtarrest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class AbstractRTarrestDistanceFilterFactoryTest {
+class RTarrestBaseCallCountFilterFactoryTest {
 
 	@Test
 	void testProcessCLICommandLine() {

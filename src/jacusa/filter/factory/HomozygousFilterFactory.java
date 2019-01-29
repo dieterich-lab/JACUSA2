@@ -24,7 +24,7 @@ import lib.util.coordinate.CoordinateController;
 /**
  * TODO add comments
  * 
- * Tested in 
+ * Tested in test.jacusa.filter.factory.HomozygousFilterFactoryTest
  */
 public class HomozygousFilterFactory extends AbstractFilterFactory {
 

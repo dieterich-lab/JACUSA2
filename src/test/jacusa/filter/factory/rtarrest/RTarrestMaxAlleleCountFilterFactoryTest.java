@@ -17,18 +17,18 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.FilterFactory;
 import jacusa.filter.factory.rtarrest.RTarrestMaxAlleleCountFilterFactory;
 import jacusa.method.rtarrest.RTarrestMethod;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
 import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.util.Util;
-import test.jacusa.filter.factory.AbstractMaxAlleleCountFilterFactoryTest;
+import test.jacusa.filter.factory.MaxAlleleCountFilterFactoryTest;
 import test.utlis.CLIUtils;
 import test.utlis.TestUtils;
 
 @DisplayName("Test CLI processing of RTarrestMaxAlleleCountFilterFactory")
-class RTarrestMaxAlleleCountFilterFactoryTest extends AbstractMaxAlleleCountFilterFactoryTest {
+class RTarrestMaxAlleleCountFilterFactoryTest extends MaxAlleleCountFilterFactoryTest {
 
 	private RTarrestMaxAlleleCountFilterFactory testInstance;
 	
@@ -105,7 +105,7 @@ class RTarrestMaxAlleleCountFilterFactoryTest extends AbstractMaxAlleleCountFilt
 	}
 	
 	@Override
-	protected AbstractFilterFactory getTestInstance() {
+	protected FilterFactory getTestInstance() {
 		return testInstance;
 	}
 	

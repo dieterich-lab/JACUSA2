@@ -6,16 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import htsjdk.tribble.AsciiFeatureCodec;
 import htsjdk.tribble.readers.LineIterator;
 import jacusa.JACUSA;
-import jacusa.filter.factory.ResultFeature;
 import lib.data.DefaultDataTypeContainer;
 import lib.data.ParallelData;
 import lib.data.has.LibraryType;
@@ -48,11 +46,10 @@ public class JACUSA2codec extends AsciiFeatureCodec<ResultFeature> {
 	}
 
 	public JACUSA2codec() {
-		this(JACUSA.getLogger().getTool().getCLI().getMethodFactories().stream()
-				.collect(
-						Collectors.toMap(
-								AbstractMethod.AbstractFactory::getName, 
-								Function.identity())) );
+		this(
+				JACUSA.getLogger() == null ? 
+				new HashMap<>() :
+				JACUSA.getLogger().getTool().getCLI().getName2methodFactory() );
 	}
 	
 	@Override

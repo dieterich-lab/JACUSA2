@@ -9,7 +9,7 @@ import java.util.Map;
 
 import htsjdk.samtools.util.StringUtil;
 import jacusa.JACUSA;
-import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.FilterFactory;
 import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
@@ -133,7 +133,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		protected abstract void addFilters(final AbstractBuilder builder);
 		
 		private void initFilterDataTypes(final AbstractBuilder builder) {
-			for (final AbstractFilterFactory filterFactory : parameter.getFilterConfig().getFilterFactories()) {
+			for (final FilterFactory filterFactory : parameter.getFilterConfig().getFilterFactories()) {
 				filterFactory.initDataTypeContainer(builder);
 			}
 		}

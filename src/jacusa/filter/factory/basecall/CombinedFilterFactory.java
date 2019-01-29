@@ -22,8 +22,7 @@ import lib.data.filter.BaseCallCountFilteredData;
  * 
  * @param 
  */
-public class CombinedFilterFactory
-extends AbstractBaseCallCountFilterFactory {
+public class CombinedFilterFactory extends AbstractBaseCallCountFilterFactory {
 
 	public CombinedFilterFactory(
 			final Fetcher<BaseCallCount> observedBccFetcher,

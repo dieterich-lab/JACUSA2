@@ -1,4 +1,4 @@
-package jacusa.filter.factory.distance.lrtarrest;
+package jacusa.filter.factory.basecall.lrtarrest;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,8 +16,8 @@ import jacusa.filter.GenericBaseCallCountFilter;
 import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.basecall.AbstractBaseCallCountFilterFactory;
+import jacusa.filter.factory.basecall.rtarrest.AbstractRTarrestBaseCallcountFilterFactory;
 import jacusa.filter.homopolymer.RecordProcessDataCache;
-import jacusa.method.rtarrest.RTarrestMethod;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataType;
@@ -48,7 +48,7 @@ import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
 import lib.data.has.LibraryType;
 import lib.util.coordinate.CoordinateController;
 
-public abstract class AbstractLRTarrestDistanceFilterFactory 
+public abstract class AbstractLRTarrestBaseCallCountFilterFactory 
 extends AbstractFilterFactory {
 
 	private final Apply2readsBaseCallCountSwitch bccSwitch;
@@ -59,7 +59,7 @@ extends AbstractFilterFactory {
 	private int filterDistance;
 	private double filterMinRatio;
 	
-	public AbstractLRTarrestDistanceFilterFactory(
+	public AbstractLRTarrestBaseCallCountFilterFactory(
 			final Option option,
 			final Apply2readsBaseCallCountSwitch bccSwitch, 
 			final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, ArrestPosition2baseCallCount> filteredDataFetcher, 
@@ -106,26 +106,17 @@ extends AbstractFilterFactory {
 			final String longOpt = option.getLongOpt();
 			switch (longOpt) {
 				case "distance":
-					filterDistance = Integer.parseInt(cmd.getOptionValue(longOpt));
+					filterDistance = AbstractBaseCallCountFilterFactory.parseDistance(cmd, longOpt);
 					parsed.add(option);
 					break;
 					
 				case "minRatio":
-					filterMinRatio = Double.parseDouble(cmd.getOptionValue(longOpt));
+					filterMinRatio = AbstractBaseCallCountFilterFactory.parseMinRatio(cmd, longOpt);
 					parsed.add(option);
 					break;
 			
 				case "reads":
-					final String optionValue = cmd.getOptionValue(longOpt);
-					if (optionValue.isEmpty()) {
-						throw new MissingOptionException("Missing value for " + longOpt);
-					}
-					final Set<RT_READS> tmpApply2reads = RTarrestMethod.processApply2Reads(optionValue);
-					if (tmpApply2reads.size() == 0) {
-						throw new IllegalArgumentException("Unknown value for " + longOpt);
-					}
-					bccSwitch.getApply2reads().clear();
-					bccSwitch.getApply2reads().addAll(tmpApply2reads);
+					AbstractRTarrestBaseCallcountFilterFactory.parseApply2reads(cmd, longOpt, bccSwitch);
 					parsed.add(option);
 					break;
 			}
@@ -142,6 +133,7 @@ extends AbstractFilterFactory {
 	@Override
 	protected Filter createFilter(CoordinateController coordinateController,
 			ConditionContainer conditionContainer) {
+		
 		return new GenericBaseCallCountFilter(getC(),
 			bccSwitch,
 			filteredBccExtractor,	
@@ -193,7 +185,9 @@ extends AbstractFilterFactory {
 				createProcessRecord(uniqueBaseCallCache));
 	}
 	
-
+	public double getFilterMinRatio() {
+		return filterMinRatio;
+	}
 	
 	public int getFilterDistance() {
 		return filterDistance;

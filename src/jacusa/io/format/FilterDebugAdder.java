@@ -3,6 +3,7 @@ package jacusa.io.format;
 import java.util.List;
 
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.FilterFactory;
 import lib.data.DataTypeContainer;
 import lib.data.result.Result;
 import lib.io.format.bed.DataAdder;
@@ -26,7 +27,7 @@ public class FilterDebugAdder implements DataAdder {
 	public void addHeader(StringBuilder sb, int conditionIndex, int replicateIndex) {
 		dataAdder.addHeader(sb, conditionIndex, replicateIndex);
 
-		for (final AbstractFilterFactory filterFactory : filterFactories) {
+		for (final FilterFactory filterFactory : filterFactories) {
 			sb.append(Util.FIELD_SEP);
 			sb.append(filterFactory.getC());
 			sb.append(conditionIndex + 1);
@@ -39,7 +40,7 @@ public class FilterDebugAdder implements DataAdder {
 		dataAdder.addData(sb, valueIndex, conditionIndex, replicateIndex, result);
 		
 		final DataTypeContainer container = result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
-		for (final AbstractFilterFactory filterFactory : filterFactories) {
+		for (final FilterFactory filterFactory : filterFactories) {
 			sb.append(Util.FIELD_SEP);
 			filterFactory.addFilteredData(sb, container);
 		}

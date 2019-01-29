@@ -1,7 +1,7 @@
 package jacusa.filter;
 
-import htsjdk.tribble.AbstractFeatureCodec;
 import htsjdk.tribble.Feature;
+import htsjdk.tribble.FeatureCodec;
 import htsjdk.tribble.readers.LineIterator;
 import jacusa.filter.factory.exclude.ContainedCoordinate;
 import jacusa.filter.factory.exclude.DefaultContainedCoordinate;
@@ -19,7 +19,7 @@ public class ExcludeSiteFilter extends AbstractFilter {
 	public ExcludeSiteFilter(
 			final char c, 
 			final String fileName, 
-			final AbstractFeatureCodec<? extends Feature, LineIterator> codec) {
+			final FeatureCodec<? extends Feature, LineIterator> codec) {
 		
 		super(c);
 		containedCoordinate = new DefaultContainedCoordinate(fileName, codec);

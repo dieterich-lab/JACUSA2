@@ -1,6 +1,7 @@
 package jacusa.filter;
 
 import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.FilterFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +60,7 @@ public class FilterConfig implements Cloneable {
 	 * @param conditionContainer
 	 */
 	public void registerFilters(final CoordinateController coordinateController, final ConditionContainer conditionContainer) {
-		for (final AbstractFilterFactory filterFactory : c2factory.values()) {
+		for (final FilterFactory filterFactory : c2factory.values()) {
 			filterFactory.registerFilter(coordinateController, conditionContainer);
 		}
 	}
