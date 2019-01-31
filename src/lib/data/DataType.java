@@ -3,38 +3,61 @@ package lib.data;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
-import lib.data.cache.fetcher.DataTypeFetcher;
-import lib.data.cache.fetcher.Fetcher;
-import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.count.BaseSubstitutionCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.fetcher.DataTypeFetcher;
+import lib.data.fetcher.Fetcher;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.filter.BooleanWrapperFilteredData;
-import lib.util.Data;
+import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 
 public final class DataType<T extends Data<T>> implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	private static int ID = 0;
-	
-	public static final DataType<PileupCount> PILEUP_COUNT = create("Default", PileupCount.class); 
-	public static final DataType<BaseCallCount> BCC = create("Default", BaseCallCount.class);
-	public static final DataType<BaseCallCount> ARREST_BCC = create("Arrest", BaseCallCount.class);
-	public static final DataType<BaseCallCount> THROUGH_BCC = create("Through", BaseCallCount.class);
-	public static final DataType<ArrestPosition2baseCallCount> AP2BCC = create("Default", ArrestPosition2baseCallCount.class);
-	
-	public static final DataType<BaseSubstitutionCount> BASE_SUBST = create("Default", BaseSubstitutionCount.class);
-	
-	public static final DataType<BaseSubstitutionCount> ARREST_BASE_SUBST = create("Arrest", BaseSubstitutionCount.class);
-	public static final DataType<BaseSubstitutionCount> THROUGH_BASE_SUBST = create("Through", BaseSubstitutionCount.class);
+	private static Map<Class<?>, Map<String, DataType<?>>> CLASS2NAME2TYPE = new HashMap<>();
 
-	public static final DataType<BaseCallCountFilteredData> F_BCC = create("Default", BaseCallCountFilteredData.class);
-	public static final DataType<BooleanWrapperFilteredData> F_BOOLEAN = create("Default", BooleanWrapperFilteredData.class);
-	public static final DataType<ArrestPos2BaseCallCountFilteredData> F_AP2BCC = create("Default", ArrestPos2BaseCallCountFilteredData.class);
+	private static String DEFAULT = "Default";
+	
+	public static final DataType<PileupCount> PILEUP_COUNT = 
+			create(DEFAULT, PileupCount.class);
+	
+	public static final DataType<BaseCallCount> BCC = 
+			create(DEFAULT, BaseCallCount.class);
+	
+	public static final DataType<BaseCallCount> ARREST_BCC = 
+			create("Arrest", BaseCallCount.class);
+	
+	public static final DataType<BaseCallCount> THROUGH_BCC = 
+			create("Through", BaseCallCount.class);
+	
+	public static final DataType<ArrestPosition2baseCallCount> AP2BCC = 
+			create(DEFAULT, ArrestPosition2baseCallCount.class);
+	
+	public static final DataType<BaseSubstitutionCount> BASE_SUBST = 
+			create(DEFAULT, BaseSubstitutionCount.class);
+	
+	public static final DataType<BaseSubstitutionCount> ARREST_BASE_SUBST = 
+			create("Arrest", BaseSubstitutionCount.class);
+	
+	public static final DataType<BaseSubstitutionCount> THROUGH_BASE_SUBST = 
+			create("Through", BaseSubstitutionCount.class);
+
+	public static final DataType<BaseCallCountFilteredData> F_BCC = 
+			create(DEFAULT, BaseCallCountFilteredData.class);
+	
+	public static final DataType<BooleanWrapperFilteredData> F_BOOLEAN = 
+			create(DEFAULT, BooleanWrapperFilteredData.class);
+	
+	public static final DataType<ArrestPos2BaseCallCountFilteredData> F_AP2BCC = 
+			create(DEFAULT, ArrestPos2BaseCallCountFilteredData.class);
+
 	
 	private final int id;
 	private final String name;
@@ -43,15 +66,15 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	private final Fetcher<T> fetcher;
 	
 	private DataType(final String name, final Class<T> enclosingClass) {
-		this.id = ++ID;
-		this.name = name;
+		this.id 			= ++ID;
+		this.name 			= name;
 		this.enclosingClass = enclosingClass;
-		fetcher = new DataTypeFetcher<>(this);
+		fetcher 			= new DataTypeFetcher<>(this);
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof DataType)) {
+		if (obj == null || ! (obj instanceof Data)) {
 			return false;
 		}
 		if (obj == this) {
@@ -114,8 +137,39 @@ public final class DataType<T extends Data<T>> implements Serializable {
 		return String.format("id: %d, name: %s, class: %s", id, name, enclosingClass.getName());
 	}
 	
-	public static <T extends Data<T>> DataType<T> create(final String name, final Class<T> enclosingClass) {
-		return new DataType<T>(name, enclosingClass);
+	public synchronized static <T extends Data<T>> DataType<T> retrieve(final String name, final Class<T> enclosingClass) {
+		DataType<T> dataType = get(name, enclosingClass);
+		if (dataType == null) {
+			dataType = create(name, enclosingClass);
+		}
+		return dataType;
+	}
+	
+	public synchronized static <T extends Data<T>> DataType<T> create(final String name, final Class<T> enclosingClass) {
+		if (! CLASS2NAME2TYPE.containsKey(enclosingClass)) {
+			CLASS2NAME2TYPE.put(enclosingClass, new HashMap<>());
+		}
+		final Map<String, DataType<?>> name2type = CLASS2NAME2TYPE.get(enclosingClass); 
+		if (name2type.containsKey(name)) {
+			throw new IllegalArgumentException(
+					"Duplicate name: " + name +  
+					" for class: " + enclosingClass.getCanonicalName());
+		}
+		final DataType<T> dataType = new DataType<T>(name, enclosingClass);
+		name2type.put(name, dataType);		
+		return dataType;
 	}
 
+	@SuppressWarnings("unchecked")
+	public synchronized static <T extends Data<T>> DataType<T> get(final String name, final Class<T> enclosingClass) {
+		if (! CLASS2NAME2TYPE.containsKey(enclosingClass)) {
+			return null;
+		}
+		final Map<String, DataType<?>> name2type = CLASS2NAME2TYPE.get(enclosingClass); 
+		if (name2type.containsKey(name)) {
+			return (DataType<T>)name2type.get(name);
+		}
+		return null;
+	}
+	
 }

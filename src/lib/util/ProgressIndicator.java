@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Inspired by https://stackoverflow.com/questions/4573123/java-updating-text-in-the-command-line-without-a-new-line
  * 
- * @author Michael Piechotta
+ * 
  */
 
 public class ProgressIndicator {

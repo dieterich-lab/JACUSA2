@@ -5,7 +5,7 @@ import lib.data.result.Result;
 
 /**
  * 
- * @author Michael Piechotta
+ * 
  */
 public abstract class AbstractStat {
 

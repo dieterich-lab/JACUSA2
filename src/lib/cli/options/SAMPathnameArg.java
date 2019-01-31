@@ -19,6 +19,9 @@ public class SAMPathnameArg {
 		this.condition = conditionParameter;
 	}
 
+	/**
+	 * Tested @see test.lib.cli.options.SAMPathnameArgTest
+	 */
 	public void processArg(String arg) throws FileNotFoundException {
 		final String[] recordFilenames = arg.split(Character.toString(SEP));
     	for (String recordFilename : recordFilenames) {

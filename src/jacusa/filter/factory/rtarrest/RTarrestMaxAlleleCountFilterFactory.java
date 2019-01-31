@@ -1,30 +1,25 @@
 package jacusa.filter.factory.rtarrest;
 
-import java.util.Collections;
 import java.util.Set;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.MissingOptionException;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-
 import jacusa.filter.Filter;
-import jacusa.filter.MaxAlleleFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
-import jacusa.method.rtarrest.RTarrestMethod;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
+import lib.cli.options.filter.Apply2readsOption;
+import lib.cli.options.filter.has.HasApply2reads;
 import lib.cli.parameter.ConditionParameter;
-import lib.data.DataTypeContainer;
-import lib.data.DataTypeContainer.AbstractBuilder;
-import lib.data.assembler.ConditionContainer;
-import lib.data.cache.container.SharedCache;
-import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
-import lib.data.cache.record.RecordWrapperProcessor;
+import lib.data.DataContainer;
+import lib.data.DataContainer.AbstractBuilder;
+import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
+import lib.data.storage.Cache;
+import lib.data.storage.container.SharedStorage;
+import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
 public class RTarrestMaxAlleleCountFilterFactory 
-extends AbstractFilterFactory {
+extends AbstractFilterFactory 
+implements HasApply2reads {
 
 	private MaxAlleleCountFilterFactory maxAlleleCountFilterFactory;
 	private final Apply2readsBaseCallCountSwitch bccSwitch;
@@ -33,67 +28,39 @@ extends AbstractFilterFactory {
 			final Apply2readsBaseCallCountSwitch bccSwitch) {
 		super(MaxAlleleCountFilterFactory.getOptionBuilder().build());
 		maxAlleleCountFilterFactory = new MaxAlleleCountFilterFactory(bccSwitch);
+		getACOption().addAll(maxAlleleCountFilterFactory.getACOption());
+		getACOption().add(new Apply2readsOption(this));
 		this.bccSwitch = bccSwitch;
 	}
 
 	@Override
-	public void initDataTypeContainer(AbstractBuilder builder) {
+	public void initDataContainer(AbstractBuilder builder) {
 		// nothing to do
-	}
-	
-	public int getMaxAlleles() {
-		return maxAlleleCountFilterFactory.getMaxAlleles();
-	}
-	
-	public Set<RT_READS> getApply2Reads() {
-		return Collections.unmodifiableSet(bccSwitch.getApply2reads());
 	}
 
 	@Override
-	protected Filter createFilter(
+	public Set<RT_READS> getApply2Reads() {
+		return bccSwitch.getApply2reads();
+	}
+
+	@Override
+	public Filter createFilter(
 			CoordinateController coordinateController,
 			ConditionContainer conditionContainer) {
 		
-		return new MaxAlleleFilter(
-				getC(), 
-				maxAlleleCountFilterFactory.getMaxAlleles(),
-				bccSwitch);
+		return maxAlleleCountFilterFactory.createFilter(coordinateController, conditionContainer);
 	}
 	
 	@Override
-	public RecordWrapperProcessor createFilterCache(
+	public Cache createFilterCache(
 			ConditionParameter conditionParameter,
-			SharedCache sharedCache) {
+			SharedStorage sharedStorage) {
 
-		return maxAlleleCountFilterFactory.createFilterCache(conditionParameter, sharedCache);
-	}
-	
-	@Override
-	public Set<Option> processCLI(final CommandLine cmd) throws IllegalArgumentException, MissingOptionException {
-		final Set<Option> parsed = maxAlleleCountFilterFactory.processCLI(cmd);
-		for (final Option option : cmd.getOptions()) {
-			final String longOpt = option.getLongOpt();
-			switch (longOpt) {
-			case "reads": // choose arrest, through or arrest&through
-				final String readsValue = cmd.getOptionValue(longOpt);
-				bccSwitch.getApply2reads().clear();
-				bccSwitch.getApply2reads().addAll(RTarrestMethod.processApply2Reads(readsValue));
-				parsed.add(option);
-				break;
-			}
-		}
-		return parsed;
-	}
-	
-	@Override
-	public Options getOptions() {
-		final Options options = maxAlleleCountFilterFactory.getOptions();
-		options.addOption(RTarrestMethod.getReadsOptionBuilder(bccSwitch.getApply2reads()).build());
-		return options;
+		return maxAlleleCountFilterFactory.createFilterCache(conditionParameter, sharedStorage);
 	}
 
 	@Override
-	public void addFilteredData(StringBuilder sb, DataTypeContainer filteredData) {
+	public void addFilteredData(StringBuilder sb, DataContainer filteredData) {
 		maxAlleleCountFilterFactory.addFilteredData(sb, filteredData);
 	}
 	

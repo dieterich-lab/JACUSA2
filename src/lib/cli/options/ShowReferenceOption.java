@@ -23,6 +23,9 @@ public class ShowReferenceOption extends AbstractACOption {
 				.build();
 	}
 
+	/**
+	 * Tested in @see test.lib.cli.options.ShowReferenceOptionTest
+	 */
 	@Override
 	public void process(CommandLine line) throws Exception {
     	parameters.setShowReferenceBase(true);

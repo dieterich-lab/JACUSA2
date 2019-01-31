@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import lib.data.DataTypeContainer;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
@@ -42,7 +42,7 @@ extends AbstractDirMultPileupCountProvider {
 
 		// get bases that are different between the samples
 		final List<BaseCallCount> originalBccs = new ArrayList<>(parallelData.getCombinedData().size());
-		for (final DataTypeContainer container : parallelData.getCombinedData()) {
+		for (final DataContainer container : parallelData.getCombinedData()) {
 			originalBccs.add(container.getPileupCount().getBaseCallCount());
 		}
 		final Set<Base> variantBases = 

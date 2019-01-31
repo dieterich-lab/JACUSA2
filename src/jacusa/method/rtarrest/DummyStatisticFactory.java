@@ -22,9 +22,6 @@ extends AbstractStatFactory {
 				.desc(DESC)
 				.build());
 	}
-	
-	@Override
-	public void processCLI(final String line) {}
 
 	@Override
 	public void processCLI(CommandLine cmd) {}

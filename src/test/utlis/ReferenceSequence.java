@@ -13,8 +13,9 @@ public final class ReferenceSequence {
 
 	private static Map<String, String> CONTIG2REF_SEQ = new HashMap<String, String>(); 
 	static {
-		CONTIG2REF_SEQ.put("homopolymerTest", 	"ACGAACGT");
-		CONTIG2REF_SEQ.put("processRecordTest", "ACGAACGT");
+		CONTIG2REF_SEQ.put("homopolymerTest", 			"ACGAACGT");
+		CONTIG2REF_SEQ.put("processRecordTest", 		"ACGAACGT");
+		CONTIG2REF_SEQ.put("BaseCallInterpreterTest", 	"ACGAACGT");
 		// CONTIG2REF_SEQ.put("Contig3", 			"TODO");
 		// add more sequences here 
 	}

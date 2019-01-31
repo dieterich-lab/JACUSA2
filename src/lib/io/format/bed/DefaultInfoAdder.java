@@ -3,7 +3,7 @@ package lib.io.format.bed;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.ParallelData;
 import lib.data.result.Result;
-import lib.util.Util;
+import lib.io.InputOutput;
 
 public class DefaultInfoAdder implements InfoAdder {
 	
@@ -15,18 +15,18 @@ public class DefaultInfoAdder implements InfoAdder {
 	
 	@Override
 	public void addHeader(StringBuilder sb) {
-		sb.append(Util.FIELD_SEP);
+		sb.append(InputOutput.FIELD_SEP);
 		sb.append("info");
 
 		// add filtering info
 		if (parameter.getFilterConfig().hasFiters()) {
-			sb.append(Util.FIELD_SEP);
+			sb.append(InputOutput.FIELD_SEP);
 			sb.append("filter_info");
 		}
 
 		// show reference base
 		if (parameter.showReferenceBase()) {
-			sb.append(Util.FIELD_SEP);
+			sb.append(InputOutput.FIELD_SEP);
 			sb.append("refBase");
 		}
 	}
@@ -35,17 +35,17 @@ public class DefaultInfoAdder implements InfoAdder {
 	public void addData(StringBuilder sb, int valueIndex, Result result) {
 		final ParallelData parallelData = result.getParellelData();
 
-		sb.append(Util.FIELD_SEP);
+		sb.append(InputOutput.FIELD_SEP);
 		sb.append(result.getResultInfo(valueIndex).combine());
 		
 		// add filtering info
 		if (parameter.getFilterConfig().hasFiters()) {
-			sb.append(Util.FIELD_SEP);
+			sb.append(InputOutput.FIELD_SEP);
 			sb.append(result.getFilterInfo(valueIndex).combine());
 		}
 		
 		if (parameter.showReferenceBase()) {
-			sb.append(Util.FIELD_SEP);
+			sb.append(InputOutput.FIELD_SEP);
 			sb.append(parallelData.getCombinedPooledData().getReferenceBase());
 		}
 	}

@@ -1,18 +1,19 @@
-	package jacusa.filter.factory.basecall;
+package jacusa.filter.factory.basecall;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Option.Builder;
 
-import jacusa.filter.cache.processrecord.ProcessRecord;
-import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
-import lib.data.cache.fetcher.Fetcher;
-import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.region.RegionDataCache;
+import jacusa.filter.processrecord.ProcessSkippedOperator;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.fetcher.Fetcher;
+import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.filter.BaseCallCountFilteredData;
+import lib.data.storage.PositionProcessor;
+import lib.data.storage.container.SharedStorage;
+import lib.data.storage.processor.RecordExtendedProcessor;
 
 /**
  * TODO add comments.
@@ -27,22 +28,26 @@ extends AbstractBaseCallCountFilterFactory {
 		
 		super(
 				getOptionBuilder().build(),
-				observedBccFetcher, filteredDataFetcher,
-				6, 0.5);
+				observedBccFetcher, filteredDataFetcher);
 	}
 	
 	@Override
-	protected List<ProcessRecord> createProcessRecord(final RegionDataCache regionDataCache) {
-		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
-		processRecords.add(new ProcessSkippedOperator(getFilterDistance(), regionDataCache));
-		return processRecords;
+	protected List<RecordExtendedProcessor> createRecordProcessors(SharedStorage sharedStorage, final PositionProcessor positionProcessor) {
+		return createRecordProcessors(sharedStorage, getFilterDistance(), positionProcessor);
+	}
+	
+	public static List<RecordExtendedProcessor> createRecordProcessors(
+			final SharedStorage sharedStorage,
+			final int filterDistance, 
+			final PositionProcessor positionProcessor) {
+		
+		return Arrays.asList(new ProcessSkippedOperator(
+				sharedStorage, filterDistance, positionProcessor));
 	}
 	
 	public static Builder getOptionBuilder() {
 		return Option.builder(Character.toString('S'))
 				.desc("Filter potential false positive variants adjacent to splice site(s).");
 	}
-	
-	
 	
 }

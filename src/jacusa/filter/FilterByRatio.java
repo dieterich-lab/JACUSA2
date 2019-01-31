@@ -9,7 +9,8 @@ public class FilterByRatio {
 	}
 
 	/**
-	 * TODO
+	 * TODO add comment
+	 * 
 	 * @param count
 	 * @param filteredCount
 	 * @return

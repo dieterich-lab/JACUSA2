@@ -6,10 +6,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lib.util.Data;
+import lib.data.Data;
 
-public abstract class AbstractFilteredData<F extends FilteredData<F, T>, T extends Data<T>>
-implements FilteredData<F, T> {
+public abstract class AbstractFilteredData<F extends FilteredDataContainer<F, T>, T extends Data<T>>
+implements FilteredDataContainer<F, T> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -111,7 +111,7 @@ implements FilteredData<F, T> {
 		return map.hashCode();
 	}
 	
-	public static abstract class AbstractParser<F extends FilteredData<F, T>, T extends Data<T>>
+	public static abstract class AbstractParser<F extends FilteredDataContainer<F, T>, T extends Data<T>>
 	implements lib.util.Parser<F> {
 
 		public static final char FILTER_SEP = ',';
@@ -130,7 +130,7 @@ implements FilteredData<F, T> {
 			this(FILTER_SEP, FILTER_DATA_SEP);
 		}
 
-		public String wrap(final FilteredData<F, T> filteredData) {
+		public String wrap(final FilteredDataContainer<F, T> filteredData) {
 			final StringBuilder sb = new StringBuilder();
 			if (filteredData.isEmpty()) {
 				sb.append(EMPTY);
@@ -152,7 +152,7 @@ implements FilteredData<F, T> {
 
 		protected abstract String wrapFilteredElement(T filteredElement);
 		
-		protected void parse(String s, FilteredData<F, T> filteredDataContainer) {
+		protected void parse(String s, FilteredDataContainer<F, T> filteredDataContainer) {
 			if (s.equals(Character.toString(EMPTY))) {
 				return;
 			}

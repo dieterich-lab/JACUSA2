@@ -16,12 +16,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import lib.data.Data;
 import lib.data.filter.AbstractFilteredData;
-import lib.data.filter.FilteredData;
-import lib.util.Data;
+import lib.data.filter.FilteredDataContainer;
 
 @TestInstance(Lifecycle.PER_CLASS)
-public abstract class AbstractFilteredDataTest<F extends FilteredData<F, T>, T extends Data<T>> {
+public abstract class AbstractFilteredDataTest<F extends FilteredDataContainer<F, T>, T extends Data<T>> {
 
 	protected final AbstractFilteredData.AbstractParser<F, T> parser;
 	
@@ -43,12 +43,12 @@ public abstract class AbstractFilteredDataTest<F extends FilteredData<F, T>, T e
 	@MethodSource("testParserParse")
 	void testParserParse(String s, F expected) {
 		final F actual = parser.parse(s);
-		myAssertEquals(expected, actual);
+		assertEquals(expected, actual);
 	}
 	
 	@ParameterizedTest(name = "Wrap data {0} and expect String: {1}")
 	@MethodSource("testParserWrap")
-	void testParserWrap(FilteredData<F, T> data, String expected) {
+	void testParserWrap(FilteredDataContainer<F, T> data, String expected) {
 		final String actual = parser.wrap(data);
 		assertEquals(expected, actual);
 	}

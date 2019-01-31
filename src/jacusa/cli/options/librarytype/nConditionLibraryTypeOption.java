@@ -4,14 +4,14 @@ import java.util.List;
 
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
-import lib.data.has.LibraryType;
+import lib.util.LibraryType;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 /**
  * Specific command line option to chose library type for one condition.
- * @author Michael Piechotta
+ * 
  * @param <T>
  */
 public class nConditionLibraryTypeOption
@@ -39,8 +39,9 @@ extends AbstractLibraryTypeOption {
 		}
 		desc += ":\n" + getPossibleValues() + 
         		"\n default: " + LibraryType.UNSTRANDED;
-		return Option.builder(getOpt())
-				.argName(getLongOpt().toUpperCase())
+		return Option.builder()
+				.longOpt(getOpt())
+				.argName(LONG_OPT.toUpperCase())
 				.hasArg(true)
 				.desc(desc) 
 	        	.build();

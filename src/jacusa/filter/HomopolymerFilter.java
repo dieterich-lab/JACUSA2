@@ -1,7 +1,7 @@
 package jacusa.filter;
 
 import lib.data.ParallelData;
-import lib.data.cache.fetcher.Fetcher;
+import lib.data.fetcher.Fetcher;
 import lib.data.filter.BooleanWrapper;
 
 /**

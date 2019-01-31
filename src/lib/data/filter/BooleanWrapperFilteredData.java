@@ -55,8 +55,7 @@ public class BooleanWrapperFilteredData extends AbstractFilteredData<BooleanWrap
 
 		@Override
 		public String wrap(BooleanWrapperFilteredData o) {
-			// TODO Auto-generated method stub
-			return null;
+			return wrap(o);
 		}
 
 		@Override

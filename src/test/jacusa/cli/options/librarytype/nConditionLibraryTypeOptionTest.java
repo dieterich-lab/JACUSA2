@@ -26,7 +26,7 @@ import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
 import lib.cli.options.AbstractACOption;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
-import lib.data.has.LibraryType;
+import lib.util.LibraryType;
 import test.utlis.CLIUtils;
 
 /**
@@ -41,19 +41,19 @@ class nConditionLibraryTypeOptionTest {
 		parser = new DefaultParser();
 	}
 	
-	@ParameterizedTest(name = "args: {3}")
+	@ParameterizedTest(name = "args: {2}")
 	@MethodSource("testProcess")
 	void testProcess(
 			List<AbstractLibraryTypeOption> testInstances,
 			List<ConditionParameter> conditionParameters,
-			String[] args,
+			String line,
 			List<LibraryType> expected) throws Exception {
 
 		final Options options = getOptions(testInstances);
-		final CommandLine line = parser.parse(options, args);
+		final CommandLine cmd = parser.parse(options, line.split(" "));
 		for (AbstractLibraryTypeOption testInstance : testInstances) {
-			if (line.hasOption(testInstance.getOpt())) {
-				testInstance.process(line);
+			if (cmd.hasOption(testInstance.getOpt())) {
+				testInstance.process(cmd);
 			}
 		}
 		final List<LibraryType> actual = conditionParameters.stream()
@@ -64,26 +64,26 @@ class nConditionLibraryTypeOptionTest {
 	
 	static Stream<Arguments> testProcess() {
 		return Stream.of(
-				testProcess(1, new ArrayList<LibraryType>(Collections.nCopies(1, null))),
-				testProcess(1, Arrays.asList(LibraryType.UNSTRANDED)),
-				testProcess(1, Arrays.asList(LibraryType.RF_FIRSTSTRAND)),
-				testProcess(1, Arrays.asList(LibraryType.FR_SECONDSTRAND)),
+				createArgs(1, new ArrayList<LibraryType>(Collections.nCopies(1, null))),
+				createArgs(1, Arrays.asList(LibraryType.UNSTRANDED)),
+				createArgs(1, Arrays.asList(LibraryType.RF_FIRSTSTRAND)),
+				createArgs(1, Arrays.asList(LibraryType.FR_SECONDSTRAND)),
 				
-				testProcess(2, new ArrayList<LibraryType>(Collections.nCopies(2, null))),
-				testProcess(2, Arrays.asList(LibraryType.UNSTRANDED, LibraryType.UNSTRANDED)),
-				testProcess(2, Arrays.asList(LibraryType.RF_FIRSTSTRAND, LibraryType.RF_FIRSTSTRAND)),
-				testProcess(2, Arrays.asList(LibraryType.FR_SECONDSTRAND, LibraryType.FR_SECONDSTRAND)),
+				createArgs(2, new ArrayList<LibraryType>(Collections.nCopies(2, null))),
+				createArgs(2, Arrays.asList(LibraryType.UNSTRANDED, LibraryType.UNSTRANDED)),
+				createArgs(2, Arrays.asList(LibraryType.RF_FIRSTSTRAND, LibraryType.RF_FIRSTSTRAND)),
+				createArgs(2, Arrays.asList(LibraryType.FR_SECONDSTRAND, LibraryType.FR_SECONDSTRAND)),
 				
-				testProcess(2, Arrays.asList(LibraryType.UNSTRANDED, null)),
-				testProcess(2, Arrays.asList(LibraryType.RF_FIRSTSTRAND, null)),
-				testProcess(2, Arrays.asList(LibraryType.FR_SECONDSTRAND, null)),
+				createArgs(2, Arrays.asList(LibraryType.UNSTRANDED, null)),
+				createArgs(2, Arrays.asList(LibraryType.RF_FIRSTSTRAND, null)),
+				createArgs(2, Arrays.asList(LibraryType.FR_SECONDSTRAND, null)),
 				
-				testProcess(2, Arrays.asList(null, LibraryType.UNSTRANDED)),
-				testProcess(2, Arrays.asList(null, LibraryType.RF_FIRSTSTRAND)),
-				testProcess(2, Arrays.asList(null, LibraryType.FR_SECONDSTRAND)) );
+				createArgs(2, Arrays.asList(null, LibraryType.UNSTRANDED)),
+				createArgs(2, Arrays.asList(null, LibraryType.RF_FIRSTSTRAND)),
+				createArgs(2, Arrays.asList(null, LibraryType.FR_SECONDSTRAND)) );
 	}
 
-	static Arguments testProcess(final int conditions, final List<LibraryType> libraryTypes) {
+	static Arguments createArgs(final int conditions, final List<LibraryType> libraryTypes) {
 		assert(conditions == libraryTypes.size());
 		
 		final GeneralParameter generalParameter = new GeneralParameter(conditions);
@@ -95,31 +95,31 @@ class nConditionLibraryTypeOptionTest {
 		final StringBuilder sb = new StringBuilder(); 
 		final List<LibraryType> expected = new ArrayList<>(conditions);
 		
-		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
+		for (int conditionIndex = 1; conditionIndex <= conditions; ++conditionIndex) {
 			final ConditionParameter conditionParameter = new ConditionParameter(conditionIndex);
 			conditionParameters.add(conditionParameter);
 			testInstances.add(
 					new nConditionLibraryTypeOption(conditionParameter, generalParameter));
 			testInstances.add(new nConditionLibraryTypeOption(conditionParameters, generalParameter));
-			if (libraryTypes.get(conditionIndex) == null) {
+			if (libraryTypes.get(conditionIndex - 1) == null) {
 				expected.add(conditionParameter.getLibraryType());
 			} else {
-				expected.add(libraryTypes.get(conditionIndex));
+				expected.add(libraryTypes.get(conditionIndex - 1));
 				if (sb.length() > 0) {
 					sb.append(' ');
 				}
 				sb.append('-');
 				sb.append(AbstractLibraryTypeOption.OPT);
-				sb.append((conditionIndex + 1));
+				sb.append((conditionIndex));
 				sb.append(' ');
-				sb.append(libraryTypes.get(conditionIndex));
+				sb.append(libraryTypes.get(conditionIndex - 1));
 			}
 		}
 		
 		return Arguments.of(
 				testInstances,
 				conditionParameters,
-				sb.toString().split(" "),
+				sb.toString(),
 				expected);
 	}
 	
@@ -129,7 +129,7 @@ class nConditionLibraryTypeOptionTest {
 		
 		final AbstractLibraryTypeOption testInstance = 
 				new nConditionLibraryTypeOption(
-						Arrays.asList(new ConditionParameter(0)), 
+						Arrays.asList(new ConditionParameter(1)), 
 						generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
 		
@@ -147,7 +147,7 @@ class nConditionLibraryTypeOptionTest {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
 		final AbstractLibraryTypeOption testInstance = 
-				new nConditionLibraryTypeOption(new ConditionParameter(0), generalParameter);
+				new nConditionLibraryTypeOption(new ConditionParameter(1), generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
 		
 		assertThrows(MissingArgumentException.class,
@@ -165,7 +165,7 @@ class nConditionLibraryTypeOptionTest {
 		
 		final AbstractLibraryTypeOption testInstance = 
 				new nConditionLibraryTypeOption(
-						Arrays.asList(new ConditionParameter(0)), 
+						Arrays.asList(new ConditionParameter(1)), 
 						generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
 		
@@ -183,7 +183,7 @@ class nConditionLibraryTypeOptionTest {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
 		final AbstractLibraryTypeOption testInstance = 
-				new nConditionLibraryTypeOption(new ConditionParameter(0), generalParameter);
+				new nConditionLibraryTypeOption(new ConditionParameter(1), generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
 		
 		assertThrows(IllegalArgumentException.class,
@@ -201,7 +201,7 @@ class nConditionLibraryTypeOptionTest {
 		
 		final AbstractLibraryTypeOption testInstance = 
 				new nConditionLibraryTypeOption(
-						Arrays.asList(new ConditionParameter(0)), 
+						Arrays.asList(new ConditionParameter(1)), 
 						generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
 		
@@ -221,7 +221,7 @@ class nConditionLibraryTypeOptionTest {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
 		final AbstractLibraryTypeOption testInstance = 
-				new nConditionLibraryTypeOption(new ConditionParameter(0), generalParameter);
+				new nConditionLibraryTypeOption(new ConditionParameter(1), generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
 		
 		assertThrows(IllegalArgumentException.class,

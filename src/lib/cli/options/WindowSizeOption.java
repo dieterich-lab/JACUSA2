@@ -24,6 +24,9 @@ public class WindowSizeOption extends AbstractACOption {
 	        	.build();
 	}
 
+	/**
+	 * Tested in @see test.lib.cli.options.WindowSizeOptionTest
+	 */
 	@Override
 	public void process(CommandLine line) throws Exception {
     	String value = line.getOptionValue(getOpt());

@@ -6,24 +6,22 @@ import java.util.List;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Option.Builder;
 
-import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
-import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
-import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
-import jacusa.filter.cache.processrecord.ProcessRecord;
-import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
+import jacusa.filter.factory.basecall.INDEL_FilterFactory;
+import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
-import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
-import lib.data.cache.region.RegionDataCache;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.fetcher.FilteredDataFetcher;
+import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.filter.BaseCallCountFilteredData;
+import lib.data.storage.PositionProcessor;
+import lib.data.storage.container.SharedStorage;
+import lib.data.storage.processor.RecordExtendedProcessor;
 
 /**
  * TODO add comments.
  * 
  * @param 
  */
-
 public class RTarrestCombinedFilterFactory 
 extends AbstractRTarrestBaseCallcountFilterFactory {
 
@@ -33,22 +31,30 @@ extends AbstractRTarrestBaseCallcountFilterFactory {
 
 		super(
 				getOptionBuilder().build(),
-				bccSwitch, filteredDataFetcher,
-				6, 0.5);
+				bccSwitch, filteredDataFetcher);
 
 		getApply2Reads().add(RT_READS.ARREST);
 	}
 
 	@Override
-	protected List<ProcessRecord> createProcessRecord(RegionDataCache regionDataCache) {
-		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
+	protected List<RecordExtendedProcessor> createRecordProcessors(
+			SharedStorage sharedStorage, PositionProcessor positionProcessor) {
+		
+		return createRecordProcessors(sharedStorage, getFilterDistance(), positionProcessor);
+	}
+	
+	public static List<RecordExtendedProcessor> createRecordProcessors(
+			final SharedStorage sharedStorage,
+			final int filterDistance, 
+			PositionProcessor positionProcessor) {
+		
+		final List<RecordExtendedProcessor> processRecords = new ArrayList<>();
 		// INDELs
-		processRecords.add(new ProcessInsertionOperator(getFilterDistance(), regionDataCache));
-		processRecords.add(new ProcessDeletionOperator(getFilterDistance(), regionDataCache));
-		// read start end 
-		processRecords.add(new ProcessReadStartEnd(getFilterDistance(), regionDataCache));
+		processRecords.addAll(INDEL_FilterFactory.createRecordProcessor(
+				sharedStorage, filterDistance, positionProcessor));
 		// introns
-		processRecords.add(new ProcessSkippedOperator(getFilterDistance(), regionDataCache));
+		processRecords.addAll(SpliceSiteFilterFactory.createRecordProcessors(
+				sharedStorage, filterDistance, positionProcessor));
 		return processRecords;
 	}
 

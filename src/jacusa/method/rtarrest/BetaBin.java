@@ -8,7 +8,7 @@ import lib.stat.BetaBinParameter;
 
 /**
  * TODO implement this test-statistic
- * @author Michael Piechotta
+ * 
  * @param 
  */
 public class BetaBin 

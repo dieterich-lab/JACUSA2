@@ -13,7 +13,7 @@ import java.util.TreeSet;
 
 import jacusa.cli.parameters.HasConditionParameter;
 import jacusa.filter.FilterConfig;
-import lib.cli.options.has.HasReadSubstitution;
+import lib.cli.options.filter.has.HasReadSubstitution;
 import lib.io.ResultFormat;
 import lib.util.AbstractTool;
 
@@ -71,7 +71,7 @@ implements HasConditionParameter, HasReadSubstitution {
 	public GeneralParameter(final int conditionSize) {
 		this();
 		
-		for (int conditionIndex = 0; conditionIndex < conditionSize; conditionIndex++) {
+		for (int conditionIndex = 1; conditionIndex <= conditionSize; conditionIndex++) {
 			conditionParameters.add(new ConditionParameter(conditionIndex));
 		}
 	}

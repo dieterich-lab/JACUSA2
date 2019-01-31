@@ -14,14 +14,14 @@ import java.util.regex.Pattern;
 import htsjdk.tribble.AsciiFeatureCodec;
 import htsjdk.tribble.readers.LineIterator;
 import jacusa.JACUSA;
-import lib.data.DefaultDataTypeContainer;
+import lib.data.DefaultDataContainer;
 import lib.data.ParallelData;
-import lib.data.has.LibraryType;
 import lib.data.result.OneStatResult;
 import lib.data.result.Result;
-import lib.method.AbstractMethod;
+import lib.io.InputOutput;
+import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
-import lib.util.Util;
+import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.coordinate.ZeroCoordinate;
@@ -87,7 +87,7 @@ public class JACUSA2codec extends AsciiFeatureCodec<ResultFeature> {
 	
 	@Override
 	public ResultFeature decode(String s) {
-		final String[] token = s.split(Character.toString(Util.FIELD_SEP)); 
+		final String[] token = s.split(Character.toString(InputOutput.FIELD_SEP)); 
 		return decode(token);
 	}
 
@@ -105,7 +105,7 @@ public class JACUSA2codec extends AsciiFeatureCodec<ResultFeature> {
 		final Coordinate coordinate = decodeCoordinate(token);
 		
 		final ParallelData.Builder pdBuilder = new ParallelData.Builder(1, Arrays.asList(1));
-		DefaultDataTypeContainer.Builder dcBuilder = new DefaultDataTypeContainer.Builder(coordinate, LibraryType.MIXED);
+		DefaultDataContainer.Builder dcBuilder = new DefaultDataContainer.Builder(coordinate, LibraryType.MIXED);
 		
 		final ParallelData parallelData = 
 				pdBuilder.withReplicate(
@@ -138,7 +138,7 @@ public class JACUSA2codec extends AsciiFeatureCodec<ResultFeature> {
 	}
 
 	public boolean isHeaderLine(final String line) {
-		return line.startsWith(Util.HEADER);
+		return line.startsWith(InputOutput.HEADER);
 	}
 	
 }

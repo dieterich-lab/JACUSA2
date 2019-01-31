@@ -13,6 +13,7 @@ import org.junit.jupiter.api.function.Executable;
 import lib.cli.options.AbstractACOption;
 import test.utlis.CLIUtils;
 
+// TODO remove
 public class ParserWrapper {
 
 	private CommandLineParser parser;
@@ -48,7 +49,8 @@ public class ParserWrapper {
 			testInstance.process(cmd);
 		}
 	}
-	
+
+	// TODO remove
 	public <E extends Throwable> void myAssertThrows(final Class<E> expectedType, 
 			final AbstractACOption testInstance, final String value) throws Exception{
 

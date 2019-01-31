@@ -21,8 +21,8 @@ extends AbstractACOption {
 	public AbstractConditionACOption(
 			final String opt, final String longOpt, 
 			final ConditionParameter conditionParameter) {
-		super(opt != null ? opt + (conditionParameter.getConditionIndex() + 1) : null,
-				longOpt != null ? longOpt + (conditionParameter.getConditionIndex() + 1) : null);
+		super(opt != null ? opt + (conditionParameter.getConditionIndex()) : null,
+				longOpt != null ? longOpt + (conditionParameter.getConditionIndex()) : null);
 
 		this.conditionIndex = conditionParameter.getConditionIndex();
 		conditionParameters = new ArrayList<ConditionParameter>(1);
@@ -38,7 +38,7 @@ extends AbstractACOption {
 	}
 
 	public int getConditionIndex() {
-		return conditionIndex == -1 ? -1 : conditionIndex + 1;
+		return conditionIndex == -1 ? -1 : conditionIndex;
 	}
 
 }

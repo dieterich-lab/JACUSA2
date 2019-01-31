@@ -3,7 +3,7 @@ package jacusa.method.call;
 import org.apache.commons.cli.ParseException;
 
 import jacusa.cli.parameters.CallParameter;
-import lib.data.builder.factory.CallDataAssemblerFactory;
+import lib.data.assembler.factory.CallDataAssemblerFactory;
 
 public class TwoConditionCallMethod 
 extends CallMethod {

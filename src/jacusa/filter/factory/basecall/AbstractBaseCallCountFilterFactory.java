@@ -1,52 +1,57 @@
 package jacusa.filter.factory.basecall;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
 
 import jacusa.JACUSA;
 import jacusa.filter.Filter;
 import jacusa.filter.FilterByRatio;
 import jacusa.filter.GenericBaseCallCountFilter;
-import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.filter.homopolymer.RecordProcessDataCache;
+import jacusa.filter.homopolymer.CollectionRecordExtendedProcessors;
+import lib.cli.options.filter.FilterDistanceOption;
+import lib.cli.options.filter.FilterMinRatioOption;
+import lib.cli.options.filter.has.HasFilterDistance;
+import lib.cli.options.filter.has.HasFilterMinRatio;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataType;
-import lib.data.DataTypeContainer;
-import lib.data.DataTypeContainer.AbstractBuilder;
-import lib.data.adder.IncrementAdder;
-import lib.data.adder.basecall.ArrayBaseCallAdder;
-import lib.data.adder.region.ValidatedRegionDataCache;
-import lib.data.assembler.ConditionContainer;
-import lib.data.cache.container.SharedCache;
-import lib.data.cache.fetcher.Fetcher;
-import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.fetcher.SpecificFilteredDataFetcher;
-import lib.data.cache.record.RecordWrapperProcessor;
-import lib.data.cache.region.RegionDataCache;
-import lib.data.cache.region.UniqueTraverse;
-import lib.data.cache.region.isvalid.BaseCallValidator;
-import lib.data.cache.region.isvalid.DefaultBaseCallValidator;
-import lib.data.cache.region.isvalid.MaxDepthBaseCallValidator;
-import lib.data.cache.region.isvalid.MinBASQBaseCallValidator;
+import lib.data.DataContainer;
+import lib.data.DataContainer.AbstractBuilder;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.data.fetcher.Fetcher;
+import lib.data.fetcher.FilteredDataFetcher;
+import lib.data.fetcher.SpecificFilteredDataFetcher;
 import lib.data.filter.BaseCallCountFilteredData;
-import lib.util.Util;
+import lib.data.storage.Cache;
+import lib.data.storage.PositionProcessor;
+import lib.data.storage.basecall.AbstractBaseCallCountStorage;
+import lib.data.storage.basecall.ArrayBaseCallStorage;
+import lib.data.storage.basecall.VisitedReadPositionStorage;
+import lib.data.storage.container.SharedStorage;
+import lib.data.storage.processor.RecordExtendedProcessor;
+import lib.data.stroage.Storage;
+import lib.data.validator.DefaultBaseCallValidator;
+import lib.data.validator.MaxDepthValidator;
+import lib.data.validator.MinBASQValidator;
+import lib.data.validator.UniqueVisitReadPositionValidator;
+import lib.data.validator.Validator;
+import lib.io.InputOutput;
+import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
 /**
- * Tested in @see test.jacusa.filter.factory.basecall.BaseCallCountFilterFactoryTest
+ * TODO add comments
  */
 public abstract class AbstractBaseCallCountFilterFactory
-extends AbstractFilterFactory {
+extends AbstractFilterFactory 
+implements HasFilterDistance, HasFilterMinRatio {
 
+	public static final int DEFAULT_FILTER_DISTANCE 	= 6;
+	public static final double DEFAULT_FILTER_MINRATIO 	= 0.5;
+	
 	private Fetcher<BaseCallCount> observedBccFetcher;
 	private final Fetcher<BaseCallCount> filteredBccFetcher;
 	private final DataType<BaseCallCountFilteredData> dataType;
@@ -55,6 +60,17 @@ extends AbstractFilterFactory {
 	private double filterMinRatio;
 
 	private final BaseCallCount.AbstractParser baseCallCountParser;
+	
+	public AbstractBaseCallCountFilterFactory(
+			final Option option,
+			final Fetcher<BaseCallCount> observedBccFetcher, 
+			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
+		
+		this(
+				option, 
+				observedBccFetcher, filteredDataFetcher, 
+				DEFAULT_FILTER_DISTANCE, DEFAULT_FILTER_MINRATIO);
+	}
 	
 	public AbstractBaseCallCountFilterFactory(
 			final Option option,
@@ -71,54 +87,15 @@ extends AbstractFilterFactory {
 		filterDistance = defaultFilterDistance;
 		filterMinRatio = defaultFilterMinRatio;
 
-		baseCallCountParser = new DefaultBaseCallCount.Parser(Util.EMPTY_FIELD, Util.VALUE_SEP);
+		getACOption().add(new FilterDistanceOption(this));
+		getACOption().add(new FilterMinRatioOption(this));
+		
+		baseCallCountParser = new DefaultBaseCallCount.Parser(
+				InputOutput.EMPTY_FIELD, InputOutput.VALUE_SEP);
 	}
 	
 	@Override
-	public Options getOptions() {
-		return new Options()
-				.addOption(getDistanceOptionBuilder(filterDistance).build())
-				.addOption(getMinRatioOptionBuilder(filterMinRatio).build());
-	}
-	
-	@Override
-	public Set<Option> processCLI(final CommandLine cmd) {
-		final Set<Option> parsed = new HashSet<>();
-		for (final Option option : cmd.getOptions()) {
-			final String longOpt = option.getLongOpt();
-			switch (longOpt) {
-			case "distance":
-				filterDistance = parseDistance(cmd, longOpt);
-				parsed.add(option);
-				break;
-				
-			case "minRatio":
-				filterMinRatio = parseMinRatio(cmd, longOpt);
-				parsed.add(option);
-				break;
-			}
-		}
-		return parsed;
-	}
-
-	public static int parseDistance(final CommandLine cmd, final String longOpt) {
-		final int tmpDistance = Integer.parseInt(cmd.getOptionValue(longOpt));
-		if (tmpDistance <= 0) {
-			throw new IllegalArgumentException(longOpt + " needs to be > 0");
-		}
-		return tmpDistance;
-	}
-
-	public static double parseMinRatio(final CommandLine cmd, final String longOpt) {
-		final double tmpMinRatio = Double.parseDouble(cmd.getOptionValue(longOpt)); 
-		if (tmpMinRatio < 0.0 || tmpMinRatio > 1.0) {
-			throw new IllegalArgumentException(longOpt + " needs to be within [0.0, 1.0]");
-		}
-		return tmpMinRatio;
-	}
-	
-	@Override
-	public void initDataTypeContainer(AbstractBuilder builder) {
+	public void initDataContainer(AbstractBuilder builder) {
 		if (! builder.contains(dataType)) { 
 			builder.with(dataType);
 		}
@@ -136,77 +113,73 @@ extends AbstractFilterFactory {
 		return new GenericBaseCallCountFilter(getC(),
 				observedBccFetcher,
 				filteredBccFetcher,	
-				filterDistance, new FilterByRatio(getFilterMinRatio()));
+				filterDistance, new FilterByRatio(getFilterDistance()));
 	}
 	
 	@Override
-	public RecordWrapperProcessor createFilterCache(
+	public Cache createFilterCache(
 			final ConditionParameter conditionParameter,
-			final SharedCache sharedCache) {
+			final SharedStorage sharedStorage) {
 
-		final List<IncrementAdder> adder = new ArrayList<IncrementAdder>();
-		final IncrementAdder baseCallAdder = new ArrayBaseCallAdder(filteredBccFetcher, sharedCache);
-		adder.add(baseCallAdder);
+		final Cache cache = new Cache();
+		final List<Storage> storages = new ArrayList<>();
 		
-		final List<BaseCallValidator> validator = new ArrayList<BaseCallValidator>();
+		final VisitedReadPositionStorage visitedStorage = new VisitedReadPositionStorage(sharedStorage);
+		storages.add(visitedStorage);
+		
+		final AbstractBaseCallCountStorage bccStorage = 
+				new ArrayBaseCallStorage(sharedStorage, filteredBccFetcher);
+		storages.add(bccStorage);
+		
+		final List<Validator> validators = new ArrayList<Validator>();
+		UniqueVisitReadPositionValidator uniqueValidator = 
+				new UniqueVisitReadPositionValidator(visitedStorage);
+		validators.add(uniqueValidator);
+		validators.add(new DefaultBaseCallValidator());
 		if (conditionParameter.getMaxDepth() > 0) {
-			validator.add(new MaxDepthBaseCallValidator(conditionParameter.getMaxDepth(), baseCallAdder));
+			validators.add(new MaxDepthValidator(conditionParameter.getMaxDepth(), bccStorage));
 		}
-		validator.add(new DefaultBaseCallValidator());
 		if (conditionParameter.getMinBASQ() > 0) {
-			validator.add(new MinBASQBaseCallValidator(conditionParameter.getMinBASQ()));
+			validators.add(new MinBASQValidator(conditionParameter.getMinBASQ()));
 		}
 		
-		final ValidatedRegionDataCache regionDataCache = 
-				new ValidatedRegionDataCache(adder, validator, sharedCache);
-		final UniqueTraverse uniqueBaseCallCache = 
-				new UniqueTraverse(regionDataCache);
-		return new RecordProcessDataCache(
-				uniqueBaseCallCache, 
-				createProcessRecord(uniqueBaseCallCache));
+		final PositionProcessor positionProcessor = new PositionProcessor(
+				validators, storages);
+		
+		cache.addRecordProcessor(new CollectionRecordExtendedProcessors(
+				visitedStorage,
+				createRecordProcessors(sharedStorage, positionProcessor)));
+		cache.addStorages(storages);
+		
+		return cache;
 	}
 	
 	@Override
-	public void addFilteredData(StringBuilder sb, DataTypeContainer filteredData) {
-		baseCallCountParser.wrap(filteredBccFetcher.fetch(filteredData));
-	}
-	
 	public int getFilterDistance() {
 		return filterDistance;
 	}
 
+	@Override
+	public void setFilterDistance(int distance) {
+		this.filterDistance = distance;
+	}
+	
+	@Override
 	public double getFilterMinRatio() {
 		return filterMinRatio;
 	}
-
-	/*
-	public int getMinCount() {
-		return filterMinCount;
-	}
-	*/
 	
 	@Override
-	public String toString() {
-		return Character.toString(getC());
+	public void setFilterMinRatio(double minRatio) {
+		this.filterMinRatio = minRatio;
 	}
 	
-	protected abstract List<ProcessRecord> createProcessRecord(final RegionDataCache regionDataCache);
-	
-	public static Option.Builder getDistanceOptionBuilder(final int filterDistance) {
-		return Option.builder()
-				.argName("DISTANCE")
-				.longOpt("distance")
-				.hasArg(true)
-				.desc("Filter base calls within distance to feature. Default: " + filterDistance);
+	@Override
+	public void addFilteredData(StringBuilder sb, DataContainer filteredData) {
+		baseCallCountParser.wrap(filteredBccFetcher.fetch(filteredData));
 	}
 	
-	public static Option.Builder getMinRatioOptionBuilder(final double minRatio) {
-		return Option.builder()
-				.argName("MINRATIO")
-				.longOpt("minRatio")
-				.hasArg(true)
-				.desc("Minimal ratio of base calls to pass filtering. Default: " + minRatio);
-	}
-	
+	protected abstract List<RecordExtendedProcessor> createRecordProcessors(
+			SharedStorage sharedStorage, final PositionProcessor positionProcessor);
 	
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.cli.parameters.RTarrestParameter;
@@ -13,6 +14,9 @@ import lib.cli.parameter.GeneralParameter;
 import lib.io.BEDlikeResultFileWriter;
 import test.jacusa.io.format.AbstractResultWriterTest;
 
+//TODO Qi this should test that the output is correct, specifically the header!
+//you should generate manually some sample output files
+@Disabled
 class BED6rtArrestResultWriterTest extends AbstractResultWriterTest {
 
 	public static final String PATH = AbstractResultWriterTest.PATH + "rtarrest/";

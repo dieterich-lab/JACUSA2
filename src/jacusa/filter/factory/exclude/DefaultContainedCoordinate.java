@@ -23,12 +23,13 @@ import lib.util.coordinate.OneCoordinate;
 /**
  * TODO add comments
  * 
- * Each thread has its own instance. 
+ * Each thread has its own instance.
+ * No random access - successive calls to isContained must have ascending coordinates! 
  * 
  */
 public class DefaultContainedCoordinate implements ContainedCoordinate {
 
-	private Map<String, List<Coordinate>> contig2coordinate;
+	private final Map<String, List<Coordinate>> contig2coordinate;
 
 	private Coordinate current;
 	private Iterator<Coordinate> it;
@@ -40,6 +41,13 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 		contig2coordinate = init(fileName, codec);
 	}
 
+	public DefaultContainedCoordinate(final Map<String, List<Coordinate>> contig2coordinate) {
+		this.contig2coordinate = contig2coordinate;
+	}
+	
+	/**
+	 * Tested in @see test.jacusa.filter.factory.exclude.DefaultContainedCoordinateTest
+	 */
 	@Override
 	public boolean isContained(final Coordinate site) {
 		// check if there is anything to filter against this site (contig)
@@ -57,7 +65,7 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 		}
 
 		while (true) {
-			final int orientation = CoordinateUtil.orientation(site, current);
+			final int orientation = CoordinateUtil.orientation(current, site);
 			switch (orientation) {
 			case -1:
 				return false;
@@ -78,7 +86,7 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 		}
 	}
 
-	private Map<String, List<Coordinate>> init(final String filename, 
+	public Map<String, List<Coordinate>> init(final String filename, 
 			final FeatureCodec<? extends Feature, LineIterator> codec) {
 
 		final Map<String, List<Coordinate>> contig2coordinate = new HashMap<String, List<Coordinate>>();

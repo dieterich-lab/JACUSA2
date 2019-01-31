@@ -3,14 +3,14 @@ package lib.data.assembler;
 import java.util.Iterator;
 
 import lib.cli.parameter.ConditionParameter;
-import lib.data.DataTypeContainer;
-import lib.data.DataTypeContainer.AbstractBuilderFactory;
-import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.container.CacheContainer;
-import lib.data.has.LibraryType;
+import lib.data.DataContainer;
+import lib.data.DataContainer.AbstractBuilderFactory;
+import lib.data.storage.container.CacheContainer;
 import lib.util.AbstractTool;
 import lib.util.Base;
+import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
+import lib.recordextended.SAMRecordExtended;
 
 public class SiteDataAssembler
 implements DataAssembler {
@@ -41,26 +41,26 @@ implements DataAssembler {
 
 	@Override
 	public void buildCache(final Coordinate activeWindowCoordinate,
-			final Iterator<SAMRecordWrapper> iterator) {
+			final Iterator<SAMRecordExtended> iterator) {
 		
-		clearCache();
+		clearStorage();
 
 		int records = 0;
 		
-		SAMRecordWrapper recordWrapper = null;
+		SAMRecordExtended recordExtended = null;
 		try {
 			if (iterator.hasNext()) {
 				cacheContainer.preProcess();
 				while (iterator.hasNext()) {
-					recordWrapper = iterator.next();
-					cacheContainer.process(recordWrapper);
+					recordExtended = iterator.next();
+					cacheContainer.process(recordExtended);
 					records++;
 				}
 				cacheContainer.postProcess();
 			}
 		} catch (Exception e){
-			if (recordWrapper != null) {
-				AbstractTool.getLogger().addError("Problem with read: " + recordWrapper.getSAMRecord().getReadName() + 
+			if (recordExtended != null) {
+				AbstractTool.getLogger().addError("Problem with read: " + recordExtended.getSAMRecord().getReadName() + 
 						" in " + conditionParameter.getRecordFilenames()[replicateIndex]);
 			}
 			e.printStackTrace();
@@ -71,15 +71,15 @@ implements DataAssembler {
 	
 	// Reset all caches in windows
 	@Override
-	public void clearCache() {
+	public void clearStorage() {
 		cacheContainer.clear();
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
 	}
 
 	@Override
-	public DataTypeContainer assembleData(final Coordinate coordinate) {
+	public DataContainer assembleData(final Coordinate coordinate) {
 		final Base referenceBase = getCacheContainer().getReferenceProvider().getReferenceBase(coordinate);
-		final DataTypeContainer container =
+		final DataContainer container =
 				builderFactory.createBuilder(coordinate, getLibraryType())
 					.withReferenceBase(referenceBase)
 					.build();

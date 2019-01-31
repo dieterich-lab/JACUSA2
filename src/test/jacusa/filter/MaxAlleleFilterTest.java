@@ -8,11 +8,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import jacusa.filter.Filter;
 import jacusa.filter.MaxAlleleFilter;
 import lib.data.DataType;
-import lib.data.cache.fetcher.DataTypeFetcher;
+import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBaseCallCount;
-import lib.data.has.LibraryType;
+import lib.data.fetcher.DataTypeFetcher;
 import lib.data.result.Result;
+import lib.util.LibraryType;
 import lib.util.Parser;
 import lib.util.coordinate.OneCoordinate;
 
@@ -24,17 +25,21 @@ class MaxAlleleFilterTest extends AbstractFilterTest {
 	private final Parser<BaseCallCount> bccParser; 
 	private final DataTypeFetcher<BaseCallCount> bccFetcher;
 	
+	private int testNumber;
+	
 	public MaxAlleleFilterTest() {
 		bccParser 	= new DefaultBaseCallCount.Parser(',', '*');
-		bccFetcher 	= new DataTypeFetcher<>(DataType.create("Observed", BaseCallCount.class));
+		bccFetcher 	= new DataTypeFetcher<>(DataType.retrieve("Observed", BaseCallCount.class));
+		
+		testNumber 	= 0;
 	}
 	
 	@Override
 	Stream<Arguments> testFilter() {
 		return Stream.of(
 				
-				Arguments.of(
-						createTestInstance(1),
+				createArguments(
+						1,
 						new Result.ResultBuilder(
 								new OneCoordinate(), Collections.nCopies(1, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
@@ -44,8 +49,8 @@ class MaxAlleleFilterTest extends AbstractFilterTest {
 						.build().getParellelData(),
 						false),
 
-				Arguments.of(
-						createTestInstance(1),
+				createArguments(
+						1,
 						new Result.ResultBuilder(
 								new OneCoordinate(), Collections.nCopies(1, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
@@ -55,8 +60,8 @@ class MaxAlleleFilterTest extends AbstractFilterTest {
 						.build().getParellelData(),
 						true),
 				
-				Arguments.of(
-						createTestInstance(1),
+				createArguments(
+						1,
 						new Result.ResultBuilder(
 								new OneCoordinate(), Collections.nCopies(4, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
@@ -66,8 +71,8 @@ class MaxAlleleFilterTest extends AbstractFilterTest {
 						.build().getParellelData(),
 						true),
 				
-				Arguments.of(
-						createTestInstance(4),
+				createArguments(
+						4,
 						new Result.ResultBuilder(
 								new OneCoordinate(), Collections.nCopies(4, LibraryType.UNSTRANDED))
 						.with(0, 0, "1,0,0,0", bccParser, bccFetcher.getDataType())
@@ -78,17 +83,20 @@ class MaxAlleleFilterTest extends AbstractFilterTest {
 						false) );
 	}
 
-	Filter createTestInstance(final int maxAlleles) {
-		final MaxAlleleFilter maxAlleleFilter = new MaxAlleleFilter(' ', maxAlleles, bccFetcher);
+	Arguments createArguments(
+			final int maxAlleles, final ParallelData parallelData, final boolean expected) {
 		
-		return new AbstractFilterWrapper<MaxAlleleFilter>(maxAlleleFilter) {
-			
-			@Override
-			public String toString() {
-				return "maxAllelles: " + maxAlleles;
-			}
-
-		};
+		return Arguments.of(
+				createTestInstance(maxAlleles),
+				parallelData,
+				expected,
+				new StringBuilder()
+				.append("maxAlleles: ").append(maxAlleles).append(' ')
+				.append("test: ").append(++testNumber)
+				.toString() );
 	}
 	
+	Filter createTestInstance(final int maxAlleles) {
+		return new MaxAlleleFilter(' ', maxAlleles, bccFetcher);
+	}
 }

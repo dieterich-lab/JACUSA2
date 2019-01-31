@@ -2,13 +2,13 @@ package jacusa.io.format;
 
 import java.util.List;
 
-import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
-import lib.data.DataTypeContainer;
+import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.data.DataContainer;
 import lib.data.count.BaseSubstitutionCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.result.Result;
+import lib.io.InputOutput;
 import lib.io.format.bed.DataAdder;
-import lib.util.Util;
 
 public class RTarrestBaseSubstitutionDataAdder implements DataAdder {
 
@@ -34,7 +34,7 @@ public class RTarrestBaseSubstitutionDataAdder implements DataAdder {
 	@Override
 	public void addData(StringBuilder sb, int valueIndex, int conditionIndex, int replicateIndex, Result result) {
 		final BaseSubstitution baseSub = baseSubs.get(valueIndex);
-		final DataTypeContainer container = result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
+		final DataContainer container = result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
 		addBaseCallCount(sb, baseSub, container.getArrestBaseSubstitutionCount());
 		addBaseCallCount(sb, baseSub, container.getThroughBaseSubstitutionCount());
 	}
@@ -48,7 +48,7 @@ public class RTarrestBaseSubstitutionDataAdder implements DataAdder {
 		if (bcc == null) {
 			bcc = BaseCallCount.EMPTY;
 		}
-		sb.append(Util.FIELD_SEP);
+		sb.append(InputOutput.FIELD_SEP);
 		sb.append(bccParser.wrap(bcc));
 	}
 }

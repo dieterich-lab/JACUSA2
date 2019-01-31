@@ -1,49 +1,34 @@
 package test.lib.cli.options;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.params.provider.Arguments;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.FilterModusOption;
-import lib.cli.parameter.GeneralParameter;
-import test.utlis.CLIUtils;
 
-@DisplayName("Test CLI processing of FilterModusOption")
-class FilterModusOptionTest extends AbstractACOptionTest<Boolean> {
-
-	/*
-	 * Tests
-	 */
-	
-	@DisplayName("Check FilterModusOption are parsed correctly")
-	@ParameterizedTest(name = "Option should be used: {0}")
-	@ValueSource(strings = { "true", "false" })
-	@Override
-	void testProcess(Boolean expected) throws Exception {
-		super.testProcess(expected);
-	}
-	
-	/*
-	 * Helper
-	 */
+/**
+ * Tests @see lib.cli.options.FilterModusOption#process(org.apache.commons.cli.CommandLine)
+ */
+class FilterModusOptionTest
+extends AbstractGeneralParameterProvider
+implements ACOptionTest<Boolean> {
 
 	@Override
-	protected AbstractACOption create(GeneralParameter parameter) {
-		return new FilterModusOption(parameter);
+	public Stream<Arguments> testProcess() {
+		return Stream.of(
+				Arguments.of(createOptLine(), true),
+				Arguments.of("", false) );
 	}
 	
 	@Override
-	protected Boolean getActualValue(GeneralParameter parameter) {
-		return parameter.splitFiltered();
+	public AbstractACOption createTestInstance() {
+		return new FilterModusOption(getGeneralParamter());
 	}
 	
 	@Override
-	protected String createLine(Boolean v) {
-		if (v) {
-			return CLIUtils.assignValue(getOption(), "");
-		}
-		return new String();
+	public Boolean getActualValue() {
+		return getGeneralParamter().splitFiltered();
 	}
 	
 }

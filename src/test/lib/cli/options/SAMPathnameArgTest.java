@@ -11,32 +11,27 @@ import org.junit.jupiter.api.Test;
 
 import lib.cli.options.SAMPathnameArg;
 import lib.cli.parameter.ConditionParameter;
-import lib.util.Util;
+import lib.io.InputOutput;
 
-@DisplayName("Test CLI processing of SAMPathnameArg")
+/**
+ * Tests @see lib.cli.options.SAMPathnameArg#processArg(String)
+ */
 class SAMPathnameArgTest {
 
 	private ConditionParameter conditionParameter;
-	private SAMPathnameArg pathnameArg;
+	private SAMPathnameArg testInstance;
 	
 	@BeforeEach
-	void setUp() {
-		final int conditionIndex = 2;
-		conditionParameter = new ConditionParameter(conditionIndex);
-		pathnameArg = new SAMPathnameArg(conditionIndex, conditionParameter);
+	void beforeEach() {
+		final int conditionIndex 	= 2;
+		conditionParameter 			= new ConditionParameter(conditionIndex);
+		testInstance 				= new SAMPathnameArg(conditionIndex, conditionParameter);
 	}
 
-	/*
-	 * Test
-	 */
-
 	private String toFilename(int i) {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(AbstractACOptionTest.PATH);
-		sb.append("SAMPathnameArg");
-		sb.append(i);
-		sb.append(".bam");
-		return sb.toString();
+		return new StringBuilder()
+				.append(ACOptionTest.PATH).append("SAMPathnameArgTest")
+				.append("_File").append(i).append(".bam").toString();
 	}
 	
 	@Test
@@ -46,33 +41,32 @@ class SAMPathnameArgTest {
 				.mapToObj(i -> toFilename(i))
 				.toArray(String[]::new);
 
-		final String arg = String.join(new StringBuilder(1).append(Util.FIELD_SEP), 
+		final String arg = String.join(new StringBuilder(1).append(SAMPathnameArg.SEP), 
 				expected);
 
-		pathnameArg.processArg(arg);
+		testInstance.processArg(arg);
 
 		// check
 		final String[] actual = conditionParameter.getRecordFilenames();
-		assertEquals(expected, actual);
+		assertArrayEquals(expected, actual);
 	}
 
 	@Test
-	@DisplayName("Check SAMPathnameArg fails on wrong input")
 	void testProcessArgFail() {
 		// no bam
 		assertThrows(FileNotFoundException.class,
 				() -> {
-					final String[] fileNames = new String[] { "SAMPathnameArg4.bam" };
-					final String arg = String.join(new StringBuilder(1).append(Util.FIELD_SEP), fileNames);
-					pathnameArg.processArg(arg);				
+					final String[] fileNames = new String[] { "wrong.bam" };
+					final String arg = String.join(new StringBuilder(1).append(InputOutput.FIELD_SEP), fileNames);
+					testInstance.processArg(arg);				
 				});
 
 		// no bai
 		assertThrows(FileNotFoundException.class,
 				() -> {
-					final String[] fileNames = new String[] { "SAMPathnameArg5.bam" };
-					final String arg = String.join(new StringBuilder(1).append(Util.FIELD_SEP), fileNames);
-					pathnameArg.processArg(arg);				
+					final String[] fileNames = new String[] { "SAMPathnameArg4.bam" };
+					final String arg = String.join(new StringBuilder(1).append(InputOutput.FIELD_SEP), fileNames);
+					testInstance.processArg(arg);				
 				});
 	}
 	

@@ -1,6 +1,5 @@
 package lib.cli.options;
 
-import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.FilterFactory;
 
 import java.io.PrintWriter;
@@ -8,7 +7,7 @@ import java.io.StringWriter;
 import java.util.Map;
 
 import lib.cli.parameter.GeneralParameter;
-import lib.util.Util;
+import lib.io.InputOutput;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -22,10 +21,10 @@ public class FilterConfigOption extends AbstractACOption {
 	public static final char OR = ',';
 	//public static char AND = '&';
 
-	final private Map<Character, AbstractFilterFactory> filterFactories;
+	final private Map<Character, FilterFactory> filterFactories;
 
 	public FilterConfigOption(final GeneralParameter parameter, 
-			final Map<Character, AbstractFilterFactory> filterFactories) {
+			final Map<Character, FilterFactory> filterFactories) {
 
 		super("a", "feature-filter");
 		this.parameters 		= parameter;
@@ -72,17 +71,20 @@ public class FilterConfigOption extends AbstractACOption {
 				.build(); 
 	}
 
+	/**
+	 * Tested in @see test.lib.cli.options.FilterConfigOptionTest
+	 */
 	@Override
 	public void process(final CommandLine line) throws Exception {
 		final String s = line.getOptionValue(getOpt());
-		final String[] t = s.split(Character.toString(Util.VALUE_SEP));
+		final String[] t = s.split(Character.toString(InputOutput.VALUE_SEP));
 
 		for (String a : t) {
 			final char c = a.charAt(0);
 			if (! filterFactories.containsKey(c)) {
 				throw new IllegalArgumentException("Unknown filter or wrong option: " + s);
 			}
-			final AbstractFilterFactory filterFactory = filterFactories.get(c);
+			final FilterFactory filterFactory = filterFactories.get(c);
 			if (a.length() > 1) {
 				a = a.substring(1);
 				filterFactory.processCLI(a.replaceAll(":", " --").trim());

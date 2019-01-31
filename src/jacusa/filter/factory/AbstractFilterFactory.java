@@ -1,15 +1,12 @@
 package jacusa.filter.factory;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
 
-import jacusa.filter.Filter;
-import lib.data.assembler.ConditionContainer;
-import lib.util.Util;
-import lib.util.coordinate.CoordinateController;
+import lib.cli.options.AbstractACOption;
+import lib.util.CLIUtil;
 
 /**
  * This factory creates an artefact filter object and registers it.  
@@ -19,9 +16,11 @@ import lib.util.coordinate.CoordinateController;
 public abstract class AbstractFilterFactory implements FilterFactory {
 
 	private final Option option;
-
+	private final List<AbstractACOption> acOptions;
+	
 	public AbstractFilterFactory(final Option option) {
 		this.option = option;
+		acOptions 	= new ArrayList<>();
 	}
 
 	@Override
@@ -30,13 +29,21 @@ public abstract class AbstractFilterFactory implements FilterFactory {
 	}
 
 	@Override
+	public List<AbstractACOption> getACOption() {
+		return acOptions;
+	}
+	
+	@Override
 	public String getDesc() {
 		// HACK
 		Option tmp = (Option)option.clone();
-		Util.adjustOption(tmp, getOptions(), tmp.getOpt().length());
+		CLIUtil.adjustOption(tmp, getOptions(), tmp.getOpt().length());
 		return tmp.getDescription();
 	}
 
-	protected abstract Set<Option> processCLI(CommandLine cmd) throws MissingOptionException;
+	@Override
+	public String toString() {
+		return Character.toString(getC());
+	}
 	
 }

@@ -36,24 +36,26 @@ public class MaxDepthConditionOption extends AbstractConditionACOption {
 		s = "max read depth" + s + "\ndefault: " + maxDepth;
 				
 		return Option.builder(getOpt())
+				.longOpt(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg()
 				.desc(s)
 				.build();
 	}
 
+	/**
+	 * Tested in @see test.lib.cli.options.condition.MaxDepthConditionOptionTest
+	 */
 	@Override
 	public void process(CommandLine line) throws Exception {
-		if(line.hasOption(getOpt())) {
-	    	int maxDepth = Integer.parseInt(line.getOptionValue(getOpt()));
-	    	if(maxDepth != UNLIMITED_DEPTH && maxDepth < MIN_DEPTH ) {
-	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " must be > 0 or -1 (limited by memory)!");
-	    	}
-	    	
-	    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
-	    		conditionParameter.setMaxDepth(maxDepth);
-	    	}
-	    }
+    	int maxDepth = Integer.parseInt(line.getOptionValue(getOpt()));
+    	if(maxDepth != UNLIMITED_DEPTH && maxDepth < MIN_DEPTH ) {
+    		throw new IllegalArgumentException(getOpt().toUpperCase() + " must be > 0 or -1 (limited by memory)!");
+    	}
+    	
+    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
+    		conditionParameter.setMaxDepth(maxDepth);
+    	}
 	}
 
 }

@@ -1,55 +1,48 @@
 package test.lib.cli.options;
 
-import org.junit.jupiter.api.DisplayName;
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.ThreadWindowSizeOption;
-import lib.cli.parameter.GeneralParameter;
-import test.utlis.CLIUtils;
 
-@DisplayName("Test CLI processing of ThreadWindowSizeOption")
-class ThreadWindowSizeOptionTest extends AbstractACOptionTest<Integer> {
-
-	/*
-	 * Tests
-	 */
+/**
+ * Tests @see lib.cli.options.ThreadWindowSizeOption#process(org.apache.commons.cli.CommandLine)
+ */
+class ThreadWindowSizeOptionTest
+extends AbstractGeneralParameterProvider
+implements ACOptionTest<Integer> {
 	
-	@DisplayName("Check ThreadWindowSizeOption are parsed correctly")
-	@ParameterizedTest(name = "Parse line and expect threadWindowSize to be: {0}")
-	@ValueSource(strings = { "100", "200", "1000" } )
-	@Override
-	void testProcess(Integer expected) throws Exception {
-		super.testProcess(expected);
-	}
-
 	@Test
-	@DisplayName("Check ThreadWindowSizeOption fails on wrong input")
 	void testProcessFail() throws Exception {
 		// < ThreadWindowSizeOption.MIN_WINDOWS
-		getParserWrapper().myAssertThrows(IllegalArgumentException.class, getACOption(), Integer.toString(ThreadWindowSizeOption.MIN_WINDOWS - 1));
-		getParserWrapper().myAssertThrows(IllegalArgumentException.class, getACOption(), "wrong");
+		myAssertOptThrows(IllegalArgumentException.class, Integer.toString(ThreadWindowSizeOption.MIN_WINDOWS - 1));
+		myAssertOptThrows(IllegalArgumentException.class, "wrong");
 	}
-	
-	/*
-	 * Helper
-	 */
 
 	@Override
-	protected AbstractACOption create(GeneralParameter parameter) {
-		return new ThreadWindowSizeOption(parameter);
+	public Stream<Arguments> testProcess() {
+		return Arrays.asList(100, 200, 1000).stream()
+				.map(i -> createArguments(i));
+	}
+
+	Arguments createArguments(final int threadWindowSize) {
+		return Arguments.of(
+				createOptLine(Integer.toString(threadWindowSize)),
+				threadWindowSize);
 	}
 	
 	@Override
-	protected Integer getActualValue(GeneralParameter parameter) {
-		return parameter.getReservedWindowSize();
+	public AbstractACOption createTestInstance() {
+		return new ThreadWindowSizeOption(getGeneralParamter());
 	}
 	
 	@Override
-	protected String createLine(Integer v) {
-		return CLIUtils.assignValue(getOption(), Integer.toString(v));
+	public Integer getActualValue() {
+		return getGeneralParamter().getReservedWindowSize();
 	}
-	
+		
 }

@@ -26,6 +26,9 @@ public class ReferenceFastaFilenameOption extends AbstractACOption {
 				.build();
 	}
 
+	/**
+	 * Tested in @see test.lib.cli.options.ReferenceFastaFilenameOptionTest
+	 */
 	@Override
 	public void process(CommandLine line) throws Exception {
     	final String filename = line.getOptionValue(getOpt());

@@ -106,7 +106,7 @@ class CoordinateControllerTest {
 	}
 
 	@Test
-	void testGetSharedCache() {
+	void testGetSharedStorage() {
 		fail("Not yet implemented"); // TODO
 	}
 

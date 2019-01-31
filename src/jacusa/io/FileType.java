@@ -53,7 +53,14 @@ public enum FileType {
 	public FeatureCodec<? extends Feature, LineIterator> getCodec() {
 		return codec;
 	}
-	
+
+	/**
+	 * TODO add comments
+	 * @param fileName
+	 * @return
+	 * Tested in @see test.jacusa.io.FileTypeTest#testValueOfFileName()
+	 * Tested in @see test.jacusa.io.FileTypeTest#testValueOfFileNameFails()
+	 */
 	public static FileType valueOfFileName(final String fileName) {
 		for (final FileType fileType : FileType.values()) {
 			for (final String suffix : fileType.getSuffix()) {
@@ -62,6 +69,23 @@ public enum FileType {
 				}
 			}
 		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param fileName
+	 * @return
+	 * Tested in @see test.jacusa.io.FileTypeTest#testValueOfFileContent()
+	 */
+	public static FileType valueOfFileContent(final String fileName) {
+		for (final FileType fileType : FileType.values()) {
+			final FeatureCodec<?, LineIterator> tmpCodec = fileType.getCodec();
+			if (tmpCodec.canDecode(fileName)) {
+				return fileType;
+			}
+		}
+		
 		return null;
 	}
 	

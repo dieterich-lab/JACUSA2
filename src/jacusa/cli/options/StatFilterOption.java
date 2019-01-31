@@ -8,11 +8,10 @@ import org.apache.commons.cli.Option;
 
 /**
  * Enables the user to choose a threshold by command line
- * @author Michael Piechotta
  */
 public class StatFilterOption  extends AbstractACOption {
 
-	public static final String OPT = "T";
+	public static final String OPT 		= "T";
 	public static final String LONG_OPT = "threshold";
 	
 	private StatParameter statisticParamter;

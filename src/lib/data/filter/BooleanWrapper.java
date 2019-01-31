@@ -1,6 +1,6 @@
 package lib.data.filter;
 
-import lib.util.Data;
+import lib.data.Data;
 
 public class BooleanWrapper implements Data<BooleanWrapper> {
 	
@@ -14,6 +14,30 @@ public class BooleanWrapper implements Data<BooleanWrapper> {
 	
 	private BooleanWrapper(final BooleanWrapper booleanWrapper) {
 		b = booleanWrapper.b;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+
+		if (!(obj instanceof BooleanWrapper)) {
+			return false;
+		}
+		BooleanWrapper bw = (BooleanWrapper)obj;
+		return getValue() == bw.getValue();
+	}
+	
+	@Override
+	public int hashCode() {
+		if (b) {
+			return 1;
+		}
+		return 2;
 	}
 	
 	public boolean getValue() {

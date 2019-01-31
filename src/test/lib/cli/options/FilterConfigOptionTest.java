@@ -1,46 +1,40 @@
 package test.lib.cli.options;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
-import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.FilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.basecall.CombinedFilterFactory;
 import jacusa.filter.factory.basecall.INDEL_FilterFactory;
-import jacusa.filter.factory.basecall.ReadPositionDistanceFilterFactory;
+import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.FilterConfigOption;
-import lib.cli.parameter.GeneralParameter;
-import test.utlis.CLIUtils;
+import lib.data.DataType;
+import lib.data.fetcher.DefaultFilteredDataFetcher;
 import test.utlis.TestUtils;
 
-@DisplayName("Test CLI processing of FilterConfigOption")
-class FilterConfigOptionTest extends AbstractACOptionTest<Set<Character>> {
+/**
+ * Tests @see lib.cli.options.FilterConfigOption#process(org.apache.commons.cli.CommandLine)
+ */
+class FilterConfigOptionTest 
+extends AbstractGeneralParameterProvider
+implements ACOptionTest<Set<Character>> {
 
-	@DisplayName("Check FilterConfigOption are parsed correctly")
-	@ParameterizedTest(name = "List of filters: {arguments}")
-	@MethodSource("testProcess")
-	@Override
-	void testProcess(Set<Character> expected) throws Exception {
-		super.testProcess(expected);
-	}
-
+	@Disabled
 	@Test
 	@DisplayName("Check FilterConfigOption fails on wrong input")
 	void testProcessFail() throws Exception {
@@ -59,70 +53,62 @@ class FilterConfigOptionTest extends AbstractACOptionTest<Set<Character>> {
 		// add 2 false chars
 		falseConfigOption.addAll(notUsedChars.stream().limit(2).collect(Collectors.toSet()));
 		
-		final String value = TestUtils.collapseSet(falseConfigOption, lib.util.Util.VALUE_SEP);
-		getParserWrapper().myAssertThrows(IllegalArgumentException.class, getACOption(), value);
+		final String value = TestUtils.collapseSet(falseConfigOption, lib.io.InputOutput.VALUE_SEP);
+		myAssertOptThrows(IllegalArgumentException.class, value);
 	}
 
-	/*
-	 * Method Source
-	 */
-
-	static Stream<Arguments> testProcess() {
-		final List<Set<Character>> data = new ArrayList<>();
-		// 1 
-		data.add(new HashSet<>(Arrays.asList('B')));
-		// 3
-		data.add(new HashSet<>(Arrays.asList('B', 'I', 'S')));
-		return data.stream().map(set -> {
-			if (! getFilterFactories().keySet().containsAll(set)) {
-				throw new IllegalStateException("Unknown filter!");
-			} else {
-				return Arguments.of(set);
-			}});
+	@Override
+	public Stream<Arguments> testProcess() {
+		return Stream.of(
+				createArguments("B"),
+				createArguments("B,I,S") );
 	}
 	
-	/*
-	 * Helper
-	 */
+	Arguments createArguments(final String filters) {
+		return Arguments.of(
+				createOptLine(filters), 
+				extractC(filters) );
+	}
 	
-	static Map<Character, AbstractFilterFactory> getFilterFactories() {
-		final Map<Character, AbstractFilterFactory> abstractPileupFilters = 
-				new HashMap<Character, AbstractFilterFactory>();
-
-		final List<AbstractFilterFactory> filterFactories = 
-				new ArrayList<AbstractFilterFactory>(10);
-		
-		filterFactories.add(new CombinedFilterFactory(null, null));
-		filterFactories.add(new INDEL_FilterFactory(null, null));
-		filterFactories.add(new ReadPositionDistanceFilterFactory(null, null));
-		filterFactories.add(new SpliceSiteFilterFactory(null, null));
-		
-		filterFactories.add(new MaxAlleleCountFilterFactory(null));
-		
-		filterFactories.add(new HomopolymerFilterFactory(null));
-
-		for (final AbstractFilterFactory filterFactory : filterFactories) {
-			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
-		}
-
-		return abstractPileupFilters;
+	Map<Character, FilterFactory> getFilterFactories() {
+		return Arrays.asList(
+				new CombinedFilterFactory(
+						DataType.BCC.getFetcher(), 
+						new DefaultFilteredDataFetcher<>(DataType.F_BCC)),
+				
+				new INDEL_FilterFactory(
+						DataType.BCC.getFetcher(), 
+						new DefaultFilteredDataFetcher<>(DataType.F_BCC)),
+				
+				new ReadPositionFilterFactory(
+						DataType.BCC.getFetcher(), 
+						new DefaultFilteredDataFetcher<>(DataType.F_BCC)),
+				
+				new SpliceSiteFilterFactory(
+						DataType.BCC.getFetcher(), 
+						new DefaultFilteredDataFetcher<>(DataType.F_BCC)),
+				new MaxAlleleCountFilterFactory(DataType.BCC.getFetcher()),
+				new HomopolymerFilterFactory(new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN)))
+				.stream()
+				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()));
 	}
 	
 	@Override
-	protected AbstractACOption create(GeneralParameter parameter) {
-		return new FilterConfigOption(parameter, getFilterFactories());
+	public AbstractACOption createTestInstance() {
+		return new FilterConfigOption(getGeneralParamter(), getFilterFactories());
 	}
 	
 	@Override
-	protected Set<Character> getActualValue(GeneralParameter parameter) {
-		return getParameter().getFilterConfig().getFilterFactories().stream()
-				.map(f -> f.getC())
-				.collect(Collectors.toSet());
+	public Set<Character> getActualValue() {
+		return getGeneralParamter().getFilterConfig().getFilterFactories().stream()
+				.map(FilterFactory::getC)
+				.collect(Collectors.toSet() );
 	}
 	
-	@Override
-	protected String createLine(Set<Character> v) {
-		return CLIUtils.assignValue(getOption(), TestUtils.collapseSet(v, lib.util.Util.VALUE_SEP));
+	private Set<Character> extractC(String filters) {
+		return Arrays.asList(filters.split(",")).stream()
+			.map(s -> s.charAt(0))
+			.collect(Collectors.toSet());
 	}
 	
 }

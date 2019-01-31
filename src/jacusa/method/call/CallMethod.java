@@ -4,14 +4,14 @@ import jacusa.cli.options.StatFactoryOption;
 import jacusa.cli.options.StatFilterOption;
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
 import jacusa.cli.parameters.CallParameter;
-import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.ExcludeSiteFilterFactory;
+import jacusa.filter.factory.FilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.basecall.CombinedFilterFactory;
 import jacusa.filter.factory.basecall.INDEL_FilterFactory;
-import jacusa.filter.factory.basecall.ReadPositionDistanceFilterFactory;
+import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import jacusa.io.format.call.BED6callResultFormat;
 import jacusa.io.format.call.VCFcallFormat;
@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.Map;
 
 import lib.cli.options.BedCoordinatesOption;
@@ -41,17 +43,17 @@ import lib.cli.options.condition.MinBASQConditionOption;
 import lib.cli.options.condition.MinCoverageConditionOption;
 import lib.cli.options.condition.MinMAPQConditionOption;
 import lib.cli.options.condition.filter.FilterFlagConditionOption;
-import lib.cli.options.condition.filter.FilterNHsamTagOption;
-import lib.cli.options.condition.filter.FilterNMsamTagOption;
+import lib.cli.options.condition.filter.FilterNHsamTagConditionOption;
+import lib.cli.options.condition.filter.FilterNMsamTagConditionOption;
 import lib.data.DataType;
-import lib.data.DataTypeContainer.AbstractBuilder;
-import lib.data.DataTypeContainer.AbstractBuilderFactory;
-import lib.data.builder.factory.CallDataAssemblerFactory;
-import lib.data.cache.fetcher.DefaultFilteredDataFetcher;
-import lib.data.cache.fetcher.Fetcher;
-import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.fetcher.basecall.PileupCountBaseCallCountExtractor;
+import lib.data.DataContainer.AbstractBuilder;
+import lib.data.DataContainer.AbstractBuilderFactory;
+import lib.data.assembler.factory.CallDataAssemblerFactory;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.fetcher.DefaultFilteredDataFetcher;
+import lib.data.fetcher.Fetcher;
+import lib.data.fetcher.FilteredDataFetcher;
+import lib.data.fetcher.basecall.PileupCountBaseCallCountExtractor;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.filter.BooleanWrapper;
@@ -59,9 +61,9 @@ import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.data.validator.paralleldata.NonHomozygousSite;
 import lib.io.ResultFormat;
-import lib.method.AbstractMethod;
 import lib.stat.AbstractStatFactory;
 import lib.stat.dirmult.DirMultRobustCompoundErrorFactory;
+import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 
 import org.apache.commons.cli.ParseException;
@@ -127,6 +129,7 @@ extends AbstractMethod {
 		addACOption(new DebugModusOption(getParameter(), this));
 	}
 	
+	@Override
 	protected void initConditionACOptions() {
 		// for all conditions
 		addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters()));
@@ -135,8 +138,8 @@ extends AbstractMethod {
 		addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters()));
 		addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters()));
 		
-		addACOption(new FilterNHsamTagOption(getParameter().getConditionParameters()));
-		addACOption(new FilterNMsamTagOption(getParameter().getConditionParameters()));
+		addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
+		addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
 		
 		addACOption(new nConditionLibraryTypeOption(getParameter().getConditionParameters(), getParameter()));
 		
@@ -149,8 +152,8 @@ extends AbstractMethod {
 				addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 				addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 				
-				addACOption(new FilterNHsamTagOption(getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new FilterNMsamTagOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 				
 				addACOption(new nConditionLibraryTypeOption(
 						getParameter().getConditionParameters().get(conditionIndex),
@@ -171,16 +174,13 @@ extends AbstractMethod {
 		return statistics;
 	}
 
-	public Map<Character, AbstractFilterFactory> getFilterFactories() {
-		final Map<Character, AbstractFilterFactory> abstractPileupFilters = 
-				new HashMap<Character, AbstractFilterFactory>();
-
+	public Map<Character, FilterFactory> getFilterFactories() {
 		final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredBccData = 
 				new DefaultFilteredDataFetcher<>(DataType.F_BCC);
 		final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredBooleanData = 
 				new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN);
 		
-		final List<AbstractFilterFactory> filterFactories = Arrays.asList(
+		return Arrays.asList(
 				new ExcludeSiteFilterFactory(),
 				new CombinedFilterFactory(
 						bccFetcher,
@@ -188,7 +188,7 @@ extends AbstractMethod {
 				new INDEL_FilterFactory(
 						bccFetcher, 
 						filteredBccData),
-				new ReadPositionDistanceFilterFactory(
+				new ReadPositionFilterFactory(
 						bccFetcher, 
 						filteredBccData),
 				new SpliceSiteFilterFactory(
@@ -196,13 +196,9 @@ extends AbstractMethod {
 						filteredBccData),
 				new HomozygousFilterFactory(getParameter().getConditionsSize(), bccFetcher),
 				new MaxAlleleCountFilterFactory(bccFetcher),
-				new HomopolymerFilterFactory(filteredBooleanData) );
-
-		for (final AbstractFilterFactory filterFactory : filterFactories) {
-			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
-		}
-
-		return abstractPileupFilters;
+				new HomopolymerFilterFactory(filteredBooleanData))
+				.stream()
+				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()) );
 	}
 
 	public Map<Character, ResultFormat> getResultFormats() {

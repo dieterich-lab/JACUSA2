@@ -1,57 +1,52 @@
 package test.lib.cli.options;
 
 import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
-import lib.cli.parameter.GeneralParameter;
-import test.utlis.CLIUtils;
 
-@DisplayName("Test CLI processing of ReferenceFastaFilenameOption")
-class ReferenceFastaFilenameOptionTest extends AbstractACOptionTest<String> {
+// TODO add test file in fasta format
+/**
+ * Tests @see lib.cli.options.ReferenceFastaFilenameOption#process(org.apache.commons.cli.CommandLine)
+ */
+class ReferenceFastaFilenameOptionTest 
+extends AbstractGeneralParameterProvider 
+implements ACOptionTest<String> {
 
-	/*
-	 * Tests
-	 */
-	
-	@DisplayName("Check ReferenceFastaFilenameOption are parsed correctly")
-	@ParameterizedTest(name = "Reference fasta fileName: {0}")
-	@ValueSource( strings = { "ReferenceFastaFilenameOptionTest.fasta" } )
 	@Override
-	void testProcess(String expected) throws Exception {
-		expected = PATH + expected;
-		super.testProcess(expected);
+	public Stream<Arguments> testProcess() {
+		return Arrays.asList("ReferenceFastaFilenameOptionTest_File1.fasta").stream()
+				.map(s -> createArguments(s));
 	}
-
+	
+	Arguments createArguments(final String fileName) {
+		final String fullPath = PATH + fileName;
+		return Arguments.of(
+				createOptLine(fullPath),
+				fullPath);
+	}
+	
 	@Test
 	@DisplayName("Check ReferenceFastaFilenameOption fails on wrong input")
 	void testProcessFail() throws Exception {
-		final String value = PATH + "missingReferenceFastaFilenameOptionTest.fasta";
-		getParserWrapper().myAssertThrows(FileNotFoundException.class, getACOption(), value);
-	}
-	
-	/*
-	 * Helper
-	 */
-
-	@Override
-	protected AbstractACOption create(GeneralParameter parameter) {
-		return new ReferenceFastaFilenameOption(parameter);
-	}
-
-	@Override
-	protected String getActualValue(GeneralParameter parameter) {
-		return getParameter().getReferenceFilename();
+		final String fullPath = PATH + "wrong.fasta";
+		myAssertOptThrows(FileNotFoundException.class, fullPath);
 	}
 	
 	@Override
-	protected String createLine(String v) {
-		return CLIUtils.assignValue(getOption(), v);
+	public AbstractACOption createTestInstance() {
+		return new ReferenceFastaFilenameOption(getGeneralParamter());
+	}
+
+	@Override
+	public String getActualValue() {
+		return getGeneralParamter().getReferenceFilename();
 	}
 	
 }

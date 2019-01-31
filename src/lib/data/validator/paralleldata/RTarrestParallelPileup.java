@@ -1,9 +1,9 @@
 package lib.data.validator.paralleldata;
 
-import lib.data.DataTypeContainer;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.cache.fetcher.Fetcher;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.fetcher.Fetcher;
 
 public class RTarrestParallelPileup
 implements ParallelDataValidator {
@@ -25,7 +25,7 @@ implements ParallelDataValidator {
 
 	@Override
 	public boolean isValid(final ParallelData parallelData) {
-		final DataTypeContainer combinedPooledContainer = parallelData.getCombinedPooledData();
+		final DataContainer combinedPooledContainer = parallelData.getCombinedPooledData();
 		return variantSite.isValid(parallelData) || 
 				arrestBccFetcher.fetch(combinedPooledContainer).getCoverage() > 0 &&
 				throughBccFetcher.fetch(combinedPooledContainer).getCoverage() > 0;

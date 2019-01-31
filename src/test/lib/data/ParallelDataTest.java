@@ -17,17 +17,17 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import lib.data.DataTypeContainer;
-import lib.data.DefaultDataTypeContainer;
+import lib.data.DataContainer;
+import lib.data.DefaultDataContainer;
 import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.has.LibraryType;
 import lib.util.Base;
+import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.OneCoordinate;
 import test.lib.data.count.basecall.BaseCallCountListArgumentConverter;
 import test.lib.util.BaseSetArgumentConverter;
-import test.lib.util.coordinate.CoordinateArgumentConverter;
+import test.lib.util.coordinate.OneCoordinateArgumentConverter;
 
 // JUNIT: A
 class ParallelDataTest {
@@ -42,7 +42,7 @@ class ParallelDataTest {
 		"1:1-2:-,FR_SECONDSTRAND,A,ACG",
 	})
 	void testGetNonReferenceBases(
-			@ConvertWith(CoordinateArgumentConverter.class) Coordinate coordinate, 
+			@ConvertWith(OneCoordinateArgumentConverter.class) Coordinate coordinate, 
 			LibraryType libraryType, 
 			Base referenceBase, 
 			@ConvertWith(BaseSetArgumentConverter.class) Set<Base> expected) {
@@ -76,15 +76,15 @@ class ParallelDataTest {
 	@ParameterizedTest(name = "Expected common coordinate {1}")
 	@MethodSource("testGetCommonCoordinate")
 	void testGetCommonCoordinate(
-			List<DataTypeContainer> containers, 
-			@ConvertWith(CoordinateArgumentConverter.class) Coordinate expected) {
+			List<DataContainer> containers, 
+			@ConvertWith(OneCoordinateArgumentConverter.class) Coordinate expected) {
 		final Coordinate actual = ParallelData.getCommonCoordinate(containers);
 		assertEquals(expected, actual);
 	}
 
 	/*
 	 * Format:
-	 * 1.	List<DataTypeContainer>
+	 * 1.	List<DataContainer>
 	 * 1a.	List<Coordinate>
 	 * 1b.	List<LibraryType>
 	 * 2.	Coordinate(Expected)
@@ -94,33 +94,33 @@ class ParallelDataTest {
 		return Stream.of(
 				// 1 coordinate, all lib-types
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Arrays.asList("1:1-2:."),
 								Collections.nCopies(1, lt)),
 						"1:1-2:."),
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Arrays.asList("1:1-2:+"),
 								Collections.nCopies(1, lt)),
 						"1:1-2:+"),
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Arrays.asList("1:1-2:-"),
 								Collections.nCopies(1, lt)),
 						"1:1-2:-"),
 				// 2 coordinate, all lib-types
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Arrays.asList("1:1-2:.", "1:1-2:."),
 								Collections.nCopies(2, lt)),
 						"1:1-2:."),
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Arrays.asList("1:1-2:+", "1:1-2:+"),
 								Collections.nCopies(2, lt)),
 						"1:1-2:+"),
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Arrays.asList("1:1-2:-", "1:1-2:-"),
 								Collections.nCopies(2, lt)),
 						"1:1-2:-")
@@ -136,8 +136,8 @@ class ParallelDataTest {
 		assertThrows(
 				expectedType, 
 				() -> {
-					final List<DataTypeContainer> containers = 
-							createDataTypeContainers(
+					final List<DataContainer> containers = 
+							createDataContainers(
 									Arrays.asList("1:1-2:.", "1:1-2:+"),
 									Collections.nCopies(2, lt));
 					ParallelData.getCommonCoordinate(containers);
@@ -147,8 +147,8 @@ class ParallelDataTest {
 		assertThrows(
 				expectedType, 
 				() -> {
-					final List<DataTypeContainer> containers = 
-							createDataTypeContainers(
+					final List<DataContainer> containers = 
+							createDataContainers(
 									Arrays.asList("1:1-2:-", "1:1-2:+"),
 									Collections.nCopies(2, lt));
 					ParallelData.getCommonCoordinate(containers);
@@ -158,8 +158,8 @@ class ParallelDataTest {
 		assertThrows(
 				expectedType, 
 				() -> {
-					final List<DataTypeContainer> containers = 
-							createDataTypeContainers(
+					final List<DataContainer> containers = 
+							createDataContainers(
 									Arrays.asList("1:1-2:.", "2:1-2:."),
 									Collections.nCopies(2, lt));
 					ParallelData.getCommonCoordinate(containers);
@@ -169,45 +169,45 @@ class ParallelDataTest {
 		assertThrows(
 				expectedType, 
 				() -> {
-					final List<DataTypeContainer> containers = 
-							createDataTypeContainers(
+					final List<DataContainer> containers = 
+							createDataContainers(
 									Arrays.asList("1:1-2:.", "1:3-4:."),
 									Collections.nCopies(2, lt));
 					ParallelData.getCommonCoordinate(containers);
 				});
 	}
 
-	static List<DataTypeContainer> createDataTypeContainers(
+	static List<DataContainer> createDataContainers(
 			final List<String> coordinateStrings, 
 			final List<String> libraryTypeStrings) {
 		
 		assertEquals(coordinateStrings.size(), libraryTypeStrings.size());
 		final int length = coordinateStrings.size();
 		return IntStream.range(0, length)
-			.mapToObj(i -> createDataTypeContainer(coordinateStrings.get(i), libraryTypeStrings.get(i)))
+			.mapToObj(i -> createDataContainer(coordinateStrings.get(i), libraryTypeStrings.get(i)))
 			.collect(Collectors.toList());
 	}
 	
 	
-	static DataTypeContainer createDataTypeContainer(
+	static DataContainer createDataContainer(
 			final Coordinate.AbstractParser parser, final String coordinateStr, 
 			final String libraryTypeStr) {
 		
 		final Coordinate coordinate 	= parser.parse(coordinateStr);
 		final LibraryType libraryType 	= LibraryType.valueOf(libraryTypeStr);
-		return new DefaultDataTypeContainer.Builder(coordinate, libraryType).build();
+		return new DefaultDataContainer.Builder(coordinate, libraryType).build();
 	}
 	
-	static DataTypeContainer createDataTypeContainer(
+	static DataContainer createDataContainer(
 			final String coordinateStr, final String libraryTypeStr) {
 		
-		return createDataTypeContainer(new OneCoordinate.Parser(), coordinateStr, libraryTypeStr);
+		return createDataContainer(new OneCoordinate.Parser(), coordinateStr, libraryTypeStr);
 	}
 	
 	@ParameterizedTest(name = "Expected common library type {1}")
 	@MethodSource("testGetCommonLibraryType")
 	void testGetCommonLibraryType(
-			List<DataTypeContainer> containers,
+			List<DataContainer> containers,
 			LibraryType expected) {
 		
 		final LibraryType actual = ParallelData.getCommonLibraryType(containers);
@@ -219,48 +219,48 @@ class ParallelDataTest {
 		return Stream.of(
 				// 1 libraryType
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Collections.nCopies(1, c),
 								Arrays.asList("UNSTRANDED")),
 						LibraryType.UNSTRANDED),
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Collections.nCopies(1, c),
 								Arrays.asList("RF_FIRSTSTRAND")),
 						LibraryType.RF_FIRSTSTRAND),
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Collections.nCopies(1, c),
 								Arrays.asList("FR_SECONDSTRAND")),
 						LibraryType.FR_SECONDSTRAND),
 				// 2 identical libraryTypes
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Collections.nCopies(2, c),
 								Arrays.asList("UNSTRANDED", "UNSTRANDED")),
 						LibraryType.UNSTRANDED),
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Collections.nCopies(2, c),
 								Arrays.asList("RF_FIRSTSTRAND", "RF_FIRSTSTRAND")),
 						LibraryType.RF_FIRSTSTRAND),
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Collections.nCopies(2, c),
 								Arrays.asList("FR_SECONDSTRAND", "FR_SECONDSTRAND")),
 						LibraryType.FR_SECONDSTRAND),				
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Collections.nCopies(2, c),
 								Arrays.asList("UNSTRANDED", "RF_FIRSTSTRAND")),
 						LibraryType.MIXED),
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Collections.nCopies(2, c),
 								Arrays.asList("RF_FIRSTSTRAND", "FR_SECONDSTRAND")),
 						LibraryType.MIXED),
 				Arguments.of(
-						createDataTypeContainers(
+						createDataContainers(
 								Collections.nCopies(2, c),
 								Arrays.asList("FR_SECONDSTRAND", "UNSTRANDED")),
 						LibraryType.MIXED)				

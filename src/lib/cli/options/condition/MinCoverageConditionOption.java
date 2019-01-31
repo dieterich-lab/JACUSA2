@@ -34,6 +34,7 @@ public class MinCoverageConditionOption extends AbstractConditionACOption {
 				s + "\ndefault: " + minCoverage;
 
 		return Option.builder(getOpt())
+				.longOpt(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 			    .desc(s)
@@ -42,16 +43,14 @@ public class MinCoverageConditionOption extends AbstractConditionACOption {
 
 	@Override
 	public void process(CommandLine line) throws Exception {
-	    if(line.hasOption(getOpt())) {
-	    	int minCoverage = Integer.parseInt(line.getOptionValue(getOpt()));
-	    	if(minCoverage < 1) {
-	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " must be > 0!");
-	    	}
-	    	
-	    	for (final ConditionParameter condition : getConditionParameters()) {
-	    		condition.setMinCoverage(minCoverage);
-	    	}
-	    }
+    	int minCoverage = Integer.parseInt(line.getOptionValue(getOpt()));
+    	if(minCoverage < 1) {
+    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " must be > 0!");
+    	}
+    	
+    	for (final ConditionParameter condition : getConditionParameters()) {
+    		condition.setMinCoverage(minCoverage);
+    	}
 	}
 
 }

@@ -1,6 +1,6 @@
 package lib.stat;
 
-import jacusa.estimate.MinkaEstimateParameter;
+import lib.estimate.MinkaEstimateParameter;
 
 public class DirichletParameter {
 

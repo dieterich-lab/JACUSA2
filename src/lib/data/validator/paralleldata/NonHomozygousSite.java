@@ -1,9 +1,9 @@
 package lib.data.validator.paralleldata;
 
-import lib.data.DataTypeContainer;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.cache.fetcher.Fetcher;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.fetcher.Fetcher;
 
 public class NonHomozygousSite 
 implements ParallelDataValidator {
@@ -16,7 +16,7 @@ implements ParallelDataValidator {
 	
 	@Override
 	public boolean isValid(final ParallelData parallelData) {
-		final DataTypeContainer container = parallelData.getCombinedPooledData();
+		final DataContainer container = parallelData.getCombinedPooledData();
 		final BaseCallCount bcc = bccFetcher.fetch(container);
 		// more than one non-reference allele
 		return bcc.getAlleles().size() > 1;

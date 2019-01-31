@@ -9,22 +9,22 @@ import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import jacusa.filter.Filter;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
-import lib.data.DataTypeContainer;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.assembler.ConditionContainer;
-import lib.data.assembler.ReplicateContainer;
-import lib.data.cache.container.ComplexSharedCache;
-import lib.data.cache.container.FileReferenceProvider;
-import lib.data.cache.container.ReferenceProvider;
-import lib.data.cache.container.SharedCache;
-import lib.data.cache.container.SimpleMDReferenceProvider;
 import lib.data.result.Result;
+import lib.data.storage.container.ComplexSharedStorage;
+import lib.data.storage.container.FileReferenceProvider;
+import lib.data.storage.container.ReferenceProvider;
+import lib.data.storage.container.SharedStorage;
+import lib.data.storage.container.SimpleMDReferenceProvider;
 import lib.data.validator.paralleldata.CompositeParallelDataValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.io.copytmp.CopyTmpResult;
-import lib.method.AbstractMethod;
 import lib.util.coordinate.CoordinateController;
+import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
+import lib.util.ConditionContainer;
+import lib.util.ReplicateContainer;
 import lib.util.coordinate.Coordinate;
 
 public abstract class AbstractWorker
@@ -55,12 +55,12 @@ implements Iterator<ParallelData> {
 
 		copyTmpResult = getParameter().getResultFormat().createCopyTmp(threadId, method.getWorkerDispatcherInstance());
 		
-		conditionContainer = new ConditionContainer(getParameter());
-		coordinateController = new CoordinateController(getParameter().getActiveWindowSize(), conditionContainer);
+		conditionContainer 		= new ConditionContainer(getParameter());
+		coordinateController 	= new CoordinateController(getParameter().getActiveWindowSize(), conditionContainer);
 
-		final ReferenceProvider referenceProvider = createReferenceProvider(coordinateController);
-		final SharedCache sharedCache = new ComplexSharedCache(referenceProvider);
-		conditionContainer.initReplicateContainer(sharedCache, getParameter(), method);
+		final ReferenceProvider referenceProvider 	= createReferenceProvider(coordinateController);
+		final SharedStorage sharedStorage 			= new ComplexSharedStorage(referenceProvider);
+		conditionContainer.initReplicateContainer(sharedStorage, getParameter(), method);
 
 		parallelDataValidator = new CompositeParallelDataValidator(method.createParallelDataValidators());
 
@@ -109,7 +109,7 @@ implements Iterator<ParallelData> {
 			for (int conditionIndex = 0; conditionIndex < conditionContainer.getConditionSize() ; ++conditionIndex) {
 				final ReplicateContainer replicateContainer = conditionContainer.getReplicatContainer(conditionIndex);
 				for (int replicateIndex = 0; replicateIndex < replicateContainer.getReplicateSize() ; ++replicateIndex) {
-					DataTypeContainer replicate = conditionContainer.getDataContainer(conditionIndex, replicateIndex, coordinate);
+					DataContainer replicate = conditionContainer.getDataContainer(conditionIndex, replicateIndex, coordinate);
 					parallelDataBuilder.withReplicate(conditionIndex, replicateIndex, replicate);
 				}	
 			}

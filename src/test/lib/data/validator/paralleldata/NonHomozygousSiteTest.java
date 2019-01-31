@@ -8,13 +8,13 @@ import org.junit.jupiter.params.provider.Arguments;
 import jacusa.JACUSA;
 import lib.data.DataType;
 import lib.data.ParallelData;
-import lib.data.DataTypeContainer.AbstractBuilderFactory;
-import lib.data.DataTypeContainer.DefaultBuilderFactory;
-import lib.data.cache.fetcher.DataTypeFetcher;
+import lib.data.DataContainer.AbstractBuilderFactory;
+import lib.data.DataContainer.DefaultBuilderFactory;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.has.LibraryType;
+import lib.data.fetcher.DataTypeFetcher;
 import lib.data.validator.paralleldata.ExtendedVariantSiteValidator;
 import lib.util.Base;
+import lib.util.LibraryType;
 import lib.util.coordinate.OneCoordinate;
 
 class NonHomozygousSiteTest extends AbstractParallelDataValidatorTest {

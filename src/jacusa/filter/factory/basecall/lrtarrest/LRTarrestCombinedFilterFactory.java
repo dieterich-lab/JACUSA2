@@ -1,21 +1,16 @@
 package jacusa.filter.factory.basecall.lrtarrest;
 
-import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Option.Builder;
-
-import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
-import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
-import jacusa.filter.cache.processrecord.ProcessRecord;
-import jacusa.filter.cache.processrecord.ProcessSkippedOperator;
+import jacusa.filter.factory.basecall.rtarrest.RTarrestCombinedFilterFactory;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
-import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
-import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
-import lib.data.cache.region.RegionDataCache;
+import lib.data.fetcher.FilteredDataFetcher;
+import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
+import lib.data.storage.PositionProcessor;
+import lib.data.storage.container.SharedStorage;
+import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.storage.processor.RecordExtendedProcessor;
 
 /**
  * TODO add comments.
@@ -31,25 +26,18 @@ extends AbstractLRTarrestBaseCallCountFilterFactory {
 			final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, ArrestPosition2baseCallCount> filteredDataFetcher) {
 		
 		super(
-				getOptionBuilder().build(),
-				bccSwitch, filteredDataFetcher,
-				6, 0.5);
+				RTarrestCombinedFilterFactory.getOptionBuilder().build(),
+				bccSwitch, filteredDataFetcher);
 		getApply2Reads().add(RT_READS.ARREST);
 	}
 
 	@Override
-	protected List<ProcessRecord> createProcessRecord(RegionDataCache regionDataCache) {
-		return Arrays.asList(
-				// INDELs		
-				new ProcessInsertionOperator(getFilterDistance(), regionDataCache),
-				new ProcessDeletionOperator(getFilterDistance(), regionDataCache),
-				// introns
-				new ProcessSkippedOperator(getFilterDistance(), regionDataCache) );
+	protected List<RecordExtendedProcessor> createRecordProcessors(
+			final SharedStorage sharedStorage, PositionProcessor positionProcessor) {
+		
+		return RTarrestCombinedFilterFactory.createRecordProcessors(
+				sharedStorage,
+				getFilterDistance(), positionProcessor);
 	}
 
-	public static Builder getOptionBuilder() {
-		return Option.builder(Character.toString('D'))
-				.desc("Filter artefacts in the vicinity of INDELs, and splice site position(s)");
-	}
-	
 }

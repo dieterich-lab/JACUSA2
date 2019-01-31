@@ -8,13 +8,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import jacusa.filter.Filter;
 import jacusa.filter.HomopolymerFilter;
 import lib.data.DataType;
-import lib.data.cache.fetcher.DefaultFilteredDataFetcher;
-import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.fetcher.SpecificFilteredDataFetcher;
+import lib.data.ParallelData;
+import lib.data.fetcher.DefaultFilteredDataFetcher;
+import lib.data.fetcher.FilteredDataFetcher;
+import lib.data.fetcher.SpecificFilteredDataFetcher;
 import lib.data.filter.BooleanWrapper;
 import lib.data.filter.BooleanWrapperFilteredData;
-import lib.data.has.LibraryType;
 import lib.data.result.Result;
+import lib.util.LibraryType;
 import lib.util.Parser;
 import lib.util.coordinate.OneCoordinate;
 
@@ -35,15 +36,15 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 		
 		parser	= new BooleanWrapperFilteredData.Parser(',', SEP);
 		fetcher = new DefaultFilteredDataFetcher<>(
-				DataType.create("Filtered boolean", BooleanWrapperFilteredData.class) );
+				DataType.retrieve("Filtered boolean", BooleanWrapperFilteredData.class) );
 	}
 	
 	@Override
 	Stream<Arguments> testFilter() {
 		return Stream.of(
 
-				Arguments.of(
-						createTestInstance(),
+				createArguments(
+						0,
 						new Result.ResultBuilder(
 								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(false), parser, fetcher.getDataType())
@@ -51,8 +52,8 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 						.build().getParellelData(),
 						false),
 
-				Arguments.of(
-						createTestInstance(),
+				createArguments(
+						0,
 						new Result.ResultBuilder(
 								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(true), parser, fetcher.getDataType())
@@ -60,8 +61,8 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 						.build().getParellelData(),
 						true),
 				
-				Arguments.of(
-						createTestInstance(),
+				createArguments(
+						0,
 						new Result.ResultBuilder(
 								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(false), parser, fetcher.getDataType())
@@ -69,8 +70,8 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 						.build().getParellelData(),
 						true),
 
-				Arguments.of(
-						createTestInstance(),
+				createArguments(
+						0,
 						new Result.ResultBuilder(
 								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(true), parser, fetcher.getDataType())
@@ -78,8 +79,8 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 						.build().getParellelData(),
 						true),
 				
-				Arguments.of(
-						createTestInstance(),
+				createArguments(
+						0,
 						new Result.ResultBuilder(
 								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(false), parser, fetcher.getDataType())
@@ -89,8 +90,8 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 						.build().getParellelData(),
 						false),
 				
-				Arguments.of(
-						createTestInstance(),
+				createArguments(
+						0,
 						new Result.ResultBuilder(
 								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(true), parser, fetcher.getDataType())
@@ -100,8 +101,8 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 						.build().getParellelData(),
 						true),
 				
-				Arguments.of(
-						createTestInstance(),
+				createArguments(
+						0,
 						new Result.ResultBuilder(
 								new OneCoordinate(), Collections.nCopies(2, LibraryType.UNSTRANDED))
 						.with(0, 0, h(false), parser, fetcher.getDataType())
@@ -120,19 +121,19 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 		return sb.toString();
 	}
 	
-	Filter createTestInstance() {
-		final int overhang = 0;
-		final HomopolymerFilter homopolymerFilter = new HomopolymerFilter(
+	Arguments createArguments(
+			final int overhang, final ParallelData parallelData, final boolean expected) {
+		
+		return Arguments.of(
+				createTestInstance(overhang),
+				parallelData,
+				expected,
+				"conditionIndex: " + Integer.toString(overhang));
+	}
+	
+	Filter createTestInstance(final int overhang) {
+		return new HomopolymerFilter(
 				c, overhang, new SpecificFilteredDataFetcher<>(c, fetcher) );
-
-		return new AbstractFilterWrapper<HomopolymerFilter>(homopolymerFilter) {
-			
-			@Override
-			public String toString() {
-				return "overhang: " + overhang;
-			}
-
-		};
 	}
 	
 }

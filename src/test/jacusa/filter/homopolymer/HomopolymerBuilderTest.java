@@ -35,17 +35,22 @@ class HomopolymerBuilderTest {
 	@CsvSource(
 			delimiter = '\t',
 			value = {
+				//   0         1	
+				//   0123456789012345678
 					"ACGTAAAAAAATGT	1	5	7	7",
 					"ACGCCCCCCCGGT	1	4	7	7",
 					"AGGGACGGTTTAAANCCC	4	2,9,12,16	3,3,3,3	3",
 					"ACGATTTTATTTAGT	1	5	4	4",
 					"ACGNNNNNNNNNNNCGT	0	*	*	7",
-
+				//   0         1	
+				//   0123456789012345678
 					"ACGTAAAAAAATGT	0	*	*	8",
 					"ACGGCCCCCCCGGT	0	*	*	8",
 					"ACGCGGGGGGGCGT	0	*	*	8",
 					"ACAATTTTTTTAGT	0	*	*	8",
-					"ACGNCGGGGNGGGCGT	0	*	*	8"					
+					"ACGNCGGGGNGGGCGT	0	*	*	8"
+				//   0         1	
+				//   0123456789012345678
 			})
 	void testAdd(
 			String sequence, 

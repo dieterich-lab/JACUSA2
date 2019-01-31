@@ -1,14 +1,14 @@
 package lib.cli.options;
 
-import lib.cli.options.has.HasReadSubstitution;
-import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
+import lib.cli.options.filter.has.HasReadSubstitution;
+import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+
 public class CollectReadSubstituionOption extends AbstractACOption {
 
-	private final static char SEP = ',';
+	public final static char SEP = ',';
 	
 	private final HasReadSubstitution hasReadReadSubstitution;
 
@@ -17,9 +17,13 @@ public class CollectReadSubstituionOption extends AbstractACOption {
 		this.hasReadReadSubstitution = hasReadReadSubstitution;
 	}
 
+	/**
+	 * Tested in @see test.lib.cli.options.CollectReadSubstitutionOptionTest
+	 */
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
+				.longOpt(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc(

@@ -2,94 +2,89 @@ package test.lib.cli.options.condition;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.options.condition.MinBASQConditionOption;
 import lib.cli.parameter.ConditionParameter;
 import lib.phred2prob.Phred2Prob;
-import test.utlis.CLIUtils;
 
-@DisplayName("Test CLI processing of MinBASQConditionOption")
+/**
+ * Tests @see lib.cli.options.condition.MinBASQConditionOption#process(org.apache.commons.cli.CommandLine)
+ */
 class MinBASQConditionOptionTest extends AbstractConditionACOptionTest<Byte> {
 
-	/*
-	 * Tests
-	 */
-	
-	@DisplayName("Check general MinBASQConditionOption is parsed correctly")
-	@ParameterizedTest(name = "Set maxDepth to {1} for {0} conditions")
-	@CsvSource( { "1, 1", "2, 10", "3, 5" } )
-	@Override
-	public void testProcessGeneral(int conditions, Byte expected) throws Exception {
-		super.testProcessGeneral(conditions, expected);
-	}
-	
 	@Test
-	@DisplayName("Check general MinBASQConditionOption fails on wrong input")
 	void testProcessGeneralFail() throws Exception {
-		final List<ConditionParameter> conditionParameters = createConditionParameters(2); 
-		final AbstractConditionACOption acOption = createACOption(conditionParameters);
-
-		// < -1
-		getParserWrapper().myAssertThrows(IllegalArgumentException.class, acOption, Byte.toString((byte)(-1)));
-		// > max Phred2Prob.MAX_Q
-		getParserWrapper().myAssertThrows(IllegalArgumentException.class, acOption, Byte.toString((byte)(Phred2Prob.MAX_Q + 1)));
+		final List<ConditionParameter> conditionParameters 	=
+				createConditionParameters(2); 
+		final AbstractConditionACOption testInstance 		= 
+				createGeneralTestInstance(conditionParameters);
+		
+		// < 0
+		myAssertOptThrows(IllegalArgumentException.class, testInstance, Integer.toString(-1));
+		// > Phred2Prob.MAX_Q
+		myAssertOptThrows(IllegalArgumentException.class, testInstance, Byte.toString((byte)(Phred2Prob.MAX_Q + 1)));
 		// not a number
-		getParserWrapper().myAssertThrows(IllegalArgumentException.class, acOption, "wrong");
+		myAssertOptThrows(IllegalArgumentException.class, testInstance, "wrong");
 	}
-	
-	@DisplayName("Check individual MinBASQConditionOption is parsed correctly")
-	@ParameterizedTest(name = "minBASQ should be {2} after setting {1} conditions of total {0}")
-	@MethodSource("testProcessIndividual")
-	@Override
-	public void testProcessIndividual(int conditions, List<Integer> conditionIndices, List<Byte> expected) throws Exception {
-		super.testProcessIndividual(conditions, conditionIndices, expected);
-	}
-	
-	/*
-	 * Method Source
-	 */
-	
-	static Stream<Arguments> testProcessIndividual() {
-		final ConditionParameter conditionParameter = createConditionParameter(-1);
-		// FIXME ugly
-		final Byte d = conditionParameter.getMinBASQ();
 
+	@Override
+	protected Stream<Arguments> testProcessIndividual() {
+		final Byte b = getDefaultValue();
+		final int i = Byte.toUnsignedInt(getDefaultValue());
 		return Stream.of(
-				ArgumentsHelper(3, Arrays.asList(), Arrays.asList(d, d, d)),
-				ArgumentsHelper(3, Arrays.asList(1, 2, 3), Arrays.asList((byte)10, (byte)20, (byte)30)),
-				ArgumentsHelper(3, Arrays.asList(1, 3), Arrays.asList((byte)10, d, (byte)30)) );
-	}
-	
-	/*
-	 * Helper
-	 */
-	
-	@Override
-	protected String createLine(AbstractConditionACOption actOption, Byte v) {
-		return CLIUtils.assignValue(actOption.getOption(false), Byte.toString(v));
+				createIndividualArguments(b, Arrays.asList(), Arrays.asList()),
+				createIndividualArguments(
+						b, Arrays.asList(1, 2, 3), c(Arrays.asList(10, 20, 30))),
+				createIndividualArguments(
+						b, Arrays.asList(1, 2, 3), c(Arrays.asList(10, i, 30))) );
 	}
 	
 	@Override
-	protected Byte getActualValue(ConditionParameter conditionParameter) {
+	protected Stream<Arguments> testProcessGeneral() {
+		final Byte d = getDefaultValue();
+		return Stream.of(
+				createGeneralArguments(d, 1, c(1)),
+				createGeneralArguments(d, 2, c(10)),
+				createGeneralArguments(d, 3, c(5)) );
+	}
+
+	Byte c(int i) {
+		return new Byte((byte)i);
+	}
+	
+	List<Byte> c(List<Integer> l) {
+		return l.stream()
+				.map(i -> c(i))
+				.collect(Collectors.toList());
+	}
+	
+	@Override
+	protected
+	String convertString(Byte value) {
+		return Byte.toString(value);
+	}
+	
+	@Override
+	protected
+	Byte getActualValue(ConditionParameter conditionParameter) {
 		return conditionParameter.getMinBASQ();
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(ConditionParameter conditionParameter) {
-		return new MinBASQConditionOption(conditionParameter);
+	protected
+	AbstractConditionACOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
+		return new MinBASQConditionOption(conditionParameters);
 	}
 	
 	@Override
-	protected AbstractConditionACOption createACOption(List<ConditionParameter> conditionParameter) {
+	protected
+	AbstractConditionACOption createIndividualTestInstance(ConditionParameter conditionParameter) {
 		return new MinBASQConditionOption(conditionParameter);
 	}
 	

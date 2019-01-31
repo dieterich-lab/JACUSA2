@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import lib.cli.parameter.ConditionParameter;
-import lib.data.DataTypeContainer;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 import lib.data.result.Result;
@@ -83,8 +83,8 @@ extends AbstractResultFileWriter {
 	 * @param sb
 	 * @param containers
 	 */
-	protected void addPileupData(final StringBuilder sb, final List<DataTypeContainer> containers) {
-		for (final DataTypeContainer container : containers) {
+	protected void addPileupData(final StringBuilder sb, final List<DataContainer> containers) {
+		for (final DataContainer container : containers) {
 			final PileupCount pileupCount = container.getPileupCount();
 			sb.append(SEP);
 			sb.append(pileupCount.getBaseCallCount().getCoverage());

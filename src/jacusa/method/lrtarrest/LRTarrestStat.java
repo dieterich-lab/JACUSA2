@@ -10,7 +10,7 @@ import lib.stat.AbstractStat;
 
 /**
  * TODO implement this test-statistic
- * @author Michael Piechotta
+ * 
  * @param 
  */
 public class LRTarrestStat 

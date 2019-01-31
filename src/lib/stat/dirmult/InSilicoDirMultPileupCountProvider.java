@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import jacusa.JACUSA;
-import lib.data.DataTypeContainer;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
@@ -47,7 +47,7 @@ extends AbstractDirMultPileupCountProvider {
 	private List<PileupCount> getPileupCounts(final int conditionIndex, final ParallelData parallelData) {
 		final List<PileupCount> pileupCounts = 
 				new ArrayList<>(parallelData.getReplicates().get(conditionIndex));
-		for (final DataTypeContainer container : parallelData.getData(conditionIndex)) {
+		for (final DataContainer container : parallelData.getData(conditionIndex)) {
 			pileupCounts.add(container.getPileupCount());
 		}
 		return pileupCounts;

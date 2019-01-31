@@ -10,7 +10,7 @@ import org.apache.commons.cli.Option;
 
 /**
  * 
- * @author Michael Piechotta
+ * 
  *
  */
 public class ResultFileOption extends AbstractACOption {
@@ -32,12 +32,15 @@ public class ResultFileOption extends AbstractACOption {
 	        .build();
 	}
 
+	/**
+	 * Tested in @see test.lib.cli.options.ResultFileOptionTest
+	 */
 	@Override
 	public void process(final CommandLine line) throws FileAlreadyExistsException {
     	final String resultFilename = line.getOptionValue(getOpt());
     	final File file = new File(resultFilename);
 	 	if (file.exists()) {
-	 		// throw new FileAlreadyExistsException(resultFilename);
+	 		throw new FileAlreadyExistsException(resultFilename);
 	 	}
     	parameter.setResultFilename(resultFilename);
 	}

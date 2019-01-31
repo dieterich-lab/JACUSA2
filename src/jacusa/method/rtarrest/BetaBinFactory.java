@@ -8,7 +8,7 @@ import lib.stat.AbstractStatFactory;
 
 /**
  * TODO implement this test-statistic
- * @author Michael Piechotta
+ * 
  * @param 
  */
 public class BetaBinFactory 

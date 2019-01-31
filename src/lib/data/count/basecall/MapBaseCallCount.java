@@ -7,8 +7,7 @@ import java.util.TreeSet;
 
 import lib.util.Base;
 
-public class MapBaseCallCount 
-implements BaseCallCount {
+public class MapBaseCallCount extends AbstractBaseCallCount {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -137,24 +136,6 @@ implements BaseCallCount {
 	@Override
 	public String toString() {
 		return BaseCallCount.toString(this);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof MapBaseCallCount)) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
-		
-		final MapBaseCallCount bcc = (MapBaseCallCount) obj;
-		return baseCalls.equals(bcc.baseCalls);
-	}
-	
-	@Override
-	public int hashCode() {
-		return baseCalls.hashCode();
 	}
 	
 	/*

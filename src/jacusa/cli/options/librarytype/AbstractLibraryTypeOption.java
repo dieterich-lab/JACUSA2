@@ -5,18 +5,18 @@ import java.util.List;
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
-import lib.data.has.LibraryType;
+import lib.util.LibraryType;
 
 /**
  * General command line option to chose library type for one or all conditions.
- * @author Michael Piechotta
+ * 
  * @param <T>
  */
 public abstract class AbstractLibraryTypeOption
 extends AbstractConditionACOption {
 
 	// short opt
-	public static final String OPT = "P";
+	public static final String OPT 		= "P";
 	// long opt
 	public static final String LONG_OPT = "library-type";
 
@@ -25,7 +25,7 @@ extends AbstractConditionACOption {
 	public AbstractLibraryTypeOption(final List<ConditionParameter> conditionParameter, 
 			final GeneralParameter generalParameter) {
 		
-		super(OPT, LONG_OPT, conditionParameter);
+		super(OPT, OPT, conditionParameter);
 		this.generalParameter = generalParameter;
 	}
 

@@ -4,8 +4,8 @@ import jacusa.cli.options.StatFactoryOption;
 import jacusa.cli.options.StatFilterOption;
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
 import jacusa.cli.parameters.RTarrestParameter;
-import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.ExcludeSiteFilterFactory;
+import jacusa.filter.factory.FilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.basecall.rtarrest.RTarrestCombinedFilterFactory;
 import jacusa.filter.factory.basecall.rtarrest.RTarrestINDEL_FilterFactory;
@@ -21,8 +21,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.Map;
-import java.util.Set;
 
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.CollectReadSubstituionOption;
@@ -41,18 +42,18 @@ import lib.cli.options.condition.MinBASQConditionOption;
 import lib.cli.options.condition.MinCoverageConditionOption;
 import lib.cli.options.condition.MinMAPQConditionOption;
 import lib.cli.options.condition.filter.FilterFlagConditionOption;
-import lib.cli.options.condition.filter.FilterNHsamTagOption;
-import lib.cli.options.condition.filter.FilterNMsamTagOption;
+import lib.cli.options.condition.filter.FilterNHsamTagConditionOption;
+import lib.cli.options.condition.filter.FilterNMsamTagConditionOption;
 import lib.data.DataType;
-import lib.data.DataTypeContainer.AbstractBuilder;
-import lib.data.DataTypeContainer.AbstractBuilderFactory;
-import lib.data.builder.factory.RTarrestDataAssemblerFactory;
-import lib.data.cache.fetcher.DefaultFilteredDataFetcher;
-import lib.data.cache.fetcher.Fetcher;
-import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.fetcher.TotalBaseCallCountAggregator;
-import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
+import lib.data.DataContainer.AbstractBuilder;
+import lib.data.DataContainer.AbstractBuilderFactory;
+import lib.data.assembler.factory.RTarrestDataAssemblerFactory;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.fetcher.DefaultFilteredDataFetcher;
+import lib.data.fetcher.Fetcher;
+import lib.data.fetcher.FilteredDataFetcher;
+import lib.data.fetcher.TotalBaseCallCountAggregator;
+import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.filter.BooleanWrapper;
@@ -60,13 +61,10 @@ import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.data.validator.paralleldata.RTarrestParallelPileup;
 import lib.io.ResultFormat;
-import lib.method.AbstractMethod;
 import lib.stat.AbstractStatFactory;
+import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
-import lib.util.Util;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.ParseException;
 
 public class RTarrestMethod 
@@ -128,8 +126,8 @@ extends AbstractMethod {
 		// not needed addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters()));
 		addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters()));
 		
-		addACOption(new FilterNHsamTagOption(getParameter().getConditionParameters()));
-		addACOption(new FilterNMsamTagOption(getParameter().getConditionParameters()));
+		addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
+		addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
 		
 		addACOption(new nConditionLibraryTypeOption(getParameter().getConditionParameters(), getParameter()));
 		
@@ -141,8 +139,8 @@ extends AbstractMethod {
 			// not needed addACOption(new MaxDepthConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
 			addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new FilterNHsamTagOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterNMsamTagOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 			
 			addACOption(new nConditionLibraryTypeOption(
 					getParameter().getConditionParameters().get(conditionIndex),
@@ -165,16 +163,13 @@ extends AbstractMethod {
 		return factories;
 	}
 
-	public Map<Character, AbstractFilterFactory> getFilterFactories() {
-		final Map<Character, AbstractFilterFactory> abstractPileupFilters = 
-				new HashMap<Character, AbstractFilterFactory>();
-		
+	public Map<Character, FilterFactory> getFilterFactories() {
 		final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredBccFetcher = 
 				new DefaultFilteredDataFetcher<>(DataType.F_BCC);
 		final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredBooleanFetcher =
 				new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN);
 		
-		final List<AbstractFilterFactory> filterFactories = Arrays.asList(
+		return Arrays.asList(
 				new ExcludeSiteFilterFactory(),
 				new RTarrestCombinedFilterFactory(
 						new Apply2readsBaseCallCountSwitch(
@@ -210,13 +205,9 @@ extends AbstractMethod {
 								totalBccAggregator, 
 								arrestBccFetcher, 
 								throughBccFetcher)),
-				new HomopolymerFilterFactory(filteredBooleanFetcher) );
-
-		for (final AbstractFilterFactory filterFactory : filterFactories) {
-			abstractPileupFilters.put(filterFactory.getC(), filterFactory);
-		}
-
-		return abstractPileupFilters;
+				new HomopolymerFilterFactory(filteredBooleanFetcher))
+				.stream()
+				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()) );
 	}
 
 	public Map<Character, ResultFormat> getResultFormats() {
@@ -270,49 +261,6 @@ extends AbstractMethod {
 	public enum RT_READS {
 		ARREST,
 		THROUGH
-	}
-
-	public static Builder getReadsOptionBuilder() {
-		Set<RT_READS> defaultValues = new HashSet<>();
-		for (final RT_READS e : RT_READS.values()) {
-			defaultValues.add(e);
-		}
-		return getReadsOptionBuilder(defaultValues);
-	}
-
-	public static Builder getReadsOptionBuilder(final Set<RT_READS> defaultValue) {
-		final StringBuilder sb = new StringBuilder();
-		boolean first = true;
-		for (final RT_READS r : defaultValue) {
-			if (! first) {
-				sb.append(Util.AND);
-				first = false;
-			}
-			sb.append(r.toString());
-		}
-
-		return Option.builder()
-				.longOpt("reads")
-				.argName("READS")
-				.hasArg()
-				.desc("Apply filter to base calls from reads: ARREST or THROUGH or ARREST&THROUGH. Default: " + sb.toString());
-	}
-
-	public static Set<RT_READS> processApply2Reads(final String line) {
-		final Set<RT_READS> apply2reads = new HashSet<RT_READS>(2);
-		if (line == null || line.isEmpty()) {
-			return apply2reads;
-		}
-		
-		final String[] options = line.toUpperCase().split(Character.toString(Util.AND));
-		for (final String option : options) {
-			final RT_READS tmpOption = RT_READS.valueOf(option.toUpperCase());
-			if (tmpOption == null) {
-				throw new IllegalArgumentException("Invalid argument: " + line);						
-			}
-			apply2reads.add(tmpOption);
-		}
-		return apply2reads;
 	}
 
 	/*

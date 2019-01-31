@@ -26,6 +26,9 @@ public class BedCoordinatesOption extends AbstractACOption {
 				.build();
 	}
 
+	/**
+	 * Tested in @see test.lib.cli.options.BedCoordinatesOptionTest
+	 */
 	@Override
 	public void process(final CommandLine line) throws FileNotFoundException {
     	final String pathname = line.getOptionValue(getOpt());

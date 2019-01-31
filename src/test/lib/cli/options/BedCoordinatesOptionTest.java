@@ -1,53 +1,50 @@
 package test.lib.cli.options;
 
 import java.io.FileNotFoundException;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.BedCoordinatesOption;
-import lib.cli.parameter.GeneralParameter;
 
-class BedCoordinatesOptionTest extends AbstractACOptionTest<String> {
+/**
+ * Tests @see lib.cli.options.BedCoordinatesOption#process(org.apache.commons.cli.CommandLine)
+ */
+class BedCoordinatesOptionTest 
+extends AbstractGeneralParameterProvider
+implements ACOptionTest<String> {
 	
-	/*
-	 * Test
-	 */
-
-	@DisplayName("Check bedInputFilename are parsed correctly")
-	@ParameterizedTest(name = "Parse line: {0} and expect maxThreads to be: {1}")
-	@ValueSource(strings = { "BedCoordinatesOption.txt" } )
-	void testProcess(String expected) throws Exception {
-		expected = PATH + expected;
-		super.testProcess(expected);
-	}
-	
+	// TODO add tests that this is a BED file
 	@Test
 	void testProcessFails() throws Exception {
-		final String expected = PATH + "missingBedCoordinatesOptionTest.txt";
-		getParserWrapper().myAssertThrows(FileNotFoundException.class, getACOption(), expected);
-	}
-
-	/*
-	 * Helper
-	 */
-
-	@Override
-	protected AbstractACOption create(GeneralParameter parameter) {
-		return new BedCoordinatesOption(parameter);
+		final String fullPath = PATH + "wrong.txt";
+		myAssertOptThrows(FileNotFoundException.class, fullPath);
 	}
 	
 	@Override
-	protected String getActualValue(GeneralParameter parameter) {
-		return parameter.getInputBedFilename();
+	public Stream<Arguments> testProcess() {
+		return Stream.of(
+				createArguments("BedCoordinatesOptionTest_File1.txt"),
+				createArguments("BedCoordinatesOptionTest_File2.txt") );
+	}
+	
+	Arguments createArguments(final String fileName) {
+		final String fullPath = PATH + "/" + fileName;
+		return Arguments.of(
+				createOptLine(fullPath),
+				fullPath);
 	}
 	
 	@Override
-	protected String createLine(String v) {
-		return v;
+	public AbstractACOption createTestInstance() {
+		return new BedCoordinatesOption(getGeneralParamter()); 
+	}
+	
+	@Override
+	public String getActualValue() {
+		return getGeneralParamter().getInputBedFilename();
 	}
 	
 }

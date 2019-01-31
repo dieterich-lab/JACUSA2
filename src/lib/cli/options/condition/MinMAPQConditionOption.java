@@ -36,25 +36,27 @@ public class MinMAPQConditionOption extends AbstractConditionACOption {
 				s + "\ndefault: " + minMapq;
 		
 		return Option.builder(getOpt())
+				.longOpt(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 		        .desc(s)
 		        .build();
 	}
 
+	/**
+	 * Tested in @see test.lib.cli.options.condition.MinMAPQConditionOptionTest
+	 */
 	@Override
 	public void process(CommandLine line) throws IllegalArgumentException {
-		if (line.hasOption(getOpt())) {
-	    	final String value = line.getOptionValue(getOpt());
-	    	final int minMapq = Integer.parseInt(value);
-	    	if(minMapq < 0 | minMapq > 255) {
-	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + minMapq + " not valid.");
-	    	}
+    	final String value = line.getOptionValue(getOpt());
+    	final int minMapq = Integer.parseInt(value);
+    	if(minMapq < 0 | minMapq > 255) {
+    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + minMapq + " not valid.");
+    	}
 
-	    	for (final ConditionParameter condition : getConditionParameters()) {
-	    		condition.setMinMAPQ(minMapq);
-	    	}
-	    }
+    	for (final ConditionParameter condition : getConditionParameters()) {
+    		condition.setMinMAPQ(minMapq);
+    	}
 	}
 
 }

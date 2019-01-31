@@ -1,7 +1,6 @@
 package test.utlis;
 
 import htsjdk.samtools.CigarOperator;
-import test.jacusa.filter.homopolymer.SAMRecordBuilder;
 
 public class DefaultSAMRecordBuilderStrategy implements SAMRecordBuilderStrategy {
 

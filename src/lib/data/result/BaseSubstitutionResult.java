@@ -3,8 +3,8 @@ package lib.data.result;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
-import lib.data.DataTypeContainer;
+import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.count.BaseSubstitutionCount;
 import lib.util.Info;
@@ -23,7 +23,7 @@ public class BaseSubstitutionResult implements Result {
 		
 		this.result = result;
 
-		final DataTypeContainer container = result.getParellelData().getCombinedPooledData();
+		final DataContainer container = result.getParellelData().getCombinedPooledData();
 		final BaseSubstitutionCount bsc = container.getBaseSubstitutionCount();
 		valuesIndex = new TreeSet<>();
 		valuesIndex.addAll(result.getValueIndex());

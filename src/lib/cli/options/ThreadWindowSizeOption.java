@@ -27,6 +27,9 @@ public class ThreadWindowSizeOption extends AbstractACOption {
 				.build();
 	}
 
+	/**
+	 * Tested int @see test.lib.cli.options.ThreadWindowSizeOptionTest
+	 */
 	@Override
 	public void process(final CommandLine line) throws Exception {
     	final String value = line.getOptionValue(getOpt());

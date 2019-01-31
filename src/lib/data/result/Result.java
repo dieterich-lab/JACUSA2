@@ -7,14 +7,14 @@ import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import lib.data.DataType;
-import lib.data.DataTypeContainer;
-import lib.data.DefaultDataTypeContainer;
+import lib.data.Data;
+import lib.data.DataContainer;
+import lib.data.DefaultDataContainer;
 import lib.data.ParallelData;
 import lib.data.has.HasParallelData;
-import lib.data.has.LibraryType;
 import lib.util.Base;
-import lib.util.Data;
 import lib.util.Info;
+import lib.util.LibraryType;
 import lib.util.Parser;
 import lib.util.coordinate.Coordinate;
 
@@ -42,7 +42,7 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 		private final List<LibraryType> libraryTypes;
 		private final Base referenceBase;
 		
-		private final List<List<DataTypeContainer.AbstractBuilder>> builders;
+		private final List<List<DataContainer.AbstractBuilder>> builders;
 
 		public ResultBuilder(final Coordinate coordinate, final List<LibraryType> libraryTypes) {
 			this(coordinate, libraryTypes, Base.N);
@@ -58,10 +58,10 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 			this.referenceBase 	= referenceBase;
 			
 			final int conditions = libraryTypes.size();
-			builders = new ArrayList<List<DataTypeContainer.AbstractBuilder>>(conditions);
+			builders = new ArrayList<List<DataContainer.AbstractBuilder>>(conditions);
 			for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
-				final List<DataTypeContainer.AbstractBuilder> replicates = 
-						new ArrayList<DataTypeContainer.AbstractBuilder>();
+				final List<DataContainer.AbstractBuilder> replicates = 
+						new ArrayList<DataContainer.AbstractBuilder>();
 				builders.add(replicates);
 			}
 		}
@@ -71,17 +71,17 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 				final String s, final Parser<T> parser, 
 				final DataType<T> dataType) {
 
-			final List<DataTypeContainer.AbstractBuilder> replicateBuilders = 
+			final List<DataContainer.AbstractBuilder> replicateBuilders = 
 					builders.get(condition);
 			
 			if (replicateBuilders.size() <= replicate) {
 				replicateBuilders.add(
-						new DefaultDataTypeContainer.Builder(
+						new DefaultDataContainer.Builder(
 								coordinate, 
 								libraryTypes.get(condition))
 						.withReferenceBase(referenceBase) );
 			}
-			final DataTypeContainer.AbstractBuilder dataTypeBuilder = 
+			final DataContainer.AbstractBuilder dataTypeBuilder = 
 					replicateBuilders.get(replicate);
 			
 			final T data = parser.parse(s);
@@ -104,9 +104,9 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 
 			for (int condition = 0; condition < getConditions(); ++condition) {
 				for (int replicate = 0; replicate < replicates.get(condition); ++replicate) {
-					final DataTypeContainer dataTypeContainer = 
+					final DataContainer dataContainer = 
 							builders.get(condition).get(replicate).build();
-					pdBuilder.withReplicate(condition, replicate, dataTypeContainer);
+					pdBuilder.withReplicate(condition, replicate, dataContainer);
 				}
 			}
 			

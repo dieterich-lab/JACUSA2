@@ -20,9 +20,9 @@ import lib.data.ParallelData;
 @TestInstance(Lifecycle.PER_CLASS)
 abstract class AbstractFilterTest {
 
-	@ParameterizedTest(name = "testInstance: {0} should be filtered: {2}")
+	@ParameterizedTest(name = "{3}")
 	@MethodSource("testFilter")
-	void testFilter(Filter testInstance, ParallelData parallelData, boolean expected) {
+	void testFilter(Filter testInstance, ParallelData parallelData, boolean expected, String info) {
 		final boolean actual = testInstance.filter(parallelData);
 		assertEquals(expected, actual);
 	}

@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
-import lib.data.has.LibraryType;
 import lib.util.AbstractTool;
+import lib.util.LibraryType;
 
 public class ConditionParameter {
 	
@@ -213,6 +213,7 @@ public class ConditionParameter {
 		return false;
 	}
 
+	// 1-based
 	public int getConditionIndex() {
 		return conditionIndex;
 	}

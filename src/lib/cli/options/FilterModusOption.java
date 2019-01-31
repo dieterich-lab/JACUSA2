@@ -24,6 +24,10 @@ public class FilterModusOption extends AbstractACOption {
 		        .build();
 	}
 	
+	/**
+	 * Tested in @see test.lib.cli.options.FilterModusOptionTest
+	 */
+	
 	@Override
 	public void process(final CommandLine line) throws Exception {
 		parameter.splitFiltered(true);

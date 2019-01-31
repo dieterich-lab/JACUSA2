@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.ShowVersionOption;
-import lib.method.AbstractMethod;
+import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 
 import org.apache.commons.cli.CommandLine;
@@ -296,8 +296,7 @@ public class CLI {
 
 	public final Map<String, AbstractMethod.AbstractFactory> getName2methodFactory() {
 		return getMethodFactories().stream()
-				.collect(
-						Collectors.toMap(
+				.collect(Collectors.toMap(
 								AbstractMethod.AbstractFactory::getName,
 								Function.identity()) );
 	}

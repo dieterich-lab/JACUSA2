@@ -4,7 +4,7 @@ import lib.stat.dirmult.DirMultData;
 
 /**
  * 
- * @author Michael Piechotta
+ * 
  */
 public abstract class AbstractAlphaInit {
 

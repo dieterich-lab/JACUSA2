@@ -1,12 +1,12 @@
 package lib.data.count;
 
 import jacusa.JACUSA;
+import lib.data.Data;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.UnmodifiableBaseCallCount;
 import lib.data.count.basecallquality.BaseCallQualityCount;
 import lib.util.Base;
-import lib.util.Data;
 
 public class PileupCount implements Data<PileupCount> {
 

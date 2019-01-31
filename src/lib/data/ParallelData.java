@@ -11,20 +11,20 @@ import htsjdk.samtools.util.SequenceUtil;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.has.HasCoordinate;
 import lib.data.has.HasLibraryType;
-import lib.data.has.LibraryType;
 import lib.util.Base;
 import lib.util.Copyable;
+import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
 
 public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<ParallelData>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final List<List<DataTypeContainer>> data;
-	private List<DataTypeContainer> cachedCombinedData;
+	private final List<List<DataContainer>> data;
+	private List<DataContainer> cachedCombinedData;
 
-	private List<DataTypeContainer> cachedPooledData;
-	private DataTypeContainer cachedCombinedPooledData;
+	private List<DataContainer> cachedPooledData;
+	private DataContainer cachedCombinedPooledData;
 
 	private Coordinate cachedCommonCoordinates;
 	private LibraryType cachedCommonLibraryType;
@@ -50,7 +50,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		return totalReplicates;
 	}
 
-	public List<DataTypeContainer> getPooledData() {
+	public List<DataContainer> getPooledData() {
 		if (cachedPooledData == null) {
 			for (int conditionIndex = 0; conditionIndex < getConditions(); ++conditionIndex) {
 				getPooledData(conditionIndex);
@@ -59,7 +59,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		return Collections.unmodifiableList(cachedPooledData);
 	}
 
-	public DataTypeContainer getPooledData(int conditionIndex) {
+	public DataContainer getPooledData(int conditionIndex) {
 		if (cachedPooledData == null) {
 			cachedPooledData = new ArrayList<>(getConditions());
 			cachedPooledData.addAll(Collections.nCopies(getConditions(), null));
@@ -75,7 +75,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		return cachedPooledData.get(conditionIndex);
 	}
 
-	public DataTypeContainer getCombinedPooledData() {
+	public DataContainer getCombinedPooledData() {
 		if (cachedCombinedPooledData == null && getConditions() > 0) {
 			cachedCombinedPooledData = merge(getPooledData());
 		}
@@ -83,11 +83,11 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		return cachedCombinedPooledData;
 	}
 
-	public List<DataTypeContainer> getCombinedData() {
+	public List<DataContainer> getCombinedData() {
 		if (cachedCombinedData == null) {
 			cachedCombinedData = new ArrayList<>(getTotalReplicates());
 
-			for (final List<DataTypeContainer> replicateData : data) {
+			for (final List<DataContainer> replicateData : data) {
 				cachedCombinedData.addAll(replicateData);
 			}
 		}
@@ -111,7 +111,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		return cachedCommonLibraryType;
 	}
 
-	public DataTypeContainer getDataContainer(int conditionIndex, int replicateIndex) {
+	public DataContainer getDataContainer(int conditionIndex, int replicateIndex) {
 		return data.get(conditionIndex).get(replicateIndex);
 	}
 
@@ -119,7 +119,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		return data.size();
 	}
 
-	public List<DataTypeContainer> getData(int conditionIndex) {
+	public List<DataContainer> getData(int conditionIndex) {
 		return data.get(conditionIndex);
 	}
 
@@ -128,8 +128,8 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		return new Builder(this).build();
 	}
 
-	public DataTypeContainer merge(final List<DataTypeContainer> dataList) {
-		final DataTypeContainer copy = dataList.get(0).copy();
+	public DataContainer merge(final List<DataContainer> dataList) {
+		final DataContainer copy = dataList.get(0).copy();
 		for (int i = 1; i < dataList.size(); ++i) {
 			copy.merge(dataList.get(i));
 		}
@@ -138,7 +138,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 
 	public static class Builder implements lib.util.Builder<ParallelData> {
 
-		private final List<List<DataTypeContainer>> data;
+		private final List<List<DataContainer>> data;
 		private final List<Integer> replicates;
 		private final int totalReplicates;
 
@@ -149,7 +149,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 
 			for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
 				for (int replicateIndex = 0; replicateIndex < replicates.get(replicateIndex); ++replicateIndex) {
-					DataTypeContainer replicate = parallelData.getDataContainer(conditionIndex, replicateIndex).copy();
+					DataContainer replicate = parallelData.getDataContainer(conditionIndex, replicateIndex).copy();
 					withReplicate(conditionIndex, replicateIndex, replicate);
 				}
 			}
@@ -162,7 +162,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		}
 
 		public Builder withReplicate(final int conditionIndex, final int replicateIndex,
-				final DataTypeContainer dataContainer) {
+				final DataContainer dataContainer) {
 			data.get(conditionIndex).set(replicateIndex, dataContainer);
 			return this;
 		}
@@ -172,7 +172,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 				throw new IllegalStateException("data cannot be null");
 			}
 			for (int conditionIndex = 0; conditionIndex < data.size(); ++conditionIndex) {
-				final List<DataTypeContainer> replicateData = data.get(conditionIndex);
+				final List<DataContainer> replicateData = data.get(conditionIndex);
 				if (replicateData == null) {
 					throw new IllegalStateException(
 							"replicateData for conditionIndex: " + conditionIndex + " cannot be null");
@@ -191,16 +191,16 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		 * Static methods
 		 */
 
-		public static List<DataTypeContainer> createEmptyContainer(final int n) {
+		public static List<DataContainer> createEmptyContainer(final int n) {
 			return new ArrayList<>(Collections.nCopies(n, null));
 		}
 
-		public static List<List<DataTypeContainer>> createEmptyContainer(final int conditions,
+		public static List<List<DataContainer>> createEmptyContainer(final int conditions,
 				List<Integer> replicates) {
 			if (conditions != replicates.size()) {
 				throw new IllegalStateException("conditions != replicates.size()");
 			}
-			final List<List<DataTypeContainer>> l = new ArrayList<>(conditions);
+			final List<List<DataContainer>> l = new ArrayList<>(conditions);
 			for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
 				l.add(createEmptyContainer(replicates.get(conditionIndex)));
 			}
@@ -253,7 +253,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 
 	@Override
 	public String toString() {
-		return String.format("conditions: %s", getConditions());
+		return String.format("cond.: %s", getConditions());
 	}
 
 	// for RRDs RNA RNA differences
@@ -292,9 +292,9 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 	 * new int[0]; }
 	 */
 
-	public static Coordinate getCommonCoordinate(final List<DataTypeContainer> containers) {
+	public static Coordinate getCommonCoordinate(final List<DataContainer> containers) {
 		Coordinate commonCoordinate = null;
-		for (final DataTypeContainer container : containers) {
+		for (final DataContainer container : containers) {
 			final Coordinate specificCoordinate = container.getCoordinate();
 			if (commonCoordinate == null) {
 				commonCoordinate = specificCoordinate;
@@ -307,9 +307,9 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		return commonCoordinate;
 	}
 
-	public static LibraryType getCommonLibraryType(final List<DataTypeContainer> containers) {
+	public static LibraryType getCommonLibraryType(final List<DataContainer> containers) {
 		LibraryType commonLibraryType = null;
-		for (final DataTypeContainer container : containers) {
+		for (final DataContainer container : containers) {
 			final LibraryType specificLibraryType = container.getLibraryType();
 			if (commonLibraryType == null) {
 				commonLibraryType = specificLibraryType;

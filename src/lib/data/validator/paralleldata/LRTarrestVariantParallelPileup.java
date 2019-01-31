@@ -1,10 +1,10 @@
 package lib.data.validator.paralleldata;
 
-import lib.data.DataTypeContainer;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.cache.fetcher.Fetcher;
-import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.fetcher.Fetcher;
+import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 
 public class LRTarrestVariantParallelPileup
 implements ParallelDataValidator {
@@ -18,7 +18,7 @@ implements ParallelDataValidator {
 	
 	@Override
 	public boolean isValid(final ParallelData parallelData) {
-		final DataTypeContainer combinedPooledContainer = parallelData.getCombinedPooledData();
+		final DataContainer combinedPooledContainer = parallelData.getCombinedPooledData();
 		
 		final ArrestPosition2baseCallCount ap2bcc = 
 				arrestPos2BccFetcher.fetch(combinedPooledContainer);

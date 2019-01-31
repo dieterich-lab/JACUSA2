@@ -4,7 +4,7 @@ import lib.util.Base;
 
 /**
  * 
- * @author Michael Piechotta
+ * 
  *
  */
 public interface HasReferenceBase {

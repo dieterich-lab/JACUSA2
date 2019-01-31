@@ -3,29 +3,28 @@ package test.lib.cli.options;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.ShowVersionOption;
-import lib.cli.parameter.GeneralParameter;
 import lib.util.AbstractTool;
 
-// FIXME
-@DisplayName("Test CLI processing of ShowVersionOption")
-class ShowVersionOptionTest extends AbstractACOptionTest<String> {
+/**
+ * Tests @see lib.cli.options.ShowVersionOption#process(org.apache.commons.cli.CommandLine)
+ */
+class ShowVersionOptionTest 
+implements ACOptionTest<String> {
 
 	private ByteArrayOutputStream myOut;
-	private AbstractTool tool;
+	@SuppressWarnings("unused")
+	private AbstractTool tool; // used in Option via static method
 	private static final String EXPECTED_VERSION = "X.Y.Z"; 
 	
 	@BeforeEach
-	public void beforeEach() {
-		super.beforeEach();
-		
+	void beforeEach() {
 		myOut = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(myOut));
 		
@@ -37,40 +36,23 @@ class ShowVersionOptionTest extends AbstractACOptionTest<String> {
 			}
 		};
 	}
-	
-	/*
-	 * Tests
-	 */
 
-	@DisplayName("Check ShowVersionOption are parsed correctly")
-	@ParameterizedTest(name = "Option should be used: {0}")
-	@ValueSource(strings = { "true", "false" })
 	@Override
-	void testProcess(String expected) throws Exception {
-		super.testProcess(expected);
-	}
-
-	/*
-	 * Helper
-	 */
-	
-	protected AbstractTool getTool() {
-		return tool;
+	public Stream<Arguments> testProcess() {
+		return Stream.of(
+				Arguments.of(createOptLine(), EXPECTED_VERSION),
+				Arguments.of("", "") );
+				
 	}
 	
 	@Override
-	protected AbstractACOption create(GeneralParameter parameter) {
+	public AbstractACOption createTestInstance() {
 		return new ShowVersionOption();
 	}
 	
 	@Override
-	protected String getActualValue(GeneralParameter parameter) {
+	public String getActualValue() {
 		return myOut.toString().replaceAll("\n", "");
-	}
-	
-	@Override
-	protected String createLine(String v) {
-		return v; // FIXME
 	}
 	
 }

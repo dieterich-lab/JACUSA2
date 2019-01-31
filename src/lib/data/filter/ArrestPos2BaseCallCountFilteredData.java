@@ -2,7 +2,7 @@ package lib.data.filter;
 
 import java.util.Map;
 
-import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 
 public class ArrestPos2BaseCallCountFilteredData 
 extends AbstractFilteredData<ArrestPos2BaseCallCountFilteredData, ArrestPosition2baseCallCount> {

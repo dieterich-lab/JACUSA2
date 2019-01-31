@@ -1,6 +1,7 @@
 package lib.util;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,29 +15,31 @@ public enum Base {
 	T(3, 0, (byte)'T'), 
 	N(4, 4, (byte)'N');
 
-	private static final Base[] VALID;
+	private static final Base[] VALID = new Base[] {A, C, G, T};
 	private static final Map<Byte, Base> BYTE2BASE;
 	private static final Map<Base, Set<Base>> REF2NON_REF;
 	
 	static {
-		VALID = new Base[] {A, C, G, T};
-		BYTE2BASE = new HashMap<Byte, Base>();
-		for (Base b : Base.values()) {
-			BYTE2BASE.put(b.bite, b);
-		}
-
-		REF2NON_REF = new HashMap<Base, Set<Base>>(validValues().length + 1);
-		for (final Base refBase : validValues()) {
+		final Map<Base, Set<Base>> REF2NON_REF_TMP = new HashMap<Base, Set<Base>>(validValues().length + 1);
+		for (final Base base : validValues()) {
 			final Set<Base> nonRefBases = new HashSet<Base>(VALID.length);
 			for (final Base tmp : validValues()) {
 				nonRefBases.add(tmp);
 			}
-			nonRefBases.remove(refBase);
-			REF2NON_REF.put(refBase, nonRefBases);
+			nonRefBases.remove(base);
+			REF2NON_REF_TMP.put(base, Collections.unmodifiableSet(nonRefBases));
 		}
-		REF2NON_REF.put(Base.N, new HashSet<>(Arrays.asList(Base.N)));
+		REF2NON_REF_TMP.put(Base.N, Collections.unmodifiableSet(new HashSet<>(Arrays.asList(Base.N))));
+		REF2NON_REF = Collections.unmodifiableMap(REF2NON_REF_TMP);
+		
+		final Map<Byte, Base> BYTE2BASE_TMP = new HashMap<Byte, Base>();
+		for (Base b : Base.values()) {
+			BYTE2BASE_TMP.put(b.bite, b);
+		}
+		BYTE2BASE = Collections.unmodifiableMap(BYTE2BASE_TMP);
 	}
-
+	
+	
 	private final int index;
 	private final byte bite;
 	private final int complementIndex;
@@ -63,7 +66,7 @@ public enum Base {
 		return (char)bite;
 	}
 	
-	public static final Base valueOf(final byte bite) {
+	public synchronized static final Base valueOf(final byte bite) {
 		if (! BYTE2BASE.containsKey(bite)) {
 			throw new IllegalArgumentException("Byte " + bite + " unknown");
 		}
@@ -83,8 +86,8 @@ public enum Base {
 		return VALID;
 	}
 
-	public static final Set<Base> getNonRefBases(final Base refBase) {
-		return REF2NON_REF.get(refBase);
+	public synchronized static final Set<Base> getNonRefBases(final Base refBase) {
+		return new HashSet<>(REF2NON_REF.get(refBase));
 	}
 
 	public static final String wrap(final Base base) {

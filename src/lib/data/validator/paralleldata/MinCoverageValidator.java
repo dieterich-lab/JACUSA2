@@ -3,10 +3,10 @@ package lib.data.validator.paralleldata;
 import java.util.List;
 
 import lib.cli.parameter.ConditionParameter;
-import lib.data.DataTypeContainer;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.cache.fetcher.Fetcher;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.fetcher.Fetcher;
 
 public class MinCoverageValidator 
 implements ParallelDataValidator {
@@ -25,7 +25,7 @@ implements ParallelDataValidator {
 	@Override
 	public boolean isValid(final ParallelData parallelData) {
 		for (int conditionIndex = 0; conditionIndex < conditionParameters.size(); conditionIndex++) {
-			for (final DataTypeContainer container : parallelData.getData(conditionIndex)) {
+			for (final DataContainer container : parallelData.getData(conditionIndex)) {
 				final BaseCallCount bcc = bccFetcher.fetch(container);
 				if (bcc.getCoverage() < conditionParameters.get(conditionIndex).getMinCoverage()) {
 					return false;

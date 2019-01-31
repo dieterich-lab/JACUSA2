@@ -6,10 +6,10 @@ import java.util.Set;
 
 import htsjdk.samtools.util.StringUtil;
 import jacusa.JACUSA;
+import lib.data.Data;
 import lib.data.has.HasCoverage;
+import lib.io.InputOutput;
 import lib.util.Base;
-import lib.util.Data;
-import lib.util.Util;
 
 public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Serializable {
 	
@@ -47,7 +47,7 @@ public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Seriali
 	String toString();
 
 	static String toString(BaseCallCount baseCallCount) {
-		return new ArrayBaseCallCount.Parser(Util.SEP4, Util.EMPTY_FIELD)
+		return new ArrayBaseCallCount.Parser(InputOutput.SEP4, InputOutput.EMPTY_FIELD)
 				.wrap(baseCallCount);
 	}
 	

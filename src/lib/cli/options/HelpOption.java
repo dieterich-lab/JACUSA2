@@ -25,6 +25,9 @@ public class HelpOption extends AbstractACOption {
 				.build();
 	}
 
+	/**
+	 * Tested in @see lib.cli.options.HelpOptionTest
+	 */
 	@Override
 	public void process(CommandLine line) {
     	cli.setPrintExtendedHelp();

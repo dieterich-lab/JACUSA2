@@ -1,16 +1,15 @@
 package jacusa.filter.factory.basecall.lrtarrest;
 
-import java.util.Arrays;
 import java.util.List;
 
-import jacusa.filter.cache.processrecord.ProcessReadStartEnd;
-import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
-import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
-import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
-import lib.data.cache.region.RegionDataCache;
+import lib.data.fetcher.FilteredDataFetcher;
+import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
+import lib.data.storage.PositionProcessor;
+import lib.data.storage.container.SharedStorage;
+import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.storage.processor.RecordExtendedProcessor;
 
 /**
  * TODO add comments.
@@ -25,14 +24,16 @@ extends AbstractLRTarrestBaseCallCountFilterFactory {
 
 		super(
 				SpliceSiteFilterFactory.getOptionBuilder().build(),
-				bccSwitch, filteredDataFetcher,
-				6, 0.5);
+				bccSwitch, filteredDataFetcher);
 	}
 	
 	@Override
-	protected List<ProcessRecord> createProcessRecord(RegionDataCache regionDataCache) {
-		return Arrays.asList(
-				new ProcessReadStartEnd(getFilterDistance(), regionDataCache));
+	protected List<RecordExtendedProcessor> createRecordProcessors(
+			final SharedStorage sharedStorage, PositionProcessor positionProcessor) {
+		
+		return SpliceSiteFilterFactory.createRecordProcessors(
+				sharedStorage,
+				getFilterDistance(), positionProcessor);
 	}
 
 }

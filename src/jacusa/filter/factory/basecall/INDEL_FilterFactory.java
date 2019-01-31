@@ -1,19 +1,20 @@
 package jacusa.filter.factory.basecall;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Option.Builder;
 
-import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
-import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
-import jacusa.filter.cache.processrecord.ProcessRecord;
-import lib.data.cache.fetcher.Fetcher;
-import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.region.RegionDataCache;
+import jacusa.filter.processrecord.ProcessDeletionOperator;
+import jacusa.filter.processrecord.ProcessInsertionOperator;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.fetcher.Fetcher;
+import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.filter.BaseCallCountFilteredData;
+import lib.data.storage.PositionProcessor;
+import lib.data.storage.container.SharedStorage;
+import lib.data.storage.processor.RecordExtendedProcessor;
 
 /**
  * TODO add comments.
@@ -21,26 +22,30 @@ import lib.data.filter.BaseCallCountFilteredData;
  * @param 
  */
 
-public class INDEL_FilterFactory
-extends AbstractBaseCallCountFilterFactory {
+public class INDEL_FilterFactory extends AbstractBaseCallCountFilterFactory {
 
 	public INDEL_FilterFactory(
 			final Fetcher<BaseCallCount> observedBccFetcher,
 			FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
 		super(
 				getOptionBuilder().build(),
-				observedBccFetcher, filteredDataFetcher,
-				6, 0.5);
+				observedBccFetcher, filteredDataFetcher);
 	}
 
 	@Override
-	protected List<ProcessRecord> createProcessRecord(RegionDataCache regionDataCache) {
-		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
-		processRecords.add(new ProcessInsertionOperator(getFilterDistance(), regionDataCache));
-		processRecords.add(new ProcessDeletionOperator(getFilterDistance(), regionDataCache));
-		return processRecords;
+	protected List<RecordExtendedProcessor> createRecordProcessors(SharedStorage sharedStorage, PositionProcessor positionProcessor) {
+		return createRecordProcessor(sharedStorage, getFilterDistance(), positionProcessor);
 	}
 
+	public static List<RecordExtendedProcessor> createRecordProcessor(
+			SharedStorage sharedStorage, 
+			final int filterDistance, PositionProcessor positionProcessor) {
+		
+		return Arrays.asList(
+				new ProcessInsertionOperator(sharedStorage, filterDistance, positionProcessor),
+				new ProcessDeletionOperator(sharedStorage, filterDistance, positionProcessor) );
+	}
+	
 	public static Builder getOptionBuilder() {
 		return Option.builder(Character.toString('I'))
 				.desc("Filter potential false positive variants adjacent to INDEL position(s).");

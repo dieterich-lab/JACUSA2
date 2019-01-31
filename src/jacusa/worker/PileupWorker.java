@@ -3,7 +3,7 @@ package jacusa.worker;
 import java.util.SortedSet;
 
 import jacusa.method.pileup.PileupMethod;
-import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.ParallelData;
 import lib.data.result.BaseSubstitutionResult;
 import lib.data.result.Result;

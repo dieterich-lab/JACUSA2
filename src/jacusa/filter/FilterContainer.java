@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import jacusa.filter.factory.FilterFactory;
 import lib.cli.parameter.ConditionParameter;
-import lib.data.cache.container.SharedCache;
-import lib.data.cache.record.RecordWrapperProcessor;
+import lib.data.storage.Cache;
+import lib.data.storage.container.SharedStorage;
 
 /**
  * This class holds the instance of filters.
@@ -70,15 +70,18 @@ public class FilterContainer {
 		return Collections.unmodifiableList(new ArrayList<>(filters.values()));
 	}
 	
-	public List<RecordWrapperProcessor> createFilterCaches(
+	public Cache createFilterCache(
 			final ConditionParameter conditionParameter, 
-			final SharedCache sharedCache) {
+			final SharedStorage sharedStorage) {
 		
-		return Collections.unmodifiableList(
-			filterConfig.getFilterFactories().stream()
-				.map(filterFactory -> filterFactory.createFilterCache(conditionParameter, sharedCache))
-				.filter(filterCache -> filterCache != null)
-				.collect(Collectors.toList()) );
+		final Cache filterCache = new Cache();
+		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {
+			final Cache tmpCache = filterFactory.createFilterCache(conditionParameter, sharedStorage);
+			if (tmpCache != null) {
+				filterCache.addCache(tmpCache);
+			}
+		}
+		return filterCache;
 	}
 	
 }

@@ -18,6 +18,9 @@ public class ShowVersionOption extends AbstractACOption {
 		        .build();
 	}
 	
+	/**
+	 * Tested in @see test.lib.cli.options.ShowVersionOptionTest
+	 */
 	@Override
 	public void process(final CommandLine line) throws Exception {
 		final AbstractTool tool = AbstractTool.getLogger().getTool();

@@ -3,10 +3,10 @@ package jacusa.filter;
 import java.util.List;
 import java.util.Set;
 
-import lib.data.DataTypeContainer;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.cache.fetcher.Fetcher;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.fetcher.Fetcher;
 import lib.util.Base;
 
 /**
@@ -66,7 +66,7 @@ public class GenericBaseCallCountFilter extends AbstractFilter {
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
 				final int replicates = parallelData.getReplicates(conditionIndex);
 				for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
-					final DataTypeContainer container = parallelData.getDataContainer(conditionIndex, replicateIndex);
+					final DataContainer container = parallelData.getDataContainer(conditionIndex, replicateIndex);
 					// observed count
 					final BaseCallCount o = observedBccFetcher.fetch(container);
 					final int tmpCount = o.getBaseCall(variantBase);

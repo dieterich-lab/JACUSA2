@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.util.List;
 
 import lib.cli.CLI;
-import lib.method.AbstractMethod;
 import lib.worker.WorkerDispatcher;
 
 public abstract class AbstractTool {

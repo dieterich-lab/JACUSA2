@@ -2,13 +2,17 @@ package test.lib.stat.dirmult;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.converter.ConvertWith;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import lib.stat.dirmult.DirMultData;
 
-// JUNIT: A
+@TestInstance(Lifecycle.PER_CLASS)
 class DirMultDataTest {
 
 	public static final double DELTA = 1e-15;
@@ -19,18 +23,33 @@ class DirMultDataTest {
 	 *  1. int(# of categories),double[][](values)
 	 *  2. double[](expected rowSums)
 	 */
-	@CsvSource(
-			value = {
-					"4,1,1,1,1,2,2,2,2	4,8",
-					"2,0,0,1,2,3,4	4,6"
-			}, 
-			delimiter = '\t')
-	void testGetRowWiseSums(
-			@ConvertWith(DirMultDataArgumentConverter.class) DirMultData dirMultData, 
-			double[] expected) {
-		
+	@MethodSource("testGetRowWiseSums")
+	void testGetRowWiseSums(DirMultData dirMultData, double[] expected) {
 		final double[] actual = dirMultData.getRowWiseSums();
 		assertArrayEquals(expected, actual, DELTA);
 	}
 
+	Stream<Arguments> testGetRowWiseSums() {
+		return Stream.of(
+				createArguments(
+						4, 
+						new double[][] {
+							{ 1d, 1d, 1d, 1d }, 
+							{ 2d, 2d, 2d, 2d } }, 
+						new double[] {4d, 8d} ),
+				createArguments(
+						2, 
+						new double[][] {
+							{ 1d, 1d },
+							{ 1d, 2d }, 
+							{ 3d, 4d } }, 
+						new double[] {2d, 3d, 7d} ) );
+	}
+
+	Arguments createArguments(final int k, final double[][] data, double[] expected) {
+		return Arguments.of(
+				new DirMultData(k, data),
+				expected);
+	}
+	
 }

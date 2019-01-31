@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import jacusa.JACUSA;
-import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.data.Data;
 import lib.data.count.basecall.BaseCallCount;
 import lib.util.Base;
-import lib.util.Data;
 
 public class BaseSubstitutionCount implements Data<BaseSubstitutionCount> {
 

@@ -1,9 +1,10 @@
 package test.lib.cli.options;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -11,9 +12,7 @@ import java.util.stream.Stream;
 import org.apache.commons.cli.MissingArgumentException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import jacusa.io.format.call.BED6callResultFormat;
 import jacusa.io.format.call.VCFcallFormat;
@@ -21,32 +20,23 @@ import lib.cli.options.AbstractACOption;
 import lib.cli.options.ResultFormatOption;
 import lib.cli.parameter.GeneralParameter;
 import lib.io.ResultFormat;
-import test.utlis.CLIUtils;
 import test.utlis.TestUtils;
 
-@DisplayName("Test CLI processing of ResultFormatOption")
-class ResultFormatOptionTest extends AbstractACOptionTest<Character> {
-
-	/*
-	 * Tests
-	 */
+/**
+ * Tests @see lib.cli.options.ResultFormatOption#process(org.apache.commons.cli.CommandLine)
+ */
+class ResultFormatOptionTest 
+extends AbstractGeneralParameterProvider
+implements ACOptionTest<Character> {
 	
-	@DisplayName("Check ResultFormatOption are parsed correctly")
-	@ParameterizedTest(name = "List of filters: {arguments}")
-	@MethodSource("testProcess")
-	@Override
-	void testProcess(Character expected) throws Exception {
-		super.testProcess(expected);
-	}
-
 	@Test
 	@DisplayName("Test ResultFormatOption fails on wrong input")
 	void testProcessFail() throws Exception {
 		// test required
-		getParserWrapper().myAssertThrows(MissingArgumentException.class, getACOption(), "");
+		myAssertOptThrows(MissingArgumentException.class, "");
 		
 		// get all available chars for filters
-		final Set<Character> available = getResultFormats(getParameter()).keySet();
+		final Set<Character> available = getResultFormats(getGeneralParamter()).keySet();
 		// get all REMAINING/NOT USED chars
 		final Set<Character> notUsedChars = IntStream.rangeClosed(65, 90)
 				.mapToObj(i -> (char)i)
@@ -60,48 +50,39 @@ class ResultFormatOptionTest extends AbstractACOptionTest<Character> {
 		// add 2 false chars
 		falseConfigOption.addAll(notUsedChars.stream().limit(2).collect(Collectors.toSet()));
 		
-		final String value = TestUtils.collapseSet(falseConfigOption, lib.util.Util.VALUE_SEP);
-		getParserWrapper().myAssertThrows(IllegalArgumentException.class, getACOption(), value);
+		final String value = TestUtils.collapseSet(falseConfigOption, lib.io.InputOutput.VALUE_SEP);
+		myAssertOptThrows(IllegalArgumentException.class, value);
+	}
+
+	@Override
+	public Stream<Arguments> testProcess() {
+		return getResultFormats(getGeneralParamter()).keySet().stream()
+				.map(c -> createArguments(c));
 	}
 	
-	/*
-	 * Helper
-	 */
-
-	static Stream<Arguments> testProcess() {
-		return getResultFormats(null).keySet().stream()
-				.map(Arguments::of);
+	Arguments createArguments(final char c) {
+		return Arguments.of(
+				createOptLine(Character.toString(c)),
+				c);
 	}
 	
 	static Map<Character, ResultFormat> getResultFormats(GeneralParameter parameter) {
-		final Map<Character, ResultFormat> resultFormats = 
-				new HashMap<Character, ResultFormat>();
-
-		ResultFormat resultFormat = null;
-
-		// BED like output
-		resultFormat = new BED6callResultFormat("test", parameter);
-		resultFormats.put(resultFormat.getC(), resultFormat);
-
-		resultFormat = new VCFcallFormat(parameter);
-		resultFormats.put(resultFormat.getC(), resultFormat);
-
-		return resultFormats;
+		return Arrays.asList(
+				new BED6callResultFormat("test", parameter),
+				new VCFcallFormat(parameter))
+				.stream()
+				.collect(Collectors.toMap(ResultFormat::getC, Function.identity()) );
 	}
 
-	
 	@Override
-	protected AbstractACOption create(GeneralParameter parameter) {
+	public AbstractACOption createTestInstance() {
+		final GeneralParameter parameter = getGeneralParamter();
 		return new ResultFormatOption(parameter, getResultFormats(parameter));
 	}
 
 	@Override
-	protected Character getActualValue(GeneralParameter parameter) {
-		return parameter.getResultFormat().getC();
+	public Character getActualValue() {
+		return getGeneralParamter().getResultFormat().getC();
 	}
 
-	@Override
-	protected String createLine(Character v) {
-		return CLIUtils.assignValue(getOption(), Character.toString(v));
-	}
 }

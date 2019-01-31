@@ -10,15 +10,15 @@ import org.apache.commons.cli.Option;
 
 public class FilterFlagConditionOption extends AbstractConditionACOption {
 
-	private static final String OPT = "F";
-	private static final String LONG_OPT = "filter-flags";
+	// obsolete private static final String OPT = "F";
+	private static final String LONG_OPT = "filterFlags";
 	
-	public FilterFlagConditionOption(final List<ConditionParameter> conditionParameter) {
-		super(OPT, LONG_OPT, conditionParameter);
+	public FilterFlagConditionOption(final List<ConditionParameter> conditionParameters) {
+		super(LONG_OPT, LONG_OPT, conditionParameters);
 	}
 
 	public FilterFlagConditionOption(ConditionParameter conditionParameter) {
-		super(OPT, LONG_OPT, conditionParameter);
+		super(LONG_OPT, LONG_OPT, conditionParameter);
 	}
 	
 	@Override
@@ -34,7 +34,8 @@ public class FilterFlagConditionOption extends AbstractConditionACOption {
 		s = "filter reads with flags " + getLongOpt().toUpperCase() + 
 				s + "\ndefault: " + filterFlags;
 
-		return Option.builder(getOpt())
+		return Option.builder(getLongOpt())
+				.longOpt(getLongOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 		        .desc(s)
@@ -43,17 +44,15 @@ public class FilterFlagConditionOption extends AbstractConditionACOption {
 
 	@Override
 	public void process(final CommandLine line) throws Exception {
-		if (line.hasOption(getOpt())) {
-	    	final String value = line.getOptionValue(getOpt());
-	    	final int filterFlags = Integer.parseInt(value);
-	    	if (filterFlags <= 0) {
-	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + filterFlags + " not valid.");
-	    	}
+    	final String value = line.getOptionValue(getOpt());
+    	final int filterFlags = Integer.parseInt(value);
+    	if (filterFlags <= 0) {
+    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + filterFlags + " not valid.");
+    	}
 
-	    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
-	    		conditionParameter.setFilterFlags(filterFlags);
-	    	}
-	    }
+    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
+    		conditionParameter.setFilterFlags(filterFlags);
+    	}
 	}
 
 }

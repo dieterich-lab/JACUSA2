@@ -1,55 +1,49 @@
 package test.lib.cli.options;
 
-import org.junit.jupiter.api.DisplayName;
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.MaxThreadOption;
-import lib.cli.parameter.GeneralParameter;
-import test.utlis.CLIUtils;
 
-@DisplayName("Test CLI processing of MaxThreadOption")
-class MaxThreadOptionTest extends AbstractACOptionTest<Integer> {
+/**
+ * Tests @see lib.cli.options.MaxThreadOption#process(org.apache.commons.cli.CommandLine)
+ */
+class MaxThreadOptionTest 
+extends AbstractGeneralParameterProvider
+implements ACOptionTest<Integer> {
 
-	/*
-	 * Tests
-	 */
-	
-	@DisplayName("Check MaxThreadOption are parsed correctly")
-	@ParameterizedTest(name = "Parse line: {0} and expect maxThreads to be: {1}")
-	@ValueSource(strings = { "1", "2", "5" } )
-	void testProcess(Integer expected) throws Exception {
-		super.testProcess(expected);
+	@Override
+	public Stream<Arguments> testProcess() {
+		return Arrays.asList(1, 2, 5).stream()
+				.map(i -> createArguments(i));
+	}
+
+	Arguments createArguments(final int maxThreads) {
+		return Arguments.of(
+				createOptLine(Integer.toString(maxThreads)),
+				maxThreads);
 	}
 
 	@Test
-	@DisplayName("Check MaxThreadOption fails on wrong input")
 	void testProcessFail() throws Exception {
 		// < 1
-		getParserWrapper().myAssertThrows(IllegalArgumentException.class, getACOption(), Integer.toString(0));
+		myAssertOptThrows(IllegalArgumentException.class, Integer.toString(0));
 		// not a number
-		getParserWrapper().myAssertThrows(IllegalArgumentException.class, getACOption(), "wrong");
-	}
-	
-	/*
-	 * Helper
-	 */
-
-	@Override
-	protected AbstractACOption create(GeneralParameter parameter) {
-		return new MaxThreadOption(parameter);
+		myAssertOptThrows(IllegalArgumentException.class, "wrong");
 	}
 	
 	@Override
-	protected Integer getActualValue(GeneralParameter parameter) {
-		return parameter.getMaxThreads();
+	public AbstractACOption createTestInstance() {
+		return new MaxThreadOption(getGeneralParamter());
 	}
 	
 	@Override
-	protected String createLine(Integer v) {
-		return CLIUtils.assignValue(getOption(), Integer.toString(v));
+	public Integer getActualValue() {
+		return getGeneralParamter().getMaxThreads();
 	}
 	
 }

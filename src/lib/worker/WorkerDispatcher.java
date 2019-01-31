@@ -8,13 +8,13 @@ import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.io.ResultWriter;
 import lib.io.copytmp.CopyTmpExecuter;
-import lib.method.AbstractMethod;
+import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 import lib.util.coordinate.Coordinate;
 
 /**
  * 
- * @author Michael Piechotta
+ * 
  *
  * @param <T>
  */

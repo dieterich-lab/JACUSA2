@@ -3,8 +3,6 @@ package lib.util.coordinate;
 import java.io.Serializable;
 
 /**
- * 
- * @author Michael Piechotta
  *
  */
 public final class CoordinateUtil {
@@ -17,6 +15,9 @@ public final class CoordinateUtil {
 		throw new AssertionError();
 	}
 	
+	/**
+	 * Tested in @see test.lib.util.coordinate.CoordinateUtil#testIsContained
+	 */
 	public static boolean isContained(final Coordinate coordinate, final int position) {
 		return coordinate.getStart() <= position && coordinate.getEnd() >= position;
 	}
@@ -29,6 +30,8 @@ public final class CoordinateUtil {
 	 * @param coord1
 	 * @param coord2
 	 * @return
+	 * 
+	 * Tested in @see test.lib.util.coordinate.CoordinateUtil#testOrientation 
 	 */
 	public static int orientation(final Coordinate coord1, final Coordinate coord2) {
 		if (! coord1.getContig().equals(coord2.getContig())) {

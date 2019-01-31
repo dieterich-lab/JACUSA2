@@ -7,10 +7,10 @@ import lib.data.count.basecall.DefaultBaseCallCount;
 import lib.io.AbstractResultFormat;
 import lib.io.BEDlikeResultFileWriter;
 import lib.io.BEDlikeResultFileWriter.BEDlikeResultFileWriterBuilder;
+import lib.io.InputOutput;
 import lib.io.copytmp.CopyTmpResult;
 import lib.io.format.bed.DefaultBED6adder;
 import lib.io.format.bed.DefaultInfoAdder;
-import lib.util.Util;
 import lib.worker.WorkerDispatcher;
 
 public class BED6lrtArrestResultFormat 
@@ -35,7 +35,7 @@ extends AbstractResultFormat {
 	@Override
 	public BEDlikeResultFileWriter createWriter(final String outputFileName) {
 		final BaseCallCount.AbstractParser bccParser = 
-				new DefaultBaseCallCount.Parser(Util.VALUE_SEP, Util.EMPTY_FIELD);
+				new DefaultBaseCallCount.Parser(InputOutput.VALUE_SEP, InputOutput.EMPTY_FIELD);
 		
 		return new BEDlikeResultFileWriterBuilder(outputFileName, getParameter())
 				.addBED6Adder(

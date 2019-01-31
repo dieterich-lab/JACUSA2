@@ -3,8 +3,8 @@ package lib.data.result;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
-import lib.data.DataTypeContainer;
+import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.util.Info;
 
@@ -25,7 +25,7 @@ public class RTarrestBaseSubstitutionResult implements Result {
 		valuesIndex = new TreeSet<>();
 		valuesIndex.addAll(result.getValueIndex());
 		
-		final DataTypeContainer container = result.getParellelData().getCombinedPooledData();
+		final DataContainer container = result.getParellelData().getCombinedPooledData();
 		valuesIndex.addAll(
 				BaseSubstitutionResult.process(
 						baseSubs, 

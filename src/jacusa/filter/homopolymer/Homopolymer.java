@@ -16,11 +16,11 @@ public class Homopolymer {
 		this.position 	= position;
 		this.length 	= length;
 	}
-
+	
 	public int getLength() {
 		return length;
 	}
-
+	
 	public int getPosition() {
 		return position;
 	}
@@ -29,15 +29,16 @@ public class Homopolymer {
 		return base;
 	}
 	
+	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("Position: ");
-		sb.append(position);
-		sb.append(" Base: ");
-		sb.append(base.getChar());
-		sb.append(" Length: ");
-		sb.append(length);
-		return sb.toString();
+		return new StringBuilder()
+			.append("Position: ")
+			.append(position)
+			.append(" Base: ")
+			.append(base.getChar())
+			.append(" Length: ")
+			.append(length)
+			.toString();
 	}
 
 	/**

@@ -1,32 +1,29 @@
 package jacusa.filter.factory;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Option.Builder;
-import org.apache.commons.cli.Options;
 
 import jacusa.filter.Filter;
 import jacusa.filter.MaxAlleleFilter;
+import lib.cli.options.filter.MaxAlleleCountOption;
+import lib.cli.options.filter.has.HasMaxAlleleCount;
 import lib.cli.parameter.ConditionParameter;
-import lib.data.DataTypeContainer;
-import lib.data.DataTypeContainer.AbstractBuilder;
-import lib.data.assembler.ConditionContainer;
-import lib.data.cache.container.SharedCache;
-import lib.data.cache.fetcher.Fetcher;
-import lib.data.cache.record.RecordWrapperProcessor;
+import lib.data.DataContainer;
+import lib.data.DataContainer.AbstractBuilder;
 import lib.data.count.basecall.BaseCallCount;
-import lib.util.Util;
+import lib.data.fetcher.Fetcher;
+import lib.data.storage.Cache;
+import lib.data.storage.container.SharedStorage;
+import lib.io.InputOutput;
+import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
 /**
- * 
- * @author Michael Piechotta
- * Tested in @see test.jacusa.filter.factory.MaxAlleleCountFilterFactoryTest
+ * TODO add comments
  */
-public class MaxAlleleCountFilterFactory extends AbstractFilterFactory {
+public class MaxAlleleCountFilterFactory 
+extends AbstractFilterFactory 
+implements HasMaxAlleleCount {
 
 	// default value for max alleles
 	public static final int MAX_ALLELES = 2;
@@ -38,11 +35,12 @@ public class MaxAlleleCountFilterFactory extends AbstractFilterFactory {
 	public MaxAlleleCountFilterFactory(final Fetcher<BaseCallCount> bccFetcher) {
 		super(getOptionBuilder().build());
 		maxAlleles = MAX_ALLELES;
+		getACOption().add(new MaxAlleleCountOption(this));
 		this.bccFetcher = bccFetcher;
 	}
 
 	@Override
-	protected Filter createFilter(
+	public Filter createFilter(
 			CoordinateController coordinateController,
 			ConditionContainer conditionContainer) {
 		
@@ -50,71 +48,36 @@ public class MaxAlleleCountFilterFactory extends AbstractFilterFactory {
 	}
 	
 	@Override
-	public RecordWrapperProcessor createFilterCache(
+	public Cache createFilterCache(
 			ConditionParameter conditionParameter,
-			SharedCache sharedCache) {
+			SharedStorage sharedStorage) {
 
 		return null;
 	}
 	
 	@Override
-	public Options getOptions() {
-		final Options options = new Options();
-		options.addOption(getMaxAlleleOptionBuilder(MAX_ALLELES).build());
-		return options;
-	}
-	
-	@Override
-	public void initDataTypeContainer(AbstractBuilder builder) {
+	public void initDataContainer(AbstractBuilder builder) {
 		// not needed
 	}
 	
-	@Override
-	public Set<Option> processCLI(final CommandLine cmd) throws IllegalArgumentException {
-		final Set<Option> parsed = new HashSet<>();
-		for (final Option option : cmd.getOptions()) {
-			final String longOpt = option.getLongOpt();
-			switch (longOpt) {
-			case "maxAlleles":
-				final int maxAllelesOptionValue = Integer.valueOf(cmd.getOptionValue(longOpt));
-				if (maxAllelesOptionValue < 1) {
-					throw new IllegalArgumentException("Invalid allele count: " + longOpt);
-				}
-				maxAlleles = maxAllelesOptionValue;
-				parsed.add(option);
-				break;
-			}
-		}
-		return parsed;
-	}
-	
-	/**
-	 * TODO add comments.
-	 */
-
 	public static Builder getOptionBuilder() {
 		return Option.builder(Character.toString('M'))
 				.desc("Max allowed alleles per site.");
 	}
-
-	public static Builder getMaxAllelesOptionBuilder() {
-		return getMaxAlleleOptionBuilder(MAX_ALLELES);
+	
+	@Override
+	public void addFilteredData(StringBuilder sb, DataContainer filteredData) {
+		sb.append(InputOutput.EMPTY_FIELD);
 	}
 
-	public static Builder getMaxAlleleOptionBuilder(final int defaultValue) {
-		return Option.builder()
-				.hasArg()
-				.longOpt("maxAlleles")
-				.desc("must be > 0. Default: " + defaultValue);
+	@Override
+	public int getMaxAlleleCount() {
+		return maxAlleles;
 	}
 	
 	@Override
-	public void addFilteredData(StringBuilder sb, DataTypeContainer filteredData) {
-		sb.append(Util.EMPTY_FIELD);
-	}
-
-	public int getMaxAlleles() {
-		return maxAlleles;
+	public void setMaxAlleleCount(int count) {
+		this.maxAlleles = count;
 	}
 	
 }

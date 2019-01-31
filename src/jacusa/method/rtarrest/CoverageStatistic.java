@@ -7,7 +7,8 @@ import lib.data.result.Result;
 import lib.stat.AbstractStat;
 
 /**
- * This is a dummy statistic... TODO add comments
+ * This is a dummy statistic... 
+ * TODO add comments
  *  
  * @param 
  */

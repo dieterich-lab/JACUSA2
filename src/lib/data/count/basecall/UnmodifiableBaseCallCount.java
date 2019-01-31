@@ -5,7 +5,7 @@ import java.util.Set;
 
 import lib.util.Base;
 
-public class UnmodifiableBaseCallCount implements BaseCallCount {
+public class UnmodifiableBaseCallCount extends AbstractBaseCallCount {
 
 	private static final long serialVersionUID = 1L;
 

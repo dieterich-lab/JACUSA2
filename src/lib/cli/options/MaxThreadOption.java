@@ -23,6 +23,9 @@ public class MaxThreadOption extends AbstractACOption {
 		        .build();
 	}
 
+	/**
+	 * Tested in @see test.lib.cli.options.MaxThreadOptionTest
+	 */
 	@Override
 	public void process(CommandLine line) throws Exception {
     	int maxThreads = Integer.parseInt(line.getOptionValue(getOpt()));

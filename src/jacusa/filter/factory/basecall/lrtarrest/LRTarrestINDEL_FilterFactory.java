@@ -1,17 +1,15 @@
 package jacusa.filter.factory.basecall.lrtarrest;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.filter.cache.processrecord.ProcessDeletionOperator;
-import jacusa.filter.cache.processrecord.ProcessInsertionOperator;
-import jacusa.filter.cache.processrecord.ProcessRecord;
 import jacusa.filter.factory.basecall.INDEL_FilterFactory;
-import lib.data.cache.fetcher.FilteredDataFetcher;
-import lib.data.cache.fetcher.basecall.Apply2readsBaseCallCountSwitch;
-import lib.data.cache.lrtarrest.ArrestPosition2baseCallCount;
-import lib.data.cache.region.RegionDataCache;
+import lib.data.fetcher.FilteredDataFetcher;
+import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
+import lib.data.storage.PositionProcessor;
+import lib.data.storage.container.SharedStorage;
+import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.storage.processor.RecordExtendedProcessor;
 
 /**
  * TODO add comments.
@@ -28,17 +26,15 @@ extends AbstractLRTarrestBaseCallCountFilterFactory {
 		
 		super(
 				INDEL_FilterFactory.getOptionBuilder().build(),
-				bccSwitch, filteredDataFetcher,
-				6, 0.5);
+				bccSwitch, filteredDataFetcher);
 	}
-	
 
 	@Override
-	protected List<ProcessRecord> createProcessRecord(RegionDataCache regionDataCache) {
-		final List<ProcessRecord> processRecords = new ArrayList<ProcessRecord>(1);
-		processRecords.add(new ProcessInsertionOperator(getFilterDistance(), regionDataCache));
-		processRecords.add(new ProcessDeletionOperator(getFilterDistance(), regionDataCache));
-		return processRecords;
+	protected List<RecordExtendedProcessor> createRecordProcessors(
+			final SharedStorage sharedStorage, final PositionProcessor positionProcessor) {
+		
+		return INDEL_FilterFactory.createRecordProcessor(
+				sharedStorage, getFilterDistance(), positionProcessor);
 	}
 
 }

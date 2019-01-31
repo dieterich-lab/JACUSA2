@@ -3,7 +3,7 @@ package jacusa.worker;
 import java.util.SortedSet;
 
 import jacusa.method.rtarrest.RTarrestMethod;
-import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.ParallelData;
 import lib.data.result.RTarrestBaseSubstitutionResult;
 import lib.data.result.Result;

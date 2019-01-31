@@ -5,11 +5,11 @@ import java.text.DecimalFormatSymbols;
 
 import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 
-import jacusa.estimate.MinkaEstimateDirMultAlpha;
 import lib.stat.dirmult.initalpha.AbstractAlphaInit;
 import lib.data.ParallelData;
 import lib.data.result.OneStatResult;
 import lib.data.result.Result;
+import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.stat.AbstractStat;
 import lib.stat.AbstractStatFactory;
 import lib.stat.DirichletParameter;

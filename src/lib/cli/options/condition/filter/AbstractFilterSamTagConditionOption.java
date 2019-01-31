@@ -15,12 +15,12 @@ public abstract class AbstractFilterSamTagConditionOption extends AbstractCondit
 	private String tag;
 
 	public AbstractFilterSamTagConditionOption(final ConditionParameter conditionParameter, final String tag) {
-		super(null, LONG_OPT + tag, conditionParameter);
+		super(LONG_OPT + tag, LONG_OPT + tag, conditionParameter);
 		this.tag = tag;
 	}
 
 	public AbstractFilterSamTagConditionOption(final List<ConditionParameter> conditionParameters, final String tag) {
-		super(null, LONG_OPT + tag, conditionParameters);
+		super(LONG_OPT + tag, LONG_OPT + tag, conditionParameters);
 		this.tag = tag;
 	}
 
@@ -34,7 +34,7 @@ public abstract class AbstractFilterSamTagConditionOption extends AbstractCondit
 			s += " for all conditions";
 		}
 		
-		return Option.builder(getOpt())
+		return Option.builder(getLongOpt())
 				.longOpt(getLongOpt())
 				.argName(tag + "-VALUE")
 				.hasArg(true)
@@ -42,11 +42,15 @@ public abstract class AbstractFilterSamTagConditionOption extends AbstractCondit
 		        .build();
 	}
 	
+	/**
+	 * Tested in @see test.lib.cli.options.condition.filter.FilterNHsamTagConditionOptionTest
+	 * Tested in @see test.lib.cli.options.condition.filter.FilterNMsamTagConditionOptionTest
+	 */
 	@Override
 	public void process(CommandLine line) throws Exception {
-    	int value = Integer.parseInt(line.getOptionValue(getLongOpt()));
+    	int value = Integer.parseInt(line.getOptionValue(getOpt()));
     	if (value < 1) {
-    		throw new IllegalArgumentException(getLongOpt() + " cannot be < 1");
+    		throw new IllegalArgumentException(getOpt() + " cannot be < 1");
     	}
     	for (final ConditionParameter conditionParameter : getConditionParameters()) {
     		conditionParameter.getSamTagFilters().add(createSamTagFilter(value));

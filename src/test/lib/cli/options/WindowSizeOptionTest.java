@@ -1,56 +1,52 @@
 package test.lib.cli.options;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.WindowSizeOption;
-import lib.cli.parameter.GeneralParameter;
-import test.utlis.CLIUtils;
 
-@DisplayName("Test CLI processing of WindowSizeOption")
-class WindowSizeOptionTest extends AbstractACOptionTest<Integer> {
-	
-	/*
-	 * Tests
-	 */
-	
-	@DisplayName("Check WindowSizeOption is parsed correctly")
-	@ParameterizedTest(name = "Parse line and expect activeWindowSize to be: {0}")
-	@ValueSource(strings = { "100", "200", "1000" } )
-	@Override
-	void testProcess(Integer expected) throws Exception {
-		super.testProcess(expected);
-	}
+// TODO add test windowSize > threadWindowSize
+/**
+ * Tests @see lib.cli.options.WindowSizeOption#process(org.apache.commons.cli.CommandLine)
+ */
+class WindowSizeOptionTest 
+extends AbstractGeneralParameterProvider
+implements ACOptionTest<Integer> {
 
 	@Test
 	@DisplayName("Check WindowSizeOption fails on wrong input")
 	void testProcessFail() throws Exception {
 		// < 1
-		getParserWrapper().myAssertThrows(IllegalArgumentException.class, getACOption(), Integer.toString(0));
+		myAssertOptThrows(IllegalArgumentException.class, Integer.toString(0));
 		// not a number
-		getParserWrapper().myAssertThrows(IllegalArgumentException.class, getACOption(), "wrong");
+		myAssertOptThrows(IllegalArgumentException.class, "wrong");
 	}
-	
-	/*
-	 * Helper
-	 */
 
 	@Override
-	protected String createLine(Integer v) {
-		return CLIUtils.assignValue(getOption(), Integer.toString(v));
+	public Stream<Arguments> testProcess() {
+		return Arrays.asList(100, 200, 1000).stream()
+				.map(i -> createArguments(i));
+	}
+
+	Arguments createArguments(final int windowSize) {
+		return Arguments.of(
+				createOptLine(Integer.toString(windowSize)),
+				windowSize);
 	}
 	
 	@Override
-	protected Integer getActualValue(GeneralParameter parameter) {
-		return parameter.getActiveWindowSize();
+	public Integer getActualValue() {
+		return getGeneralParamter().getActiveWindowSize();
 	}
 	
 	@Override
-	protected AbstractACOption create(GeneralParameter parameter) {
-		return new WindowSizeOption(parameter);
+	public AbstractACOption createTestInstance() {
+		return new WindowSizeOption(getGeneralParamter());
 	}
 	
 }

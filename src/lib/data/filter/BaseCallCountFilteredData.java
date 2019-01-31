@@ -43,14 +43,14 @@ public class BaseCallCountFilteredData extends AbstractFilteredData<BaseCallCoun
 		
 		@Override
 		public BaseCallCountFilteredData parse(String s) {
-			// TODO Auto-generated method stub
-			return null;
+			final BaseCallCountFilteredData bccFd = new BaseCallCountFilteredData();
+			parse(s, bccFd);
+			return bccFd;
 		}
 
 		@Override
 		public String wrap(BaseCallCountFilteredData o) {
-			// TODO Auto-generated method stub
-			return null;
+			return wrap(o);
 		}
 
 		@Override

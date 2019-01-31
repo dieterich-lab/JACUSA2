@@ -1,6 +1,5 @@
 package jacusa.filter;
 
-import jacusa.filter.factory.AbstractFilterFactory;
 import jacusa.filter.factory.FilterFactory;
 
 import java.util.ArrayList;
@@ -8,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lib.data.assembler.ConditionContainer;
+import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
 /**
@@ -20,10 +19,10 @@ import lib.util.coordinate.CoordinateController;
 public class FilterConfig implements Cloneable {
 
 	// Map holds chosen filter factories, indexed by unique char id
-	private final Map<Character, AbstractFilterFactory> c2factory;
+	private final Map<Character, FilterFactory> c2factory;
 	
 	public FilterConfig() {
-		c2factory = new HashMap<Character, AbstractFilterFactory>(6);
+		c2factory = new HashMap<Character, FilterFactory>(6);
 	}
 
 	/**
@@ -33,7 +32,7 @@ public class FilterConfig implements Cloneable {
 	 * @param filterFactory filterFactory to be added
 	 * @throws Exception if filter has been already added
 	 */
-	public void addFactory(final AbstractFilterFactory filterFactory) throws Exception {
+	public void addFactory(final FilterFactory filterFactory) throws Exception {
 		final char c = filterFactory.getC();
 
 		if (c2factory.containsKey(c)) {
@@ -79,8 +78,8 @@ public class FilterConfig implements Cloneable {
 	 * 
 	 * @return a list of FilterFactories
 	 */
-	public List<AbstractFilterFactory> getFilterFactories() {
-		return new ArrayList<AbstractFilterFactory>(c2factory.values());
+	public List<FilterFactory> getFilterFactories() {
+		return new ArrayList<FilterFactory>(c2factory.values());
 	}
 	
 }

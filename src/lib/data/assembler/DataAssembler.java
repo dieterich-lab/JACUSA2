@@ -3,21 +3,21 @@ package lib.data.assembler;
 import java.util.Iterator;
 
 import lib.cli.parameter.ConditionParameter;
-import lib.data.DataTypeContainer;
-import lib.data.builder.recordwrapper.SAMRecordWrapper;
-import lib.data.cache.container.CacheContainer;
+import lib.data.DataContainer;
 import lib.data.has.HasLibraryType;
+import lib.data.storage.container.CacheContainer;
 import lib.util.coordinate.Coordinate;
+import lib.recordextended.SAMRecordExtended;
 
 public interface DataAssembler 
 extends HasLibraryType {
 
-	void buildCache(Coordinate activeWindowCoordinate, Iterator<SAMRecordWrapper> iterator);
+	void buildCache(Coordinate activeWindowCoordinate, Iterator<SAMRecordExtended> iterator);
 
-	// Reset all caches in windows
-	void clearCache();
+	// Reset storage in windows
+	void clearStorage();
 
-	DataTypeContainer assembleData(Coordinate coordinate);
+	DataContainer assembleData(Coordinate coordinate);
 
 	CacheContainer getCacheContainer();
 

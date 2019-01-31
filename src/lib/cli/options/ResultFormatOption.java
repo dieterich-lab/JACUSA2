@@ -18,18 +18,21 @@ extends AbstractACOption {
 			final Map<Character, ResultFormat> resultFormats) {
 
 		super("f", "output-format");
-		this.parameter = parameter;
-		this.resultFormats = resultFormats;
+		this.parameter 		= parameter;
+		this.resultFormats 	= resultFormats;
 	}
 
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
 		StringBuffer sb = new StringBuffer();
 
+		boolean required = true;
 		for (char c : resultFormats.keySet()) {
 			ResultFormat resultFormat = resultFormats.get(c);
-			if (resultFormat.getC() == parameter.getResultFormat().getC()) {
+			if (parameter.getResultFormat() != null && 
+					resultFormat.getC() == parameter.getResultFormat().getC()) {
 				sb.append("<*>");
+				required = false;
 			} else {
 				sb.append("< >");
 			}
@@ -42,6 +45,7 @@ extends AbstractACOption {
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
+				.required(required)
 				.desc("Choose output format:\n" + sb.toString())
 				.build(); 
 	}

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
+import lib.io.InputOutput;
+
 public class Info implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -31,7 +33,7 @@ public class Info implements Serializable {
 	
 	public String combine() {
 		if (isEmpty()) {
-			return Character.toString(Util.EMPTY_FIELD);
+			return Character.toString(InputOutput.EMPTY_FIELD);
 		}
 		
 		final StringBuilder sb = new StringBuilder();

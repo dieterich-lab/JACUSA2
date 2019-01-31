@@ -5,7 +5,7 @@ import java.util.Set;
 
 import lib.util.Base;
 
-public class DefaultBaseCallCount implements BaseCallCount {
+public class DefaultBaseCallCount extends AbstractBaseCallCount {
 
 	private static final long serialVersionUID = 1L;
 
@@ -260,29 +260,6 @@ public class DefaultBaseCallCount implements BaseCallCount {
 	@Override
 	public String toString() {
 		return new Parser().wrap(this);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof DefaultBaseCallCount)) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
-		
-		final DefaultBaseCallCount bcc = (DefaultBaseCallCount) obj;
-		return a == bcc.a && c == bcc.c && g == bcc.g && t == bcc.t;
-	}
-
-	@Override
-	public int hashCode() {
-		int hash = 1;
-		hash = 31 * hash + a;
-		hash = 31 * hash + c;
-		hash = 31 * hash + g;
-		hash = 31 * hash + t;
-		return hash;
 	}
 	
 	/*

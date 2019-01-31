@@ -6,18 +6,18 @@ import java.util.List;
 import jacusa.io.format.BaseSubstitutionBED6adder;
 import jacusa.io.format.BaseSubstitutionDataAdder;
 import jacusa.io.format.StratifiedDataAdder;
-import lib.cli.options.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBaseCallCount;
 import lib.io.AbstractResultFileFormat;
 import lib.io.BEDlikeResultFileWriter;
 import lib.io.BEDlikeResultFileWriter.BEDlikeResultFileWriterBuilder;
+import lib.io.InputOutput;
 import lib.io.format.bed.BED6adder;
 import lib.io.format.bed.DataAdder;
 import lib.io.format.bed.DefaultBED6adder;
 import lib.io.format.bed.DefaultInfoAdder;
-import lib.util.Util;
 
 public class BED6pileupResultFormat 
 extends AbstractResultFileFormat {
@@ -34,7 +34,7 @@ extends AbstractResultFileFormat {
 	@Override
 	public BEDlikeResultFileWriter createWriter(final String outputFileName) {
 		final BaseCallCount.AbstractParser bccParser = 
-				new DefaultBaseCallCount.Parser(Util.VALUE_SEP, Util.EMPTY_FIELD);
+				new DefaultBaseCallCount.Parser(InputOutput.VALUE_SEP, InputOutput.EMPTY_FIELD);
 		
 		BED6adder bed6adder = new DefaultBED6adder(getMethodName(), "stat");
 		DataAdder dataAdder = new PileupDataAdder(bccParser); 

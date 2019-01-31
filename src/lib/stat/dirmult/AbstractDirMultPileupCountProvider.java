@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import lib.data.DataTypeContainer;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 import lib.phred2prob.Phred2Prob;
@@ -88,7 +88,7 @@ implements DirMultSampleProvider {
 		final List<List<PileupCount>> originalPileupCounts = new ArrayList<>(conditions);
 		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
 			final List<PileupCount> tmpPileupCounts = new ArrayList<>(parallelData.getData(conditionIndex).size());
-			for (final DataTypeContainer container : parallelData.getData(conditionIndex)) {
+			for (final DataContainer container : parallelData.getData(conditionIndex)) {
 				tmpPileupCounts.add(container.getPileupCount());
 			}
 			originalPileupCounts.add(tmpPileupCounts);

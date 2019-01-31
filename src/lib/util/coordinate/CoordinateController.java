@@ -4,14 +4,14 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 
 import lib.cli.parameter.ConditionParameter;
-import lib.data.assembler.ConditionContainer;
-import lib.data.has.LibraryType;
-import lib.location.CoordinateAdvancer;
-import lib.location.StrandedJumpingCoordinateAdvancer;
-import lib.location.UnstrandedJumpingCoordinateAdvancer;
+import lib.util.ConditionContainer;
+import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
-import lib.util.coordinate.provider.WindowedCoordinateProviderStatic;
+import lib.util.coordinate.advancer.CoordinateAdvancer;
+import lib.util.coordinate.advancer.StrandedJumpingCoordinateAdvancer;
+import lib.util.coordinate.advancer.UnstrandedJumpingCoordinateAdvancer;
+import lib.util.coordinate.provider.WindowedCoordinateStaticProvider;
 
 public class CoordinateController {
 
@@ -21,7 +21,7 @@ public class CoordinateController {
 	private CoordinateTranslator coordinateTranslator;
 	
 	private Coordinate reserved;
-	private WindowedCoordinateProviderStatic provider;
+	private WindowedCoordinateStaticProvider provider;
 	private Coordinate active;
 	
 	private CoordinateController(final int activeWindowSize) {
@@ -53,7 +53,7 @@ public class CoordinateController {
 	public void updateReserved(final Coordinate reservedWindowCoordinate) {
 		active 		= null;
 		reserved 	= reservedWindowCoordinate;
-		provider 	= new WindowedCoordinateProviderStatic(
+		provider 	= new WindowedCoordinateStaticProvider(
 				reservedWindowCoordinate.getStrand() != STRAND.UNKNOWN, 
 				reservedWindowCoordinate, activeWindowSize);
 
@@ -129,13 +129,12 @@ public class CoordinateController {
 		return checkCoordinateWithinActiveWindow(coordinateAdvancer.getCurrentCoordinate());
 	}
 	
-	public boolean chechReferencePositionWithinActiveWindow(final int referencePosition) {
-		return CoordinateUtil.makeRelativePosition(active, referencePosition) >= 0;
+	public boolean chechReferencePositionWithinActiveWindow(final int refPos) {
+		return CoordinateUtil.makeRelativePosition(active, refPos) >= 0;
 	}
 	
-	// TODO check
-	public boolean chechWindowPositionWithinActiveWindow(final int windowPosition) {
-		return CoordinateUtil.makeRelativePosition(active, active.getStart() + windowPosition) >= 0;
+	public boolean chechWindowPositionWithinActiveWindow(final int winPos) {
+		return CoordinateUtil.makeRelativePosition(active, active.getStart() + winPos) >= 0;
 	}
 
 	public CoordinateTranslator getCoordinateTranslator() {
@@ -143,36 +142,36 @@ public class CoordinateController {
 	}
 	
 	public Entry<Integer, STRAND> getStrandedWindowPosition(final Coordinate coordinate) {
-		final int windowPosition = coordinateTranslator.coordinate2windowPosition(coordinate);
-		return new SimpleEntry<Integer, STRAND>(windowPosition, coordinate.getStrand());
+		final int winPos = coordinateTranslator.coordinate2windowPosition(coordinate);
+		return new SimpleEntry<Integer, STRAND>(winPos, coordinate.getStrand());
 	}
 
-	public WindowPositionGuard convert(int referencePosition, int length) {
-		WindowPositionGuard tmp = convert(referencePosition, -1 , length);
-		tmp.readPosition = -1;
+	public WindowPositionGuard convert(int refPos, int length) {
+		WindowPositionGuard tmp = convert(refPos, -1 , length);
+		tmp.readPos = -1;
 		return tmp;
 	}
 	
-	public WindowPositionGuard convert(int referencePosition, int readPosition, int length) {
-		int windowPosition = referencePosition - active.getStart();
+	public WindowPositionGuard convert(int refPos, int readPos, int length) {
+		int winPos = refPos - active.getStart();
 
-		if (windowPosition < 0) {
-			length 				= Math.max(0, length + windowPosition);
-			readPosition 		+= -windowPosition;
-			referencePosition 	+= -windowPosition;
-			windowPosition 		+= -windowPosition;
+		if (winPos < 0) {
+			length 	= Math.max(0, length + winPos);
+			readPos += -winPos;
+			refPos 	+= -winPos;
+			winPos 	+= -winPos;
 		}
 
-		final int offset = activeWindowSize - (windowPosition + length);
+		final int offset = activeWindowSize - (winPos + length);
 		if (offset < 0) {
 			length = Math.max(0, length + offset);
 		}
 
-		if (windowPosition < 0 || windowPosition >= activeWindowSize) {
-			windowPosition = -1;
+		if (winPos < 0 || winPos >= activeWindowSize) {
+			winPos = -1;
 		}
 
-		return new WindowPositionGuard(referencePosition, windowPosition, readPosition, length);
+		return new WindowPositionGuard(refPos, winPos, readPos, length);
 	}		
 	
 	public String toString() {
@@ -186,31 +185,31 @@ public class CoordinateController {
 	
 	public class WindowPositionGuard {
 		
-		private int referencePosition;
-		private int readPosition;
+		private int refPos;
+		private int readPos;
 		private int length;
 
-		private int windowPosition;
+		private int winPos;
 
-		protected WindowPositionGuard(final int referencePosition, final int windowPosition, final int length) {
-			this(referencePosition, windowPosition, -1, length);
+		protected WindowPositionGuard(final int refPos, final int winPos, final int length) {
+			this(refPos, winPos, -1, length);
 		}
 		
-		protected WindowPositionGuard(final int referencePosition, final int windowPosition, final int readPosition, 
+		protected WindowPositionGuard(final int refPos, final int winPos, final int readPos, 
 				final int length) {
 
-			this.referencePosition 	= referencePosition;
-			this.readPosition 		= readPosition;
-			this.length 			= length;
-			this.windowPosition 	= windowPosition;
+			this.refPos 	= refPos;
+			this.readPos 	= readPos;
+			this.length 	= length;
+			this.winPos 	= winPos;
 		}
 
 		public WindowPositionGuard transform(final int offset, final int length) {
-			return convert(referencePosition + offset, readPosition + offset, length);
+			return convert(refPos + offset, readPos + offset, length);
 		}
 		
 		public int getReferencePosition() {
-			return referencePosition;
+			return refPos;
 		}
 		
 		public int getLength() {
@@ -218,35 +217,35 @@ public class CoordinateController {
 		}
 		
 		public int getReadPosition() {
-			return readPosition;
+			return readPos;
 		}
 		
 		public int getWindowPosition() {
-			return windowPosition;
+			return winPos;
 		}
 		
 		public int getWindowEnd() {
-			return windowPosition + length;
+			return winPos + length;
 		}
 		
 		public int getReadEnd() {
-			return readPosition + length;
+			return readPos + length;
 		}
 		
 		public int getReferenceEnd() {
-			return referencePosition + length;
+			return refPos + length;
 		}
 	
 		public boolean isValid() {
-			return windowPosition >= 0 && length > 0;
+			return winPos >= 0 && length > 0;
 		}
 
 		@Override
 		public String toString() {
 			final StringBuilder sb = new StringBuilder();
-			sb.append("ref=" + referencePosition + 
-					" win=" + windowPosition + 
-					" read=" + readPosition + 
+			sb.append("ref=" + refPos + 
+					" win=" + winPos + 
+					" read=" + readPos + 
 					" length=" + length);
 			return sb.toString();
 		}

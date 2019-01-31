@@ -1,9 +1,9 @@
 package jacusa.filter;
 
-import lib.data.DataTypeContainer;
+import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.cache.fetcher.Fetcher;
 import lib.data.count.basecall.BaseCallCount;
+import lib.data.fetcher.Fetcher;
 
 public class MaxAlleleFilter extends AbstractFilter {
 
@@ -25,7 +25,7 @@ public class MaxAlleleFilter extends AbstractFilter {
 	 */
 	@Override
 	public boolean filter(final ParallelData parallelData) {
-		final DataTypeContainer container = parallelData.getCombinedPooledData();
+		final DataContainer container = parallelData.getCombinedPooledData();
 		final int alleles = bccFetcher.fetch(container).getAlleles().size();
 		return alleles > maxAlleles;
 	}

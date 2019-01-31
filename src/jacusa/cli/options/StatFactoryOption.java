@@ -8,8 +8,8 @@ import java.util.Map;
 
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.HelpOption;
+import lib.io.InputOutput;
 import lib.stat.AbstractStatFactory;
-import lib.util.Util;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -18,13 +18,12 @@ import org.apache.commons.cli.Options;
 
 /**
  * Enables the user to choose between different statistics. 
- * @author Michael Piechotta
  * @param 
  */
 public class StatFactoryOption 
 extends AbstractACOption {
 
-	public static final String OPT = "u";
+	public static final String OPT 		= "u";
 	public static final String LONG_OPT = "mode";
 	
 	private final StatParameter statParameter;
@@ -88,7 +87,7 @@ extends AbstractACOption {
 	public void process(final CommandLine line) throws Exception {
 		final String s = line.getOptionValue(getOpt());
 		// separator for optional arguments
-		final String[] t = s.split(Character.toString(Util.WITHIN_FIELD_SEP));
+		final String[] t = s.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
 
 		// name of the statistic
 		final String statName = t[0];
@@ -97,7 +96,7 @@ extends AbstractACOption {
 			throw new IllegalArgumentException("Unknown statistic or wrong option: " + statName);
 		}
 
-		final int beginIndex = s.indexOf(Character.toString(Util.WITHIN_FIELD_SEP));
+		final int beginIndex = s.indexOf(Character.toString(InputOutput.WITHIN_FIELD_SEP));
 		String a = new String();
 		// parse name and options
 		if (beginIndex > -1) {

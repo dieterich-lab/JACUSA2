@@ -1,148 +1,249 @@
 package test.lib.cli.options.condition;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.parameter.ConditionParameter;
-import test.lib.cli.options.ParserWrapper;
 
+@TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractConditionACOptionTest<T> {
 
-	public static final String PATH = "src/test/lib/cli/options/";
-	
-	private ParserWrapper parserWrapper;
-	
-	@BeforeEach
-	public void beforeEach() {
-		parserWrapper = new ParserWrapper();
-	}
-
-	/*
-	 * Tests
-	 */
-	
-	public void testProcessGeneral(int conditions, T expected) throws Exception {
-		// get 
-		final List<ConditionParameter> conditionParameters = createConditionParameters(conditions); 
-		final AbstractConditionACOption acOption = createACOption(conditionParameters);
-
-		// parse and process
-		getParserWrapper().process(acOption, createLine(acOption, expected));
-
-		// check
+	@ParameterizedTest(name = "Parse line: {2}")
+	@MethodSource("testProcessGeneral")
+	void testProcessGeneral(
+			AbstractConditionACOption testInstance,
+			List<ConditionParameter> conditionParameters, 
+			String line, 
+			T expected) throws Exception {
+		
+		final CommandLineParser parser = new DefaultParser();
+		final Options options = new Options();
+		options.addOption(testInstance.getOption(false));
+		
+		final CommandLine cmd = parser.parse(options, line.split(" "));
+		process(testInstance, cmd);
+		
 		for (final ConditionParameter conditionParameter : conditionParameters) {
 			final T actual = getActualValue(conditionParameter);
 			assertEquals(expected, actual);
 		}
 	}
 
-	public void testProcessIndividual(int conditions, List<Integer> conditionIndices, List<T> expected) throws Exception {
-		// create list of conditions
-		final List<ConditionParameter> conditionParameters = createConditionParameters(conditions);
+	@ParameterizedTest(name = "Parse line: {2}")
+	@MethodSource("testProcessIndividual")
+	void testProcessIndividual(
+			List<AbstractConditionACOption> testInstances,
+			List<ConditionParameter> conditionParameters,
+			String line, 
+			List<T> expected) throws Exception {
 		
-		// create list of acOptions - size need not == conditionParameters
-		final List<AbstractConditionACOption> acOptions = conditionIndices.stream()
-				.map(i -> createACOption(conditionParameters.get(i - 1)))
-				.collect(Collectors.toList());
-		
-		// container for command line options
-		final StringBuilder sb = new StringBuilder();
-		// container for options
+		final CommandLineParser parser = new DefaultParser();
 		final Options options = new Options();
-		
-		// for reach provided conditionIndex in conditionIndices add option with corresponding element from expected
-		for (int i = 0; i < acOptions.size(); ++i) {
-			final AbstractConditionACOption acOption = acOptions.get(i);
-			options.addOption(acOption.getOption(false));
-			final int conditionIndex = conditionIndices.get(i);
-			sb.append(' ');
-			sb.append(createLine(acOption, expected.get(conditionIndex - 1)));
+		for (final AbstractConditionACOption testInstance : testInstances) {
+			options.addOption(testInstance.getOption(false));
 		}
-		// construct cmd from all provided options
-		final CommandLine cmd = getParserWrapper().parse(options, sb.toString());
-		// try to parse
-		process(acOptions, cmd);
 		
-		// check over all conditions - only options provided via conditionIndex should be changed
-		for (int i = 0; i < conditions; ++i) {
-			final ConditionParameter conditionParameter = conditionParameters.get(i);
+		final CommandLine cmd = parser.parse(options, line.split(" "));
+		for (final AbstractConditionACOption testInstance : testInstances) {
+			process(testInstance, cmd);
+		}
+		
+		for (final ConditionParameter conditionParameter : conditionParameters) {
 			final T actual = getActualValue(conditionParameter);
-			final T e = expected.get(i);  
-			assertEquals(e, actual);
+			assertEquals(expected.get(conditionParameter.getConditionIndex() - 1), actual);
 		}
-	}
-	
-	/*
-	 * Others
-	 */
-	
-	public static ConditionParameter createConditionParameter(final int conditionIndex) {
-		return new ConditionParameter(conditionIndex);
 	}
 
-	public List<ConditionParameter> createConditionParameters(final int conditions) {
+	void process(final AbstractConditionACOption testInstance, final CommandLine cmd) throws Exception {
+		if (! testInstance.getOpt().isEmpty()) {
+			if (cmd.hasOption(testInstance.getOpt())) {
+				testInstance.process(cmd);
+			}
+		}
+	}
+
+	List<AbstractConditionACOption> createTestInstances(final List<ConditionParameter> conditionParameters) {
+		return IntStream.rangeClosed(1, conditionParameters.size())
+				.mapToObj(i -> createIndividualTestInstance(conditionParameters.get(i - 1)))
+				.collect(Collectors.toList());
+	}
+
+	protected Arguments createIndividualArguments(
+			final T defaultValue, 
+			final List<Integer> conditions, 
+			final List<T> actualValues) {
+
+		final ArgumentsBuilder builder = new ArgumentsBuilder(conditions.size(), defaultValue);
+		for (final int condition : conditions) {
+			builder.withCondition(condition, actualValues.get(condition - 1));
+		}
+		return builder.build();
+				
+	}
+	
+	protected Arguments createGeneralArguments(final T defaultValue, final int conditions, final T actualValue) {
+		return new ArgumentsBuilder(conditions, defaultValue)
+				.withConditions(actualValue)
+				.build();
+	}
+
+	protected <E extends Throwable> void myAssertOptThrows(
+			final Class<E> expectedType,
+			final AbstractConditionACOption testInstance,
+			final String value) throws Exception{
+
+		final Options options				= new Options();
+		options.addOption(testInstance.getOption(false));
+		final CommandLineParser parser		= new DefaultParser();
+		final String line 					= createOptLine(testInstance, value);
+		Executable executable 				= () -> {
+			final CommandLine cmd = parser.parse(options, line.split(" "));
+			testInstance.process(cmd); 
+			};
+		assertThrows(expectedType, executable);
+	}
+	
+	ConditionParameter createConditionParameter(final int condition) {
+		return new ConditionParameter(condition);
+	}
+	
+	protected List<ConditionParameter> createConditionParameters(final int conditions) {
 		return IntStream.rangeClosed(1, conditions)
 			.mapToObj(i -> createConditionParameter(i))
 			.collect(Collectors.toList());
 	}
-
-	protected void process(final List<AbstractConditionACOption> conditionACoptions, final CommandLine cmd) throws Exception {
-		for (AbstractConditionACOption conditionACoption : conditionACoptions) {
-			process(conditionACoption, cmd);
-		}
+	
+	String createOptLine(final AbstractConditionACOption testInstance, String value) {
+		return createOptLine(testInstance.getOpt(), value);
 	}
 	
-	protected void process(final AbstractConditionACOption conditionACoption, final CommandLine cmd) throws Exception {
-		if (conditionACoption.getOpt() != null && cmd.hasOption(conditionACoption.getOpt()) ||
-				conditionACoption.getLongOpt() != null && cmd.hasOption(conditionACoption.getLongOpt())) {
-			conditionACoption.process(cmd);
-		}
-	}
-
-	protected List<AbstractConditionACOption> createACOptions(List<ConditionParameter> conditionParameter) {
-		return IntStream.rangeClosed(1, conditionParameter.size() + 1)
-				.mapToObj(i -> createACOption(conditionParameter.get(i - 1)))
-				.collect(Collectors.toList());
+	String createOptLine(final AbstractConditionACOption testInstance, T value) {
+		return createOptLine(testInstance.getOpt(), convertString(value));
 	}
 	
-	public static <T> Arguments ArgumentsHelper(final int conditions, final List<Integer> conditionIndicies, final List<T> expected) {
-		if (conditionIndicies.size() > conditions) {
-			throw new IllegalStateException("Size of conditionIndicies > conditions");
+	String createOptLine(final String opt, final String value) {
+		if (value.isEmpty()) {
+			return " -" + opt;
 		}
-		if (conditions != expected.size()) {
-			throw new IllegalStateException("Size of conditions != expected");
-		}
-		for (final int conditionIndex : conditionIndicies) {
-			if (conditionIndex - 1 >= conditions) {
-				throw new IllegalStateException("Size of conditionIndex > conditions + 1");	
-			}
-		}
-		return Arguments.of(conditions, conditionIndicies, expected);
+		return " -" + opt + "=" + value;
 	}
 
-	/*
-	 * Helper
-	 */
-	
-	protected ParserWrapper getParserWrapper() {
-		return parserWrapper;
+	protected T getDefaultValue() {
+		return getActualValue(new ConditionParameter(-1));
 	}
 	
-	/*
-	 * Abstract
-	 */
-
-	protected abstract AbstractConditionACOption createACOption(List<ConditionParameter> conditionParameters);
-	protected abstract AbstractConditionACOption createACOption(ConditionParameter conditionParameter);
+	protected abstract Stream<Arguments> testProcessGeneral();
+	protected abstract Stream<Arguments> testProcessIndividual();
+	
+	protected abstract AbstractConditionACOption createGeneralTestInstance(List<ConditionParameter> conditionParameters);
+	protected abstract AbstractConditionACOption createIndividualTestInstance(ConditionParameter conditionParameter);
 	protected abstract T getActualValue(ConditionParameter conditionParameter);
-	protected abstract String createLine(AbstractConditionACOption acOption, T v);
+
+	protected abstract String convertString(T value);
+	
+	public class ArgumentsBuilder implements lib.util.Builder<Arguments> {
+		
+		private final List<ConditionParameter> conditionParameters;
+		private final List<T> expected;
+		private final List<Integer> conditions;
+		
+		// make sure we don't mix individual and general build
+		private int flag = 0; // 0 => unknown, 1 => individual => 2 general 
+		
+		public ArgumentsBuilder(final int conditions, final T expected) {
+			conditionParameters = createConditionParameters(conditions);
+			this.expected 		= new ArrayList<>(Collections.nCopies(conditions, expected));
+			this.conditions		= new ArrayList<>();
+		}
+		
+		ArgumentsBuilder withConditions(final T value) {
+			assert(flag != 1);
+			expected.clear();
+			expected.addAll(Collections.nCopies(conditionParameters.size(), value));
+			flag = 2;
+			return this;
+		}
+		
+		ArgumentsBuilder withCondition(final int condition, final T value) {
+			assert(flag != 2);
+			assert(condition - 1 < conditionParameters.size());
+			expected.set(condition - 1, value);
+			conditions.add(condition);
+			flag = 1;
+			return this;
+		}
+		
+		Arguments createGeneralArguments(
+				final List<ConditionParameter> conditionParameters, 
+				final T expected) {
+			
+			final AbstractConditionACOption testInstance = createGeneralTestInstance(conditionParameters);
+			final String line = createOptLine(testInstance, expected);
+			return Arguments.of(
+					testInstance,
+					conditionParameters,
+					line, 
+					expected);
+		}
+		
+		Arguments createIndividualArguments(
+				final List<ConditionParameter> conditionParameters,
+				final List<Integer> conditions,
+				final List<T> expected) {
+			
+			final List<AbstractConditionACOption> testInstances = 
+					createTestInstances(conditionParameters);
+			
+			final StringBuilder sb = new StringBuilder();
+			for (int condition : conditions) {
+				sb.append(createOptLine(
+						  testInstances.get(condition - 1), 
+						  expected.get(condition - 1)) );
+			}
+			
+			return Arguments.of(
+					testInstances,
+					conditionParameters,
+					sb.toString(), 
+					expected);
+		}
+		
+		@Override
+		public Arguments build() {
+			switch (flag) {
+			case 0:
+
+			case 1:
+				return createIndividualArguments(conditionParameters, conditions, expected);
+				
+			case 2:
+				return createGeneralArguments(conditionParameters, expected.get(0));
+				
+			default:
+				throw new IllegalStateException();
+			}
+			
+		}
+		
+	}
+	
 }

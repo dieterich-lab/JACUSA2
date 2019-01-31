@@ -35,24 +35,26 @@ public class MinBASQConditionOption extends AbstractConditionACOption {
 				s + "\n default: " + minBasq;
 
 		return Option.builder(getOpt())
+				.longOpt(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc(s)
 				.build();
 	}
 
+	/**
+	 * Tested in @see test.lib.cli.options.condition.MinBASQConditionOptionTest
+	 */
 	@Override
 	public void process(CommandLine line) throws Exception {
-		if(line.hasOption(getOpt())) {
-	    	String value = line.getOptionValue(getOpt());
-	    	byte minBASQ = Byte.parseByte(value);
-	    	if(minBASQ < 0 || minBASQ > Phred2Prob.MAX_Q) {
-	    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + minBASQ + " not valid.");
-	    	}
-	    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
-	    		conditionParameter.setMinBASQ(minBASQ);
-	    	}
-		}
+    	String value = line.getOptionValue(getOpt());
+    	byte minBASQ = Byte.parseByte(value);
+    	if(minBASQ < 0 || minBASQ > Phred2Prob.MAX_Q) {
+    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " = " + minBASQ + " not valid.");
+    	}
+    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
+    		conditionParameter.setMinBASQ(minBASQ);
+    	}
 	}
 
 }

@@ -6,7 +6,6 @@ import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 
 import htsjdk.samtools.SAMRecord;
-import test.jacusa.filter.homopolymer.SAMRecordBuilder;
 
 public class SAMRecordArgumentConverter extends SimpleArgumentConverter {
 	
