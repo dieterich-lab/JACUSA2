@@ -27,6 +27,7 @@ public class CoordinateController {
 	private CoordinateController(final int activeWindowSize) {
 		this.active = null;
 		this.activeWindowSize = activeWindowSize;
+		coordinateTranslator = new DynamicCoordinateTranslator(this);
 	}
 	
 	public CoordinateController(final int activeWindowSize, final CoordinateAdvancer coordinateAdvancer) {
@@ -71,7 +72,6 @@ public class CoordinateController {
 		}
 
 		active = provider.next();
-		coordinateTranslator = new DynamicCoordinateTranslator(this);
 		updateCoordinateAdvancer(active);
 		return active;
 	}

@@ -23,6 +23,7 @@ import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.FilterConfigOption;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
 import lib.data.fetcher.DefaultFilteredDataFetcher;
 import test.utlis.TestUtils;
@@ -88,9 +89,13 @@ implements ACOptionTest<Set<Character>> {
 						DataType.BCC.getFetcher(), 
 						new DefaultFilteredDataFetcher<>(DataType.F_BCC)),
 				new MaxAlleleCountFilterFactory(DataType.BCC.getFetcher()),
-				new HomopolymerFilterFactory(new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN)))
+				new HomopolymerFilterFactory(getParameter(), new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN)))
 				.stream()
 				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()));
+	}
+	
+	GeneralParameter getParameter() {
+		return new GeneralParameter(2);
 	}
 	
 	@Override

@@ -15,7 +15,9 @@ import java.util.stream.Collectors;
 
 import lib.cli.parameter.ConditionParameter;
 import lib.util.coordinate.CoordinateController;
-import lib.util.coordinate.CoordinateController.WindowPositionGuard;
+import lib.util.coordinate.CoordinateTranslator;
+import lib.util.position.AllAlignmentBlocksPositionProvider;
+import lib.util.position.Position;
 import lib.recordextended.SAMRecordExtended;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
@@ -33,7 +35,8 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 	
 	private Map<Integer, Byte> referenceBaseBuffer;
 	
-	public SimpleMDReferenceProvider(final CoordinateController coordinateController,
+	public SimpleMDReferenceProvider(
+			final CoordinateController coordinateController,
 			final List<String> recordFilenames) {
 
 		this.coordinateController = coordinateController;		
@@ -46,7 +49,24 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 		referenceBaseBuffer = new HashMap<Integer, Byte>(READ_AHEAD);
 	}
 
+	private CoordinateTranslator getTranslator() {
+		return coordinateController.getCoordinateTranslator();
+	}
+	
 	public void addRecordExtended(final SAMRecordExtended recordExtended) {
+		final AllAlignmentBlocksPositionProvider positionProvider = 
+				new AllAlignmentBlocksPositionProvider(recordExtended, getTranslator());
+		
+		while (positionProvider.hasNext()) {
+			final Position position = positionProvider.next();
+			reference[position.getWindowPosition()] = 
+					recordExtended
+						.getRecordReferenceProvider()
+						.getReferenceBase(position.getReferencePosition())
+						.getByte();
+		}
+		
+		/* TODO remove all code
 		for (final AlignmentBlock block : recordExtended.getSAMRecord().getAlignmentBlocks()) {
 			final int refStart = block.getReferenceStart();
 			final int readStart = block.getReadStart() - 1;
@@ -64,6 +84,7 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 				}
 			}
 		}
+		*/
 	}
 
 	@Override

@@ -51,9 +51,10 @@ public class HomopolymerReferenceRecordProcessor implements RecordExtendedPrePos
 	public void preProcess() {
 		final Coordinate active = getCoordinateController().getActive().copy();
 		if (storage.contains(active)) {
+			storage.updateStorage(active);
 			return;
 		}
-		final HomopolymerStorage tmpStorage = storage.add(active);
+		final HomopolymerStorage tmpStorage = storage.updateStorage(active);
 		
 		final int windowLength = getCoordinateController().getActive().getLength();
 		// cache homopolymer within window

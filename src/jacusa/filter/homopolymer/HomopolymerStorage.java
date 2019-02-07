@@ -42,7 +42,7 @@ public class HomopolymerStorage extends AbstractStorage {
 		this.filteredDataFetcher 	= filteredDataFetcher;
 		this.minLength 				= minLength;
 		
-		final int size				= sharedStorage.getCoordinateController().getActive().getLength();
+		final int size				= sharedStorage.getCoordinateController().getActiveWindowSize();
 		isHomopolymer 				= new boolean[size];
 	}
 	

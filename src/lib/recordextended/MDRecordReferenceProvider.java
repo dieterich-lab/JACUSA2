@@ -21,7 +21,7 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
 	// from htsjdk SequenceUtils
 	static final Pattern MD_PATTERN = Pattern.compile("\\G(?:([0-9]+)|([ACTGNactgn])|(\\^[ACTGNactgn]+))");
 	
-	private final List<CombinedPosition> mismatchPositions;
+	private final List<AlignedPosition> mismatchPositions;
 	private final Map<Integer, Byte> refPos2base;
 
 	private final Iterator<CigarElementExtended> it;
@@ -30,7 +30,7 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
 	
 	public MDRecordReferenceProvider(final SAMRecordExtended recordExtended) {
 		final int n = 5;
-		mismatchPositions = new ArrayList<CombinedPosition>(n);
+		mismatchPositions = new ArrayList<AlignedPosition>(n);
 		refPos2base = new HashMap<Integer, Byte>(n);
 
 		it = recordExtended.getCigarElementExtended().iterator();
@@ -77,7 +77,7 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
             } else if ((matchGroup = match.group(2)) != null) {
                 // It's a single nucleotide, meaning a mismatch
             	final byte base = (byte)matchGroup.charAt(0);
-            	final CombinedPosition position = getCurrentPosition();
+            	final AlignedPosition position = getCurrentPosition();
             	int refPos = position.getReferencePosition();
         		refPos2base.put(refPos, base);
         		mismatchPositions.add(position.copy());
@@ -85,7 +85,7 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
             } else if ((matchGroup = match.group(3)) != null) {
                 // It's a deletion, starting with a caret
 
-            	final CombinedPosition position = getCurrentPosition();
+            	final AlignedPosition position = getCurrentPosition();
             	int refPos = position.getReferencePosition();
                 // i = 1 -> don't include caret
             	for (int i = 1; i < matchGroup.length(); ++i) {
@@ -97,7 +97,7 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
         }
 	}
 	
-	public List<CombinedPosition> getMismatchPositions() {
+	public List<AlignedPosition> getMismatchPositions() {
 		return Collections.unmodifiableList(mismatchPositions);
 	}
 		
@@ -108,7 +108,7 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
 		}
 	}
 
-	private CombinedPosition getCurrentPosition() {
+	private AlignedPosition getCurrentPosition() {
 		final int offset = currentMatches - current.getPosition().getMatches();
 		return current.getPosition().copy()
 				.advance(offset);

@@ -10,6 +10,7 @@ import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.DataContainer;
 import lib.data.assembler.DataAssembler;
+import lib.data.assembler.DataAssembler.CACHE_STATUS;
 import lib.data.storage.container.SharedStorage;
 import lib.util.coordinate.Coordinate;
 import lib.recordextended.SAMRecordExtendedIterator;
@@ -54,8 +55,21 @@ public class ReplicateContainer {
 		createIterators(activeWindowCoordinate);
 	}
 	
-	public DataContainer getDataContainer(final int replicateIndex, final Coordinate coordinate) {
-		return dataAssemblers.get(replicateIndex).assembleData(coordinate);
+	// returns null if cache is empty
+	public DataContainer getNullDataContainer(final int replicateIndex, final Coordinate coordinate) {
+		if (dataAssemblers.get(replicateIndex).getCacheStatus() == CACHE_STATUS.CACHED) {
+			return dataAssemblers.get(replicateIndex).assembleData(coordinate);
+		}
+		
+		return null;
+	}
+	// returns default container if cache emptry
+	public DataContainer getDefaultDataContainer(final int replicateIndex, final Coordinate coordinate) {
+		if (dataAssemblers.get(replicateIndex).getCacheStatus() == CACHE_STATUS.CACHED) {
+			return dataAssemblers.get(replicateIndex).assembleData(coordinate);
+		}
+		
+		return 	dataAssemblers.get(replicateIndex).createDefaultDataContainer(coordinate);
 	}
 	
 	private List<DataAssembler> createDataAssemblers(

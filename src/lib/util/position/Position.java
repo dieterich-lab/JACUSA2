@@ -21,6 +21,10 @@ public interface Position extends Copyable<Position> {
 		return Base.valueOf(getRecord().getReadBases()[getReadPosition()]);
 	}
 	
+	default byte getReadBase() {
+		return getRecord().getReadBases()[getReadPosition()];
+	}
+	
 	default byte getReadBaseCallQuality() {
 		return getRecord().getBaseQualities()[getReadPosition()];
 	}

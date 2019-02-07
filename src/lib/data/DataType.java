@@ -74,7 +74,7 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof Data)) {
+		if (obj == null || ! (obj instanceof DataType)) {
 			return false;
 		}
 		if (obj == this) {

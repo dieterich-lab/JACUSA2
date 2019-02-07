@@ -38,6 +38,32 @@ abstract class AbstractPosition implements Position {
 	}
 	
 	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !(obj instanceof Position)) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		final Position pos = (Position)obj;
+		return 
+				refPos == pos.getReferencePosition() && 
+				readPos == pos.getReadPosition() &&
+				winPos == pos.getWindowPosition() &&
+				recordExtended.getSAMRecord().equals(pos.getRecord());
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = 31 * hash + refPos;
+		hash = 31 * hash + readPos;
+		hash = 31 * hash + winPos;
+		hash = 31 * hash + getRecord().hashCode();
+		return hash;
+	}
+	
+	@Override
 	public int getReferencePosition() {
 		return refPos;
 	}
@@ -75,12 +101,18 @@ abstract class AbstractPosition implements Position {
 		winPos	+= offset;
 	}
 
+	void setWindowPosition(final int winPos) {
+		this.winPos = winPos;
+	}
+	
 	void resetWindowPosition() {
 		this.winPos = -1;
 	}
 	
 	@Override
 	public String toString() {
+		return String.format("(%d,%d,%d)", refPos, readPos, winPos);
+		/*
 		return new StringBuilder()
 				.append("1-based-ref=").append(getReferencePosition()).append(' ')
 				.append("0-based-read=").append(getReadPosition()).append(' ')
@@ -89,6 +121,7 @@ abstract class AbstractPosition implements Position {
 				.append("base=").append(getReadBaseCall()).append(' ')
 				.append("qual=").append(getReadBaseCallQuality()).append(' ')
 				.toString();
+				*/
 	}
 
 	static abstract class AbstractBuilder<T extends AbstractPosition> implements lib.util.Builder<T> {

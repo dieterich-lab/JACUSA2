@@ -44,9 +44,9 @@ public class ReferenceSegmentContainer {
 
 		final List<ReferenceSegment> segments = getSegments(winPos, length);
 
-		int tmpWindowPosition = winPos;
-		int tmpReadPosition = readPos;
-		int tmpLength = length;
+		int tmpWindowPosition 	= winPos;
+		int tmpReadPosition 	= readPos;
+		int tmpLength 			= length;
 		
 		for (final ReferenceSegment segment : segments) {
 			final int end = tmpWindowPosition + tmpLength;
@@ -70,9 +70,9 @@ public class ReferenceSegmentContainer {
 
 			final int offset = Math.min(segment.getEnd(), end) - tmpWindowPosition;
 			if (offset > 0) {
-				tmpWindowPosition += offset;
-				tmpReadPosition += offset;
-				tmpLength -= offset;
+				tmpWindowPosition 	+= offset;
+				tmpReadPosition 	+= offset;
+				tmpLength 			-= offset;
 			}
 			
 		}

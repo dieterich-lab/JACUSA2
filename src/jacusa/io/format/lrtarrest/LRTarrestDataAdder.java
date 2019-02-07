@@ -34,8 +34,8 @@ public class LRTarrestDataAdder implements DataAdder {
 	
 	@Override
 	public void addData(StringBuilder sb, int valueIndex, int conditionIndex, int replicateIndex, Result result) {
-		final DataContainer container = result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
-		final ArrestPosition2baseCallCount ap2bcc = container.getArrestPos2BaseCallCount();
+		final DataContainer container 				= result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
+		final ArrestPosition2baseCallCount ap2bcc 	= container.getArrestPos2BaseCallCount();
 		
 		final List<String> tmp = new ArrayList<>(2);
 		

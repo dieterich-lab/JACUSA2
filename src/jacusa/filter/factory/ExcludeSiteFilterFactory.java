@@ -35,8 +35,6 @@ implements HasFileName, HasFileType {
 	private String fileName;
 	private FileType fileType;
 	
-	private FeatureCodec<? extends Feature, LineIterator> codec;
-	
 	public ExcludeSiteFilterFactory() {
 		super(getOptionBuilder().build());
 		getACOption().add(new FileNameOption(this));
@@ -94,7 +92,7 @@ implements HasFileName, HasFileType {
 			CoordinateController coordinateController,
 			ConditionContainer conditionContainer) {
 		
-		return new ExcludeSiteFilter(getC(), fileName, codec);
+		return new ExcludeSiteFilter(getC(), fileName, getCodec());
 	}
 	
 	@Override
@@ -125,7 +123,7 @@ implements HasFileName, HasFileType {
 	}
 	
 	public FeatureCodec<? extends Feature, LineIterator> getCodec() {
-		return codec;
+		return fileType.getCodec();
 	}
 	
 	public static Builder getOptionBuilder() {

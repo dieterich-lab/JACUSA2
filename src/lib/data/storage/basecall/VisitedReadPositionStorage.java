@@ -38,7 +38,7 @@ public class VisitedReadPositionStorage implements Storage {
 	}
 
 	public boolean isVisited(int readPos) {
-		return visited[readPos];
+		return visited[readPos];			
 	}
 	
 	public void reset(final SAMRecordExtended recordExtended) {

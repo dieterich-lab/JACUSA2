@@ -6,7 +6,8 @@ import java.util.List;
 import htsjdk.samtools.AlignmentBlock;
 import lib.util.LibraryType;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.AlignmentBlockBuilder;
+import lib.util.position.AlignmentBlockPositionProviderBuilder;
+import lib.util.position.DefaultPosition;
 import lib.util.position.MatchPosition;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
@@ -57,33 +58,48 @@ public interface LocationInterpreter {
 			final SAMRecordExtended recordExtended, 
 			final CoordinateTranslator translator) {
 		
-		return new MatchPosition.Builder(0, recordExtended, translator).build();
+		final Position pos = new MatchPosition.Builder(0, recordExtended, translator).build();
+		if (pos.getWindowPosition() >= 0) {
+			return pos;
+		} else {
+			return null;
+		}
 	}
 	
 	default Position getLastAlignmentPosition(
 			final SAMRecordExtended recordExtended, 
 			final CoordinateTranslator translator) {
 		
-		final int size = recordExtended.getSAMRecord().getAlignmentBlocks().size();
-		return new MatchPosition.Builder(size, recordExtended, translator).build();
+		final int size 				= recordExtended.getSAMRecord().getAlignmentBlocks().size() - 1;
+		final AlignmentBlock block 	= recordExtended.getSAMRecord().getAlignmentBlocks().get(size);
+		final int length			= block.getLength() - 1;
+		final int refPos 			= block.getReferenceStart() + length;
+		final int readPos			= block.getReadStart() - 1 + length;
+		final int winPos			= translator.reference2windowPosition(refPos);
+		if (winPos >= 0) {
+			return new DefaultPosition(refPos, readPos, winPos, recordExtended);
+		}
+		return  null;
 	}
 	
 	default PositionProvider getFirstThroughPositionProvider(
 			final SAMRecordExtended recordExtended,
 			final CoordinateTranslator translator) {
 		
-		return new AlignmentBlockBuilder(0, recordExtended, translator)
+		return new AlignmentBlockPositionProviderBuilder(0, recordExtended, translator)
 				.ignoreFirst(1)
+				.adjustWindowPos()
 				.build();
 	}
 	
-	default PositionProvider getInnerThroughRegion(
+	default PositionProvider getInnerThroughPositionProvider(
 			final SAMRecordExtended recordExtended,
 			final CoordinateTranslator translator) {
 		
-		return new AlignmentBlockBuilder(0, recordExtended, translator)
+		return new AlignmentBlockPositionProviderBuilder(0, recordExtended, translator)
 				.ignoreFirst(1)
 				.ignoreLast(1)
+				.adjustWindowPos()
 				.build();
 	}
 	
@@ -93,8 +109,9 @@ public interface LocationInterpreter {
 		
 		final List<AlignmentBlock> blocks = recordExtended.getSAMRecord().getAlignmentBlocks();
 		final int size = blocks.size();
-		return new AlignmentBlockBuilder(size - 1, recordExtended, translator)
+		return new AlignmentBlockPositionProviderBuilder(size - 1, recordExtended, translator)
 				.ignoreLast(1)
+				.adjustWindowPos()
 				.build();
 	}
 	
@@ -108,8 +125,10 @@ public interface LocationInterpreter {
 		final List<PositionProvider> positionProviders = new ArrayList<>(size);
 		for (int i = startIndex; i < endIndex; ++i) {
 			positionProviders.add(
-					new AlignmentBlockBuilder(
-							i, recordExtended, translator).build()); 
+					new AlignmentBlockPositionProviderBuilder(
+							i, recordExtended, translator)
+					.adjustWindowPos()
+					.build()); 
 		}
 		return positionProviders;
 	}

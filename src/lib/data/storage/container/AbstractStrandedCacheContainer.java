@@ -65,9 +65,8 @@ implements CacheContainer {
 	}
 	
 	@Override
-	public void clear() {
-		forwardContainer.clear();
-		reverseContainer.clear();
+	public void clearSharedCache() {
+		forwardContainer.clearSharedCache();
 	}
 	
 	@Override

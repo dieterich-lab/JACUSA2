@@ -3,14 +3,14 @@ package lib.util.position;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.recordextended.SAMRecordExtended;
 
-public class AlignmentBlockBuilder implements lib.util.Builder<AlignedPositionProvider> {
+public class AlignmentBlockPositionProviderBuilder implements lib.util.Builder<AlignmentBlockPositionProvider> {
 	
 	private final MatchPosition pos;
 	private int length;
 
 	private CoordinateTranslator translator;
 
-	public AlignmentBlockBuilder(
+	public AlignmentBlockPositionProviderBuilder(
 			final int alignmentBlockIndex, final SAMRecordExtended recordExtended, 
 			final CoordinateTranslator translator) {
 		
@@ -23,49 +23,48 @@ public class AlignmentBlockBuilder implements lib.util.Builder<AlignedPositionPr
 	}
 
 	// call this once
-	public AlignmentBlockBuilder tryFirst(final int length) {
+	public AlignmentBlockPositionProviderBuilder tryFirst(final int length) {
 		this.length = Math.min(this.length, length);
 		return this;
 	}
 	
 	// call this once
-	public AlignmentBlockBuilder tryLast(final int length) {
-		int offset = this.length - 1;
+	public AlignmentBlockPositionProviderBuilder tryLast(final int length) {
+		int oldLength = this.length;
 		this.length = Math.min(this.length, length);
-		offset -= (this.length - 1);
+		final int offset = oldLength - this.length;
 		pos.offset(offset);
 		return this;
 	}
 	
 	// call this once
-	public AlignmentBlockBuilder ignoreFirst(final int length) {
-		final int offset = this.length - length;
-		if (offset < 0) {
-			pos.offset(this.length - 1);
-			this.length = 0;
+	public AlignmentBlockPositionProviderBuilder ignoreFirst(final int length) {
+		if (length <= this.length) {
+			this.length = this.length -length;
+			pos.offset(length);
 		} else {
-			pos.offset(offset);
-			this.length = offset;
+			pos.offset(this.length);
+			this.length = 0;
 		}
 		return this;
 	}
 
 	// call this once
-	public AlignmentBlockBuilder ignoreLast(final int length) {
+	public AlignmentBlockPositionProviderBuilder ignoreLast(final int length) {
 		final int offset = this.length - length;
 		this.length = Math.max(0, offset);
 		return this;
 	}
 	
 	// make sure to run this last
-	public AlignmentBlockBuilder adjustForWindow() {
-		length = PositionProvider.adjustForWindow(pos, length, translator);
+	public AlignmentBlockPositionProviderBuilder adjustWindowPos() {
+		length = PositionProvider.adjustWindowPos(pos, length, translator);
 		return this;
 	} 
 	
 	@Override
-	public AlignedPositionProvider build() {
-		return new AlignedPositionProvider(pos, length); 
+	public AlignmentBlockPositionProvider build() {
+		return new AlignmentBlockPositionProvider(pos, length); 
 	}
 	
 }

@@ -88,6 +88,8 @@ public class FilterConfigOption extends AbstractACOption {
 			if (a.length() > 1) {
 				a = a.substring(1);
 				filterFactory.processCLI(a.replaceAll(":", " --").trim());
+			} else {
+				filterFactory.processCLI(new String());
 			}
 			parameters.getFilterConfig().addFactory(filterFactory);
 		}

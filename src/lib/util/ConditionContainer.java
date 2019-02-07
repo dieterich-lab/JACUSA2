@@ -39,7 +39,7 @@ public class ConditionContainer {
 	}
 
 	public DataContainer getDataContainer(final int conditionIndex, final int replicateIndex, final Coordinate coordinate) {
-		return replicateContainers.get(conditionIndex).getDataContainer(replicateIndex, coordinate);
+		return replicateContainers.get(conditionIndex).getNullDataContainer(replicateIndex, coordinate);
 	}
 
 	public List<Integer> getReplicateSizes() {

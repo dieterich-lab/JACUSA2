@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.IntStream;
 
 import jacusa.cli.parameters.HasConditionParameter;
 import jacusa.filter.FilterConfig;
@@ -232,6 +233,12 @@ implements HasConditionParameter, HasReadSubstitution {
 	
 	public void setReferernceFilename(final String referenceFilename) {
 		this.referenceFilename = referenceFilename;
+	}
+
+	public int getBAMfileCount() {
+		return IntStream.range(0, getConditionsSize())
+		.mapToObj(i -> getReplicates(i))
+		.mapToInt(i -> i).sum();
 	}
 	
 	public IndexedFastaSequenceFile getReferenceFile() {

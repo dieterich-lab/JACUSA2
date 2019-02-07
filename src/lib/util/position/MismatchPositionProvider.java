@@ -5,7 +5,7 @@ import java.util.List;
 
 import lib.data.validator.CombinedValidator;
 import lib.data.validator.Validator;
-import lib.recordextended.CombinedPosition;
+import lib.recordextended.AlignedPosition;
 import lib.recordextended.SAMRecordExtended;
 import lib.util.Base;
 import lib.util.coordinate.CoordinateTranslator;
@@ -16,7 +16,7 @@ public class MismatchPositionProvider implements PositionProvider {
 	private final CoordinateTranslator translator;
 	private final Validator validator;
 	
-	private final Iterator<CombinedPosition> combPosIt;
+	private final Iterator<AlignedPosition> combPosIt;
 	
 	private Position nextPos;
 
@@ -36,14 +36,16 @@ public class MismatchPositionProvider implements PositionProvider {
 		this.recordExtended = recordExtended;
 		this.translator		= translator;
 		this.validator		= validator;
-		combPosIt 			= recordExtended.getRecordReferenceProvider().getMismatchPositions()
-				.iterator();
+		List<AlignedPosition> mismatchPositions = recordExtended.getRecordReferenceProvider()
+				.getMismatchPositions();
+		
+		combPosIt 			= mismatchPositions.iterator();
 	}
 
 	@Override
 	public boolean hasNext() {
-		while (nextPos != null && combPosIt.hasNext()) {
-			final CombinedPosition combPos = combPosIt.next();
+		while (nextPos == null && combPosIt.hasNext()) {
+			final AlignedPosition combPos = combPosIt.next();
 			final int refPos 	= combPos.getReferencePosition();
 			final Base refBase 	= recordExtended.getRecordReferenceProvider().getReferenceBase(refPos);
 			if (refBase == Base.N) {
@@ -53,6 +55,7 @@ public class MismatchPositionProvider implements PositionProvider {
 			final int winPos	= translator.reference2windowPosition(refPos);
 			final Position tmpNextPos = new DefaultPosition(refPos, readPos, winPos, recordExtended);
 			if (validator.isValid(tmpNextPos)) {
+				nextPos = tmpNextPos;
 				return true;
 			}
 		}

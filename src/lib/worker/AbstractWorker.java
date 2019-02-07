@@ -9,7 +9,6 @@ import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import jacusa.filter.Filter;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
-import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.result.Result;
 import lib.data.storage.container.ComplexSharedStorage;
@@ -24,7 +23,6 @@ import lib.util.coordinate.CoordinateController;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 import lib.util.ConditionContainer;
-import lib.util.ReplicateContainer;
 import lib.util.coordinate.Coordinate;
 
 public abstract class AbstractWorker
@@ -106,14 +104,7 @@ implements Iterator<ParallelData> {
 			
 			final ParallelData.Builder parallelDataBuilder = new ParallelData.Builder(
 							conditionContainer.getConditionSize(), conditionContainer.getReplicateSizes());
-			for (int conditionIndex = 0; conditionIndex < conditionContainer.getConditionSize() ; ++conditionIndex) {
-				final ReplicateContainer replicateContainer = conditionContainer.getReplicatContainer(conditionIndex);
-				for (int replicateIndex = 0; replicateIndex < replicateContainer.getReplicateSize() ; ++replicateIndex) {
-					DataContainer replicate = conditionContainer.getDataContainer(conditionIndex, replicateIndex, coordinate);
-					parallelDataBuilder.withReplicate(conditionIndex, replicateIndex, replicate);
-				}	
-			}
-			parallelData = parallelDataBuilder.build();
+			parallelData = createParallelData(parallelDataBuilder, coordinate);
 			if (parallelData != null && parallelDataValidator.isValid(parallelData)) {
 				comparisons++;
 				return true;
@@ -129,6 +120,10 @@ implements Iterator<ParallelData> {
 
 		return false;
 	}
+	
+	protected abstract ParallelData createParallelData(
+			final ParallelData.Builder parallelDataBuilder,
+			final Coordinate coordinate) ;
 	
 	@Override
 	public ParallelData next() {

@@ -10,9 +10,11 @@ public class ComplexSharedStorage implements SharedStorage {
 	private final ReferenceProvider referenceProvider;
 	private final NextPositionSegmentContainer segmentContainer;
 	
-	public ComplexSharedStorage(final ReferenceProvider referenceProvider) {
-		this.referenceProvider = referenceProvider;
-		segmentContainer = new NextPositionSegmentContainer(
+	public ComplexSharedStorage(
+			final ReferenceProvider referenceProvider) {
+
+		this.referenceProvider 	= referenceProvider;
+		segmentContainer 		= new NextPositionSegmentContainer(
 				getCoordinateController().getActiveWindowSize());
 	}
 	
@@ -40,6 +42,7 @@ public class ComplexSharedStorage implements SharedStorage {
 		}
 	}
 
+	// TODO remove WindowPositionGuard
 	@Override
 	public void addRecordExtended(final SAMRecordExtended recordExtended) {
 		referenceProvider.addRecordExtended(recordExtended);

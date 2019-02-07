@@ -11,7 +11,7 @@ import org.apache.commons.cli.Option;
 public class FilterFlagConditionOption extends AbstractConditionACOption {
 
 	// obsolete private static final String OPT = "F";
-	private static final String LONG_OPT = "filterFlags";
+	private static final String LONG_OPT = "F";
 	
 	public FilterFlagConditionOption(final List<ConditionParameter> conditionParameters) {
 		super(LONG_OPT, LONG_OPT, conditionParameters);

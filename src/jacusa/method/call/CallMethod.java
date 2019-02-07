@@ -196,7 +196,7 @@ extends AbstractMethod {
 						filteredBccData),
 				new HomozygousFilterFactory(getParameter().getConditionsSize(), bccFetcher),
 				new MaxAlleleCountFilterFactory(bccFetcher),
-				new HomopolymerFilterFactory(filteredBooleanData))
+				new HomopolymerFilterFactory(getParameter(), filteredBooleanData))
 				.stream()
 				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()) );
 	}

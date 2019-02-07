@@ -2,7 +2,7 @@ package lib.util.coordinate;
 
 public class DefaultCoordinateTranslator implements CoordinateTranslator {
 
-	private int refPosStart;
+	private int refPoswinStart;
 	private int refPosEnd;
 	private int length;
 	
@@ -10,9 +10,9 @@ public class DefaultCoordinateTranslator implements CoordinateTranslator {
 		this(coordinate.getStart(), coordinate.getLength());
 	}
 	
-	public DefaultCoordinateTranslator(final int refPosStart, final int length) {
-		this.refPosStart 	= refPosStart;
-		refPosEnd 			= refPosStart + length - 1;
+	public DefaultCoordinateTranslator(final int refPosWinStart, final int length) {
+		this.refPoswinStart = refPosWinStart;
+		refPosEnd 			= refPosWinStart + length - 1;
 		this.length 		= length;
 	}
 
@@ -27,14 +27,14 @@ public class DefaultCoordinateTranslator implements CoordinateTranslator {
 		
 		final DefaultCoordinateTranslator coordinateTranslator = (DefaultCoordinateTranslator)obj;
 		return 
-				refPosStart == coordinateTranslator.refPosStart &&
+				refPoswinStart == coordinateTranslator.refPoswinStart &&
 				length == coordinateTranslator.length;
 	}
 	
 	@Override
 	public int hashCode() {
 		int hash = 1;
-		hash = 31 * hash + refPosStart;
+		hash = 31 * hash + refPoswinStart;
 		hash = 31 * hash + refPosEnd;
 		hash = 31 * hash + length;
 		return hash;
@@ -42,7 +42,7 @@ public class DefaultCoordinateTranslator implements CoordinateTranslator {
 	
 	@Override
 	public int getRefPosStart() {
-		return refPosStart;
+		return refPoswinStart;
 	}
 	
 	@Override
@@ -57,10 +57,10 @@ public class DefaultCoordinateTranslator implements CoordinateTranslator {
 	
 	@Override
 	public int reference2windowPosition(final int refPos) {
-		if (refPos > refPosEnd || refPos < refPosStart){
+		if (refPos > refPosEnd || refPos < refPoswinStart){
 			return -1;
 		}
-		return refPos - refPosStart;
+		return refPos - refPoswinStart;
 	}
 	
 }

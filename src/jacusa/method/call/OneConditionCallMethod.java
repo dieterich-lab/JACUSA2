@@ -64,7 +64,7 @@ extends CallMethod {
 						getBaseCallCountFetcher(), 
 						filteredBccData),
 				new MaxAlleleCountFilterFactory(getBaseCallCountFetcher()),
-				new HomopolymerFilterFactory(filteredBooleanData))
+				new HomopolymerFilterFactory(getParameter(), filteredBooleanData))
 				.stream()
 				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()) );
 	}

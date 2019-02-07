@@ -1,12 +1,22 @@
 package lib.util.position;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import lib.util.coordinate.CoordinateTranslator;
 
 public interface PositionProvider extends Iterator<Position> {
 
-	static int adjustForWindow(
+	default List<Position> flat() {
+		final List<Position> positions = new ArrayList<Position>();
+		while (hasNext()) {
+			positions.add(next());
+		}
+		return positions;
+	}
+	
+	static int adjustWindowPos(
 			final MatchPosition pos, int length, 
 			final CoordinateTranslator translator) {
 		
@@ -24,6 +34,8 @@ public interface PositionProvider extends Iterator<Position> {
 
 		if (winPos < 0 || winPos >= translator.getLength()) {
 			pos.resetWindowPosition();
+		} else {
+			pos.setWindowPosition(winPos);
 		}
 		
 		return length;

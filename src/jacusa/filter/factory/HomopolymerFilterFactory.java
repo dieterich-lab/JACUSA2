@@ -10,10 +10,10 @@ import jacusa.filter.homopolymer.HomopolymerReadRecordProcessor;
 import jacusa.filter.homopolymer.HomopolymerReferenceRecordProcessor;
 import jacusa.filter.homopolymer.HomopolymerReferenceStorage;
 import lib.cli.options.filter.HomopolymerLengthOption;
-import lib.cli.options.filter.HomopolymerMethodOption;
 import lib.cli.options.filter.has.HasHomopolymerLength;
 import lib.cli.options.filter.has.HasHomopolymerMethod;
 import lib.cli.parameter.ConditionParameter;
+import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
 import lib.data.DataContainer;
 import lib.data.DataContainer.AbstractBuilder;
@@ -33,25 +33,30 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 	// default length of consecutive identical base call for
 	// a homopolymer
 	public static final int MIN_HOMOPOLYMER_LENGTH = 7;
-	public static final HomopolymerMethod HOMOPOLYMER_METHOD = HomopolymerMethod.REFERENCE;
+	public static final HomopolymerMethod HOMOPOLYMER_METHOD = HomopolymerMethod.READ;
 
 	// chosen length of homopolymer
 	private int length;
 	private HomopolymerMethod method;
 	
+	private final GeneralParameter parameter;
 	private final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredBooleanFetcher;
 	private final DataType<BooleanWrapperFilteredData> dataType;
 
-	public HomopolymerFilterFactory(final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher) {
+	public HomopolymerFilterFactory(
+			final GeneralParameter parameter,
+			final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher) {
+
 		super(getOptionBuilder().build());
 		length = MIN_HOMOPOLYMER_LENGTH;
 		method = HOMOPOLYMER_METHOD;
 		
 		getACOption().add(new HomopolymerLengthOption(this));
-		getACOption().add(new HomopolymerMethodOption(this));
-		
+		// getACOption().add(new HomopolymerMethodOption(this));
+
+		this.parameter 				= parameter;
 		this.filteredBooleanFetcher = filteredDataFetcher;
-		dataType = filteredDataFetcher.getDataType();
+		dataType 					= filteredDataFetcher.getDataType();
 	}
 
 	public static Builder getOptionBuilder() {
@@ -68,10 +73,12 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 		
 		switch (method) {
 		case REFERENCE:
+			final int bamFileCount = parameter.getBAMfileCount();
 			final HomopolymerReferenceStorage refStorage = new HomopolymerReferenceStorage(
 					sharedStorage,
 					getC(), filteredBooleanFetcher, 
-					length);
+					length,
+					bamFileCount);
 			cache.addStorage(refStorage);
 
 			final HomopolymerReferenceRecordProcessor refRecordProcessor = 

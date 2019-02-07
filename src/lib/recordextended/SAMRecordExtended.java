@@ -49,7 +49,7 @@ public class SAMRecordExtended {
 	}
 	
 	private void process() {
-		final CombinedPosition position = new CombinedPosition(record);
+		final AlignedPosition position = new AlignedPosition(record.getAlignmentStart());
 
 		int index = 0;
 		
@@ -112,7 +112,9 @@ public class SAMRecordExtended {
 	}
 
 	public String toString() {
-		return record.toString();
+		final StringBuilder sb = new StringBuilder();
+		sb.append(StringUtil.bytesToString(record.getReadBases()));
+		return sb.toString();
 	}
 	
 	public int getUpstreamMatch(final int index) {
@@ -143,10 +145,10 @@ public class SAMRecordExtended {
 	
 	public class CigarElementExtended {
 		
-		private CombinedPosition position;
+		private AlignedPosition position;
 		private CigarElement cigarElement;
 		
-		public CigarElementExtended(final CombinedPosition position, final CigarElement cigarElement) {
+		public CigarElementExtended(final AlignedPosition position, final CigarElement cigarElement) {
 			this.position 		= position;
 			this.cigarElement 	= cigarElement;
 		}
@@ -161,7 +163,7 @@ public class SAMRecordExtended {
 					cigarElement.getLength() : 0;
 		}
 
-		public CombinedPosition getPosition() {
+		public AlignedPosition getPosition() {
 			return position;
 		}
 		
@@ -205,7 +207,7 @@ public class SAMRecordExtended {
 		
 		sb.append("mismatch=");
 		final List<Integer> mismtachPositions = new ArrayList<>();
-		for (final CombinedPosition position : recordExtended.getRecordReferenceProvider().getMismatchPositions()) {
+		for (final AlignedPosition position : recordExtended.getRecordReferenceProvider().getMismatchPositions()) {
 			mismtachPositions.add(position.getReferencePosition());
 		}
 
@@ -258,7 +260,7 @@ public class SAMRecordExtended {
 		
 		final char[] ref = new char[length];
 		Arrays.fill(ref, ' ');
-		for (final CombinedPosition position : recordExtended.getRecordReferenceProvider().getMismatchPositions()) {
+		for (final AlignedPosition position : recordExtended.getRecordReferenceProvider().getMismatchPositions()) {
 			final int refPos = position.getReferencePosition();
 			int i = refPos - AlignmentStart;
 			ref[i] = recordExtended.getRecordReferenceProvider().getReferenceBase(refPos).getChar();

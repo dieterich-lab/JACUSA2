@@ -5,7 +5,7 @@ import java.util.Collection;
 import jacusa.filter.homopolymer.Homopolymer.HomopolymerBuilder;
 import lib.data.storage.processor.RecordExtendedPrePostProcessor;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.ContinousAligmnentPositionProvider;
+import lib.util.position.AllAlignmentBlocksPositionProvider;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 import lib.recordextended.SAMRecordExtended;
@@ -40,7 +40,7 @@ public class HomopolymerReadRecordProcessor implements RecordExtendedPrePostProc
 	
 	@Override
 	public void process(final SAMRecordExtended recordExtended) {
-		PositionProvider positionProvider = new ContinousAligmnentPositionProvider(
+		PositionProvider positionProvider = new AllAlignmentBlocksPositionProvider(
 				recordExtended, getTranslator());
 		
 		if (! positionProvider.hasNext()) {

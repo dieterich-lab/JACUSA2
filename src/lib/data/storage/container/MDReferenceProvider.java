@@ -19,13 +19,12 @@ public class MDReferenceProvider implements ReferenceProvider {
 		
 		refSegmentContainer = new ReferenceSegmentContainer(coordinateController.getActiveWindowSize());
 	}
-
+	
 	public void addRecordExtended(final SAMRecordExtended recordExtended) {
 		for (final AlignmentBlock currentBlock : recordExtended.getSAMRecord().getAlignmentBlocks()) {
-
-			final int refPos = currentBlock.getReferenceStart();	
-			final int readPos = currentBlock.getReadStart() - 1;
-			final int len = currentBlock.getLength();
+			final int refPos 	= currentBlock.getReferenceStart();	
+			final int readPos 	= currentBlock.getReadStart() - 1;
+			final int len 		= currentBlock.getLength();
 			final WindowPositionGuard currentWinPosGuard = coordinateController.convert(refPos, readPos, len);
 
 			if (currentWinPosGuard.isValid()) {
@@ -33,7 +32,7 @@ public class MDReferenceProvider implements ReferenceProvider {
 						currentWinPosGuard.getWindowPosition(), 
 						currentWinPosGuard.getReadPosition(), 
 						currentWinPosGuard.getLength(),
-						recordExtended);
+						recordExtended);			
 			}
 		}
 	}

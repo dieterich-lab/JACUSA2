@@ -1,13 +1,13 @@
 package lib.util.position;
 
-public class AlignedPositionProvider implements PositionProvider {
+public class 	AlignmentBlockPositionProvider implements PositionProvider {
 
 	private final MatchPosition pos;
 	private final int length;
 	
 	private int current;
 	
-	AlignedPositionProvider(final MatchPosition pos, final int length) {
+	AlignmentBlockPositionProvider(final MatchPosition pos, final int length) {
 		this.pos 	= pos;
 		this.length = length;
 		
@@ -16,7 +16,7 @@ public class AlignedPositionProvider implements PositionProvider {
 	
 	@Override
 	public boolean hasNext() {
-		return pos != null && current < length;
+		return current < length;
 	}
 	
 	@Override

@@ -1,13 +1,13 @@
 package lib.data.storage.arrest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import htsjdk.samtools.SAMRecord;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.CollectionPositionProvider;
 import lib.util.position.CombinedPositionProvider;
+import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 import lib.recordextended.SAMRecordExtended;
 
@@ -18,9 +18,17 @@ public class UnstrandedLocationInterpreter implements LocationInterpreter {
 			final SAMRecordExtended recordExtended,
 			final CoordinateTranslator translator) {
 		
-		return new CollectionPositionProvider(Arrays.asList(
-				getFirstAlignmentPosition(recordExtended, translator),
-				getLastAlignmentPosition(recordExtended, translator)));
+		final Position posFirst 	= getFirstAlignmentPosition(recordExtended, translator);
+		final Position posLast 		= getLastAlignmentPosition(recordExtended, translator);
+		final List<Position> pos 	= new ArrayList<>(2); 
+		if (posFirst != null) {
+			pos.add(posFirst);
+		}
+		if (posLast != null) {
+			pos.add(posLast);
+		}
+		
+		return new CollectionPositionProvider(pos);
 	}
 	
 	@Override
@@ -32,7 +40,7 @@ public class UnstrandedLocationInterpreter implements LocationInterpreter {
 		final int size = record.getAlignmentBlocks().size();
 		
 		if (size == 1) {
-			return getInnerThroughRegion(recordExtended, translator);
+			return getInnerThroughPositionProvider(recordExtended, translator);
 		} else {
 			final List<PositionProvider> positionProviders = new ArrayList<>(size); 
 			positionProviders.add(getFirstThroughPositionProvider(recordExtended, translator));

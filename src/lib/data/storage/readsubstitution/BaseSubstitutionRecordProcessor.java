@@ -3,7 +3,7 @@ package lib.data.storage.readsubstitution;
 import lib.util.Base;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.ContinousAligmnentPositionProvider;
+import lib.util.position.AllAlignmentBlocksPositionProvider;
 import lib.util.position.MismatchPositionProvider;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
@@ -79,15 +79,16 @@ implements RecordExtendedPrePostProcessor {
 		if (observedBaseSubs.size() == 0) {
 			return;
 		}
-		final PositionProvider positionProvider = new ContinousAligmnentPositionProvider(
+		final PositionProvider positionProvider = new AllAlignmentBlocksPositionProvider(
 				recordExtended, getTranslator());
 		
 		while (positionProvider.hasNext()) {
 			final Position pos = positionProvider.next();
-			// TODO what about validator
-			for (final BaseSubstitution observedBaseSub : observedBaseSubs) {
-					baseSub2cache.get(observedBaseSub).increment(pos);
-			}	
+			if (validator.isValid(pos)) {
+				for (final BaseSubstitution observedBaseSub : observedBaseSubs) {
+						baseSub2cache.get(observedBaseSub).increment(pos);
+				}
+			}
 		}
 	}
 	

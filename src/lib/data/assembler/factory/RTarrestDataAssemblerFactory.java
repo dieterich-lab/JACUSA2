@@ -27,6 +27,7 @@ import lib.data.validator.CombinedValidator;
 import lib.data.validator.DefaultBaseCallValidator;
 import lib.data.validator.MinBASQValidator;
 import lib.data.validator.Validator;
+import lib.data.validator.WindowPositionValidator;
 import lib.util.LibraryType;
 
 public class RTarrestDataAssemblerFactory 
@@ -90,10 +91,14 @@ extends AbstractSiteDataAssemblerFactory {
 				DataType.THROUGH_BCC.getFetcher());
 		cache.addStorage(throughBccStorage);
 		
+		final WindowPositionValidator winPosValidator = new WindowPositionValidator();
 		final PositionProcessor arrestPositionProcessor = 
 				new PositionProcessor(validators, arrestBccStorage);
+		arrestPositionProcessor.addValidator(winPosValidator);
+		
 		final PositionProcessor throughPositionProcessor = 
 				new PositionProcessor(validators, throughBccStorage);		
+		throughPositionProcessor.addValidator(winPosValidator);
 		
 		cache.addRecordProcessor(new RTarrestRecordProcessor(
 				sharedStorage,

@@ -24,7 +24,13 @@ public interface CacheContainer {
 	
 	List<RecordExtendedPrePostProcessor> getRecordProcessors();
 	List<Storage> getStorages();
-	void clear();
+	
+	default void clearStorage() {
+		for (final Storage storage : getStorages()) {
+			storage.clear();
+		}
+	}
+	void clearSharedCache();
 	
 	public static class StrandedBuilder implements lib.util.Builder<CacheContainer> {
 		

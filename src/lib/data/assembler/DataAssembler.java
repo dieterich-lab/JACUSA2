@@ -4,8 +4,10 @@ import java.util.Iterator;
 
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataContainer;
+import lib.data.DataContainer.AbstractBuilderFactory;
 import lib.data.has.HasLibraryType;
 import lib.data.storage.container.CacheContainer;
+import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.recordextended.SAMRecordExtended;
 
@@ -17,8 +19,21 @@ extends HasLibraryType {
 	// Reset storage in windows
 	void clearStorage();
 
-	DataContainer assembleData(Coordinate coordinate);
-
+	default DataContainer assembleData(Coordinate coordinate) {
+		final DataContainer container = createDefaultDataContainer(coordinate);
+		getCacheContainer().populate(container, coordinate);
+		return container;
+	}
+	
+	default DataContainer createDefaultDataContainer(Coordinate coordinate) {
+		final Base referenceBase = getCacheContainer().getReferenceProvider().getReferenceBase(coordinate);
+		return getBuilderFactory().createBuilder(coordinate, getLibraryType())
+				.withReferenceBase(referenceBase)
+				.build();
+	}
+	
+	AbstractBuilderFactory getBuilderFactory();
+	
 	CacheContainer getCacheContainer();
 
 	ConditionParameter getConditionParameter();

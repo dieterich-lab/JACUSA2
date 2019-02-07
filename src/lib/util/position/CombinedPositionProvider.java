@@ -19,11 +19,13 @@ public class CombinedPositionProvider implements PositionProvider {
 	
 	@Override
 	public boolean hasNext() {
-		if (positionProvider != null || positionProvider.hasNext()) {
+		if (positionProvider != null && positionProvider.hasNext()) {
 			return true;
 		} else if (it.hasNext()) {
 			positionProvider = it.next();
 			return hasNext();
+		} else {
+			positionProvider = null;
 		}
 		return false;
 	}

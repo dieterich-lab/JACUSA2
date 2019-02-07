@@ -40,7 +40,7 @@ public class ResultFileOption extends AbstractACOption {
     	final String resultFilename = line.getOptionValue(getOpt());
     	final File file = new File(resultFilename);
 	 	if (file.exists()) {
-	 		throw new FileAlreadyExistsException(resultFilename);
+	 		// throw new FileAlreadyExistsException(resultFilename);
 	 	}
     	parameter.setResultFilename(resultFilename);
 	}

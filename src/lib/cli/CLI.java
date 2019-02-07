@@ -74,7 +74,7 @@ public class CLI {
 		// parse arguments
 		final CommandLineParser parser = new DefaultParser();
 		try {
-			CommandLine line = parser.parse(options, args);
+			CommandLine line = parser.parse(options, args, true);
 			if (line.hasOption(showHelp.getOpt())) {
 				showHelp.process(line);
 				processMethodFactoryACOptions(printExtendedHelp, false,
@@ -137,15 +137,12 @@ public class CLI {
 			method = tmpMethodFactory.createMethod();
 			processMethodFactoryACOptions(printExtendedHelp, true, acOptions, options);
 
-			final String s = new String();
 			try {
 				line = parser.parse(options, processedArgs);
 			} catch (ParseException e) {
-				s.length();
 				// e.printStackTrace();
 				// ignore
 			}
-			s.length();
 		} while (conditions < args.length && (line == null || line.getArgs().length != conditions));
 		
 		// if not all args could be parsed STOP

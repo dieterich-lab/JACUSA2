@@ -10,6 +10,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import htsjdk.samtools.Cigar;
+import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.SAMFileHeader;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordComparator;
@@ -62,7 +63,7 @@ public class SAMRecordBuilder {
         random = new Random(1);
 	}
 
-	private Base getRandomBase() {
+	public Base getRandomBase() {
 		final int i = random.nextInt(Base.values().length);
 		return Base.values()[i];
 	}
@@ -81,7 +82,25 @@ public class SAMRecordBuilder {
 			return StringUtil.stringToBytes(readSeq);
 		}
 		
-		return StringUtil.stringToBytes(contig2refSeq.get(contig));
+		final byte[] readBases = new byte[readLength];
+		final byte[] refBases = StringUtil.stringToBytes(contig2refSeq.get(contig));
+		
+		int tmpRefPos = refStart;
+		int tmpReadPos 	= 0;
+		for (final CigarElement cigarElement : cigar) {
+			if (cigarElement.getOperator().consumesReadBases() && 
+					cigarElement.getOperator().consumesReferenceBases()) {
+				final int length = cigarElement.getLength();
+				System.arraycopy(
+						refBases, tmpRefPos - 1, 
+						readBases, tmpReadPos, 
+						length);
+				tmpRefPos 	+= length;
+				tmpReadPos 	+= length;
+			}
+		}
+		
+		return readBases;
 	}
 	
 	public SAMRecordBuilder withStrategy(final String contig, final SAMRecordBuilderStrategy strategy) {
@@ -107,12 +126,14 @@ public class SAMRecordBuilder {
        	record.setMappingQuality(255);
         record.setAttribute(SAMTag.RG.name(), READ_GROUP_ID);
         
-        SequenceUtil.calculateMdAndNmTags(record, StringUtil.stringToBytes(contig2refSeq.get(contig)), true, true);
-
         final int length 	= record.getReadLength();
         final byte[] quals 	= new byte[length];
         Arrays.fill(quals, DEFAULT_BASQ);
         record.setBaseQualities(quals);
+
+        record.validateCigar(-1);
+        
+        SequenceUtil.calculateMdAndNmTags(record, StringUtil.stringToBytes(contig2refSeq.get(contig)), true, true);
 		
         records.add(record);
 		return this;
@@ -175,13 +196,20 @@ public class SAMRecordBuilder {
 		
 		return createSERead(contig, refStart, negativeStrand, cigarStr, new String());
 	}
+
+	public static SAMRecord createSERead(
+			final String contig, final int refStart,  
+			final String cigarStr, final String readSeq) {
+		
+		return createSERead(contig, refStart, false, cigarStr, readSeq);
+	}
 	
 	public static SAMRecord createSERead(
 			final String contig, final int refStart, final boolean negativeStrand, 
-			final String cigarStr, final String refSeq) {
+			final String cigarStr, final String readSeq) {
 
 		final List<SAMRecord> records = new ArrayList<>(new SAMRecordBuilder()
-				.withSERead(contig, refStart, negativeStrand, cigarStr, refSeq)
+				.withSERead(contig, refStart, negativeStrand, cigarStr, readSeq)
 				.getRecords() );
 		return records.get(0);
 	}

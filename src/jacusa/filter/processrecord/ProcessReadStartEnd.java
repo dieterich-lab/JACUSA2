@@ -7,7 +7,7 @@ import java.util.List;
 
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.util.position.AlignmentBlockBuilder;
+import lib.util.position.AlignmentBlockPositionProviderBuilder;
 import lib.recordextended.SAMRecordExtended;
 
 /**
@@ -30,20 +30,22 @@ public class ProcessReadStartEnd extends AbstractFilterRecordExtendedProcessor {
 
 		// read start
 		getPositionProcessor().process(
-				new AlignmentBlockBuilder(
+				new AlignmentBlockPositionProviderBuilder(
 						0, 
 						recordExtended, 
 						getTranslator())
 				.tryFirst(getDistance())
+				.adjustWindowPos()
 				.build());
 		
 		// read end
 		getPositionProcessor().process(
-				new AlignmentBlockBuilder(
+				new AlignmentBlockPositionProviderBuilder(
 						alignmentBlocks.size() - 1, 
 						recordExtended, 
 						getTranslator())
 				.tryLast(getDistance())
+				.adjustWindowPos()
 				.build());
 	}
 	

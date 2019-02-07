@@ -7,7 +7,7 @@ public class DefaultBaseCallValidator implements Validator {
 
 	@Override
 	public boolean isValid(Position pos) {
-		return SequenceUtil.isValidBase(pos.getReadBaseCall().getByte());
+		return SequenceUtil.isValidBase(pos.getReadBase());
 	}
 
 }

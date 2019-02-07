@@ -205,7 +205,7 @@ extends AbstractMethod {
 								totalBccAggregator, 
 								arrestBccFetcher, 
 								throughBccFetcher)),
-				new HomopolymerFilterFactory(filteredBooleanFetcher))
+				new HomopolymerFilterFactory(getParameter(), filteredBooleanFetcher))
 				.stream()
 				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()) );
 	}

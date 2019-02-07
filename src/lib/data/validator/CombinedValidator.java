@@ -14,8 +14,8 @@ public class CombinedValidator implements Validator {
 		
 		@Override
 		public boolean isValid(Position pos) {
-			for (final Validator validatos : validators) {
-				if (! validatos.isValid(null)) {
+			for (final Validator validator : validators) {
+				if (! validator.isValid(pos)) {
 					return false;
 				}
 			}

@@ -6,28 +6,28 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import lib.util.Copyable;
 
-public class CombinedPosition implements Copyable<CombinedPosition>{
+public class AlignedPosition implements Copyable<AlignedPosition>{
 	
 	private int readPos;
 	private int refPos;
 	private int matches;
 	
-	public CombinedPosition(final int refPos) {
+	public AlignedPosition(final int refPos) {
 		this(0, refPos, 0);
 	}
 	
-	public CombinedPosition(final SAMRecord record) {
+	public AlignedPosition(final SAMRecord record) {
 		this(record.getAlignmentBlocks().get(0));
 	}
 	
-	private CombinedPosition(final AlignmentBlock block) {
+	private AlignedPosition(final AlignmentBlock block) {
 		this(block.getReadStart() - 1, block.getReferenceStart(), 0);
 	}
 	
-	private CombinedPosition(final int readPos, final int refPos, final int matches) {
-		this.readPos = readPos;
-		this.refPos = refPos;
-		this.matches = matches;
+	private AlignedPosition(final int readPos, final int refPos, final int matches) {
+		this.readPos 	= readPos;
+		this.refPos 	= refPos;
+		this.matches 	= matches;
 	}
 
 	public void advance(final CigarElement e) {
@@ -43,7 +43,7 @@ public class CombinedPosition implements Copyable<CombinedPosition>{
 		}
 	}
 	
-	public CombinedPosition advance(final int offset) {
+	public AlignedPosition advance(final int offset) {
 		refPos 	+= offset;
 		matches += offset;
 		readPos += offset;
@@ -63,8 +63,8 @@ public class CombinedPosition implements Copyable<CombinedPosition>{
 	}
 	
 	@Override
-	public CombinedPosition copy() {
-		return new CombinedPosition(readPos, refPos, matches);
+	public AlignedPosition copy() {
+		return new AlignedPosition(readPos, refPos, matches);
 	}
 	
 }

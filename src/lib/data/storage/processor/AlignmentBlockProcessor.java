@@ -5,7 +5,7 @@ import lib.recordextended.SAMRecordExtended;
 import lib.data.storage.PositionProcessor;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.PositionProvider;
-import lib.util.position.ContinousAligmnentPositionProvider;
+import lib.util.position.AllAlignmentBlocksPositionProvider;
 
 public class AlignmentBlockProcessor implements RecordExtendedPrePostProcessor {
 
@@ -26,7 +26,7 @@ public class AlignmentBlockProcessor implements RecordExtendedPrePostProcessor {
 	
 	@Override
 	public void process(final SAMRecordExtended recordExtended) {
-		final PositionProvider positionProvider = new ContinousAligmnentPositionProvider(
+		final PositionProvider positionProvider = new AllAlignmentBlocksPositionProvider(
 						recordExtended, translator);
 		positionProcessor.process(positionProvider);
 	}

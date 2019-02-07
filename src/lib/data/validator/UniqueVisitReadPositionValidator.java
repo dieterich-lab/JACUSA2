@@ -14,7 +14,7 @@ implements Validator {
 	
 	@Override
 	public boolean isValid(Position pos) {
-		return !storage.isVisited(pos.getReadPosition());
+		return ! storage.isVisited(pos.getReadPosition());
 	}
 	
 }

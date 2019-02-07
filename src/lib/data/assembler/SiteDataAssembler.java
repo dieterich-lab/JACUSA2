@@ -42,8 +42,6 @@ implements DataAssembler {
 	@Override
 	public void buildCache(final Coordinate activeWindowCoordinate,
 			final Iterator<SAMRecordExtended> iterator) {
-		
-		clearStorage();
 
 		int records = 0;
 		
@@ -57,6 +55,7 @@ implements DataAssembler {
 					records++;
 				}
 				cacheContainer.postProcess();
+				clearStorage();
 			}
 		} catch (Exception e){
 			if (recordExtended != null) {
@@ -65,14 +64,14 @@ implements DataAssembler {
 			}
 			e.printStackTrace();
 		}
-
+		
 		cacheStatus = records > 0 ? CACHE_STATUS.CACHED : CACHE_STATUS.NOT_FOUND; 
 	}
 	
 	// Reset all caches in windows
 	@Override
 	public void clearStorage() {
-		cacheContainer.clear();
+		cacheContainer.clearStorage();
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
 	}
 
@@ -85,6 +84,11 @@ implements DataAssembler {
 					.build();
 		cacheContainer.populate(container, coordinate);
 		return container;
+	}
+
+	@Override
+	public AbstractBuilderFactory getBuilderFactory() {
+		return builderFactory;
 	}
 	
 	@Override

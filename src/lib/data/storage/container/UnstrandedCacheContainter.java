@@ -68,11 +68,9 @@ implements CacheContainer {
 		}
 	}
 	
-	public void clear() {
+	@Override
+	public void clearSharedCache() {
 		sharedStorage.clear();
-		for (final Storage cache : storages) {
-			cache.clear();
-		}
 	}
 
 	@Override

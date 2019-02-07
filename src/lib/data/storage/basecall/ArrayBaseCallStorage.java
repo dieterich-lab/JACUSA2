@@ -28,7 +28,11 @@ implements Storage {
 	public void increment(Position pos) {
 		final int winPos 	= pos.getWindowPosition();
 		final Base base 	= pos.getReadBaseCall(); 
-		baseCalls[winPos][base.getIndex()] += 1;
+		try {
+			baseCalls[winPos][base.getIndex()] += 1;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

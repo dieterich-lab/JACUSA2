@@ -7,11 +7,11 @@ import htsjdk.samtools.AlignmentBlock;
 import lib.recordextended.SAMRecordExtended;
 import lib.util.coordinate.CoordinateTranslator;
 
-public class ContinousAligmnentPositionProvider implements PositionProvider {
+public class AllAlignmentBlocksPositionProvider implements PositionProvider {
 
 	private final CombinedPositionProvider positionProvider;
 		
-	public ContinousAligmnentPositionProvider(
+	public AllAlignmentBlocksPositionProvider(
 			final SAMRecordExtended recordExtended, final CoordinateTranslator translator) {
 
 		final List<AlignmentBlock> blocks = recordExtended.getSAMRecord().getAlignmentBlocks();
@@ -19,9 +19,9 @@ public class ContinousAligmnentPositionProvider implements PositionProvider {
 		final List<PositionProvider> positionProviders = new ArrayList<PositionProvider>(blocksSize);
 		
 		for (int blockIndex = 0; blockIndex < blocksSize; ++blockIndex) {
-			// TODO check alignmentBlock refPos is outside of window
 			positionProviders.add(
-					new AlignmentBlockBuilder(blockIndex, recordExtended, translator)
+					new AlignmentBlockPositionProviderBuilder(blockIndex, recordExtended, translator)
+					.adjustWindowPos()
 					.build());
 		}
 		positionProvider = new CombinedPositionProvider(positionProviders);

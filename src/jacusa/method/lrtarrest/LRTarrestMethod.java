@@ -173,7 +173,7 @@ extends AbstractMethod {
 				new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN);
 
 		return Arrays.asList(
-				new HomopolymerFilterFactory(filteredBooleanFetcher),
+				new HomopolymerFilterFactory(getParameter(), filteredBooleanFetcher),
 				new ExcludeSiteFilterFactory(),
 				new RTarrestMaxAlleleCountFilterFactory(
 						new Apply2readsBaseCallCountSwitch(
