@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import lib.util.Base;
+import lib.util.Util;
 
 public class MapBaseCallCount extends AbstractBaseCallCount {
 
@@ -15,7 +16,7 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 	private final Map<Base, Integer> baseCalls;
 
 	public MapBaseCallCount() {
-		baseCalls = new HashMap<>(2);
+		baseCalls = new HashMap<>(4);
 	}
 	
 	public MapBaseCallCount(final Map<Base, Integer> baseCalls) {
@@ -164,7 +165,7 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 		@Override
 		public MapBaseCallCount parse(String s) {
 			final String[] cols = split(s);
-			final Map<Base, Integer> baseCalls = new HashMap<>(cols.length);
+			final Map<Base, Integer> baseCalls = new HashMap<>(Util.noRehashCapacity(cols.length));
 			for (int baseIndex = 0; baseIndex < cols.length; ++baseIndex) {
 				final Base base = Base.valueOf(baseIndex);
 				baseCalls.put(base, Integer.parseInt(cols[baseIndex]));

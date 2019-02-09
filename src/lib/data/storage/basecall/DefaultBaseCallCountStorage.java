@@ -3,7 +3,6 @@ package lib.data.storage.basecall;
 import java.util.Arrays;
 
 import lib.util.Base;
-import lib.util.position.Position;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
 import lib.data.storage.container.SharedStorage;
@@ -25,14 +24,12 @@ extends AbstractBaseCallCountStorage {
 		bcG = new int[getCoordinateController().getActiveWindowSize()];
 		bcT = new int[getCoordinateController().getActiveWindowSize()];
 	}
-	
+
 	@Override
-	public void increment(Position pos) {
-		final int winPos 	= pos.getWindowPosition();
-		final Base base 	= pos.getReadBaseCall();
+	void increment(int winPos, Base base) {
 		getBaseCallStorage(base)[winPos] += 1;
 	}
-
+	
 	private int[] getBaseCallStorage(final Base base) {
 		switch (base) {
 		

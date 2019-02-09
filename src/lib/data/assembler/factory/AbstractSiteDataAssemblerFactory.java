@@ -28,6 +28,7 @@ import lib.data.validator.CombinedValidator;
 import lib.data.validator.DefaultBaseCallValidator;
 import lib.data.validator.MinBASQValidator;
 import lib.data.validator.Validator;
+import lib.util.Util;
 
 public abstract class AbstractSiteDataAssemblerFactory
 extends AbstractDataAssemblerFactory {
@@ -75,7 +76,8 @@ extends AbstractDataAssemblerFactory {
 		final BaseCallInterpreter bci = 
 				BaseCallInterpreter.build(conditionParameter.getLibraryType());
 		
-		final Map<BaseSubstitution, Storage> baseSub2storage = new HashMap<>(baseSubs.size());
+		final Map<BaseSubstitution, Storage> baseSub2storage = new HashMap<>(
+				Util.noRehashCapacity(baseSubs.size()));
 		for (final BaseSubstitution baseSub : baseSubs) {
 			final Fetcher<BaseCallCount> bccFetcher = new BaseCallCountExtractor(
 					baseSub, 

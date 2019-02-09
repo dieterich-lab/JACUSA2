@@ -21,6 +21,7 @@ import lib.data.has.HasReferenceBase;
 import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 import lib.util.Base;
 import lib.util.LibraryType;
+import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 
 public interface DataContainer 
@@ -181,7 +182,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			this.libraryType = libraryType;
 			referenceBase = Base.N;
 			
-			map = new HashMap<DataType<?>, Object>(10);
+			map = new HashMap<DataType<?>, Object>(Util.noRehashCapacity(20));
 		}
 		
 		public AbstractBuilder withReferenceBase(final Base referenceBase) {

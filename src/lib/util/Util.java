@@ -13,6 +13,10 @@ public final class Util {
 	private Util() {
 		throw new AssertionError();
 	}
+
+	public static int noRehashCapacity(final int size) {
+		return (int)(Math.ceil(size / 0.75d)) + 1;
+	}
 	
 	/**
 	 * 

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import jacusa.JACUSA;
 import lib.util.Base;
-import lib.util.position.Position;
+import lib.util.Util;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
 import lib.data.storage.container.SharedStorage;
@@ -21,15 +21,12 @@ implements Storage {
 			final SharedStorage sharedStorage,final Fetcher<BaseCallCount> bccFetcher) {
 
 		super(sharedStorage, bccFetcher);
-		final int n = getCoordinateController().getActiveWindowSize();
+		final int n = Util.noRehashCapacity(getCoordinateController().getActiveWindowSize() / 2);
 		winPos2bcc 	= new HashMap<Integer, BaseCallCount>(n);
 	}
-	
+
 	@Override
-	public void increment(Position pos) {
-		final int winPos 	= pos.getWindowPosition();
-		final Base base 	= pos.getReadBaseCall();
-		
+	void increment(int winPos, Base base) {
 		if (! winPos2bcc.containsKey(winPos)) {
 			winPos2bcc.put(winPos, JACUSA.BCC_FACTORY.create());
 		}

@@ -9,6 +9,7 @@ import htsjdk.samtools.reference.ReferenceSequence;
 import lib.util.coordinate.CoordinateController;
 import lib.recordextended.SAMRecordExtended;
 import lib.util.Base;
+import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 
 public class FileReferenceProvider implements ReferenceProvider {
@@ -29,7 +30,7 @@ public class FileReferenceProvider implements ReferenceProvider {
 		this.indexedFastaSequenceFile 	= indexedFastaSequenceFile;
 		this.coordinateController 		= coordinateController;
 
-		referenceBaseBuffer = new HashMap<Integer, Byte>(READ_AHEAD);
+		referenceBaseBuffer = new HashMap<Integer, Byte>(Util.noRehashCapacity(READ_AHEAD));
 	}
 	
 	@Override
@@ -50,7 +51,7 @@ public class FileReferenceProvider implements ReferenceProvider {
 			reference 						= refSeq.getBases();
 			
 			if (referenceBaseBuffer.size() > 3 * READ_AHEAD) {
-				referenceBaseBuffer = new HashMap<Integer, Byte>(READ_AHEAD);
+				referenceBaseBuffer = new HashMap<Integer, Byte>(Util.noRehashCapacity(READ_AHEAD));
 			} else {
 				referenceBaseBuffer.clear();
 			}

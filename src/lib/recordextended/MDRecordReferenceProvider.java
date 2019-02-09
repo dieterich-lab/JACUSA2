@@ -14,6 +14,7 @@ import htsjdk.samtools.SAMException;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMTag;
 import lib.util.Base;
+import lib.util.Util;
 import lib.recordextended.SAMRecordExtended.CigarElementExtended;
 
 public class MDRecordReferenceProvider implements RecordReferenceProvider {
@@ -31,7 +32,7 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
 	public MDRecordReferenceProvider(final SAMRecordExtended recordExtended) {
 		final int n = 5;
 		mismatchPositions = new ArrayList<AlignedPosition>(n);
-		refPos2base = new HashMap<Integer, Byte>(n);
+		refPos2base = new HashMap<Integer, Byte>(Util.noRehashCapacity(n));
 
 		it = recordExtended.getCigarElementExtended().iterator();
 		current = it.next();

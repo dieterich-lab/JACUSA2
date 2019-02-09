@@ -6,7 +6,6 @@ import java.util.Map;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.Data;
 import lib.data.count.basecall.BaseCallCount;
-import lib.util.Base;
 
 public class BaseSubstitutionCount implements Data<BaseSubstitutionCount> {
 
@@ -15,7 +14,7 @@ public class BaseSubstitutionCount implements Data<BaseSubstitutionCount> {
 	private final Map<BaseSubstitution, BaseCallCount> count;
 	
 	public BaseSubstitutionCount() {
-		count = new HashMap<>(2);
+		count = new HashMap<>();
 	}
 	
 	public BaseSubstitutionCount(final BaseSubstitutionCount bsc) {

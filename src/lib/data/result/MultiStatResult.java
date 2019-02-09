@@ -8,6 +8,7 @@ import java.util.TreeSet;
 
 import lib.data.ParallelData;
 import lib.util.Info;
+import lib.util.Util;
 
 public class MultiStatResult 
 implements Result {
@@ -26,7 +27,7 @@ implements Result {
 		this.stat = stat;
 		this.parallelData = parallelData;
 		
-		final int n = stat.size();
+		final int n = Util.noRehashCapacity(stat.size());
 		markedFiltered = false;
 		filterInfo = new HashMap<>(n);
 		resultInfo = new HashMap<>(n);

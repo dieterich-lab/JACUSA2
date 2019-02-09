@@ -98,7 +98,9 @@ implements Iterator<ParallelData> {
 	
 	@Override
 	public boolean hasNext() {
-		while (coordinateController.checkCoordinateAdvancerWithinActiveWindow()) {
+		while (coordinateController.checkCoordinateAdvancerWithinActiveWindow() || 
+				coordinateController.hasNext()) {
+			
 			final Coordinate coordinate = coordinateController.getCoordinateAdvancer()
 					.getCurrentCoordinate().copy();
 			
@@ -110,13 +112,12 @@ implements Iterator<ParallelData> {
 				return true;
 			}
 			coordinateController.advance();
+			
+			if (coordinateController.hasNext()) {
+				final Coordinate activeWindowCoordinate = coordinateController.next();
+				conditionContainer.updateActiveWindowCoordinates(activeWindowCoordinate);
+			}
 		}
-		
-		if (coordinateController.hasNext()) {
-			final Coordinate activeWindowCoordinate = coordinateController.next();
-			conditionContainer.updateActiveWindowCoordinates(activeWindowCoordinate);
-			return hasNext();
-		} 
 
 		return false;
 	}
@@ -127,9 +128,6 @@ implements Iterator<ParallelData> {
 	
 	@Override
 	public ParallelData next() {
-		if (! hasNext()) {
-			return null;
-		}
 		coordinateController.advance();
 		return parallelData;
 	}
@@ -190,8 +188,9 @@ implements Iterator<ParallelData> {
 	protected void processReady() {
 		status = STATUS.BUSY;
 		copyTmpResult.newIteration();
-		ParallelData parallelData;
-		while ((parallelData = next()) != null) {
+		
+		while (hasNext()) {
+			final ParallelData parallelData = next();
 			doWork(parallelData);	
 		}
 		status = STATUS.INIT;

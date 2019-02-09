@@ -29,6 +29,7 @@ import lib.data.validator.MinBASQValidator;
 import lib.data.validator.Validator;
 import lib.data.validator.WindowPositionValidator;
 import lib.util.LibraryType;
+import lib.util.Util;
 
 public class RTarrestDataAssemblerFactory 
 extends AbstractSiteDataAssemblerFactory {
@@ -116,7 +117,8 @@ extends AbstractSiteDataAssemblerFactory {
 			final List<Validator> validators) {
 				
 		final Cache cache = new Cache();
-		final Map<BaseSubstitution, Storage> basSub2storage = new HashMap<>(baseSubs.size());
+		final Map<BaseSubstitution, Storage> basSub2storage = new HashMap<>(
+				Util.noRehashCapacity(baseSubs.size()));
 		for (final BaseSubstitution baseSub : baseSubs) {
 			
 			final AbstractBaseCallCountStorage arrestBccStorage = new DefaultBaseCallCountStorage(

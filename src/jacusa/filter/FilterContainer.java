@@ -10,6 +10,7 @@ import jacusa.filter.factory.FilterFactory;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.storage.Cache;
 import lib.data.storage.container.SharedStorage;
+import lib.util.Util;
 
 /**
  * This class holds the instance of filters.
@@ -30,8 +31,8 @@ public class FilterContainer {
 	public FilterContainer(final FilterConfig filterConfig) {
 		this.filterConfig 	= filterConfig;
 		overhang 			= 0;
-		filters				= 
-				new HashMap<Character, Filter>(filterConfig.getFilterFactories().size());
+		filters				= new HashMap<Character, Filter>(
+				Util.noRehashCapacity(filterConfig.getFilterFactories().size()));
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package jacusa.filter;
 
+import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.fetcher.Fetcher;
 import lib.data.filter.BooleanWrapper;
@@ -28,7 +29,9 @@ public class HomopolymerFilter extends AbstractFilter {
 	 */
 	@Override
 	public boolean filter(final ParallelData parallelData) {
-		return fetcher.fetch(parallelData.getCombinedPooledData()).getValue();
+		final DataContainer dataContainer 	= parallelData.getCombinedPooledData();
+		final BooleanWrapper bw 			= fetcher.fetch(dataContainer);
+		return bw != null && bw.getValue();
 	}
 	
 }

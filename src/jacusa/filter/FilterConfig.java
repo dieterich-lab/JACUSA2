@@ -22,7 +22,7 @@ public class FilterConfig implements Cloneable {
 	private final Map<Character, FilterFactory> c2factory;
 	
 	public FilterConfig() {
-		c2factory = new HashMap<Character, FilterFactory>(6);
+		c2factory = new HashMap<Character, FilterFactory>();
 	}
 
 	/**

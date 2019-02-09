@@ -1,9 +1,6 @@
 package lib.data.storage.lrtarrest;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import lib.data.DataContainer;
@@ -12,6 +9,7 @@ import lib.data.storage.container.SharedStorage;
 import lib.data.stroage.AbstractStorage;
 import lib.data.stroage.WindowCoverage;
 import lib.util.Base;
+import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 import lib.util.position.Position;
 
@@ -23,7 +21,7 @@ implements WindowCoverage {
 	
 	private final Fetcher<ArrestPosition2baseCallCount> ap2bccExtractor;
 	
-	private final List<ArrestPosition2baseCallCount> winPos2ap2bcc;
+	private final ArrestPosition2baseCallCount[] winPos2ap2bcc;
 	private final Map<Integer, ArrestPosition2baseCallCount> refPos2ap2bcc;
 	
 	private final int winSize;
@@ -38,8 +36,8 @@ implements WindowCoverage {
 		this.ap2bccExtractor 	= arrestPos2BaseCallCountExtractor;
 		
 		winSize 		= sharedStorage.getCoordinateController().getActiveWindowSize();
-		winPos2ap2bcc 	= new ArrayList<>(Collections.nCopies(winSize, null));
-		refPos2ap2bcc 	= new HashMap<>(50);
+		winPos2ap2bcc 	= new ArrestPosition2baseCallCount[winSize];
+		refPos2ap2bcc 	= new HashMap<>(Util.noRehashCapacity(200));
 	}
 	
 	@Override
@@ -47,8 +45,8 @@ implements WindowCoverage {
 		final int refPos = coordinate.get1Position();
 		
 		final ArrestPosition2baseCallCount ap2bcc = ap2bccExtractor.fetch(container);
-		if (winPos2ap2bcc.get(winPos) != null) {
-			ap2bcc.merge(winPos2ap2bcc.get(winPos));
+		if (winPos2ap2bcc[winPos] != null) {
+			ap2bcc.merge(winPos2ap2bcc[winPos]);
 		}
 		if (refPos2ap2bcc.containsKey(refPos)) {
 			ap2bcc.merge(refPos2ap2bcc.get(refPos));
@@ -70,10 +68,10 @@ implements WindowCoverage {
 			final Base base) {
 
 		if (winPos >= 0) {
-			if (winPos2ap2bcc.get(winPos) == null) {
-				winPos2ap2bcc.set(winPos, new ArrestPosition2baseCallCount());
+			if (winPos2ap2bcc[winPos] == null) {
+				winPos2ap2bcc[winPos] = new ArrestPosition2baseCallCount();
 			}
-			winPos2ap2bcc.get(winPos).addBaseCall(arrestPosition, base);
+			winPos2ap2bcc[winPos].addBaseCall(arrestPosition, base);
 		} else {
 			if (! refPos2ap2bcc.containsKey(refPos)) {
 				refPos2ap2bcc.put(refPos, new ArrestPosition2baseCallCount());
@@ -84,7 +82,7 @@ implements WindowCoverage {
 	
 	@Override
 	public int getCoverage(int winPos) {
-		return winPos2ap2bcc.get(winPos).getTotalBaseCallCount().getCoverage();
+		return winPos2ap2bcc[winPos].getTotalBaseCallCount().getCoverage();
 	}
 	
 	@Override
@@ -94,7 +92,9 @@ implements WindowCoverage {
 				ap2bcc.clear();
 			}
 		}
-		refPos2ap2bcc.clear();
+		if (refPos2ap2bcc.size() > 0) {
+			refPos2ap2bcc.clear();
+		}
 	}
 	
 }

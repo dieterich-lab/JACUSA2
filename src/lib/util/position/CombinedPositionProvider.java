@@ -11,23 +11,19 @@ public class CombinedPositionProvider implements PositionProvider {
 	
 	public CombinedPositionProvider(final List<PositionProvider> positionProviders) {
 		it = positionProviders.iterator();
-		
-		if (it.hasNext()) {
-			positionProvider = it.next();
-		}
 	}
 	
 	@Override
 	public boolean hasNext() {
-		if (positionProvider != null && positionProvider.hasNext()) {
-			return true;
-		} else if (it.hasNext()) {
-			positionProvider = it.next();
-			return hasNext();
-		} else {
-			positionProvider = null;
+		while (positionProvider == null || ! positionProvider.hasNext()) {
+			if (it.hasNext()) {
+				positionProvider = it.next();
+			} else {
+				return false;
+			}
 		}
-		return false;
+		
+		return true;
 	}
 
 	@Override

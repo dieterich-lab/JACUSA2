@@ -1,6 +1,7 @@
 package lib.data.storage.readsubstitution;
 
 import lib.util.Base;
+import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AllAlignmentBlocksPositionProvider;
@@ -50,8 +51,8 @@ implements RecordExtendedPrePostProcessor {
 		this.validator 			= validator;
 		this.baseSub2storage 	= baseSub2storage;
 
-		internalRecordExtended 	= new HashMap<>(100);
-		externalRecordExtended 	= new HashSet<>(100);
+		internalRecordExtended 	= new HashMap<>(Util.noRehashCapacity(100));
+		externalRecordExtended 	= new HashSet<>(Util.noRehashCapacity(100));
 		
 		queryBaseSubs 			= baseSub2storage.keySet();
 	}

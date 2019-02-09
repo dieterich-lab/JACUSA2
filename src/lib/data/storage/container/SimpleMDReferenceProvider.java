@@ -20,6 +20,7 @@ import lib.util.position.AllAlignmentBlocksPositionProvider;
 import lib.util.position.Position;
 import lib.recordextended.SAMRecordExtended;
 import lib.util.Base;
+import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 
 public class SimpleMDReferenceProvider implements ReferenceProvider {
@@ -46,7 +47,7 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 
 		samReaders = createSamReaders(recordFilenames);
 
-		referenceBaseBuffer = new HashMap<Integer, Byte>(READ_AHEAD);
+		referenceBaseBuffer = new HashMap<Integer, Byte>(Util.noRehashCapacity(READ_AHEAD));
 	}
 
 	private CoordinateTranslator getTranslator() {
@@ -94,7 +95,7 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 			Arrays.fill(reference, (byte)'N');
 
 			if (referenceBaseBuffer.size() > 3 * READ_AHEAD) {
-				referenceBaseBuffer = new HashMap<Integer, Byte>(READ_AHEAD);
+				referenceBaseBuffer = new HashMap<Integer, Byte>(Util.noRehashCapacity(READ_AHEAD));
 			} else {
 				referenceBaseBuffer.clear();
 			}

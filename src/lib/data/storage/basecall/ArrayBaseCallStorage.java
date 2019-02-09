@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import htsjdk.samtools.util.SequenceUtil;
 import lib.util.Base;
-import lib.util.position.Position;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
 import lib.data.storage.container.SharedStorage;
@@ -25,16 +24,10 @@ implements Storage {
 	}
 
 	@Override
-	public void increment(Position pos) {
-		final int winPos 	= pos.getWindowPosition();
-		final Base base 	= pos.getReadBaseCall(); 
-		try {
-			baseCalls[winPos][base.getIndex()] += 1;
-		} catch (ArrayIndexOutOfBoundsException e) {
-			e.printStackTrace();
-		}
+	void increment(int winPos, Base base) {
+		baseCalls[winPos][base.getIndex()] += 1;
 	}
-
+	
 	@Override
 	public void clear() {
 		for (int[] baseCall : baseCalls) {

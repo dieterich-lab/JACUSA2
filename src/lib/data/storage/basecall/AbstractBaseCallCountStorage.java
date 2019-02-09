@@ -9,11 +9,14 @@ import lib.data.stroage.WindowCoverage;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
+import lib.util.position.Position;
 
 public abstract class AbstractBaseCallCountStorage
 extends AbstractStorage 
 implements WindowCoverage {
 
+	private final int[] coverage;
+	
 	private final Fetcher<BaseCallCount> bccFetcher;
 	
 	public AbstractBaseCallCountStorage(
@@ -22,6 +25,7 @@ implements WindowCoverage {
 		
 		super(sharedStorage);
 		this.bccFetcher = bccFetcher;
+		coverage 		= new int[sharedStorage.getCoordinateController().getActiveWindowSize()]; 
 	}
 
 	@Override
@@ -73,17 +77,26 @@ implements WindowCoverage {
 	public int hashCode() {
 		return getCoordinateController().getActive().hashCode();
 	}
+
+	@Override
+	final public void increment(Position position) {
+		final int winPos = position.getWindowPosition();
+		++coverage[winPos];
+		increment(winPos, position.getReadBaseCall());
+	}
+	
+	abstract void increment(int winPos, Base base);
 	
 	public abstract int getCount(final int winPos, final Base base);
 
 	@Override
 	public int getCoverage(int winPos) {
-		int cov = 0;
-		for (final Base base : Base.validValues()) {
-			final int count = getCount(winPos, base);
-			cov += count;
-		}
-		return cov;
+		return coverage[winPos];
 	}
+	
+	protected void clearCoverage(int winPos) {
+		coverage[winPos] = 0;
+	}
+		
 	
 }

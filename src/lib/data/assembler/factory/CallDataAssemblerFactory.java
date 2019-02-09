@@ -11,7 +11,7 @@ import lib.data.count.PileupCount;
 import lib.data.fetcher.Fetcher;
 import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
-import lib.data.storage.basecall.MapBaseCallQualityStorage;
+import lib.data.storage.basecall.ArrayBaseCallQualityStorage;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.AlignmentBlockProcessor;
 import lib.data.validator.DefaultBaseCallValidator;
@@ -37,7 +37,8 @@ extends AbstractSiteDataAssemblerFactory {
 
 		final Cache cache = new Cache();
 		
-		final MapBaseCallQualityStorage bcqcStorage = new MapBaseCallQualityStorage(sharedStorage, pcFetcher);
+		final ArrayBaseCallQualityStorage bcqcStorage = new ArrayBaseCallQualityStorage(
+				sharedStorage, pcFetcher);
 		cache.addStorage(bcqcStorage);
 		
 		final List<Validator> validators = new ArrayList<Validator>();

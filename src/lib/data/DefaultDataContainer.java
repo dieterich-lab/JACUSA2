@@ -14,6 +14,7 @@ import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 import lib.util.Base;
 import lib.util.LibraryType;
+import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil;
 
@@ -38,7 +39,7 @@ public class DefaultDataContainer implements DataContainer {
 		coordinate 		= template.getCoordinate().copy();
 		libraryType 	= template.getLibraryType();
 		referenceBase 	= template.getReferenceBase();
-		map 			= new HashMap<>(template.getDataTypes().size());
+		map 			= new HashMap<>(Util.noRehashCapacity(template.getDataTypes().size()));
 		for (final DataType<?> dataType : template.getDataTypes()) {
 			map.put(dataType, template.get(dataType).copy());
 		}

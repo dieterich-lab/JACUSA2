@@ -7,13 +7,14 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import lib.util.Base;
+import lib.util.Util;
 
 public class MapBaseCallQualityCount implements BaseCallQualityCount {
 
 	private final Map<Base, Map<Byte, Integer>> baseCallQuals;
 	
 	public MapBaseCallQualityCount() {
-		baseCallQuals = new HashMap<>(2);
+		baseCallQuals = new HashMap<>(4);
 	}
 	
 	public MapBaseCallQualityCount(final Map<Base, Map<Byte, Integer>> baseCallQuals) {
@@ -29,7 +30,7 @@ public class MapBaseCallQualityCount implements BaseCallQualityCount {
 	
 	@Override
 	public BaseCallQualityCount copy() {
-		final Map<Base, Map<Byte, Integer>> tmp = new HashMap<>(baseCallQuals.size());
+		final Map<Base, Map<Byte, Integer>> tmp = new HashMap<>(Util.noRehashCapacity(baseCallQuals.size()));
 		for (final Base base : baseCallQuals.keySet()) {
 			if (baseCallQuals.containsKey(base) && baseCallQuals.get(base) != null) {
 				tmp.put(base, new HashMap<>(baseCallQuals.get(base)));
@@ -69,7 +70,7 @@ public class MapBaseCallQualityCount implements BaseCallQualityCount {
 	@Override
 	public MapBaseCallQualityCount set(final Base base, final byte baseQual, final int count) {
 		if (! baseCallQuals.containsKey(base)) {
-			baseCallQuals.put(base, new HashMap<Byte, Integer>(5));
+			baseCallQuals.put(base, new HashMap<Byte, Integer>(8));
 		}
 		final Map<Byte, Integer> qual2count = baseCallQuals.get(base);
 		qual2count.put(baseQual, count);

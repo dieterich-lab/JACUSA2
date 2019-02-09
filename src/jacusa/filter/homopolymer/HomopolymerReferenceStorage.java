@@ -24,8 +24,8 @@ public class HomopolymerReferenceStorage extends AbstractStorage {
 	private static final Map<Coordinate, Integer> COORD2COUNT;
 	
 	static {
-		COORD2HOMOPOLYMER_STORAGE 	= new HashMap<>();
-		COORD2COUNT					= new HashMap<>(); 
+		COORD2HOMOPOLYMER_STORAGE 	= new HashMap<>(30);
+		COORD2COUNT					= new HashMap<>(30); 
 	}
 	
 	private final char c;

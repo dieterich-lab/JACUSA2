@@ -328,7 +328,7 @@ extends AbstractMethod {
 				
 			default:
 				throw new IllegalStateException(
-						"Only 1 and 2 conditions supported; getConditions: " + getConditions());
+						"Arguments could not be parsed check call!");
 			}
 		}
 		

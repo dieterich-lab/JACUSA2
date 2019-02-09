@@ -7,6 +7,7 @@ import java.util.List;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.CollectionPositionProvider;
 import lib.util.position.CombinedPositionProvider;
+import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 import lib.recordextended.SAMRecordExtended;
 
@@ -15,8 +16,12 @@ implements LocationInterpreter {
 	
 	@Override
 	public PositionProvider getArrestPositionProvider(SAMRecordExtended recordExtended, CoordinateTranslator translator) {
-		return new CollectionPositionProvider(
-				Arrays.asList(getFirstAlignmentPosition(recordExtended, translator)));
+		final Position pos = getFirstAlignmentPosition(recordExtended, translator);
+		if (pos == null) {
+			return new CollectionPositionProvider(new ArrayList<>(0));
+		}
+		
+		return new CollectionPositionProvider(Arrays.asList(pos));
 	}
 	
 	@Override

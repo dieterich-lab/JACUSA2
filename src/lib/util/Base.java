@@ -20,7 +20,8 @@ public enum Base {
 	private static final Map<Base, Set<Base>> REF2NON_REF;
 	
 	static {
-		final Map<Base, Set<Base>> REF2NON_REF_TMP = new HashMap<Base, Set<Base>>(validValues().length + 1);
+		final Map<Base, Set<Base>> REF2NON_REF_TMP = new HashMap<Base, Set<Base>>(
+				Util.noRehashCapacity(validValues().length + 1));
 		for (final Base base : validValues()) {
 			final Set<Base> nonRefBases = new HashSet<Base>(VALID.length);
 			for (final Base tmp : validValues()) {
