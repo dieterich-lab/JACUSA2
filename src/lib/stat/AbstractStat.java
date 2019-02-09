@@ -9,16 +9,6 @@ import lib.data.result.Result;
  */
 public abstract class AbstractStat {
 
-	private final AbstractStatFactory factory;
-
-	public AbstractStat(final AbstractStatFactory factory) {
-		this.factory = factory;
-	}
-
-	protected final AbstractStatFactory getFactory() {
-		return factory;
-	}
-
 	protected abstract boolean filter(Result statResult);
 	public abstract Result calculate(ParallelData parallelData);
 	protected abstract void addStatResultInfo(Result statResult);

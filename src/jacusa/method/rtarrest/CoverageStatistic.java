@@ -15,10 +15,6 @@ import lib.stat.AbstractStat;
 public class CoverageStatistic 
 extends AbstractStat {
 
-	public CoverageStatistic(final CoverageStatisticFactory factory) {
-		super(factory);
-	}
-
 	@Override
 	protected boolean filter(final Result statResult) {
 		return false;

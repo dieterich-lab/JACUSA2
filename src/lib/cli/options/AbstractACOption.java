@@ -26,10 +26,6 @@ public abstract class AbstractACOption {
 		hide = true;
 	}
 	
-	protected void show() {
-		hide = true;
-	}
-	
 	public String getOpt() {
 		return opt;
 	}

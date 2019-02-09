@@ -59,6 +59,7 @@ public final class CoordinateUtil {
 		return position - coordinate.getStart();
 	}
 	
+	/* TODO remove
 	public static STRAND invertStrand(final STRAND strand) {
 		switch (strand) {
 		case FORWARD:
@@ -73,6 +74,7 @@ public final class CoordinateUtil {
 
 		return STRAND.UNKNOWN;
 	}
+	*/
 	
 	public enum STRAND implements Serializable {
 		FORWARD(STRAND_FORWARD_CHAR),REVERSE(STRAND_REVERSE_CHAR),UNKNOWN(STRAND_UNKNOWN_CHAR);

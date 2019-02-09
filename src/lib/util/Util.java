@@ -2,7 +2,6 @@ package lib.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 
 import htsjdk.samtools.SAMSequenceDictionary;
 import htsjdk.samtools.SamReader;
@@ -47,6 +46,7 @@ public final class Util {
 		return sb.toString();
 	}
 	
+	/*
 	public static String printAlpha2(double a[]) {
 		DecimalFormat df = new DecimalFormat("0.0000"); 
 		StringBuilder sb = new StringBuilder();
@@ -74,5 +74,6 @@ public final class Util {
 
 		return sb.toString();
 	}
+	*/
 
 }

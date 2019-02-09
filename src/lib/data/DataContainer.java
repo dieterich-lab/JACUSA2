@@ -1,13 +1,10 @@
 package lib.data;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import htsjdk.samtools.util.StringUtil;
 import jacusa.JACUSA;
 import jacusa.filter.factory.FilterFactory;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
@@ -24,9 +21,7 @@ import lib.data.has.HasReferenceBase;
 import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 import lib.util.Base;
 import lib.util.LibraryType;
-import lib.util.Parser;
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.OneCoordinate;
 
 public interface DataContainer 
 extends HasCoordinate, HasLibraryType, HasReferenceBase, 
@@ -55,6 +50,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	<T extends Data<T>> boolean contains(DataType<T> dataType);
 	Collection<DataType<?>> getDataTypes();
 	
+	/* TODO remove
 	static LibraryType mergeLibraryType(final LibraryType lib1, final LibraryType lib2) {
 		return lib1 == lib2 ? lib1 : LibraryType.MIXED;  
 	}
@@ -66,6 +62,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 
 		return coord1;
 	}
+	*/
 
 	/*
 	 * Factory, Builder, and Parser
@@ -77,6 +74,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 
 	}
 	
+	/*
 	public static class GenericBuilderFactory implements BuilderFactory {
 		
 		private final Collection<DataType<?>> dataTypes;
@@ -95,6 +93,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		}
 		
 	}
+	*/
 	
 	public static abstract class AbstractBuilderFactory implements BuilderFactory {
 		
@@ -144,10 +143,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		
 		public DefaultBuilderFactory() {
 			super(null);
-		}
-		
-		public DefaultBuilderFactory(final GeneralParameter parameter) {
-			super(parameter);
 		}
 	
 		@Override
@@ -220,14 +215,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			map.put(dataType, dataType.getEnclosingClass().cast(data));
 			return this;
 		}
-		
-		public <T extends Data<T>> AbstractBuilder with(
-				final String s, final Parser<T> parser, 
-				final DataType<T> dataType) {
-			
-			final T data = parser.parse(s);
-			return with(dataType, data);
-		}
 
 		protected Coordinate getCoordinate() {
 			return coordinate;
@@ -247,6 +234,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		
 	}
 
+	/*
 	public static abstract class AbstractParser 
 	implements lib.util.Parser<DataContainer> {
 
@@ -321,5 +309,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		}
 		
 	}
+	*/
 	
 }

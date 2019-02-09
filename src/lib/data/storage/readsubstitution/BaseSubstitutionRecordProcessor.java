@@ -31,7 +31,7 @@ implements RecordExtendedPrePostProcessor {
 	private final BaseCallInterpreter bci;
 	private final Validator validator;
 	
-	private final Map<BaseSubstitution, Storage> baseSub2cache;
+	private final Map<BaseSubstitution, Storage> baseSub2storage;
 	
 	private final Map<String, SAMRecordExtended> internalRecordExtended;
 	private final Set<SAMRecordExtended> externalRecordExtended;
@@ -48,7 +48,7 @@ implements RecordExtendedPrePostProcessor {
 		
 		this.bci 				= bci;
 		this.validator 			= validator;
-		this.baseSub2cache 		= baseSub2storage;
+		this.baseSub2storage 	= baseSub2storage;
 
 		internalRecordExtended 	= new HashMap<>(100);
 		externalRecordExtended 	= new HashSet<>(100);
@@ -86,7 +86,7 @@ implements RecordExtendedPrePostProcessor {
 			final Position pos = positionProvider.next();
 			if (validator.isValid(pos)) {
 				for (final BaseSubstitution observedBaseSub : observedBaseSubs) {
-						baseSub2cache.get(observedBaseSub).increment(pos);
+					baseSub2storage.get(observedBaseSub).increment(pos);
 				}
 			}
 		}
@@ -167,7 +167,7 @@ implements RecordExtendedPrePostProcessor {
 	
 	@Override
 	public void postProcess() {
-		processExternalPE(baseSub2cache.keySet());
+		processExternalPE(baseSub2storage.keySet());
 		internalRecordExtended.clear();
 		externalRecordExtended.clear();
 	}
@@ -179,6 +179,7 @@ implements RecordExtendedPrePostProcessor {
 		final Set<BaseSubstitution> foundBaseSubs 	= new HashSet<>(queryBaseSubs.size());
 		final SAMRecord record 						= recordExtended.getSAMRecord();
 
+		
 		final int nm = record.getIntegerAttribute(SAMTag.NM.name());
 		if (nm == 0) {
 			return foundBaseSubs;

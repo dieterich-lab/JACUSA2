@@ -36,10 +36,9 @@ extends CallMethod {
 	protected OneConditionCallMethod(
 			final String name, 
 			final CallParameter parameter, 
-			final CallDataAssemblerFactory dataAssemblerFactory,
-			final CallBuilderFactory builderFactory) {
+			final CallDataAssemblerFactory dataAssemblerFactory) {
 		
-		super(name, parameter, dataAssemblerFactory, builderFactory);
+		super(name, parameter, dataAssemblerFactory);
 	}
 
 	@Override

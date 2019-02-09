@@ -46,9 +46,11 @@ public class PileupCount implements Data<PileupCount> {
 		return baseCallQualCount;
 	}
 
+	/*
 	public void add(final Base base, final byte baseQual) {
 		baseCallQualCount.increment(base, baseQual);
 	}
+	*/
 		
 	public void merge(final PileupCount pileupCount) {
 		for (final Base base : pileupCount.getBaseCallCount().getAlleles()) {
@@ -78,10 +80,6 @@ public class PileupCount implements Data<PileupCount> {
 		}
 	}
 
-	public void invert() {
-		baseCallQualCount.invert();
-	}
-
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(baseCallQualCount.toString());
@@ -109,6 +107,7 @@ public class PileupCount implements Data<PileupCount> {
 		return hash;
 	}
 	
+	/*
 	public static class Parser implements lib.util.Parser<PileupCount> {
 
 		private final BaseCallQualityCount.AbstractParser bcqcParser;
@@ -138,5 +137,6 @@ public class PileupCount implements Data<PileupCount> {
 		}
 
 	}
+	*/
 	
 }

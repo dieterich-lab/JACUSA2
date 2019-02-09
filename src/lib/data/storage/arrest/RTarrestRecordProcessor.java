@@ -9,7 +9,7 @@ import lib.util.coordinate.CoordinateTranslator;
 public class RTarrestRecordProcessor 
 implements RecordExtendedPrePostProcessor {
 
-	private final SharedStorage shareStorage;
+	private final SharedStorage sharedStorage;
 	
 	private final LocationInterpreter locInterpreter;
 	
@@ -22,7 +22,7 @@ implements RecordExtendedPrePostProcessor {
 			final PositionProcessor arrestPositionProcessor,
 			final PositionProcessor throughPositionProcessor) {
 		
-		this.shareStorage				= sharedStorage;
+		this.sharedStorage				= sharedStorage;
 		
 		locInterpreter 					= locactionInterpreter;
 		
@@ -31,7 +31,7 @@ implements RecordExtendedPrePostProcessor {
 	}
 
 	private CoordinateTranslator getTranslator() {
-		return shareStorage.getCoordinateController().getCoordinateTranslator();
+		return sharedStorage.getCoordinateController().getCoordinateTranslator();
 	}
 	
 	@Override

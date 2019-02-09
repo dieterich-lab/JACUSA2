@@ -7,8 +7,6 @@ import htsjdk.samtools.SAMRecord;
 public class StrandedBaseCallInterpreter
 implements BaseCallInterpreter {
 
-	protected StrandedBaseCallInterpreter() {}
-	
 	@Override
 	public Base getReadBase(SAMRecordExtended recordExtended, int readPos) {
 		final SAMRecord record = recordExtended.getSAMRecord();

@@ -44,16 +44,6 @@ public class MatchPosition extends AbstractPosition {
 	}
 	
 	public static class Builder extends AbstractBuilder<MatchPosition> {
-
-		public Builder(
-				final SAMRecordExtended recordExtended, 
-				final CoordinateTranslator translator) {
-			
-			this(
-					recordExtended.getSAMRecord().getAlignmentBlocks().size() > 0 ? 1 : -1,
-					recordExtended, 
-					translator);
-		}
 		
 		public Builder(
 				final int alignmentBlockIndex, final SAMRecordExtended recordExtended, 

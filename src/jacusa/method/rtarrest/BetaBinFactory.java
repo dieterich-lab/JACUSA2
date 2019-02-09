@@ -36,8 +36,7 @@ extends AbstractStatFactory {
 
 	@Override
 	public BetaBin newInstance(final int conditions) {
-		return new BetaBin(this);
+		return new BetaBin();
 	}
-	
 	
 }

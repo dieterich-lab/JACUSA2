@@ -1,8 +1,5 @@
 package lib.util.coordinate;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.Map.Entry;
-
 import lib.cli.parameter.ConditionParameter;
 import lib.util.ConditionContainer;
 import lib.util.LibraryType;
@@ -76,6 +73,12 @@ public class CoordinateController {
 		return active;
 	}
 
+	// don't use only for JUNIT TODO remove
+	public void _setActive(final Coordinate active) {
+		this.active = active;
+		updateCoordinateAdvancer(active);
+	}
+	
 	public Coordinate getActive() {
 		return active;
 	}
@@ -128,22 +131,9 @@ public class CoordinateController {
 	public boolean checkCoordinateAdvancerWithinActiveWindow() {
 		return checkCoordinateWithinActiveWindow(coordinateAdvancer.getCurrentCoordinate());
 	}
-	
-	public boolean chechReferencePositionWithinActiveWindow(final int refPos) {
-		return CoordinateUtil.makeRelativePosition(active, refPos) >= 0;
-	}
-	
-	public boolean chechWindowPositionWithinActiveWindow(final int winPos) {
-		return CoordinateUtil.makeRelativePosition(active, active.getStart() + winPos) >= 0;
-	}
 
 	public CoordinateTranslator getCoordinateTranslator() {
 		return coordinateTranslator;
-	}
-	
-	public Entry<Integer, STRAND> getStrandedWindowPosition(final Coordinate coordinate) {
-		final int winPos = coordinateTranslator.coordinate2windowPosition(coordinate);
-		return new SimpleEntry<Integer, STRAND>(winPos, coordinate.getStrand());
 	}
 
 	public WindowPositionGuard convert(int refPos, int length) {
@@ -190,10 +180,6 @@ public class CoordinateController {
 		private int length;
 
 		private int winPos;
-
-		protected WindowPositionGuard(final int refPos, final int winPos, final int length) {
-			this(refPos, winPos, -1, length);
-		}
 		
 		protected WindowPositionGuard(final int refPos, final int winPos, final int readPos, 
 				final int length) {
@@ -202,10 +188,6 @@ public class CoordinateController {
 			this.readPos 	= readPos;
 			this.length 	= length;
 			this.winPos 	= winPos;
-		}
-
-		public WindowPositionGuard transform(final int offset, final int length) {
-			return convert(refPos + offset, readPos + offset, length);
 		}
 		
 		public int getReferencePosition() {

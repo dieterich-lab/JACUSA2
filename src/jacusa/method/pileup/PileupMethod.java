@@ -259,10 +259,6 @@ extends AbstractMethod {
 					builderFactory);
 		}
 		
-		protected PileupParameter createParameter(final int conditions) {
-			return new PileupParameter(conditions);
-		}
-		
 		@Override
 		public Factory createFactory(int conditions) {
 			return new Factory(conditions);

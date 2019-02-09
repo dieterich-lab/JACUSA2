@@ -35,8 +35,11 @@ extends AbstractSiteDataAssemblerFactory {
 			final SharedStorage sharedStorage, 
 			final ConditionParameter conditionParameter) {
 
+		final Cache cache = new Cache();
+		
 		final MapBaseCallQualityStorage bcqcStorage = new MapBaseCallQualityStorage(sharedStorage, pcFetcher);
-
+		cache.addStorage(bcqcStorage);
+		
 		final List<Validator> validators = new ArrayList<Validator>();
 		validators.add(new DefaultBaseCallValidator());
 		if (conditionParameter.getMinBASQ() > 0) {
@@ -47,8 +50,6 @@ extends AbstractSiteDataAssemblerFactory {
 		}
 
 		final PositionProcessor positionProcessor = new PositionProcessor(validators, bcqcStorage);
-		
-		final Cache cache = new Cache();
 		cache.addRecordProcessor(new AlignmentBlockProcessor(
 				sharedStorage.getCoordinateController().getCoordinateTranslator(), 
 				positionProcessor));

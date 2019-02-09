@@ -38,8 +38,12 @@ public class ConditionContainer {
 		return replicateContainers.get(conditionIndex);
 	}
 
-	public DataContainer getDataContainer(final int conditionIndex, final int replicateIndex, final Coordinate coordinate) {
+	public DataContainer getNullDataContainer(final int conditionIndex, final int replicateIndex, final Coordinate coordinate) {
 		return replicateContainers.get(conditionIndex).getNullDataContainer(replicateIndex, coordinate);
+	}
+	
+	public DataContainer getDefaultDataContainer(final int conditionIndex, final int replicateIndex, final Coordinate coordinate) {
+		return replicateContainers.get(conditionIndex).getDefaultDataContainer(replicateIndex, coordinate);
 	}
 
 	public List<Integer> getReplicateSizes() {

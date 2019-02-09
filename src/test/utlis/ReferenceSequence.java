@@ -17,7 +17,8 @@ public final class ReferenceSequence {
 		CONTIG2REF_SEQ.put("processRecordTest", 		"ACGAACGT");
 		CONTIG2REF_SEQ.put("BaseCallInterpreterTest", 	"ACGAACGT");
 		CONTIG2REF_SEQ.put("PositionProviderTest", 		"ACGAACGT");
-		// CONTIG2REF_SEQ.put("Contig3", 			"TODO");
+		CONTIG2REF_SEQ.put("BaseSubstitutionTest", 		"ACGAACGT");
+		
 		// add more sequences here 
 	}
 	

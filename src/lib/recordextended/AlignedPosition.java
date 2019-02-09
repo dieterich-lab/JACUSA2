@@ -1,9 +1,7 @@
 package lib.recordextended;
 
-import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.CigarOperator;
-import htsjdk.samtools.SAMRecord;
 import lib.util.Copyable;
 
 public class AlignedPosition implements Copyable<AlignedPosition>{
@@ -14,14 +12,6 @@ public class AlignedPosition implements Copyable<AlignedPosition>{
 	
 	public AlignedPosition(final int refPos) {
 		this(0, refPos, 0);
-	}
-	
-	public AlignedPosition(final SAMRecord record) {
-		this(record.getAlignmentBlocks().get(0));
-	}
-	
-	private AlignedPosition(final AlignmentBlock block) {
-		this(block.getReadStart() - 1, block.getReferenceStart(), 0);
 	}
 	
 	private AlignedPosition(final int readPos, final int refPos, final int matches) {

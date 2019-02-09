@@ -34,12 +34,12 @@ implements WindowCoverage {
 			final Fetcher<ArrestPosition2baseCallCount> arrestPos2BaseCallCountExtractor) {
 		
 		super(sharedStorage);
-		this.apc = arrestPositionCalculator;
-		this.ap2bccExtractor = arrestPos2BaseCallCountExtractor;
+		this.apc 				= arrestPositionCalculator;
+		this.ap2bccExtractor 	= arrestPos2BaseCallCountExtractor;
 		
-		winSize = sharedStorage.getCoordinateController().getActiveWindowSize();
-		winPos2ap2bcc = new ArrayList<>(Collections.nCopies(winSize, null));
-		refPos2ap2bcc = new HashMap<>(50);
+		winSize 		= sharedStorage.getCoordinateController().getActiveWindowSize();
+		winPos2ap2bcc 	= new ArrayList<>(Collections.nCopies(winSize, null));
+		refPos2ap2bcc 	= new HashMap<>(50);
 	}
 	
 	@Override

@@ -33,7 +33,7 @@ extends AbstractStatFactory {
 	
 	@Override
 	public CoverageStatistic newInstance(final int conditions) {
-		return new CoverageStatistic(this);
+		return new CoverageStatistic();
 	}
 	
 }

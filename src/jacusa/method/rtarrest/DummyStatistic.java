@@ -16,8 +16,6 @@ extends AbstractStat {
 	private final double defaultValue;
 
 	public DummyStatistic(final DummyStatisticFactory factory) {
-		super(factory);
-
 		defaultValue = Double.NaN;
 	}
 

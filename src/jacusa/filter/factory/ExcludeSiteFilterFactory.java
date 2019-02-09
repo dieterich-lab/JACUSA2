@@ -55,6 +55,7 @@ implements HasFileName, HasFileType {
 	}
 	*/
 	
+	/*
 	public FeatureCodec<? extends Feature, LineIterator> initByBruteForce(final String fileName) {
 		final FileType fileType = FileType.valueOfFileContent(fileName);
 		if (fileType == null) {
@@ -63,6 +64,7 @@ implements HasFileName, HasFileType {
 		
 		return fileType.getCodec();
 	}
+	*/
 	
 	@Override
 	public void initDataContainer(AbstractBuilder builder) {

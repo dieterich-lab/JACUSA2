@@ -71,22 +71,15 @@ import org.apache.commons.cli.ParseException;
 public class CallMethod 
 extends AbstractMethod {
 
-	private final CallBuilderFactory builderFactory;
 	private final Fetcher<BaseCallCount> bccFetcher;
 	
 	protected CallMethod(
 			final String name, 
 			final CallParameter parameter, 
-			final CallDataAssemblerFactory dataAssemblerFactory,
-			final CallBuilderFactory builderFactory) {
+			final CallDataAssemblerFactory dataAssemblerFactory) {
 		
 		super(name, parameter, dataAssemblerFactory);
-		this.builderFactory	= builderFactory;
 		bccFetcher = new PileupCountBaseCallCountExtractor(DataType.PILEUP_COUNT.getFetcher());
-	}
-
-	protected CallBuilderFactory getBuilderFactory() {
-		return builderFactory;
 	}
 	
 	protected Fetcher<BaseCallCount> getBaseCallCountFetcher() {
@@ -325,15 +318,13 @@ extends AbstractMethod {
 				return new OneConditionCallMethod(
 						getName(), 
 						parameter, 
-						dataAssemblerFactory,
-						builderFactory);
+						dataAssemblerFactory);
 
 			case 2:
 				return new TwoConditionCallMethod(
 						getName(), 
 						parameter, 
-						dataAssemblerFactory,
-						builderFactory);
+						dataAssemblerFactory);
 				
 			default:
 				throw new IllegalStateException(

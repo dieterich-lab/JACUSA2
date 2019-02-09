@@ -35,10 +35,6 @@ abstract class AbstractCoordinate implements Coordinate {
 		this(contig, start, end, STRAND.UNKNOWN);
 	}
 	
-	protected AbstractCoordinate(final String contig, final int position, STRAND strand) {
-		this(contig, position, position, strand);
-	}
-	
 	@Override
 	public String getContig() {
 		return contig;

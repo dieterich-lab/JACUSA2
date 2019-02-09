@@ -35,8 +35,6 @@ extends AbstractStat {
 			final DirMultSampleProvider dirMultDataProvider,
 			final DirichletParameter dirichletParameter) {
 
-		super(factory);
-
 		this.dirMultSampleProvider 	= dirMultDataProvider;
 		this.dirichletParameter 	= dirichletParameter;
 	

@@ -13,21 +13,21 @@ public interface HasReadSubstitution {
 	
 	public enum BaseSubstitution {
 		
-		AtoC(Base.A, Base.C),
-		AtoG(Base.A, Base.G),
-		AtoT(Base.A, Base.T),
+		A2C(Base.A, Base.C),
+		A2G(Base.A, Base.G),
+		A2T(Base.A, Base.T),
 		
-		CtoA(Base.C, Base.A),
-		CtoG(Base.C, Base.G),
-		CtoT(Base.C, Base.T),
+		C2A(Base.C, Base.A),
+		C2G(Base.C, Base.G),
+		C2T(Base.C, Base.T),
 		
-		GtoA(Base.G, Base.A),
-		GtoC(Base.G, Base.C),
-		GtoT(Base.G, Base.T),
+		G2A(Base.G, Base.A),
+		G2C(Base.G, Base.C),
+		G2T(Base.G, Base.T),
 		
-		TtoA(Base.T, Base.A),
-		TtoC(Base.T, Base.C),
-		TtoG(Base.T, Base.G);
+		T2A(Base.T, Base.A),
+		T2C(Base.T, Base.C),
+		T2G(Base.T, Base.G);
 		
 		private final Base from;
 		private final Base to;
@@ -59,11 +59,11 @@ public interface HasReadSubstitution {
 			case A:
 				switch (to) {
 				case C:
-					return BaseSubstitution.AtoC;
+					return BaseSubstitution.A2C;
 				case G:
-					return BaseSubstitution.AtoG;
+					return BaseSubstitution.A2G;
 				case T:
-					return BaseSubstitution.AtoT;
+					return BaseSubstitution.A2T;
 				default:
 					throw new IllegalArgumentException("Illegal Base: " + to);
 				}
@@ -71,11 +71,11 @@ public interface HasReadSubstitution {
 			case C:
 				switch (to) {
 				case A:
-					return BaseSubstitution.CtoA;
+					return BaseSubstitution.C2A;
 				case G:
-					return BaseSubstitution.CtoG;
+					return BaseSubstitution.C2G;
 				case T:
-					return BaseSubstitution.CtoT;
+					return BaseSubstitution.C2T;
 				default:
 					throw new IllegalArgumentException("Illegal Base: " + to);
 				}
@@ -83,11 +83,11 @@ public interface HasReadSubstitution {
 			case G:
 				switch (to) {
 				case A:
-					return BaseSubstitution.GtoA;
+					return BaseSubstitution.G2A;
 				case C:
-					return BaseSubstitution.GtoC;
+					return BaseSubstitution.G2C;
 				case T:
-					return BaseSubstitution.GtoT;
+					return BaseSubstitution.G2T;
 				default:
 					throw new IllegalArgumentException("Illegal Base: " + to);
 				}
@@ -95,11 +95,11 @@ public interface HasReadSubstitution {
 			case T:
 				switch (to) {
 				case A:
-					return BaseSubstitution.TtoA;
+					return BaseSubstitution.T2A;
 				case C:
-					return BaseSubstitution.TtoC;
+					return BaseSubstitution.T2C;
 				case G:
-					return BaseSubstitution.TtoG;
+					return BaseSubstitution.T2G;
 				default:
 					throw new IllegalArgumentException("Illegal Base: " + to);
 				}

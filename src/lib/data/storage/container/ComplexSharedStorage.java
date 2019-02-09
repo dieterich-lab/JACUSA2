@@ -42,7 +42,6 @@ public class ComplexSharedStorage implements SharedStorage {
 		}
 	}
 
-	// TODO remove WindowPositionGuard
 	@Override
 	public void addRecordExtended(final SAMRecordExtended recordExtended) {
 		referenceProvider.addRecordExtended(recordExtended);

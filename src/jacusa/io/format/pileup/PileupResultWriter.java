@@ -22,14 +22,10 @@ import htsjdk.samtools.SAMUtils;
 public class PileupResultWriter
 extends AbstractResultFileWriter {
 
-	// empty field, e.g.: no filters, no infos etc.
-	public static final char EMPTY 	= '*';
 	// char to start a comment
-	public static final char COMMENT = '#';
 	// split columns by
 	public static final char SEP 	= '\t';
 	// split within columns by
-	public static final char SEP2 	= ',';
 
 	// indicates if the reference base should be added as a column 
 	private final boolean showReferenceBase;

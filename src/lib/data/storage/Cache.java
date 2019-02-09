@@ -22,12 +22,6 @@ public class Cache {
 		storages.addAll(cache.storages);
 	}
 	
-	public void addCaches(final List<Cache> caches) {
-		for (final Cache cache : caches) {
-			addCache(cache);
-		}
-	}
-	
 	public void addStorage(final Storage storage) {
 		storages.add(storage);
 	}

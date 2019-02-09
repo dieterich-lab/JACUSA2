@@ -20,7 +20,6 @@ extends AbstractStat {
 	// private final DirMult dirMult;
 	
 	public LRTarrestStat(final LRTarrestStatFactory factory) {
-		super(factory);
 		// betaBin = new BetaBin(new BetaBinFactory());
 		// dirMult = new DirMult(factory, null, null); // TODO finish
 	}

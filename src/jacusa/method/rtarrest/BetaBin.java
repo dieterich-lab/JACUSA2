@@ -16,9 +16,7 @@ extends AbstractStat {
 	
 	private final BetaBinParameter betaBinParameter;
 	
-	public BetaBin(final BetaBinFactory factory) {
-		super(factory);
-		
+	public BetaBin() {
 		betaBinParameter = new BetaBinParameter();
 	}
 

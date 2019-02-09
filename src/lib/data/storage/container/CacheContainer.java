@@ -30,7 +30,7 @@ public interface CacheContainer {
 			storage.clear();
 		}
 	}
-	void clearSharedCache();
+	void clearSharedStorage();
 	
 	public static class StrandedBuilder implements lib.util.Builder<CacheContainer> {
 		
@@ -108,8 +108,6 @@ public interface CacheContainer {
 				throw new IllegalArgumentException("Unsupported library type: " + libraryType.toString());
 			}
 		}
-		
-
 		
 	}
 	

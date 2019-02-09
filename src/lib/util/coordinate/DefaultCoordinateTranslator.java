@@ -6,10 +6,6 @@ public class DefaultCoordinateTranslator implements CoordinateTranslator {
 	private int refPosEnd;
 	private int length;
 	
-	public DefaultCoordinateTranslator(final Coordinate coordinate) {
-		this(coordinate.getStart(), coordinate.getLength());
-	}
-	
 	public DefaultCoordinateTranslator(final int refPosWinStart, final int length) {
 		this.refPoswinStart = refPosWinStart;
 		refPosEnd 			= refPosWinStart + length - 1;

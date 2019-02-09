@@ -45,11 +45,6 @@ implements FilteredDataContainer<F, T> {
 		return cast();
 	}
 
-	public F clear() {
-		map.clear();
-		return cast();
-	}
-
 	public boolean contains(final char c) {
 		return map.containsKey(c);
 	}

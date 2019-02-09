@@ -39,9 +39,5 @@ public abstract class AbstractResultFileWriter implements ResultWriter {
 	public void close() throws IOException {
 		bw.close();
 	}
-
-	protected BufferedWriter getBW() {
-		return bw;
-	}
 	
 }

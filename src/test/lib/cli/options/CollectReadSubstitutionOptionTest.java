@@ -24,11 +24,11 @@ implements ACOptionTest<SortedSet<BaseSubstitution>> {
 	@Override
 	public Stream<Arguments> testProcess() {
 		return Stream.of(
-				createArguments(BaseSubstitution.AtoG),
-				createArguments(BaseSubstitution.AtoG, BaseSubstitution.TtoC),
+				createArguments(BaseSubstitution.A2G),
+				createArguments(BaseSubstitution.A2G, BaseSubstitution.T2C),
 				createArguments(
-						BaseSubstitution.AtoG, BaseSubstitution.GtoA, 
-						BaseSubstitution.CtoT, BaseSubstitution.TtoC) );
+						BaseSubstitution.A2G, BaseSubstitution.G2A, 
+						BaseSubstitution.C2T, BaseSubstitution.T2C) );
 	}
 
 	Arguments createArguments(final BaseSubstitution... baseSubs) {

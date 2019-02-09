@@ -235,10 +235,6 @@ implements Iterator<ParallelData> {
 	protected void setStatus(final STATUS status) {
 		this.status = status;
 	}
-
-	protected CoordinateController getCoordinateController() {
-		return coordinateController;
-	}
 	
 	private WorkerDispatcher getWorkerDispatcherInstance() {
 		return method.getWorkerDispatcherInstance();

@@ -3,11 +3,9 @@ package lib.data.assembler;
 import java.util.Iterator;
 
 import lib.cli.parameter.ConditionParameter;
-import lib.data.DataContainer;
 import lib.data.DataContainer.AbstractBuilderFactory;
 import lib.data.storage.container.CacheContainer;
 import lib.util.AbstractTool;
-import lib.util.Base;
 import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
 import lib.recordextended.SAMRecordExtended;
@@ -29,14 +27,14 @@ implements DataAssembler {
 			final ConditionParameter conditionParameter,
 			final CacheContainer cacheContainer) {
 		
-		this.replicateIndex = replicateIndex;
+		this.replicateIndex 	= replicateIndex;
 		
-		this.builderFactory = builderFactory;
+		this.builderFactory 	= builderFactory;
 		this.conditionParameter	= conditionParameter;
 		
-		this.cacheContainer = cacheContainer;
+		this.cacheContainer 	= cacheContainer;
 
-		cacheStatus	= CACHE_STATUS.NOT_CACHED;
+		cacheStatus				= CACHE_STATUS.NOT_CACHED;
 	}
 
 	@Override
@@ -44,6 +42,11 @@ implements DataAssembler {
 			final Iterator<SAMRecordExtended> iterator) {
 
 		int records = 0;
+
+		if (cacheStatus == CACHE_STATUS.CACHED) {
+			clearStorage();
+		}
+		getCacheContainer().clearSharedStorage();
 		
 		SAMRecordExtended recordExtended = null;
 		try {
@@ -55,7 +58,6 @@ implements DataAssembler {
 					records++;
 				}
 				cacheContainer.postProcess();
-				clearStorage();
 			}
 		} catch (Exception e){
 			if (recordExtended != null) {
@@ -73,17 +75,6 @@ implements DataAssembler {
 	public void clearStorage() {
 		cacheContainer.clearStorage();
 		cacheStatus	= CACHE_STATUS.NOT_CACHED;
-	}
-
-	@Override
-	public DataContainer assembleData(final Coordinate coordinate) {
-		final Base referenceBase = getCacheContainer().getReferenceProvider().getReferenceBase(coordinate);
-		final DataContainer container =
-				builderFactory.createBuilder(coordinate, getLibraryType())
-					.withReferenceBase(referenceBase)
-					.build();
-		cacheContainer.populate(container, coordinate);
-		return container;
 	}
 
 	@Override

@@ -89,10 +89,6 @@ public enum Base {
 	public synchronized static final Set<Base> getNonRefBases(final Base refBase) {
 		return new HashSet<>(REF2NON_REF.get(refBase));
 	}
-
-	public static final String wrap(final Base base) {
-		return base.toString();
-	}
 	
 	public static Base mergeBase(final Base base1, final Base base2) {
 		if (base1 == base2) {

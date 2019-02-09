@@ -14,6 +14,7 @@ import lib.data.storage.container.SharedStorage;
 import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.storage.processor.RecordExtendedProcessor;
 
+// TODO add as filter but beware of arrest position
 public class LRTarrestReadPositionDistanceFilterFactory 
 extends AbstractLRTarrestBaseCallCountFilterFactory {
 

@@ -30,7 +30,7 @@ extends AbstractWorker {
 		for (int conditionIndex = 0; conditionIndex < getConditionContainer().getConditionSize() ; ++conditionIndex) {
 			final ReplicateContainer replicateContainer = getConditionContainer().getReplicatContainer(conditionIndex);
 			for (int replicateIndex = 0; replicateIndex < replicateContainer.getReplicateSize() ; ++replicateIndex) {
-				final DataContainer replicate = getConditionContainer().getDataContainer(conditionIndex, replicateIndex, coordinate);
+				final DataContainer replicate = getConditionContainer().getNullDataContainer(conditionIndex, replicateIndex, coordinate);
 				if (replicate == null) {
 					return null;
 				}

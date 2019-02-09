@@ -69,7 +69,7 @@ implements CacheContainer {
 	}
 	
 	@Override
-	public void clearSharedCache() {
+	public void clearSharedStorage() {
 		sharedStorage.clear();
 	}
 

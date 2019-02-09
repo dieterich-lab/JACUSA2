@@ -2,9 +2,7 @@ package lib.data.count;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedSet;
 
-import jacusa.JACUSA;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.Data;
 import lib.data.count.basecall.BaseCallCount;
@@ -18,13 +16,6 @@ public class BaseSubstitutionCount implements Data<BaseSubstitutionCount> {
 	
 	public BaseSubstitutionCount() {
 		count = new HashMap<>(2);
-	}
-
-	public BaseSubstitutionCount(SortedSet<BaseSubstitution> baseSubstitutions) {
-		count = new HashMap<>(baseSubstitutions.size());
-		for (final BaseSubstitution baseSub : baseSubstitutions) {
-			count.put(baseSub, JACUSA.BCC_FACTORY.create());
-		}
 	}
 	
 	public BaseSubstitutionCount(final BaseSubstitutionCount bsc) {
@@ -52,10 +43,12 @@ public class BaseSubstitutionCount implements Data<BaseSubstitutionCount> {
 		}
 	}
 
+	/*
 	public BaseSubstitutionCount add(final BaseSubstitution baseSubstitution, final Base base) {
 		count.get(baseSubstitution).increment(base);
 		return this;
 	}
+	*/
 
 	public BaseSubstitutionCount set(final BaseSubstitution baseSubstitution, final BaseCallCount baseCallCount) {
 		if (count.containsKey(baseSubstitution)) {

@@ -45,6 +45,34 @@ implements WindowCoverage {
 			}
 		}
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || ! (obj instanceof AbstractBaseCallCountStorage)) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		
+		AbstractBaseCallCountStorage bccStore = (AbstractBaseCallCountStorage)obj;
+		if (! getCoordinateController().getActive().equals(bccStore.getCoordinateController().getActive())) {
+			return false;
+		}
+		for (int winPos = 0; winPos < getCoordinateController().getActiveWindowSize(); ++winPos) {
+			for (final Base base : Base.validValues()) {
+				if (getCount(winPos, base) != bccStore.getCount(winPos, base)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		return getCoordinateController().getActive().hashCode();
+	}
 	
 	public abstract int getCount(final int winPos, final Base base);
 
