@@ -113,7 +113,7 @@ implements HasFilterDistance, HasFilterMinRatio {
 		return new GenericBaseCallCountFilter(getC(),
 				observedBccFetcher,
 				filteredBccFetcher,	
-				filterDistance, new FilterByRatio(getFilterDistance()));
+				filterDistance, new FilterByRatio(getFilterMinRatio()));
 	}
 	
 	@Override

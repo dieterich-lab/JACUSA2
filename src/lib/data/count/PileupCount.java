@@ -82,6 +82,8 @@ public class PileupCount implements Data<PileupCount> {
 
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
+		sb.append(getBaseCallCount().toString());
+		sb.append('\n');
 		sb.append(baseCallQualCount.toString());
 		sb.append('\n');
 		return sb.toString();

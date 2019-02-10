@@ -2,8 +2,8 @@ package jacusa;
 
 public final class VersionInfo {
 
-	public final static String BRANCH 	= "master";
-	public final static String TAG 		= "2.0.0-BETA32-TEST";
+	public final static String BRANCH 	= "develop";
+	public final static String TAG 		= "2.0.0-BETA31";
 
 	private VersionInfo() {
 		throw new AssertionError();

@@ -46,6 +46,11 @@ public class GenericBaseCallCountFilter extends AbstractFilter {
 					parallelData.getCoordinate(), 
 					parallelData.getLibraryType(),
 					parallelData.getCombinedPooledData().getReferenceBase() );
+		} else if (parallelData.getConditions() == 2){
+			final BaseCallCount pooledBcc1 = observedBccFetcher.fetch(parallelData.getPooledData(0));
+			final BaseCallCount pooledBcc2 = observedBccFetcher.fetch(parallelData.getPooledData(1));
+			final Base refBase = parallelData.getCombinedPooledData().getReferenceBase();
+			variantBases = ParallelData.getVariantBases(refBase, pooledBcc1, pooledBcc2);
 		} else {
 			final List<BaseCallCount> bccs = Fetcher.apply(observedBccFetcher, parallelData.getCombinedData());
 			variantBases = ParallelData.getVariantBases(alleles, bccs);
@@ -73,7 +78,7 @@ public class GenericBaseCallCountFilter extends AbstractFilter {
 					count += tmpCount;
 					// artifacts
 					final BaseCallCount filteredBcc = filteredBccFetcher.fetch(container);
-					if (filteredBcc != null) {
+					if (filteredBcc.getCoverage() > 0) {
 						filteredCount += tmpCount - filteredBcc.getBaseCall(variantBase);						
 					} else {
 						filteredCount += tmpCount;

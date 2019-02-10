@@ -79,7 +79,7 @@ extends AbstractDirMultPileupCountProvider {
 			modifiedPileupCounts.set(
 					changeConditionIndex, 
 					flat(
-							orginalPileupCounts.get(changeConditionIndex),
+							orginalPileupCounts.get(keepConditionIndex),
 							variantBases, commonBase) );
 			return modifiedPileupCounts;
 		}
