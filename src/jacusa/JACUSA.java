@@ -9,9 +9,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-import lib.data.count.basecall.ArrayBaseCallCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.BaseCallCountFactory;
+import lib.data.count.basecall.DefaultBaseCallCount;
 import lib.data.count.basecallquality.BaseCallQualityCount;
 import lib.data.count.basecallquality.BaseCallQualityCountFactory;
 import lib.data.count.basecallquality.MapBaseCallQualityCount;
@@ -40,7 +40,7 @@ import lib.util.AbstractTool;
 public class JACUSA extends AbstractTool {
 
 	public static final BaseCallCountFactory<? extends BaseCallCount> BCC_FACTORY = 
-			new ArrayBaseCallCount.Factory();
+			new DefaultBaseCallCount.Factory();
 	public static final BaseCallQualityCountFactory<? extends BaseCallQualityCount> BCQC_FACTORY = 
 			new MapBaseCallQualityCount.Factory();
 	

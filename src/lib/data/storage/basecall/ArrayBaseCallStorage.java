@@ -29,7 +29,7 @@ implements Storage {
 	}
 	
 	@Override
-	public void clear() {
+	protected void clearSpecific() {
 		for (int[] baseCall : baseCalls) {
 			Arrays.fill(baseCall, 0);	
 		}

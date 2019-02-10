@@ -1,5 +1,6 @@
 package lib.data.storage.basecall;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import jacusa.JACUSA;
@@ -62,12 +63,13 @@ implements WindowCoverage {
 	
 	@Override
 	public void clear() {
+		/*
 		for (final BaseCallQualityCount bcqc : winPos2bcqc) {
 			if (bcqc != null && bcqc.getCoverage() > 0) {
 				bcqc.clear();
 			}
-		}
-		// Arrays.fill(winPos2bcqc, null);
+		}*/
+		Arrays.fill(winPos2bcqc, null);
 	}
 
 	@Override

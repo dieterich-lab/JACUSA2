@@ -39,7 +39,7 @@ implements Storage {
 	}
 	
 	@Override
-	public void clear() {
+	protected void clearSpecific() {
 		winPos2bcc.clear();
 	}
 	

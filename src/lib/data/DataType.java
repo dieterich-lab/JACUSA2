@@ -161,7 +161,7 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public synchronized static <T extends Data<T>> DataType<T> get(final String name, final Class<T> enclosingClass) {
+	public static <T extends Data<T>> DataType<T> get(final String name, final Class<T> enclosingClass) {
 		if (! CLASS2NAME2TYPE.containsKey(enclosingClass)) {
 			return null;
 		}

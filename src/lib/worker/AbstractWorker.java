@@ -63,7 +63,7 @@ implements Iterator<ParallelData> {
 		parallelDataValidator = new CompositeParallelDataValidator(method.createParallelDataValidators());
 
 		comparisons = 0;
-		status = STATUS.INIT;
+		status 		= STATUS.INIT;
 		setName(AbstractTool.getLogger().getTool().getName() + " Worker " + threadId);
 	}
 
@@ -98,28 +98,28 @@ implements Iterator<ParallelData> {
 	
 	@Override
 	public boolean hasNext() {
-		while (coordinateController.checkCoordinateAdvancerWithinActiveWindow() || 
-				coordinateController.hasNext()) {
-			
-			final Coordinate coordinate = coordinateController.getCoordinateAdvancer()
-					.getCurrentCoordinate().copy();
-			
-			final ParallelData.Builder parallelDataBuilder = new ParallelData.Builder(
-							conditionContainer.getConditionSize(), conditionContainer.getReplicateSizes());
-			parallelData = createParallelData(parallelDataBuilder, coordinate);
-			if (parallelData != null && parallelDataValidator.isValid(parallelData)) {
-				comparisons++;
-				return true;
+		while (true) {
+			while (coordinateController.checkCoordinateAdvancerWithinActiveWindow()) {
+				final Coordinate coordinate = coordinateController.getCoordinateAdvancer()
+						.getCurrentCoordinate().copy();
+				
+				final ParallelData.Builder parallelDataBuilder = new ParallelData.Builder(
+								conditionContainer.getConditionSize(), conditionContainer.getReplicateSizes());
+				parallelData = createParallelData(parallelDataBuilder, coordinate);
+				if (parallelData != null && parallelDataValidator.isValid(parallelData)) {
+					comparisons++;
+					return true;
+				}
+				coordinateController.advance();
 			}
-			coordinateController.advance();
 			
 			if (coordinateController.hasNext()) {
 				final Coordinate activeWindowCoordinate = coordinateController.next();
 				conditionContainer.updateActiveWindowCoordinates(activeWindowCoordinate);
+			} else {
+				return false;
 			}
 		}
-
-		return false;
 	}
 	
 	protected abstract ParallelData createParallelData(
@@ -190,8 +190,7 @@ implements Iterator<ParallelData> {
 		copyTmpResult.newIteration();
 		
 		while (hasNext()) {
-			final ParallelData parallelData = next();
-			doWork(parallelData);	
+			doWork(next());	
 		}
 		status = STATUS.INIT;
 	}

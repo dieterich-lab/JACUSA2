@@ -67,7 +67,7 @@ public enum Base {
 		return (char)bite;
 	}
 	
-	public synchronized static final Base valueOf(final byte bite) {
+	public static final Base valueOf(final byte bite) {
 		if (! BYTE2BASE.containsKey(bite)) {
 			throw new IllegalArgumentException("Byte " + bite + " unknown");
 		}
@@ -87,7 +87,7 @@ public enum Base {
 		return VALID;
 	}
 
-	public synchronized static final Set<Base> getNonRefBases(final Base refBase) {
+	public static final Set<Base> getNonRefBases(final Base refBase) {
 		return new HashSet<>(REF2NON_REF.get(refBase));
 	}
 	

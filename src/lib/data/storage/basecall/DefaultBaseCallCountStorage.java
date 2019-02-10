@@ -56,7 +56,7 @@ extends AbstractBaseCallCountStorage {
 	}
 	
 	@Override
-	public void clear() {
+	protected void clearSpecific() {
 		for (final Base base : Base.validValues()) {
 			Arrays.fill(getBaseCallStorage(base), 0);	
 		}

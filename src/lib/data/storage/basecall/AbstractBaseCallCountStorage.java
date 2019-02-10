@@ -1,5 +1,7 @@
 package lib.data.storage.basecall;
 
+import java.util.Arrays;
+
 import lib.data.DataContainer;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
@@ -93,6 +95,14 @@ implements WindowCoverage {
 	public int getCoverage(int winPos) {
 		return coverage[winPos];
 	}
+	
+	@Override
+	final public void clear() {
+		clearSpecific();
+		Arrays.fill(coverage, 0);
+	}
+	
+	protected abstract void clearSpecific();
 	
 	protected void clearCoverage(int winPos) {
 		coverage[winPos] = 0;
