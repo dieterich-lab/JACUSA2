@@ -1,6 +1,8 @@
-package lib.stat.dirmult;
+package lib.stat.sample;
 
-public interface DirMultSample {
+import lib.stat.nominal.NominalData;
+
+public interface EstimationSample {
 
 	String getId();
 
@@ -16,13 +18,13 @@ public interface DirMultSample {
 	int getMaxIterations();
 	int getIteration();
 
-	DirMultData getDirMultData();
+	NominalData getNominalData();
 
 	void add(double[] alpha, double likelihood);
 
 	String toString();
 
 	void clear();
-	void clear(String id, DirMultData dirMultData);
+	void update(String id, NominalData nominalData);
 	
 }

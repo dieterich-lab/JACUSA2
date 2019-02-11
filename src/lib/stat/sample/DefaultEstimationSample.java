@@ -1,27 +1,27 @@
-package lib.stat.dirmult;
+package lib.stat.sample;
 
+import lib.stat.nominal.NominalData;
 import lib.util.Util;
 
-public class FastDirMultSample implements DirMultSample {
+public class DefaultEstimationSample implements EstimationSample {
 
 	private String id;
-	private DirMultData dirMultData;
+	private NominalData nominalData;
 	private final int maxIterations;
-
-	private double[] initAlpha;
-	private double[] alpha;
 	
-	private double logLikelihood;
+	private double[][] alpha;
+	private double[] logLikelihood;
 	private boolean numericallyStable;
 	
 	private int iteration;
 
-	public FastDirMultSample(final String id, final DirMultData dirMultData, final int maxIterations) {
+	public DefaultEstimationSample(final String id, final NominalData dirMultData, final int maxIterations) {
 		this.id				= id;
-		this.dirMultData	= dirMultData;
+		this.nominalData	= dirMultData;
 		this.maxIterations 	= maxIterations;
 
-		logLikelihood 		= Double.NaN;
+		alpha 				= new double[maxIterations + 1][];
+		logLikelihood 		= new double[maxIterations + 1];
 		numericallyStable 	= true;
 		
 		iteration 			= -1;
@@ -34,32 +34,22 @@ public class FastDirMultSample implements DirMultSample {
 	
 	@Override
 	public double[] getAlpha(final int iteration) {
-		if (iteration == 0) {
-			return initAlpha;			
-		} else if(this.iteration == iteration) {
-			return alpha;
-		} else {
-			throw new IllegalArgumentException("Does not support random access to iteration");
-		}
+		return alpha[iteration];
 	}
 
 	@Override
 	public double[] getAlpha() {
-		return getAlpha(iteration);
+		return alpha[getIteration()];
 	}
 	
 	@Override
 	public double getLogLikelihood() {
-		return logLikelihood;
+		return logLikelihood[getIteration()];
 	}
 	
 	@Override
 	public double getLogLikelihood(final int iteration) {
-		if(this.iteration == iteration) {
-			return logLikelihood;
-		} else {
-			throw new IllegalArgumentException("Does not support random access to iteration");
-		}
+		return logLikelihood[iteration];
 	}
 	
 	@Override
@@ -83,26 +73,21 @@ public class FastDirMultSample implements DirMultSample {
 	}
 
 	@Override
-	public DirMultData getDirMultData() {
-		return dirMultData;
+	public NominalData getNominalData() {
+		return nominalData;
 	}
 	
 	@Override
-	public void add(final double[] alpha, final double logLikelihood) {
+	public void add(final double[] alpha, final double likelihood) {
 		iteration++;
-		if (iteration == 0) {
-			this.initAlpha 	= alpha;
-		} else {
-			this.alpha 		= alpha;
-			
-		}
-		this.logLikelihood 	= logLikelihood;
+		this.alpha[iteration] 			= alpha;
+		this.logLikelihood[iteration] 	= likelihood;
 	}
 	
 	@Override
-	public void clear(final String id, final DirMultData dirMultData) {
+	public void update(final String id, final NominalData nominalData) {
 		this.id				= id;
-		this.dirMultData	= dirMultData;
+		this.nominalData	= nominalData;
 	}
 
 	@Override

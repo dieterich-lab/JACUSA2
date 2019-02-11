@@ -1,4 +1,4 @@
-package lib.stat.dirmult;
+package lib.stat.sample.provider.pileup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,10 +12,10 @@ import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.util.Base;
 
-public class RobustDirMultPileupCountProvider 
-extends AbstractDirMultPileupCountProvider {
+public class RobustEstimationSamplePileupProvider 
+extends AbstractEstimationSamplePileupProvider {
 
-	public RobustDirMultPileupCountProvider(
+	public RobustEstimationSamplePileupProvider(
 			final int maxIterations, final double estimatedError) {
 		
 		super(maxIterations, estimatedError);

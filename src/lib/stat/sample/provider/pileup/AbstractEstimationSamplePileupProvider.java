@@ -1,4 +1,4 @@
-package lib.stat.dirmult;
+package lib.stat.sample.provider.pileup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +9,14 @@ import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 import lib.phred2prob.Phred2Prob;
+import lib.stat.nominal.NominalData;
+import lib.stat.sample.DefaultEstimationSample;
+import lib.stat.sample.EstimationSample;
+import lib.stat.sample.provider.EstimationSampleProvider;
 import lib.util.Base;
 
-public abstract class AbstractDirMultPileupCountProvider 
-implements DirMultSampleProvider {
+abstract class AbstractEstimationSamplePileupProvider 
+implements EstimationSampleProvider {
 
 	protected static final int[][][] VALID;
 	static {
@@ -39,7 +43,7 @@ implements DirMultSampleProvider {
 	private final int maxIterations;
 	private final double estimatedError;
 	
-	public AbstractDirMultPileupCountProvider(
+	public AbstractEstimationSamplePileupProvider(
 			final int maxIterations, 
 			final double estimatedError) {
 
@@ -50,37 +54,37 @@ implements DirMultSampleProvider {
 	protected abstract List<List<PileupCount>> process(ParallelData parallelData);
 	
 	@Override
-	public DirMultSample[] convert(final ParallelData parallelData) {
+	public EstimationSample[] convert(final ParallelData parallelData) {
 		final List<List<PileupCount>> pileupCounts = process(parallelData);
 
-		final Base[] bases = Base.validValues();
-		final int conditions = pileupCounts.size();
-		final DirMultSample[] dirMultSamples = new DirMultSample[conditions + 1];
+		final Base[] bases 		= Base.validValues();
+		final int conditions 	= pileupCounts.size();
+		final EstimationSample[] estimationSamples = new EstimationSample[conditions + 1];
 		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
-			final DirMultData dirMultData 	= createData(bases, pileupCounts.get(conditionIndex)); 
-			dirMultSamples[conditionIndex] 	= createSample(Integer.toString(conditionIndex + 1), dirMultData, maxIterations);
+			final NominalData nominalData 		= createData(bases, pileupCounts.get(conditionIndex)); 
+			estimationSamples[conditionIndex] 	= createSample(Integer.toString(conditionIndex + 1), nominalData, maxIterations);
 		}
 
 		// conditions pooled
-		final DirMultData dirMultData 	= createData(
+		final NominalData nominalData = createData(
 				bases, 
 				pileupCounts.stream()
 					.flatMap(List::stream)
 					.collect(Collectors.toList()) ); 
-		dirMultSamples[conditions] 		= new DefaultDirMultSample("P", dirMultData, maxIterations);
-		return dirMultSamples;
+		estimationSamples[conditions] 		= new DefaultEstimationSample("P", nominalData, maxIterations);
+		return estimationSamples;
 	}
 
-	private DirMultSample createSample(final String id, final DirMultData dirMultData, final int maxIterations) {
-		return new DefaultDirMultSample(id, dirMultData, maxIterations);
+	private EstimationSample createSample(final String id, final NominalData nominalData, final int maxIterations) {
+		return new DefaultEstimationSample(id, nominalData, maxIterations);
 	}
 	
-	private DirMultData createData(final Base[] bases, final List<PileupCount> pileupCounts) {
+	private NominalData createData(final Base[] bases, final List<PileupCount> pileupCounts) {
 		final double[][] dataMatrix  = new double[pileupCounts.size()][bases.length];
 		for (int replicateIndex = 0; replicateIndex < pileupCounts.size(); replicateIndex++) {
 			populate(pileupCounts.get(replicateIndex), bases, dataMatrix[replicateIndex]);
 		}
-		return new DirMultData(bases.length, dataMatrix);
+		return NominalData.build(bases.length, dataMatrix);
 	}
 	
 	protected List<List<PileupCount>> getPileupCounts(final ParallelData parallelData) {

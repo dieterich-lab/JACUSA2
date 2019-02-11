@@ -80,9 +80,9 @@ extends AbstractMethod {
 			final RTarrestBuilderFactory builderFactory) {
 		
 		super(name, parameter, dataAssemblerFactory);
-		arrestBccFetcher = DataType.ARREST_BCC.getFetcher();
-		throughBccFetcher = DataType.THROUGH_BCC.getFetcher();
-		totalBccAggregator = new TotalBaseCallCountAggregator(
+		arrestBccFetcher 	= DataType.ARREST_BCC.getFetcher();
+		throughBccFetcher 	= DataType.THROUGH_BCC.getFetcher();
+		totalBccAggregator 	= new TotalBaseCallCountAggregator(
 				Arrays.asList(arrestBccFetcher, throughBccFetcher));
 	}
 

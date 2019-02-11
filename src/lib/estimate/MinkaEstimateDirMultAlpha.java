@@ -2,8 +2,8 @@ package lib.estimate;
 
 import java.util.Arrays;
 
-import lib.stat.dirmult.DirMultData;
-import lib.stat.dirmult.DirMultSample;
+import lib.stat.nominal.NominalData;
+import lib.stat.sample.EstimationSample;
 import lib.util.Info;
 import lib.util.MathUtil;
 
@@ -14,35 +14,35 @@ import org.apache.commons.math3.special.Gamma;
  */
 public class MinkaEstimateDirMultAlpha {
 
-	private final MinkaEstimateParameter minkaEstimateParameter;
+	private final MinkaParameter minkaEstimateParameter;
 
 	private double[] tmpRowWiseSums;
 	
-	public MinkaEstimateDirMultAlpha(final MinkaEstimateParameter minkaEstimateParameter) {
+	public MinkaEstimateDirMultAlpha(final MinkaParameter minkaEstimateParameter) {
 		this.minkaEstimateParameter = minkaEstimateParameter;
 	}
 	
 	/**
 	 * estimate alpha and returns log-lik
 	 * TODO comments
-	 * @param dirMultSample
+	 * @param 
 	 * @param estimateInfo
 	 * @param backtrack
 	 * @return
 	 * 
 	 * Tested in test.lib.estimate.MinkaEstimateDirMultAlphaTest
 	 */
-	public boolean maximizeLogLikelihood(final DirMultSample dirMultSample, final Info estimateInfo, final boolean backtrack) {
-		final DirMultData dirMultData = dirMultSample.getDirMultData();
-		final int categories = dirMultData.getCategories();  
+	public boolean maximizeLogLikelihood(final EstimationSample estimationSample, final Info estimateInfo, final boolean backtrack) {
+		final NominalData nominalData 	= estimationSample.getNominalData();
+		final int categories 			= nominalData.getCategories();  
 		
-		final double localSums[] = getRowWiseSums(dirMultData);
+		final double localSums[] 		= getRowWiseSums(nominalData);
 		
-		boolean converged = false;
+		boolean converged 				= false;
 
 		// container see Minka
-		double[] gradient = new double[categories];
-		double[] Q = new double[categories];
+		double[] gradient 	= new double[categories];
+		double[] Q 			= new double[categories];
 		double b;
 		double z;
 		// holds pre-computed value
@@ -53,35 +53,35 @@ public class MinkaEstimateDirMultAlpha {
 		double loglikOld = Double.NEGATIVE_INFINITY;
 		
 		// maximize
-		while (dirMultSample.getIteration() < dirMultSample.getMaxIterations() && ! converged) {
+		while (estimationSample.getIteration() < estimationSample.getMaxIterations() && ! converged) {
 			// init alpha new
 			double[] alphaNew = new double[categories];
 			Arrays.fill(alphaNew, 0.0);
 			
 			// pre-compute
-			summedAlphaOld 			= MathUtil.sum(dirMultSample.getAlpha());
+			summedAlphaOld 			= MathUtil.sum(estimationSample.getAlpha());
 			digammaSummedAlphaOld 	= Gamma.digamma(summedAlphaOld);
 			trigammaSummedAlphaOld 	= Gamma.trigamma(summedAlphaOld);
 
 			// reset
 			b = 0.0;
 			double b_DenominatorSum = 0.0;
-			for (int i = 0; i < dirMultSample.getDirMultData().getCategories(); i++) {
+			for (int i = 0; i < categories; i++) {
 				// reset
 				gradient[i] = 0.0;
 				Q[i] = 0.0;
 
-				for (int replicateIndex = 0; replicateIndex < dirMultData.getReplicates(); ++replicateIndex) {
+				for (int replicateIndex = 0; replicateIndex < nominalData.getReplicates(); ++replicateIndex) {
 					// calculate gradient
 					gradient[i] += digammaSummedAlphaOld;
 					gradient[i] -= Gamma.digamma(localSums[replicateIndex] + summedAlphaOld);
 					// 
-					gradient[i] += Gamma.digamma(dirMultData.getReplicate(replicateIndex)[i] + dirMultSample.getAlpha()[i]);
-					gradient[i] -= Gamma.digamma(dirMultSample.getAlpha()[i]);
+					gradient[i] += Gamma.digamma(nominalData.getReplicate(replicateIndex)[i] + estimationSample.getAlpha()[i]);
+					gradient[i] -= Gamma.digamma(estimationSample.getAlpha()[i]);
 
 					// calculate Q
-					Q[i] += Gamma.trigamma(dirMultData.getReplicate(replicateIndex)[i] + dirMultSample.getAlpha()[i]);
-					Q[i] -= Gamma.trigamma(dirMultSample.getAlpha()[i]);
+					Q[i] += Gamma.trigamma(nominalData.getReplicate(replicateIndex)[i] + estimationSample.getAlpha()[i]);
+					Q[i] -= Gamma.trigamma(estimationSample.getAlpha()[i]);
 				}
 
 				// calculate b
@@ -91,19 +91,19 @@ public class MinkaEstimateDirMultAlpha {
 
 			// calculate z
 			z = 0.0;
-			for (int replicateIndex = 0; replicateIndex < dirMultData.getReplicates(); ++replicateIndex) {
+			for (int replicateIndex = 0; replicateIndex < nominalData.getReplicates(); ++replicateIndex) {
 				z += trigammaSummedAlphaOld;
 				z -= Gamma.trigamma(localSums[replicateIndex] + summedAlphaOld);
 			}
 			// calculate b cont.
 			b = b / (1.0 / z + b_DenominatorSum);
 
-			loglikOld = getLogLikelihood(dirMultSample.getAlpha(), dirMultData);
+			loglikOld = getLogLikelihood(estimationSample.getAlpha(), nominalData);
 			
 			// try update alphaNew
 			boolean admissible = true; 		
 			for (int i = 0; i < categories; ++i) {
-				alphaNew[i] = dirMultSample.getAlpha()[i] - (gradient[i] - b) / Q[i];
+				alphaNew[i] = estimationSample.getAlpha()[i] - (gradient[i] - b) / Q[i];
 
 				if (alphaNew[i] < 0.0) {
 					admissible = false;
@@ -113,25 +113,25 @@ public class MinkaEstimateDirMultAlpha {
 			// check if alpha negative
 			if (! admissible) {
 				if (backtrack) {
-					estimateInfo.add("backtrack" + dirMultSample.getId(), Integer.toString(dirMultSample.getIteration()));
-					alphaNew = backtracking(dirMultSample.getAlpha(), gradient, b_DenominatorSum, Q);
+					estimateInfo.add("backtrack" + estimationSample.getId(), Integer.toString(estimationSample.getIteration()));
+					alphaNew = backtracking(estimationSample.getAlpha(), gradient, b_DenominatorSum, Q);
 					if (alphaNew == null) {
 						this.tmpRowWiseSums = null;
 						return false;
 					}
 				} else {
-					estimateInfo.add("reset" + dirMultSample.getId(), Integer.toString(dirMultSample.getIteration()));
+					estimateInfo.add("reset" + estimationSample.getId(), Integer.toString(estimationSample.getIteration()));
 					this.tmpRowWiseSums = null;
 					return false;
 				}
 				// update value
-				dirMultSample.add(alphaNew, getLogLikelihood(alphaNew, dirMultData));
+				estimationSample.add(alphaNew, getLogLikelihood(alphaNew, nominalData));
 			} else {
 				// update value
-				dirMultSample.add(alphaNew, getLogLikelihood(alphaNew, dirMultData));
+				estimationSample.add(alphaNew, getLogLikelihood(alphaNew, nominalData));
 
 				// check if converged
-				double delta = Math.abs(dirMultSample.getLogLikelihood() - loglikOld);
+				double delta = Math.abs(estimationSample.getLogLikelihood() - loglikOld);
 				if (delta  <= minkaEstimateParameter.getEpsilon()) {
 					converged = true;
 				}
@@ -143,7 +143,7 @@ public class MinkaEstimateDirMultAlpha {
 		return true;
 	}
 	
-	private double[] getRowWiseSums(final DirMultData dirMultData) {
+	private double[] getRowWiseSums(final NominalData dirMultData) {
 		if (tmpRowWiseSums == null) {
 			tmpRowWiseSums = dirMultData.getRowWiseSums();
 		}
@@ -159,7 +159,7 @@ public class MinkaEstimateDirMultAlpha {
 	 * 
 	 * Tested in test.lib.estimate.MinkaEstimateDirMultAlphaTest
 	 */
-	public double getLogLikelihood(final double[] alpha, final DirMultData dirMultData) {
+	public double getLogLikelihood(final double[] alpha, final NominalData dirMultData) {
 		double logLikelihood 		= 0.0;
 		final double alphaSum 		= MathUtil.sum(alpha);
 		final double[] replicates 	= getRowWiseSums(dirMultData);
