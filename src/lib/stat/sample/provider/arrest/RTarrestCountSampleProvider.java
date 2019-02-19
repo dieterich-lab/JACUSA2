@@ -11,8 +11,8 @@ import lib.stat.sample.provider.EstimationSampleProvider;
 
 public class RTarrestCountSampleProvider implements EstimationSampleProvider {
 
-	public static final int READ_ARREST_INDEX	= 0;
-	public static final int READ_THROUGH_INDEX	= 1;
+	public static final int READ_TOTAL_INDEX	= 0;
+	public static final int READ_ARREST_INDEX	= 1;
 	
 	private final int maxIterations;
 	private final double pseudoCount;
@@ -48,8 +48,9 @@ public class RTarrestCountSampleProvider implements EstimationSampleProvider {
 			final DataContainer dataContainer = dataContainers.get(replicateIndex);
 			final int readArrestCount 	= dataContainer.getArrestBaseCallCount().getCoverage();
 			final int readThroughCount 	= dataContainer.getThroughBaseCallCount().getCoverage();
-			dataMatrix[replicateIndex][READ_ARREST_INDEX] 	= readArrestCount + pseudoCount;
-			dataMatrix[replicateIndex][READ_THROUGH_INDEX] 	= readThroughCount + pseudoCount;
+			final int totalReadCount	= readArrestCount + readThroughCount;
+			dataMatrix[replicateIndex][READ_TOTAL_INDEX] 	= totalReadCount + pseudoCount;
+			dataMatrix[replicateIndex][READ_ARREST_INDEX] 	= readThroughCount + pseudoCount;
 		}
 		return NominalData.build(catergories, dataMatrix);
 	}
