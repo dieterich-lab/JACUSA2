@@ -39,7 +39,7 @@ extends AbstractLibraryTypeOption {
 		}
 		desc += ":\n" + getPossibleValues() + 
         		"\n default: " + LibraryType.UNSTRANDED;
-		return Option.builder()
+		return Option.builder(getOpt())
 				.longOpt(getOpt())
 				.argName(LONG_OPT.toUpperCase())
 				.hasArg(true)

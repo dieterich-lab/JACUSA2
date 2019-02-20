@@ -137,7 +137,11 @@ public abstract class AbstractMethod {
 		// hack remove longOpts -> don't show them
 		final Options tmpOptions = new Options();
 		for (final Option option : getOptions(false).getOptions()) {
-			option.setLongOpt(null);
+			final Option tmpOption = new Option(option.getOpt(), option.getDescription());
+			tmpOption.setArgName(option.getArgName());
+			tmpOption.setArgs(option.getArgs());
+			tmpOption.setRequired(option.isRequired());
+			tmpOptions.addOption(tmpOption);
 		}
 		
 		formatter.printHelp(

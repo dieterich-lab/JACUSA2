@@ -2,8 +2,8 @@ package jacusa;
 
 public final class VersionInfo {
 
-	public final static String BRANCH 	= "add_Minka_BetaBin";
-	public final static String TAG 		= "2.0.0-BETA32";
+	public final static String BRANCH 	= "develop";
+	public final static String TAG 		= "2.0.0-BETA33";
 
 	private VersionInfo() {
 		throw new AssertionError();
