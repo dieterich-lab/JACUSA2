@@ -24,7 +24,7 @@ class NonHomozygousSiteTest extends AbstractParallelDataValidatorTest {
 	
 	public NonHomozygousSiteTest() {
 		builderFactory = new DefaultBuilderFactory();
-		bccFetcher = new DataTypeFetcher<>(DataType.create("Test", BaseCallCount.class));
+		bccFetcher = new DataTypeFetcher<>(DataType.retrieve("Test", BaseCallCount.class));
 		setTestInstance(
 				new ExtendedVariantSiteValidator(bccFetcher));
 	}

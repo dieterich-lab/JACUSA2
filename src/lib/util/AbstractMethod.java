@@ -17,6 +17,7 @@ import lib.worker.AbstractWorker;
 import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import htsjdk.samtools.SAMException;
@@ -133,13 +134,19 @@ public abstract class AbstractMethod {
 		final HelpFormatter formatter = new HelpFormatter();
 		formatter.setWidth(160);
 		
+		// hack remove longOpts -> don't show them
+		final Options tmpOptions = new Options();
+		for (final Option option : getOptions(false).getOptions()) {
+			option.setLongOpt(null);
+		}
+		
 		formatter.printHelp(
 				AbstractTool.getLogger().getTool().getName() + 
 				" " + 
 				name +
 				" " +
 				getFiles(), 
-				getOptions(printExtendedHelp));
+				tmpOptions);
 	}
 	
 	protected String getFiles() {
