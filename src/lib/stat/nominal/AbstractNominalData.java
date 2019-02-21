@@ -1,27 +1,31 @@
-package lib.stat.dirmult;
+package lib.stat.nominal;
 
-public class DirMultData {
+class AbstractNominalData implements NominalData {
 
 	private final int categories;
 	private final double[][] data;
 
-	public DirMultData(final int categories, final double[][] data) {
+	AbstractNominalData(final int categories, final double[][] data) {
 		this.categories = categories;
 		this.data 		= data;
 	}
 
+	@Override
 	public int getReplicates() {
 		return data.length;
 	}
 	
+	@Override
 	public double[] getReplicate(final int replicate) {
 		return data[replicate];
 	}
 	
+	@Override
 	public double getReplicate(final int replicate, final int category) {
 		return data[replicate][category];
 	}
 
+	@Override
 	public double[] getRowWiseSums() {
 		final int replicates = data.length;
 		final double[] sums = new double[replicates];
@@ -34,6 +38,7 @@ public class DirMultData {
 		return sums;
 	}
 	
+	@Override
 	public int getCategories() {
 		return categories;
 	}
@@ -61,7 +66,7 @@ public class DirMultData {
 		return sb.toString();
 	}
 
-	public static class Parser implements lib.util.Parser<DirMultData> {
+	public static class Parser implements lib.util.Parser<AbstractNominalData> {
 		
 		public static final char SEP = ',';
 		
@@ -76,7 +81,7 @@ public class DirMultData {
 		}
 		
 		@Override
-		public DirMultData parse(String s) {
+		public AbstractNominalData parse(String s) {
 			if (s == null) {
 				throw new IllegalArgumentException("s cannot be null");
 			}
@@ -98,11 +103,11 @@ public class DirMultData {
 			for (int replicate = 0; replicate < replicates; replicate++) {
 				i = parseDouble(e, i, categories, data[replicate]);
 			}
-			return new DirMultData(categories, data);
+			return new AbstractNominalData(categories, data);
 		}
 		
 		@Override
-		public String wrap(DirMultData o) {
+		public String wrap(AbstractNominalData o) {
 			final StringBuilder sb = new StringBuilder();
 			sb.append(o.getCategories());
 			for (int replicate = 0; replicate < o.getReplicates(); replicate++) {

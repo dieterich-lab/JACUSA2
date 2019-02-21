@@ -1,6 +1,6 @@
-package lib.stat.dirmult.initalpha;
+package lib.stat.initalpha;
 
-import lib.stat.dirmult.DirMultData;
+import lib.stat.nominal.NominalData;
 
 public class MeanAlphaInit extends AbstractAlphaInit {
 
@@ -14,15 +14,15 @@ public class MeanAlphaInit extends AbstractAlphaInit {
 	}
 	
 	@Override
-	public double[] init(final DirMultData dirMultData) {
-		final int categories 	= dirMultData.getCategories();
+	public double[] init(final NominalData nominalData) {
+		final int categories 	= nominalData.getCategories();
 		final double[] alpha 	= new double[categories];
 		final double[] mean 	= new double[categories];
 
 		double total 			= 0.0;
-		for (int replicateIndex = 0; replicateIndex < dirMultData.getReplicates(); ++replicateIndex) {
+		for (int replicateIndex = 0; replicateIndex < nominalData.getReplicates(); ++replicateIndex) {
 			for (int i = 0; i < categories; i++) { 
-				final double tmp = dirMultData.getReplicate(replicateIndex)[i];
+				final double tmp = nominalData.getReplicate(replicateIndex)[i];
 				mean[i] += tmp;
 				total 	+= tmp;
 			}

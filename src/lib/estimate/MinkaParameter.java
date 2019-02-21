@@ -1,20 +1,20 @@
 package lib.estimate;
 
-import lib.stat.dirmult.initalpha.AbstractAlphaInit;
-import lib.stat.dirmult.initalpha.MeanAlphaInit;
-import lib.stat.dirmult.initalpha.MinAlphaInit;
+import lib.stat.initalpha.AbstractAlphaInit;
+import lib.stat.initalpha.MeanAlphaInit;
+import lib.stat.initalpha.MinAlphaInit;
 
 /**
  * TODO comments
  */
-public class MinkaEstimateParameter {
+public class MinkaParameter {
 
 	private AbstractAlphaInit alphaInit;
 	private AbstractAlphaInit fallbackAlphaInit;
 	private int maxIterations;
 	private double epsilon;
 	
-	public MinkaEstimateParameter() {
+	public MinkaParameter() {
 		alphaInit 			= new MeanAlphaInit();
 		fallbackAlphaInit	= new MinAlphaInit();
 		maxIterations 		= 100;

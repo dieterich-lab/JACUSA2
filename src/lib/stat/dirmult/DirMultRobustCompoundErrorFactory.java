@@ -7,54 +7,56 @@ import org.apache.commons.cli.Options;
 import lib.io.ResultFormat;
 import lib.stat.AbstractStat;
 import lib.stat.AbstractStatFactory;
-import lib.stat.DirichletFactoryUtil;
-import lib.stat.DirichletParameter;
+import lib.stat.sample.provider.EstimationSampleProvider;
+import lib.stat.sample.provider.pileup.InSilicoEstimationSamplePileupProvider;
+import lib.stat.sample.provider.pileup.RobustEstimationSamplePileupProvider;
 
 public class DirMultRobustCompoundErrorFactory
 extends AbstractStatFactory {
 
-	private final DirichletFactoryUtil facturyUtil;
+	private final CallDirMultParameter dirMultParameter;
+	private final DirMultCLIprocessing CLIprocessing;
 	
 	public DirMultRobustCompoundErrorFactory(final ResultFormat resultFormat) {
 		super(Option.builder("DirMult")
 				.desc(DirMultCompoundErrorFactory.DESC + "\n"+
 						"Adjusts variant condition")
 				.build());
-
-		facturyUtil = new DirichletFactoryUtil(resultFormat);
+		
+		dirMultParameter 	= new CallDirMultParameter();
+		CLIprocessing 		= new CallDirMultCLIProcessing(resultFormat, dirMultParameter);
 	}
 
 	@Override
 	public AbstractStat newInstance(final int conditions) {
-		final DirichletParameter dirichletParameter = facturyUtil.getDirichletParameter();
-		DirMultSampleProvider dirMultPileupCountProvider;
+		EstimationSampleProvider dirMultPileupCountProvider;
 		switch (conditions) {
 		case 1:
-			dirMultPileupCountProvider = new InSilicoDirMultPileupCountProvider(
-					dirichletParameter.getMinkaEstimateParameter().getMaxIterations(),
-					dirichletParameter.getEstimatedError());
+			dirMultPileupCountProvider = new InSilicoEstimationSamplePileupProvider(
+					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
+					dirMultParameter.getEstimatedError());
 			break;
 			
 		case 2:
-			dirMultPileupCountProvider = new RobustDirMultPileupCountProvider(
-					dirichletParameter.getMinkaEstimateParameter().getMaxIterations(),
-					dirichletParameter.getEstimatedError()); 
+			dirMultPileupCountProvider = new RobustEstimationSamplePileupProvider(
+					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
+					dirMultParameter.getEstimatedError()); 
 			break;
 
 		default:
 			throw new IllegalStateException("Number of conditions not supported: " + conditions);
 		}
-		return new DirMult(this, dirMultPileupCountProvider, dirichletParameter);
-	}
-
-	@Override
-	public void processCLI(CommandLine cmd) {
-		facturyUtil.processCLI(cmd);
+		return new DirMult(dirMultPileupCountProvider, dirMultParameter);
 	}
 
 	@Override
 	protected Options getOptions() {
-		return facturyUtil.getOptions();
+		return CLIprocessing.getOptions();
+	}
+	
+	@Override
+	public void processCLI(final CommandLine cmd) {
+		CLIprocessing.processCLI(cmd);
 	}
 	
 }

@@ -1,8 +1,8 @@
-package lib.stat.dirmult.initalpha;
+package lib.stat.initalpha;
 
 import java.util.Arrays;
 
-import lib.stat.dirmult.DirMultData;
+import lib.stat.nominal.NominalData;
 
 public class MinAlphaInit extends AbstractAlphaInit {
 
@@ -16,18 +16,18 @@ public class MinAlphaInit extends AbstractAlphaInit {
 	}
 
 	@Override
-	public double[] init(final DirMultData dirMultData) {
-		final int categories = dirMultData.getCategories();
+	public double[] init(final NominalData nominalData) {
+		final int categories = nominalData.getCategories();
 		final double[] alpha = new double[categories];
 		Arrays.fill(alpha, Double.MAX_VALUE);
 
-		final double[] sums = dirMultData.getRowWiseSums();
+		final double[] sums = nominalData.getRowWiseSums();
 
-		double[][] dataProportionMatrix = new double[dirMultData.getReplicates()][alpha.length];
-		for (int replicateIndex = 0; replicateIndex < dirMultData.getReplicates(); ++replicateIndex) {
+		double[][] dataProportionMatrix = new double[nominalData.getReplicates()][alpha.length];
+		for (int replicateIndex = 0; replicateIndex < nominalData.getReplicates(); ++replicateIndex) {
 			for (int i = 0; i < categories; ++i) {
 				dataProportionMatrix[replicateIndex][i] = 
-						dirMultData.getReplicate(replicateIndex,i) / sums[replicateIndex];
+						nominalData.getReplicate(replicateIndex,i) / sums[replicateIndex];
 				alpha[i] = Math.min(alpha[i], dataProportionMatrix[replicateIndex][i]);
 			}
 		}

@@ -6,56 +6,58 @@ import org.apache.commons.cli.Options;
 
 import lib.io.ResultFormat;
 import lib.stat.AbstractStatFactory;
-import lib.stat.DirichletFactoryUtil;
-import lib.stat.DirichletParameter;
+import lib.stat.sample.provider.EstimationSampleProvider;
+import lib.stat.sample.provider.pileup.DefaultEstimationSamplePileupProvider;
+import lib.stat.sample.provider.pileup.InSilicoEstimationSamplePileupProvider;
 
 public class DirMultCompoundErrorFactory
 extends AbstractStatFactory {
 
 	private static final String NAME 	= "DirMultCE";
-	public static final String DESC 	= "Compound Error (estimated error {" + DirichletParameter.ESTIMATED_ERROR + "} + phred score)";
+	public static final String DESC 	= "Compound Error (estimated error {" + DirMultParameter.ESTIMATED_ERROR + "} + phred score)";
 	
-	private final DirichletFactoryUtil dirichletFactory;
+	private final CallDirMultParameter dirMultParameter;
+	private final DirMultCLIprocessing CLIprocessing;
 	
 	public DirMultCompoundErrorFactory(final ResultFormat resultFormat) {
 
 		super(Option.builder(NAME)
 				.desc(DESC)
 				.build());
-		dirichletFactory = new DirichletFactoryUtil(resultFormat);
+		dirMultParameter 	= new CallDirMultParameter();
+		CLIprocessing 		= new CallDirMultCLIProcessing(resultFormat, dirMultParameter);
 	}
 
 	@Override
 	public DirMult newInstance(final int conditions) {
-		final DirichletParameter dirichletParameter = dirichletFactory.getDirichletParameter();
-		DirMultSampleProvider dirMultPileupCountProvider;
+		EstimationSampleProvider dirMultPileupCountProvider;
 		switch (conditions) {
 		case 1:
-			dirMultPileupCountProvider = new InSilicoDirMultPileupCountProvider(
-					dirichletParameter.getMinkaEstimateParameter().getMaxIterations(),
-					dirichletParameter.getEstimatedError());
+			dirMultPileupCountProvider = new InSilicoEstimationSamplePileupProvider(
+					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
+					dirMultParameter.getEstimatedError());
 			break;
 			
 		case 2:
-			dirMultPileupCountProvider = new DefaultDirMultPileupCountProvider(
-					dirichletParameter.getMinkaEstimateParameter().getMaxIterations(),
-					dirichletParameter.getEstimatedError()); 
+			dirMultPileupCountProvider = new DefaultEstimationSamplePileupProvider(
+					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
+					dirMultParameter.getEstimatedError()); 
 			break;
 
 		default:
 			throw new IllegalStateException("Number of conditions not supported: " + conditions);
 		}
-		return new DirMult(this, dirMultPileupCountProvider, dirichletParameter);
+		return new DirMult(dirMultPileupCountProvider, dirMultParameter);
 	}
 
 	@Override
 	protected Options getOptions() {
-		return dirichletFactory.getOptions();
+		return CLIprocessing.getOptions();
 	}
 	
 	@Override
 	public void processCLI(final CommandLine cmd) {
-		dirichletFactory.processCLI(cmd);
+		CLIprocessing.processCLI(cmd);
 	}
 	
 }

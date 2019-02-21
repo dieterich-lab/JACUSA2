@@ -1,4 +1,4 @@
-package lib.stat.dirmult;
+package lib.stat.sample.provider.pileup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,10 +12,10 @@ import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.util.Base;
 
-public class InSilicoDirMultPileupCountProvider 
-extends AbstractDirMultPileupCountProvider {
+public class InSilicoEstimationSamplePileupProvider 
+extends AbstractEstimationSamplePileupProvider {
 	
-	public InSilicoDirMultPileupCountProvider(
+	public InSilicoEstimationSamplePileupProvider(
 			final int maxIterations, final double estimatedError) {
 		
 		super(maxIterations, estimatedError);

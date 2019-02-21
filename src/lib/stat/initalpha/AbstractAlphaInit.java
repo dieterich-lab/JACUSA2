@@ -1,6 +1,6 @@
-package lib.stat.dirmult.initalpha;
+package lib.stat.initalpha;
 
-import lib.stat.dirmult.DirMultData;
+import lib.stat.nominal.NominalData;
 
 /**
  * 
@@ -44,7 +44,7 @@ public abstract class AbstractAlphaInit {
 	 * 			final T[] data,
 	 * @return
 	 */
-	public abstract double[] init(DirMultData dirMultData);
+	public abstract double[] init(NominalData dirMultData);
 	
 	/**
 	 * Create a new instance.

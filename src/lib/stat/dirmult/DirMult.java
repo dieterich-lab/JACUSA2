@@ -5,40 +5,40 @@ import java.text.DecimalFormatSymbols;
 
 import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 
-import lib.stat.dirmult.initalpha.AbstractAlphaInit;
 import lib.data.ParallelData;
 import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.stat.AbstractStat;
-import lib.stat.AbstractStatFactory;
-import lib.stat.DirichletParameter;
+import lib.stat.initalpha.AbstractAlphaInit;
+import lib.stat.sample.EstimationSample;
+import lib.stat.sample.provider.EstimationSampleProvider;
 import lib.util.Base;
 import lib.util.Info;
 
 public class DirMult
 extends AbstractStat {
 
-	private final DirMultSampleProvider dirMultSampleProvider;
-	private final DirichletParameter dirichletParameter;
+	private final EstimationSampleProvider estimationSampleProvider;
+	private final DirMultParameter dirMultParameter;
 
-	private MinkaEstimateDirMultAlpha minkaEstimateDirMultAlpha;
+	private MinkaEstimateDirMultAlpha minkaEstimateAlpha;
 
-	private DirMultSample[] dirMultSamples;
+	private EstimationSample[] estimationSamples;
 	private Info estimateInfo;
 
 	private DecimalFormat decimalFormat;
 
 	private final ChiSquaredDistribution dist = new ChiSquaredDistribution(Base.validValues().length - 1d);
 	
-	public DirMult(final AbstractStatFactory factory,
-			final DirMultSampleProvider dirMultDataProvider,
-			final DirichletParameter dirichletParameter) {
+	public DirMult(
+			final EstimationSampleProvider estimationSampleProvider,
+			final DirMultParameter dirMultParameter) {
 
-		this.dirMultSampleProvider 	= dirMultDataProvider;
-		this.dirichletParameter 	= dirichletParameter;
+		this.estimationSampleProvider 	= estimationSampleProvider;
+		this.dirMultParameter 		= dirMultParameter;
 	
-		minkaEstimateDirMultAlpha	= new MinkaEstimateDirMultAlpha(dirichletParameter.getMinkaEstimateParameter());
+		minkaEstimateAlpha				= new MinkaEstimateDirMultAlpha(dirMultParameter.getMinkaEstimateParameter());
 		
 		final DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
 		otherSymbols.setDecimalSeparator('.');
@@ -50,7 +50,7 @@ extends AbstractStat {
 	public void addStatResultInfo(final Result statResult) {
 		// append content to info field
 		final Info info = statResult.getResultInfo();
-		if (! isNumericallyStable(dirMultSamples)) {
+		if (! isNumericallyStable(estimationSamples)) {
 			info.add("NumericallyInstable");
 		}
 
@@ -59,9 +59,9 @@ extends AbstractStat {
 		}
 	}
 	
-	public boolean isNumericallyStable(final DirMultSample[] dirMultSamples) {
-		for (final DirMultSample dirMultSample : dirMultSamples) {
-			if (! dirMultSample.isNumericallyStable()) {
+	public boolean isNumericallyStable(final EstimationSample[] estimationSamples) {
+		for (final EstimationSample estimationSample : estimationSamples) {
+			if (! estimationSample.isNumericallyStable()) {
 				return false;
 			}
 		}
@@ -69,25 +69,25 @@ extends AbstractStat {
 		return true;
 	}
 	
-	public boolean estimate(final DirMultSample dirMultSample, final AbstractAlphaInit alphaInit, final boolean backtrack) {
+	public boolean estimate(final EstimationSample estimationSample, final AbstractAlphaInit alphaInit, final boolean backtrack) {
 		// perform an initial guess of alpha
-		final double[] initAlpha 	= alphaInit.init(dirMultSample.getDirMultData());
-		final double logLikelihood 	= minkaEstimateDirMultAlpha.getLogLikelihood(initAlpha, dirMultSample.getDirMultData());
-		dirMultSample.add(initAlpha, logLikelihood);
+		final double[] initAlpha 	= alphaInit.init(estimationSample.getNominalData());
+		final double logLikelihood 	= minkaEstimateAlpha.getLogLikelihood(initAlpha, estimationSample.getNominalData());
+		estimationSample.add(initAlpha, logLikelihood);
 
 		// estimate alpha(s), capture and info(s), and store log-likelihood
-		return minkaEstimateDirMultAlpha.maximizeLogLikelihood(dirMultSample, estimateInfo, backtrack);
+		return minkaEstimateAlpha.maximizeLogLikelihood(estimationSample, estimateInfo, backtrack);
 	}
 	
 	private boolean estimate(final ParallelData parallelData, final AbstractAlphaInit alphaInit, final boolean backtrack) {
 		boolean flag = true;
 		// estimate alpha(s), capture info(s), and store log-likelihood
-		for (final DirMultSample dirMultsample : dirMultSamples) {
+		for (final EstimationSample estimationSample : estimationSamples) {
 			try {
-				flag &= estimate(dirMultsample, alphaInit, backtrack);
+				flag &= estimate(estimationSample, alphaInit, backtrack);
 			} catch (StackOverflowError e) {
 				// catch numerical instabilities and report
-				dirMultsample.setNumericallyUnstable();
+				estimationSample.setNumericallyUnstable();
 			}
 		}
 		return flag;
@@ -97,35 +97,34 @@ extends AbstractStat {
 		// flag to indicated numerical stability of parameter estimation
 		estimateInfo = new Info();
 
-		final AbstractAlphaInit defaultAlphaInit 	= dirichletParameter.getMinkaEstimateParameter().getAlphaInit();
-		final AbstractAlphaInit fallbackAlphaInit 	= dirichletParameter.getMinkaEstimateParameter().getFallbackAlphaInit();
+		final AbstractAlphaInit defaultAlphaInit 	= dirMultParameter.getMinkaEstimateParameter().getAlphaInit();
+		final AbstractAlphaInit fallbackAlphaInit 	= dirMultParameter.getMinkaEstimateParameter().getFallbackAlphaInit();
 
-		dirMultSamples = dirMultSampleProvider.convert(parallelData);
+		estimationSamples = estimationSampleProvider.convert(parallelData);
 		
 		if (! estimate(parallelData, defaultAlphaInit, false)) {
-			for (final DirMultSample dirMultsample : dirMultSamples) {
-				dirMultsample.clear();
+			for (final EstimationSample estimationSample : estimationSamples) {
+				estimationSample.clear();
 			}
 			estimate(parallelData, fallbackAlphaInit, true);
 		}
 		
 		// container for test-statistic
 		double stat =  Double.NaN;
-		
 
 		// append alpha/iterations/log-likelihood to info info field
-		if (dirichletParameter.isShowAlpha()) {
+		if (dirMultParameter.isShowAlpha()) {
 			addShowAlpha();
 		}
 		
 		double tmpLogLikelihood = 0.0;
 		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
-			tmpLogLikelihood += getDirMultSampleCondition(conditionIndex).getLogLikelihood();
+			tmpLogLikelihood += getEstimationSampleCondition(conditionIndex).getLogLikelihood();
 		}
-		double NULLLogLikelihood = getDirMultSamplePooled().getLogLikelihood();
+		double NULLLogLikelihood = getEstimationSamplePooled().getLogLikelihood();
 
 		// we want a p-value?
-		if (dirichletParameter.isCalcPValue()) {
+		if (dirMultParameter.isCalcPValue()) {
 			// TODO test
 			stat = -2 * (NULLLogLikelihood - tmpLogLikelihood);
 			stat = 1 - dist.cumulativeProbability(stat);
@@ -136,12 +135,12 @@ extends AbstractStat {
 		return stat;
 	}
 
-	private  DirMultSample getDirMultSampleCondition(final int conditionIndex) {
-		return dirMultSamples[conditionIndex];
+	private  EstimationSample getEstimationSampleCondition(final int conditionIndex) {
+		return estimationSamples[conditionIndex];
 	}
 	
-	private  DirMultSample getDirMultSamplePooled() {
-		return dirMultSamples[dirMultSamples.length - 1];
+	private  EstimationSample getEstimationSamplePooled() {
+		return estimationSamples[estimationSamples.length - 1];
 	}
 	
 	@Override
@@ -154,26 +153,26 @@ extends AbstractStat {
 	public boolean filter(final Result statResult) {
 		final double statValue = statResult.getStat();
 
-		if (Double.isNaN(dirichletParameter.getThreshold())) {
+		if (Double.isNaN(dirMultParameter.getThreshold())) {
 			return false;
 		}
 
 		// if p-value interpret threshold as upper bound
-		if (dirichletParameter.isCalcPValue()) {
-			return dirichletParameter.getThreshold() < statValue;
+		if (dirMultParameter.isCalcPValue()) {
+			return dirMultParameter.getThreshold() < statValue;
 		}
 
 		// if log-likelihood ratio interpret threshold as lower bound
-		return statValue < dirichletParameter.getThreshold();
+		return statValue < dirMultParameter.getThreshold();
 	}
 
 	protected void addShowAlpha() {
-		for (final DirMultSample dirMultSample : dirMultSamples) {
-			final String id 			= dirMultSample.getId();
-			final int iteration			= dirMultSample.getIteration();
-			final double[] initAlpha 	= dirMultSample.getAlpha(0);
-			final double[] alpha 		= dirMultSample.getAlpha(iteration);
-			final double logLikelihood	= dirMultSample.getLogLikelihood(iteration);
+		for (final EstimationSample estimationSample : estimationSamples) {
+			final String id 			= estimationSample.getId();
+			final int iteration			= estimationSample.getIteration();
+			final double[] initAlpha 	= estimationSample.getAlpha(0);
+			final double[] alpha 		= estimationSample.getAlpha(iteration);
+			final double logLikelihood	= estimationSample.getLogLikelihood(iteration);
 			
 			estimateInfo.add("initAlpha" + id, decimalFormat.format(initAlpha[0]));			
 			for (int i = 1; i < initAlpha.length; ++i) {

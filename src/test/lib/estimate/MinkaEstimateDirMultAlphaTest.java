@@ -1,12 +1,12 @@
 package test.lib.estimate;
 
 import lib.estimate.MinkaEstimateDirMultAlpha;
-import lib.estimate.MinkaEstimateParameter;
-import lib.stat.dirmult.DirMultData;
-import lib.stat.dirmult.DirMultSample;
-import lib.stat.dirmult.FastDirMultSample;
+import lib.estimate.MinkaParameter;
+import lib.stat.nominal.NominalData;
+import lib.stat.sample.EstimationSample;
+import lib.stat.sample.FastEstimationResult;
 import lib.util.Info;
-import test.lib.stat.dirmult.DirMultDataArgumentConverter;
+import test.lib.stat.dirmult.NominalDataArgumentConverter;
 import test.utlis.DoubleArrayArgumentConverter;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -18,24 +18,23 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
-
 class MinkaEstimateDirMultAlphaTest {
 
 	public static final double DELTA_ALPHA = 1e-6;
 	public static final double DELTA_LL = 1e-2;
 
-	private final MinkaEstimateParameter minkaParameter;
+	private final MinkaParameter minkaParameter;
 	private MinkaEstimateDirMultAlpha testInstance;
 	
 	public MinkaEstimateDirMultAlphaTest() {
-		minkaParameter = new MinkaEstimateParameter();
+		minkaParameter = new MinkaParameter();
 		testInstance = new MinkaEstimateDirMultAlpha(minkaParameter);
 	}
 	
 	// resources = "src/test/jacusa/estimate/dataMaximizeLogLikelihood.csv",
 	@Disabled
 	/**
-	 * Tests @see lib.estimate.MinkaEstimateDirMultAlpha#maximizeLogLikelihood(DirMultSample, Info, boolean)
+	 * Tests @see lib.estimate.MinkaEstimateDirMultAlpha#maximizeLogLikelihood(EstimationSample, Info, boolean)
 	 */
 	@DisplayName("Should calculate the correct alpha(s) and log likelihood")
 	@ParameterizedTest(name = "Test on: {arguments}")
@@ -43,20 +42,20 @@ class MinkaEstimateDirMultAlphaTest {
 			resources = "dataMaximizeLogLikelihood.csv",
 			delimiter = '\t')
 	void testMaximizeLogLikelihood(
-			@ConvertWith(DirMultDataArgumentConverter.class) DirMultData dirMultData, 
+			@ConvertWith(NominalDataArgumentConverter.class) NominalData nominalData, 
 			@ConvertWith(DoubleArrayArgumentConverter.class) double[] initAlpha, 
 			@ConvertWith(DoubleArrayArgumentConverter.class) double[] expectedAlpha, 
 			double expectedLL) {
 		
-		final DirMultSample dirMultSample = 
-				new FastDirMultSample("TEST", dirMultData, minkaParameter.getMaxIterations());  
-		dirMultSample.add(initAlpha, Double.NaN);
-		testInstance.maximizeLogLikelihood(dirMultSample, new Info(), false);
+		final EstimationSample estimationSample = 
+				new FastEstimationResult("TEST", nominalData, minkaParameter.getMaxIterations());  
+		estimationSample.add(initAlpha, Double.NaN);
+		testInstance.maximizeLogLikelihood(estimationSample, new Info(), false);
 		
-		final double[] actualAlpha = dirMultSample.getAlpha();
+		final double[] actualAlpha = estimationSample.getAlpha();
 		assertArrayEquals(expectedAlpha, actualAlpha, DELTA_ALPHA);
 		
-		final double calculatedLL = dirMultSample.getLogLikelihood();
+		final double calculatedLL = estimationSample.getLogLikelihood();
 		assertEquals(expectedLL, calculatedLL, DELTA_LL);
 	}
 	
@@ -66,7 +65,7 @@ class MinkaEstimateDirMultAlphaTest {
 			resources = "dataGetLogLikelihood.csv",
 			delimiter = '\t')
 	void testGetLogLikelihood(
-			@ConvertWith(DirMultDataArgumentConverter.class) DirMultData dirMultData, 
+			@ConvertWith(NominalDataArgumentConverter.class) NominalData dirMultData, 
 			@ConvertWith(DoubleArrayArgumentConverter.class) double[] alpha, 
 			double expectedLL) {
 

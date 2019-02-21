@@ -1,14 +1,14 @@
-package lib.stat.dirmult;
+package lib.stat.sample.provider.pileup;
 
 import java.util.List;
 
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 
-public class DefaultDirMultPileupCountProvider
-extends AbstractDirMultPileupCountProvider {
+public class DefaultEstimationSamplePileupProvider
+extends AbstractEstimationSamplePileupProvider {
 
-	public DefaultDirMultPileupCountProvider(final int maxIterations, final double estimatedError) {
+	public DefaultEstimationSamplePileupProvider(final int maxIterations, final double estimatedError) {
 
 		super(maxIterations, estimatedError);
 	}

@@ -10,10 +10,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import lib.stat.dirmult.DirMultData;
+import lib.stat.nominal.NominalData;
 
 @TestInstance(Lifecycle.PER_CLASS)
-class DirMultDataTest {
+class NominalDataTest {
 
 	public static final double DELTA = 1e-15;
 
@@ -24,7 +24,7 @@ class DirMultDataTest {
 	 *  2. double[](expected rowSums)
 	 */
 	@MethodSource("testGetRowWiseSums")
-	void testGetRowWiseSums(DirMultData dirMultData, double[] expected) {
+	void testGetRowWiseSums(NominalData dirMultData, double[] expected) {
 		final double[] actual = dirMultData.getRowWiseSums();
 		assertArrayEquals(expected, actual, DELTA);
 	}
@@ -48,7 +48,7 @@ class DirMultDataTest {
 
 	Arguments createArguments(final int k, final double[][] data, double[] expected) {
 		return Arguments.of(
-				new DirMultData(k, data),
+				NominalData.build(k, data),
 				expected);
 	}
 	
