@@ -17,7 +17,6 @@ public class ShowReferenceOption extends AbstractACOption {
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
-				.argName(getLongOpt().toUpperCase())
 				.hasArg(false)
 				.desc("Add reference base to output")
 				.build();

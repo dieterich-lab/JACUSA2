@@ -144,7 +144,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 		if (value.isEmpty()) {
 			return " -" + opt;
 		}
-		return " -" + opt + "=" + value;
+		return " -" + opt + " " + value;
 	}
 
 	protected T getDefaultValue() {

@@ -234,11 +234,7 @@ extends AbstractMethod {
 	public static class Factory extends AbstractMethod.AbstractFactory {
 	
 		public static final String NAME = "pileup";
-		public static final String DESC = "samtools like mpileup";
-		
-		public Factory() {
-			this(1);
-		}
+		public static final String DESC = "samtools like mpileup (2 conditions)";
 		
 		public Factory(final int conditions) {
 			super(NAME, DESC, conditions);
@@ -246,8 +242,8 @@ extends AbstractMethod {
 		
 		@Override
 		public PileupMethod createMethod() {
-			final PileupParameter parameter = new PileupParameter(getConditions());
-			final PileupBuilderFactory builderFactory = new PileupBuilderFactory(parameter);
+			final PileupParameter parameter 			= new PileupParameter(getConditions());
+			final PileupBuilderFactory builderFactory 	= new PileupBuilderFactory(parameter);
 			
 			final PileupDataAssemblerFactory dataAssemblerFactory = 
 					new PileupDataAssemblerFactory(builderFactory);
@@ -261,7 +257,10 @@ extends AbstractMethod {
 		
 		@Override
 		public Factory createFactory(int conditions) {
-			return new Factory(conditions);
+			if (conditions == 2) {
+				return new Factory(conditions);
+			}
+			return null;
 		}
 		
 	}

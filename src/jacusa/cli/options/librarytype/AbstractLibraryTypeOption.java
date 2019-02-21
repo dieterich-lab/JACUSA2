@@ -25,7 +25,7 @@ extends AbstractConditionACOption {
 	public AbstractLibraryTypeOption(final List<ConditionParameter> conditionParameter, 
 			final GeneralParameter generalParameter) {
 		
-		super(OPT, OPT, conditionParameter);
+		super(OPT, LONG_OPT, conditionParameter);
 		this.generalParameter = generalParameter;
 	}
 

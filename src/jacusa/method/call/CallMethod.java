@@ -334,7 +334,11 @@ extends AbstractMethod {
 		
 		@Override
 		public Factory createFactory(int conditions) {
-			return new Factory(conditions);
+			if (conditions == 1 || conditions == 2) {
+				return new Factory(conditions);
+			} else {
+				return null;
+			}
 		}
 		
 	}
