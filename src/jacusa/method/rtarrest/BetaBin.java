@@ -4,7 +4,7 @@ import lib.data.ParallelData;
 import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
-import lib.stat.betabin.ArrestDirMultBinParameter;
+import lib.stat.betabin.RTarrestBetaBinParameter;
 
 /**
  * TODO implement this test-statistic
@@ -14,10 +14,10 @@ import lib.stat.betabin.ArrestDirMultBinParameter;
 public class BetaBin 
 extends AbstractStat {
 	
-	private final ArrestDirMultBinParameter betaBinParameter;
+	private final RTarrestBetaBinParameter betaBinParameter;
 	
 	public BetaBin() {
-		betaBinParameter = new ArrestDirMultBinParameter();
+		betaBinParameter = new RTarrestBetaBinParameter();
 	}
 
 	@Override

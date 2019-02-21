@@ -5,40 +5,27 @@ import java.text.DecimalFormatSymbols;
 
 import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 
-import lib.data.ParallelData;
-import lib.data.result.OneStatResult;
-import lib.data.result.Result;
 import lib.estimate.MinkaEstimateDirMultAlpha;
-import lib.stat.AbstractStat;
+import lib.estimate.MinkaParameter;
 import lib.stat.initalpha.AbstractAlphaInit;
 import lib.stat.sample.EstimationSample;
-import lib.stat.sample.provider.EstimationSampleProvider;
 import lib.util.Base;
 import lib.util.Info;
 
-public class DirMult
-extends AbstractStat {
+public class EstimateDirMult {
 
-	private final EstimationSampleProvider estimationSampleProvider;
-	private final DirMultParameter dirMultParameter;
-
-	private MinkaEstimateDirMultAlpha minkaEstimateAlpha;
-
-	private EstimationSample[] estimationSamples;
-	private Info estimateInfo;
+	private final MinkaParameter minkaParameter;
+	private final MinkaEstimateDirMultAlpha minkaEstimateAlpha;
 
 	private DecimalFormat decimalFormat;
-
 	private final ChiSquaredDistribution dist = new ChiSquaredDistribution(Base.validValues().length - 1d);
 	
-	public DirMult(
-			final EstimationSampleProvider estimationSampleProvider,
-			final DirMultParameter dirMultParameter) {
+	private EstimationSample[] estimationSamples;	
+	private Info estimateInfo;
 
-		this.estimationSampleProvider 	= estimationSampleProvider;
-		this.dirMultParameter 		= dirMultParameter;
-	
-		minkaEstimateAlpha				= new MinkaEstimateDirMultAlpha(dirMultParameter.getMinkaEstimateParameter());
+	public EstimateDirMult(final MinkaParameter minkaParameter) {
+		minkaEstimateAlpha		= new MinkaEstimateDirMultAlpha(minkaParameter);
+		this.minkaParameter 	= minkaParameter;
 		
 		final DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
 		otherSymbols.setDecimalSeparator('.');
@@ -46,14 +33,10 @@ extends AbstractStat {
 		decimalFormat = new DecimalFormat("#.##", otherSymbols);
 	}
 
-	@Override
-	public void addStatResultInfo(final Result statResult) {
-		// append content to info field
-		final Info info = statResult.getResultInfo();
+	public void addStatResultInfo(final Info info) {
 		if (! isNumericallyStable(estimationSamples)) {
 			info.add("NumericallyInstable");
 		}
-
 		if (! estimateInfo.isEmpty()) {
 			info.addAll(estimateInfo);
 		}
@@ -79,7 +62,7 @@ extends AbstractStat {
 		return minkaEstimateAlpha.maximizeLogLikelihood(estimationSample, estimateInfo, backtrack);
 	}
 	
-	private boolean estimate(final ParallelData parallelData, final AbstractAlphaInit alphaInit, final boolean backtrack) {
+	private boolean estimate(final AbstractAlphaInit alphaInit, final boolean backtrack) {
 		boolean flag = true;
 		// estimate alpha(s), capture info(s), and store log-likelihood
 		for (final EstimationSample estimationSample : estimationSamples) {
@@ -93,46 +76,33 @@ extends AbstractStat {
 		return flag;
 	}
 	
-	protected double getStatistic(final ParallelData parallelData) {
-		// flag to indicated numerical stability of parameter estimation
-		estimateInfo = new Info();
+	public double getPValue(final EstimationSample[] estimationSamples) {
+		double stat = getStatistic(estimationSamples);
+		stat = -2 * (stat);
+		return 1 - dist.cumulativeProbability(stat);
+	}
+	
+	public double getStatistic(final EstimationSample[] estimationSamples) {
+		this.estimationSamples 	= estimationSamples;
+		estimateInfo 			= new Info();
 
-		final AbstractAlphaInit defaultAlphaInit 	= dirMultParameter.getMinkaEstimateParameter().getAlphaInit();
-		final AbstractAlphaInit fallbackAlphaInit 	= dirMultParameter.getMinkaEstimateParameter().getFallbackAlphaInit();
+		final AbstractAlphaInit defaultAlphaInit 	= minkaParameter.getAlphaInit();
+		final AbstractAlphaInit fallbackAlphaInit 	= minkaParameter.getFallbackAlphaInit();
 
-		estimationSamples = estimationSampleProvider.convert(parallelData);
-		
-		if (! estimate(parallelData, defaultAlphaInit, false)) {
+		if (! estimate(defaultAlphaInit, false)) {
 			for (final EstimationSample estimationSample : estimationSamples) {
 				estimationSample.clear();
 			}
-			estimate(parallelData, fallbackAlphaInit, true);
-		}
-		
-		// container for test-statistic
-		double stat =  Double.NaN;
-
-		// append alpha/iterations/log-likelihood to info info field
-		if (dirMultParameter.isShowAlpha()) {
-			addShowAlpha();
+			estimate(fallbackAlphaInit, true);
 		}
 		
 		double tmpLogLikelihood = 0.0;
-		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
+		final int conditions = estimationSamples.length - 1;
+		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
 			tmpLogLikelihood += getEstimationSampleCondition(conditionIndex).getLogLikelihood();
 		}
-		double NULLLogLikelihood = getEstimationSamplePooled().getLogLikelihood();
-
-		// we want a p-value?
-		if (dirMultParameter.isCalcPValue()) {
-			// TODO test
-			stat = -2 * (NULLLogLikelihood - tmpLogLikelihood);
-			stat = 1 - dist.cumulativeProbability(stat);
-		} else { // just the log-likelihood ratio
-			stat = tmpLogLikelihood - NULLLogLikelihood;
-		}
-
-		return stat;
+		double NULLlogLikelihood = getEstimationSamplePooled().getLogLikelihood();
+		return tmpLogLikelihood - NULLlogLikelihood;
 	}
 
 	private  EstimationSample getEstimationSampleCondition(final int conditionIndex) {
@@ -142,31 +112,8 @@ extends AbstractStat {
 	private  EstimationSample getEstimationSamplePooled() {
 		return estimationSamples[estimationSamples.length - 1];
 	}
-	
-	@Override
-	public Result calculate(ParallelData parallelData) {
-		final double stat = getStatistic(parallelData);
-		return new OneStatResult(stat, parallelData);
-	}
-	
-	@Override
-	public boolean filter(final Result statResult) {
-		final double statValue = statResult.getStat();
 
-		if (Double.isNaN(dirMultParameter.getThreshold())) {
-			return false;
-		}
-
-		// if p-value interpret threshold as upper bound
-		if (dirMultParameter.isCalcPValue()) {
-			return dirMultParameter.getThreshold() < statValue;
-		}
-
-		// if log-likelihood ratio interpret threshold as lower bound
-		return statValue < dirMultParameter.getThreshold();
-	}
-
-	protected void addShowAlpha() {
+	public void addShowAlpha() {
 		for (final EstimationSample estimationSample : estimationSamples) {
 			final String id 			= estimationSample.getId();
 			final int iteration			= estimationSample.getIteration();

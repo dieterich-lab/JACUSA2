@@ -11,6 +11,7 @@ import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.util.Base;
+import lib.util.coordinate.CoordinateUtil.STRAND;
 
 public class InSilicoEstimationSamplePileupProvider 
 extends AbstractEstimationSamplePileupProvider {
@@ -26,7 +27,10 @@ extends AbstractEstimationSamplePileupProvider {
 		final int ORIGINAL_CONDITION_INDEX = 0;
 		final int INSILICO_CONDITION_INDEX = 1;
 		
-		final Base refBase = parallelData.getCombinedPooledData().getReferenceBase();
+		Base refBase = parallelData.getCombinedPooledData().getReferenceBase();
+		if (parallelData.getCoordinate().getStrand() == STRAND.REVERSE) {
+			refBase = refBase.getComplement();
+		}
 		final BaseCallCount bcc = JACUSA.BCC_FACTORY.create();
 		bcc.merge(parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount());
 		final Set<Base> alleles = bcc.getAlleles();

@@ -16,6 +16,7 @@ public class RTarrestCountSampleProvider implements EstimationSampleProvider {
 	
 	private final int maxIterations;
 	private final double pseudoCount;
+
 	public RTarrestCountSampleProvider(final int maxIterations) {
 		this.maxIterations 	= maxIterations;
 		this.pseudoCount 	= 1d;
@@ -41,7 +42,7 @@ public class RTarrestCountSampleProvider implements EstimationSampleProvider {
 		return new DefaultEstimationSample(id, nominalData, maxIterations);
 	}
 	
-	private NominalData createData(final List<DataContainer> dataContainers) {
+	public NominalData createData(final List<DataContainer> dataContainers) {
 		final int catergories = 2;
 		final double[][] dataMatrix  = new double[dataContainers.size()][catergories]; // -> 2 because BetaBin
 		for (int replicateIndex = 0; replicateIndex < dataContainers.size(); replicateIndex++) {

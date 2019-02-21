@@ -5,21 +5,20 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import lib.io.ResultFormat;
-import lib.stat.AbstractStat;
 import lib.stat.AbstractStatFactory;
 import lib.stat.sample.provider.EstimationSampleProvider;
 import lib.stat.sample.provider.pileup.InSilicoEstimationSamplePileupProvider;
 import lib.stat.sample.provider.pileup.RobustEstimationSamplePileupProvider;
 
-public class DirMultRobustCompoundErrorFactory
+public class DirMultRobustCompoundErrorStatFactory
 extends AbstractStatFactory {
 
 	private final CallDirMultParameter dirMultParameter;
 	private final DirMultCLIprocessing CLIprocessing;
 	
-	public DirMultRobustCompoundErrorFactory(final ResultFormat resultFormat) {
+	public DirMultRobustCompoundErrorStatFactory(final ResultFormat resultFormat) {
 		super(Option.builder("DirMult")
-				.desc(DirMultCompoundErrorFactory.DESC + "\n"+
+				.desc(DirMultCompoundErrorStatFactory.DESC + "\n"+
 						"Adjusts variant condition")
 				.build());
 		
@@ -28,7 +27,7 @@ extends AbstractStatFactory {
 	}
 
 	@Override
-	public AbstractStat newInstance(final int conditions) {
+	public CallStat newInstance(final int conditions) {
 		EstimationSampleProvider dirMultPileupCountProvider;
 		switch (conditions) {
 		case 1:
@@ -46,7 +45,7 @@ extends AbstractStatFactory {
 		default:
 			throw new IllegalStateException("Number of conditions not supported: " + conditions);
 		}
-		return new DirMult(dirMultPileupCountProvider, dirMultParameter);
+		return new CallStat(dirMultPileupCountProvider, dirMultParameter);
 	}
 
 	@Override

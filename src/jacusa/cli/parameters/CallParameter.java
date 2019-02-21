@@ -3,7 +3,7 @@ package jacusa.cli.parameters;
 import jacusa.io.format.call.BED6callResultFormat;
 import jacusa.method.call.CallMethod;
 import lib.cli.parameter.GeneralParameter;
-import lib.stat.dirmult.DirMultRobustCompoundErrorFactory;
+import lib.stat.dirmult.DirMultRobustCompoundErrorStatFactory;
 
 /**
  * Parameters specific to call method(s).
@@ -24,7 +24,7 @@ implements HasStatParameter {
 						this));
 		setStatParameter(
 				new StatParameter(
-						new DirMultRobustCompoundErrorFactory(
+						new DirMultRobustCompoundErrorStatFactory(
 								getResultFormat()),
 						Double.NaN));
 	}

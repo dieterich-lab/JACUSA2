@@ -31,8 +31,8 @@ import jacusa.method.rtarrest.BetaBinFactory;
 import jacusa.method.rtarrest.CoverageStatisticFactory;
 import jacusa.method.rtarrest.DummyStatisticFactory;
 import lib.stat.AbstractStatFactory;
-import lib.stat.dirmult.DirMultCompoundErrorFactory;
-import lib.stat.dirmult.DirMultRobustCompoundErrorFactory;
+import lib.stat.dirmult.DirMultCompoundErrorStatFactory;
+import lib.stat.dirmult.DirMultRobustCompoundErrorStatFactory;
 
 /**
  * Tests @see {@link jacusa.cli.options.StatFactoryOption#process(org.apache.commons.cli.CommandLine)}
@@ -107,8 +107,8 @@ class StatFactoryOptionTest {
 		return Arrays.asList(
 				new BetaBinFactory(),
 				new CoverageStatisticFactory(),
-				new DirMultCompoundErrorFactory(null),
-				new DirMultRobustCompoundErrorFactory(null),
+				new DirMultCompoundErrorStatFactory(null),
+				new DirMultRobustCompoundErrorStatFactory(null),
 				new DummyStatisticFactory(),
 				new LRTarrestStatFactory() );
 	}

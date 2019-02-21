@@ -3,9 +3,9 @@ package lib.stat.betabin;
 import lib.estimate.MinkaParameter;
 import lib.stat.dirmult.AbstractDirMultParameter;
 
-public class ArrestDirMultBinParameter extends AbstractDirMultParameter {
+public class RTarrestBetaBinParameter extends AbstractDirMultParameter {
 
-	public ArrestDirMultBinParameter() {
+	public RTarrestBetaBinParameter() {
 		super(false, true, new MinkaParameter(), Double.NaN);
 	}
 	

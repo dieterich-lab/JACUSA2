@@ -7,11 +7,11 @@ import org.apache.commons.cli.Options;
 import lib.estimate.MinkaParameter;
 import lib.stat.dirmult.DirMultCLIprocessing;
 
-public class ArrestBetaBinCLIProcessing implements DirMultCLIprocessing {
+public class RTarrestBetaBinCLIProcessing implements DirMultCLIprocessing {
 
-	private final ArrestDirMultBinParameter dirMultParameter;
+	private final RTarrestBetaBinParameter dirMultParameter;
 
-	public ArrestBetaBinCLIProcessing(final ArrestDirMultBinParameter dirMultParameter) {
+	public RTarrestBetaBinCLIProcessing(final RTarrestBetaBinParameter dirMultParameter) {
 		this.dirMultParameter 	= dirMultParameter;
 	}
 	

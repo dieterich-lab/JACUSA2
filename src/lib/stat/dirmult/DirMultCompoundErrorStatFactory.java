@@ -10,7 +10,7 @@ import lib.stat.sample.provider.EstimationSampleProvider;
 import lib.stat.sample.provider.pileup.DefaultEstimationSamplePileupProvider;
 import lib.stat.sample.provider.pileup.InSilicoEstimationSamplePileupProvider;
 
-public class DirMultCompoundErrorFactory
+public class DirMultCompoundErrorStatFactory
 extends AbstractStatFactory {
 
 	private static final String NAME 	= "DirMultCE";
@@ -19,7 +19,7 @@ extends AbstractStatFactory {
 	private final CallDirMultParameter dirMultParameter;
 	private final DirMultCLIprocessing CLIprocessing;
 	
-	public DirMultCompoundErrorFactory(final ResultFormat resultFormat) {
+	public DirMultCompoundErrorStatFactory(final ResultFormat resultFormat) {
 
 		super(Option.builder(NAME)
 				.desc(DESC)
@@ -29,7 +29,7 @@ extends AbstractStatFactory {
 	}
 
 	@Override
-	public DirMult newInstance(final int conditions) {
+	public CallStat newInstance(final int conditions) {
 		EstimationSampleProvider dirMultPileupCountProvider;
 		switch (conditions) {
 		case 1:
@@ -47,7 +47,7 @@ extends AbstractStatFactory {
 		default:
 			throw new IllegalStateException("Number of conditions not supported: " + conditions);
 		}
-		return new DirMult(dirMultPileupCountProvider, dirMultParameter);
+		return new CallStat(dirMultPileupCountProvider, dirMultParameter);
 	}
 
 	@Override

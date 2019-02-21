@@ -62,7 +62,7 @@ import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.data.validator.paralleldata.NonHomozygousSite;
 import lib.io.ResultFormat;
 import lib.stat.AbstractStatFactory;
-import lib.stat.dirmult.DirMultRobustCompoundErrorFactory;
+import lib.stat.dirmult.DirMultRobustCompoundErrorStatFactory;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 
@@ -160,7 +160,7 @@ extends AbstractMethod {
 				new TreeMap<String, AbstractStatFactory>();
 
 		AbstractStatFactory statFactory = null;
-		statFactory = new DirMultRobustCompoundErrorFactory(
+		statFactory = new DirMultRobustCompoundErrorStatFactory(
 				getParameter().getResultFormat());
 		statistics.put(statFactory.getName(), statFactory);
 
