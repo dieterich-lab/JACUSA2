@@ -62,6 +62,7 @@ import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.data.validator.paralleldata.RTarrestParallelPileup;
 import lib.io.ResultFormat;
 import lib.stat.AbstractStatFactory;
+import lib.stat.betabin.RTarrestStatFactory;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 
@@ -153,13 +154,11 @@ extends AbstractMethod {
 				new TreeMap<String, AbstractStatFactory>();
 
 		final List<AbstractStatFactory> tmpFactory = new ArrayList<AbstractStatFactory>(5);
-		tmpFactory.add(new DummyStatisticFactory());
-		tmpFactory.add(new BetaBinFactory());
-		
+		// tmpFactory.add(new DummyStatisticFactory());
+		tmpFactory.add(new RTarrestStatFactory());
 		for (final AbstractStatFactory factory : tmpFactory) {
 			factories.put(factory.getName(), factory);
 		}
-		
 		return factories;
 	}
 

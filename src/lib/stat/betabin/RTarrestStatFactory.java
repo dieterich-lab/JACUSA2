@@ -4,13 +4,11 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-import lib.io.ResultFormat;
 import lib.stat.AbstractStatFactory;
 import lib.stat.dirmult.DirMultCLIprocessing;
 import lib.stat.sample.provider.arrest.RTarrestCountSampleProvider;
 
-public class RTarrestStatFactory
-extends AbstractStatFactory {
+public class RTarrestStatFactory extends AbstractStatFactory {
 
 	private static final String NAME 	= "BetaBin";
 	public static final String DESC 	= "Minka Newton iteration method";
@@ -18,7 +16,7 @@ extends AbstractStatFactory {
 	private final RTarrestBetaBinParameter dirMultParameter;
 	private final DirMultCLIprocessing CLIprocessing;
 	
-	public RTarrestStatFactory(final ResultFormat resultFormat) {
+	public RTarrestStatFactory() {
 
 		super(Option.builder(NAME)
 				.desc(DESC)

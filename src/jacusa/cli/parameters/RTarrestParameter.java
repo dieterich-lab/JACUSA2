@@ -1,10 +1,10 @@
 package jacusa.cli.parameters;
 
 import jacusa.io.format.rtarrest.BED6rtArrestResultFormat;
-import jacusa.method.rtarrest.BetaBinFactory;
 import jacusa.method.rtarrest.RTarrestMethod;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
+import lib.stat.betabin.RTarrestStatFactory;
 
 /**
  * Class defines parameters and default values that are need for Reverse Transcription arrest (rt-arrest).
@@ -19,7 +19,7 @@ implements HasStatParameter {
 		super(conditions);
 		// related to test-statistic
 		setStatParameter(new StatParameter(
-				new BetaBinFactory(), Double.NaN));
+				new RTarrestStatFactory(), Double.NaN));
 		// default result format
 		setResultFormat(
 				new BED6rtArrestResultFormat(
