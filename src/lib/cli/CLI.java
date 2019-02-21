@@ -74,11 +74,10 @@ public class CLI {
 		// parse arguments
 		final CommandLineParser parser = new DefaultParser();
 		try {
-			CommandLine line = parser.parse(options, args, true);
+			CommandLine line = parser.parse(options, args, false);
 			if (line.hasOption(showHelp.getOpt())) {
 				showHelp.process(line);
-				processMethodFactoryACOptions(printExtendedHelp, false,
-						new ArrayList<AbstractACOption>(), new Options());
+				method.initACOptions();
 				printMethodFactoryUsage();
 				System.exit(0);
 			}
@@ -124,17 +123,18 @@ public class CLI {
 		final AbstractMethod.AbstractFactory methodFactory = getMethodFactory(args[0].toLowerCase());
 		method = methodFactory.createMethod();
 		if (args.length == 1) {
-			processMethodFactoryACOptions(printExtendedHelp, false, 
-					new ArrayList<AbstractACOption>(), new Options());
+			method.initACOptions();
 			method.printUsage(printExtendedHelp);
 			System.exit(0);
 		}
-		conditionalExtendedHelp(args);
-				
+		
+	
 		// copy arguments while ignoring the first array element
 		String[] processedArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, processedArgs, 0, args.length - 1);
-
+		
+		conditionalExtendedHelp(processedArgs);
+		
 		// parse arguments
 		final CommandLineParser parser = new DefaultParser();
 		
