@@ -13,12 +13,15 @@ public class RTarrestStat extends AbstractStat {
 	private final RTarrestCountSampleProvider estimationSampleProvider;
 	private final RTarrestBetaBinParameter dirMultParameter;
 
+	private final double threshold;
 	private final EstimateDirMult dirMult;
 	
 	public RTarrestStat(
+			final double threshold,
 			final RTarrestCountSampleProvider estimationSampleProvider,
 			final RTarrestBetaBinParameter dirMultParameter) {
 
+		this.threshold					= threshold;
 		this.estimationSampleProvider 	= estimationSampleProvider;
 		this.dirMultParameter 			= dirMultParameter;
 		
@@ -44,11 +47,11 @@ public class RTarrestStat extends AbstractStat {
 	public boolean filter(final Result statResult) {
 		final double statValue = statResult.getStat();
 
-		if (Double.isNaN(dirMultParameter.getThreshold())) {
+		if (Double.isNaN(threshold)) {
 			return false;
 		}
 
-		return dirMultParameter.getThreshold() < statValue;
+		return threshold < statValue;
 	}
 	
 }

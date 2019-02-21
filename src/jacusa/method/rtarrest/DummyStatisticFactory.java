@@ -32,7 +32,7 @@ extends AbstractStatFactory {
 	}
 	
 	@Override
-	public DummyStatistic newInstance(final int conditions) {
+	public DummyStatistic newInstance(double threshold, final int conditions) {
 		return new DummyStatistic(this);
 	}
 	

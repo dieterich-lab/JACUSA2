@@ -35,7 +35,7 @@ extends AbstractStatFactory {
 	}
 
 	@Override
-	public LRTarrestStat newInstance(final int conditions) {
+	public LRTarrestStat newInstance(double threshold, final int conditions) {
 		return new LRTarrestStat(this);
 	}
 

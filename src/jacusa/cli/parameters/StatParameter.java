@@ -51,7 +51,7 @@ public class StatParameter {
 	 * @return an instance of AbstractStatisticCalculator 
 	 */
 	public AbstractStat newInstance(final int conditions) {
-		return factory.newInstance(conditions);
+		return factory.newInstance(threshold, conditions);
 	}
 
 	/**
@@ -59,7 +59,8 @@ public class StatParameter {
 	 * 
 	 * @param new factory to be set 
 	 */
-	public void setFactory(final String CLIoption, 
+	public void setFactory(
+			final String CLIoption, 
 			final AbstractStatFactory factory) {
 
 		factory.processCLI(CLIoption);

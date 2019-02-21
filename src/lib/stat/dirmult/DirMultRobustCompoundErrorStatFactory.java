@@ -27,7 +27,7 @@ extends AbstractStatFactory {
 	}
 
 	@Override
-	public CallStat newInstance(final int conditions) {
+	public CallStat newInstance(double threshold, final int conditions) {
 		EstimationSampleProvider dirMultPileupCountProvider;
 		switch (conditions) {
 		case 1:
@@ -45,7 +45,7 @@ extends AbstractStatFactory {
 		default:
 			throw new IllegalStateException("Number of conditions not supported: " + conditions);
 		}
-		return new CallStat(dirMultPileupCountProvider, dirMultParameter);
+		return new CallStat(threshold, dirMultPileupCountProvider, dirMultParameter);
 	}
 
 	@Override

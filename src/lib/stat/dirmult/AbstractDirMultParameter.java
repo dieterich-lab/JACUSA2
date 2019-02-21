@@ -7,7 +7,6 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	private boolean showAlpha;
 	private boolean calcPValue;
 	private MinkaParameter minkaParameter;
-	private double threshold; 
 	
 	public AbstractDirMultParameter(
 			final boolean showAlpha,
@@ -17,7 +16,6 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 		this.showAlpha 		= showAlpha;
 		this.calcPValue		= calcPValue;
 		this.minkaParameter	= minkaParameter;
-		this.threshold		= threshold;
 	}
 
 	@Override
@@ -48,16 +46,6 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	@Override
 	public void setMinkaParameter(final MinkaParameter minkaParameter) {
 		this.minkaParameter = minkaParameter;
-	}
-
-	@Override
-	public double getThreshold() {
-		return threshold;
-	}
-
-	@Override
-	public void setThreshold(final double threshold) {
-		this.threshold = threshold;
 	}
 	
 }

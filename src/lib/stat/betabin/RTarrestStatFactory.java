@@ -27,7 +27,7 @@ public class RTarrestStatFactory extends AbstractStatFactory {
 	}
 
 	@Override
-	public RTarrestStat newInstance(final int conditions) {
+	public RTarrestStat newInstance(double threshold, final int conditions) {
 		RTarrestCountSampleProvider arrestCountProvider;
 		switch (conditions) {
 		case 2:
@@ -38,7 +38,7 @@ public class RTarrestStatFactory extends AbstractStatFactory {
 		default:
 			throw new IllegalStateException("Number of conditions not supported: " + conditions);
 		}
-		return new RTarrestStat(arrestCountProvider, dirMultParameter);
+		return new RTarrestStat(threshold, arrestCountProvider, dirMultParameter);
 	}
 
 	@Override

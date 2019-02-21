@@ -14,8 +14,5 @@ public interface DirMultParameter {
 
 	MinkaParameter getMinkaEstimateParameter();
 	void setMinkaParameter(MinkaParameter estimateAlpha);
-
-	double getThreshold();
-	void setThreshold(double threshold);
 	
 }

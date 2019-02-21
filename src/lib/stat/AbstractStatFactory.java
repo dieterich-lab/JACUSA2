@@ -24,10 +24,11 @@ public abstract class AbstractStatFactory {
 
 	/**
 	 * Returns a new instance of this StatisticCalculator.
+	 * @param threshold TODO
 	 * @param threshold
 	 * @return
 	 */
-	public abstract AbstractStat newInstance(int conditions);
+	public abstract AbstractStat newInstance(double threshold, int conditions);
 
 	/**
 	 * Process command lines options.

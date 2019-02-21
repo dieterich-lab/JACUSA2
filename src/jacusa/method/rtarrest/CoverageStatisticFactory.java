@@ -32,7 +32,7 @@ extends AbstractStatFactory {
 	}
 	
 	@Override
-	public CoverageStatistic newInstance(final int conditions) {
+	public CoverageStatistic newInstance(double threshold, final int conditions) {
 		return new CoverageStatistic();
 	}
 	
