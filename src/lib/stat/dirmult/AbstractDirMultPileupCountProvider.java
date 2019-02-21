@@ -95,9 +95,7 @@ implements DirMultSampleProvider {
 		}
 		return originalPileupCounts;
 	}
-	
-	
-	
+
 	protected List<PileupCount> flat(
 			final List<PileupCount> pileupCounts, 
 			final Set<Base> variantBases, final Base commonBase) {
@@ -119,12 +117,15 @@ implements DirMultSampleProvider {
 		final double[] colSumCount 	= phred2Prob.colSumCount(bases, pileupCount);
 		final double[] colMeanError = phred2Prob.colMeanErrorProb(bases, pileupCount);
 
-		for (int i = 0; i < bases.length; ++i) {
-			if (colSumCount[i] > 0.0) {
-				pileupVector[i] += colSumCount[i];
-				for (final int i2 : VALID[bases.length][i]) {
-					double combinedError = (colMeanError[i2] + estimatedError) * (double)colSumCount[i] / (double)(VALID[bases.length][i].length);
-					pileupVector[i2] += combinedError;
+		for (final Base base : bases) {
+			final int index = base.getIndex();
+			if (colSumCount[index] > 0.0) {
+				pileupVector[index] += colSumCount[index];
+				for (final int index2 : VALID[bases.length][index]) {
+					double combinedError = 
+							(colMeanError[index2] + estimatedError) * (double)colSumCount[index] / 
+							(double)(VALID[bases.length][index].length);
+					pileupVector[index2] += combinedError;
 				}
 			}
 		}
