@@ -32,7 +32,7 @@ public class CLI {
 		this.methodFactories = methodFactories;
 		printExtendedHelp = false;
 	}
-
+	
 	public List<AbstractMethod.AbstractFactory> getMethodFactories() {
 		return Collections.unmodifiableList(methodFactories);
 	}
@@ -41,7 +41,7 @@ public class CLI {
 		// check if version should be printed
 		final ShowVersionOption showVersion = new ShowVersionOption();
 		final HelpOption showHelp = new HelpOption(this);
-
+		
 		final Options options = new Options();
 		options.addOption(showVersion.getOption(false));
 		options.addOption(showHelp.getOption(false));
@@ -107,52 +107,6 @@ public class CLI {
 		return null;
 	}
 	
-	// try to find the correct number of conditions
-	// all provided args need to be correctly parsed
-	private int getConditions(
-			AbstractMethod.AbstractFactory methodFactory,
-			final String[] args,
-			final String[] processedArgs) {
-		// parse arguments
-		final CommandLineParser parser = new DefaultParser();
-		
-		// container for options and parsed line
-		List<AbstractACOption> acOptions = new ArrayList<AbstractACOption>();
-		Options options = new Options(); 
-		CommandLine line = null;
-		int conditions = 0;
-
-		// try to find the correct number of conditions
-		// all provided args need to be correctly parsed
-		do {
-			conditions++;
-			options = new Options();
-			acOptions.clear();
-
-			final AbstractMethod.AbstractFactory tmpMethodFactory = 
-					methodFactory.createFactory(conditions);
-			if (tmpMethodFactory == null) {
-				continue;
-			}
-			method = tmpMethodFactory.createMethod();
-			processMethodFactoryACOptions(printExtendedHelp, true, acOptions, options);
-
-			try {
-				line = parser.parse(options, processedArgs);
-			} catch (ParseException e) {
-				// e.printStackTrace();
-				// ignore
-			}
-		} while (conditions < args.length && (line == null || line.getArgs().length != conditions));
-		
-		// if not all args could be parsed STOP
-		if (line == null || line.getArgs().length != conditions) {
-			return -1;
-		}
-
-		return conditions;
-	}
-	
 	/**
 	 * 
 	 * @param args
@@ -189,13 +143,14 @@ public class CLI {
 		Options options = new Options(); 
 		CommandLine line = null;
 
-		final int conditions = getConditions(methodFactory, args, processedArgs);
-		if (conditions < 1) {
-			method.printUsage(false);
-			System.exit(1);
+		final int conditions = methodFactory.getConditions();
+		final AbstractMethod.AbstractFactory tmpMethodFactory = 
+				methodFactory.createFactory(conditions);
+		if (tmpMethodFactory == null) {
+			throw new IllegalArgumentException("Illegal number of conditions");
 		}
+		method = tmpMethodFactory.createMethod();
 		processMethodFactoryACOptions(printExtendedHelp, true, acOptions, options);
-
 		try {
 			line = parser.parse(options, processedArgs);
 		} catch (ParseException e) {

@@ -10,8 +10,6 @@ import org.apache.commons.cli.Option;
 
 /**
  * 
- * 
- *
  */
 public class ResultFileOption extends AbstractACOption {
 

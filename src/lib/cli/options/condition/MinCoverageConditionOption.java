@@ -34,7 +34,6 @@ public class MinCoverageConditionOption extends AbstractConditionACOption {
 				s + "\ndefault: " + minCoverage;
 
 		return Option.builder(getOpt())
-				.longOpt(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 			    .desc(s)

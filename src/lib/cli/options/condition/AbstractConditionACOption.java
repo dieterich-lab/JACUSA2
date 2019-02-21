@@ -14,8 +14,8 @@ extends AbstractACOption {
 		
 	public AbstractConditionACOption(final String opt, final String longOpt, final List<ConditionParameter> conditionParameters) {
 		super(opt, longOpt);
-		conditionIndex 	= -1;
-		this.conditionParameters = conditionParameters;
+		conditionIndex 				= -1;
+		this.conditionParameters 	= conditionParameters;
 	}
 	
 	public AbstractConditionACOption(

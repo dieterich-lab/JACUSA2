@@ -36,7 +36,6 @@ public class MaxDepthConditionOption extends AbstractConditionACOption {
 		s = "max read depth" + s + "\ndefault: " + maxDepth;
 				
 		return Option.builder(getOpt())
-				.longOpt(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg()
 				.desc(s)

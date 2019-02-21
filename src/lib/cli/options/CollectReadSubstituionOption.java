@@ -23,7 +23,6 @@ public class CollectReadSubstituionOption extends AbstractACOption {
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
-				.longOpt(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc(

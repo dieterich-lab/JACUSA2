@@ -34,8 +34,7 @@ public abstract class AbstractFilterSamTagConditionOption extends AbstractCondit
 			s += " for all conditions";
 		}
 		
-		return Option.builder(getLongOpt())
-				.longOpt(getLongOpt())
+		return Option.builder(getOpt())
 				.argName(tag + "-VALUE")
 				.hasArg(true)
 		        .desc(s)
@@ -44,7 +43,6 @@ public abstract class AbstractFilterSamTagConditionOption extends AbstractCondit
 	
 	/**
 	 * Tested in @see test.lib.cli.options.condition.filter.FilterNHsamTagConditionOptionTest
-	 * Tested in @see test.lib.cli.options.condition.filter.FilterNMsamTagConditionOptionTest
 	 */
 	@Override
 	public void process(CommandLine line) throws Exception {

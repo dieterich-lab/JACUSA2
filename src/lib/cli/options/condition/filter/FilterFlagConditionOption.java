@@ -10,15 +10,15 @@ import org.apache.commons.cli.Option;
 
 public class FilterFlagConditionOption extends AbstractConditionACOption {
 
-	// obsolete private static final String OPT = "F";
-	private static final String LONG_OPT = "F";
+	private static final String OPT = "F";
+	private static final String LONG_OPT = "FLAG";
 	
 	public FilterFlagConditionOption(final List<ConditionParameter> conditionParameters) {
-		super(LONG_OPT, LONG_OPT, conditionParameters);
+		super(OPT, LONG_OPT, conditionParameters);
 	}
 
 	public FilterFlagConditionOption(ConditionParameter conditionParameter) {
-		super(LONG_OPT, LONG_OPT, conditionParameter);
+		super(OPT, LONG_OPT, conditionParameter);
 	}
 	
 	@Override
@@ -34,8 +34,7 @@ public class FilterFlagConditionOption extends AbstractConditionACOption {
 		s = "filter reads with flags " + getLongOpt().toUpperCase() + 
 				s + "\ndefault: " + filterFlags;
 
-		return Option.builder(getLongOpt())
-				.longOpt(getLongOpt())
+		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 		        .desc(s)
