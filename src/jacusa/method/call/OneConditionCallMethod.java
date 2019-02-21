@@ -25,6 +25,7 @@ import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.filter.BooleanWrapper;
 import lib.data.filter.BooleanWrapperFilteredData;
 import lib.data.validator.paralleldata.ExtendedVariantSiteValidator;
+import lib.data.validator.paralleldata.KnownReferenceBase;
 import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
 
@@ -71,6 +72,7 @@ extends CallMethod {
 	@Override
 	public List<ParallelDataValidator> createParallelDataValidators() {
 		return Arrays.asList(
+				new KnownReferenceBase(),
 				new MinCoverageValidator(getBaseCallCountFetcher(), getParameter().getConditionParameters()),
 				new ExtendedVariantSiteValidator(getBaseCallCountFetcher()));
 	}
