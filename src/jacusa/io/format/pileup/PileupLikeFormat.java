@@ -25,9 +25,7 @@ extends AbstractResultFileFormat {
 
 	@Override
 	public ResultWriter createWriter(String outputFileName) {
-		return new PileupResultWriter(
-				outputFileName, 
-				getParameter().showReferenceBase());
+		return new PileupResultWriter(outputFileName);
 	}
 
 }

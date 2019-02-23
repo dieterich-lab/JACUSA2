@@ -26,16 +26,9 @@ extends AbstractResultFileWriter {
 	// split columns by
 	public static final char SEP 	= '\t';
 	// split within columns by
-
-	// indicates if the reference base should be added as a column 
-	private final boolean showReferenceBase;
 	
-	public PileupResultWriter(
-			final String outputFileName, 
-			final boolean showReferenceBase) {
-		
+	public PileupResultWriter(final String outputFileName) {
 		super(outputFileName);
-		this.showReferenceBase = showReferenceBase;
 	}
 
 	/**
@@ -55,11 +48,7 @@ extends AbstractResultFileWriter {
 
 		// add reference
 		sb.append(SEP);
-		if (showReferenceBase) {
-			sb.append(parallelData.getCombinedPooledData().getReferenceBase());
-		} else {
-			sb.append("N");
-		}
+		sb.append(parallelData.getCombinedPooledData().getReferenceBase());
 
 		// add strand
 		sb.append(SEP);

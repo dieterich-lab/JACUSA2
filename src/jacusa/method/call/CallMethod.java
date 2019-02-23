@@ -35,7 +35,6 @@ import lib.cli.options.ResultFormatOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ResultFileOption;
-import lib.cli.options.ShowReferenceOption;
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.cli.options.WindowSizeOption;
 import lib.cli.options.condition.MaxDepthConditionOption;
@@ -101,12 +100,10 @@ extends AbstractMethod {
 		}
 		
 		addACOption(new FilterModusOption(getParameter()));
-		// addACOption(new BaseConfigOption(getParameter()));
 		addACOption(new FilterConfigOption(getParameter(), getFilterFactories()));
 		
 		addACOption(new StatFilterOption(getParameter().getStatParameter()));
 
-		addACOption(new ShowReferenceOption(getParameter()));
 		addACOption(new ReferenceFastaFilenameOption(getParameter()));
 		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 		

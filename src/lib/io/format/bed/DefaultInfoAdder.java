@@ -24,11 +24,9 @@ public class DefaultInfoAdder implements InfoAdder {
 			sb.append("filter_info");
 		}
 
-		// show reference base
-		if (parameter.showReferenceBase()) {
-			sb.append(InputOutput.FIELD_SEP);
-			sb.append("refBase");
-		}
+		// always show reference base
+		sb.append(InputOutput.FIELD_SEP);
+		sb.append("refBase");
 	}
 
 	@Override
@@ -43,11 +41,10 @@ public class DefaultInfoAdder implements InfoAdder {
 			sb.append(InputOutput.FIELD_SEP);
 			sb.append(result.getFilterInfo(valueIndex).combine());
 		}
-		
-		if (parameter.showReferenceBase()) {
-			sb.append(InputOutput.FIELD_SEP);
-			sb.append(parallelData.getCombinedPooledData().getReferenceBase());
-		}
+
+		// always show reference
+		sb.append(InputOutput.FIELD_SEP);
+		sb.append(parallelData.getCombinedPooledData().getReferenceBase());
 	}
 
 }

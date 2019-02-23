@@ -26,8 +26,6 @@ implements HasConditionParameter, HasReadSubstitution {
 	private int reservedWindowSize;
 
 	private int maxThreads;
-	
-	private boolean showReferenceBase;
 
 	private String referenceFilename;
 	private IndexedFastaSequenceFile referenceFile;
@@ -52,8 +50,6 @@ implements HasConditionParameter, HasReadSubstitution {
 	protected GeneralParameter() {
 		activeWindowSize 	= 10000;
 		reservedWindowSize	= 10 * activeWindowSize;
-		
-		showReferenceBase 	= false;
 
 		maxThreads			= 1;
 		
@@ -217,14 +213,6 @@ implements HasConditionParameter, HasReadSubstitution {
 	 */
 	public boolean splitFiltered() {
 		return splitFiltered;
-	}
-
-	public boolean showReferenceBase() {
-		return showReferenceBase;
-	}
-	
-	public void setShowReferenceBase(boolean showReferenceBase) {
-		this.showReferenceBase = showReferenceBase;
 	}
 	
 	public String getReferenceFilename() {
