@@ -25,6 +25,8 @@ public class MaxAlleleCountFilterFactory
 extends AbstractFilterFactory 
 implements HasMaxAlleleCount {
 
+	public static final char FILTER = 'M';
+	
 	// default value for max alleles
 	public static final int MAX_ALLELES = 2;
 
@@ -61,7 +63,7 @@ implements HasMaxAlleleCount {
 	}
 	
 	public static Builder getOptionBuilder() {
-		return Option.builder(Character.toString('M'))
+		return Option.builder(Character.toString(FILTER))
 				.desc("Max allowed alleles per site.");
 	}
 	

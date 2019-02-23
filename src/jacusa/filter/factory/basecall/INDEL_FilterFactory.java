@@ -24,6 +24,8 @@ import lib.data.storage.processor.RecordExtendedProcessor;
 
 public class INDEL_FilterFactory extends AbstractBaseCallCountFilterFactory {
 
+	public static final char FILTER = 'I';
+	
 	public INDEL_FilterFactory(
 			final Fetcher<BaseCallCount> observedBccFetcher,
 			FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
@@ -47,7 +49,7 @@ public class INDEL_FilterFactory extends AbstractBaseCallCountFilterFactory {
 	}
 	
 	public static Builder getOptionBuilder() {
-		return Option.builder(Character.toString('I'))
+		return Option.builder(Character.toString(FILTER))
 				.desc("Filter potential false positive variants adjacent to INDEL position(s).");
 	}
 	

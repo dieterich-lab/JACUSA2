@@ -1,11 +1,13 @@
 package jacusa.filter.factory.basecall;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Option.Builder;
 
+import htsjdk.samtools.util.StringUtil;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
 import lib.data.fetcher.FilteredDataFetcher;
@@ -21,6 +23,8 @@ import lib.data.storage.processor.RecordExtendedProcessor;
  */
 public class CombinedFilterFactory extends AbstractBaseCallCountFilterFactory {
 
+	public static final char FILTER = 'D';
+	
 	public CombinedFilterFactory(
 			final Fetcher<BaseCallCount> observedBccFetcher,
 			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
@@ -54,8 +58,10 @@ public class CombinedFilterFactory extends AbstractBaseCallCountFilterFactory {
 	}
 	
 	public static Builder getOptionBuilder() {
-		return Option.builder(Character.toString('D'))
-				.desc("Filter artefacts in the vicinity of read start/end, INDELs, and splice site position(s).");
+		return Option.builder(Character.toString(FILTER))
+				.desc("Combines Filters: " + StringUtil.join(" + ", Arrays.asList(INDEL_FilterFactory.FILTER, ReadPositionFilterFactory.FILTER, SpliceSiteFilterFactory.FILTER)));
+				
+		// old message .desc("Filter artefacts in the vicinity of read start/end, INDELs, and splice site position(s).");
 	}
 	
 }

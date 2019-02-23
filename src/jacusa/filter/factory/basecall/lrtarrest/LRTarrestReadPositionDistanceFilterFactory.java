@@ -23,7 +23,7 @@ extends AbstractLRTarrestBaseCallCountFilterFactory {
 			final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, ArrestPosition2baseCallCount> filteredDataFetcher) {		
 
 		super(
-				Option.builder(Character.toString('B'))
+				Option.builder(Character.toString(ReadPositionFilterFactory.FILTER))
 					.desc("Filter potential false positive variants adjacent to read start/end in read through reads.")
 					.build(),
 				bccSwitch, filteredDataFetcher);

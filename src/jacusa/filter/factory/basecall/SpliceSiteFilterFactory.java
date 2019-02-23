@@ -22,6 +22,8 @@ import lib.data.storage.processor.RecordExtendedProcessor;
 public class SpliceSiteFilterFactory
 extends AbstractBaseCallCountFilterFactory {
 
+	public static final char FILTER = 'S';
+	
 	public SpliceSiteFilterFactory(
 			final Fetcher<BaseCallCount> observedBccFetcher,
 			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
@@ -46,7 +48,7 @@ extends AbstractBaseCallCountFilterFactory {
 	}
 	
 	public static Builder getOptionBuilder() {
-		return Option.builder(Character.toString('S'))
+		return Option.builder(Character.toString(FILTER))
 				.desc("Filter potential false positive variants adjacent to splice site(s).");
 	}
 	

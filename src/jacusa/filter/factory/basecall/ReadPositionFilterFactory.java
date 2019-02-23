@@ -17,12 +17,14 @@ import lib.data.storage.processor.RecordExtendedProcessor;
 public class ReadPositionFilterFactory 
 extends AbstractBaseCallCountFilterFactory {
 
+	public static final char FILTER = 'B';
+	
 	public ReadPositionFilterFactory(
 			final Fetcher<BaseCallCount> observedBccFetcher,
 			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
 
 		super(
-				Option.builder(Character.toString('B'))
+				Option.builder(Character.toString(FILTER))
 					.desc("Filter potential false positive variants adjacent to read start/end.")
 					.build(), 
 				observedBccFetcher, filteredDataFetcher);

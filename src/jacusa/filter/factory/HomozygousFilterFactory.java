@@ -25,6 +25,8 @@ public class HomozygousFilterFactory
 extends AbstractFilterFactory 
 implements HasCondition {
 
+	public static final char FILTER = 'H';
+	
 	// which condition is required to be homozygous
 	private int condition;
 	private final Fetcher<BaseCallCount> bccFetcher;
@@ -61,7 +63,7 @@ implements HasCondition {
 	}
 		
 	public static Builder getOptionBuilder() {
-		return Option.builder(Character.toString('H'))
+		return Option.builder(Character.toString(FILTER))
 				.desc("Filter non-homozygous sites in condition 1 or 2.");
 	}
 	

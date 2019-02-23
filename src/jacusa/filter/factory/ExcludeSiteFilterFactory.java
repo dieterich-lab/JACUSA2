@@ -32,6 +32,8 @@ public class ExcludeSiteFilterFactory
 extends AbstractFilterFactory 
 implements HasFileName, HasFileType {
 
+	private final static char FILTER = 'E';
+	
 	private String fileName;
 	private FileType fileType;
 	
@@ -129,7 +131,7 @@ implements HasFileName, HasFileType {
 	}
 	
 	public static Builder getOptionBuilder() {
-		return Option.builder(Character.toString('E'))
+		return Option.builder(Character.toString(FILTER))
 				.desc("Exclude sites contained in file (VCF, BED, or JACUSA 2.x output).");
 	}
 	

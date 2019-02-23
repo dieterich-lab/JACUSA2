@@ -30,6 +30,8 @@ public class HomopolymerFilterFactory
 extends AbstractFilterFactory 
 implements HasHomopolymerLength, HasHomopolymerMethod {
 
+	public static final char FILTER = 'Y';
+	
 	// default length of consecutive identical base call for
 	// a homopolymer
 	public static final int MIN_HOMOPOLYMER_LENGTH = 7;
@@ -60,7 +62,7 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 	}
 
 	public static Builder getOptionBuilder() {
-		return Option.builder(Character.toString('Y'))
+		return Option.builder(Character.toString(FILTER))
 				.desc("Filter wrong variant calls within homopolymers.");
 	}
 
