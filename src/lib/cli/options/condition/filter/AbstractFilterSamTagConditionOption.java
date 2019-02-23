@@ -15,12 +15,12 @@ public abstract class AbstractFilterSamTagConditionOption extends AbstractCondit
 	private String tag;
 
 	public AbstractFilterSamTagConditionOption(final ConditionParameter conditionParameter, final String tag) {
-		super(LONG_OPT + tag, LONG_OPT + tag, conditionParameter);
+		super(LONG_OPT + tag + "_", LONG_OPT + tag + "_", conditionParameter);
 		this.tag = tag;
 	}
 
 	public AbstractFilterSamTagConditionOption(final List<ConditionParameter> conditionParameters, final String tag) {
-		super(LONG_OPT + tag, LONG_OPT + tag, conditionParameters);
+		super(LONG_OPT + tag + "_", LONG_OPT + tag + "_", conditionParameters);
 		this.tag = tag;
 	}
 
