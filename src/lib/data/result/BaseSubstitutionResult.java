@@ -6,7 +6,7 @@ import java.util.TreeSet;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.count.BaseSubstitutionCount;
+import lib.data.count.BaseSubstitution2BaseCallCount;
 import lib.util.Info;
 
 public class BaseSubstitutionResult implements Result {
@@ -24,7 +24,7 @@ public class BaseSubstitutionResult implements Result {
 		this.result = result;
 
 		final DataContainer container = result.getParellelData().getCombinedPooledData();
-		final BaseSubstitutionCount bsc = container.getBaseSubstitutionCount();
+		final BaseSubstitution2BaseCallCount bsc = container.getBaseSubstitutionCount();
 		valuesIndex = new TreeSet<>();
 		valuesIndex.addAll(result.getValueIndex());
 		valuesIndex.addAll(process(baseSubs, bsc));
@@ -32,7 +32,7 @@ public class BaseSubstitutionResult implements Result {
 	
 	public static SortedSet<Integer> process(
 			final SortedSet<BaseSubstitution> baseSubs, 
-			final BaseSubstitutionCount baseSubstitutionCount) {
+			final BaseSubstitution2BaseCallCount baseSubstitutionCount) {
 		
 		final SortedSet<Integer> valuesIndex = new TreeSet<>();
 		int baseSubId = 0;

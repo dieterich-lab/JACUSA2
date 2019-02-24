@@ -43,6 +43,10 @@ public class PositionProcessor {
 		validators.add(validator);
 	}
 	
+	public void addStorage(final Storage storage) {
+		storages.add(storage);
+	}
+	
 	public void process(final PositionProvider positionProvider) {
 		while (positionProvider.hasNext()) {
 			final Position position = positionProvider.next();

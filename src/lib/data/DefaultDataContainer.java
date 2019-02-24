@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import lib.data.count.BaseSubstitutionCount;
+import lib.data.count.BaseSubstitution2BaseCallCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
@@ -79,17 +79,17 @@ public class DefaultDataContainer implements DataContainer {
 	}
 	
 	@Override
-	public BaseSubstitutionCount getBaseSubstitutionCount() {
-		return get(DataType.BASE_SUBST);
+	public BaseSubstitution2BaseCallCount getBaseSubstitutionCount() {
+		return get(DataType.BASE_SUBST2BCC);
 	}
 	
 	@Override
-	public BaseSubstitutionCount getArrestBaseSubstitutionCount() {
+	public BaseSubstitution2BaseCallCount getArrestBaseSubstitutionCount() {
 		return get(DataType.ARREST_BASE_SUBST);
 	}
 	
 	@Override
-	public BaseSubstitutionCount getThroughBaseSubstitutionCount() {
+	public BaseSubstitution2BaseCallCount getThroughBaseSubstitutionCount() {
 		return get(DataType.THROUGH_BASE_SUBST);
 	}
 	

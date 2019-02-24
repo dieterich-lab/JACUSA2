@@ -9,7 +9,7 @@ import jacusa.JACUSA;
 import jacusa.filter.factory.FilterFactory;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.GeneralParameter;
-import lib.data.count.BaseSubstitutionCount;
+import lib.data.count.BaseSubstitution2BaseCallCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
@@ -35,15 +35,15 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	
 	BaseCallCount getBaseCallCount();
 	
-	BaseSubstitutionCount getBaseSubstitutionCount();
+	BaseSubstitution2BaseCallCount getBaseSubstitutionCount();
 	BaseCallCountFilteredData getBaseCallCountFilteredData();
 	BooleanFilteredData getBooleanFilteredData();
 	
 	BaseCallCount getArrestBaseCallCount();
 	BaseCallCount getThroughBaseCallCount();
 	
-	BaseSubstitutionCount getArrestBaseSubstitutionCount();
-	BaseSubstitutionCount getThroughBaseSubstitutionCount();
+	BaseSubstitution2BaseCallCount getArrestBaseSubstitutionCount();
+	BaseSubstitution2BaseCallCount getThroughBaseSubstitutionCount();
 	
 	ArrestPosition2baseCallCount getArrestPos2BaseCallCount();
 	ArrestPos2BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData();
@@ -122,9 +122,9 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 					dataType.newInstance());
 		}
 		
-		protected void addBaseSubstitution(final AbstractBuilder builder, final DataType<BaseSubstitutionCount> dataType) {
+		protected void addBaseSubstitution(final AbstractBuilder builder, final DataType<BaseSubstitution2BaseCallCount> dataType) {
 			add(builder, dataType);
-			final BaseSubstitutionCount bsc = builder.get(dataType);
+			final BaseSubstitution2BaseCallCount bsc = builder.get(dataType);
 			for (final BaseSubstitution baseSub : parameter.getReadSubstitutions()) {
 				bsc.set(baseSub, JACUSA.BCC_FACTORY.create());
 			}
@@ -156,7 +156,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			add(builder, DataType.THROUGH_BCC);
 			add(builder, DataType.AP2BCC);
 			
-			add(builder, DataType.BASE_SUBST);
+			add(builder, DataType.BASE_SUBST2BCC);
 			add(builder, DataType.ARREST_BASE_SUBST);
 			add(builder, DataType.THROUGH_BASE_SUBST);
 		}

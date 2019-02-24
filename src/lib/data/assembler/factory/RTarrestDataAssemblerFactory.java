@@ -11,7 +11,10 @@ import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
+import lib.data.IntegerData;
+import lib.data.fetcher.Fetcher;
 import lib.data.fetcher.basecall.BaseCallCountExtractor;
+import lib.data.fetcher.basecall.IntegerDataExtractor;
 import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.Storage;
@@ -21,6 +24,7 @@ import lib.data.storage.basecall.AbstractBaseCallCountStorage;
 import lib.data.storage.basecall.DefaultBaseCallCountStorage;
 import lib.data.storage.basecall.RTarrestCountStorage;
 import lib.data.storage.container.SharedStorage;
+import lib.data.storage.integer.MapIntegerStorage;
 import lib.data.storage.readsubstitution.BaseCallInterpreter;
 import lib.data.storage.readsubstitution.BaseSubstitutionRecordProcessor;
 import lib.data.validator.CombinedValidator;
@@ -62,14 +66,18 @@ extends AbstractSiteDataAssemblerFactory {
 				locInterpreter, 
 				validators));
 
+		addDelectionCount(parameter, sharedStorage, conditionParameter, cache);
+		
 		// stratify by base substitutions
 		if (baseSubs.size() > 0) {
 			cache.addCache(createStratifyByBaseSubstitution(
-							baseSubs,
-							sharedStorage, 
-							locInterpreter,
-							BaseCallInterpreter.build(libraryType),
-							validators));
+					parameter,
+					conditionParameter,
+					baseSubs,
+					sharedStorage, 
+					locInterpreter,
+					BaseCallInterpreter.build(libraryType),
+					validators));
 		}
 
 		return cache;
@@ -105,11 +113,13 @@ extends AbstractSiteDataAssemblerFactory {
 				sharedStorage,
 				locInterpreter, 
 				arrestPositionProcessor, throughPositionProcessor));
-		
+				
 		return cache;
 	}
 	
 	private Cache createStratifyByBaseSubstitution(
+			final GeneralParameter parameter, 
+			final ConditionParameter conditionParameter,
 			final SortedSet<BaseSubstitution> baseSubs,
 			final SharedStorage sharedStorage,
 			final LocationInterpreter locInterpreter,
@@ -117,8 +127,18 @@ extends AbstractSiteDataAssemblerFactory {
 			final List<Validator> validators) {
 				
 		final Cache cache = new Cache();
-		final Map<BaseSubstitution, Storage> basSub2storage = new HashMap<>(
-				Util.noRehashCapacity(baseSubs.size()));
+		int size = baseSubs.size();
+		if (parameter.showDeletionCount()) {
+			size *= 2;
+		}
+		final Map<BaseSubstitution, Storage> baseSub2storage = new HashMap<>(
+				Util.noRehashCapacity(size));
+		
+		final PositionProcessor alignPosProcessor 	= new PositionProcessor();
+		alignPosProcessor.addValidator(new CombinedValidator(validators));
+		// deletions don't need validation
+		final PositionProcessor deletedPosProcessor = new PositionProcessor();
+		
 		for (final BaseSubstitution baseSub : baseSubs) {
 			
 			final AbstractBaseCallCountStorage arrestBccStorage = new DefaultBaseCallCountStorage(
@@ -137,16 +157,43 @@ extends AbstractSiteDataAssemblerFactory {
 							sharedStorage,
 							locInterpreter,
 							arrestBccStorage, throughBccStorage);
+			
 			cache.addStorage(rtArrestCountStorage);
-			basSub2storage.put(baseSub, rtArrestCountStorage);
+			baseSub2storage.put(baseSub, rtArrestCountStorage);
+			alignPosProcessor.addStorage(rtArrestCountStorage);
+			
+			if (parameter.showDeletionCount()) {
+				final Fetcher<IntegerData> delFetcher = new IntegerDataExtractor(
+						baseSub, 
+						DataType.BASE_SUBST2DELETION_COUNT.getFetcher());
+				final Storage delStorage = new MapIntegerStorage(
+						sharedStorage, 
+						delFetcher);
+				cache.addStorage(delStorage);
+				baseSub2storage.put(baseSub, delStorage);
+				deletedPosProcessor.addStorage(delStorage);
+			}
 		}	
-
-		cache.addRecordProcessor(new BaseSubstitutionRecordProcessor(
-				sharedStorage, 
-				baseCallInterpreter, 
-				new CombinedValidator(validators), 
-				basSub2storage));
 		
+		final boolean stratifyOnlyBcc = ! parameter.showDeletionCount();
+		
+		final List<PositionProcessor> positionProcessors = new ArrayList<>(2);
+		positionProcessors.add(alignPosProcessor);
+		if (parameter.showDeletionCount()) {
+			positionProcessors.add(deletedPosProcessor);
+		}
+		
+		final BaseCallInterpreter bci = 
+				BaseCallInterpreter.build(conditionParameter.getLibraryType());
+		
+		cache.addRecordProcessor(
+				new BaseSubstitutionRecordProcessor(
+				sharedStorage, 
+				bci, 
+				new CombinedValidator(validators),
+				stratifyOnlyBcc,
+				baseSub2storage.keySet(), 
+				positionProcessors) );
 		return cache;
 	}
 	

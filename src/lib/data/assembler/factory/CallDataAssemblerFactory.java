@@ -18,6 +18,7 @@ import lib.data.validator.DefaultBaseCallValidator;
 import lib.data.validator.MaxDepthValidator;
 import lib.data.validator.MinBASQValidator;
 import lib.data.validator.Validator;
+import lib.util.coordinate.CoordinateTranslator;
 
 public class CallDataAssemblerFactory 
 extends AbstractSiteDataAssemblerFactory {
@@ -50,16 +51,14 @@ extends AbstractSiteDataAssemblerFactory {
 			validators.add(new MaxDepthValidator(conditionParameter.getMaxDepth(), bcqcStorage));
 		}
 
-		final PositionProcessor positionProcessor = new PositionProcessor(validators, bcqcStorage);
-		cache.addRecordProcessor(new AlignmentBlockProcessor(
-				sharedStorage.getCoordinateController().getCoordinateTranslator(), 
-				positionProcessor));
+		final CoordinateTranslator translator = 
+				sharedStorage.getCoordinateController().getCoordinateTranslator();
 		
-		addBaseSubstitution(
-				parameter,
-				sharedStorage,
-				conditionParameter, 
-				cache);
+		final PositionProcessor positionProcessor = new PositionProcessor(validators, bcqcStorage);
+		cache.addRecordProcessor(new AlignmentBlockProcessor(translator, positionProcessor));
+
+		addDelectionCount(parameter, sharedStorage, conditionParameter, cache);
+		addBaseSubstitution(parameter, sharedStorage,  conditionParameter, cache);
 		
 		return cache;
 	}

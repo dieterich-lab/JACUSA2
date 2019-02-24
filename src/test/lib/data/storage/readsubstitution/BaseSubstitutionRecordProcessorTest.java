@@ -17,6 +17,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import htsjdk.samtools.SAMRecord;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.data.storage.PositionProcessor;
 import lib.data.storage.Storage;
 import lib.data.storage.basecall.AbstractBaseCallCountStorage;
 import lib.data.storage.basecall.DefaultBaseCallCountStorage;
@@ -176,7 +177,7 @@ class BaseSubstitutionRecordProcessorTest {
 		}
 		
 		return Arguments.of(
-				createTestInstance(sharedStorage, libraryType, validator, actual),
+				createTestInstance(sharedStorage, libraryType, validator, true, actual),
 				records,
 				actual,
 				expected,
@@ -187,15 +188,24 @@ class BaseSubstitutionRecordProcessorTest {
 			final SharedStorage sharedStorage,
 			final LibraryType libraryType,
 			final Validator validator,
+			final boolean stratifyOnlyBcc,
 			final Map<BaseSubstitution, Storage> baseSub2storage) {
 
+		final List<PositionProcessor> positionProcessors = new ArrayList<>(2);
+		positionProcessors.add(
+				new PositionProcessor(
+						Arrays.asList(validator), 
+						new ArrayList<>(baseSub2storage.values())));
+		
 		// how to interpret strand and libraryType to infer 
 		final BaseCallInterpreter bci = BaseCallInterpreter.build(libraryType);
 		return new BaseSubstitutionRecordProcessor(
 				sharedStorage,
 				bci,
 				validator,
-				baseSub2storage);
+				stratifyOnlyBcc,
+				baseSub2storage.keySet(),
+				positionProcessors);
 	}
 	
 	// ',' separated array of strings of the following form: "x2y,winPos,{A|C|G|T}" 

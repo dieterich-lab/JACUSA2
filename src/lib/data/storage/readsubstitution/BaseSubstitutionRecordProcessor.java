@@ -5,13 +5,16 @@ import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AllAlignmentBlocksPositionProvider;
+import lib.util.position.AllDeletionsPositionProvider;
 import lib.util.position.MismatchPositionProvider;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 import lib.recordextended.SAMRecordExtended;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,7 +22,7 @@ import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMTag;
 import htsjdk.samtools.SamReader;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
-import lib.data.storage.Storage;
+import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.RecordExtendedPrePostProcessor;
 import lib.data.validator.Validator;
@@ -32,29 +35,32 @@ implements RecordExtendedPrePostProcessor {
 	private final BaseCallInterpreter bci;
 	private final Validator validator;
 	
-	private final Map<BaseSubstitution, Storage> baseSub2storage;
-	
 	private final Map<String, SAMRecordExtended> internalRecordExtended;
 	private final Set<SAMRecordExtended> externalRecordExtended;
 	
+	private final boolean stratifyOnlyBcc;
 	private final Set<BaseSubstitution> queryBaseSubs;
-
+	private final List<PositionProcessor> positionProcessors;
+	
 	public BaseSubstitutionRecordProcessor(
 			final SharedStorage sharedStorage,
 			final BaseCallInterpreter bci,
 			final Validator validator,
-			final Map<BaseSubstitution, Storage> baseSub2storage) {
+			final boolean stratifyOnlyBcc,
+			final Set<BaseSubstitution> queryBaseSubs,
+			final List<PositionProcessor> positionProcessors) {
 
 		this.sharedStorage 		= sharedStorage;
 		
 		this.bci 				= bci;
 		this.validator 			= validator;
-		this.baseSub2storage 	= baseSub2storage;
 
 		internalRecordExtended 	= new HashMap<>(Util.noRehashCapacity(100));
 		externalRecordExtended 	= new HashSet<>(Util.noRehashCapacity(100));
 		
-		queryBaseSubs 			= baseSub2storage.keySet();
+		this.stratifyOnlyBcc	= stratifyOnlyBcc;
+		this.queryBaseSubs 		= queryBaseSubs;
+		this.positionProcessors	= positionProcessors;
 	}
 	
 	protected void processSE(
@@ -73,6 +79,16 @@ implements RecordExtendedPrePostProcessor {
 	private CoordinateTranslator getTranslator() {
 		return getController().getCoordinateTranslator();
 	}
+
+	private List<PositionProvider> getPositionProviders(final SAMRecordExtended recordExtended) {
+		if (stratifyOnlyBcc) {
+			return Arrays.asList(new AllAlignmentBlocksPositionProvider(recordExtended, getTranslator()));
+		}
+		
+		return Arrays.asList(
+				new AllAlignmentBlocksPositionProvider(recordExtended, getTranslator()),
+				new AllDeletionsPositionProvider(recordExtended, getTranslator()));
+	}
 	
 	protected void stratifyBaseCallCounts(
 			final Set<BaseSubstitution> observedBaseSubs, final SAMRecordExtended recordExtended) {
@@ -80,15 +96,11 @@ implements RecordExtendedPrePostProcessor {
 		if (observedBaseSubs.size() == 0) {
 			return;
 		}
-		final PositionProvider positionProvider = new AllAlignmentBlocksPositionProvider(
-				recordExtended, getTranslator());
 		
-		while (positionProvider.hasNext()) {
-			final Position pos = positionProvider.next();
-			if (validator.isValid(pos)) {
-				for (final BaseSubstitution observedBaseSub : observedBaseSubs) {
-					baseSub2storage.get(observedBaseSub).increment(pos);
-				}
+		final List<PositionProvider> positionPorviders = getPositionProviders(recordExtended);
+		for (final PositionProcessor positionProcessor : positionProcessors) {
+			for (final PositionProvider positionProvider : positionPorviders) {
+				positionProcessor.process(positionProvider);
 			}
 		}
 	}
@@ -168,7 +180,7 @@ implements RecordExtendedPrePostProcessor {
 	
 	@Override
 	public void postProcess() {
-		processExternalPE(baseSub2storage.keySet());
+		processExternalPE(queryBaseSubs);
 		internalRecordExtended.clear();
 		externalRecordExtended.clear();
 	}

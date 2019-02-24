@@ -4,7 +4,7 @@ import java.util.List;
 
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.DataContainer;
-import lib.data.count.BaseSubstitutionCount;
+import lib.data.count.BaseSubstitution2BaseCallCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.result.Result;
 import lib.io.InputOutput;
@@ -42,7 +42,7 @@ public class RTarrestBaseSubstitutionDataAdder implements DataAdder {
 	private void addBaseCallCount(
 			final StringBuilder sb, 
 			final BaseSubstitution baseSub, 
-			final BaseSubstitutionCount baseSubstitutionCount) {
+			final BaseSubstitution2BaseCallCount baseSubstitutionCount) {
 
 		BaseCallCount bcc = baseSubstitutionCount.get(baseSub);
 		if (bcc == null) {

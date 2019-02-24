@@ -6,7 +6,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import lib.data.count.BaseSubstitutionCount;
+import lib.data.count.BaseSubstitution2IntegerData;
+import lib.data.count.BaseSubstitution2BaseCallCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.DataTypeFetcher;
@@ -40,14 +41,18 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	public static final DataType<ArrestPosition2baseCallCount> AP2BCC = 
 			create(DEFAULT, ArrestPosition2baseCallCount.class);
 	
-	public static final DataType<BaseSubstitutionCount> BASE_SUBST = 
-			create(DEFAULT, BaseSubstitutionCount.class);
+	public static final DataType<BaseSubstitution2BaseCallCount> BASE_SUBST2BCC = 
+			create(DEFAULT, BaseSubstitution2BaseCallCount.class);
 	
-	public static final DataType<BaseSubstitutionCount> ARREST_BASE_SUBST = 
-			create("Arrest", BaseSubstitutionCount.class);
+	public static final DataType<BaseSubstitution2IntegerData> BASE_SUBST2DELETION_COUNT = 
+			create(DEFAULT, BaseSubstitution2IntegerData.class);
 	
-	public static final DataType<BaseSubstitutionCount> THROUGH_BASE_SUBST = 
-			create("Through", BaseSubstitutionCount.class);
+	
+	public static final DataType<BaseSubstitution2BaseCallCount> ARREST_BASE_SUBST = 
+			create("Arrest", BaseSubstitution2BaseCallCount.class);
+	
+	public static final DataType<BaseSubstitution2BaseCallCount> THROUGH_BASE_SUBST = 
+			create("Through", BaseSubstitution2BaseCallCount.class);
 
 	public static final DataType<IntegerData> DELETION_COUNT = 
 			create("Deletion count", IntegerData.class);
