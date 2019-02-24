@@ -1,5 +1,7 @@
 package lib.stat.betabin;
 
+import org.apache.commons.math3.distribution.ChiSquaredDistribution;
+
 import lib.data.ParallelData;
 import lib.data.result.OneStatResult;
 import lib.data.result.Result;
@@ -16,6 +18,8 @@ public class RTarrestStat extends AbstractStat {
 	private final double threshold;
 	private final EstimateDirMult dirMult;
 	
+	private final ChiSquaredDistribution dist;
+	
 	public RTarrestStat(
 			final double threshold,
 			final RTarrestCountSampleProvider estimationSampleProvider,
@@ -25,7 +29,8 @@ public class RTarrestStat extends AbstractStat {
 		this.estimationSampleProvider 	= estimationSampleProvider;
 		this.dirMultParameter 			= dirMultParameter;
 		
-		dirMult							= new EstimateDirMult(dirMultParameter.getMinkaEstimateParameter()); 
+		dirMult							= new EstimateDirMult(dirMultParameter.getMinkaEstimateParameter());
+		dist = new ChiSquaredDistribution(1);
 	}
 
 	@Override
@@ -36,11 +41,16 @@ public class RTarrestStat extends AbstractStat {
 		dirMult.addStatResultInfo(statResult.getResultInfo());
 	}
 	
+	private double getPValue(final EstimationSample[] estimationSamples) {
+		final double lrt = dirMult.getLRT(estimationSamples);
+		return 1 - dist.cumulativeProbability(lrt);
+	}
+	
 	@Override
 	public Result calculate(ParallelData parallelData) {
 		final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
-		final double stat = dirMult.getStatistic(estimationSamples);
-		return new OneStatResult(stat, parallelData);
+		final double pvalue = getPValue(estimationSamples);
+		return new OneStatResult(pvalue, parallelData);
 	}
 	
 	@Override
@@ -51,7 +61,7 @@ public class RTarrestStat extends AbstractStat {
 			return false;
 		}
 
-		return threshold < statValue;
+		return threshold > statValue;
 	}
 	
 }

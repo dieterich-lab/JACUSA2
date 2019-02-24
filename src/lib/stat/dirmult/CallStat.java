@@ -38,7 +38,7 @@ public class CallStat extends AbstractStat {
 	@Override
 	public Result calculate(ParallelData parallelData) {
 		final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
-		final double stat = dirMult.getStatistic(estimationSamples);
+		final double stat = dirMult.getScore(estimationSamples);
 		return new OneStatResult(stat, parallelData);
 	}
 	

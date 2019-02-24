@@ -3,13 +3,10 @@ package lib.stat.dirmult;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import org.apache.commons.math3.distribution.ChiSquaredDistribution;
-
 import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.estimate.MinkaParameter;
 import lib.stat.initalpha.AbstractAlphaInit;
 import lib.stat.sample.EstimationSample;
-import lib.util.Base;
 import lib.util.Info;
 
 public class EstimateDirMult {
@@ -18,7 +15,6 @@ public class EstimateDirMult {
 	private final MinkaEstimateDirMultAlpha minkaEstimateAlpha;
 
 	private DecimalFormat decimalFormat;
-	private final ChiSquaredDistribution dist = new ChiSquaredDistribution(Base.validValues().length - 1d);
 	
 	private EstimationSample[] estimationSamples;	
 	private Info estimateInfo;
@@ -76,35 +72,41 @@ public class EstimateDirMult {
 		return flag;
 	}
 	
-	public double getPValue(final EstimationSample[] estimationSamples) {
-		double stat = getStatistic(estimationSamples);
-		stat = -2 * (stat);
-		return 1 - dist.cumulativeProbability(stat);
+	public double getScore(final EstimationSample[] estimationSamples) {
+		estimate(estimationSamples);
+		return getObservedlogLikeliood() - getEstimationSamplePooled().getLogLikelihood();
 	}
-	
-	public double getStatistic(final EstimationSample[] estimationSamples) {
+
+	private void estimate(final EstimationSample[] estimationSamples) { 
 		this.estimationSamples 	= estimationSamples;
 		estimateInfo 			= new Info();
-
+	
 		final AbstractAlphaInit defaultAlphaInit 	= minkaParameter.getAlphaInit();
 		final AbstractAlphaInit fallbackAlphaInit 	= minkaParameter.getFallbackAlphaInit();
-
+	
 		if (! estimate(defaultAlphaInit, false)) {
 			for (final EstimationSample estimationSample : estimationSamples) {
 				estimationSample.clear();
 			}
 			estimate(fallbackAlphaInit, true);
 		}
-		
+	}
+	
+	private double getObservedlogLikeliood() {
 		double tmpLogLikelihood = 0.0;
 		final int conditions = estimationSamples.length - 1;
 		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
 			tmpLogLikelihood += getEstimationSampleCondition(conditionIndex).getLogLikelihood();
 		}
-		double NULLlogLikelihood = getEstimationSamplePooled().getLogLikelihood();
-		return tmpLogLikelihood - NULLlogLikelihood;
+		return tmpLogLikelihood;
 	}
-
+	
+	public double getLRT(final EstimationSample[] estimationSamples) {
+		estimate(estimationSamples);
+		return - 2 * (getEstimationSamplePooled().getLogLikelihood() - 
+				getObservedlogLikeliood());
+	}
+	
 	private  EstimationSample getEstimationSampleCondition(final int conditionIndex) {
 		return estimationSamples[conditionIndex];
 	}
