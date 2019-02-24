@@ -19,10 +19,10 @@ import lib.data.DataContainer;
 import lib.data.DataContainer.AbstractBuilder;
 import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.fetcher.SpecificFilteredDataFetcher;
-import lib.data.filter.BooleanWrapperFilteredData;
+import lib.data.filter.BooleanFilteredData;
 import lib.data.storage.Cache;
 import lib.data.storage.container.SharedStorage;
-import lib.data.filter.BooleanWrapper;
+import lib.data.filter.BooleanData;
 import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
@@ -42,12 +42,12 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 	private HomopolymerMethod method;
 	
 	private final GeneralParameter parameter;
-	private final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredBooleanFetcher;
-	private final DataType<BooleanWrapperFilteredData> dataType;
+	private final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredBooleanFetcher;
+	private final DataType<BooleanFilteredData> dataType;
 
 	public HomopolymerFilterFactory(
 			final GeneralParameter parameter,
-			final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher) {
+			final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredDataFetcher) {
 
 		super(getOptionBuilder().build());
 		length = MIN_HOMOPOLYMER_LENGTH;

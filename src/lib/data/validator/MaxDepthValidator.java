@@ -1,6 +1,6 @@
 package lib.data.validator;
 
-import lib.data.stroage.WindowCoverage;
+import lib.data.storage.WindowCoverage;
 import lib.util.position.Position;
 
 public class MaxDepthValidator implements Validator {

@@ -5,10 +5,10 @@ import java.util.Map;
 
 import lib.data.DataContainer;
 import lib.data.fetcher.FilteredDataFetcher;
-import lib.data.filter.BooleanWrapperFilteredData;
+import lib.data.filter.BooleanFilteredData;
+import lib.data.storage.AbstractStorage;
 import lib.data.storage.container.SharedStorage;
-import lib.data.stroage.AbstractStorage;
-import lib.data.filter.BooleanWrapper;
+import lib.data.filter.BooleanData;
 import lib.util.coordinate.Coordinate;
 import lib.util.position.Position;
 
@@ -29,7 +29,7 @@ public class HomopolymerReferenceStorage extends AbstractStorage {
 	}
 	
 	private final char c;
-	private final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher; 
+	private final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredDataFetcher; 
 
 	// min length of identical base call to define homopolymer
 	private final int minLength;
@@ -40,7 +40,7 @@ public class HomopolymerReferenceStorage extends AbstractStorage {
 	public HomopolymerReferenceStorage(
 			final SharedStorage sharedStorage,
 			final char c,
-			final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher, 
+			final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredDataFetcher, 
 			final int minLength,
 			final int bamFiles) {
 

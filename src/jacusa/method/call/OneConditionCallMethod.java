@@ -22,8 +22,8 @@ import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.DefaultFilteredDataFetcher;
 import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.filter.BaseCallCountFilteredData;
-import lib.data.filter.BooleanWrapper;
-import lib.data.filter.BooleanWrapperFilteredData;
+import lib.data.filter.BooleanData;
+import lib.data.filter.BooleanFilteredData;
 import lib.data.validator.paralleldata.ExtendedVariantSiteValidator;
 import lib.data.validator.paralleldata.KnownReferenceBase;
 import lib.data.validator.paralleldata.MinCoverageValidator;
@@ -46,8 +46,8 @@ extends CallMethod {
 	public Map<Character, FilterFactory> getFilterFactories() {
 		final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredBccData = 
 				new DefaultFilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount>(DataType.F_BCC);
-		final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredBooleanData = 
-				new DefaultFilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper>(DataType.F_BOOLEAN);
+		final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredBooleanData = 
+				new DefaultFilteredDataFetcher<BooleanFilteredData, BooleanData>(DataType.F_BOOLEAN);
 		
 		return Arrays.asList(
 				new ExcludeSiteFilterFactory(),

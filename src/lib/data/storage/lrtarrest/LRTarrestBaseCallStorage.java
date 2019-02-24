@@ -5,9 +5,9 @@ import java.util.Map;
 
 import lib.data.DataContainer;
 import lib.data.fetcher.Fetcher;
+import lib.data.storage.AbstractStorage;
+import lib.data.storage.WindowCoverage;
 import lib.data.storage.container.SharedStorage;
-import lib.data.stroage.AbstractStorage;
-import lib.data.stroage.WindowCoverage;
 import lib.util.Base;
 import lib.util.Util;
 import lib.util.coordinate.Coordinate;

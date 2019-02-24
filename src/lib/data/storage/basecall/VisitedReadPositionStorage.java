@@ -2,8 +2,8 @@ package lib.data.storage.basecall;
 
 import lib.recordextended.SAMRecordExtended;
 import lib.data.DataContainer;
+import lib.data.storage.Storage;
 import lib.data.storage.container.SharedStorage;
-import lib.data.stroage.Storage;
 import lib.util.coordinate.Coordinate;
 import lib.util.position.Position;
 

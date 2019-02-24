@@ -54,8 +54,8 @@ import lib.data.fetcher.Fetcher;
 import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.fetcher.basecall.PileupCountBaseCallCountExtractor;
 import lib.data.filter.BaseCallCountFilteredData;
-import lib.data.filter.BooleanWrapperFilteredData;
-import lib.data.filter.BooleanWrapper;
+import lib.data.filter.BooleanFilteredData;
+import lib.data.filter.BooleanData;
 import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.data.validator.paralleldata.NonHomozygousSite;
@@ -167,7 +167,7 @@ extends AbstractMethod {
 	public Map<Character, FilterFactory> getFilterFactories() {
 		final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredBccData = 
 				new DefaultFilteredDataFetcher<>(DataType.F_BCC);
-		final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredBooleanData = 
+		final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredBooleanData = 
 				new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN);
 		
 		return Arrays.asList(

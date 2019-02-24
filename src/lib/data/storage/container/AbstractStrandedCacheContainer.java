@@ -6,8 +6,8 @@ import java.util.List;
 import lib.util.coordinate.Coordinate;
 import lib.recordextended.SAMRecordExtended;
 import lib.data.DataContainer;
+import lib.data.storage.Storage;
 import lib.data.storage.processor.RecordExtendedPrePostProcessor;
-import lib.data.stroage.Storage;
 
 public abstract class AbstractStrandedCacheContainer 
 implements CacheContainer {

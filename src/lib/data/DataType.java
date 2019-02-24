@@ -13,7 +13,7 @@ import lib.data.fetcher.DataTypeFetcher;
 import lib.data.fetcher.Fetcher;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
 import lib.data.filter.BaseCallCountFilteredData;
-import lib.data.filter.BooleanWrapperFilteredData;
+import lib.data.filter.BooleanFilteredData;
 import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 
 public final class DataType<T extends Data<T>> implements Serializable {
@@ -52,8 +52,8 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	public static final DataType<BaseCallCountFilteredData> F_BCC = 
 			create(DEFAULT, BaseCallCountFilteredData.class);
 	
-	public static final DataType<BooleanWrapperFilteredData> F_BOOLEAN = 
-			create(DEFAULT, BooleanWrapperFilteredData.class);
+	public static final DataType<BooleanFilteredData> F_BOOLEAN = 
+			create(DEFAULT, BooleanFilteredData.class);
 	
 	public static final DataType<ArrestPos2BaseCallCountFilteredData> F_AP2BCC = 
 			create(DEFAULT, ArrestPos2BaseCallCountFilteredData.class);

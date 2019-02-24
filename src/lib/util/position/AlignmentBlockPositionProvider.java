@@ -1,7 +1,7 @@
 package lib.util.position;
 
 public class 	AlignmentBlockPositionProvider implements PositionProvider {
-
+	
 	private final MatchPosition pos;
 	private final int length;
 	

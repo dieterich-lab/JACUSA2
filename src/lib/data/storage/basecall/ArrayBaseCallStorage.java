@@ -6,8 +6,8 @@ import htsjdk.samtools.util.SequenceUtil;
 import lib.util.Base;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
+import lib.data.storage.Storage;
 import lib.data.storage.container.SharedStorage;
-import lib.data.stroage.Storage;
 
 public class ArrayBaseCallStorage
 extends AbstractBaseCallCountStorage 

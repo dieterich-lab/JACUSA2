@@ -12,9 +12,9 @@ import lib.data.DataContainer;
 import lib.data.count.PileupCount;
 import lib.data.count.basecallquality.BaseCallQualityCount;
 import lib.data.fetcher.Fetcher;
+import lib.data.storage.AbstractStorage;
+import lib.data.storage.WindowCoverage;
 import lib.data.storage.container.SharedStorage;
-import lib.data.stroage.AbstractStorage;
-import lib.data.stroage.WindowCoverage;
 
 public class ArrayBaseCallQualityStorage
 extends AbstractStorage 

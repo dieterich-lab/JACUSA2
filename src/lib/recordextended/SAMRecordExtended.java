@@ -12,6 +12,7 @@ public class SAMRecordExtended {
 	private final SAMRecord record;
 	private final List<CigarElementExtended> cigarElementExtended;
 
+	// indices to cigarElementExtended
 	private final List<Integer> skipped;
 	private final List<Integer> insertions;
 	private final List<Integer> deletions;

@@ -3,7 +3,7 @@ package jacusa.filter;
 import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.fetcher.Fetcher;
-import lib.data.filter.BooleanWrapper;
+import lib.data.filter.BooleanData;
 
 /**
  * This class implements the homopolymorph filter that identifies variants
@@ -13,12 +13,12 @@ import lib.data.filter.BooleanWrapper;
  */
 public class HomopolymerFilter extends AbstractFilter {
 
-	private final Fetcher<BooleanWrapper> fetcher;
+	private final Fetcher<BooleanData> fetcher;
 	
 	public HomopolymerFilter(
 			final char c, 
 			final int overhang, 
-			final Fetcher<BooleanWrapper> fetcher) {
+			final Fetcher<BooleanData> fetcher) {
 		
 		super(c, overhang);
 		this.fetcher = fetcher;
@@ -30,7 +30,7 @@ public class HomopolymerFilter extends AbstractFilter {
 	@Override
 	public boolean filter(final ParallelData parallelData) {
 		final DataContainer dataContainer 	= parallelData.getCombinedPooledData();
-		final BooleanWrapper bw 			= fetcher.fetch(dataContainer);
+		final BooleanData bw 			= fetcher.fetch(dataContainer);
 		return bw != null && bw.getValue();
 	}
 	

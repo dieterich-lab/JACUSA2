@@ -12,13 +12,13 @@ import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import lib.data.filter.BooleanWrapperFilteredData;
-import lib.data.filter.BooleanWrapper;
+import lib.data.filter.BooleanFilteredData;
+import lib.data.filter.BooleanData;
 
-public class BooleanFilteredDataTest extends AbstractFilteredDataTest<BooleanWrapperFilteredData, BooleanWrapper> {
+public class BooleanFilteredDataTest extends AbstractFilteredDataTest<BooleanFilteredData, BooleanData> {
 
 	public BooleanFilteredDataTest() {
-		super(new BooleanWrapperFilteredData.Parser());
+		super(new BooleanFilteredData.Parser());
 	}
 	
 	/*
@@ -41,9 +41,9 @@ public class BooleanFilteredDataTest extends AbstractFilteredDataTest<BooleanWra
 	} )
 	@Override
 	void testMerge(
-			@ConvertWith(ToBooleanFilteredDataArgumentConverter.class) BooleanWrapperFilteredData data1, 
-			@ConvertWith(ToBooleanFilteredDataArgumentConverter.class) BooleanWrapperFilteredData data2,
-			@ConvertWith(ToBooleanFilteredDataArgumentConverter.class) BooleanWrapperFilteredData expected) {
+			@ConvertWith(ToBooleanFilteredDataArgumentConverter.class) BooleanFilteredData data1, 
+			@ConvertWith(ToBooleanFilteredDataArgumentConverter.class) BooleanFilteredData data2,
+			@ConvertWith(ToBooleanFilteredDataArgumentConverter.class) BooleanFilteredData expected) {
 
 		super.testMerge(data1, data2, expected);
 	}
@@ -54,7 +54,7 @@ public class BooleanFilteredDataTest extends AbstractFilteredDataTest<BooleanWra
 			"A=true,B=false"
 		} )
 	@Override
-	void testCopy(BooleanWrapperFilteredData data) {
+	void testCopy(BooleanFilteredData data) {
 		super.testCopy(data);
 	}
 	
@@ -65,27 +65,27 @@ public class BooleanFilteredDataTest extends AbstractFilteredDataTest<BooleanWra
 	@Override
 	Stream<Arguments> testParserParse() {
 		return Stream.of(
-				Arguments.of("*", new BooleanWrapperFilteredData()),
-				Arguments.of("A=true", new BooleanWrapperFilteredData().add('A', new BooleanWrapper(true))),
+				Arguments.of("*", new BooleanFilteredData()),
+				Arguments.of("A=true", new BooleanFilteredData().add('A', new BooleanData(true))),
 				Arguments.of(
 						"A=true,B=false", 
-						new BooleanWrapperFilteredData()
-							.add('A', new BooleanWrapper(true))
-							.add('B', new BooleanWrapper(false))) );
+						new BooleanFilteredData()
+							.add('A', new BooleanData(true))
+							.add('B', new BooleanData(false))) );
 	}
 	
 	@Override
 	Stream<Arguments> testParserWrap() {
 		return Stream.of(
-				Arguments.of(new BooleanWrapperFilteredData(), "*"),
+				Arguments.of(new BooleanFilteredData(), "*"),
 				Arguments.of(
-						new BooleanWrapperFilteredData()
-							.add('A', new BooleanWrapper(true)), 
+						new BooleanFilteredData()
+							.add('A', new BooleanData(true)), 
 						"A=true"),
 				Arguments.of(
-						new BooleanWrapperFilteredData()
-							.add('A', new BooleanWrapper(true))
-							.add('B', new BooleanWrapper(false)), 
+						new BooleanFilteredData()
+							.add('A', new BooleanData(true))
+							.add('B', new BooleanData(false)), 
 						"A=true,B=false") );
 	}
 
@@ -97,15 +97,15 @@ public class BooleanFilteredDataTest extends AbstractFilteredDataTest<BooleanWra
 
 		@Override
 		protected Object convert(Object src, Class<?> target) throws ArgumentConversionException {
-			assertEquals(BooleanWrapperFilteredData.class, target, "Can only convert to BooleanFilteredData");
+			assertEquals(BooleanFilteredData.class, target, "Can only convert to BooleanFilteredData");
 			final String s = String.valueOf(src);
-			return new BooleanWrapperFilteredData.Parser().parse(s);
+			return new BooleanFilteredData.Parser().parse(s);
 		}
 		
 	}
 
 	@Override
-	protected boolean myEquals(BooleanWrapper data1, BooleanWrapper data2) {
+	protected boolean myEquals(BooleanData data1, BooleanData data2) {
 		return data1.equals(data2);
 	}
 	

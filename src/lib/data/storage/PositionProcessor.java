@@ -3,7 +3,6 @@ package lib.data.storage;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.data.stroage.Storage;
 import lib.data.validator.Validator;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;

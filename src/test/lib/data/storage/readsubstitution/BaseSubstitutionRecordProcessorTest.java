@@ -17,12 +17,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import htsjdk.samtools.SAMRecord;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.data.storage.Storage;
 import lib.data.storage.basecall.AbstractBaseCallCountStorage;
 import lib.data.storage.basecall.DefaultBaseCallCountStorage;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.readsubstitution.BaseCallInterpreter;
 import lib.data.storage.readsubstitution.BaseSubstitutionRecordProcessor;
-import lib.data.stroage.Storage;
 import lib.data.validator.CombinedValidator;
 import lib.data.validator.Validator;
 import lib.recordextended.SAMRecordExtended;

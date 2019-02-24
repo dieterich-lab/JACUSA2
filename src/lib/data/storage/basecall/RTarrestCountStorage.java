@@ -4,10 +4,10 @@ import lib.util.coordinate.Coordinate;
 import lib.util.position.Position;
 
 import lib.data.DataContainer;
+import lib.data.storage.AbstractStorage;
+import lib.data.storage.WindowCoverage;
 import lib.data.storage.arrest.LocationInterpreter;
 import lib.data.storage.container.SharedStorage;
-import lib.data.stroage.AbstractStorage;
-import lib.data.stroage.WindowCoverage;
 
 public class RTarrestCountStorage
 extends AbstractStorage 

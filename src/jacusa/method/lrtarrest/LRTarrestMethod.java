@@ -57,8 +57,8 @@ import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.fetcher.basecall.ArrestBaseCallCountExtractor;
 import lib.data.fetcher.basecall.ThroughBaseCallCountExtractor;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
-import lib.data.filter.BooleanWrapper;
-import lib.data.filter.BooleanWrapperFilteredData;
+import lib.data.filter.BooleanData;
+import lib.data.filter.BooleanFilteredData;
 import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.validator.paralleldata.LRTarrestVariantParallelPileup;
 import lib.data.validator.paralleldata.MinCoverageValidator;
@@ -167,7 +167,7 @@ extends AbstractMethod {
 		final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, ArrestPosition2baseCallCount> filteredAp2bccFetcher = 
 				new DefaultFilteredDataFetcher<>(DataType.F_AP2BCC);
 		
-		final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredBooleanFetcher =
+		final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredBooleanFetcher =
 				new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN);
 
 		return Arrays.asList(

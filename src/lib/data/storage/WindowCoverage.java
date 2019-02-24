@@ -1,4 +1,4 @@
-package lib.data.stroage;
+package lib.data.storage;
 
 public interface WindowCoverage {
 

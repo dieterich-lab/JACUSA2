@@ -10,7 +10,7 @@ import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
 import lib.data.filter.BaseCallCountFilteredData;
-import lib.data.filter.BooleanWrapperFilteredData;
+import lib.data.filter.BooleanFilteredData;
 import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 import lib.util.Base;
 import lib.util.LibraryType;
@@ -94,7 +94,7 @@ public class DefaultDataContainer implements DataContainer {
 	}
 	
 	@Override
-	public BooleanWrapperFilteredData getBooleanFilteredData() {
+	public BooleanFilteredData getBooleanFilteredData() {
 		return get(DataType.F_BOOLEAN);
 	}
 	

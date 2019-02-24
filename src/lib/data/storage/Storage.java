@@ -1,4 +1,4 @@
-package lib.data.stroage;
+package lib.data.storage;
 
 import lib.data.DataContainer;
 import lib.data.storage.container.ReferenceProvider;

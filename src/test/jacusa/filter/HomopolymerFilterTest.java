@@ -12,8 +12,8 @@ import lib.data.ParallelData;
 import lib.data.fetcher.DefaultFilteredDataFetcher;
 import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.fetcher.SpecificFilteredDataFetcher;
-import lib.data.filter.BooleanWrapper;
-import lib.data.filter.BooleanWrapperFilteredData;
+import lib.data.filter.BooleanData;
+import lib.data.filter.BooleanFilteredData;
 import lib.data.result.Result;
 import lib.util.LibraryType;
 import lib.util.Parser;
@@ -28,15 +28,15 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 	
 	private final char c;
 	
-	private final Parser<BooleanWrapperFilteredData> parser; 
-	private final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> fetcher;
+	private final Parser<BooleanFilteredData> parser; 
+	private final FilteredDataFetcher<BooleanFilteredData, BooleanData> fetcher;
 	
 	public HomopolymerFilterTest() {
 		c 		= 'X';
 		
-		parser	= new BooleanWrapperFilteredData.Parser(',', SEP);
+		parser	= new BooleanFilteredData.Parser(',', SEP);
 		fetcher = new DefaultFilteredDataFetcher<>(
-				DataType.retrieve("Filtered boolean", BooleanWrapperFilteredData.class) );
+				DataType.retrieve("Filtered boolean", BooleanFilteredData.class) );
 	}
 	
 	@Override

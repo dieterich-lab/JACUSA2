@@ -8,8 +8,8 @@ import lib.util.Base;
 import lib.util.Util;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
+import lib.data.storage.Storage;
 import lib.data.storage.container.SharedStorage;
-import lib.data.stroage.Storage;
 
 public class MapBaseCallStorage
 extends AbstractBaseCallCountStorage

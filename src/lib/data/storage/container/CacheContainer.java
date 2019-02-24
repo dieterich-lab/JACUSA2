@@ -5,8 +5,8 @@ import java.util.List;
 
 import lib.data.DataContainer;
 import lib.data.storage.Cache;
+import lib.data.storage.Storage;
 import lib.data.storage.processor.RecordExtendedPrePostProcessor;
-import lib.data.stroage.Storage;
 import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
 import lib.recordextended.SAMRecordExtended;

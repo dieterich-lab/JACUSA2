@@ -14,7 +14,7 @@ import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
 import lib.data.filter.BaseCallCountFilteredData;
-import lib.data.filter.BooleanWrapperFilteredData;
+import lib.data.filter.BooleanFilteredData;
 import lib.data.has.HasCoordinate;
 import lib.data.has.HasLibraryType;
 import lib.data.has.HasReferenceBase;
@@ -37,7 +37,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	
 	BaseSubstitutionCount getBaseSubstitutionCount();
 	BaseCallCountFilteredData getBaseCallCountFilteredData();
-	BooleanWrapperFilteredData getBooleanFilteredData();
+	BooleanFilteredData getBooleanFilteredData();
 	
 	BaseCallCount getArrestBaseCallCount();
 	BaseCallCount getThroughBaseCallCount();

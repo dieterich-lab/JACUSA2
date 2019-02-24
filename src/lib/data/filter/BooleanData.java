@@ -2,18 +2,18 @@ package lib.data.filter;
 
 import lib.data.Data;
 
-public class BooleanWrapper implements Data<BooleanWrapper> {
+public class BooleanData implements Data<BooleanData> {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private boolean b;
 	
-	public BooleanWrapper(final boolean b) {
+	public BooleanData(final boolean b) {
 		this.b = b;
 	}
 	
-	private BooleanWrapper(final BooleanWrapper booleanWrapper) {
-		b = booleanWrapper.b;
+	private BooleanData(final BooleanData booleanData) {
+		b = booleanData.b;
 	}
 
 	@Override
@@ -25,10 +25,10 @@ public class BooleanWrapper implements Data<BooleanWrapper> {
 			return true;
 		}
 
-		if (!(obj instanceof BooleanWrapper)) {
+		if (!(obj instanceof BooleanData)) {
 			return false;
 		}
-		BooleanWrapper bw = (BooleanWrapper)obj;
+		BooleanData bw = (BooleanData)obj;
 		return getValue() == bw.getValue();
 	}
 	
@@ -45,13 +45,13 @@ public class BooleanWrapper implements Data<BooleanWrapper> {
 	}
 	
 	@Override
-	public BooleanWrapper copy() {
-		return new BooleanWrapper(this);
+	public BooleanData copy() {
+		return new BooleanData(this);
 	}
 	
 	@Override
-	public void merge(BooleanWrapper booleanWrapper) {
-		b |= booleanWrapper.b;
+	public void merge(BooleanData booleanData) {
+		b |= booleanData.b;
 	}
 	
 }

@@ -6,10 +6,10 @@ import java.util.Collection;
 import jacusa.filter.homopolymer.Homopolymer.HomopolymerBuilder;
 import lib.data.DataContainer;
 import lib.data.fetcher.FilteredDataFetcher;
-import lib.data.filter.BooleanWrapperFilteredData;
+import lib.data.filter.BooleanFilteredData;
+import lib.data.storage.AbstractStorage;
 import lib.data.storage.container.SharedStorage;
-import lib.data.stroage.AbstractStorage;
-import lib.data.filter.BooleanWrapper;
+import lib.data.filter.BooleanData;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.util.position.Position;
@@ -22,7 +22,7 @@ import lib.util.position.Position;
 public class HomopolymerStorage extends AbstractStorage {
 	
 	private final char c;
-	private final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher; 
+	private final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredDataFetcher; 
 
 	// min length of identical base call to define homopolymer
 	private final int minLength;
@@ -33,7 +33,7 @@ public class HomopolymerStorage extends AbstractStorage {
 	public HomopolymerStorage(
 			final SharedStorage sharedStorage,
 			final char c,
-			final FilteredDataFetcher<BooleanWrapperFilteredData, BooleanWrapper> filteredDataFetcher,
+			final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredDataFetcher,
 			final int minLength) {
 
 		super(sharedStorage);
@@ -70,7 +70,7 @@ public class HomopolymerStorage extends AbstractStorage {
 	public void populate(DataContainer container, int winPos, Coordinate coordinate) {
 		if (isHomopolymer[winPos]) {
 			filteredDataFetcher.fetch(container).add(
-					c, new BooleanWrapper(isHomopolymer[winPos]));
+					c, new BooleanData(isHomopolymer[winPos]));
 		}
 	}
 	
