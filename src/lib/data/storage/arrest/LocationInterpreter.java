@@ -7,7 +7,7 @@ import htsjdk.samtools.AlignmentBlock;
 import lib.util.LibraryType;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AlignmentBlockPositionProviderBuilder;
-import lib.util.position.DefaultPosition;
+import lib.util.position.UnmodifiablePosition;
 import lib.util.position.MatchPosition;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
@@ -77,7 +77,7 @@ public interface LocationInterpreter {
 		final int readPos			= block.getReadStart() - 1 + length;
 		final int winPos			= translator.reference2windowPosition(refPos);
 		if (winPos >= 0) {
-			return new DefaultPosition(refPos, readPos, winPos, recordExtended);
+			return new UnmodifiablePosition(refPos, readPos, winPos, recordExtended);
 		}
 		return  null;
 	}

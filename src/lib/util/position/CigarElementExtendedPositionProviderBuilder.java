@@ -16,7 +16,6 @@ public class CigarElementExtendedPositionProviderBuilder implements lib.util.Bui
 	private final SAMRecordExtended recordExtended;
 	private CoordinateTranslator translator;
 	
-
 	/**
 	 * 
 	 * @param CigarElementExtended
@@ -71,6 +70,6 @@ public class CigarElementExtendedPositionProviderBuilder implements lib.util.Bui
 		// winPos -1 will be set in PositionProvider.adjustForWindow 
 		final MatchPosition matchPosition = new MatchPosition(refPos, readPos, -1, recordExtended);
 		length = PositionProvider.adjustWindowPos(matchPosition, length, translator);
-		return new AlignmentBlockPositionProvider(matchPosition, length);
+		return new IntervalPositionProvider(matchPosition, length);
 	}
 }

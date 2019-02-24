@@ -109,6 +109,11 @@ public class DefaultDataContainer implements DataContainer {
 	}
 	
 	@Override
+	public IntegerData getDeletionCount() {
+		return get(DataType.DELETION_COUNT);
+	}
+	
+	@Override
 	public <T extends Data<T>> boolean contains(DataType<T> dataType) {
 		return map.containsKey(dataType);
 	}

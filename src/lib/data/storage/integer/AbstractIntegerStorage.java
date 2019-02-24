@@ -1,8 +1,8 @@
 package lib.data.storage.integer;
 
 import lib.data.DataContainer;
+import lib.data.IntegerData;
 import lib.data.fetcher.Fetcher;
-import lib.data.filter.IntegerData;
 import lib.data.storage.AbstractStorage;
 import lib.data.storage.container.SharedStorage;
 import lib.util.coordinate.Coordinate;

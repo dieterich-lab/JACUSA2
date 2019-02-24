@@ -5,6 +5,7 @@ import java.util.List;
 
 import jacusa.io.format.BaseSubstitutionBED6adder;
 import jacusa.io.format.BaseSubstitutionDataAdder;
+import jacusa.io.format.DeletionCountDataAdder;
 import jacusa.io.format.StratifiedDataAdder;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.GeneralParameter;
@@ -46,11 +47,14 @@ extends AbstractResultFileFormat {
 					new BaseSubstitutionDataAdder(bccParser, baseSubs, dataAdder));
 		}
 		
-		return new BEDlikeResultFileWriterBuilder(outputFileName, getParameter())
+		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter())
 				.addBED6Adder(bed6adder)
-				.addDataAdder(dataAdder)
-				.addInfoAdder(new DefaultInfoAdder(getParameter()))
-				.build();
+				.addDataAdder(dataAdder);
+		if (getParameter().showDeletionCount()) {
+			builder.addDataAdder(new DeletionCountDataAdder());
+		}
+		builder.addInfoAdder(new DefaultInfoAdder(getParameter()));
+		return builder.build();
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 public final class InputOutput {
 
 	public static final String BASE_FIELD 		= "bases";
+	public static final String DELETION_FIELD 	= "deletions";
 	public static final String ARREST_BASES 	= "arrest_bases";
 	public static final String THROUGH_BASES 	= "through_bases";
 	

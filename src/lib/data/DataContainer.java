@@ -48,6 +48,8 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	ArrestPosition2baseCallCount getArrestPos2BaseCallCount();
 	ArrestPos2BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData();
 	
+	IntegerData getDeletionCount();
+	
 	<T extends Data<T>> boolean contains(DataType<T> dataType);
 	Collection<DataType<?>> getDataTypes();
 	

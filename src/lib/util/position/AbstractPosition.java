@@ -5,9 +5,9 @@ import lib.recordextended.SAMRecordExtended;
 // TODO Qi all PositionProviders need testing
 abstract class AbstractPosition implements Position {
 	
-	private int refPos;
-	private int readPos;
-	private int winPos;
+	protected int refPos;
+	protected int readPos;
+	protected int winPos;
 	
 	private final SAMRecordExtended recordExtended;
 	
@@ -89,17 +89,9 @@ abstract class AbstractPosition implements Position {
 		this.winPos 	= winPos;
 	}
 
-	void increment() {
-		++refPos;
-		++readPos;
-		++winPos;
-	}
+	abstract void increment();
 	
-	void offset(final int offset) {
-		refPos 	+= offset;
-		readPos	+= offset;
-		winPos	+= offset;
-	}
+	abstract void offset(final int offset);
 
 	void setWindowPosition(final int winPos) {
 		this.winPos = winPos;
@@ -112,16 +104,6 @@ abstract class AbstractPosition implements Position {
 	@Override
 	public String toString() {
 		return String.format("(%d,%d,%d)", refPos, readPos, winPos);
-		/*
-		return new StringBuilder()
-				.append("1-based-ref=").append(getReferencePosition()).append(' ')
-				.append("0-based-read=").append(getReadPosition()).append(' ')
-				.append("0-based-win=").append(getWindowPosition()).append(' ')
-				.append('\n')
-				.append("base=").append(getReadBaseCall()).append(' ')
-				.append("qual=").append(getReadBaseCallQuality()).append(' ')
-				.toString();
-				*/
 	}
 
 	static abstract class AbstractBuilder<T extends AbstractPosition> implements lib.util.Builder<T> {

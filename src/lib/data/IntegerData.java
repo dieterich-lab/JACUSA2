@@ -1,6 +1,4 @@
-package lib.data.filter;
-
-import lib.data.Data;
+package lib.data;
 
 public class IntegerData implements Data<IntegerData> {
 	

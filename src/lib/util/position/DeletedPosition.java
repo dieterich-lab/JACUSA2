@@ -1,20 +1,21 @@
 package lib.util.position;
 
-import htsjdk.samtools.AlignmentBlock;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.recordextended.AlignedPosition;
 import lib.recordextended.SAMRecordExtended;
+import lib.recordextended.SAMRecordExtended.CigarElementExtended;
 
-public class MatchPosition extends AbstractPosition {
+public class DeletedPosition extends AbstractPosition {
 
-	public MatchPosition(final MatchPosition matchPosition) {
-		super(matchPosition);
+	public DeletedPosition(final DeletedPosition deletedPosition) {
+		super(deletedPosition);
 	}
 	
-	public MatchPosition(
+	public DeletedPosition(
 			final AlignedPosition alignPos, 
 			final SAMRecordExtended recordExtended,
 			final CoordinateTranslator translator) {
+
 		super(
 				alignPos.getReferencePosition(), 
 				alignPos.getReadPosition(), 
@@ -22,34 +23,32 @@ public class MatchPosition extends AbstractPosition {
 				recordExtended);
 	}
 	
-	MatchPosition(
+	DeletedPosition(
 			final int refPos, final int readPos, final int winPos, 
 			final SAMRecordExtended recordExtended) {
 
 		super(refPos, readPos, winPos, recordExtended);
 	}
 	
+	private DeletedPosition(Builder builder) {
+		super(builder);
+	}
+
 	@Override
 	void increment() {
 		refPos++;
-		readPos++;
 		winPos++;
 	}
 	
 	@Override
 	void offset(int offset) {
 		refPos 	+= offset;
-		readPos	+= offset;
 		winPos	+= offset;
 	}
 	
-	private MatchPosition(Builder builder) {
-		super(builder);
-	}
-	
 	@Override
-	public MatchPosition copy() {
-		return new MatchPosition(this);
+	public DeletedPosition copy() {
+		return new DeletedPosition(this);
 	}
 	
 	@Override
@@ -57,32 +56,32 @@ public class MatchPosition extends AbstractPosition {
 		return true;
 	}
 	
-	public static class Builder extends AbstractBuilder<MatchPosition> {
+	public static class Builder extends AbstractBuilder<DeletedPosition> {
 		
 		public Builder(
-				final int alignmentBlockIndex, final SAMRecordExtended recordExtended, 
+				final int deletionIndex, final SAMRecordExtended recordExtended, 
 				final CoordinateTranslator translator) {
 			
 			this(
-					recordExtended.getSAMRecord().getAlignmentBlocks().get(alignmentBlockIndex),
+					recordExtended.getCigarElementExtended().get(deletionIndex),
 					recordExtended, 
 					translator);
 		}
 		
 		private Builder(
-				final AlignmentBlock alignmentBlock, final SAMRecordExtended recordExtended, 
+				final CigarElementExtended cigarElementExtended, final SAMRecordExtended recordExtended, 
 				final CoordinateTranslator translator) {
 			
 			super(
-					alignmentBlock.getReferenceStart(), 
-					alignmentBlock.getReadStart() - 1,
-					translator.reference2windowPosition(alignmentBlock.getReferenceStart()),
+					cigarElementExtended.getPosition().getReferencePosition(), 
+					cigarElementExtended.getPosition().getReadPosition(),
+					translator.reference2windowPosition(cigarElementExtended.getPosition().getReferencePosition()),
 					recordExtended);
 		}
 		
 		@Override
-		public MatchPosition build() {
-			return new MatchPosition(this);
+		public DeletedPosition build() {
+			return new DeletedPosition(this);
 		}
 		
 	}

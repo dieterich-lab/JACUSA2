@@ -20,9 +20,9 @@ public class BaseSubstitutionDataAdder implements DataAdder {
 			final List<BaseSubstitution> baseSubs, 
 			final DataAdder dataAdder) {		
 		
-		this.bccParser = bccParser;
-		this.baseSubs = baseSubs;
-		this.dataAdder = dataAdder;
+		this.bccParser 	= bccParser;
+		this.baseSubs 	= baseSubs;
+		this.dataAdder 	= dataAdder;
 	}
 
 	@Override

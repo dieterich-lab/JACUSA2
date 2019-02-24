@@ -1,13 +1,13 @@
 package lib.util.position;
 
-public class 	AlignmentBlockPositionProvider implements PositionProvider {
+public class IntervalPositionProvider implements PositionProvider {
 	
-	private final MatchPosition pos;
+	private final AbstractPosition pos;
 	private final int length;
 	
 	private int current;
 	
-	AlignmentBlockPositionProvider(final MatchPosition pos, final int length) {
+	IntervalPositionProvider(final AbstractPosition pos, final int length) {
 		this.pos 	= pos;
 		this.length = length;
 		
@@ -21,7 +21,7 @@ public class 	AlignmentBlockPositionProvider implements PositionProvider {
 	
 	@Override
 	public Position next() {
-		Position tmpPos = new DefaultPosition(pos);
+		Position tmpPos = new UnmodifiablePosition(pos);
 		++current;
 		pos.increment();
 		return tmpPos;

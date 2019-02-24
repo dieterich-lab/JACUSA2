@@ -53,7 +53,7 @@ public class MismatchPositionProvider implements PositionProvider {
 			}
 			final int readPos 	= combPos.getReadPosition();
 			final int winPos	= translator.reference2windowPosition(refPos);
-			final Position tmpNextPos = new DefaultPosition(refPos, readPos, winPos, recordExtended);
+			final Position tmpNextPos = new UnmodifiablePosition(refPos, readPos, winPos, recordExtended);
 			if (validator.isValid(tmpNextPos)) {
 				nextPos = tmpNextPos;
 				return true;

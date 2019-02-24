@@ -17,7 +17,7 @@ public interface PositionProvider extends Iterator<Position> {
 	}
 	
 	static int adjustWindowPos(
-			final MatchPosition pos, int length, 
+			final AbstractPosition pos, int length, 
 			final CoordinateTranslator translator) {
 		
 		int winPos 	= pos.getReferencePosition() - translator.getRefPosStart();

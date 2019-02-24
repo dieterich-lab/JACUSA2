@@ -3,7 +3,7 @@ package lib.util.position;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.recordextended.SAMRecordExtended;
 
-public class AlignmentBlockPositionProviderBuilder implements lib.util.Builder<AlignmentBlockPositionProvider> {
+public class AlignmentBlockPositionProviderBuilder implements lib.util.Builder<IntervalPositionProvider> {
 	
 	private final MatchPosition pos;
 	private int length;
@@ -63,8 +63,8 @@ public class AlignmentBlockPositionProviderBuilder implements lib.util.Builder<A
 	} 
 	
 	@Override
-	public AlignmentBlockPositionProvider build() {
-		return new AlignmentBlockPositionProvider(pos, length); 
+	public IntervalPositionProvider build() {
+		return new IntervalPositionProvider(pos, length); 
 	}
 	
 }

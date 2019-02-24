@@ -43,6 +43,7 @@ implements HasConditionParameter, HasReadSubstitution {
 	private boolean splitFiltered;
 	
 	private final SortedSet<BaseSubstitution> baseSubstitutions;
+	private boolean showDeletionCount;
 	
 	// debug flag
 	private boolean debug;
@@ -61,6 +62,7 @@ implements HasConditionParameter, HasReadSubstitution {
 		splitFiltered		= false;
 		
 		baseSubstitutions	= new TreeSet<>();
+		showDeletionCount	= false;
 		
 		debug				= false;
 	}
@@ -208,6 +210,21 @@ implements HasConditionParameter, HasReadSubstitution {
 		this.debug = debug;
 	}
 
+	
+	/**
+	 * @return the showDeletionCount
+	 */
+	public boolean showDeletionCount() {
+		return showDeletionCount;
+	}
+
+	/**
+	 * @param showDeletionCount the showDeletionCount to set
+	 */
+	public void showDeletionCount(boolean showDeletionCount) {
+		this.showDeletionCount = showDeletionCount;
+	}
+	
 	/**
 	 * @return the debug
 	 */

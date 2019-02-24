@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.recordextended.SAMRecordExtended;
-import lib.util.position.DefaultPosition;
+import lib.util.position.UnmodifiablePosition;
 import lib.util.position.Position;
 
 public interface PositionProviderTest {
@@ -16,7 +16,7 @@ public interface PositionProviderTest {
 			final int refPos = Integer.parseInt(cols[0]);
 			final int readPos = Integer.parseInt(cols[1]);
 			final int winPos = Integer.parseInt(cols[2]);
-			positions.add(new DefaultPosition(refPos, readPos, winPos, recordExtended));
+			positions.add(new UnmodifiablePosition(refPos, readPos, winPos, recordExtended));
 		}
 		return positions;
 	}

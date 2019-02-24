@@ -7,8 +7,8 @@ import java.util.List;
 
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.util.position.AlignmentBlockPositionProviderBuilder;
 import lib.recordextended.SAMRecordExtended;
+import lib.util.position.AlignmentBlockPositionProviderBuilder;
 
 /**
  * Tested in test.jacusa.filter.processrecord.ProcessReadStartEndTest

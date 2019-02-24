@@ -4,8 +4,8 @@ import lib.recordextended.SAMRecordExtended;
 
 import lib.data.storage.PositionProcessor;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.PositionProvider;
 import lib.util.position.AllAlignmentBlocksPositionProvider;
+import lib.util.position.PositionProvider;
 
 public class AlignmentBlockProcessor implements RecordExtendedPrePostProcessor {
 

@@ -3,8 +3,8 @@ package lib.data.storage.integer;
 import java.util.HashMap;
 import java.util.Map;
 
+import lib.data.IntegerData;
 import lib.data.fetcher.Fetcher;
-import lib.data.filter.IntegerData;
 import lib.data.storage.container.SharedStorage;
 import lib.util.position.Position;
 

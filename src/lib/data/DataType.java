@@ -49,6 +49,9 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	public static final DataType<BaseSubstitutionCount> THROUGH_BASE_SUBST = 
 			create("Through", BaseSubstitutionCount.class);
 
+	public static final DataType<IntegerData> DELETION_COUNT = 
+			create("Deletion count", IntegerData.class);
+	
 	public static final DataType<BaseCallCountFilteredData> F_BCC = 
 			create(DEFAULT, BaseCallCountFilteredData.class);
 	

@@ -4,15 +4,15 @@ import lib.recordextended.SAMRecordExtended;
 
 import lib.data.storage.PositionProcessor;
 import lib.util.coordinate.CoordinateTranslator;
+import lib.util.position.AllDeletionsPositionProvider;
 import lib.util.position.PositionProvider;
-import lib.util.position.AllAlignmentBlocksPositionProvider;
 
-public class DeletionProcessor implements RecordExtendedPrePostProcessor {
+public class DeletionRecordProcessor implements RecordExtendedPrePostProcessor {
 
 	private final CoordinateTranslator translator;
 	private final PositionProcessor positionProcessor;
 	
-	public DeletionProcessor(
+	public DeletionRecordProcessor(
 			final CoordinateTranslator translator, final PositionProcessor positionProcessor) {
 		
 		this.translator 		= translator;
@@ -26,7 +26,7 @@ public class DeletionProcessor implements RecordExtendedPrePostProcessor {
 	
 	@Override
 	public void process(final SAMRecordExtended recordExtended) {
-		final PositionProvider positionProvider = new AllAlignmentBlocksPositionProvider(
+		final PositionProvider positionProvider = new AllDeletionsPositionProvider(
 						recordExtended, translator);
 		positionProcessor.process(positionProvider);
 	}
