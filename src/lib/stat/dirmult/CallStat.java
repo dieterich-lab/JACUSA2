@@ -1,5 +1,7 @@
 package lib.stat.dirmult;
 
+import org.apache.commons.math3.distribution.ChiSquaredDistribution;
+
 import lib.data.ParallelData;
 import lib.data.result.OneStatResult;
 import lib.data.result.Result;
@@ -38,7 +40,15 @@ public class CallStat extends AbstractStat {
 	@Override
 	public Result calculate(ParallelData parallelData) {
 		final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
-		final double stat = dirMult.getScore(estimationSamples);
+		double stat = Double.NaN;
+		if (dirMultParameter.isCalcPValue()) {
+			stat = dirMult.getLRT(estimationSamples);
+			// TODO degrees of freedom
+			final ChiSquaredDistribution dist = new ChiSquaredDistribution(1); 
+			stat = 1 - dist.cumulativeProbability(stat);
+		} else {
+			stat = dirMult.getScore(estimationSamples);;
+		}
 		return new OneStatResult(stat, parallelData);
 	}
 	

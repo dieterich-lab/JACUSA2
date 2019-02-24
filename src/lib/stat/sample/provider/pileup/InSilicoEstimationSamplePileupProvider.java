@@ -17,9 +17,9 @@ public class InSilicoEstimationSamplePileupProvider
 extends AbstractEstimationSamplePileupProvider {
 	
 	public InSilicoEstimationSamplePileupProvider(
-			final int maxIterations, final double estimatedError) {
+			final boolean calcPValue, final int maxIterations, final double estimatedError) {
 		
-		super(maxIterations, estimatedError);
+		super(calcPValue, maxIterations, estimatedError);
 	}
 
 	@Override

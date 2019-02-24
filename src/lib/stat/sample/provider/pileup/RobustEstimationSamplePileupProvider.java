@@ -15,8 +15,9 @@ import lib.util.Base;
 public class RobustEstimationSamplePileupProvider 
 extends AbstractEstimationSamplePileupProvider {
 
-	public RobustEstimationSamplePileupProvider(final int maxIterations, final double estimatedError) {
-		super(maxIterations, estimatedError);
+	public RobustEstimationSamplePileupProvider(
+			final boolean calcPValue, final int maxIterations, final double estimatedError) {
+		super(calcPValue, maxIterations, estimatedError);
 	}
 
 	@Override

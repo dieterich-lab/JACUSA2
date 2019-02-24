@@ -18,46 +18,46 @@ import lib.util.Base;
 abstract class AbstractEstimationSamplePileupProvider 
 implements EstimationSampleProvider {
 
-	protected static final int[][][] VALID;
+	protected static final int[][] VALID;
 	static {
-		VALID 			= new int[5][][];
-		VALID[0] 		= null; // not possible
-		VALID[1] 		= null; // not possible
-
-		VALID[2]		= new int[2][1];
-		VALID[2][0][0] 	= 1;
-		VALID[2][1][0] 	= 0;
-
-		VALID[3]		= new int[3][2];
-		VALID[3][0]		= new int[] {1, 2};
-		VALID[3][1]		= new int[] {0, 2};
-		VALID[3][2]		= new int[] {0, 1};
-
-		VALID[4]		= new int[4][3];
-		VALID[4][0]		= new int[] {1, 2, 3};
-		VALID[4][1]		= new int[] {0, 2, 3};
-		VALID[4][2]		= new int[] {0, 1, 3};
-		VALID[4][3]		= new int[] {0, 1, 2};
+		VALID		= new int[4][3];
+		VALID[0]	= new int[] {1, 2, 3};
+		VALID[1]	= new int[] {0, 2, 3};
+		VALID[2]	= new int[] {0, 1, 3};
+		VALID[3]	= new int[] {0, 1, 2};
 	}
 	
+	private final boolean calcPValue; 
 	private final int maxIterations;
 	private final double estimatedError;
 	
 	public AbstractEstimationSamplePileupProvider(
+			final boolean calcPValue,
 			final int maxIterations, 
 			final double estimatedError) {
 
+		this.calcPValue		= calcPValue;
 		this.maxIterations 	= maxIterations;
 		this.estimatedError	= estimatedError;
 	}
 
 	protected abstract List<List<PileupCount>> process(ParallelData parallelData);
 	
+	
+	private Base[] getBases(final ParallelData parallelData) {
+		if (calcPValue) {
+			return parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount()
+					.getAlleles().toArray(new Base[0]);
+		}
+		
+		return Base.validValues();
+	}
+	
 	@Override
 	public EstimationSample[] convert(final ParallelData parallelData) {
 		final List<List<PileupCount>> pileupCounts = process(parallelData);
 
-		final Base[] bases 		= Base.validValues();
+		final Base[] bases 		= getBases(parallelData);
 		final int conditions 	= pileupCounts.size();
 		final EstimationSample[] estimationSamples = new EstimationSample[conditions + 1];
 		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
@@ -127,9 +127,9 @@ implements EstimationSampleProvider {
 			final int index = base.getIndex();
 			if (colSumCount[index] > 0.0) {
 				pileupVector[index] += colSumCount[index];
-				for (final int index2 : VALID[bases.length][index]) {
+				for (final int index2 : VALID[index]) {
 					double combinedError = (colMeanError[index2] + estimatedError) * (double)colSumCount[index] / 
-							(double)(VALID[bases.length][index].length);
+							(double)(bases.length);
 					pileupVector[index2] += combinedError;
 				}
 			}

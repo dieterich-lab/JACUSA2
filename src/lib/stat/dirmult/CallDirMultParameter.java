@@ -6,7 +6,6 @@ public class CallDirMultParameter extends AbstractDirMultParameter {
 
 	public final static double ESTIMATED_ERROR = 0.01;
 	
-	
 	private double estimatedError;
 	
 	public CallDirMultParameter() {

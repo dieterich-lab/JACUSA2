@@ -38,13 +38,11 @@ public class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 				.desc("Maximum number of iterations for Newton's method.\nDefault: " + maxIterations)
 				.build());
 		
-		/* TODO decide if to provide this option
 		options.addOption(Option.builder()
-				.longOpt("calculatePvalue")
+				.longOpt("calcPvalue")
 				.hasArg(false)
-				.desc("TODO")
+				.desc("Calculate a pvalue based on a chi^2 approximation of the likelihood ratio")
 				.build());
-		 */
 		
 		options.addOption(Option.builder()
 				.longOpt("showAlpha")
@@ -71,7 +69,7 @@ public class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 				minkaParameter.setMaxIterations(Integer.parseInt(cmd.getOptionValue(longOpt)));
 				break;
 	
-			case "calculatePvalue":
+			case "calcPvalue":
 				dirMultParameter.setCalcPValue(true);
 				break;
 				

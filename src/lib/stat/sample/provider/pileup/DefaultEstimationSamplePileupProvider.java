@@ -8,9 +8,10 @@ import lib.data.count.PileupCount;
 public class DefaultEstimationSamplePileupProvider
 extends AbstractEstimationSamplePileupProvider {
 
-	public DefaultEstimationSamplePileupProvider(final int maxIterations, final double estimatedError) {
+	public DefaultEstimationSamplePileupProvider(
+			final boolean calcPValue, final int maxIterations, final double estimatedError) {
 
-		super(maxIterations, estimatedError);
+		super(calcPValue, maxIterations, estimatedError);
 	}
 
 	@Override
