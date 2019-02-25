@@ -30,7 +30,7 @@ public class ShowDeletionCountOption extends AbstractACOption {
 	
 	@Override
 	public void process(final CommandLine line) throws Exception {
-		parameter.splitFiltered(true);
+		parameter.showDeletionCount(true);
 	}
 
 }
