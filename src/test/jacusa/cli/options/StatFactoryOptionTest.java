@@ -26,10 +26,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import jacusa.cli.options.StatFactoryOption;
 import jacusa.cli.parameters.StatParameter;
-import jacusa.method.lrtarrest.LRTarrestStatFactory;
 import jacusa.method.rtarrest.CoverageStatisticFactory;
 import jacusa.method.rtarrest.DummyStatisticFactory;
 import lib.stat.AbstractStatFactory;
+import lib.stat.betabin.LRTarrestStatFactory;
 import lib.stat.dirmult.DirMultCompoundErrorStatFactory;
 import lib.stat.dirmult.DirMultRobustCompoundErrorStatFactory;
 

@@ -65,6 +65,7 @@ import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.io.ResultFormat;
 import lib.stat.AbstractStatFactory;
+import lib.stat.betabin.LRTarrestStatFactory;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 

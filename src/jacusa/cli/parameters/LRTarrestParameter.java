@@ -2,8 +2,8 @@ package jacusa.cli.parameters;
 
 import jacusa.io.format.lrtarrest.BED6lrtArrestResultFormat;
 import jacusa.method.lrtarrest.LRTarrestMethod;
-import jacusa.method.lrtarrest.LRTarrestStatFactory;
 import lib.cli.parameter.GeneralParameter;
+import lib.stat.betabin.LRTarrestStatFactory;
 
 /**
  * Class defines parameters and default values that are need for Linked Reverse Transcription arrest (lrt-arrest).

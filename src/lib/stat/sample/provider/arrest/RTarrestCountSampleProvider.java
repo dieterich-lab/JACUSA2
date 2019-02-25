@@ -49,7 +49,6 @@ public class RTarrestCountSampleProvider implements EstimationSampleProvider {
 			final DataContainer dataContainer = dataContainers.get(replicateIndex);
 			final int readArrestCount 	= dataContainer.getArrestBaseCallCount().getCoverage();
 			final int readThroughCount 	= dataContainer.getThroughBaseCallCount().getCoverage();
-			// final int totalReadCount	= readArrestCount + readThroughCount;
 			dataMatrix[replicateIndex][READ_ARREST_INDEX] 	= readArrestCount + pseudoCount;
 			dataMatrix[replicateIndex][READ_THROUGH_INDEX] 	= readThroughCount + pseudoCount;
 			

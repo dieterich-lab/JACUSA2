@@ -17,7 +17,6 @@ public class RTarrestStatFactory extends AbstractStatFactory {
 	private final DirMultCLIprocessing CLIprocessing;
 	
 	public RTarrestStatFactory() {
-
 		super(Option.builder(NAME)
 				.desc(DESC)
 				.build());
