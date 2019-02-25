@@ -13,9 +13,7 @@ import lib.data.storage.container.SharedStorage;
 import lib.util.Util;
 
 /**
- * This class holds the instance of filters.
- *
- * @param 
+ * This class holds the instances of filters.
  */
 public class FilterContainer {
 
@@ -71,9 +69,14 @@ public class FilterContainer {
 		return Collections.unmodifiableList(new ArrayList<>(filters.values()));
 	}
 	
+	/**
+	 * Creates Cache for all chosen filters.
+	 * @param conditionParameter	conditionParameter for one condition
+	 * @param sharedStorage			cache that is shared between conditions for ONE thread
+	 * @return
+	 */
 	public Cache createFilterCache(
-			final ConditionParameter conditionParameter, 
-			final SharedStorage sharedStorage) {
+			final ConditionParameter conditionParameter, final SharedStorage sharedStorage) {
 		
 		final Cache filterCache = new Cache();
 		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {

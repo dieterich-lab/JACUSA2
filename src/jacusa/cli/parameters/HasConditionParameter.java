@@ -6,8 +6,6 @@ import lib.cli.parameter.ConditionParameter;
 
 /**
  * Interface to handle condition parameters.
- * 
- * @param <T>
  */
 public interface HasConditionParameter {
 

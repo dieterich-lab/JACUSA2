@@ -15,13 +15,13 @@ import lib.util.coordinate.Coordinate;
 import lib.util.position.Position;
 
 /**
- * TODO add comments
- * 
- * @param 
+ * Simple window based storage indicating if at a specific window position a homopolymer could be
+ * identified.
  */
 public class HomopolymerStorage extends AbstractStorage {
 	
 	private final char c;
+	// defines where to llok for boolean information in dataContainer
 	private final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredDataFetcher; 
 
 	// min length of identical base call to define homopolymer

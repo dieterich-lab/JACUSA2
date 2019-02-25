@@ -17,9 +17,8 @@ import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.RecordExtendedProcessor;
 
 /**
- * TODO add comments.
- * 
- * @param 
+ * This FilterFactory configures and helps to create the combined filter which aggregates the counts 
+ * of other more basic filters.
  */
 public class CombinedFilterFactory extends AbstractBaseCallCountFilterFactory {
 
@@ -39,6 +38,7 @@ public class CombinedFilterFactory extends AbstractBaseCallCountFilterFactory {
 		return createRecordProcessors(sharedStorage, getFilterDistance(), positionProcessor);
 	}
 	
+	// make the collection of recordProcessors available to other factories
 	public static List<RecordExtendedProcessor> createRecordProcessors(
 			final SharedStorage sharedStorage,
 			final int filterDistance, 

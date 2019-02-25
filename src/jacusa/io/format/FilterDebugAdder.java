@@ -8,6 +8,10 @@ import lib.data.result.Result;
 import lib.io.InputOutput;
 import lib.io.format.bed.DataAdder;
 
+/**
+ * This class allows to add additional filter related data to the output. 
+ * All chosen filters will be represented by their unique char.
+ */
 public class FilterDebugAdder implements DataAdder {
 
 	private final List<FilterFactory> filterFactories;

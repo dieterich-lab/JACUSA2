@@ -4,16 +4,18 @@ import htsjdk.tribble.Feature;
 import htsjdk.tribble.FeatureCodec;
 import htsjdk.tribble.readers.LineIterator;
 import jacusa.filter.factory.exclude.ContainedCoordinate;
-import jacusa.filter.factory.exclude.DefaultContainedCoordinate;
+import jacusa.filter.factory.exclude.FileBasedContainedCoordinate;
 import lib.data.ParallelData;
 import lib.util.coordinate.Coordinate;
 
 /**
- * TODO add comments.
- * Tested in TODO is this test needed? 
+ * This class adds a filter that enables to mark sites as contained in an other BED or VCF file, e. g.:
+ * polymorphic positions etc. The file has to be sorted - there is no check!
+ * TODO test 
  */
 public class ExcludeSiteFilter extends AbstractFilter {
 
+	// this is a file type independent representation of the file
 	private final ContainedCoordinate containedCoordinate; 
 	
 	public ExcludeSiteFilter(
@@ -22,7 +24,7 @@ public class ExcludeSiteFilter extends AbstractFilter {
 			final FeatureCodec<? extends Feature, LineIterator> codec) {
 		
 		super(c);
-		containedCoordinate = new DefaultContainedCoordinate(fileName, codec);
+		containedCoordinate = new FileBasedContainedCoordinate(fileName, codec);
 	}
 
 	@Override

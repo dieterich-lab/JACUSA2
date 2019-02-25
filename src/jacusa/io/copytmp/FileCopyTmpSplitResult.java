@@ -6,11 +6,7 @@ import lib.data.result.Result;
 import lib.io.copytmp.CopyTmpResult;
 
 /**
- * TODO add comments. 
- * Used, when results should be split based on artefact filters for one thread
- *
- * @param 
- * @param <R>
+ * This class enables to split result in two temporary files based on artefact filters for one thread.
  */
 public class FileCopyTmpSplitResult 
 implements CopyTmpResult {
@@ -24,7 +20,7 @@ implements CopyTmpResult {
 			final FileCopyTmpResult copyResult,
 			final FileCopyTmpResult copyFilteredResult) {
 
-		this.copyResult = copyResult;
+		this.copyResult 		= copyResult;
 		this.copyFilteredResult = copyFilteredResult;
 	}
 	
@@ -46,7 +42,9 @@ implements CopyTmpResult {
 		copyFilteredResult.newIteration();
 	}
 
+	@Override
 	public void addResult(final Result result) throws Exception {
+		// distribute to corresponding temporary file
 		if (result.isFiltered()) {
 			copyFilteredResult.addResult(result);
 		} else {

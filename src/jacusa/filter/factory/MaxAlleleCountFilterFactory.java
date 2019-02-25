@@ -19,7 +19,7 @@ import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
 /**
- * TODO add comments
+ * This FilterFactory configures and creates the MaxAllele Filter.
  */
 public class MaxAlleleCountFilterFactory 
 extends AbstractFilterFactory 
@@ -32,6 +32,7 @@ implements HasMaxAlleleCount {
 
 	// chosen value
 	private int maxAlleles;
+	// define where to look for base call count
 	private final Fetcher<BaseCallCount> bccFetcher;
 	
 	public MaxAlleleCountFilterFactory(final Fetcher<BaseCallCount> bccFetcher) {

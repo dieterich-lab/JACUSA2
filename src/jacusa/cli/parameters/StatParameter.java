@@ -6,8 +6,6 @@ import lib.stat.AbstractStatFactory;
 /**
  * Class that stores necessary statistic parameters such as the factory for the method
  * to calculate the test-statistic and a threshold to filter relevant results. 
- * 
- * @param 
  */
 public class StatParameter {
 
@@ -24,6 +22,7 @@ public class StatParameter {
 	 * Default constructor
 	 */
 	public StatParameter() {
+		// Double.Nan implies no filtering
 		threshold = Double.NaN;
 	}
 
@@ -55,7 +54,7 @@ public class StatParameter {
 	}
 
 	/**
-	 * Updates the factory.
+	 * Updates the factory - set any CLI opitions.
 	 * 
 	 * @param new factory to be set 
 	 */

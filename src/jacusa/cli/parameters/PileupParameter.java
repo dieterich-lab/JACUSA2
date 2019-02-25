@@ -16,10 +16,8 @@ implements HasStatParameter {
 	
 	public PileupParameter(final int conditions) {
 		super(conditions);
-		setStatParameter(new StatParameter(
-				new CoverageStatisticFactory(), Double.NaN));
-		setResultFormat(
-				new BED6pileupResultFormat(PileupMethod.Factory.NAME, this));
+		setStatParameter(new StatParameter(new CoverageStatisticFactory(), Double.NaN));
+		setResultFormat(new BED6pileupResultFormat(PileupMethod.Factory.NAME, this));
 	}
 
 	@Override

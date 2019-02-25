@@ -16,7 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import jacusa.filter.factory.exclude.DefaultContainedCoordinate;
+import jacusa.filter.factory.exclude.FileBasedContainedCoordinate;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.OneCoordinate;
 import test.lib.util.coordinate.OneCoordinateArgumentConverter;
@@ -27,14 +27,14 @@ import test.lib.util.coordinate.OneCoordinateArgumentConverter;
 @TestInstance(Lifecycle.PER_CLASS)
 class DefaultContainedCoordinateTest {
 
-	private DefaultContainedCoordinate testInstance;
+	private FileBasedContainedCoordinate testInstance;
 	
 	@BeforeAll
 	void beforeAll() {
 		testInstance = createTestInstance();
 	}
 	
-	DefaultContainedCoordinate createTestInstance() {
+	FileBasedContainedCoordinate createTestInstance() {
 		final Coordinate.AbstractParser parser = new OneCoordinate.Parser();
 		final Map<String, List<Coordinate>> contig2coordinate = Arrays.asList(
 				"1:1-100:.", "1:200-300:.",
@@ -43,7 +43,7 @@ class DefaultContainedCoordinateTest {
 				.stream()
 				.map(s -> parser.parse(s))
 				.collect(Collectors.groupingBy(Coordinate::getContig));
-		return new DefaultContainedCoordinate(contig2coordinate);
+		return new FileBasedContainedCoordinate(contig2coordinate);
 	}
 	
 	// TODO throw when coordinate not sorted

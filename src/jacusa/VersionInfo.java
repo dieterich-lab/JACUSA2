@@ -1,6 +1,8 @@
-
 package jacusa;
 
+/**
+ * This class stores version info and optional branch information.
+ */
 public final class VersionInfo {
 
 	public final static String BRANCH 	= "develop";

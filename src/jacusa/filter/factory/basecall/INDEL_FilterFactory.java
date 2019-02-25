@@ -17,11 +17,8 @@ import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.RecordExtendedProcessor;
 
 /**
- * TODO add comments.
- * 
- * @param 
+ * This FilterFactory configures and helps to create the filter that will filter sites around INDELs.
  */
-
 public class INDEL_FilterFactory extends AbstractBaseCallCountFilterFactory {
 
 	public static final char FILTER = 'I';

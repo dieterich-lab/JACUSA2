@@ -16,9 +16,9 @@ import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.RecordExtendedProcessor;
 
 /**
- * TODO add comments.
+ * This FilterFactory configures and helps to create the filter that filters sites adjacent to 
+ * splices sites.
  */
-
 public class SpliceSiteFilterFactory
 extends AbstractBaseCallCountFilterFactory {
 

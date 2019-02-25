@@ -8,6 +8,7 @@ import org.apache.commons.cli.Option;
 
 /**
  * Enables the user to choose a threshold by command line
+ * Currently, only values the chosen threshold needs to be >= 0.
  */
 public class StatFilterOption  extends AbstractACOption {
 
@@ -35,13 +36,13 @@ public class StatFilterOption  extends AbstractACOption {
 	 */
 	@Override
 	public void process(final CommandLine line) throws IllegalArgumentException {
-	    final String value = line.getOptionValue(getOpt());
-    	final double stat = Double.parseDouble(value);
-    	if (stat < 0) {
+	    final String optionValue 	= line.getOptionValue(getOpt());
+    	final double threshold 		= Double.parseDouble(optionValue);
+    	if (threshold < 0) {
     		throw new IllegalArgumentException("Invalid value for " + getLongOpt().toUpperCase() + 
     				". Allowed values are " + getLongOpt().toUpperCase() + " >= 0");
     	}
-    	statisticParamter.setThreshold(stat);
+    	statisticParamter.setThreshold(threshold);
 	}
 
 }

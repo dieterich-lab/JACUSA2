@@ -31,15 +31,14 @@ public interface Filter {
 	default boolean applyFilter(Result result) {
 		// get data to investigate
 		final ParallelData parallelData = result.getParellelData();
-		// if filter finds artefact, add info to result and return true
+		// if filter finds potential false positive variant, mark result and return true
 		boolean filter = false;
 		for (final int valueIndex : result.getValueIndex()) {
 			if (filter(parallelData)) {
-				addInfo(valueIndex, result);
+				markResult(valueIndex, result);
 				filter = true;
 			}
 		}
-
 		return filter;
 	}
 
@@ -53,10 +52,10 @@ public interface Filter {
 	boolean filter(ParallelData parallelData);
 	
 	/**
-	 * Adds unique id of filter to result object 
+	 * Adds unique id of filter to result object. Mark result a filtered. 
 	 * 
 	 * @param result object to be marked by this filter 
 	 */
-	void addInfo(int valueIndex, Result result);
+	void markResult(int valueIndex, Result result);
 
 }

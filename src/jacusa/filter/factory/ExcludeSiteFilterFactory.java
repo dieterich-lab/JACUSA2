@@ -22,11 +22,10 @@ import lib.io.InputOutput;
 import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
-// FIXME test, and finish ResultFeature.
-/*
+/**
  * Currently, only the coordinates are read and 
  * the rest(e.g.: BaseCallCount, filters etc.) is ignored!
- * 
+ * TODO test, and finish ResultFeature.
  */
 public class ExcludeSiteFilterFactory
 extends AbstractFilterFactory 
@@ -44,6 +43,7 @@ implements HasFileName, HasFileType {
 	}
 
 	/* TODO implement auto
+	 * This method tries to identify the file type by the suffix of the filename
 	private AbstractFeatureCodec<? extends Feature, LineIterator> initBySuffix(final String fileName) {
 		final FileType fileType = FileType.valueOfFileName(fileName);
 		if (fileType != null) {
@@ -57,7 +57,8 @@ implements HasFileName, HasFileType {
 	}
 	*/
 	
-	/*
+	/* 
+	 * This method tries to identify the file type by brute force trying all available codecs
 	public FeatureCodec<? extends Feature, LineIterator> initByBruteForce(final String fileName) {
 		final FileType fileType = FileType.valueOfFileContent(fileName);
 		if (fileType == null) {
@@ -73,24 +74,6 @@ implements HasFileName, HasFileType {
 		// not needed
 	}
 	
-	/* TODO implement AUTO
-	case AUTO:
-		// first - try by suffix
-		codec = initBySuffix(fileName);
-		if (codec == null) {
-			codec = initByBruteForce(fileName);
-			if (codec == null) {
-				throw new IllegalStateException("No matching codec could be found for: " + fileName);
-			}
-		}	
-		break;
-
-	default:
-		codec = fileType.getCodec();
-		break;
-	}
-			*/
-	
 	@Override
 	public Filter createFilter(
 			CoordinateController coordinateController,
@@ -103,6 +86,7 @@ implements HasFileName, HasFileType {
 	public Cache createFilterCache(
 			ConditionParameter conditionParameter,
 			SharedStorage sharedStorage) {
+		// now cache needed
 		return null;
 	}
 	

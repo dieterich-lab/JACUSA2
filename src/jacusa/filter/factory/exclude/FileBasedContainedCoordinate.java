@@ -21,27 +21,26 @@ import lib.util.coordinate.CoordinateUtil;
 import lib.util.coordinate.OneCoordinate;
 
 /**
- * TODO add comments
- * 
- * Each thread has its own instance.
+ * This enables to query if specific coordinates are contained within a file or a pre-processed map. 
+ * Files can be provided via implementing Codec(s) from htsjdk library.
  * No random access - successive calls to isContained must have ascending coordinates! 
- * 
  */
-public class DefaultContainedCoordinate implements ContainedCoordinate {
+public class FileBasedContainedCoordinate implements ContainedCoordinate {
 
+	// map of contig to successive coordinates
 	private final Map<String, List<Coordinate>> contig2coordinate;
 
 	private Coordinate current;
 	private Iterator<Coordinate> it;
 	
-	public DefaultContainedCoordinate(
+	public FileBasedContainedCoordinate(
 			final String fileName, 
 			FeatureCodec<? extends Feature, LineIterator> codec) {
 
 		contig2coordinate = init(fileName, codec);
 	}
 
-	public DefaultContainedCoordinate(final Map<String, List<Coordinate>> contig2coordinate) {
+	public FileBasedContainedCoordinate(final Map<String, List<Coordinate>> contig2coordinate) {
 		this.contig2coordinate = contig2coordinate;
 	}
 	
@@ -64,6 +63,7 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 			current = it.next();
 		}
 
+		// manage it(erator) and current coordinate to try to find a match with site
 		while (true) {
 			final int orientation = CoordinateUtil.orientation(current, site);
 			switch (orientation) {
@@ -86,11 +86,16 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 		}
 	}
 
+	/**
+	 * populate a Map from a file by using a codec
+	 */
 	public Map<String, List<Coordinate>> init(final String filename, 
 			final FeatureCodec<? extends Feature, LineIterator> codec) {
 
+		// container for results
 		final Map<String, List<Coordinate>> contig2coordinate = new HashMap<String, List<Coordinate>>();
 
+		// see documentation of codec in htsjdk
 		LineIterator lit = null;
 		try {
 			final InputStream io 	= new FileInputStream(filename);
@@ -104,7 +109,7 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 		List<Coordinate> coordinates = new ArrayList<Coordinate>();
 		while (lit.hasNext()) {
 			try {
-				final Feature f = codec.decode(lit);
+				final Feature f 		= codec.decode(lit);
 				final String newContig 	= f.getContig();
 				final int newStart		= f.getStart();
 				final int newEnd		= f.getEnd();
@@ -123,7 +128,6 @@ public class DefaultContainedCoordinate implements ContainedCoordinate {
 				} else if (currentCoordinate.getEnd() == newCoordinate.getStart()){ // extend existing
 					// extend current coordinates
 					CoordinateUtil.mergeCoordinate(currentCoordinate, newCoordinate);
-					// TODO old code currentCoordinate.setEnd(newCoordinate.getStart());
 				} else { // same contig but not adjacent coords 
 					coordinates.add(currentCoordinate);
 					currentCoordinate = newCoordinate;

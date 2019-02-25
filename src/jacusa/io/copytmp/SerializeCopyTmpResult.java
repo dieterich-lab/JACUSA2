@@ -18,13 +18,12 @@ import lib.io.copytmp.CopyTmpResult;
 import lib.util.AbstractTool;
 
 /**
- * TODO add comments.
- *
- * @param <T>
- * @param <R>
+ * This class enables to store temporary results from multithreaded runs and allows to restore order
+ * of output by keeping track of the number of results per iteration of a thread. Each thread has its own 
+ * instance of CopyTmpResult. This implementation uses serialization to write temporary results to a 
+ * temporary file. When JACUSA2 finishes computation, temporary results are read and written to final output.
  */
-public class SerializeCopyTmpResult 
-implements CopyTmpResult {
+public class SerializeCopyTmpResult implements CopyTmpResult {
 
 	// 
 	private final ResultWriter resultWriter;
@@ -131,7 +130,6 @@ implements CopyTmpResult {
 			try {
 				final Object obj = objectInputStream.readObject();
 				final Result result = (Result)obj;
-				// TODO filter incomplete results
 				resultWriter.writeResult(result);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();

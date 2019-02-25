@@ -13,8 +13,6 @@ import lib.util.coordinate.CoordinateController;
 /**
  * This class holds the configuration of chosen filters by storing 
  * the factories of the respective filters.
- * 
- * @param 
  */
 public class FilterConfig implements Cloneable {
 
@@ -43,17 +41,16 @@ public class FilterConfig implements Cloneable {
 	}
 
 	/**
-	 * TODO add comments
+	 * Create FilterContainers with the current filter configuration.
 	 * 
-	 * @param coordinateController
 	 * @return
 	 */
-	public FilterContainer createFilterInstances() {
+	public FilterContainer createFilterContainer() {
 		return new FilterContainer(this);
 	}
 	
 	/**
-	 * TODO add comments
+	 * Register all chosen filters
 	 * 
 	 * @param coordinateController
 	 * @param conditionContainer
@@ -65,7 +62,7 @@ public class FilterConfig implements Cloneable {
 	}
 
 	/**
-	 * Indicates if any filter has been configured.
+	 * Indicates if any filter has been chosen.
 	 * 
 	 * @return true if at least one filter has been added
 	 */

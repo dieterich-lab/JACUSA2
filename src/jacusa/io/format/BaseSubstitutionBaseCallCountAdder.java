@@ -9,13 +9,17 @@ import lib.data.result.Result;
 import lib.io.InputOutput;
 import lib.io.format.bed.DataAdder;
 
-public class BaseSubstitutionDataAdder implements DataAdder {
+/**
+ * This class corresponds to the a column of a BEDlike output file that contains read base substitution 
+ * information, namely the base call counts that correspond to a specific base substitution.
+ */
+public class BaseSubstitutionBaseCallCountAdder implements DataAdder {
 
 	private final BaseCallCount.AbstractParser bccParser;
 	private final List<BaseSubstitution> baseSubs; 
 	private final DataAdder dataAdder;
 	
-	public BaseSubstitutionDataAdder(
+	public BaseSubstitutionBaseCallCountAdder(
 			final BaseCallCount.AbstractParser bccParser, 
 			final List<BaseSubstitution> baseSubs, 
 			final DataAdder dataAdder) {		

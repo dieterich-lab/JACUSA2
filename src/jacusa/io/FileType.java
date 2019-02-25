@@ -13,6 +13,9 @@ import htsjdk.tribble.readers.LineIterator;
 import htsjdk.variant.vcf.VCFCodec;
 import lib.io.codec.JACUSA2codec;
 
+/**
+ * Simple enum that defines a file type and adds suffix and codec information.
+ */
 public enum FileType {
 	BED(
 			"BED", 
@@ -28,8 +31,11 @@ public enum FileType {
 			new HashSet<String>(), 
 			new JACUSA2codec());
 	
+	// name of file format
 	private final String name;
+	// set of common suffixes
 	private final Set<String> suffix;
+	//htsjdk codec for this file type
 	private final FeatureCodec<? extends Feature, LineIterator> codec;
 	
 	private FileType(
@@ -55,9 +61,11 @@ public enum FileType {
 	}
 
 	/**
-	 * TODO add comments
-	 * @param fileName
-	 * @return
+	 * Returns the FileType that corresponds to fileName
+	 * 
+	 * @param fileName to look for FileType
+	 * @return FilteType that correspond to fileName, null if unknown
+	 * 
 	 * Tested in @see test.jacusa.io.FileTypeTest#testValueOfFileName()
 	 * Tested in @see test.jacusa.io.FileTypeTest#testValueOfFileNameFails()
 	 */
@@ -73,9 +81,10 @@ public enum FileType {
 	}
 	
 	/**
+	 * Try to identify the FileType based on the content of fileName
 	 * 
-	 * @param fileName
-	 * @return
+	 * @param fileName to be identification by content
+	 * @return FileType that could be related to the content of fileName
 	 * Tested in @see test.jacusa.io.FileTypeTest#testValueOfFileContent()
 	 */
 	public static FileType valueOfFileContent(final String fileName) {

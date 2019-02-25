@@ -22,6 +22,10 @@ import lib.util.CLIUtil;
 import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
+/**
+ * Interface defines methods for a FilterFactory that allows to configure filter options via 
+ * processCLI and create new instance of filters.
+ */
 public interface FilterFactory {
 
 	/**

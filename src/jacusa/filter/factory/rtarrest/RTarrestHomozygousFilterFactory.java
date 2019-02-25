@@ -18,7 +18,9 @@ import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
 /**
- * TODO add comments
+ * This FilterFactory configures and creates the Homozygous filter for rt- and lrt-arrest method.
+ * The user can decide which base call count instance should be used for counting and filtering, see
+ * Apply2readsBaseCallCountSwitch
  */
 public class RTarrestHomozygousFilterFactory
 extends AbstractFilterFactory 
@@ -27,15 +29,18 @@ implements HasApply2reads {
 	// which condition is required to be homozygous
 	private final Apply2readsBaseCallCountSwitch bccSwitch;
 
+	// use the existing simple implementation
 	private final HomozygousFilterFactory homozygousFilterFactory;
 	
 	public RTarrestHomozygousFilterFactory(
 			final int conditionSize, 
 			final Apply2readsBaseCallCountSwitch bccSwitch) {
+
 		super(HomozygousFilterFactory.getOptionBuilder().build());
 		homozygousFilterFactory = new HomozygousFilterFactory(conditionSize, bccSwitch);
 		// register acOptions in current instance
 		getACOption().addAll(homozygousFilterFactory.getACOption());
+		getApply2Reads().add(RT_READS.ARREST);
 		getACOption().add(new Apply2readsOption(this));
 		this.bccSwitch = bccSwitch;
 	}

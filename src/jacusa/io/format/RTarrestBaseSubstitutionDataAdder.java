@@ -10,6 +10,10 @@ import lib.data.result.Result;
 import lib.io.InputOutput;
 import lib.io.format.bed.DataAdder;
 
+/**
+ * This class corresponds to the two columns of a BEDlike output file that contains base call count  
+ * information for read through and read arrest reads.
+ */
 public class RTarrestBaseSubstitutionDataAdder implements DataAdder {
 
 	private final BaseCallCount.AbstractParser bccParser;

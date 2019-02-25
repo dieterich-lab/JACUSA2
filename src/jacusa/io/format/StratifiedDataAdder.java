@@ -3,6 +3,9 @@ package jacusa.io.format;
 import lib.data.result.Result;
 import lib.io.format.bed.DataAdder;
 
+/**
+ * This class allows to display stratified data.
+ */
 public class StratifiedDataAdder implements DataAdder {
 
 	private final DataAdder dataAdderTotal;

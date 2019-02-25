@@ -14,6 +14,10 @@ import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.RecordExtendedProcessor;
 
+/**
+ * This FilterFactory configures and helps to create the filter that will filter false positive variants
+ * at the read start and end.
+ */
 public class ReadPositionFilterFactory 
 extends AbstractBaseCallCountFilterFactory {
 

@@ -5,6 +5,10 @@ import lib.data.result.Result;
 import lib.io.InputOutput;
 import lib.io.format.bed.DataAdder;
 
+/**
+ * This class corresponds to the a column of a BEDlike output file that contains deletion count 
+ * information.
+ */
 public class DeletionCountDataAdder implements DataAdder {
 	
 	@Override

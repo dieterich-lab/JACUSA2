@@ -11,8 +11,9 @@ import lib.util.position.PositionProvider;
 import lib.recordextended.SAMRecordExtended;
 
 /**
- * TODO add comments
- * 
+ * This class process a read and identifies homopolymers within the aligned region. Base call quality
+ * and base calls from insertions are ignored.
+ *  
  * Tested in @see test.jacusa.filter.homopolymer.HomopolymerReadFilterCacheTest
  */
 public class HomopolymerReadRecordProcessor implements RecordExtendedPrePostProcessor {
@@ -40,21 +41,25 @@ public class HomopolymerReadRecordProcessor implements RecordExtendedPrePostProc
 	
 	@Override
 	public void process(final SAMRecordExtended recordExtended) {
-		PositionProvider positionProvider = new AllAlignmentBlocksPositionProvider(
+		// ignore all non aligned positions such as insertions
+		final PositionProvider positionProvider = new AllAlignmentBlocksPositionProvider(
 				recordExtended, getTranslator());
 		
 		if (! positionProvider.hasNext()) {
 			return;
  		}
+		// get the first position and base call to start the first homopolymer
 		Position pos 		= positionProvider.next();
 		final int refPos 	= pos.getReferencePosition();
 		final HomopolymerBuilder builder = new HomopolymerBuilder(refPos, getMinLength());
 		
+		// continue search for homopolymers as long as there are aligned position
 		while (positionProvider.hasNext()) {
 			pos = positionProvider.next();
 			builder.add(pos.getReadBaseCall());
 		}
 		
+		// create collection of identified homopolymers and save them in storage
 		final Collection<Homopolymer> homopolymers = builder.build();
 		for (final Homopolymer homopolymer : homopolymers) {
 			storage.increment(homopolymer.getPosition(), homopolymer.getLength());

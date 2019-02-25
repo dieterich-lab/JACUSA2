@@ -5,10 +5,14 @@ import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
 
-public class HomozygousFilter 
-extends AbstractFilter {
+/**
+ * This class implements a filter that requires a condition to be homomorph at a site.
+ */
+public class HomozygousFilter extends AbstractFilter {
 
+	// defines the conditions that requires to be homomorph
 	private final int homozygousConditionIndex;
+	// defines what base call counts to use for filtering
 	private final Fetcher<BaseCallCount> bccFetcher;
 	
 	public HomozygousFilter(

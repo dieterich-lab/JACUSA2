@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import jacusa.io.format.BaseSubstitutionBED6adder;
-import jacusa.io.format.BaseSubstitutionDataAdder;
+import jacusa.io.format.BaseSubstitutionBaseCallCountAdder;
 import jacusa.io.format.CombinedDataAdder;
 import jacusa.io.format.DeletionCountDataAdder;
 import jacusa.io.format.StratifiedDataAdder;
@@ -46,7 +46,7 @@ extends AbstractResultFileFormat {
 			bed6adder = new BaseSubstitutionBED6adder(baseSubs, bed6adder);
 			dataAdder = new StratifiedDataAdder(
 					dataAdder, 
-					new BaseSubstitutionDataAdder(bccParser, baseSubs, dataAdder));
+					new BaseSubstitutionBaseCallCountAdder(bccParser, baseSubs, dataAdder));
 		}
 		
 		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter())

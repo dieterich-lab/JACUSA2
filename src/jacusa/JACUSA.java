@@ -18,7 +18,8 @@ import lib.data.count.basecallquality.MapBaseCallQualityCount;
 import lib.util.AbstractTool;
 
 /**
- * JACUSA2 TODO add text
+ * JACUSA2 identifies variants and read arrest events.
+ * 
  * Copyright (C) 2018  Michael Piechotta
  * <p>
  * This program is free software: you can redistribute it and/or modify
@@ -39,8 +40,12 @@ import lib.util.AbstractTool;
  */
 public class JACUSA extends AbstractTool {
 
+	// factory to globally create BaseCallCount objects - there are different implementations
 	public static final BaseCallCountFactory<? extends BaseCallCount> BCC_FACTORY = 
 			new DefaultBaseCallCount.Factory();
+	
+	// factory to globally create BaseCallQualtityCount objects - there are different implementations
+	// used to define PileupCount for variant calling
 	public static final BaseCallQualityCountFactory<? extends BaseCallQualityCount> BCQC_FACTORY = 
 			new MapBaseCallQualityCount.Factory();
 	
@@ -48,18 +53,24 @@ public class JACUSA extends AbstractTool {
 		super(
 				"JACUSA", VersionInfo.format(), 
 				args,
-				Arrays.asList(
+				Arrays.asList( // this list defines the available methods
+						
 						// calling variants
 						new CallMethod.Factory(1),
 						new CallMethod.Factory(2),
+						
 						// pileup
 						new PileupMethod.Factory(2),
+						
 						// reverse transcription read arrest
+						
 						new RTarrestMethod.Factory(),
+						
 						// linked reverse transcription read arrest
 						new LRTarrestMethod.Factory()) ); 
 	}
 
+	// print message after tool finishes computation
 	@Override
 	protected String getEpilog() {
 		final StringBuilder sb = new StringBuilder();
@@ -76,6 +87,7 @@ public class JACUSA extends AbstractTool {
 		sb.append(getCLI().getMethodFactory().getParameter().getResultFilename());
 		sb.append('\n');
 
+		// create line
 		final String lineSep = Collections.nCopies(80, '-').stream()
 			.map(e->e.toString()).collect(Collectors.joining());
 

@@ -19,7 +19,7 @@ import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
 /**
- * TODO add comments
+ * This FilterFactory configures and creates the Homozygous filter.
  */
 public class HomozygousFilterFactory 
 extends AbstractFilterFactory 
@@ -28,7 +28,7 @@ implements HasCondition {
 	public static final char FILTER = 'H';
 	
 	// which condition is required to be homozygous
-	private int condition;
+	private int conditionIndex;
 	private final Fetcher<BaseCallCount> bccFetcher;
 	
 	public HomozygousFilterFactory(
@@ -36,7 +36,7 @@ implements HasCondition {
 		
 		super(getOptionBuilder().build());
 				
-		condition 					= -1;
+		conditionIndex 				= -1;
 		getACOption().add(new ConditionOption(this, conditionSize));
 		this.bccFetcher 			= bccFetcher;
 	}
@@ -51,7 +51,7 @@ implements HasCondition {
 			CoordinateController coordinateController, 
 			ConditionContainer conditionContainer) {
 
-		return new HomozygousFilter(getC(), condition, bccFetcher);
+		return new HomozygousFilter(getC(), conditionIndex, bccFetcher);
 	}
 
 	@Override
@@ -69,17 +69,19 @@ implements HasCondition {
 	
 	@Override
 	public void addFilteredData(StringBuilder sb, DataContainer data) {
+		// nothing to display
+		// will be shown in filter column
 		sb.append(InputOutput.EMPTY_FIELD);	
 	}
 
 	@Override
 	public int getCondition() {
-		return condition;
+		return conditionIndex;
 	}
 	
 	@Override
 	public void setCondition(int condition) {
-		this.condition = condition;
+		this.conditionIndex = condition;
 	}
 	
 }

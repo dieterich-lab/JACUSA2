@@ -18,19 +18,20 @@ implements HasStatParameter {
 	public RTarrestParameter(final int conditions) {
 		super(conditions);
 		// related to test-statistic
-		setStatParameter(new StatParameter(
-				new RTarrestStatFactory(), Double.NaN));
+		setStatParameter(new StatParameter(new RTarrestStatFactory(), Double.NaN));
 		// default result format
-		setResultFormat(
-				new BED6rtArrestResultFormat(
-				RTarrestMethod.Factory.NAME, 
-				this));
+		setResultFormat(new BED6rtArrestResultFormat(RTarrestMethod.Factory.NAME, this));
 	}
 
 	@Override
 	public ConditionParameter createConditionParameter(final int conditionIndex) {
 		final ConditionParameter p = super.createConditionParameter(conditionIndex);
-		p.setMinBASQ((byte)0);
+		// TODO how to set minBASQ - this can have downstream effects on how a read is defined
+		// Pos.:		1234
+		// Read Seq.:	ACGT
+		// Read Basq:	HHHL H=High Quality BC, L=Quality BC
+		// Where does the Read end position 3 or 4?
+		p.setMinBASQ((byte)0); 
 		return p;
 	}
 	

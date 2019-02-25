@@ -21,11 +21,9 @@ import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.RecordExtendedProcessor;
 
 /**
- * TODO add comments.
- * 
- * @param 
- */
-public class RTarrestCombinedFilterFactory 
+ * This FilterFactory configures and helps to create the combined filter which aggregates the counts 
+ * of other more basic filters for rt-arrest method.
+ */public class RTarrestCombinedFilterFactory 
 extends AbstractRTarrestBaseCallcountFilterFactory {
 
 	public RTarrestCombinedFilterFactory(
@@ -64,7 +62,6 @@ extends AbstractRTarrestBaseCallcountFilterFactory {
 	public static Builder getOptionBuilder() {
 		return Option.builder(Character.toString(CombinedFilterFactory.FILTER))
 				.desc("Combines Filters: " + StringUtil.join(" + ", Arrays.asList(INDEL_FilterFactory.FILTER, SpliceSiteFilterFactory.FILTER)));
-		// old message .desc("Filter artefacts in the vicinity of INDELs, and splice site position(s)");
 	}
 	
 }

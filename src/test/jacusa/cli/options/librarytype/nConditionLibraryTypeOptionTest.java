@@ -21,7 +21,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import jacusa.cli.options.librarytype.AbstractLibraryTypeOption;
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
 import lib.cli.options.AbstractACOption;
 import lib.cli.parameter.ConditionParameter;
@@ -44,14 +43,14 @@ class nConditionLibraryTypeOptionTest {
 	@ParameterizedTest(name = "args: {2}")
 	@MethodSource("testProcess")
 	void testProcess(
-			List<AbstractLibraryTypeOption> testInstances,
+			List<nConditionLibraryTypeOption> testInstances,
 			List<ConditionParameter> conditionParameters,
 			String line,
 			List<LibraryType> expected) throws Exception {
 
 		final Options options = getOptions(testInstances);
 		final CommandLine cmd = parser.parse(options, line.split(" "));
-		for (AbstractLibraryTypeOption testInstance : testInstances) {
+		for (nConditionLibraryTypeOption testInstance : testInstances) {
 			if (cmd.hasOption(testInstance.getOpt())) {
 				testInstance.process(cmd);
 			}
@@ -90,8 +89,8 @@ class nConditionLibraryTypeOptionTest {
 		
 		final List<ConditionParameter> conditionParameters = 
 				new ArrayList<ConditionParameter>(conditions);
-		final List<AbstractLibraryTypeOption> testInstances = 
-				new ArrayList<AbstractLibraryTypeOption>(conditions);
+		final List<nConditionLibraryTypeOption> testInstances = 
+				new ArrayList<nConditionLibraryTypeOption>(conditions);
 		final StringBuilder sb = new StringBuilder(); 
 		final List<LibraryType> expected = new ArrayList<>(conditions);
 		
@@ -109,7 +108,7 @@ class nConditionLibraryTypeOptionTest {
 					sb.append(' ');
 				}
 				sb.append('-');
-				sb.append(AbstractLibraryTypeOption.OPT);
+				sb.append(nConditionLibraryTypeOption.OPT);
 				sb.append((conditionIndex));
 				sb.append(' ');
 				sb.append(libraryTypes.get(conditionIndex - 1));
@@ -127,7 +126,7 @@ class nConditionLibraryTypeOptionTest {
 	void testProcessFailsOnMissingInput1() {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
-		final AbstractLibraryTypeOption testInstance = 
+		final nConditionLibraryTypeOption testInstance = 
 				new nConditionLibraryTypeOption(
 						Arrays.asList(new ConditionParameter(1)), 
 						generalParameter);
@@ -137,7 +136,7 @@ class nConditionLibraryTypeOptionTest {
 				() -> {
 					final CommandLine line = parser.parse(
 							options, 
-							new String[] { "-" + AbstractLibraryTypeOption.OPT } );
+							new String[] { "-" + nConditionLibraryTypeOption.OPT } );
 					testInstance.process(line);
 				});
 	}
@@ -146,7 +145,7 @@ class nConditionLibraryTypeOptionTest {
 	void testProcessFailsOnMissingInput2() {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
-		final AbstractLibraryTypeOption testInstance = 
+		final nConditionLibraryTypeOption testInstance = 
 				new nConditionLibraryTypeOption(new ConditionParameter(1), generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
 		
@@ -154,7 +153,7 @@ class nConditionLibraryTypeOptionTest {
 				() -> {
 					final CommandLine line = parser.parse(
 							options, 
-							new String[] { "-" + AbstractLibraryTypeOption.OPT + 1} );
+							new String[] { "-" + nConditionLibraryTypeOption.OPT + 1} );
 					testInstance.process(line);
 				});
 	}
@@ -163,7 +162,7 @@ class nConditionLibraryTypeOptionTest {
 	void testProcessFailsOnWrongInput1() {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
-		final AbstractLibraryTypeOption testInstance = 
+		final nConditionLibraryTypeOption testInstance = 
 				new nConditionLibraryTypeOption(
 						Arrays.asList(new ConditionParameter(1)), 
 						generalParameter);
@@ -173,7 +172,7 @@ class nConditionLibraryTypeOptionTest {
 				() -> {
 					final CommandLine line = parser.parse(
 							options, 
-							new String[] { "-" + AbstractLibraryTypeOption.OPT, "WRONG"} );
+							new String[] { "-" + nConditionLibraryTypeOption.OPT, "WRONG"} );
 					testInstance.process(line);
 				});
 	}
@@ -182,7 +181,7 @@ class nConditionLibraryTypeOptionTest {
 	void testProcessFailsOnWrongInput2() {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
-		final AbstractLibraryTypeOption testInstance = 
+		final nConditionLibraryTypeOption testInstance = 
 				new nConditionLibraryTypeOption(new ConditionParameter(1), generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
 		
@@ -190,7 +189,7 @@ class nConditionLibraryTypeOptionTest {
 				() -> {
 					final CommandLine line = parser.parse(
 							options, 
-							new String[] { "-" + AbstractLibraryTypeOption.OPT + 1, "WRONG"} );
+							new String[] { "-" + nConditionLibraryTypeOption.OPT + 1, "WRONG"} );
 					testInstance.process(line);
 				});
 	}
@@ -199,7 +198,7 @@ class nConditionLibraryTypeOptionTest {
 	void testProcessFailsOnWrongInvalid1() {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
-		final AbstractLibraryTypeOption testInstance = 
+		final nConditionLibraryTypeOption testInstance = 
 				new nConditionLibraryTypeOption(
 						Arrays.asList(new ConditionParameter(1)), 
 						generalParameter);
@@ -210,7 +209,7 @@ class nConditionLibraryTypeOptionTest {
 					final CommandLine line = parser.parse(
 							options, 
 							new String[] { 
-									"-" + AbstractLibraryTypeOption.OPT, 
+									"-" + nConditionLibraryTypeOption.OPT, 
 									LibraryType.MIXED.toString() } );
 					testInstance.process(line);
 				});
@@ -220,7 +219,7 @@ class nConditionLibraryTypeOptionTest {
 	void testProcessFailsOnWrongInvalid2() {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
-		final AbstractLibraryTypeOption testInstance = 
+		final nConditionLibraryTypeOption testInstance = 
 				new nConditionLibraryTypeOption(new ConditionParameter(1), generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
 		
@@ -229,13 +228,13 @@ class nConditionLibraryTypeOptionTest {
 					final CommandLine line = parser.parse(
 							options, 
 							new String[] { 
-									"-" + AbstractLibraryTypeOption.OPT + 1, 
+									"-" + nConditionLibraryTypeOption.OPT + 1, 
 									LibraryType.MIXED.toString() } );
 					testInstance.process(line);
 				});
 	}
 	
-	private Options getOptions(final List<AbstractLibraryTypeOption> acOptions) {
+	private Options getOptions(final List<nConditionLibraryTypeOption> acOptions) {
 		final Options options = new Options();
 		for (final AbstractACOption acOption : acOptions) {
 			options.addOption(acOption.getOption(false));

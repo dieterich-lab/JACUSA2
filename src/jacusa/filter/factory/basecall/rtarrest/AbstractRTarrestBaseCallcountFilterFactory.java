@@ -13,6 +13,11 @@ import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.filter.BaseCallCountFilteredData;
 
+/**
+ * This abstract FilterFactory configures and helps to create base call count based filters for the 
+ * rt-arrest method. It allows to chose on which base calls counting and filtering should be 
+ * carried out, see Apply2readsBaseCallCountSwitch
+ */
 public abstract class AbstractRTarrestBaseCallcountFilterFactory 
 extends AbstractBaseCallCountFilterFactory 
 implements HasApply2reads {
@@ -29,6 +34,7 @@ implements HasApply2reads {
 				bccSwitch, filteredDataFetcher,
 				AbstractBaseCallCountFilterFactory.DEFAULT_FILTER_DISTANCE,
 				AbstractBaseCallCountFilterFactory.DEFAULT_FILTER_MINRATIO);
+		
 	}
 	
 	public AbstractRTarrestBaseCallcountFilterFactory(
@@ -39,6 +45,8 @@ implements HasApply2reads {
 
 		super(option, bccSwitch, filteredDataFetcher, defaultFilterDistance, defaultFilterMinRatio);
 		this.bccSwitch = bccSwitch;
+		// make search in arrest base calls for false positive variants the default
+		getApply2Reads().add(RT_READS.ARREST);
 		getACOption().add(new Apply2readsOption(this));
 	}
 	

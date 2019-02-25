@@ -14,7 +14,10 @@ import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.RecordExtendedProcessor;
 
-// TODO add as filter but beware of arrest position
+/**
+ * This FilterFactory configures and helps to create the filter that will filter false positive variants
+ * at the read start and end for lrt-arrest method.
+ */
 public class LRTarrestReadPositionDistanceFilterFactory 
 extends AbstractLRTarrestBaseCallCountFilterFactory {
 

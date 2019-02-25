@@ -13,7 +13,8 @@ import lib.util.coordinate.Coordinate;
 import lib.util.position.Position;
 
 /**
- * TODO add comments
+ * Class the enables storing reference based homopolymer information from multiple instance.
+ * Needs optimization.
  * 
  * Tested in @see jacusa.filter.homopolymer.HomopolymerReferenceFilterCacheTest
  */

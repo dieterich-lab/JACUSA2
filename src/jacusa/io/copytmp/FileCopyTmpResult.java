@@ -15,14 +15,15 @@ import lib.io.copytmp.CopyTmpResult;
 import lib.util.AbstractTool;
 
 /**
- * TODO add comments.
- *
- * @param 
+ * This class enables to store temporary results from multithreaded runs and allows to restore order
+ * of output by keeping track of the number of results per iteration of a thread. Each thread has its own 
+ * instance of CopyTmpResult. This implementation uses ResultWriter to write temporary results to a 
+ * temporary file. When JACUSA2 finishes computation, temporary results are read and written to final output.
  */
 public class FileCopyTmpResult 
 implements CopyTmpResult {
 
-	// 
+	// this is a reference to main output
 	private final AbstractResultFileWriter resultFileWriter;
 
 	// temporary result files are written by this object
@@ -50,12 +51,11 @@ implements CopyTmpResult {
 			e.printStackTrace();
 		}
 
-		iteration2storedResults = new ArrayList<Integer>(1000);
+		iteration2storedResults = new ArrayList<Integer>(2000);
 	}
 	
 	/**
 	 * Helper function - create temporary file for a specific thread.
-	 * TODO add comments.
 	 * 
 	 * @param threadId 
 	 * @return
@@ -92,6 +92,7 @@ implements CopyTmpResult {
 	@Override
 	public void addResult(final Result result) throws Exception {
 		tmpResultWriter.writeResult(result);
+		// some results write more then one line
 		incrementStoredResults(result.getValueSize());
 	}
 	
@@ -106,9 +107,10 @@ implements CopyTmpResult {
 	
 	@Override
 	public void copy(int iteration) throws IOException {
-		int copiedResults = 0;
+		int copiedResults 		= 0;
 		final int storedResults = iteration2storedResults.get(iteration);
 
+		// copy results from temporary file to main result file
 		String line;
 		while (storedResults > copiedResults && (line = tmpResultReader.readLine()) != null) {
 			resultFileWriter.writeLine(line);

@@ -8,24 +8,19 @@ import lib.stat.betabin.LRTarrestStatFactory;
 /**
  * Class defines parameters and default values that are need for Linked Reverse Transcription arrest (lrt-arrest).
  */
-public class LRTarrestParameter
-extends GeneralParameter
-implements HasStatParameter {
+public class LRTarrestParameter extends GeneralParameter implements HasStatParameter {
 
 	private StatParameter statParameter;
 
 	public LRTarrestParameter(final int conditions) {
 		super(conditions);
 		// change window size
-		setActiveWindowSize(500);
+		setActiveWindowSize(5000);
 		
 		// test-statistic related
-		setStatParameter(
-				new StatParameter(new LRTarrestStatFactory(), 1.0));
+		setStatParameter(new StatParameter(new LRTarrestStatFactory(), Double.NaN));
 		// default output format
-		setResultFormat(
-				new BED6lrtArrestResultFormat(
-						LRTarrestMethod.Factory.NAME, this));
+		setResultFormat(new BED6lrtArrestResultFormat(LRTarrestMethod.Factory.NAME, this));
 
 	}
 	

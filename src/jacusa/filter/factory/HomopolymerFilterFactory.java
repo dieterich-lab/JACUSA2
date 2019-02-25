@@ -26,22 +26,30 @@ import lib.data.filter.BooleanData;
 import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
+/**
+ * This FilterFactory configures and creates the Homopolymer Filter. The user can chosen the minLength
+ * that is needed for a consecutive sequence of identical base calls to be called a homopolymer.
+ * In the future the user will be able to decide how to define a homopolyer: reference or read based.
+ * While both methods are implemented, currently only the read based homopolymer definition is available.
+ * Reference based homopolyer calling needs more testing and optimization.
+ */
 public class HomopolymerFilterFactory
 extends AbstractFilterFactory 
 implements HasHomopolymerLength, HasHomopolymerMethod {
 
 	public static final char FILTER = 'Y';
 	
-	// default length of consecutive identical base call for
-	// a homopolymer
-	public static final int MIN_HOMOPOLYMER_LENGTH = 7;
-	public static final HomopolymerMethod HOMOPOLYMER_METHOD = HomopolymerMethod.READ;
+	// default length of consecutive identical base call for a homopolymer
+	public static final int MIN_HOMOPOLYMER_LENGTH 				= 7;
+	// default method to define a homopolymer
+	public static final HomopolymerMethod HOMOPOLYMER_METHOD 	= HomopolymerMethod.READ;
 
 	// chosen length of homopolymer
 	private int length;
 	private HomopolymerMethod method;
 	
 	private final GeneralParameter parameter;
+	// define the location where homopolymer indicator will be stored within a dataContainer
 	private final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredBooleanFetcher;
 	private final DataType<BooleanFilteredData> dataType;
 
@@ -54,6 +62,7 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 		method = HOMOPOLYMER_METHOD;
 		
 		getACOption().add(new HomopolymerLengthOption(this));
+		// current turned off - needs more optimization 
 		// getACOption().add(new HomopolymerMethodOption(this));
 
 		this.parameter 				= parameter;
@@ -75,6 +84,9 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 		
 		switch (method) {
 		case REFERENCE:
+			// since the reference will be identical for all BAMs and conditions within a 
+			// thread window make sure that homopolymers get called only once in the reference and
+			// the result gets shared with all the other instances - needs optimization
 			final int bamFileCount = parameter.getBAMfileCount();
 			final HomopolymerReferenceStorage refStorage = new HomopolymerReferenceStorage(
 					sharedStorage,

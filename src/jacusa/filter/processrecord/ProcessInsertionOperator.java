@@ -6,6 +6,10 @@ import lib.recordextended.SAMRecordExtended;
 import lib.util.position.CigarElementExtendedPositionProviderBuilder;
 
 /**
+ * This class will identify all insertions within a read and mark/count +/- distance up- and downstream 
+ * aligned/matched positions. Those counts will be used in a base call count filter to identify 
+ * false positive variants.
+ * 
  * Tested in test.jacusa.filter.processrecord.ProcessInsertionOperatorTest
  */
 public class ProcessInsertionOperator extends AbstractFilterRecordExtendedProcessor {
@@ -20,6 +24,7 @@ public class ProcessInsertionOperator extends AbstractFilterRecordExtendedProces
 	
 	@Override
 	public void process(SAMRecordExtended recordExtended) {
+		// iterate over cigarElement indices of deletions
 		for (final int cigarElementExtendedIndex : recordExtended.getInsertion()) {
 			processInsertionOperator(cigarElementExtendedIndex, recordExtended);
 		}

@@ -11,10 +11,11 @@ import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.OneCoordinate;
 import lib.recordextended.SAMRecordExtended;
 
+
 /**
- * TODO add comments
- * 
- * 
+ * This class is supposed to identify homopolymers in the reference sequence. This needs to be 
+ * optimized to prevent repetitive calculating the same homopolymers.
+ *  
  * Tested in @see jacusa.filter.homopolymer.HomopolymerReferenceFilterCacheTest
  */
 public class HomopolymerReferenceRecordProcessor implements RecordExtendedPrePostProcessor {
@@ -33,6 +34,7 @@ public class HomopolymerReferenceRecordProcessor implements RecordExtendedPrePos
 	@Override
 	public void process(final SAMRecordExtended recordExtended) {
 		// nothing to be done
+		// the main work is done in preProcess
 	}
 
 	private CoordinateController getCoordinateController() {

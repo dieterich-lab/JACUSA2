@@ -18,15 +18,6 @@ import lib.util.Base;
 abstract class AbstractEstimationSamplePileupProvider 
 implements EstimationSampleProvider {
 
-	protected static final int[][] VALID;
-	static {
-		VALID		= new int[4][3];
-		VALID[0]	= new int[] {1, 2, 3};
-		VALID[1]	= new int[] {0, 2, 3};
-		VALID[2]	= new int[] {0, 1, 3};
-		VALID[3]	= new int[] {0, 1, 2};
-	}
-	
 	private final boolean calcPValue; 
 	private final int maxIterations;
 	private final double estimatedError;
@@ -127,10 +118,12 @@ implements EstimationSampleProvider {
 			final int index = base.getIndex();
 			if (colSumCount[index] > 0.0) {
 				pileupVector[index] += colSumCount[index];
-				for (final int index2 : VALID[index]) {
-					double combinedError = (colMeanError[index2] + estimatedError) * (double)colSumCount[index] / 
-							(double)(VALID[bases.length].length);
-					pileupVector[index2] += combinedError;
+				for (final Base base2 : bases) {
+					if (base != base2) {
+						double combinedError = (colMeanError[base2.getIndex()] + estimatedError) * (double)colSumCount[index] / 
+								(double)(bases.length - 1);
+						pileupVector[base2.getIndex()] += combinedError;
+					}
 				}
 			}
 		}

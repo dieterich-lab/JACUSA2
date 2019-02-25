@@ -8,9 +8,7 @@ import lib.stat.dirmult.DirMultRobustCompoundErrorStatFactory;
 /**
  * Parameters specific to call method(s).
  */
-public class CallParameter 
-extends GeneralParameter
-implements HasStatParameter {
+public class CallParameter extends GeneralParameter implements HasStatParameter {
 	
 	private StatParameter statParameter;
 	
@@ -18,10 +16,14 @@ implements HasStatParameter {
 		super(conditionSize);
 		
 		// set defaults
+		
+		// result format
 		setResultFormat(
 				new BED6callResultFormat(
 						CallMethod.Factory.NAME_PREFIX + conditionSize, 
 						this));
+		
+		// stat
 		setStatParameter(
 				new StatParameter(
 						new DirMultRobustCompoundErrorStatFactory(

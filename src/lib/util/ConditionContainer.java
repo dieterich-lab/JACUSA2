@@ -59,7 +59,7 @@ public class ConditionContainer {
 			final GeneralParameter parameter,
 			final AbstractMethod method) {
 
-		filterContainer = parameter.getFilterConfig().createFilterInstances();
+		filterContainer = parameter.getFilterConfig().createFilterContainer();
 		parameter.getFilterConfig().registerFilters(sharedStorage.getCoordinateController(), this);
 		replicateContainers = parameter.getConditionParameters().stream()
 				.map(cp -> new ReplicateContainer(

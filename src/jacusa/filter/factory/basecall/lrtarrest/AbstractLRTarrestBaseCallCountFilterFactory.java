@@ -12,10 +12,14 @@ import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.filter.BaseCallCountFilteredData;
 
-public abstract class AbstractLRTarrestBaseCallCountFilterFactory 
+/**
+ * This abstract FilterFactory configures and helps to create base call count based filters for the 
+ * lrt-arrest method. It allows to chose on which base calls counting and filtering should be 
+ * carried out, see Apply2readsBaseCallCountSwitch
+ */
+abstract class AbstractLRTarrestBaseCallCountFilterFactory 
 extends AbstractRTarrestBaseCallcountFilterFactory 
 implements HasFilterDistance, HasFilterMinRatio, HasApply2reads {
-
 
 	public AbstractLRTarrestBaseCallCountFilterFactory(
 			final Option option,

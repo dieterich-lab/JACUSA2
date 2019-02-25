@@ -6,13 +6,12 @@ import lib.data.storage.processor.RecordExtendedProcessor;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
- * TODO add comments
+ * This abstract class enables to process reads with a chosen positionProcessor.
  */
 abstract class AbstractFilterRecordExtendedProcessor implements RecordExtendedProcessor {
 
 	private final SharedStorage sharedStorage;
 	
-	// TODO add comments.
 	private final int distance;
 	// ensures that each position is only counted once
 	private final PositionProcessor positionProcessor;
@@ -41,7 +40,7 @@ abstract class AbstractFilterRecordExtendedProcessor implements RecordExtendedPr
 	}
 	
 	/**
-	 * TODO add comments.
+	 * Returns the positionProcessor that is used to traverse the read.
 	 * 
 	 * @return
 	 */

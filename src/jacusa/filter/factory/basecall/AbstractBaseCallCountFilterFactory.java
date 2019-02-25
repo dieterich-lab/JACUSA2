@@ -10,7 +10,7 @@ import jacusa.filter.Filter;
 import jacusa.filter.FilterByRatio;
 import jacusa.filter.GenericBaseCallCountFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.filter.homopolymer.CollectionRecordExtendedProcessors;
+import jacusa.filter.processrecord.CollectionRecordExtendedProcessors;
 import lib.cli.options.filter.FilterDistanceOption;
 import lib.cli.options.filter.FilterMinRatioOption;
 import lib.cli.options.filter.has.HasFilterDistance;
@@ -43,7 +43,8 @@ import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
 /**
- * TODO add comments
+ * This abstract FilterFactory configures and helps to create filters that need an observed and filtered
+ * base call count, e.g.: Read/Start filter, etc.
  */
 public abstract class AbstractBaseCallCountFilterFactory
 extends AbstractFilterFactory 
@@ -52,8 +53,11 @@ implements HasFilterDistance, HasFilterMinRatio {
 	public static final int DEFAULT_FILTER_DISTANCE 	= 6;
 	public static final double DEFAULT_FILTER_MINRATIO 	= 0.5;
 	
+	// defines where the observed base call count is extracted from a dataContainer
 	private Fetcher<BaseCallCount> observedBccFetcher;
+	// defines where the filtered base call count is extracted from a dataContainer
 	private final Fetcher<BaseCallCount> filteredBccFetcher;
+	// defines the data type that will be retrieved
 	private final DataType<BaseCallCountFilteredData> dataType;
 	
 	private int filterDistance;
@@ -96,10 +100,12 @@ implements HasFilterDistance, HasFilterMinRatio {
 	
 	@Override
 	public void initDataContainer(AbstractBuilder builder) {
+		// create a container for base call count filtered data
 		if (! builder.contains(dataType)) { 
 			builder.with(dataType);
 		}
 		final BaseCallCountFilteredData filteredData = builder.get(dataType);
+		// make sure that in base call count filtered data there is a bcc for this filter
 		if (! filteredData.contains(getC())) {
 			filteredData.add(getC(), JACUSA.BCC_FACTORY.create());
 		}
@@ -110,6 +116,8 @@ implements HasFilterDistance, HasFilterMinRatio {
 			final CoordinateController coordinateController, 
 			final ConditionContainer conditionContainer) {
 		
+		// create an instance of a base call count filter
+		// use fetchers to locate observed and filtered counts
 		return new GenericBaseCallCountFilter(getC(),
 				observedBccFetcher,
 				filteredBccFetcher,	

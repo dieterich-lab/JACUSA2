@@ -8,17 +8,23 @@ import lib.data.result.Result;
 import lib.io.InputOutput;
 import lib.io.format.bed.BED6adder;
 
+/**
+ * This class corresponds to the a column of a BEDlike output file that contains read base substitution 
+ * information, specifically which base substitution is being considered
+ */
 public class BaseSubstitutionBED6adder implements BED6adder {
 
-	private final List<BaseSubstitution> baseSubs; 
+	// list of chosen base substitutions
+	private final List<BaseSubstitution> baseSubs;
+	// BED6adder that should be written before this object
 	private final BED6adder bed6adder;
 	
 	public BaseSubstitutionBED6adder(
 			final List<BaseSubstitution> baseSubs,
 			final BED6adder bed6adder) {
 		
-		this.baseSubs = baseSubs;
-		this.bed6adder = bed6adder;
+		this.baseSubs 	= baseSubs;
+		this.bed6adder 	= bed6adder;
 	}
 	
 	@Override
@@ -32,7 +38,9 @@ public class BaseSubstitutionBED6adder implements BED6adder {
 	public void addData(StringBuilder sb, int valueIndex, Result result) {
 		bed6adder.addData(sb, valueIndex, result);
 		sb.append(InputOutput.FIELD_SEP);
-		if (valueIndex == -1) {
+		// TODO use something else than -1
+		// per default -1 corresponds to not stratified data
+		if (valueIndex == -1) { 
 			sb.append(InputOutput.EMPTY_FIELD);
 		} else if (valueIndex >= 0){
 			sb.append(baseSubs.get(valueIndex).toString());

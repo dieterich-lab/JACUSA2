@@ -12,11 +12,9 @@ import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.RecordExtendedProcessor;
 
 /**
- * TODO add comments.
- * 
- * @param 
+ * This FilterFactory configures and helps to create the filter that will filter sites around INDELs
+ * for lrt-arrest method.
  */
-
 public class LRTarrestINDEL_FilterFactory 
 extends AbstractLRTarrestBaseCallCountFilterFactory {
 
