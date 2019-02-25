@@ -66,7 +66,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	public boolean contains(final int arrestPosition) {
 		return aPos2bcc.containsKey(arrestPosition);
 	}
-
+	
 	/**
 	 * Returns positions
 	 * 

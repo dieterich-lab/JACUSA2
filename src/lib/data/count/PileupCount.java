@@ -25,7 +25,7 @@ public class PileupCount implements Data<PileupCount> {
 	public PileupCount(final PileupCount pileupCount) {
 		this.baseCallQualCount 	= pileupCount.baseCallQualCount.copy();
 	}
-
+	
 	public PileupCount copy() {
 		return new PileupCount(this);
 	}

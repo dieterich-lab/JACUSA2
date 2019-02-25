@@ -23,6 +23,10 @@ public class BaseSubstitution2BaseCallCount implements Data<BaseSubstitution2Bas
 			count.put(baseSub, bsc.get(baseSub).copy());
 		}
 	}
+
+	public BaseSubstitution2BaseCallCount newInstance() {
+		return new BaseSubstitution2BaseCallCount();
+	}
 	
 	@Override
 	public BaseSubstitution2BaseCallCount copy() {

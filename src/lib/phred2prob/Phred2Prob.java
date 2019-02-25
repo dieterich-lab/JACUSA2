@@ -43,7 +43,7 @@ public final class Phred2Prob {
 
 	public double[] colSumCount(final Base[] bases, final PileupCount o) {
 		// container for accumulated counts 
-		final double[] c = new double[SequenceUtil.VALID_BASES_UPPER.length];
+		final double[] c = new double[Base.validValues().length];
 
 		for (final Base base : bases) {
 			final int count = o.getBaseCallCount().getBaseCall(base);
@@ -57,7 +57,7 @@ public final class Phred2Prob {
 	 */
 	public double[] colSumProb(final Base[] bases, final PileupCount o) {
 		// container for accumulated probabilities 
-		final double[] p = new double[SequenceUtil.VALID_BASES_UPPER.length];
+		final double[] p = new double[Base.validValues().length];
 		Arrays.fill(p, 0.0);
 
 		for (final Base base: bases) {

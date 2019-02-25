@@ -30,7 +30,7 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 	public MapBaseCallCount copy() {
 		return new MapBaseCallCount(new HashMap<>(baseCalls));
 	}
-
+	
 	@Override
 	public int getCoverage() {
 		int coverage = 0;

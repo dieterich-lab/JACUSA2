@@ -33,7 +33,7 @@ public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Seriali
 	default void merge(BaseCallCount o) {
 		add(o);
 	}
-	
+
 	static BaseCallCount newInstance() {
 		return JACUSA.BCC_FACTORY.create();
 	}

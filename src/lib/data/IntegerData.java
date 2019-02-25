@@ -5,6 +5,10 @@ public class IntegerData implements Data<IntegerData> {
 	private static final long serialVersionUID = 1L;
 	
 	private int i;
+
+	public IntegerData() {
+		this(0);
+	}
 	
 	public IntegerData(final int i) {
 		this.i = i;

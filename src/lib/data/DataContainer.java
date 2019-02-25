@@ -10,6 +10,7 @@ import jacusa.filter.factory.FilterFactory;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.BaseSubstitution2BaseCallCount;
+import lib.data.count.BaseSubstitution2IntegerData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.BaseCallCountFilteredData;
@@ -129,6 +130,14 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			}
 		}
 		
+		protected void addDeletionCount(final AbstractBuilder builder, final DataType<BaseSubstitution2IntegerData> dataType) {
+			add(builder, dataType);
+			final BaseSubstitution2IntegerData bsc = builder.get(dataType);
+			for (final BaseSubstitution baseSub : parameter.getReadSubstitutions()) {
+				bsc.set(baseSub, new IntegerData());
+			}
+		}
+		
 		protected abstract void addRequired(final AbstractBuilder builder);
 		protected abstract void addFilters(final AbstractBuilder builder);
 		
@@ -156,8 +165,11 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			add(builder, DataType.AP2BCC);
 			
 			add(builder, DataType.BASE_SUBST2BCC);
+			add(builder, DataType.BASE_SUBST2DELETION_COUNT);
+			
 			add(builder, DataType.ARREST_BASE_SUBST);
 			add(builder, DataType.THROUGH_BASE_SUBST);
+			add(builder, DataType.DELETION_COUNT);
 		}
 		
 		@Override

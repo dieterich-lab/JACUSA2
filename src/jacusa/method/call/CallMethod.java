@@ -254,6 +254,12 @@ extends AbstractMethod {
 			if (parameter.getReadSubstitutions().size() > 0) {
 				addBaseSubstitution(builder, DataType.BASE_SUBST2BCC);
 			}
+			if (parameter.showDeletionCount()) {
+				add(builder, DataType.DELETION_COUNT);
+			}
+			if (parameter.getReadSubstitutions().size() > 0 && parameter.showDeletionCount()) {
+				addDeletionCount(builder, DataType.BASE_SUBST2DELETION_COUNT);
+			}
 		}
 		
 		@Override

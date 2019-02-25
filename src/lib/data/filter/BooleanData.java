@@ -15,7 +15,7 @@ public class BooleanData implements Data<BooleanData> {
 	private BooleanData(final BooleanData booleanData) {
 		b = booleanData.b;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -52,6 +52,10 @@ public class BooleanData implements Data<BooleanData> {
 	@Override
 	public void merge(BooleanData booleanData) {
 		b |= booleanData.b;
+	}
+
+	public BooleanData newInstance() {
+		return new BooleanData(false);
 	}
 	
 }

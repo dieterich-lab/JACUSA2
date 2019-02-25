@@ -24,7 +24,7 @@ public class UnmodifiableBaseCallCount extends AbstractBaseCallCount {
 	public BaseCallCount copy() {
 		return new UnmodifiableBaseCallCount(bcc.copy());
 	}
-
+	
 	@Override
 	public int getBaseCall(Base base) {
 		return bcc.getBaseCall(base);

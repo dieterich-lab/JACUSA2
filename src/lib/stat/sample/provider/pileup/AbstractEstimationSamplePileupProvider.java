@@ -129,7 +129,7 @@ implements EstimationSampleProvider {
 				pileupVector[index] += colSumCount[index];
 				for (final int index2 : VALID[index]) {
 					double combinedError = (colMeanError[index2] + estimatedError) * (double)colSumCount[index] / 
-							(double)(bases.length);
+							(double)(VALID[bases.length].length);
 					pileupVector[index2] += combinedError;
 				}
 			}

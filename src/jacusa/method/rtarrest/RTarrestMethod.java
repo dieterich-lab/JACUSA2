@@ -282,6 +282,12 @@ extends AbstractMethod {
 				addBaseSubstitution(builder, DataType.ARREST_BASE_SUBST);
 				addBaseSubstitution(builder, DataType.THROUGH_BASE_SUBST);
 			}
+			if (parameter.showDeletionCount()) {
+				add(builder, DataType.DELETION_COUNT);
+			}
+			if (parameter.getReadSubstitutions().size() > 0 && parameter.showDeletionCount()) {
+				addDeletionCount(builder, DataType.BASE_SUBST2DELETION_COUNT);
+			}
 		}
 		
 		protected void addFilters(final AbstractBuilder builder) {

@@ -20,7 +20,7 @@ public class BaseCallCountFilteredData extends AbstractFilteredData<BaseCallCoun
 	protected BaseCallCountFilteredData newInstance(Map<Character, BaseCallCount> map) {
 		return new BaseCallCountFilteredData(map);
 	}
-
+	
 	@Override
 	public final boolean equals(Object obj) {
 		if (obj == null || ! getClass().isInstance(obj)) {
