@@ -39,18 +39,16 @@ public class LRTarrestDataAdder implements DataAdder {
 		
 		final List<String> tmp = new ArrayList<>(2);
 		
-		int onePosition = -1; 
+		int onePosition = -1;
 		if (valueIndex == -1) {
 			onePosition = result.getParellelData().getCoordinate().get1Position();
-			tmp.add(bccParser.wrap(ap2bcc.getArrestBaseCallCount(onePosition)));
-			tmp.add(bccParser.wrap(ap2bcc.getThroughBaseCallCount(onePosition)));
 		} else {
-			onePosition = 
-					result.getParellelData().getCombinedPooledData().getArrestPos2BaseCallCount().getPositions().get(valueIndex);
-			tmp.add(bccParser.wrap(ap2bcc.getArrestBaseCallCount(onePosition)));
-			tmp.add(Character.toString(bccParser.getEmpty()));
+			onePosition = result.getParellelData().getCombinedPooledData()
+					.getArrestPos2BaseCallCount().getPositions().get(valueIndex);
 		}
-
+		tmp.add(bccParser.wrap(ap2bcc.getArrestBaseCallCount(onePosition)));
+		tmp.add(bccParser.wrap(ap2bcc.getThroughBaseCallCount(onePosition)));
+		
 		sb.append(InputOutput.FIELD_SEP);
 		sb.append(
 				StringUtil.join(

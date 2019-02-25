@@ -12,7 +12,6 @@ import lib.cli.parameter.GeneralParameter;
 import lib.data.count.BaseSubstitution2BaseCallCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.filter.BooleanFilteredData;
 import lib.data.has.HasCoordinate;
@@ -46,7 +45,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	BaseSubstitution2BaseCallCount getThroughBaseSubstitutionCount();
 	
 	ArrestPosition2baseCallCount getArrestPos2BaseCallCount();
-	ArrestPos2BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData();
+	BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData();
 	
 	IntegerData getDeletionCount();
 	
@@ -165,7 +164,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		protected void addFilters(final AbstractBuilder builder) {
 			add(builder, DataType.F_BCC);
 			add(builder, DataType.F_BOOLEAN);
-			add(builder, DataType.F_AP2BCC);
 		}
 
 	}

@@ -8,7 +8,6 @@ import java.util.Map;
 import lib.data.count.BaseSubstitution2BaseCallCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.filter.BooleanFilteredData;
 import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
@@ -69,8 +68,8 @@ public class DefaultDataContainer implements DataContainer {
 	}
 	
 	@Override
-	public ArrestPos2BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData() {
-		return get(DataType.F_AP2BCC);
+	public BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData() {
+		return get(DataType.F_BCC);
 	}
 	
 	@Override

@@ -56,7 +56,7 @@ import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.fetcher.basecall.ArrestBaseCallCountExtractor;
 import lib.data.fetcher.basecall.ThroughBaseCallCountExtractor;
-import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
+import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.filter.BooleanData;
 import lib.data.filter.BooleanFilteredData;
 import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
@@ -86,9 +86,9 @@ extends AbstractMethod {
 			final LRTarrestBuilderFactory builderFactory) {
 		
 		super(name, parameter, dataAssemblerFactory);
-		ap2bccFetcher = DataType.AP2BCC.getFetcher();
-		totalBccFetcher = DataType.BCC.getFetcher();
-		arrestBccExtractor = new ArrestBaseCallCountExtractor(ap2bccFetcher);
+		ap2bccFetcher 		= DataType.AP2BCC.getFetcher();
+		totalBccFetcher 	= DataType.BCC.getFetcher();
+		arrestBccExtractor 	= new ArrestBaseCallCountExtractor(ap2bccFetcher);
 		throughBccExtractor = new ThroughBaseCallCountExtractor(ap2bccFetcher);
 	}
 
@@ -165,8 +165,8 @@ extends AbstractMethod {
 	}
 
 	public Map<Character, FilterFactory> getFilterFactories() {
-		final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, ArrestPosition2baseCallCount> filteredAp2bccFetcher = 
-				new DefaultFilteredDataFetcher<>(DataType.F_AP2BCC);
+		final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredBccFetcher = 
+				new DefaultFilteredDataFetcher<>(DataType.F_BCC);
 		
 		final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredBooleanFetcher =
 				new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN);
@@ -193,21 +193,21 @@ extends AbstractMethod {
 								totalBccFetcher, 
 								arrestBccExtractor, 
 								throughBccExtractor),
-						filteredAp2bccFetcher),
+						filteredBccFetcher),
 				new LRTarrestINDEL_FilterFactory(
 						new Apply2readsBaseCallCountSwitch(
 								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 
 								totalBccFetcher, 
 								arrestBccExtractor, 
 								throughBccExtractor),
-						filteredAp2bccFetcher),
+						filteredBccFetcher),
 				new LRTarrestSpliceSiteFilterFactory(
 						new Apply2readsBaseCallCountSwitch(
 								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 
 								totalBccFetcher, 
 								arrestBccExtractor, 
 								throughBccExtractor),
-						filteredAp2bccFetcher))
+						filteredBccFetcher))
 				.stream()
 				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()) );
 	}
@@ -276,7 +276,7 @@ extends AbstractMethod {
 		
 		@Override
 		protected void addFilters(final AbstractBuilder builder) {
-			add(builder, DataType.F_AP2BCC);
+			add(builder, DataType.F_BCC);
 			add(builder, DataType.F_BOOLEAN);
 		}
 		

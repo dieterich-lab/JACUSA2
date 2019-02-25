@@ -6,12 +6,12 @@ import org.apache.commons.cli.Option;
 
 import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
+import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
-import lib.data.filter.ArrestPos2BaseCallCountFilteredData;
+import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.storage.processor.RecordExtendedProcessor;
 
 // TODO add as filter but beware of arrest position
@@ -20,7 +20,7 @@ extends AbstractLRTarrestBaseCallCountFilterFactory {
 
 	public LRTarrestReadPositionDistanceFilterFactory(
 			final Apply2readsBaseCallCountSwitch bccSwitch, 
-			final FilteredDataFetcher<ArrestPos2BaseCallCountFilteredData, ArrestPosition2baseCallCount> filteredDataFetcher) {		
+			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {		
 
 		super(
 				Option.builder(Character.toString(ReadPositionFilterFactory.FILTER))
