@@ -5,6 +5,8 @@ import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AllAlignmentBlocksPositionProvider;
+import lib.util.position.AllDeletionsPositionProvider;
+import lib.util.position.ConsumingReferencePositionProviderBuilder;
 import lib.util.position.MismatchPositionProvider;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;

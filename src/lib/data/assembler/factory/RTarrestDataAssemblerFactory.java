@@ -127,8 +127,7 @@ extends AbstractSiteDataAssemblerFactory {
 			final List<Validator> validators) {
 				
 		final Cache cache = new Cache();
-		int size = baseSubs.size();
-		
+	
 		final Map<BaseSubstitution, PositionProcessor> baseSub2alignedPosProcessor = new HashMap<>();
 
 		final Map<BaseSubstitution, PositionProcessor> baseSub2covPosProcessor 	= new HashMap<>();

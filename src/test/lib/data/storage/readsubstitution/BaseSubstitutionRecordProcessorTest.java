@@ -2,7 +2,6 @@ package test.lib.data.storage.readsubstitution;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -95,26 +94,29 @@ class BaseSubstitutionRecordProcessorTest {
 		
 		// for stranded libs and negativeStrand base calls need to be inverted 
 		// this is done in AbstractBaseCallCountStorage.populate()
-		/*for (final LibraryType lib : libs) {
+		for (final LibraryType lib : libs) {
 			for (final boolean negativeStrand : new boolean[] { true, false } ) {
 				args.add(cSE(
 						lib, 
 						1, 7,
 						1, negativeStrand, "3M", new String(),
+						new HashSet<BaseSubstitution>(),
 						new String[] {} ) );
 			}
 			args.add(cSE(
 					lib, 
 					1, 7,
 					1, false, "3M", "ATG", // ref:ACG
+					new HashSet<BaseSubstitution>(Arrays.asList(BaseSubstitution.C2T)),
 					new String[] { "C2T,0,A", "C2T,1,T", "C2T,2,G" } ));
 		}
+		/*
 		args.add(cSE(
 				LibraryType.UNSTRANDED, 
 				1, 7,
 				1, true, "3M", "ATG", // ref:ACG
-				new String[] { "C2T,0,A", "C2T,1,T", "C2T,2,G" } ));*/
-		/*args.add(cSE(
+				new String[] { "C2T,0,A", "C2T,1,T", "C2T,2,G" } ));
+		args.add(cSE(
 				LibraryType.RF_FIRSTSTRAND, 
 				1, 7,
 				1, true, "3M", "ATG", // ref:ACG
@@ -198,127 +200,142 @@ class BaseSubstitutionRecordProcessorTest {
 				queryBaseSub,
 				expectedStr);
 	}
-
-	Arguments cPE(
-			final LibraryType libraryType,
-			final int refWinStart, final int refWinEnd,
-			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq, 
-			final int refStart2, final boolean negativeStrand2, final String cigarStr2, final String readSeq2,
-			final Set<BaseSubstitution> queryBaseSub,
-			final String[] expectedStr) {
-		final Validator validator = new CombinedValidator(new ArrayList<Validator>());
-		// size of window  
-		final int activeWindowSize = refWinEnd - refWinStart + 1;
-		
-		// simulate Paired End Reads
-		final List<SAMRecordExtended> records = new SAMRecordBuilder()
-				.withPERead(CONTIG, refStart, negativeStrand, cigarStr, readSeq, 
-						refStart2, negativeStrand2, cigarStr2, readSeq2)
-				.getRecords().stream()
-				.map(r -> new SAMRecordExtended(r))
-				.collect(Collectors.toList());
-		// make nice informative message to output along the test 
-		final String info = String.format(
-				"lib.: %s, read %d-%d:%s cigar: %s, readSeq: %s", 
-				libraryType,
-					records.get(0).getSAMRecord().getAlignmentStart(), records.get(0).getSAMRecord().getAlignmentEnd(), (negativeStrand ? '-' : '+'),
-					cigarStr,
-					(readSeq.isEmpty() ? '*' : readSeq) );
-
-		// holds some important data, e.g.: current window, reference info, stuff should be shared
-		final SharedStorage sharedStorage 	= new SharedStorageBuilder(
-				activeWindowSize, libraryType, CONTIG, ReferenceSequence.get())
-				.withActive(new OneCoordinate(CONTIG, refWinStart, refWinEnd))
-				.build();
-
-		// create the expected storage
-		final Map<BaseSubstitution, Storage> expected 	= parseExpected(expectedStr, sharedStorage);
-		if (! expected.keySet().equals(queryBaseSub)) {
-			throw new IllegalStateException("Query and expected string do not match!");
-		}
-		// need to be able to check against expected, this is otherwise buried/private in the testInstance 
-		final Map<BaseSubstitution, Storage> actual  	= new HashMap<>(expected.size());
-		for (final BaseSubstitution baseSub : queryBaseSub) {
-			actual.put(baseSub, new DefaultBaseCallCountStorage(sharedStorage, null));
-		}
-		
-		return Arguments.of(
-				createTestInstance(sharedStorage, libraryType, validator, actual),
-				records,
-				actual,
-				expected,
-				info);
-	}
+	
+	
 	
 	Arguments cSE(
 			final LibraryType libraryType,
 			final int refWinStart, final int refWinEnd,
 			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq, 
 			final Validator validator,
-			final Set<BaseSubstitution> queryBaseSub,
+			final Set<BaseSubstitution> queryBaseSubs,
 			final String[] expectedStr) {
 		
-		// size of window  
-		final int activeWindowSize = refWinEnd - refWinStart + 1;
-		
 		// simulate Single End Read
-		final SAMRecord record = SAMRecordBuilder.createSERead(
-						CONTIG, refStart, negativeStrand, cigarStr, readSeq);
-		// for future use this is a list -> Paired End
-		final List<SAMRecordExtended> records = Arrays.asList(new SAMRecordExtended(record));
+		final List<SAMRecordExtended> records = simulateSEreads(refStart, negativeStrand, cigarStr, readSeq);
+		
 		// make nice informative message to output along the test 
-		final String info = String.format(
-				"lib.: %s, read %d-%d:%s cigar: %s, readSeq: %s", 
-				libraryType,
-					record.getAlignmentStart(), record.getAlignmentEnd(), (negativeStrand ? '-' : '+'),
-					cigarStr,
-					(readSeq.isEmpty() ? '*' : readSeq) );
+		final String info = info(libraryType, records);
 
 		// holds some important data, e.g.: current window, reference info, stuff should be shared
-		final SharedStorage sharedStorage 	= new SharedStorageBuilder(
-				activeWindowSize, libraryType, CONTIG, ReferenceSequence.get())
-				.withActive(new OneCoordinate(CONTIG, refWinStart, refWinEnd))
-				.build();
+		final SharedStorage sharedStorage = createSharedStorage(refWinStart, refWinEnd, libraryType);
 
-		// create the expected storage
-		final Map<BaseSubstitution, Storage> expected 	= parseExpected(expectedStr, sharedStorage);
-		// need to be able to check against expected, this is otherwise buried/private in the testInstance 
-		
-		final Map<BaseSubstitution, Storage> actual  	= new HashMap<>(expected.size());
-		for (final BaseSubstitution baseSub : expected.keySet()) {
-			actual.put(baseSub, new DefaultBaseCallCountStorage(sharedStorage, null));
-		}
+		final BaseCallInterpreter bci = BaseCallInterpreter.build(libraryType);
+		final Map<BaseSubstitution, Storage> expected = parseExpected(expectedStr, sharedStorage);
+		final Map<BaseSubstitution, Storage> actual = new HashMap<>();
 		
 		return Arguments.of(
-				createTestInstance(sharedStorage, libraryType, validator, true, actual),
+				createTestInstance(bci, sharedStorage, validator, queryBaseSubs, actual, expected),
 				records,
 				actual,
 				expected,
 				info);
 	}
 	
-	BaseSubstitutionRecordProcessor createTestInstance(
-			final SharedStorage sharedStorage,
-			final LibraryType libraryType,
-			final Validator validator,
-			final boolean stratifyOnlyBcc,
-			final Map<BaseSubstitution, Storage> baseSub2storage) {
-
-		final List<PositionProcessor> positionProcessors = new ArrayList<>(2);
-		positionProcessors.add(
-				new PositionProcessor(
-						Arrays.asList(validator), 
-						new ArrayList<>(baseSub2storage.values())));
+	SharedStorage createSharedStorage(final int refWinStart, final int refWinEnd, final LibraryType libraryType ) {
+		final int activeWindowSize = refWinEnd - refWinStart + 1;
+		// holds some important data, e.g.: current window, reference info, stuff should be shared
+		return new SharedStorageBuilder(
+				activeWindowSize, libraryType, CONTIG, ReferenceSequence.get())
+				.withActive(new OneCoordinate(CONTIG, refWinStart, refWinEnd))
+				.build();
+	}
+	
+	List<SAMRecordExtended> simulateSEreads(
+			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq) {
+		// simulate Single End Read
+		final SAMRecord record = SAMRecordBuilder.createSERead(
+						CONTIG, refStart, negativeStrand, cigarStr, readSeq);
+		return Arrays.asList(new SAMRecordExtended(record));
+	}
+	
+	// simulate Paired End Reads
+	List<SAMRecordExtended> simulatePEreads(
+			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq, 
+			final int refStart2, final boolean negativeStrand2, final String cigarStr2, final String readSeq2) {
 		
-		// how to interpret strand and libraryType to infer 
+		return new SAMRecordBuilder()
+				.withPERead(CONTIG, refStart, negativeStrand, cigarStr, readSeq, 
+						refStart2, negativeStrand2, cigarStr2, readSeq2)
+			
+				.getRecords().stream()
+				.map(r -> new SAMRecordExtended(r))
+				.collect(Collectors.toList());
+	}
+			
+	
+	Arguments cPE(
+			final LibraryType libraryType,
+			final int refWinStart, final int refWinEnd,
+			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq, 
+			final int refStart2, final boolean negativeStrand2, final String cigarStr2, final String readSeq2,
+			final Set<BaseSubstitution> queryBaseSubs,
+			final String[] expectedStr) {
+		
+		final Validator validator = new CombinedValidator(new ArrayList<Validator>());
+		
+		final List<SAMRecordExtended> records = simulatePEreads(
+				refStart, negativeStrand, cigarStr, readSeq, 
+				refStart2, negativeStrand2, cigarStr2, readSeq2);
+		
+		// make nice informative message to output along the test 
+		final String info = info(libraryType, records);
+
+		// holds some important data, e.g.: current window, reference info, stuff should be shared
+		final SharedStorage sharedStorage = createSharedStorage(refWinStart, refWinEnd, libraryType);
+
 		final BaseCallInterpreter bci = BaseCallInterpreter.build(libraryType);
+		final Map<BaseSubstitution, Storage> expected = parseExpected(expectedStr, sharedStorage);
+		final Map<BaseSubstitution, Storage> actual = new HashMap<>();
+		
+		return Arguments.of(
+				createTestInstance(bci, sharedStorage, validator, queryBaseSubs, actual, expected),
+				records,
+				actual,
+				expected,
+				info);
+	}
+		
+	String info(final LibraryType libraryType, List<SAMRecordExtended> records) {
+		if (records.size() == 1) {
+			return String.format("Lib.: %s, 1 read", libraryType);
+
+		} else if (records.size() == 2) {
+			return String.format("Lib.: %s, 2 reads", libraryType);
+		} else {
+			throw new IllegalStateException();
+		}
+	}
+	
+	BaseSubstitutionRecordProcessor createTestInstance(
+			final BaseCallInterpreter bci,
+			final SharedStorage sharedStorage,
+			final Validator validator, 
+			Set<BaseSubstitution> queryBaseSubs,
+			final Map<BaseSubstitution, Storage> actual,
+			final Map<BaseSubstitution, Storage> expected) {
+		
+		if (! queryBaseSubs.equals(expected.keySet())) {
+			throw new IllegalStateException();
+		}
+		
+		final Map<BaseSubstitution, PositionProcessor> baseSub2positionProcessors = new HashMap<>();
+		for (final BaseSubstitution baseSub : queryBaseSubs) {
+			final Storage storage = new DefaultBaseCallCountStorage(sharedStorage, null);
+			actual.put(baseSub, storage);
+			final PositionProcessor positionProcessor = new PositionProcessor();
+			positionProcessor.addValidator(validator);
+			positionProcessor.addStorage(storage);
+		}
+		
 		return new BaseSubstitutionRecordProcessor(
 				sharedStorage,
 				bci,
 				validator,
-				stratifyOnlyBcc,
-				baseSub2storage.keySet(),
-				positionProcessors);
+				queryBaseSubs,
+				baseSub2positionProcessors,
+				new HashMap<>(),
+				new HashMap<>());
 	}
 	
 	// ',' separated array of strings of the following form: "x2y,winPos,{A|C|G|T}" 
