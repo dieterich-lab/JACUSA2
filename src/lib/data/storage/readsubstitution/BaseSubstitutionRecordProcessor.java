@@ -6,15 +6,14 @@ import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AllAlignmentBlocksPositionProvider;
 import lib.util.position.AllDeletionsPositionProvider;
+import lib.util.position.ConsumingReferencePositionProviderBuilder;
 import lib.util.position.MismatchPositionProvider;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 import lib.recordextended.SAMRecordExtended;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,17 +37,20 @@ implements RecordExtendedPrePostProcessor {
 	private final Map<String, SAMRecordExtended> internalRecordExtended;
 	private final Set<SAMRecordExtended> externalRecordExtended;
 	
-	private final boolean stratifyOnlyBcc;
 	private final Set<BaseSubstitution> queryBaseSubs;
-	private final List<PositionProcessor> positionProcessors;
+	
+	private final Map<BaseSubstitution, PositionProcessor> alignedPosProcessors;
+	private final Map<BaseSubstitution, PositionProcessor> covPosProcessors;
+	private final Map<BaseSubstitution, PositionProcessor> delPosProcessors;
 	
 	public BaseSubstitutionRecordProcessor(
 			final SharedStorage sharedStorage,
 			final BaseCallInterpreter bci,
 			final Validator validator,
-			final boolean stratifyOnlyBcc,
 			final Set<BaseSubstitution> queryBaseSubs,
-			final List<PositionProcessor> positionProcessors) {
+			final Map<BaseSubstitution, PositionProcessor> alignedPosProcessors,
+			final Map<BaseSubstitution, PositionProcessor> covPosProcessors,
+			final Map<BaseSubstitution, PositionProcessor> delPosProcessors) {
 
 		this.sharedStorage 		= sharedStorage;
 		
@@ -58,9 +60,11 @@ implements RecordExtendedPrePostProcessor {
 		internalRecordExtended 	= new HashMap<>(Util.noRehashCapacity(100));
 		externalRecordExtended 	= new HashSet<>(Util.noRehashCapacity(100));
 		
-		this.stratifyOnlyBcc	= stratifyOnlyBcc;
-		this.queryBaseSubs 		= queryBaseSubs;
-		this.positionProcessors	= positionProcessors;
+		this.queryBaseSubs 			= queryBaseSubs;
+		
+		this.alignedPosProcessors	= alignedPosProcessors;
+		this.covPosProcessors		= covPosProcessors;
+		this.delPosProcessors		= delPosProcessors;
 	}
 	
 	protected void processSE(
@@ -79,16 +83,6 @@ implements RecordExtendedPrePostProcessor {
 	private CoordinateTranslator getTranslator() {
 		return getController().getCoordinateTranslator();
 	}
-
-	private List<PositionProvider> getPositionProviders(final SAMRecordExtended recordExtended) {
-		if (stratifyOnlyBcc) {
-			return Arrays.asList(new AllAlignmentBlocksPositionProvider(recordExtended, getTranslator()));
-		}
-		
-		return Arrays.asList(
-				new AllAlignmentBlocksPositionProvider(recordExtended, getTranslator()),
-				new AllDeletionsPositionProvider(recordExtended, getTranslator()));
-	}
 	
 	protected void stratifyBaseCallCounts(
 			final Set<BaseSubstitution> observedBaseSubs, final SAMRecordExtended recordExtended) {
@@ -97,12 +91,42 @@ implements RecordExtendedPrePostProcessor {
 			return;
 		}
 		
-		final List<PositionProvider> positionPorviders = getPositionProviders(recordExtended);
-		for (final PositionProcessor positionProcessor : positionProcessors) {
-			for (final PositionProvider positionProvider : positionPorviders) {
-				positionProcessor.process(positionProvider);
+		// process base call counts and store dependent on base substitutions
+		final PositionProvider alignedPosProvider = new AllAlignmentBlocksPositionProvider(recordExtended, getTranslator());
+		while (alignedPosProvider.hasNext()) {
+			final Position alignedPos = alignedPosProvider.next();
+			for (final BaseSubstitution baseSub : observedBaseSubs) {
+				final PositionProcessor positionProcessor = alignedPosProcessors.get(baseSub);
+				if (positionProcessor.checkValidators(alignedPos)) {
+					positionProcessor.processStorages(alignedPos);
+				}
 			}
 		}
+		
+		// process deletions and store dependent on base substitutions
+		final PositionProvider delPosProvider = new AllDeletionsPositionProvider(recordExtended, getTranslator());
+		while (delPosProvider.hasNext()) {
+			final Position delPos = delPosProvider.next();
+			for (final BaseSubstitution baseSub : observedBaseSubs) {
+				final PositionProcessor positionProcessor = delPosProcessors.get(baseSub);
+				if (positionProcessor.checkValidators(delPos)) {
+					positionProcessor.processStorages(delPos);
+				}
+			}
+		}
+		
+		// process coverage and store dependent on base substitutions
+		final PositionProvider covPosProvider = new ConsumingReferencePositionProviderBuilder(recordExtended, getTranslator()).build();
+		while (covPosProvider.hasNext()) {
+			final Position covPos = covPosProvider.next();
+			for (final BaseSubstitution baseSub : observedBaseSubs) {
+				final PositionProcessor positionProcessor = covPosProcessors.get(baseSub);
+				if (positionProcessor.checkValidators(covPos)) {
+					positionProcessor.processStorages(covPos);
+				}
+			}
+		}
+		
 	}
 	
 	protected void processPE(

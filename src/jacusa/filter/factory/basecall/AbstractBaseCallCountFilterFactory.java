@@ -10,7 +10,7 @@ import jacusa.filter.Filter;
 import jacusa.filter.FilterByRatio;
 import jacusa.filter.GenericBaseCallCountFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.filter.processrecord.CollectionRecordExtendedProcessors;
+import jacusa.filter.processrecord.UniquePositionRecordExtendedProcessors;
 import lib.cli.options.filter.FilterDistanceOption;
 import lib.cli.options.filter.FilterMinRatioOption;
 import lib.cli.options.filter.has.HasFilterDistance;
@@ -154,7 +154,7 @@ implements HasFilterDistance, HasFilterMinRatio {
 		final PositionProcessor positionProcessor = new PositionProcessor(
 				validators, storages);
 		
-		cache.addRecordProcessor(new CollectionRecordExtendedProcessors(
+		cache.addRecordProcessor(new UniquePositionRecordExtendedProcessors(
 				visitedStorage,
 				createRecordProcessors(sharedStorage, positionProcessor)));
 		cache.addStorages(storages);

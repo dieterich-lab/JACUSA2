@@ -49,23 +49,10 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData();
 	
 	IntegerData getDeletionCount();
+	IntegerData getCoverage();
 	
 	<T extends Data<T>> boolean contains(DataType<T> dataType);
 	Collection<DataType<?>> getDataTypes();
-	
-	/* TODO remove
-	static LibraryType mergeLibraryType(final LibraryType lib1, final LibraryType lib2) {
-		return lib1 == lib2 ? lib1 : LibraryType.MIXED;  
-	}
-	
-	static Coordinate mergeCoordinate(final Coordinate coord1, final Coordinate coord2) {
-		if (! coord1.equals(coord2)) {
-			throw new IllegalStateException("data1 and data2 have different coordinates: " + coord1.toString() + " != " + coord2.toString());
-		}
-
-		return coord1;
-	}
-	*/
 
 	/*
 	 * Factory, Builder, and Parser
@@ -76,27 +63,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		AbstractBuilder createBuilder(Coordinate coordinate, LibraryType libraryType);
 
 	}
-	
-	/*
-	public static class GenericBuilderFactory implements BuilderFactory {
-		
-		private final Collection<DataType<?>> dataTypes;
-		
-		public GenericBuilderFactory(final Collection<DataType<?>> dataTypes) {
-			this.dataTypes = dataTypes;
-		}
-		
-		@Override
-		public AbstractBuilder createBuilder(Coordinate coordinate, LibraryType libraryType) {
-			final AbstractBuilder builder = new DefaultDataContainer.Builder(coordinate, libraryType);
-			for (final DataType<?> dataType : dataTypes) {
-				builder.with(dataType);
-			}
-			return builder;
-		}
-		
-	}
-	*/
 	
 	public static abstract class AbstractBuilderFactory implements BuilderFactory {
 		
@@ -131,6 +97,14 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		}
 		
 		protected void addDeletionCount(final AbstractBuilder builder, final DataType<BaseSubstitution2IntegerData> dataType) {
+			add(builder, dataType);
+			final BaseSubstitution2IntegerData bsc = builder.get(dataType);
+			for (final BaseSubstitution baseSub : parameter.getReadSubstitutions()) {
+				bsc.set(baseSub, new IntegerData());
+			}
+		}
+		
+		protected void addCoverage(final AbstractBuilder builder, final DataType<BaseSubstitution2IntegerData> dataType) {
 			add(builder, dataType);
 			final BaseSubstitution2IntegerData bsc = builder.get(dataType);
 			for (final BaseSubstitution baseSub : parameter.getReadSubstitutions()) {

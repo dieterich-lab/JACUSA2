@@ -57,8 +57,8 @@ extends AbstractSiteDataAssemblerFactory {
 		final PositionProcessor positionProcessor = new PositionProcessor(validators, bcqcStorage);
 		cache.addRecordProcessor(new AlignmentBlockProcessor(translator, positionProcessor));
 
-		addDelectionCount(parameter, sharedStorage, conditionParameter, cache);
-		addBaseSubstitution(parameter, sharedStorage,  conditionParameter, cache);
+		addDelectionCache(parameter, sharedStorage, cache);
+		stratifyByBaseSubstitution(parameter, sharedStorage,  conditionParameter, cache);
 		
 		return cache;
 	}

@@ -24,6 +24,7 @@ import lib.data.storage.basecall.AbstractBaseCallCountStorage;
 import lib.data.storage.basecall.DefaultBaseCallCountStorage;
 import lib.data.storage.basecall.RTarrestCountStorage;
 import lib.data.storage.container.SharedStorage;
+import lib.data.storage.integer.ArrayIntegerStorage;
 import lib.data.storage.integer.MapIntegerStorage;
 import lib.data.storage.readsubstitution.BaseCallInterpreter;
 import lib.data.storage.readsubstitution.BaseSubstitutionRecordProcessor;
@@ -33,7 +34,6 @@ import lib.data.validator.MinBASQValidator;
 import lib.data.validator.Validator;
 import lib.data.validator.WindowPositionValidator;
 import lib.util.LibraryType;
-import lib.util.Util;
 
 public class RTarrestDataAssemblerFactory 
 extends AbstractSiteDataAssemblerFactory {
@@ -66,7 +66,7 @@ extends AbstractSiteDataAssemblerFactory {
 				locInterpreter, 
 				validators));
 
-		addDelectionCount(parameter, sharedStorage, conditionParameter, cache);
+		addDelectionCache(parameter, sharedStorage, cache);
 		
 		// stratify by base substitutions
 		if (baseSubs.size() > 0) {
@@ -128,19 +128,16 @@ extends AbstractSiteDataAssemblerFactory {
 				
 		final Cache cache = new Cache();
 		int size = baseSubs.size();
-		if (parameter.showDeletionCount()) {
-			size *= 2;
-		}
-		final Map<BaseSubstitution, Storage> baseSub2storage = new HashMap<>(
-				Util.noRehashCapacity(size));
 		
-		final PositionProcessor alignPosProcessor 	= new PositionProcessor();
-		alignPosProcessor.addValidator(new CombinedValidator(validators));
-		// deletions don't need validation
-		final PositionProcessor deletedPosProcessor = new PositionProcessor();
+		final Map<BaseSubstitution, PositionProcessor> baseSub2alignedPosProcessor = new HashMap<>();
+
+		final Map<BaseSubstitution, PositionProcessor> baseSub2covPosProcessor 	= new HashMap<>();
+		final Map<BaseSubstitution, PositionProcessor> baseSub2delPosProcessor 	= new HashMap<>();
 		
 		for (final BaseSubstitution baseSub : baseSubs) {
-			
+			final PositionProcessor alignedPosProcessor = new PositionProcessor();
+			// deletions don't need validation
+			alignedPosProcessor.addValidator(new CombinedValidator(validators));
 			final AbstractBaseCallCountStorage arrestBccStorage = new DefaultBaseCallCountStorage(
 					sharedStorage,
 					new BaseCallCountExtractor(
@@ -159,10 +156,22 @@ extends AbstractSiteDataAssemblerFactory {
 							arrestBccStorage, throughBccStorage);
 			
 			cache.addStorage(rtArrestCountStorage);
-			baseSub2storage.put(baseSub, rtArrestCountStorage);
-			alignPosProcessor.addStorage(rtArrestCountStorage);
+			alignedPosProcessor.addStorage(rtArrestCountStorage);
+			baseSub2alignedPosProcessor.put(baseSub, alignedPosProcessor);
 			
 			if (parameter.showDeletionCount()) {
+				final PositionProcessor covPosProcessor = new PositionProcessor();
+				final Fetcher<IntegerData> covFetcher = new IntegerDataExtractor(
+						baseSub, 
+						DataType.BASE_SUBST2COVERAGE.getFetcher());
+				final Storage covStorage = new ArrayIntegerStorage(
+						sharedStorage, 
+						covFetcher);
+				cache.addStorage(covStorage);
+				covPosProcessor.addStorage(covStorage);
+				baseSub2covPosProcessor.put(baseSub, covPosProcessor);
+				
+				final PositionProcessor delPosProcessor = new PositionProcessor();
 				final Fetcher<IntegerData> delFetcher = new IntegerDataExtractor(
 						baseSub, 
 						DataType.BASE_SUBST2DELETION_COUNT.getFetcher());
@@ -170,19 +179,11 @@ extends AbstractSiteDataAssemblerFactory {
 						sharedStorage, 
 						delFetcher);
 				cache.addStorage(delStorage);
-				baseSub2storage.put(baseSub, delStorage);
-				deletedPosProcessor.addStorage(delStorage);
+				delPosProcessor.addStorage(delStorage);
+				baseSub2delPosProcessor.put(baseSub, delPosProcessor);
 			}
 		}	
-		
-		final boolean stratifyOnlyBcc = ! parameter.showDeletionCount();
-		
-		final List<PositionProcessor> positionProcessors = new ArrayList<>(2);
-		positionProcessors.add(alignPosProcessor);
-		if (parameter.showDeletionCount()) {
-			positionProcessors.add(deletedPosProcessor);
-		}
-		
+
 		final BaseCallInterpreter bci = 
 				BaseCallInterpreter.build(conditionParameter.getLibraryType());
 		
@@ -191,9 +192,10 @@ extends AbstractSiteDataAssemblerFactory {
 				sharedStorage, 
 				bci, 
 				new CombinedValidator(validators),
-				stratifyOnlyBcc,
-				baseSub2storage.keySet(), 
-				positionProcessors) );
+				baseSubs,
+				baseSub2alignedPosProcessor,
+				baseSub2covPosProcessor,
+				baseSub2delPosProcessor) );
 		return cache;
 	}
 	

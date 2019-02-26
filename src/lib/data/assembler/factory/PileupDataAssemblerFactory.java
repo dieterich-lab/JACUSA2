@@ -54,8 +54,8 @@ extends AbstractSiteDataAssemblerFactory {
 				positionProcessor));
 		cache.addStorage(bcqcStorage);
 		
-		addDelectionCount(parameter, sharedStorage, conditionParameter, cache);
-		addBaseSubstitution(parameter, sharedStorage,  conditionParameter, cache);
+		addDelectionCache(parameter, sharedStorage, cache);
+		stratifyByBaseSubstitution(parameter, sharedStorage,  conditionParameter, cache);
 		
 		return cache;
 	}
