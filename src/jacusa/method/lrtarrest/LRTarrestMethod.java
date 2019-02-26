@@ -60,6 +60,7 @@ import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.filter.BooleanData;
 import lib.data.filter.BooleanFilteredData;
 import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.validator.paralleldata.ExtendedVariantSiteValidator;
 import lib.data.validator.paralleldata.LRTarrestVariantParallelPileup;
 import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
@@ -245,7 +246,8 @@ extends AbstractMethod {
 		return Arrays.asList(
 				new MinCoverageValidator(totalBccFetcher,
 						getParameter().getConditionParameters()),
-				new LRTarrestVariantParallelPileup(ap2bccFetcher) );
+				new LRTarrestVariantParallelPileup(ap2bccFetcher),
+				new ExtendedVariantSiteValidator(totalBccFetcher));
 	}
 	
 	@Override

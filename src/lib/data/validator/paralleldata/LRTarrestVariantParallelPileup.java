@@ -10,9 +10,8 @@ public class LRTarrestVariantParallelPileup
 implements ParallelDataValidator {
 
 	private final Fetcher<ArrestPosition2baseCallCount> arrestPos2BccFetcher;
-	
+
 	public LRTarrestVariantParallelPileup(final Fetcher<ArrestPosition2baseCallCount> arrestPos2BccFetcher) {
-		
 		this.arrestPos2BccFetcher = arrestPos2BccFetcher;
 	}
 	
@@ -26,7 +25,7 @@ implements ParallelDataValidator {
 		final int onePosition = parallelData.getCoordinate().get1Position();
 		final BaseCallCount arrestBcc = ap2bcc.getArrestBaseCallCount(onePosition);
 		final BaseCallCount throughBcc = ap2bcc.getThroughBaseCallCount(onePosition);
-
+		
 		return arrestBcc.getCoverage() > 0 && throughBcc.getCoverage() > 0;
 	}
 
