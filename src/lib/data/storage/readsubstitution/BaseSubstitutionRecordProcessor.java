@@ -103,6 +103,10 @@ implements RecordExtendedPrePostProcessor {
 			}
 		}
 		
+		if (delPosProcessors.size() == 0) {
+			return;
+		}
+		
 		// process deletions and store dependent on base substitutions
 		final PositionProvider delPosProvider = new AllDeletionsPositionProvider(recordExtended, getTranslator());
 		while (delPosProvider.hasNext()) {

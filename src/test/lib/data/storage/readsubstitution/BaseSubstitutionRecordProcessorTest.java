@@ -201,8 +201,6 @@ class BaseSubstitutionRecordProcessorTest {
 				expectedStr);
 	}
 	
-	
-	
 	Arguments cSE(
 			final LibraryType libraryType,
 			final int refWinStart, final int refWinEnd,
@@ -262,7 +260,6 @@ class BaseSubstitutionRecordProcessorTest {
 				.map(r -> new SAMRecordExtended(r))
 				.collect(Collectors.toList());
 	}
-			
 	
 	Arguments cPE(
 			final LibraryType libraryType,
@@ -298,10 +295,16 @@ class BaseSubstitutionRecordProcessorTest {
 		
 	String info(final LibraryType libraryType, List<SAMRecordExtended> records) {
 		if (records.size() == 1) {
-			return String.format("Lib.: %s, 1 read", libraryType);
+			final SAMRecord record = records.get(0).getSAMRecord();
+			return String.format("Lib.: %s, %d-%d %s", libraryType, record.getAlignmentStart(), record.getAlignmentEnd(), record.getCigar());
 
 		} else if (records.size() == 2) {
-			return String.format("Lib.: %s, 2 reads", libraryType);
+			final SAMRecord record1 = records.get(0).getSAMRecord();
+			final SAMRecord record2 = records.get(1).getSAMRecord();
+			return String.format("Lib.: %s, %d-%d %s d-%d %s", 
+					libraryType, 
+					record1.getAlignmentStart(), record1.getAlignmentEnd(), record1.getCigar(),
+					record2.getAlignmentStart(), record2.getAlignmentEnd(), record2.getCigar());
 		} else {
 			throw new IllegalStateException();
 		}
@@ -326,6 +329,7 @@ class BaseSubstitutionRecordProcessorTest {
 			final PositionProcessor positionProcessor = new PositionProcessor();
 			positionProcessor.addValidator(validator);
 			positionProcessor.addStorage(storage);
+			baseSub2positionProcessors.put(baseSub, positionProcessor);
 		}
 		
 		return new BaseSubstitutionRecordProcessor(
