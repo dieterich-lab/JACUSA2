@@ -2,11 +2,15 @@ package test.lib.data.storage.readsubstitution;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.TestInstance;
@@ -79,9 +83,9 @@ class BaseSubstitutionRecordProcessorTest {
 	}
 	
 	Stream<Arguments> testProcess() {
-		// 01234567
-		// ACGAACGT ref.
-		// 12345567
+		// 012345678901
+		// ACGAACGTACGT ref.
+		// 123456789012
 		final List<Arguments> args = new ArrayList<Arguments>();
 		final LibraryType[] libs = 
 				new LibraryType[] { 
@@ -91,7 +95,7 @@ class BaseSubstitutionRecordProcessorTest {
 		
 		// for stranded libs and negativeStrand base calls need to be inverted 
 		// this is done in AbstractBaseCallCountStorage.populate()
-		for (final LibraryType lib : libs) {
+		/*for (final LibraryType lib : libs) {
 			for (final boolean negativeStrand : new boolean[] { true, false } ) {
 				args.add(cSE(
 						lib, 
@@ -109,8 +113,8 @@ class BaseSubstitutionRecordProcessorTest {
 				LibraryType.UNSTRANDED, 
 				1, 7,
 				1, true, "3M", "ATG", // ref:ACG
-				new String[] { "C2T,0,A", "C2T,1,T", "C2T,2,G" } ));
-		args.add(cSE(
+				new String[] { "C2T,0,A", "C2T,1,T", "C2T,2,G" } ));*/
+		/*args.add(cSE(
 				LibraryType.RF_FIRSTSTRAND, 
 				1, 7,
 				1, true, "3M", "ATG", // ref:ACG
@@ -119,7 +123,61 @@ class BaseSubstitutionRecordProcessorTest {
 				LibraryType.FR_SECONDSTRAND, 
 				1, 7,
 				1, true, "3M", "ATG", // ref:ACG
-				new String[] { "G2A,0,A", "G2A,1,T", "G2A,2,G" } ));
+				new String[] { "G2A,0,A", "G2A,1,T", "G2A,2,G" } )); */
+		// 012345678901
+		// ACGAACGTACGT ref.
+		// TGCTTGCATGCA reverese.
+		// 123456789012
+		//     [  ]
+		//     >><<
+		//     <<  >>
+		//  <<   >>
+		//  <<  >>
+		//      <<  >>
+		// ACGAACGTACGT
+		// 123456789012
+		//      <<
+		//       >>
+		args.add(cPE(
+				LibraryType.UNSTRANDED, 
+				5, 8,
+				5, true, "2M", "AT", // ref:AC
+				9, true, "2M", "AC",
+				new HashSet<BaseSubstitution>(Arrays.asList(BaseSubstitution.C2T)),
+				new String[] {"C2T,0,A","C2T,1,T" } ));
+		args.add(cPE(
+				LibraryType.UNSTRANDED, 
+				5, 8,
+				5, true, "2M", "TC", // ref:AC
+				8, true, "2M", "AC", // ref:TA
+				new HashSet<BaseSubstitution>(Arrays.asList(BaseSubstitution.A2T)),
+				new String[] { "A2T,0,T" ,"A2T,1,C", "A2T,3,A"} ));
+		args.add(cPE(
+				LibraryType.UNSTRANDED, 
+				5, 8,
+				4, true, "2M", "AT", // ref:AA
+				9, true, "2M", "AC",
+				new HashSet<BaseSubstitution>(Arrays.asList(BaseSubstitution.A2T)),
+				new String[] {"A2T,0,T" } ));
+		args.add(cPE(
+				LibraryType.UNSTRANDED, 
+				5, 8,
+				4, true, "2M", "AT", // ref:AA
+				1, true, "2M", "AC",
+				new HashSet<BaseSubstitution>(Arrays.asList(BaseSubstitution.A2T)),
+				new String[] {"A2T,0,T" } ));
+		// ACGAACGTACGT
+		// 123456789012
+		//     [  ]
+		//    AT
+		//     AC
+		args.add(cPE(
+				LibraryType.UNSTRANDED, 
+				5, 8,
+				4, true, "2M", "AT", // ref:AA
+				5, true, "2M", "AC",
+				new HashSet<BaseSubstitution>(Arrays.asList(BaseSubstitution.A2T)),
+				new String[] {"A2T,0,A", "A2T,0,T", "A2T,1,C" } ));
 		return args.stream();
 	}
 
@@ -128,7 +186,8 @@ class BaseSubstitutionRecordProcessorTest {
 	Arguments cSE(
 			final LibraryType libraryType,
 			final int refWinStart, final int refWinEnd, 
-			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq, 
+			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq,
+			final Set<BaseSubstitution> queryBaseSub,
 			final String[] expectedStr) {
 		
 		return cSE(
@@ -136,7 +195,59 @@ class BaseSubstitutionRecordProcessorTest {
 				refWinStart, refWinEnd, 
 				refStart, negativeStrand, cigarStr, readSeq, 
 				new CombinedValidator(new ArrayList<Validator>()),
+				queryBaseSub,
 				expectedStr);
+	}
+
+	Arguments cPE(
+			final LibraryType libraryType,
+			final int refWinStart, final int refWinEnd,
+			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq, 
+			final int refStart2, final boolean negativeStrand2, final String cigarStr2, final String readSeq2,
+			final Set<BaseSubstitution> queryBaseSub,
+			final String[] expectedStr) {
+		final Validator validator = new CombinedValidator(new ArrayList<Validator>());
+		// size of window  
+		final int activeWindowSize = refWinEnd - refWinStart + 1;
+		
+		// simulate Paired End Reads
+		final List<SAMRecordExtended> records = new SAMRecordBuilder()
+				.withPERead(CONTIG, refStart, negativeStrand, cigarStr, readSeq, 
+						refStart2, negativeStrand2, cigarStr2, readSeq2)
+				.getRecords().stream()
+				.map(r -> new SAMRecordExtended(r))
+				.collect(Collectors.toList());
+		// make nice informative message to output along the test 
+		final String info = String.format(
+				"lib.: %s, read %d-%d:%s cigar: %s, readSeq: %s", 
+				libraryType,
+					records.get(0).getSAMRecord().getAlignmentStart(), records.get(0).getSAMRecord().getAlignmentEnd(), (negativeStrand ? '-' : '+'),
+					cigarStr,
+					(readSeq.isEmpty() ? '*' : readSeq) );
+
+		// holds some important data, e.g.: current window, reference info, stuff should be shared
+		final SharedStorage sharedStorage 	= new SharedStorageBuilder(
+				activeWindowSize, libraryType, CONTIG, ReferenceSequence.get())
+				.withActive(new OneCoordinate(CONTIG, refWinStart, refWinEnd))
+				.build();
+
+		// create the expected storage
+		final Map<BaseSubstitution, Storage> expected 	= parseExpected(expectedStr, sharedStorage);
+		if (! expected.keySet().equals(queryBaseSub)) {
+			throw new IllegalStateException("Query and expected string do not match!");
+		}
+		// need to be able to check against expected, this is otherwise buried/private in the testInstance 
+		final Map<BaseSubstitution, Storage> actual  	= new HashMap<>(expected.size());
+		for (final BaseSubstitution baseSub : queryBaseSub) {
+			actual.put(baseSub, new DefaultBaseCallCountStorage(sharedStorage, null));
+		}
+		
+		return Arguments.of(
+				createTestInstance(sharedStorage, libraryType, validator, actual),
+				records,
+				actual,
+				expected,
+				info);
 	}
 	
 	Arguments cSE(
@@ -144,6 +255,7 @@ class BaseSubstitutionRecordProcessorTest {
 			final int refWinStart, final int refWinEnd,
 			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq, 
 			final Validator validator,
+			final Set<BaseSubstitution> queryBaseSub,
 			final String[] expectedStr) {
 		
 		// size of window  
@@ -171,6 +283,7 @@ class BaseSubstitutionRecordProcessorTest {
 		// create the expected storage
 		final Map<BaseSubstitution, Storage> expected 	= parseExpected(expectedStr, sharedStorage);
 		// need to be able to check against expected, this is otherwise buried/private in the testInstance 
+		
 		final Map<BaseSubstitution, Storage> actual  	= new HashMap<>(expected.size());
 		for (final BaseSubstitution baseSub : expected.keySet()) {
 			actual.put(baseSub, new DefaultBaseCallCountStorage(sharedStorage, null));
@@ -226,7 +339,7 @@ class BaseSubstitutionRecordProcessorTest {
 		}
 		return expected;
 	}
-
+	
 	private class ToyPosition implements Position {
 
 		private final int winPos;

@@ -5,8 +5,6 @@ import lib.util.Util;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AllAlignmentBlocksPositionProvider;
-import lib.util.position.AllDeletionsPositionProvider;
-import lib.util.position.ConsumingReferencePositionProviderBuilder;
 import lib.util.position.MismatchPositionProvider;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
@@ -136,7 +134,9 @@ implements RecordExtendedPrePostProcessor {
 		final SAMRecord record 	= recordExtended.getSAMRecord();
 		final String readName 	= record.getReadName();
 		
-		if (record.contains(getController().getActive())) { // mate within window
+		final SamReader samReader = record.getFileSource().getReader();
+		final SAMRecord mateRecord = samReader.queryMate(record);
+		if (mateRecord.overlaps(getController().getActive())) { // mate within window
 			if (! internalRecordExtended.containsKey(readName)) {
 				internalRecordExtended.put(readName, recordExtended);
 			} else {
@@ -215,7 +215,6 @@ implements RecordExtendedPrePostProcessor {
 		
 		final Set<BaseSubstitution> foundBaseSubs 	= new HashSet<>(queryBaseSubs.size());
 		final SAMRecord record 						= recordExtended.getSAMRecord();
-
 		
 		final int nm = record.getIntegerAttribute(SAMTag.NM.name());
 		if (nm == 0) {

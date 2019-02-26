@@ -52,6 +52,27 @@ class MismatchPositionProviderTest implements PositionProviderTest {
 						1, 8, 
 						new String[] { }),
 
+				// outside of window
+				createArguments(
+						1, "2M", "AT", 
+						1, 9, 
+						new String[] { "2,1,1" }),
+				// deletion in query
+				createArguments(
+						1, "2M3D2M", "ACCT", 
+						1, 8, 
+						new String[] { "7,3,6" }),
+				// insertion in query
+				createArguments(
+						1, "2M3I2M", "ACCCCGA", 
+						1, 8, 
+						new String[] { "4,2,2"}),
+				// gap in query
+				createArguments(
+						1, "2M3N2M", "ACCG", 
+						1, 8, 
+						new String[] { "4,2,2"}),
+
 				createArguments(
 						1, "2M", "AT", 
 						1, 8, 

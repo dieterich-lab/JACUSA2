@@ -54,6 +54,16 @@ class AllAlignmentBlocksPositionProviderTest implements PositionProviderTest {
 						1, 8, 
 						new String[] { "1,0,0", "2,1,1", "5,2,4", "6,3,5"}),
 
+				createArguments(
+						1, "2M2I2M", new String(), 
+						1, 9, 
+						new String[] { "1,0,0", "2,1,1", "3,4,2", "4,5,3"}),
+
+				createArguments(
+						1, "2M2D2M", new String(), 
+						1, 9, 
+						new String[] { "1,0,0", "2,1,1", "5,2,4", "6,3,5"}),
+
 				//ACGAACGT
 				//12345678
 				//-MNMNM-- cigar
