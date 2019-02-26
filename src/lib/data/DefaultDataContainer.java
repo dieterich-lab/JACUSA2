@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lib.data.count.BaseSubstitution2BaseCallCount;
+import lib.data.count.BaseSubstitution2IntegerData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.BaseCallCountFilteredData;
@@ -73,12 +74,22 @@ public class DefaultDataContainer implements DataContainer {
 	}
 	
 	@Override
+	public BaseSubstitution2IntegerData getBaseSubstitution2Coverage() {
+		return get(DataType.BASE_SUBST2COVERAGE);
+	}
+	
+	@Override
+	public BaseSubstitution2IntegerData getBaseSubstitution2DeletionCount() {
+		return get(DataType.BASE_SUBST2DELETION_COUNT);
+	}
+	
+	@Override
 	public BaseCallCountFilteredData getBaseCallCountFilteredData() {
 		return get(DataType.F_BCC);
 	}
 	
 	@Override
-	public BaseSubstitution2BaseCallCount getBaseSubstitutionCount() {
+	public BaseSubstitution2BaseCallCount getBaseSubstitution2BaseCallCount() {
 		return get(DataType.BASE_SUBST2BCC);
 	}
 	

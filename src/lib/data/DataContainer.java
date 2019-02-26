@@ -35,7 +35,8 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	
 	BaseCallCount getBaseCallCount();
 	
-	BaseSubstitution2BaseCallCount getBaseSubstitutionCount();
+	BaseSubstitution2BaseCallCount getBaseSubstitution2BaseCallCount();
+	
 	BaseCallCountFilteredData getBaseCallCountFilteredData();
 	BooleanFilteredData getBooleanFilteredData();
 	
@@ -47,6 +48,9 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	
 	ArrestPosition2baseCallCount getArrestPos2BaseCallCount();
 	BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData();
+	
+	BaseSubstitution2IntegerData getBaseSubstitution2Coverage();
+	BaseSubstitution2IntegerData getBaseSubstitution2DeletionCount();
 	
 	IntegerData getDeletionCount();
 	IntegerData getCoverage();

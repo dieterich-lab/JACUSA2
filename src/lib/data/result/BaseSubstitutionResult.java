@@ -24,7 +24,7 @@ public class BaseSubstitutionResult implements Result {
 		this.result = result;
 
 		final DataContainer container = result.getParellelData().getCombinedPooledData();
-		final BaseSubstitution2BaseCallCount bsc = container.getBaseSubstitutionCount();
+		final BaseSubstitution2BaseCallCount bsc = container.getBaseSubstitution2BaseCallCount();
 		valuesIndex = new TreeSet<>();
 		valuesIndex.addAll(result.getValueIndex());
 		valuesIndex.addAll(process(baseSubs, bsc));

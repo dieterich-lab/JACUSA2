@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import jacusa.io.format.BaseSubstitutionBED6adder;
-import jacusa.io.format.BaseSubstitutionBaseCallCountAdder;
+import jacusa.io.format.BaseSubstitutionDeletionCountAdder;
+import jacusa.io.format.BaseSubstitution2BaseCallCountAdder;
 import jacusa.io.format.CombinedDataAdder;
 import jacusa.io.format.DeletionCountDataAdder;
 import jacusa.io.format.StratifiedDataAdder;
@@ -47,22 +48,34 @@ extends AbstractResultFileFormat {
 				new DefaultBaseCallCount.Parser(InputOutput.VALUE_SEP, InputOutput.EMPTY_FIELD);
 		
 		BED6adder bed6adder = new DefaultBED6adder(getMethodName(), "stat");
-		DataAdder dataAdder = new CallDataAdder(bccParser); 
+		DataAdder dataAdder = new CallDataAdder(bccParser);
+		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
+		
 		if (getParameter().getReadSubstitutions().size() > 0) {
-			final List<BaseSubstitution> baseSubs = new ArrayList<>(getParameter().getReadSubstitutions()); 
+			final List<BaseSubstitution> baseSubs = new ArrayList<>(getParameter().getReadSubstitutions());
 			bed6adder = new BaseSubstitutionBED6adder(baseSubs, bed6adder);
 			dataAdder = new StratifiedDataAdder(
 					dataAdder, 
-					new BaseSubstitutionBaseCallCountAdder(bccParser, baseSubs, dataAdder));
-		}
-		
-		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter())
-				.addBED6Adder(bed6adder);
-		if (getParameter().showDeletionCount()) {
-			builder.addDataAdder(new CombinedDataAdder(Arrays.asList(dataAdder, new DeletionCountDataAdder())));
+					new BaseSubstitution2BaseCallCountAdder(bccParser, baseSubs, dataAdder));
+			if (getParameter().showDeletionCount()) {
+				final DataAdder delDataAder = new DeletionCountDataAdder();
+				builder.addDataAdder(
+						new CombinedDataAdder(
+								Arrays.asList(								
+										dataAdder,
+										new StratifiedDataAdder(
+											delDataAder, 
+											new BaseSubstitutionDeletionCountAdder(baseSubs, delDataAder)))));
+			}
 		} else {
-			builder.addDataAdder(dataAdder);
+			if (getParameter().showDeletionCount()) {
+				builder.addDataAdder(new CombinedDataAdder(Arrays.asList(dataAdder, new DeletionCountDataAdder())));
+			} else {
+				builder.addDataAdder(dataAdder);
+			}	
 		}
+
+		builder.addBED6Adder(bed6adder);
 		builder.addInfoAdder(new DefaultInfoAdder(getParameter()));
 		return builder.build();
 	}

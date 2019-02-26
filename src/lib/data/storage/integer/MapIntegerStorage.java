@@ -16,7 +16,7 @@ public class MapIntegerStorage extends AbstractIntegerStorage {
 		super(sharedStorage, fetcher);
 		win2count = new HashMap<>();
 	}
-	
+		
 	@Override
 	public void increment(Position position) {
 		final int winPos = position.getWindowPosition();
