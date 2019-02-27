@@ -14,6 +14,10 @@ public class AlignedPosition implements Copyable<AlignedPosition>{
 		this(0, refPos, 0);
 	}
 	
+	public AlignedPosition(final AlignedPosition alignedPosition) {
+		this(alignedPosition.readPos, alignedPosition.refPos, alignedPosition.matches);
+	}
+	
 	private AlignedPosition(final int readPos, final int refPos, final int matches) {
 		this.readPos 	= readPos;
 		this.refPos 	= refPos;

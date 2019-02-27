@@ -6,7 +6,6 @@ import org.apache.commons.cli.Option;
 
 import jacusa.filter.factory.basecall.AbstractBaseCallCountFilterFactory;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
-import lib.cli.options.filter.Apply2readsOption;
 import lib.cli.options.filter.has.HasApply2reads;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.FilteredDataFetcher;
@@ -47,7 +46,9 @@ implements HasApply2reads {
 		this.bccSwitch = bccSwitch;
 		// make search in arrest base calls for false positive variants the default
 		getApply2Reads().add(RT_READS.ARREST);
-		getACOption().add(new Apply2readsOption(this));
+		getApply2Reads().add(RT_READS.THROUGH);
+		// TODO changing reads to filter is currenlty turn off
+		// getACOption().add(new Apply2readsOption(this));
 	}
 	
 	@Override

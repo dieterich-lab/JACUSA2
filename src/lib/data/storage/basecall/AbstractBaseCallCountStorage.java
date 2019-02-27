@@ -81,7 +81,7 @@ implements WindowCoverage {
 	}
 
 	@Override
-	final public void increment(Position position) {
+	public void increment(Position position) {
 		final int winPos = position.getWindowPosition();
 		++coverage[winPos];
 		increment(winPos, position.getReadBaseCall());

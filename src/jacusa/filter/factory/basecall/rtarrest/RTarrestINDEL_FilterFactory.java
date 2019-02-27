@@ -3,6 +3,7 @@ package jacusa.filter.factory.basecall.rtarrest;
 import java.util.List;
 
 import jacusa.filter.factory.basecall.INDEL_FilterFactory;
+import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
@@ -25,6 +26,9 @@ extends AbstractRTarrestBaseCallcountFilterFactory {
 		super(
 				INDEL_FilterFactory.getOptionBuilder().build(),
 				bccSwitch, filteredDataFetcher);
+		
+		getApply2Reads().add(RT_READS.ARREST);
+		getApply2Reads().add(RT_READS.THROUGH);
 	}
 	
 

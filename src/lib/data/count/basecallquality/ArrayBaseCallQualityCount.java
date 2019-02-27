@@ -10,6 +10,8 @@ import lib.util.Base;
 
 public class ArrayBaseCallQualityCount implements BaseCallQualityCount {
 
+	private static final long serialVersionUID = 1L;
+	
 	private final int[][] baseCallQuals;
 
 	public ArrayBaseCallQualityCount() {

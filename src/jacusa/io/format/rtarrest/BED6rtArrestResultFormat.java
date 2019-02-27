@@ -10,7 +10,6 @@ import jacusa.io.format.BaseSubstitutionDeletionCountAdder;
 import jacusa.io.format.CombinedDataAdder;
 import jacusa.io.format.DeletionCountDataAdder;
 import jacusa.io.format.StratifiedDataAdder;
-import jacusa.io.format.call.CallDataAdder;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
@@ -51,7 +50,7 @@ extends AbstractResultFileFormat {
 				new DefaultBaseCallCount.Parser(InputOutput.VALUE_SEP, InputOutput.EMPTY_FIELD);
 		
 		BED6adder bed6adder = new DefaultBED6adder(getMethodName(), "pvalue");
-		DataAdder dataAdder = new CallDataAdder(bccParser);
+		DataAdder dataAdder = new RTarrestDataAdder(bccParser);
 		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
 		
 		if (getParameter().getReadSubstitutions().size() > 0) {

@@ -1,5 +1,6 @@
 package lib.data.count.basecallquality;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Set;
 import htsjdk.samtools.util.StringUtil;
 import lib.util.Base;
 
-public interface BaseCallQualityCount {
+public interface BaseCallQualityCount extends Serializable {
 
 	BaseCallQualityCount copy();
 

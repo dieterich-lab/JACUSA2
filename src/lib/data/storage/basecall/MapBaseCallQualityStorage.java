@@ -27,10 +27,10 @@ implements WindowCoverage {
 	
 	public MapBaseCallQualityStorage(
 			final SharedStorage sharedStorage,
-			final Fetcher<PileupCount> bcqcFetcher) {
+			final Fetcher<PileupCount> pileupFetcher) {
 		super(sharedStorage);
 		
-		this.pcFetcher = bcqcFetcher;
+		this.pcFetcher = pileupFetcher;
 		
 		final int n  = Util.noRehashCapacity(getCoordinateController().getActiveWindowSize() / 2);
 		winPos2bcqc = new HashMap<Integer, BaseCallQualityCount>(n);

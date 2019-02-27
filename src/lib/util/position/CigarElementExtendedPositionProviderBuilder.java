@@ -37,10 +37,9 @@ public class CigarElementExtendedPositionProviderBuilder implements lib.util.Bui
 	
 	@Override
 	public PositionProvider build() {
-		return new CombinedPositionProvider(
-				Arrays.asList(
-						buildUpstream(cigarElementExtendedIndex, Math.abs(offset)),
-						buildDownstream(cigarElementExtendedIndex, offset)) );
+		final PositionProvider upStream 	= buildUpstream(cigarElementExtendedIndex, Math.abs(offset));
+		final PositionProvider downStream	= buildDownstream(cigarElementExtendedIndex, offset);
+		return new CombinedPositionProvider(Arrays.asList(upStream, downStream));
 	}
 	
 	private PositionProvider buildUpstream(final int cigarEEIndex, final int offset) {
@@ -56,8 +55,8 @@ public class CigarElementExtendedPositionProviderBuilder implements lib.util.Bui
 	private PositionProvider buildDownstream(final int cigarEEIndex, final int offset) {
 		final CigarElementExtended cigarElementExtended = recordExtended.getCigarElementExtended()
 				.get(cigarElementExtendedIndex);
-		final AlignedPosition position = recordExtended.getCigarElementExtended()
-				.get(cigarElementExtendedIndex).getPosition();
+		final AlignedPosition position = new AlignedPosition(recordExtended.getCigarElementExtended()
+				.get(cigarElementExtendedIndex).getPosition());
 		position.advance(cigarElementExtended.getCigarElement());
 		final int downstreamMatch = recordExtended.getDownstreamMatch(cigarElementExtendedIndex);
 		final int length 	= Math.min(downstreamMatch, offset);

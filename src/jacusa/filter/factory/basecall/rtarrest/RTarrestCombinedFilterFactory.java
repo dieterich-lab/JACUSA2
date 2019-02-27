@@ -23,7 +23,8 @@ import lib.data.storage.processor.RecordExtendedProcessor;
 /**
  * This FilterFactory configures and helps to create the combined filter which aggregates the counts 
  * of other more basic filters for rt-arrest method.
- */public class RTarrestCombinedFilterFactory 
+ */
+public class RTarrestCombinedFilterFactory 
 extends AbstractRTarrestBaseCallcountFilterFactory {
 
 	public RTarrestCombinedFilterFactory(
@@ -35,6 +36,7 @@ extends AbstractRTarrestBaseCallcountFilterFactory {
 				bccSwitch, filteredDataFetcher);
 
 		getApply2Reads().add(RT_READS.ARREST);
+		getApply2Reads().add(RT_READS.THROUGH);
 	}
 
 	@Override

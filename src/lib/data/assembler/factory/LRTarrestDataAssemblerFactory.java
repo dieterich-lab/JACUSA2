@@ -7,12 +7,12 @@ import jacusa.method.lrtarrest.LRTarrestMethod.LRTarrestBuilderFactory;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
-import lib.data.count.basecall.BaseCallCount;
+import lib.data.count.PileupCount;
 import lib.data.fetcher.Fetcher;
 import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.Storage;
-import lib.data.storage.basecall.DefaultBaseCallCountStorage;
+import lib.data.storage.basecall.MapBaseCallQualityStorage;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 import lib.data.storage.lrtarrest.ArrestPositionCalculator;
@@ -39,8 +39,7 @@ extends AbstractSiteDataAssemblerFactory {
 			final ConditionParameter conditionParameter) {
 		
 		final LibraryType libraryType = conditionParameter.getLibraryType();
-
-		final Fetcher<BaseCallCount> bccFetcher = DataType.BCC.getFetcher();
+		
 		final Fetcher<ArrestPosition2baseCallCount> ap2bccFetcher =
 				DataType.AP2BCC.getFetcher();
 
@@ -60,13 +59,13 @@ extends AbstractSiteDataAssemblerFactory {
 			throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
 		}
 
-		final Storage arrestPosStorage = new LRTarrestBaseCallStorage(sharedStorage, apc, ap2bccFetcher);
-		
-		final Storage bccStorage = new DefaultBaseCallCountStorage(sharedStorage, bccFetcher);
 		final List<Storage> storages = new ArrayList<Storage>(2);
-		storages.add(bccStorage);
+		final Fetcher<PileupCount> pileupFetcher = DataType.PILEUP_COUNT.getFetcher();
+		final Storage pileupStorage = new MapBaseCallQualityStorage(sharedStorage, pileupFetcher);
+		final Storage arrestPosStorage = new LRTarrestBaseCallStorage(sharedStorage, apc, ap2bccFetcher);
 		storages.add(arrestPosStorage);
-				
+		storages.add(pileupStorage);
+		
 		final List<Validator> validators = new ArrayList<Validator>();
 		validators.add(new DefaultBaseCallValidator());
 		if (conditionParameter.getMinBASQ() > 0) {

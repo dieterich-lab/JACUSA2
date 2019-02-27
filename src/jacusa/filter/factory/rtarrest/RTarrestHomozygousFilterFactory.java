@@ -38,11 +38,13 @@ implements HasApply2reads {
 
 		super(HomozygousFilterFactory.getOptionBuilder().build());
 		homozygousFilterFactory = new HomozygousFilterFactory(conditionSize, bccSwitch);
+		this.bccSwitch 			= bccSwitch;
+		
 		// register acOptions in current instance
 		getACOption().addAll(homozygousFilterFactory.getACOption());
 		getApply2Reads().add(RT_READS.ARREST);
+		getApply2Reads().add(RT_READS.THROUGH);
 		getACOption().add(new Apply2readsOption(this));
-		this.bccSwitch = bccSwitch;
 	}
 
 	@Override

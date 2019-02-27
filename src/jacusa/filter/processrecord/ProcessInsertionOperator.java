@@ -4,6 +4,7 @@ import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
 import lib.recordextended.SAMRecordExtended;
 import lib.util.position.CigarElementExtendedPositionProviderBuilder;
+import lib.util.position.PositionProvider;
 
 /**
  * This class will identify all insertions within a read and mark/count +/- distance up- and downstream 
@@ -33,10 +34,10 @@ public class ProcessInsertionOperator extends AbstractFilterRecordExtendedProces
 	private void processInsertionOperator(
 			final int cigarElementExtendedIndex, final SAMRecordExtended recordExtended) {
 
-		getPositionProcessor().process(
-				new CigarElementExtendedPositionProviderBuilder(
-						cigarElementExtendedIndex, getDistance(), recordExtended, getTranslator())
-				.build());
+		final PositionProvider positionProvider = new CigarElementExtendedPositionProviderBuilder(
+				cigarElementExtendedIndex, getDistance(), recordExtended, getTranslator())
+				.build();
+		getPositionProcessor().process(positionProvider);
 	}
 
 }

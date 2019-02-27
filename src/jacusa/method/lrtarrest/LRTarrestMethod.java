@@ -55,6 +55,7 @@ import lib.data.fetcher.Fetcher;
 import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.fetcher.basecall.ArrestBaseCallCountExtractor;
+import lib.data.fetcher.basecall.PileupCountBaseCallCountExtractor;
 import lib.data.fetcher.basecall.ThroughBaseCallCountExtractor;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.filter.BooleanData;
@@ -88,11 +89,15 @@ extends AbstractMethod {
 		
 		super(name, parameter, dataAssemblerFactory);
 		ap2bccFetcher 		= DataType.AP2BCC.getFetcher();
-		totalBccFetcher 	= DataType.BCC.getFetcher();
+		totalBccFetcher 	= new PileupCountBaseCallCountExtractor(DataType.PILEUP_COUNT.getFetcher());
 		arrestBccExtractor 	= new ArrestBaseCallCountExtractor(ap2bccFetcher);
 		throughBccExtractor = new ThroughBaseCallCountExtractor(ap2bccFetcher);
 	}
 
+	public Fetcher<BaseCallCount> getTotalBaseCallCountFetcher() {
+		return totalBccFetcher;
+	}
+	
 	protected void initGlobalACOptions() {
 		addACOption(new StatFactoryOption(getParameter().getStatParameter(), getStatistics()));
 		
@@ -272,7 +277,7 @@ extends AbstractMethod {
 		
 		@Override
 		protected void addRequired(final AbstractBuilder builder) {
-			add(builder, DataType.BCC);
+			add(builder, DataType.PILEUP_COUNT);
 			add(builder, DataType.AP2BCC);
 		}
 		

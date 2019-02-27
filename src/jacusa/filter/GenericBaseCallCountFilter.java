@@ -75,8 +75,8 @@ public class GenericBaseCallCountFilter extends AbstractFilter {
 				for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
 					final DataContainer container = parallelData.getDataContainer(conditionIndex, replicateIndex);
 					// observed count
-					final BaseCallCount bcc = observedBccFetcher.fetch(container);
-					final int tmpCount 		= bcc.getBaseCall(variantBase);
+					final BaseCallCount observedbcc = observedBccFetcher.fetch(container);
+					final int tmpCount 				= observedbcc.getBaseCall(variantBase);
 					count += tmpCount;
 					// artifacts
 					final BaseCallCount filteredBcc = filteredBccFetcher.fetch(container);

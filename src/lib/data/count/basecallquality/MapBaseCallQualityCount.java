@@ -10,7 +10,9 @@ import lib.util.Base;
 import lib.util.Util;
 
 public class MapBaseCallQualityCount implements BaseCallQualityCount {
-
+	
+	private static final long serialVersionUID = 1L;
+	
 	private final Map<Base, Map<Byte, Integer>> baseCallQuals;
 	
 	public MapBaseCallQualityCount() {
