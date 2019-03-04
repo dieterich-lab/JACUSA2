@@ -26,6 +26,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.Map;
+import java.util.Set;
 
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.DebugModusOption;
@@ -70,6 +71,7 @@ import lib.stat.AbstractStatFactory;
 import lib.stat.betabin.LRTarrestStatFactory;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
+import lib.util.LibraryType;
 
 import org.apache.commons.cli.ParseException;
 
@@ -136,7 +138,15 @@ extends AbstractMethod {
 		addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
 		addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
 		
-		addACOption(new nConditionLibraryTypeOption(getParameter().getConditionParameters(), getParameter()));
+		final Set<LibraryType> availableLibType = new HashSet<LibraryType>(
+				Arrays.asList(
+						LibraryType.RF_FIRSTSTRAND,
+						LibraryType.FR_SECONDSTRAND));
+		
+		addACOption(new nConditionLibraryTypeOption(
+				availableLibType, 
+				getParameter().getConditionParameters(), 
+				getParameter()));
 		
 		// condition specific
 		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
@@ -150,6 +160,7 @@ extends AbstractMethod {
 			addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 			
 			addACOption(new nConditionLibraryTypeOption(
+					availableLibType, 
 					getParameter().getConditionParameters().get(conditionIndex),
 					getParameter()));
 		}

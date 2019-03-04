@@ -19,11 +19,13 @@ import jacusa.worker.CallWorker;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.Map;
+import java.util.Set;
 
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.CollectReadSubstituionOption;
@@ -65,6 +67,7 @@ import lib.stat.AbstractStatFactory;
 import lib.stat.dirmult.DirMultRobustCompoundErrorStatFactory;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
+import lib.util.LibraryType;
 
 import org.apache.commons.cli.ParseException;
 
@@ -132,8 +135,15 @@ extends AbstractMethod {
 		
 		addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
 		addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
+
+		final Set<LibraryType> availableLibType = new HashSet<LibraryType>(
+				Arrays.asList(
+						LibraryType.UNSTRANDED, 
+						LibraryType.RF_FIRSTSTRAND,
+						LibraryType.FR_SECONDSTRAND));
 		
-		addACOption(new nConditionLibraryTypeOption(getParameter().getConditionParameters(), getParameter()));
+		addACOption(new nConditionLibraryTypeOption(
+				availableLibType, getParameter().getConditionParameters(), getParameter()));
 		
 		// only add contions specific options when there are more than 1 conditions
 		if (getParameter().getConditionsSize() > 1) {
@@ -148,6 +158,7 @@ extends AbstractMethod {
 				addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 				
 				addACOption(new nConditionLibraryTypeOption(
+						availableLibType,
 						getParameter().getConditionParameters().get(conditionIndex),
 						getParameter()));
 			}

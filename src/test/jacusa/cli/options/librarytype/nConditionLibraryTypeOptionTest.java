@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -94,12 +96,18 @@ class nConditionLibraryTypeOptionTest {
 		final StringBuilder sb = new StringBuilder(); 
 		final List<LibraryType> expected = new ArrayList<>(conditions);
 		
+		final Set<LibraryType> availableLibType = new HashSet<LibraryType>(
+				Arrays.asList(
+						LibraryType.UNSTRANDED, 
+						LibraryType.RF_FIRSTSTRAND,
+						LibraryType.FR_SECONDSTRAND));
+		
 		for (int conditionIndex = 1; conditionIndex <= conditions; ++conditionIndex) {
 			final ConditionParameter conditionParameter = new ConditionParameter(conditionIndex);
 			conditionParameters.add(conditionParameter);
-			testInstances.add(
-					new nConditionLibraryTypeOption(conditionParameter, generalParameter));
-			testInstances.add(new nConditionLibraryTypeOption(conditionParameters, generalParameter));
+			testInstances.add(new nConditionLibraryTypeOption(
+					getAvailableLibType(), conditionParameter, generalParameter));
+			testInstances.add(new nConditionLibraryTypeOption(availableLibType, conditionParameters, generalParameter));
 			if (libraryTypes.get(conditionIndex - 1) == null) {
 				expected.add(conditionParameter.getLibraryType());
 			} else {
@@ -122,12 +130,21 @@ class nConditionLibraryTypeOptionTest {
 				expected);
 	}
 	
+	static Set<LibraryType> getAvailableLibType() {
+		return new HashSet<LibraryType>(
+			Arrays.asList(
+					LibraryType.UNSTRANDED, 
+					LibraryType.RF_FIRSTSTRAND,
+					LibraryType.FR_SECONDSTRAND));
+	}
+	
 	@Test
 	void testProcessFailsOnMissingInput1() {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
 		final nConditionLibraryTypeOption testInstance = 
 				new nConditionLibraryTypeOption(
+						getAvailableLibType(),
 						Arrays.asList(new ConditionParameter(1)), 
 						generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
@@ -146,7 +163,10 @@ class nConditionLibraryTypeOptionTest {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
 		final nConditionLibraryTypeOption testInstance = 
-				new nConditionLibraryTypeOption(new ConditionParameter(1), generalParameter);
+				new nConditionLibraryTypeOption(
+						getAvailableLibType(), 
+						new ConditionParameter(1), 
+						generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
 		
 		assertThrows(MissingArgumentException.class,
@@ -164,6 +184,7 @@ class nConditionLibraryTypeOptionTest {
 		
 		final nConditionLibraryTypeOption testInstance = 
 				new nConditionLibraryTypeOption(
+						getAvailableLibType(),
 						Arrays.asList(new ConditionParameter(1)), 
 						generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
@@ -182,7 +203,10 @@ class nConditionLibraryTypeOptionTest {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
 		final nConditionLibraryTypeOption testInstance = 
-				new nConditionLibraryTypeOption(new ConditionParameter(1), generalParameter);
+				new nConditionLibraryTypeOption(
+						getAvailableLibType(), 
+						new ConditionParameter(1), 
+						generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
 		
 		assertThrows(IllegalArgumentException.class,
@@ -200,6 +224,7 @@ class nConditionLibraryTypeOptionTest {
 		
 		final nConditionLibraryTypeOption testInstance = 
 				new nConditionLibraryTypeOption(
+						getAvailableLibType(),
 						Arrays.asList(new ConditionParameter(1)), 
 						generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
@@ -220,7 +245,10 @@ class nConditionLibraryTypeOptionTest {
 		final GeneralParameter generalParameter = new GeneralParameter(1);
 		
 		final nConditionLibraryTypeOption testInstance = 
-				new nConditionLibraryTypeOption(new ConditionParameter(1), generalParameter);
+				new nConditionLibraryTypeOption(
+						getAvailableLibType(),
+						new ConditionParameter(1), 
+						generalParameter);
 		Options options = CLIUtils.getOptions(testInstance);
 		
 		assertThrows(IllegalArgumentException.class,

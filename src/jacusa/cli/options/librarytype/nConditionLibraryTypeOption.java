@@ -1,6 +1,8 @@
 package jacusa.cli.options.librarytype;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import lib.cli.options.condition.AbstractConditionACOption;
 import lib.cli.parameter.ConditionParameter;
@@ -20,22 +22,27 @@ public class nConditionLibraryTypeOption extends AbstractConditionACOption {
 	public static final String OPT 		= "P";
 	public static final String LONG_OPT = "library-type";
 
+	private Set<LibraryType> availableLibTypes;
 	private final GeneralParameter generalParameter;
 	
 	public nConditionLibraryTypeOption(
+			final Set<LibraryType> availableLibTypes,
 			final ConditionParameter conditionParameter, 
 			final GeneralParameter generalParameter) {
 
 		super(OPT, LONG_OPT, conditionParameter);
-		this.generalParameter = generalParameter;
+		this.availableLibTypes 	= availableLibTypes;
+		this.generalParameter 	= generalParameter;
 	}
 
 	public nConditionLibraryTypeOption(
+			final Set<LibraryType> availableLibTypes,
 			final List<ConditionParameter> conditionParameters, 
 			final GeneralParameter generalParameter) {
 
 		super(OPT, LONG_OPT, conditionParameters);
-		this.generalParameter = generalParameter;
+		this.availableLibTypes 	= availableLibTypes;
+		this.generalParameter 	= generalParameter;
 	}
 
 	@Override
@@ -46,7 +53,7 @@ public class nConditionLibraryTypeOption extends AbstractConditionACOption {
 		} else {
 			desc += " for condition " + getConditionIndex();
 		}
-		desc += ":\n" + getPossibleValues() + 
+		desc += ":\n" + getAvailableValues(availableLibTypes) + 
         		"\n default: " + LibraryType.UNSTRANDED;
 		return Option.builder(getOpt())
 				.argName(LONG_OPT.toUpperCase())
@@ -93,11 +100,11 @@ public class nConditionLibraryTypeOption extends AbstractConditionACOption {
 	 * Nicely formatted String of available library types for command line help.
 	 * @return nicely formatted String 
 	 */
-	public String getPossibleValues() {
+	public String getAvailableValues(final Set<LibraryType> available) {
 		final StringBuilder sb = new StringBuilder();
 
 		// each line consists of: option\t\tdesc 
-		for (final LibraryType l : LibraryType.values()) {
+		for (final LibraryType l : new TreeSet<>(available)) {
 			String option = l.toString();
 			option = option.replace("_", "-");
 			String desc = "";

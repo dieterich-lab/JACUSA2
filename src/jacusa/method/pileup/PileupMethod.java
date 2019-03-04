@@ -17,8 +17,10 @@ import jacusa.worker.PileupWorker;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -59,6 +61,7 @@ import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.io.ResultFormat;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
+import lib.util.LibraryType;
 
 import org.apache.commons.cli.ParseException;
 
@@ -114,7 +117,16 @@ extends AbstractMethod {
 		addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
 		addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
 		
-		addACOption(new nConditionLibraryTypeOption(getParameter().getConditionParameters(), getParameter()));
+		final Set<LibraryType> availableLibType = new HashSet<LibraryType>(
+				Arrays.asList(
+						LibraryType.UNSTRANDED, 
+						LibraryType.RF_FIRSTSTRAND,
+						LibraryType.FR_SECONDSTRAND));
+		
+		addACOption(new nConditionLibraryTypeOption(
+				availableLibType, 
+				getParameter().getConditionParameters(), 
+				getParameter()));
 		
 		// condition specific
 		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
@@ -128,6 +140,7 @@ extends AbstractMethod {
 			addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 			
 			addACOption(new nConditionLibraryTypeOption(
+					availableLibType, 
 					getParameter().getConditionParameters().get(conditionIndex),
 					getParameter()));
 		}
