@@ -11,7 +11,7 @@ import htsjdk.samtools.util.StringUtil;
 public class SAMRecordExtended {
 
 	private final SAMRecord record;
-	private SAMRecord mate;
+	private SAMRecordExtended mate;
 	
 	private final List<CigarElementExtended> cigarElementExtended;
 
@@ -39,13 +39,13 @@ public class SAMRecordExtended {
 		return record;
 	}
 
-	public SAMRecord getMate() {
+	public SAMRecordExtended getMate() {
 		if (! record.getReadPairedFlag()) {
 			return null;
 		}
 		if (mate == null) {
 			final SamReader samReader = record.getFileSource().getReader();
-			mate = samReader.queryMate(record);
+			mate = new SAMRecordExtended(samReader.queryMate(record));
 		}
 		return mate;
 	}

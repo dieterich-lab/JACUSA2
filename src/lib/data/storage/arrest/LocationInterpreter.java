@@ -16,8 +16,7 @@ import lib.recordextended.SAMRecordExtended;
 // TODO test
 public interface LocationInterpreter {
 
-	PositionProvider getArrestPositionProvider(
-			SAMRecordExtended recordExtended, CoordinateTranslator translator);
+	Position getArrestPosition(SAMRecordExtended recordExtended, CoordinateTranslator translator);
 	
 	PositionProvider getThroughPositionProvider(
 			SAMRecordExtended recordExtended, CoordinateTranslator translator);
@@ -26,22 +25,18 @@ public interface LocationInterpreter {
 			final int readPos, SAMRecordExtended recordExtended, 
 			CoordinateTranslator translator) {
 
-		final PositionProvider positionProvider = 
-				getArrestPositionProvider(recordExtended, translator);
-		while (positionProvider.hasNext()) {
-			final Position pos = positionProvider.next();
-			if (pos.getReadPosition() == readPos) {
-				return true;
-			}
+		final Position position = getArrestPosition(recordExtended, translator);
+		if (position == null) {
+			return false;
+		}
+		if (position.getReadPosition() == readPos) {
+			return true;
 		}
 		return false;
 	}
 	
 	static LocationInterpreter create(final LibraryType libraryType) {
 		switch (libraryType) {
-
-		case UNSTRANDED:
-			return new UnstrandedLocationInterpreter();
 
 		case RF_FIRSTSTRAND:
 			return new RF_FIRSTSTRAND_LocationInterpreter();

@@ -7,6 +7,7 @@ import lib.data.DataContainer;
 import lib.data.fetcher.Fetcher;
 import lib.data.storage.AbstractStorage;
 import lib.data.storage.WindowCoverage;
+import lib.data.storage.arrest.LocationInterpreter;
 import lib.data.storage.container.SharedStorage;
 import lib.util.Base;
 import lib.util.Util;
@@ -17,7 +18,7 @@ public class LRTarrestBaseCallStorage
 extends AbstractStorage 
 implements WindowCoverage {
 
-	private final ArrestPositionCalculator apc;
+	private final LocationInterpreter li;
 	
 	private final Fetcher<ArrestPosition2baseCallCount> ap2bccExtractor;
 	
@@ -28,11 +29,11 @@ implements WindowCoverage {
 	
 	public LRTarrestBaseCallStorage(
 			final SharedStorage sharedStorage,
-			final ArrestPositionCalculator arrestPositionCalculator, 
+			final LocationInterpreter li, 
 			final Fetcher<ArrestPosition2baseCallCount> arrestPos2BaseCallCountExtractor) {
 		
 		super(sharedStorage);
-		this.apc 				= arrestPositionCalculator;
+		this.li 				= li;
 		this.ap2bccExtractor 	= arrestPos2BaseCallCountExtractor;
 		
 		winSize 		= sharedStorage.getCoordinateController().getActiveWindowSize();
@@ -55,11 +56,14 @@ implements WindowCoverage {
 	
 	@Override
 	public void increment(Position pos) {
-		final int arrestPos = apc.get(pos.getRecord());
+		final Position arrestPos = li.getArrestPosition(
+				pos.getRecordExtended(), 
+				getCoordinateController().getCoordinateTranslator());
+
 		addBaseCall(
 				pos.getReferencePosition(), 
 				pos.getWindowPosition(), 
-				arrestPos, 
+				arrestPos.getReferencePosition(), 
 				pos.getReadBaseCall());
 	}
 	

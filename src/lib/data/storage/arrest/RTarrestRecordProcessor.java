@@ -5,6 +5,7 @@ import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.RecordExtendedPrePostProcessor;
 import lib.util.coordinate.CoordinateTranslator;
+import lib.util.position.Position;
 
 public class RTarrestRecordProcessor 
 implements RecordExtendedPrePostProcessor {
@@ -41,9 +42,11 @@ implements RecordExtendedPrePostProcessor {
 	
 	@Override
 	public void process(SAMRecordExtended recordExtended) {
-		arrestPositionProcessor.process(
-				locInterpreter.getArrestPositionProvider(recordExtended, getTranslator()));
-		
+		final Position arrestPos = locInterpreter.getArrestPosition(recordExtended, getTranslator());
+		if (arrestPos != null && arrestPositionProcessor.checkValidators(arrestPos)) {
+			arrestPositionProcessor.processStorages(arrestPos);
+		}
+
 		throughPositionProcessor.process(
 				locInterpreter.getThroughPositionProvider(recordExtended, getTranslator()));
 	}

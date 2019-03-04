@@ -105,7 +105,7 @@ abstract class AbstractPosition implements Position {
 	public String toString() {
 		return String.format("(%d,%d,%d)", refPos, readPos, winPos);
 	}
-
+	
 	static abstract class AbstractBuilder<T extends AbstractPosition> implements lib.util.Builder<T> {
 		
 		private int refPos;

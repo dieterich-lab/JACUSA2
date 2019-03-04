@@ -12,13 +12,13 @@ import lib.data.fetcher.Fetcher;
 import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.Storage;
+import lib.data.storage.arrest.FR_SECONDSTRAND_LocationInterpreter;
+import lib.data.storage.arrest.LocationInterpreter;
+import lib.data.storage.arrest.RF_FIRSTSTRAND_LocationInterpreter;
 import lib.data.storage.basecall.MapBaseCallQualityStorage;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
-import lib.data.storage.lrtarrest.ArrestPositionCalculator;
-import lib.data.storage.lrtarrest.EndArrestPosition;
 import lib.data.storage.lrtarrest.LRTarrestBaseCallStorage;
-import lib.data.storage.lrtarrest.StartArrestPosition;
 import lib.data.storage.processor.AlignmentBlockProcessor;
 import lib.data.validator.DefaultBaseCallValidator;
 import lib.data.validator.MinBASQValidator;
@@ -43,16 +43,16 @@ extends AbstractSiteDataAssemblerFactory {
 		final Fetcher<ArrestPosition2baseCallCount> ap2bccFetcher =
 				DataType.AP2BCC.getFetcher();
 
-		ArrestPositionCalculator apc = null;
+		LocationInterpreter li = null;
 		
 		switch (libraryType) {
 
 		case RF_FIRSTSTRAND:
-			apc = new EndArrestPosition();
+			li = new RF_FIRSTSTRAND_LocationInterpreter();
 			break;
 
 		case FR_SECONDSTRAND:
-			apc = new StartArrestPosition();
+			li = new FR_SECONDSTRAND_LocationInterpreter();
 			break;
 			
 		default:
@@ -62,7 +62,7 @@ extends AbstractSiteDataAssemblerFactory {
 		final List<Storage> storages = new ArrayList<Storage>(2);
 		final Fetcher<PileupCount> pileupFetcher = DataType.PILEUP_COUNT.getFetcher();
 		final Storage pileupStorage = new MapBaseCallQualityStorage(sharedStorage, pileupFetcher);
-		final Storage arrestPosStorage = new LRTarrestBaseCallStorage(sharedStorage, apc, ap2bccFetcher);
+		final Storage arrestPosStorage = new LRTarrestBaseCallStorage(sharedStorage, li, ap2bccFetcher);
 		storages.add(arrestPosStorage);
 		storages.add(pileupStorage);
 		

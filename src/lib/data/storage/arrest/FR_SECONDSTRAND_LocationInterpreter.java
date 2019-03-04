@@ -1,11 +1,11 @@
 package lib.data.storage.arrest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import htsjdk.samtools.SAMRecord;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.CollectionPositionProvider;
+import lib.util.position.AllAlignmentBlocksPositionProvider;
 import lib.util.position.CombinedPositionProvider;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
@@ -15,13 +15,25 @@ public class FR_SECONDSTRAND_LocationInterpreter
 implements LocationInterpreter {
 	
 	@Override
-	public PositionProvider getArrestPositionProvider(SAMRecordExtended recordExtended, CoordinateTranslator translator) {
-		final Position pos = getFirstAlignmentPosition(recordExtended, translator);
-		if (pos == null) {
-			return new CollectionPositionProvider(new ArrayList<>(0));
+	public Position getArrestPosition(SAMRecordExtended recordExtended, CoordinateTranslator translator) {
+		// SE -> use start of current read 
+		if (! recordExtended.getSAMRecord().getReadPairedFlag()) {
+			return getFirstAlignmentPosition(recordExtended, translator);
+		}
+		final SAMRecordExtended mate = recordExtended.getMate();
+		
+		// PE -> use start of first mate
+		final SAMRecord record = recordExtended.getSAMRecord();
+		if (record.getFirstOfPairFlag()) {
+			return getFirstAlignmentPosition(recordExtended, translator);
 		}
 		
-		return new CollectionPositionProvider(Arrays.asList(pos));
+		if (! mate.getSAMRecord().getMateUnmappedFlag()) {
+			return getFirstAlignmentPosition(mate, translator);
+		}
+		// TODO what is the arrest position if second mate is not mapped?
+		// fallback to SE? or there is just no arrest position
+		return null;
 	}
 	
 	@Override
@@ -29,11 +41,25 @@ implements LocationInterpreter {
 			final SAMRecordExtended recordExtended,
 			final CoordinateTranslator translator) {
 		
-		final int size = recordExtended.getSAMRecord().getAlignmentBlocks().size();
-		final List<PositionProvider> positionProviders = new ArrayList<>(size);
-		positionProviders.add(getFirstThroughPositionProvider(recordExtended, translator));
-		positionProviders.addAll(getThroughPositionProvider(1, size - 1, recordExtended, translator));
-		return new CombinedPositionProvider(positionProviders);
+		// SE 
+		if (! recordExtended.getSAMRecord().getReadPairedFlag()) {
+			final int size = recordExtended.getSAMRecord().getAlignmentBlocks().size();
+			final List<PositionProvider> positionProviders = new ArrayList<>(size);
+			positionProviders.add(getFirstThroughPositionProvider(recordExtended, translator));
+			positionProviders.addAll(getThroughPositionProvider(1, size - 1, recordExtended, translator));
+			return new CombinedPositionProvider(positionProviders);
+		}
+		
+		// PE
+		final SAMRecord record = recordExtended.getSAMRecord();
+		if (record.getSecondOfPairFlag()) {
+			final int size = recordExtended.getSAMRecord().getAlignmentBlocks().size();
+			final List<PositionProvider> positionProviders = new ArrayList<>(size);
+			positionProviders.add(getFirstThroughPositionProvider(recordExtended, translator));
+			positionProviders.addAll(getThroughPositionProvider(1, size - 1, recordExtended, translator));
+			return new CombinedPositionProvider(positionProviders);
+		}
+		return new AllAlignmentBlocksPositionProvider(recordExtended, translator);
 	}
 	
 }

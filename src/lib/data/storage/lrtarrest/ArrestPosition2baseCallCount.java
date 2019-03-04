@@ -22,6 +22,8 @@ public class ArrestPosition2baseCallCount
 implements Serializable, Data<ArrestPosition2baseCallCount> {
 	
 	private static final long serialVersionUID = 1L;
+
+	private static final int NO_ARREST_POS = -1;
 	
 	private static final BaseCallCount EMPTY = 
 			new UnmodifiableBaseCallCount(JACUSA.BCC_FACTORY.create());
@@ -49,6 +51,10 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 		merge(src);
 	}
 
+	public ArrestPosition2baseCallCount addBaseCall(final Base base) {
+		return addBaseCall(NO_ARREST_POS, base);
+	}
+	
 	/**
 	 * Adds Base at the provided positions.
 	 * 
