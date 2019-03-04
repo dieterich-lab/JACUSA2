@@ -5,11 +5,14 @@ import java.util.List;
 
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.StringUtil;
 
 public class SAMRecordExtended {
 
 	private final SAMRecord record;
+	private SAMRecord mate;
+	
 	private final List<CigarElementExtended> cigarElementExtended;
 
 	// indices to cigarElementExtended
@@ -36,6 +39,17 @@ public class SAMRecordExtended {
 		return record;
 	}
 
+	public SAMRecord getMate() {
+		if (! record.getReadPairedFlag()) {
+			return null;
+		}
+		if (mate == null) {
+			final SamReader samReader = record.getFileSource().getReader();
+			mate = samReader.queryMate(record);
+		}
+		return mate;
+	}
+	
 	public RecordReferenceProvider getRecordReferenceProvider() {
 		if (recordRefProvider == null) {
 			recordRefProvider = new MDRecordReferenceProvider(this);

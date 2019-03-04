@@ -140,8 +140,7 @@ implements RecordExtendedPrePostProcessor {
 		final SAMRecord record 	= recordExtended.getSAMRecord();
 		final String readName 	= record.getReadName();
 		
-		final SamReader samReader = record.getFileSource().getReader();
-		final SAMRecord mateRecord = samReader.queryMate(record);
+		final SAMRecord mateRecord = recordExtended.getMate();
 		if (mateRecord.overlaps(getController().getActive())) { // mate within window
 			if (! internalRecordExtended.containsKey(readName)) {
 				internalRecordExtended.put(readName, recordExtended);
