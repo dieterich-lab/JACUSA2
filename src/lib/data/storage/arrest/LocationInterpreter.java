@@ -13,7 +13,6 @@ import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 import lib.recordextended.SAMRecordExtended;
 
-// TODO test
 public interface LocationInterpreter {
 
 	Position getArrestPosition(SAMRecordExtended recordExtended, CoordinateTranslator translator);
@@ -53,12 +52,8 @@ public interface LocationInterpreter {
 			final SAMRecordExtended recordExtended, 
 			final CoordinateTranslator translator) {
 		
-		final Position pos = new MatchPosition.Builder(0, recordExtended, translator).build();
-		if (pos.getWindowPosition() >= 0) {
-			return pos;
-		} else {
-			return null;
-		}
+		Position pos = new MatchPosition.Builder(0, recordExtended, translator).build();
+		return new UnmodifiablePosition(pos);
 	}
 	
 	default Position getLastAlignmentPosition(
@@ -71,43 +66,7 @@ public interface LocationInterpreter {
 		final int refPos 			= block.getReferenceStart() + length;
 		final int readPos			= block.getReadStart() - 1 + length;
 		final int winPos			= translator.reference2windowPosition(refPos);
-		if (winPos >= 0) {
-			return new UnmodifiablePosition(refPos, readPos, winPos, recordExtended);
-		}
-		return  null;
-	}
-	
-	default PositionProvider getFirstThroughPositionProvider(
-			final SAMRecordExtended recordExtended,
-			final CoordinateTranslator translator) {
-		
-		return new AlignmentBlockPositionProviderBuilder(0, recordExtended, translator)
-				.ignoreFirst(1)
-				.adjustWindowPos()
-				.build();
-	}
-	
-	default PositionProvider getInnerThroughPositionProvider(
-			final SAMRecordExtended recordExtended,
-			final CoordinateTranslator translator) {
-		
-		return new AlignmentBlockPositionProviderBuilder(0, recordExtended, translator)
-				.ignoreFirst(1)
-				.ignoreLast(1)
-				.adjustWindowPos()
-				.build();
-	}
-	
-	default PositionProvider getLastThroughPositionProvider(
-			final SAMRecordExtended recordExtended,
-			final CoordinateTranslator translator) {
-		
-		final List<AlignmentBlock> blocks = recordExtended.getSAMRecord().getAlignmentBlocks();
-		final int size = blocks.size();
-		return new AlignmentBlockPositionProviderBuilder(size - 1, recordExtended, translator)
-				.ignoreLast(1)
-				.adjustWindowPos()
-				.build();
+		return new UnmodifiablePosition(refPos, readPos, winPos, recordExtended);
 	}
 	
 	default List<PositionProvider> getThroughPositionProvider(

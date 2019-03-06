@@ -2,6 +2,7 @@ package lib.util.coordinate;
 
 public interface CoordinateTranslator {
 
+	// reference based coordinates of window [start, end]
 	int getRefPosStart();
 	int getRefPosEnd();
 
