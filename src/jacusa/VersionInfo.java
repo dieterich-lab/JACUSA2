@@ -5,8 +5,8 @@ package jacusa;
  */
 public final class VersionInfo {
 
-	public final static String BRANCH 	= "develop";
-	public final static String TAG 		= "2.0.0-RC1";
+	public final static String BRANCH 	= "master";
+	public final static String TAG 		= "2.0.0-RC2";
 
 	private VersionInfo() {
 		throw new AssertionError();

@@ -106,8 +106,7 @@ public class ReplicateContainer {
 			final ConditionParameter conditionParameter) {
 
 		return Stream.of(conditionParameter.getRecordFilenames())
-				.map(ConditionParameter::createSamReader)
-				.map(s -> new SAMRecordExtendedIteratorProvider(conditionParameter, s))
+				.map(f -> new SAMRecordExtendedIteratorProvider(conditionParameter, f))
 				.collect(Collectors.toList());
 	}
 

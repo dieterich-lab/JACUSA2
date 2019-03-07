@@ -38,9 +38,8 @@ implements WindowCoverage {
 	
 	@Override
 	public void increment(Position pos) {
-		if (locInterpreter.isArrest(
-				pos.getReadPosition(),
-				pos.getRecordExtended(), 
+		if (locInterpreter.isArrestPosition(
+				pos, 
 				getCoordinateController().getCoordinateTranslator())) {
 			arrestBccStorage.increment(pos);
 		} else {

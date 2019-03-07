@@ -11,6 +11,8 @@ import htsjdk.samtools.util.StringUtil;
 public class SAMRecordExtended {
 
 	private final SAMRecord record;
+	
+	private final SamReader mateReader;
 	private SAMRecordExtended mate;
 	
 	private final List<CigarElementExtended> cigarElementExtended;
@@ -24,7 +26,17 @@ public class SAMRecordExtended {
 	private RecordReferenceProvider recordRefProvider;
 
 	public SAMRecordExtended(final SAMRecord record) {
-		this.record = record;
+		this(record, null);
+	}
+	
+	public SAMRecordExtended(final SAMRecord record, final SamReader mateReader) {
+		this(record, null, mateReader);
+	}
+	
+	private SAMRecordExtended(final SAMRecord record, final SAMRecordExtended mate, final SamReader mateReader) {
+		this.record 	= record;
+		this.mate		= mate;
+		this.mateReader = mateReader; 
 		
 		cigarElementExtended = new ArrayList<CigarElementExtended>(record.getCigarLength());
 		skipped 	= new ArrayList<Integer>(2);
@@ -34,7 +46,7 @@ public class SAMRecordExtended {
 		
 		process();
 	}
-
+	
 	public SAMRecord getSAMRecord() {
 		return record;
 	}
@@ -44,8 +56,8 @@ public class SAMRecordExtended {
 			return null;
 		}
 		if (mate == null) {
-			final SamReader samReader = record.getFileSource().getReader();
-			mate = new SAMRecordExtended(samReader.queryMate(record));
+			final SAMRecord mateRecord = mateReader.queryMate(record);
+			mate = new SAMRecordExtended(mateRecord, this, mateReader);
 		}
 		return mate;
 	}

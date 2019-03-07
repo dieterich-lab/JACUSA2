@@ -5,11 +5,14 @@ import java.util.Iterator;
 
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
+import htsjdk.samtools.SamReader;
 import lib.cli.parameter.ConditionParameter;
 
 public class SAMRecordExtendedIterator implements Iterator<SAMRecordExtended> {
 
 	private final ConditionParameter conditionParameter;
+
+	private final SamReader mateReader;
 	
 	private int acceptedSAMRecords;
 	private int filteredSAMRecords;
@@ -21,10 +24,12 @@ public class SAMRecordExtendedIterator implements Iterator<SAMRecordExtended> {
 	private SAMRecordIterator iterator; 
 	
 	public SAMRecordExtendedIterator(
-			final ConditionParameter conditionParameter, 
+			final ConditionParameter conditionParameter,
+			final String fileName,
 			final SAMRecordIterator iterator) {
 
 		this.conditionParameter = conditionParameter;
+		mateReader 				= ConditionParameter.createSamReader(fileName);
 		
 		acceptedSAMRecords = 0;
 		filteredSAMRecords = 0;
@@ -92,7 +97,7 @@ public class SAMRecordExtendedIterator implements Iterator<SAMRecordExtended> {
 	private int processIterator() {
 		while (iterator.hasNext() && bufferSize < buffer.length) {
 			final SAMRecord record = iterator.next();
-
+			
 			boolean isValid = false; 
 			if(conditionParameter.isValid(record)) {
 				isValid = true;
@@ -100,9 +105,9 @@ public class SAMRecordExtendedIterator implements Iterator<SAMRecordExtended> {
 			} else {
 				filteredSAMRecords++;
 			}
-
+			
 			if (isValid) {
-				final SAMRecordExtended recordExtended = new SAMRecordExtended(record);
+				final SAMRecordExtended recordExtended = new SAMRecordExtended(record, mateReader);
 				buffer[bufferSize++] = recordExtended;
 			}
 		}

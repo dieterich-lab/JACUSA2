@@ -42,9 +42,11 @@ implements RecordExtendedPrePostProcessor {
 	
 	@Override
 	public void process(SAMRecordExtended recordExtended) {
-		final Position arrestPos = locInterpreter.getArrestPosition(recordExtended, getTranslator());
-		if (arrestPos != null && arrestPositionProcessor.checkValidators(arrestPos)) {
-			arrestPositionProcessor.processStorages(arrestPos);
+		if (locInterpreter.hasArrestPosition(recordExtended)) {
+			final Position arrestPos = locInterpreter.getArrestPosition(recordExtended, getTranslator());
+			if (arrestPos != null && arrestPositionProcessor.checkValidators(arrestPos)) {
+				arrestPositionProcessor.processStorages(arrestPos);
+			}
 		}
 
 		throughPositionProcessor.process(

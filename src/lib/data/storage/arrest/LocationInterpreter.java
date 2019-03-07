@@ -20,18 +20,14 @@ public interface LocationInterpreter {
 	PositionProvider getThroughPositionProvider(
 			SAMRecordExtended recordExtended, CoordinateTranslator translator);
 	
-	default boolean isArrest(
-			final int readPos, SAMRecordExtended recordExtended, 
-			CoordinateTranslator translator) {
-
-		final Position position = getArrestPosition(recordExtended, translator);
-		if (position == null) {
+	boolean hasArrestPosition(SAMRecordExtended recordExtended);
+	
+	default boolean isArrestPosition(final Position position, final CoordinateTranslator translator) {
+		final Position arrestPos = getArrestPosition(position.getRecordExtended(), translator);
+		if (arrestPos == null) {
 			return false;
 		}
-		if (position.getReadPosition() == readPos) {
-			return true;
-		}
-		return false;
+		return arrestPos.equals(position);
 	}
 	
 	static LocationInterpreter create(final LibraryType libraryType) {

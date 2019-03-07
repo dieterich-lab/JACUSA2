@@ -15,6 +15,18 @@ import lib.recordextended.SAMRecordExtended;
 public class RF_FIRSTSTRAND_LocationInterpreter implements LocationInterpreter {
 
 	@Override
+	public boolean hasArrestPosition(SAMRecordExtended recordExtended) {
+		final SAMRecord record = recordExtended.getSAMRecord();
+		if (record.getReadPairedFlag()) {
+			if (! record.getProperPairFlag()) {
+				return false;
+			}
+			return record.getSecondOfPairFlag();
+		}
+		return true;
+	}
+	
+	@Override
 	public Position getArrestPosition(SAMRecordExtended recordExtended, CoordinateTranslator translator) {
 		if (! recordExtended.getSAMRecord().getReadPairedFlag()) {
 			return getArrestPositionSE(recordExtended, translator);

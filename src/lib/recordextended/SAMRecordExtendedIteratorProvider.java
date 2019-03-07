@@ -11,25 +11,27 @@ import htsjdk.samtools.SAMRecordIterator;
 
 public class SAMRecordExtendedIteratorProvider {
 
-	private ConditionParameter conditionParameter;
+	private final ConditionParameter conditionParameter;
 	private SamReader reader;
+	private final String fileName;
 
 	private Coordinate current;
 	private SAMRecordExtendedIterator recordExtendedIterator;
 	
 	public SAMRecordExtendedIteratorProvider(
 			final ConditionParameter conditionParameter,
-			final SamReader reader) {
+			final String fileName) {
 
 		this.conditionParameter = conditionParameter;
-		this.reader = reader;
+		this.reader 			= ConditionParameter.createSamReader(fileName);
+		this.fileName			= fileName;
 	}
 
 	public SAMRecordExtendedIterator getIterator(final Coordinate activeWindowCoordinate) {
 		if (recordExtendedIterator == null) {
 			current = activeWindowCoordinate;
 			final SAMRecordIterator recordIterator = createSAMRecordIterator(activeWindowCoordinate);
-			recordExtendedIterator = new SAMRecordExtendedIterator(conditionParameter, recordIterator);
+			recordExtendedIterator = new SAMRecordExtendedIterator(conditionParameter, fileName, recordIterator);
 		} else if (! current.equals(activeWindowCoordinate)) {
 			current = activeWindowCoordinate;
 			final SAMRecordIterator recordIterator = createSAMRecordIterator(activeWindowCoordinate);
@@ -42,7 +44,7 @@ public class SAMRecordExtendedIteratorProvider {
 	public ConditionParameter getConditionParameter() {
 		return conditionParameter;
 	}
-	
+
 	public void close() {
 		try {
 			if (reader != null) {

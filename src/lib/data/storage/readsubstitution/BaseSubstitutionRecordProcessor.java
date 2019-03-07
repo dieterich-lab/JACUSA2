@@ -19,7 +19,6 @@ import java.util.Set;
 
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMTag;
-import htsjdk.samtools.SamReader;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
@@ -154,9 +153,7 @@ implements RecordExtendedPrePostProcessor {
 	
 	protected void processExternalPE(final Set<BaseSubstitution> queryBaseSubs) {
 		for (final SAMRecordExtended recordExtended : externalRecordExtended) {
-			final SAMRecord record = recordExtended.getSAMRecord();
-			final SamReader samReader = record.getFileSource().getReader();
-			final SAMRecord mateRecord = samReader.queryMate(record);
+			final SAMRecord mateRecord = recordExtended.getMate().getSAMRecord();
 			if (mateRecord == null) {
 				throw new IllegalStateException();
 			}
