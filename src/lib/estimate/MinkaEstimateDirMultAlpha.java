@@ -10,7 +10,7 @@ import lib.util.MathUtil;
 import org.apache.commons.math3.special.Gamma;
 
 /**
- * TODO comments
+ * TODO add comments
  */
 public class MinkaEstimateDirMultAlpha {
 
@@ -24,7 +24,7 @@ public class MinkaEstimateDirMultAlpha {
 	
 	/**
 	 * estimate alpha and returns log-lik
-	 * TODO comments
+	 * TODO add comments
 	 * @param 
 	 * @param estimateInfo
 	 * @param backtrack

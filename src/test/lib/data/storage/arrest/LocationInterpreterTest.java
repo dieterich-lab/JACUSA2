@@ -121,8 +121,9 @@ interface LocationInterpreterTest {
 			final int refStart, final boolean negativeStrand, final String cigarStr,
 			final int refExpected, final int readExpected, final int winExpected) {
 
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(
-				new SAMRecordBuilder().createSERecord(getContig(), refStart, negativeStrand, cigarStr, ""));
+		
+		final SAMRecord record = new SAMRecordBuilder().createSERecord(getContig(), refStart, negativeStrand, cigarStr, "");
+		final SAMRecordExtended recordExtended = new SAMRecordExtended(record);
 		
 		final StringBuilder infoBuilder = new StringBuilder()
 				.append("Lib.: ").append(getLibraryType()).append("; ");
@@ -138,7 +139,7 @@ interface LocationInterpreterTest {
 			final int refWinStart, final int refWinEnd,
 			final int refStart1, final boolean negativeStrand1, final String cigarStr1,
 			final int refStart2, final boolean negativeStrand2, final String cigarStr2,
-			final int refExpected, final int readExpected, final int winExpected, final boolean mate) {
+			final int refExpected, final int readExpected, final int winExpected) {
 
 		final StringBuilder infoBuilder = new StringBuilder()
 				.append("Lib.: ").append(getLibraryType()).append("; ");
@@ -147,14 +148,13 @@ interface LocationInterpreterTest {
 				getContig(), 
 				refStart1, negativeStrand1, cigarStr1, "", 
 				refStart2, negativeStrand2, cigarStr2, "").getRecords().iterator();
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(it.next());
-		
-		final SAMRecordExtended expectedRecordExtended = mate ? recordExtended.getMate() : recordExtended;
+		final SAMRecord record = it.next();
+		final SAMRecordExtended recordExtended = new SAMRecordExtended(record, record.getFileSource().getReader());
 		
 		return cArrestArgs(
 				cT(refWinStart, refWinEnd),
 				recordExtended,
-				new UnmodifiablePosition(refExpected, readExpected, winExpected, expectedRecordExtended),
+				new UnmodifiablePosition(refExpected, readExpected, winExpected, null),
 				infoBuilder);
 	}
 	
@@ -179,9 +179,9 @@ interface LocationInterpreterTest {
 		final StringBuilder infoBuilder = new StringBuilder()
 				.append("Lib.: ").append(getLibraryType()).append("; ");
 		
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(
-				new SAMRecordBuilder().createSERecord(
-						getContig(), refStart, negativeStrand, cigarStr, ""));
+		final SAMRecord record = new SAMRecordBuilder().createSERecord(
+				getContig(), refStart, negativeStrand, cigarStr, "");
+		final SAMRecordExtended recordExtended = new SAMRecordExtended(record); 
 		
 		return cThroughArgs(
 				cT(refWinStart, refWinEnd),
@@ -203,7 +203,8 @@ interface LocationInterpreterTest {
 						getContig(), 
 						refStart1, negativeStrand1, cigarStr1, "", 
 						refStart2, negativeStrand2, cigarStr2, "").getRecords().iterator();
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(it.next());
+		final SAMRecord record = it.next();
+		final SAMRecordExtended recordExtended = new SAMRecordExtended(record, record.getFileSource().getReader());
 		
 		return cThroughArgs(
 				cT(refWinStart, refWinEnd),

@@ -26,8 +26,8 @@ public final class Phred2Prob {
 		phred2baseErrorP = new double[MAX_Q];
 
 		for(int i = min; i < MAX_Q; i++) {
-			phred2errerP[i] = Math.pow(10.0, -(double)i / 10.0);
-			phred2baseP[i] = 1.0 - phred2errerP[i];
+			phred2errerP[i] 	= Math.pow(10.0, -(double)i / 10.0);
+			phred2baseP[i] 		= 1.0 - phred2errerP[i];
 			phred2baseErrorP[i] = phred2errerP[i] / (n - 1); // ignore the called base
 		}
 	}

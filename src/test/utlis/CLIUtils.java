@@ -52,12 +52,6 @@ public final class CLIUtils {
 		}
 	}
 
-	// FIXME move somewhere else
-	// FIXME give nice name
-	public static String pr(final String longOpt, final String value) {
-		return " --" + longOpt + "=" + value;
-	}
-
 	public static Options getOptions(final AbstractACOption acOption) {
 		final Options options = new Options();
 		options.addOption(acOption.getOption(false));

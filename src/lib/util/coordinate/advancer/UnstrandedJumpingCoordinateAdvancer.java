@@ -106,7 +106,6 @@ implements CoordinateAdvancer {
 	public void adjustPosition(final Coordinate coordinate) {
 		// contig is set somewhere else
 		getCurrentCoordinate().setPosition(coordinate);
-		// TODO is this necessary? getCurrentCoordinate().setStrand(coordinate.getStrand());
 	}
 	
 }

@@ -163,6 +163,9 @@ public class ArrayBaseCallCount extends AbstractBaseCallCount {
 			final int[] baseCalls = new int[cols.length];
 			for (int baseIndex = 0; baseIndex < cols.length; ++baseIndex) {
 				baseCalls[baseIndex] = Integer.parseInt(cols[baseIndex]);
+				if (baseCalls[baseIndex] < 0) {
+					throw new IllegalArgumentException(); 
+				}
 			}
 			return new ArrayBaseCallCount(baseCalls);
 		}

@@ -169,6 +169,10 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 			for (int baseIndex = 0; baseIndex < cols.length; ++baseIndex) {
 				final Base base = Base.valueOf(baseIndex);
 				baseCalls.put(base, Integer.parseInt(cols[baseIndex]));
+				Integer.parseInt(cols[baseIndex]);
+				if (baseCalls.get(base) < 0) {
+					throw new IllegalArgumentException(); 
+				}
 			}
 			return new MapBaseCallCount(baseCalls);
 		}

@@ -102,7 +102,7 @@ class FR_SECONDSTRAND_LocationInterpreterTest implements LocationInterpreterTest
 				4,  8,
 				4, false, "2M",
 				7, true, "2M",
-				4, 0, 0, false));
+				4, 0, 0));
 		
 		//123456789012
 		//   01234
@@ -114,7 +114,7 @@ class FR_SECONDSTRAND_LocationInterpreterTest implements LocationInterpreterTest
 				4,  8,
 				7, true, "2M",
 				4, false, "2M",
-				8, 1, 4, true));
+				8, -1, 4));
 		
 		return args.stream();
 	}

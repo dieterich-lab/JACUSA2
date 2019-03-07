@@ -127,7 +127,6 @@ public class CLI {
 			method.printUsage(printExtendedHelp);
 			System.exit(0);
 		}
-		
 	
 		// copy arguments while ignoring the first array element
 		String[] processedArgs = new String[args.length - 1];
@@ -213,7 +212,8 @@ public class CLI {
 			sb.append('\n');
 		}
 
-		sb.append("Version: " + AbstractTool.getLogger().getTool().getVersion() + "\n");
+		sb.append("Version:\t" + AbstractTool.getLogger().getTool().getVersion() + "\n");
+		sb.append("Libraries:\t " + AbstractTool.getLogger().getTool().getLibraries() + "\n");
 		System.out.print(sb.toString());
 	}
 

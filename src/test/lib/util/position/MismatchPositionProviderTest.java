@@ -66,12 +66,12 @@ class MismatchPositionProviderTest implements PositionProviderTest {
 				createArguments(
 						1, "2M3I2M", "ACCCCGA", 
 						1, 8, 
-						new String[] { "4,2,2"}),
+						new String[] { }),
 				// gap in query
 				createArguments(
 						1, "2M3N2M", "ACCG", 
 						1, 8, 
-						new String[] { "4,2,2"}),
+						new String[] { }),
 
 				createArguments(
 						1, "2M", "AT", 

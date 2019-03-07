@@ -231,7 +231,6 @@ public abstract class BaseCallQualityCountTest {
 
 	static Stream<Arguments> testGetBaseCallQuality() {
 		return Stream.of(
-				// FIXME arry does not support N Arguments.of(create(new int[][] { {}, {}, {}, {} }), Base.N, new HashSet<>()),
 				Arguments.of(create(new int[][] { {}, {}, {}, {} }), Base.A, new HashSet<>()),
 				Arguments.of(create(new int[][] { {}, {}, {}, {} }), Base.C, new HashSet<>()),
 				Arguments.of(create(new int[][] { {}, {}, {}, {} }), Base.G, new HashSet<>()),
@@ -254,10 +253,6 @@ public abstract class BaseCallQualityCountTest {
 	
 	static Stream<Arguments> testIncrement() {
 		return Stream.of(
-				/* FIXME array does not support N Arguments.of(create(new int[][] { {}, {}, {}, {} }), 
-						Base.N, (byte)10, 
-						create(new int[][] { {}, {}, {}, {} })),
-				 */
 				Arguments.of(create(new int[][] { {}, {}, {}, {} }), 
 						Base.A, (byte)10, 
 						create(new int[][] { {10, 1}, {}, {}, {} })),
@@ -287,11 +282,6 @@ public abstract class BaseCallQualityCountTest {
 
 	static Stream<Arguments> testSet() {
 		return Stream.of(
-				/* FIXME array not supported N Arguments.of(
-						create(new int[][] { {40, 1}, {30, 1}, {20, 1}, {10, 1} }), 
-						Base.N, (byte)40, 10,
-						create(new int[][] { {40, 1}, {30, 1}, {20, 1}, {10, 1} })),
-				 */
 				Arguments.of(
 						create(new int[][] { {40, 1}, {30, 1}, {20, 1}, {10, 1} }), 
 						Base.A, (byte)40, 0, 
@@ -312,11 +302,6 @@ public abstract class BaseCallQualityCountTest {
 	
 	static Stream<Arguments> testAddBaseBaseCallQualityCount() {
 		return Stream.of(
-				/* FIXME array N not supported Arguments.of(
-						create(new int[][] { {40, 1}, {30, 1}, {20, 1}, {10, 1} }), 
-						Base.N, create(new int[][] { {40, 1}, {30, 1}, {20, 1}, {10, 1} }), 
-						create(new int[][] { {40, 1}, {30, 1}, {20, 1}, {10, 1} })),
-				 */
 				Arguments.of(
 						create(new int[][] { {40, 1}, {30, 1}, {20, 1}, {10, 1} }), 
 						Base.A, create(new int[][] { {40, 1}, {30, 1}, {20, 1}, {10, 1} }), 
@@ -337,12 +322,6 @@ public abstract class BaseCallQualityCountTest {
 	
 	static Stream<Arguments> testAddSetBaseBaseCallQualityCount() {
 		return Stream.of(
-				/* FIXME arry not supported N Arguments.of(
-						create(new int[][] { {40, 1}, {30, 1}, {20, 1}, {10, 1} }), 
-						new HashSet<Base>(Arrays.asList(Base.N)), 
-						create(new int[][] { {40, 1}, {30, 1}, {20, 1}, {10, 1} }), 
-						create(new int[][] { {40, 1}, {30, 1}, {20, 1}, {10, 1} })),
-				 */
 				Arguments.of(
 						create(new int[][] { {40, 1}, {30, 1}, {20, 1}, {10, 1} }), 
 						new HashSet<Base>(Arrays.asList(Base.validValues())), 
@@ -357,13 +336,6 @@ public abstract class BaseCallQualityCountTest {
 
 	static Stream<Arguments> testAddBaseBaseBaseCallQualityCount() {
 		return Stream.of(
-				/* FIXME array nor supported N Arguments.of(
-						create(new int[][] { {40, 1}, {30, 1}, {30, 1}, {30, 1} }), 
-						Base.N,
-						Base.N,
-						create(new int[][] { {40, 1}, {30, 1}, {30, 1}, {30, 1} }), 
-						create(new int[][] { {40, 1}, {30, 1}, {30, 1}, {30, 1} })),
-				 */
 				Arguments.of(
 						create(new int[][] { {40, 1}, {30, 1}, {30, 1}, {30, 1} }), 
 						Base.A,
@@ -380,12 +352,6 @@ public abstract class BaseCallQualityCountTest {
 	
 	static Stream<Arguments> testSubtractBaseBaseCallQualityCount() {
 		return Stream.of(
-				/* FIXME array nor supported NArguments.of(
-						create(new int[][] { {40, 1}, {30, 1}, {30, 1}, {30, 1} }), 
-						Base.N, 
-						create(new int[][] { {40, 1}, {30, 1}, {30, 1}, {30, 1} }), 
-						create(new int[][] { {40, 1}, {30, 1}, {30, 1}, {30, 1} })),
-				 */
 				Arguments.of(
 						create(new int[][] { {40, 2}, {30, 1}, {30, 1}, {30, 1} }), 
 						Base.A, 
@@ -400,12 +366,6 @@ public abstract class BaseCallQualityCountTest {
 	
 	static Stream<Arguments> testSubtractSetBaseBaseCallQualityCount() {
 		return Stream.of(
-				/* FIXME array nor supported N Arguments.of(
-						create(new int[][] { {40, 1}, {30, 1}, {30, 1}, {30, 1} }), 
-						new HashSet<Base>(Arrays.asList(Base.N)), 
-						create(new int[][] { {40, 1}, {30, 1}, {30, 1}, {30, 1} }), 
-						create(new int[][] { {40, 1}, {30, 1}, {30, 1}, {30, 1} })),
-				 */
 				Arguments.of(
 						create(new int[][] { {40, 2}, {30, 2}, {30, 2}, {30, 2} }), 
 						new HashSet<Base>(Arrays.asList(Base.validValues())), 
@@ -420,13 +380,6 @@ public abstract class BaseCallQualityCountTest {
 
 	static Stream<Arguments> testSubtractBaseBaseBaseCallQualityCount() {
 		return Stream.of(
-				/* FIXME array nor supported N Arguments.of(
-						create(new int[][] { {40, 10}, {40, 20}, {40, 30}, {40, 40} }), 
-						Base.N,
-						Base.N,
-						create(new int[][] { {40, 10}, {40, 20}, {40, 30}, {40, 40} }), 
-						create(new int[][] { {40, 10}, {40, 20}, {40, 30}, {40, 40} })),
-				 */
 				Arguments.of(
 						create(new int[][] { {40, 10, 30, 10}, {40, 20}, {40, 30}, {40, 40, 30, 40} }), 
 						Base.T,

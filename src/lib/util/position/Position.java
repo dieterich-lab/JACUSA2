@@ -7,13 +7,11 @@ import lib.recordextended.SAMRecordExtended;
 
 public interface Position extends Copyable<Position> {
 
-	// TODO what if INSERTION?
 	// 1-based
 	int getReferencePosition();
 	
 	boolean isValidReferencePosition();
 	
-	// expected to be always valid -> within range of getRecord().getReadBases() 
 	// 0-based
 	int getReadPosition();
 	

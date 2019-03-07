@@ -10,6 +10,7 @@ import lib.util.position.AllAlignmentBlocksPositionProvider;
 import lib.util.position.CombinedPositionProvider;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
+import lib.util.position.UnmodifiablePosition;
 import lib.recordextended.SAMRecordExtended;
 
 public class FR_SECONDSTRAND_LocationInterpreter 
@@ -43,10 +44,15 @@ implements LocationInterpreter {
 	}
 		
 	private Position getArrestPositionPEhelper(SAMRecordExtended recordExtended, CoordinateTranslator translator) {
-		if (recordExtended.getSAMRecord().getReadNegativeStrandFlag()) {
-			return getLastAlignmentPosition(recordExtended, translator);
+		final SAMRecord record = recordExtended.getSAMRecord();
+		int refPos = -1;
+		if (record.getReadNegativeStrandFlag()) {
+			refPos = record.getMateAlignmentStart();
+		} else {
+			refPos = record.getAlignmentStart() + Math.abs(record.getInferredInsertSize()) - 1;
 		}
-		return getFirstAlignmentPosition(recordExtended, translator);
+		final int winPos = translator.reference2windowPosition(refPos);
+		return new UnmodifiablePosition(refPos, -1, winPos, null);
 	}
 	
 	private Position getArrestPositionPE(SAMRecordExtended recordExtended, CoordinateTranslator translator) {
@@ -60,8 +66,7 @@ implements LocationInterpreter {
 			return getArrestPositionSE(recordExtended, translator);
 		}
 		
-		final SAMRecordExtended mate = recordExtended.getMate();
-		return getArrestPositionPEhelper(mate, translator);
+		return getArrestPositionPEhelper(recordExtended, translator);
 	}
 	
 	@Override
@@ -130,5 +135,5 @@ implements LocationInterpreter {
 
 		return new AllAlignmentBlocksPositionProvider(recordExtended, translator);
 	}
-	
+
 }

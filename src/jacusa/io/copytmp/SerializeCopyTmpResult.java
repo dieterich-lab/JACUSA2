@@ -47,7 +47,7 @@ public class SerializeCopyTmpResult implements CopyTmpResult {
 
 		try {
 			// create temporary file for this thread
-			tmpResultFilename = createTmpResultFilename(threadId);
+			tmpResultFilename 				= createTmpResultFilename(threadId);
 			// write object(s)
 			final FileOutputStream fos 		= new FileOutputStream(tmpResultFilename);
 			final BufferedOutputStream bos 	= new BufferedOutputStream(fos);
@@ -84,6 +84,7 @@ public class SerializeCopyTmpResult implements CopyTmpResult {
 	public void closeTmpReader() throws IOException {
 		if (objectInputStream != null) {
 			objectInputStream.close();
+			objectInputStream = null;
 		}
 	}
 	
@@ -91,6 +92,7 @@ public class SerializeCopyTmpResult implements CopyTmpResult {
 	public void closeTmpWriter() throws IOException {
 		if (objectOutputStream != null) {
 			objectOutputStream.close();
+			objectOutputStream = null;
 		}
 	}
 
@@ -123,12 +125,12 @@ public class SerializeCopyTmpResult implements CopyTmpResult {
 			objectInputStream 				= new ObjectInputStream(bis);
 		}
 		
-		int copiedResults = 0;
+		int copiedResults 		= 0;
 		final int storedResults = iteration2storedResults.get(iteration);
 		
 		while (storedResults > copiedResults) {
 			try {
-				final Object obj = objectInputStream.readObject();
+				final Object obj 	= objectInputStream.readObject();
 				final Result result = (Result)obj;
 				resultWriter.writeResult(result);
 			} catch (ClassNotFoundException e) {

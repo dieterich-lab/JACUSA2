@@ -254,7 +254,7 @@ extends AbstractMethod {
 	public static class Factory extends AbstractMethod.AbstractFactory {
 	
 		public static final String NAME = "pileup";
-		public static final String DESC = "samtools like mpileup (2 conditions)";
+		public static final String DESC = "SAMtools like mpileup - 2 conditions";
 		
 		public Factory(final int conditions) {
 			super(NAME, DESC, conditions);

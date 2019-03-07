@@ -3,6 +3,7 @@ package lib.util;
 import java.io.PrintStream;
 import java.util.List;
 
+import jacusa.VersionInfo;
 import lib.cli.CLI;
 import lib.worker.WorkerDispatcher;
 
@@ -11,7 +12,7 @@ public abstract class AbstractTool {
 	public static final String CALL_PREFIX = "JACUSA2 Version: ";
 	
 	private final String name;
-	private final String version;
+	private final VersionInfo versionInfo;
 	
 	private final String[] args;
 
@@ -24,12 +25,12 @@ public abstract class AbstractTool {
 	private static Logger logger;
 
 	protected AbstractTool(
-			final String name, final String version, 
+			final String name, final VersionInfo versionInfo, 
 			final String[] args,
 			final List<AbstractMethod.AbstractFactory> factories) {
-		this.name 		= name;
-		this.version 	= version;
-		this.args 		= args;
+		this.name 			= name;
+		this.versionInfo 	= versionInfo;
+		this.args 			= args;
 
 		cli = new CLI(factories);
 		
@@ -83,7 +84,7 @@ public abstract class AbstractTool {
 	public String getCall() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(CALL_PREFIX);
-		sb.append(version);
+		sb.append(versionInfo.formatVersion());
 		for(final String arg : args) {
 			sb.append(" " + arg);
 		}
@@ -95,7 +96,11 @@ public abstract class AbstractTool {
 	}
 	
 	public String getVersion() {
-		return version;
+		return versionInfo.formatVersion();
+	}
+	
+	public String getLibraries() {
+		return versionInfo.formatLibs();
 	}
 	
 	public static Logger getLogger() {

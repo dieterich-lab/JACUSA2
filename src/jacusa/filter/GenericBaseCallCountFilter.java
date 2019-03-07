@@ -60,7 +60,6 @@ public class GenericBaseCallCountFilter extends AbstractFilter {
 			variantBases = ParallelData.getVariantBases(alleles, bccs);
 		}
 
-		// TODO do we need this? variantBases.retainAll(alleles);
 		return filter(variantBases, parallelData);
 	}
 

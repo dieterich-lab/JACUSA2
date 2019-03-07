@@ -13,8 +13,8 @@ public class CopyTmpExecuter {
 	public CopyTmpExecuter(
 			final List<Integer> threadIds, 
 			final List<AbstractWorker> workerContainer) {
-		this.threadIds = threadIds;
-		this.workerContainer = workerContainer;
+		this.threadIds 			= threadIds;
+		this.workerContainer 	= workerContainer;
 	}
 
 	public void copy() throws IOException {

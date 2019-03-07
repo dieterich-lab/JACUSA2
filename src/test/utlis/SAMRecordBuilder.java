@@ -140,6 +140,13 @@ public class SAMRecordBuilder {
 		
 		SamPairUtil.setMateInfo(record, record2, true);
 		
+		// inconsistent SAM and htsjdk definition of fragment and insertion length
+		final int fragmentLength = Math.max(record.getAlignmentEnd(), record2.getAlignmentEnd()) - 
+				Math.min(refStart, refStart2) + 1;
+		// according to STAR
+		record.setInferredInsertSize(-fragmentLength);
+		record2.setInferredInsertSize(-fragmentLength);
+		
 		final ToySamReader reader = new ToySamReader();
 		reader.addPair(record, record2);
 		final SAMFileSource fileSource = new SAMFileSource(reader, null);
@@ -272,98 +279,97 @@ public class SAMRecordBuilder {
 		
 		@Override
 		public void close() throws IOException {
-			// TODO Auto-generated method stub
+			// not needed
 			
 		}
 
 		@Override
 		public SAMFileHeader getFileHeader() {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public Type type() {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public String getResourceDescription() {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public boolean hasIndex() {
-			// TODO Auto-generated method stub
+			// not needed
 			return false;
 		}
 
 		@Override
 		public Indexing indexing() {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public SAMRecordIterator iterator() {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public SAMRecordIterator query(String sequence, int start, int end, boolean contained) {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public SAMRecordIterator queryOverlapping(String sequence, int start, int end) {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public SAMRecordIterator queryContained(String sequence, int start, int end) {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public SAMRecordIterator query(QueryInterval[] intervals, boolean contained) {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public SAMRecordIterator queryOverlapping(QueryInterval[] intervals) {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public SAMRecordIterator queryContained(QueryInterval[] intervals) {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public SAMRecordIterator queryUnmapped() {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public SAMRecordIterator queryAlignmentStart(String sequence, int start) {
-			// TODO Auto-generated method stub
+			// not needed
 			return null;
 		}
 
 		@Override
 		public SAMRecord queryMate(SAMRecord rec) {
 			return read2read.get(rec);
-			// TODO return read2read.entrySet().iterator().next().getValue();
 		}
 		
 	}

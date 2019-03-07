@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.provider.Arguments;
 
+import jacusa.VersionInfo;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.ShowVersionOption;
 import lib.util.AbstractTool;
@@ -28,7 +29,10 @@ implements ACOptionTest<String> {
 		myOut = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(myOut));
 		
-		tool = new AbstractTool("test", EXPECTED_VERSION, new String[] {}, new ArrayList<>() ) {
+		tool = new AbstractTool(
+				"test", new VersionInfo("master", EXPECTED_VERSION, new String[] {}), 
+				new String[] {}, 
+				new ArrayList<>() ) {
 			
 			@Override
 			protected String getEpilog() {

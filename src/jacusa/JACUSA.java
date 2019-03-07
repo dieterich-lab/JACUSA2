@@ -51,7 +51,7 @@ public class JACUSA extends AbstractTool {
 	
 	public JACUSA(final String args[]) {
 		super(
-				"JACUSA", VersionInfo.format(), 
+				"JACUSA", new VersionInfo(), 
 				args,
 				Arrays.asList( // this list defines the available methods
 						

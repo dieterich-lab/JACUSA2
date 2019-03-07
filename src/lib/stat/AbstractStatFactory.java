@@ -24,7 +24,6 @@ public abstract class AbstractStatFactory {
 
 	/**
 	 * Returns a new instance of this StatisticCalculator.
-	 * @param threshold TODO
 	 * @param threshold
 	 * @return
 	 */

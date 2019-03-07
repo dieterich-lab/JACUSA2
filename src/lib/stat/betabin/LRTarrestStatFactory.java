@@ -8,13 +8,7 @@ import lib.stat.AbstractStatFactory;
 import lib.stat.dirmult.DirMultCLIprocessing;
 import lib.stat.sample.provider.arrest.LRTarrestCountSampleProvider;
 
-/**
- * TODO implement this test-statistic
- * 
- * @param 
- */
-public class LRTarrestStatFactory 
-extends AbstractStatFactory {
+public class LRTarrestStatFactory extends AbstractStatFactory {
 
 	private final static String NAME = "BetaBin"; 
 	private final static String DESC = "Minka Newton iteration method";

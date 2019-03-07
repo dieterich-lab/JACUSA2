@@ -18,12 +18,6 @@ public final class CLIUtil {
 	}
 
 	public static CommandLine processCLI(String line, final Options options) throws ParseException {
-		/*
-		if (options.getOptions().size() == 0) { // TODO do we need this|| line == null || line.isEmpty()
-			return null;
-		}
-		*/
-	
 		final String[] args = line.split("\\s+");
 		final CommandLineParser parser = new DefaultParser();
 		

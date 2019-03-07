@@ -9,7 +9,6 @@ import lib.data.storage.AbstractStorage;
 import lib.data.storage.WindowCoverage;
 import lib.data.storage.arrest.LocationInterpreter;
 import lib.data.storage.container.SharedStorage;
-import lib.util.Base;
 import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 import lib.util.position.Position;
@@ -60,28 +59,29 @@ implements WindowCoverage {
 				pos.getRecordExtended(), 
 				getCoordinateController().getCoordinateTranslator());
 
-		addBaseCall(
-				pos.getReferencePosition(), 
-				pos.getWindowPosition(), 
-				arrestPos.getReferencePosition(), 
-				pos.getReadBaseCall());
+		final ArrestPosition2baseCallCount ap2bcc = get(
+				pos.getReferencePosition(), pos.getWindowPosition());
+		if (arrestPos == null) {
+			ap2bcc.addBaseCall(pos.getReadBaseCall());
+		} else {
+			ap2bcc.addBaseCall(arrestPos.getReferencePosition(), pos.getReadBaseCall());
+		}
 	}
-	
-	protected void addBaseCall(
-			final int refPos, final int winPos, final int arrestPosition, 
-			final Base base) {
 
+	private ArrestPosition2baseCallCount get(final int refPos, final int winPos) {
+		ArrestPosition2baseCallCount ap2bcc = null;
 		if (winPos >= 0) {
 			if (winPos2ap2bcc[winPos] == null) {
 				winPos2ap2bcc[winPos] = new ArrestPosition2baseCallCount();
 			}
-			winPos2ap2bcc[winPos].addBaseCall(arrestPosition, base);
+			ap2bcc = winPos2ap2bcc[winPos];
 		} else {
 			if (! refPos2ap2bcc.containsKey(refPos)) {
 				refPos2ap2bcc.put(refPos, new ArrestPosition2baseCallCount());
 			}
-			refPos2ap2bcc.get(refPos).addBaseCall(arrestPosition, base);
+			ap2bcc = refPos2ap2bcc.get(refPos);
 		}
+		return ap2bcc;
 	}
 	
 	@Override

@@ -22,7 +22,6 @@ import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
 import lib.util.Base;
 import test.lib.data.count.basecall.ArrayBaseCallCountTest.ToArrayBaseCallCountArgumentConverter;
 
-// TODO adjust to new class
 @TestInstance(Lifecycle.PER_CLASS)
 class ArrestPosition2baseCallCountTest {
 

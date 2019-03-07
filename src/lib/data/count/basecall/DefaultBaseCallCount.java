@@ -293,21 +293,26 @@ public class DefaultBaseCallCount extends AbstractBaseCallCount {
 			int t = 0;
 
 			for (int baseIndex = 0; baseIndex < cols.length; ++baseIndex) {
+				final int count = Integer.parseInt(cols[baseIndex]);
+				if (count < 0) {
+					throw new IllegalArgumentException(); 
+				}
+				
 				switch (baseIndex) {
 				case 0:
-					a = Integer.parseInt(cols[baseIndex]);
+					a = count;
 					break;
 
 				case 1:
-					c = Integer.parseInt(cols[baseIndex]);
+					c = count;
 					break;
 					
 				case 2:
-					g = Integer.parseInt(cols[baseIndex]);
+					g = count;
 					break;
 					
 				case 3:
-					t = Integer.parseInt(cols[baseIndex]);
+					t = count;
 					break;
 					
 				default:

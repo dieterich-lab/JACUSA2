@@ -257,7 +257,7 @@ class BaseSubstitutionRecordProcessorTest {
 						refStart2, negativeStrand2, cigarStr2, readSeq2)
 			
 				.getRecords().stream()
-				.map(r -> new SAMRecordExtended(r))
+				.map(r -> new SAMRecordExtended(r, r.getFileSource().getReader()))
 				.collect(Collectors.toList());
 	}
 	

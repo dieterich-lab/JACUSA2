@@ -53,7 +53,8 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 	private CoordinateTranslator getTranslator() {
 		return coordinateController.getCoordinateTranslator();
 	}
-	
+
+	@Override
 	public void addRecordExtended(final SAMRecordExtended recordExtended) {
 		final AllAlignmentBlocksPositionProvider positionProvider = 
 				new AllAlignmentBlocksPositionProvider(recordExtended, getTranslator());
@@ -66,26 +67,6 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 						.getReferenceBase(position.getReferencePosition())
 						.getByte();
 		}
-		
-		/* TODO remove all code
-		for (final AlignmentBlock block : recordExtended.getSAMRecord().getAlignmentBlocks()) {
-			final int refStart = block.getReferenceStart();
-			final int readStart = block.getReadStart() - 1;
-			final int length = block.getLength();
-			
-			final WindowPositionGuard windowPositionGuard = coordinateController.convert(refStart, readStart, length);
-			if (windowPositionGuard.isValid()) {
-				for (int i = 0; i < windowPositionGuard.getLength(); ++i) {
-					final int refPos = windowPositionGuard.getReferencePosition() + i;
-					reference[windowPositionGuard.getWindowPosition() + i] = 
-							recordExtended
-								.getRecordReferenceProvider()
-								.getReferenceBase(refPos)
-								.getByte();
-				}
-			}
-		}
-		*/
 	}
 
 	@Override

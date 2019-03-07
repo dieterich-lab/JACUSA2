@@ -130,7 +130,6 @@ public class SAMCoordinateAdvancedProvider implements CoordinateProvider {
 		}
 		if (found > 0) {
 			final int end = Math.min(newPosition + reservedWindowSize, sequenceRecord.getSequenceLength());
-			// TODO zero or one 
 			return new OneCoordinate(
 					sequenceRecord.getSequenceName(), 
 					newPosition, end, 

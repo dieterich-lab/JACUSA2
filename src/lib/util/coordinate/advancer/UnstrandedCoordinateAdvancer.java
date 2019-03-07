@@ -24,8 +24,6 @@ public class UnstrandedCoordinateAdvancer implements CoordinateAdvancer {
 	@Override
 	public void adjustPosition(final Coordinate coordinate) {
 		this.coordinate.setPosition(coordinate);
-		// TODO test
-		// this.coordinate.setStrand(coordinate.getStrand());
 	}
 	
 }

@@ -21,9 +21,6 @@ import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.BaseCallCountFactory;
 import lib.util.Base;
 
-// TODO
-// NOT SO IMPORTANT!!! * test sep: \t ;
-
 @TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractBaseCallCountTest {
 
@@ -59,8 +56,7 @@ public abstract class AbstractBaseCallCountTest {
 		assertThrows(IllegalArgumentException.class, () -> parser.parse("10,0,0,0"));
 		// not a number
 		assertThrows(IllegalArgumentException.class, () -> parser.parse("10;0;0,A"));
-		// TODO negative number
-		// assertThrows(IllegalArgumentException.class, () -> parser.parse("10,0,0,-10"));
+		assertThrows(IllegalArgumentException.class, () -> parser.parse("10;0;0;-10"));
 	}
 	
 	/**
@@ -263,7 +259,6 @@ public abstract class AbstractBaseCallCountTest {
 	
 	Stream<Arguments> testIncrement() {
 		return Stream.of(
-				// FIXME Arrays does not support Arguments.of(Arrays.asList(0, 0, 0, 0), Base.N, Arrays.asList(0, 0, 0, 0)),
 				Arguments.of(parser.parse("5;0;0;0"), Base.A, parser.parse("6;0;0;0")),
 				Arguments.of(parser.parse("0;0;0;0"), Base.C, parser.parse("0;1;0;0")),
 				Arguments.of(parser.parse("0;0;10;0"), Base.G, parser.parse("0;0;11;0")),
@@ -283,7 +278,6 @@ public abstract class AbstractBaseCallCountTest {
 	
 	Stream<Arguments> testSet() {
 		return Stream.of(
-				// FIXME Arrays does not support Arguments.of(Arrays.asList(0, 0, 0, 0), Base.N, 10, Arrays.asList(0, 0, 0, 0)),
 				Arguments.of(parser.parse("1;0;0;0"), Base.A, 2, parser.parse("2;0;0;0")),
 				Arguments.of(parser.parse("0;1;0;0"), Base.C, 3, parser.parse("0;3;0;0")),
 				Arguments.of(parser.parse("0;0;1;0"), Base.G, 4, parser.parse("0;0;4;0")),
@@ -293,11 +287,6 @@ public abstract class AbstractBaseCallCountTest {
 
 	Stream<Arguments> testAddBaseBaseCallCount() {
 		return Stream.of(
-				/* FIXME Arrays does not support Arguments.of(Arrays.asList(1, 0, 0, 0), 
-						Base.N,
-						Arrays.asList(0, 0, 1, 0),
-						Arrays.asList(1, 0, 0, 0)),
-				 */
 				Arguments.of(
 						parser.parse("0;1;1;1"), 
 						Base.A, 
@@ -341,12 +330,6 @@ public abstract class AbstractBaseCallCountTest {
 
 	Stream<Arguments> testAddDestSrcBaseCallCount() {
 		return Stream.of(
-				/* FIXME Arrays does not support Arguments.of(Arrays.asList(1, 0, 0, 0), 
-						Base.N,
-						Base.N,
-						Arrays.asList(0, 0, 1, 0),
-						Arrays.asList(1, 0, 0, 0)),
-				 */
 				Arguments.of(parser.parse("0;1;1;1"), 
 						Base.A,
 						Base.A, 
@@ -376,11 +359,6 @@ public abstract class AbstractBaseCallCountTest {
 
 	Stream<Arguments> testSubtractBaseBaseCallCount() {
 		return Stream.of(
-				/* FIXME Arrays does not support Arguments.of(Arrays.asList(1, 0, 0, 0), 
-						Base.N,
-						Arrays.asList(0, 0, 1, 0),
-						Arrays.asList(1, 0, 0, 0)),
-				 */
 				Arguments.of(
 						parser.parse("0;1;1;1"), 
 						Base.T, 
@@ -424,12 +402,6 @@ public abstract class AbstractBaseCallCountTest {
 
 	Stream<Arguments> testSubtractDestSrcBaseCallCount() {
 		return Stream.of(
-				/* FIXME Arrays does not support Arguments.of(parser.parse("1, 0, 0, 0), 
-						Base.N,
-						Base.N,
-						parser.parse("0, 0, 1, 0),
-						parser.parse("1, 0, 0, 0)),
-				 */
 				Arguments.of(parser.parse("4;1;1;1"), 
 						Base.A,
 						Base.A, 

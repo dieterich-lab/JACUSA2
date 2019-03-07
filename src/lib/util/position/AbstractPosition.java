@@ -46,11 +46,17 @@ abstract class AbstractPosition implements Position {
 			return true;
 		}
 		final Position pos = (Position)obj;
+		
+		if (recordExtended != null && pos.getRecordExtended() != null && 
+				! recordExtended.getSAMRecord().equals(pos.getRecordExtended().getSAMRecord())) {
+			
+			return false;
+		}
+		
 		return 
 				refPos == pos.getReferencePosition() && 
 				readPos == pos.getReadPosition() &&
-				winPos == pos.getWindowPosition() &&
-				recordExtended.getSAMRecord().equals(pos.getRecord());
+				winPos == pos.getWindowPosition();
 	}
 	
 	@Override
@@ -59,7 +65,9 @@ abstract class AbstractPosition implements Position {
 		hash = 31 * hash + refPos;
 		hash = 31 * hash + readPos;
 		hash = 31 * hash + winPos;
-		hash = 31 * hash + getRecord().hashCode();
+		if (getRecordExtended() != null) {
+			hash = 31 * hash + getRecord().hashCode();
+		}
 		return hash;
 	}
 	
