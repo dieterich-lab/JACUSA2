@@ -65,12 +65,14 @@ public interface NominalData {
 		@Override
 		public String wrap(NominalData o) {
 			final StringBuilder sb = new StringBuilder();
-			sb.append(o.getCategories());
 			for (int replicate = 0; replicate < o.getReplicates(); replicate++) {
 				for (int category = 0; category < o.getCategories(); category++) {
-					sb.append(sep);
+					if (category > 0) {
+						sb.append(sep);
+					}
 					sb.append(o.getReplicate(replicate, category));
 				}
+				sb.append('\n');
 			}
 			return sb.toString();
 		}
