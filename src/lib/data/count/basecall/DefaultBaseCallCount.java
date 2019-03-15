@@ -263,17 +263,8 @@ public class DefaultBaseCallCount extends AbstractBaseCallCount {
 	}
 	
 	/*
-	 * Factory and Parser
+	 * Parser
 	 */
-
-	public static class Factory extends BaseCallCountFactory<DefaultBaseCallCount> {
-		
-		@Override
-		public DefaultBaseCallCount create() {
-			return new DefaultBaseCallCount();
-		}
-		
-	}
 	
 	public static class Parser extends AbstractParser {
 

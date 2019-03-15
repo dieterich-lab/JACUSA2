@@ -140,17 +140,8 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 	}
 	
 	/*
-	 * Factory and Parser
+	 * Parser
 	 */
-
-	public static class Factory extends BaseCallCountFactory<MapBaseCallCount> {
-		
-		@Override
-		public MapBaseCallCount create() {
-			return new MapBaseCallCount();
-		}
-		
-	}
 	
 	public static class Parser extends BaseCallCount.AbstractParser {
 

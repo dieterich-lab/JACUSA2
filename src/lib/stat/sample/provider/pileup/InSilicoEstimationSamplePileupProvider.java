@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import jacusa.JACUSA;
 import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
@@ -29,7 +28,7 @@ extends AbstractEstimationSamplePileupProvider {
 		if (parallelData.getCoordinate().getStrand() == STRAND.REVERSE) {
 			refBase = refBase.getComplement();
 		}
-		final BaseCallCount bcc = JACUSA.BCC_FACTORY.create();
+		final BaseCallCount bcc = BaseCallCount.create();
 		bcc.merge(parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount());
 		final SortedSet<Base> alleles = new TreeSet<>(bcc.getAlleles());
 		alleles.remove(refBase);

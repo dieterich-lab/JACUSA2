@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import jacusa.JACUSA;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.position.Position;
 import lib.util.Base;
@@ -57,7 +56,7 @@ implements WindowCoverage {
 		final byte baseQual	= pos.getReadBaseCallQuality();
 		
 		if (! winPos2bcqc.containsKey(winPos)) {
-			winPos2bcqc.put(winPos, JACUSA.BCQC_FACTORY.create());
+			winPos2bcqc.put(winPos, BaseCallQualityCount.create());
 		}
 		final BaseCallQualityCount base2qual2count = winPos2bcqc.get(winPos);
 		base2qual2count.increment(base, baseQual);

@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import htsjdk.samtools.util.StringUtil;
-import jacusa.JACUSA;
 import lib.data.Data;
 import lib.data.has.HasCoverage;
 import lib.io.InputOutput;
@@ -14,7 +13,7 @@ import lib.util.Base;
 public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Serializable {
 	
 	// empty 
-	static final BaseCallCount EMPTY = new UnmodifiableBaseCallCount(JACUSA.BCC_FACTORY.create());
+	static final BaseCallCount EMPTY = new UnmodifiableBaseCallCount(create());
 	
 	int getBaseCall(Base base);
 	Set<Base> getAlleles();
@@ -35,7 +34,12 @@ public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Seriali
 	}
 
 	static BaseCallCount newInstance() {
-		return JACUSA.BCC_FACTORY.create();
+		return create();
+	}
+
+	// factory to globally create BaseCallCount objects - there are different implementations
+	public static BaseCallCount create() { 
+		return new DefaultBaseCallCount();
 	}
 	
 	BaseCallCount subtract(Base base, BaseCallCount baseCallCount);

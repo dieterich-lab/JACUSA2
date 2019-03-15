@@ -3,7 +3,6 @@ package lib.data.storage.basecall;
 import java.util.Arrays;
 import java.util.Set;
 
-import jacusa.JACUSA;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.position.Position;
 import lib.util.Base;
@@ -55,7 +54,7 @@ implements WindowCoverage {
 		final byte baseQual	= pos.getReadBaseCallQuality();
 		
 		if (winPos2bcqc[winPos] == null) {
-			winPos2bcqc[winPos] = JACUSA.BCQC_FACTORY.create();
+			winPos2bcqc[winPos] = BaseCallQualityCount.create();
 		}
 		final BaseCallQualityCount base2qual2count = winPos2bcqc[winPos];
 		base2qual2count.increment(base, baseQual);
@@ -63,12 +62,6 @@ implements WindowCoverage {
 	
 	@Override
 	public void clear() {
-		/*
-		for (final BaseCallQualityCount bcqc : winPos2bcqc) {
-			if (bcqc != null && bcqc.getCoverage() > 0) {
-				bcqc.clear();
-			}
-		}*/
 		Arrays.fill(winPos2bcqc, null);
 	}
 

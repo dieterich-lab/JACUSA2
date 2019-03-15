@@ -5,7 +5,6 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.params.provider.Arguments;
 
-import jacusa.JACUSA;
 import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.DataContainer.AbstractBuilderFactory;
@@ -39,7 +38,7 @@ class NonHomozygousSiteTest extends AbstractParallelDataValidatorTest {
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
-											JACUSA.BCC_FACTORY.create().set(Base.T, 10))
+											BaseCallCount.create().set(Base.T, 10))
 									.build())
 							.build(),
 						false),
@@ -50,13 +49,13 @@ class NonHomozygousSiteTest extends AbstractParallelDataValidatorTest {
 									.withReferenceBase(Base.A)
 									.with(	
 											bccFetcher.getDataType(),
-											JACUSA.BCC_FACTORY.create().set(Base.T, 10))
+											BaseCallCount.create().set(Base.T, 10))
 									.build())
 							.withReplicate(1, 0, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
-											JACUSA.BCC_FACTORY.create().set(Base.A, 10))
+											BaseCallCount.create().set(Base.A, 10))
 									.build())
 							.build(),
 						true),
@@ -67,34 +66,34 @@ class NonHomozygousSiteTest extends AbstractParallelDataValidatorTest {
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
-											JACUSA.BCC_FACTORY.create().set(Base.A, 10))
+											BaseCallCount.create().set(Base.A, 10))
 									.build())
 							.withReplicate(0, 1, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
-											JACUSA.BCC_FACTORY.create().set(Base.A, 10))
+											BaseCallCount.create().set(Base.A, 10))
 
 									.build())
 							.withReplicate(1, 0, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
-											JACUSA.BCC_FACTORY.create().set(Base.A, 10))
+											BaseCallCount.create().set(Base.A, 10))
 
 									.build())
 							.withReplicate(1, 1, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
-											JACUSA.BCC_FACTORY.create().set(Base.A, 10))
+											BaseCallCount.create().set(Base.A, 10))
 
 									.build())
 							.withReplicate(2, 0, builderFactory.createBuilder(new OneCoordinate(), LibraryType.UNSTRANDED)
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
-											JACUSA.BCC_FACTORY.create()
+											BaseCallCount.create()
 												.set(Base.A, 10)
 												.set(Base.T, 10))
 									.build())
@@ -102,7 +101,7 @@ class NonHomozygousSiteTest extends AbstractParallelDataValidatorTest {
 									.withReferenceBase(Base.N)
 									.with(	
 											bccFetcher.getDataType(),
-											JACUSA.BCC_FACTORY.create()
+											BaseCallCount.create()
 												.set(Base.A, 10)
 												.set(Base.T, 10))
 									.build())

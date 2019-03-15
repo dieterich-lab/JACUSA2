@@ -5,12 +5,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 
+import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBaseCallCount;
 
 class DefaultBaseCallCountTest extends AbstractBaseCallCountTest {
 
 	public DefaultBaseCallCountTest() {
-		super(new DefaultBaseCallCount.Factory(), new DefaultBaseCallCount.Parser());
+		super(new DefaultBaseCallCount.Parser());
+	}
+	
+	@Override
+	BaseCallCount create() {
+		return new DefaultBaseCallCount();
 	}
 	
 	static public class ToDefaultBaseCallCountArgumentConverter extends SimpleArgumentConverter {

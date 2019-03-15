@@ -1,6 +1,5 @@
 package lib.data.count;
 
-import jacusa.JACUSA;
 import lib.data.Data;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
@@ -15,7 +14,7 @@ public class PileupCount implements Data<PileupCount> {
 	private BaseCallQualityCount baseCallQualCount;
 
 	public PileupCount() {
-		this(JACUSA.BCQC_FACTORY.create());
+		this(BaseCallQualityCount.create());
 	}
 	
 	public PileupCount(final BaseCallQualityCount baseCallQualCount) {
@@ -31,7 +30,7 @@ public class PileupCount implements Data<PileupCount> {
 	}
 	
 	public BaseCallCount getBaseCallCount() {
-		final BaseCallCount bcc = JACUSA.BCC_FACTORY.create();
+		final BaseCallCount bcc = BaseCallCount.create();
 		for (final Base base : baseCallQualCount.getAlleles()) {
 			int count = 0;
 			for (final byte baseQual : baseCallQualCount.getBaseCallQuality(base)) {

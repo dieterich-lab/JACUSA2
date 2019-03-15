@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import htsjdk.samtools.util.StringUtil;
-import jacusa.JACUSA;
 import lib.data.Data;
 import lib.data.count.basecall.ArrayBaseCallCount;
 import lib.data.count.basecall.BaseCallCount;
@@ -24,9 +23,6 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	private static final long serialVersionUID = 1L;
 
 	private static final int NO_ARREST_POS = -1;
-	
-	private static final BaseCallCount EMPTY = 
-			new UnmodifiableBaseCallCount(JACUSA.BCC_FACTORY.create());
 	
 	/**
 	 * stores base call count information for each position
@@ -63,7 +59,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	 */
 	public ArrestPosition2baseCallCount addBaseCall(final int arrestPosition, final Base base) {
 		if (! aPos2bcc.containsKey(arrestPosition)) {
-			aPos2bcc.put(arrestPosition, JACUSA.BCC_FACTORY.create());
+			aPos2bcc.put(arrestPosition, BaseCallCount.create());
 		}
 		aPos2bcc.get(arrestPosition).increment(base);
 		return this;
@@ -93,7 +89,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	 */
 	public BaseCallCount getArrestBaseCallCount(final int refPos) {
 		if (! contains(refPos)) {
-			return EMPTY;
+			return BaseCallCount.EMPTY;
 		}
 		return new UnmodifiableBaseCallCount(aPos2bcc.get(refPos));
 	}
@@ -114,7 +110,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 
 	private BaseCallCount getTotalBaseCallCountHelper() {
 		if (cTotBcc == null) {
-			cTotBcc = JACUSA.BCC_FACTORY.create();
+			cTotBcc = BaseCallCount.create();
 			for (final BaseCallCount tmpBcc : aPos2bcc.values()) {
 				cTotBcc.add(tmpBcc);
 			}

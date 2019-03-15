@@ -3,7 +3,6 @@ package lib.data.storage.basecall;
 import java.util.HashMap;
 import java.util.Map;
 
-import jacusa.JACUSA;
 import lib.util.Base;
 import lib.util.Util;
 import lib.data.count.basecall.BaseCallCount;
@@ -28,7 +27,7 @@ implements Storage {
 	@Override
 	void increment(int winPos, Base base) {
 		if (! winPos2bcc.containsKey(winPos)) {
-			winPos2bcc.put(winPos, JACUSA.BCC_FACTORY.create());
+			winPos2bcc.put(winPos, BaseCallCount.create());
 		}
 		winPos2bcc.get(winPos).increment(base);
 	}

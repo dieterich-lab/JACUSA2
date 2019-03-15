@@ -86,6 +86,12 @@ public interface BaseCallQualityCount extends Serializable {
 		}
 		return true;
 	}
+
+	// globally create BaseCallQualtityCount objects - there are different implementations
+	// used to define PileupCount for variant calling
+	public static BaseCallQualityCount create() {
+		return new MapBaseCallQualityCount();
+	}
 	
 	/*
 	 * Parser

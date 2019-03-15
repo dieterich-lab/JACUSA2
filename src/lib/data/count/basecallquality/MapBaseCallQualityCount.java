@@ -176,17 +176,8 @@ public class MapBaseCallQualityCount implements BaseCallQualityCount {
 	}
 	
 	/*
-	 * Factory and Parser
+	 * Parser
 	 */
-	
-	public static class Factory extends BaseCallQualityCountFactory<MapBaseCallQualityCount> {
-		
-		@Override
-		public MapBaseCallQualityCount create() {
-			return new MapBaseCallQualityCount();
-		}
-
-	}
 	
 	public static class Parser extends BaseCallQualityCount.AbstractParser {
 

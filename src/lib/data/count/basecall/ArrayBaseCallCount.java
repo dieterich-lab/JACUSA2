@@ -135,17 +135,8 @@ public class ArrayBaseCallCount extends AbstractBaseCallCount {
 	}
 	
 	/*
-	 * Factory and Parser
+	 * Parser
 	 */
-
-	public static class Factory extends BaseCallCountFactory<ArrayBaseCallCount> {
-
-		@Override
-		public ArrayBaseCallCount create() {
-			return new ArrayBaseCallCount();
-		}
-
-	}
 
 	public static class Parser extends AbstractParser {
 

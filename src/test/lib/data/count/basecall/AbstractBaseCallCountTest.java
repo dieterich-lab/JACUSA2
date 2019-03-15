@@ -18,21 +18,18 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.count.basecall.BaseCallCountFactory;
 import lib.util.Base;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractBaseCallCountTest {
 
-	private final BaseCallCountFactory<? extends BaseCallCount> factory;
 	private final BaseCallCount.AbstractParser parser;
 
-	public AbstractBaseCallCountTest(
-			final BaseCallCountFactory<? extends BaseCallCount> factory,
-			final BaseCallCount.AbstractParser parser) {
-		this.factory = factory;
+	public AbstractBaseCallCountTest(final BaseCallCount.AbstractParser parser) {
 		this.parser = parser;
 	}
+	
+	abstract BaseCallCount create();
 	
 	/**
 	 * Test method for {@link lib.data.count.basecall.BaseCallCount.AbstractParser#parse(String)}.
@@ -169,7 +166,7 @@ public abstract class AbstractBaseCallCountTest {
 	}
 
 	/**
-	 * Test method for {@link lib.data.count.basecall.BaseCallCount#subtract(Base, Base, BaseCallCount)}.
+	 * Test method for {@link lib.data.count.basecall.BaseCallCount#subtract(Base, Baabstractse, BaseCallCount)}.
 	 */
 	@DisplayName("Should subtract base call count correctly")
 	@ParameterizedTest(name = "Subtract Base {1} in BaseCallCount {0} and base {2} in {3} resulting {4} ")
@@ -202,25 +199,25 @@ public abstract class AbstractBaseCallCountTest {
 	void testGetCoverage(BaseCallCount baseCallCount, int expectedCoverage) {
 		assertEquals(expectedCoverage, baseCallCount.getCoverage());
 	}
-	
+
 	/*
 	 * Method source
 	 */
 	
 	Stream<Arguments> testParserParse() {
 		return Stream.of(
-				Arguments.of("0;0;0;0", factory.create()),
-				Arguments.of("1;0;0;0", factory.create().set(Base.A, 1)),
-				Arguments.of("1;2;0;0", factory.create().set(Base.A, 1).set(Base.C, 2)),
+				Arguments.of("0;0;0;0", create()),
+				Arguments.of("1;0;0;0", create().set(Base.A, 1)),
+				Arguments.of("1;2;0;0", create().set(Base.A, 1).set(Base.C, 2)),
 				Arguments.of(
 						"1;2;3;0", 
-						factory.create()
+						create()
 							.set(Base.A, 1)
 							.set(Base.C, 2)
 							.set(Base.G, 3)),
 				Arguments.of(
 						"1;2;3;4", 
-						factory.create()
+						create()
 							.set(Base.A, 1)
 							.set(Base.C, 2)
 							.set(Base.G, 3)
@@ -229,17 +226,17 @@ public abstract class AbstractBaseCallCountTest {
 	
 	Stream<Arguments> testParserWrap() {
 		return Stream.of(
-				Arguments.of(factory.create(), Character.toString(parser.getEmpty())),
-				Arguments.of(factory.create().set(Base.A, 1), "1;0;0;0"),
-				Arguments.of(factory.create().set(Base.A, 1).set(Base.C, 2), "1;2;0;0"),
+				Arguments.of(create(), Character.toString(parser.getEmpty())),
+				Arguments.of(create().set(Base.A, 1), "1;0;0;0"),
+				Arguments.of(create().set(Base.A, 1).set(Base.C, 2), "1;2;0;0"),
 				Arguments.of(
-						factory.create()
+						create()
 							.set(Base.A, 1)
 							.set(Base.C, 2)
 							.set(Base.G, 3),
 						"1;2;3;0"),
 				Arguments.of(
-						factory.create()
+						create()
 							.set(Base.A, 1)
 							.set(Base.C, 2)
 							.set(Base.G, 3)

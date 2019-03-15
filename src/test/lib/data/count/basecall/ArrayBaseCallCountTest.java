@@ -7,13 +7,18 @@ import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 
 import lib.data.count.basecall.ArrayBaseCallCount;
+import lib.data.count.basecall.BaseCallCount;
 
 @DisplayName("Test Array based implementation of BaseCallCount")
 public class ArrayBaseCallCountTest extends AbstractBaseCallCountTest {
 
 	public ArrayBaseCallCountTest() {
-		super(new ArrayBaseCallCount.Factory(),
-				new ArrayBaseCallCount.Parser());
+		super(new ArrayBaseCallCount.Parser());
+	}
+	
+	@Override
+	BaseCallCount create() {
+		return new ArrayBaseCallCount();
 	}
 	
 	static public class ToArrayBaseCallCountArgumentConverter extends SimpleArgumentConverter {

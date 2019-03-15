@@ -6,13 +6,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 
+import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.MapBaseCallCount;
 
 @DisplayName("Test Map based implementation of BaseCallCount")
 class MapBaseCallCountTest extends AbstractBaseCallCountTest {
 
 	public MapBaseCallCountTest() {
-		super(new MapBaseCallCount.Factory(), new MapBaseCallCount.Parser());
+		super(new MapBaseCallCount.Parser());
+	}
+	
+	@Override
+	BaseCallCount create() {
+		return new MapBaseCallCount(); 
 	}
 	
 	static public class ToMapBaseCallCountArgumentConverter extends SimpleArgumentConverter {

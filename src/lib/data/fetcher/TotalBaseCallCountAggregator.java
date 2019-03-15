@@ -2,7 +2,6 @@ package lib.data.fetcher;
 
 import java.util.List;
 
-import jacusa.JACUSA;
 import lib.data.DataContainer;
 import lib.data.count.basecall.BaseCallCount;
 
@@ -16,7 +15,7 @@ public class TotalBaseCallCountAggregator implements Fetcher<BaseCallCount> {
 	
 	@Override
 	public BaseCallCount fetch(DataContainer container) {
-		final BaseCallCount totalBcc = JACUSA.BCC_FACTORY.create();
+		final BaseCallCount totalBcc = BaseCallCount.create();
 		for (final Fetcher<BaseCallCount> bccFetcher : bccFetchers) {
 			totalBcc.add(bccFetcher.fetch(container));
 		}

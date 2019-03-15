@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import jacusa.JACUSA;
 import jacusa.filter.factory.FilterFactory;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.GeneralParameter;
@@ -96,7 +95,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			add(builder, dataType);
 			final BaseSubstitution2BaseCallCount bsc = builder.get(dataType);
 			for (final BaseSubstitution baseSub : parameter.getReadSubstitutions()) {
-				bsc.set(baseSub, JACUSA.BCC_FACTORY.create());
+				bsc.set(baseSub, BaseCallCount.create());
 			}
 		}
 		

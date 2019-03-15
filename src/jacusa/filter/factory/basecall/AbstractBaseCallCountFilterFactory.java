@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.commons.cli.Option;
 
-import jacusa.JACUSA;
 import jacusa.filter.Filter;
 import jacusa.filter.FilterByRatio;
 import jacusa.filter.GenericBaseCallCountFilter;
@@ -107,7 +106,7 @@ implements HasFilterDistance, HasFilterMinRatio {
 		final BaseCallCountFilteredData filteredData = builder.get(dataType);
 		// make sure that in base call count filtered data there is a bcc for this filter
 		if (! filteredData.contains(getC())) {
-			filteredData.add(getC(), JACUSA.BCC_FACTORY.create());
+			filteredData.add(getC(), BaseCallCount.create());
 		}
 	}
 	
