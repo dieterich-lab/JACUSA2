@@ -62,7 +62,7 @@ public class DefaultBED6adder implements BED6adder {
 		if (Double.isNaN(stat)) {
 			return Character.toString(InputOutput.EMPTY_FIELD);
 		}
-		return Double.toString(stat);
+		return String.format("%.5f%", Double.toString(stat));
 	}
 	
 }

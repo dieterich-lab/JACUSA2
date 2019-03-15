@@ -18,8 +18,9 @@ import lib.util.LibraryType;
 import lib.util.Parser;
 import lib.util.coordinate.Coordinate;
 
-public interface Result 
-extends HasParallelData, Serializable {
+public interface Result extends HasParallelData, Serializable {
+	
+	public static int TOTAL = -1;
 	
 	Info getResultInfo();
 	Info getResultInfo(int valueIndex);

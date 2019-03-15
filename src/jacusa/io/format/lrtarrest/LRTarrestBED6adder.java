@@ -35,9 +35,8 @@ public class LRTarrestBED6adder implements BED6adder {
 		}
 	}
 	
-	// TODO make this a method -1 | >= 0 (total | stratified)
 	private boolean isArrestPosition(final int valueIndex) {
-		return valueIndex == -1;
+		return valueIndex == Result.TOTAL;
 	}
 	
 }

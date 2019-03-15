@@ -40,7 +40,7 @@ public class LRTarrestDataAdder implements DataAdder {
 		final List<String> tmp = new ArrayList<>(2);
 		
 		int onePosition = -1;
-		if (valueIndex == -1) {
+		if (valueIndex == Result.TOTAL) {
 			onePosition = result.getParellelData().getCoordinate().get1Position();
 		} else {
 			onePosition = result.getParellelData().getCombinedPooledData()

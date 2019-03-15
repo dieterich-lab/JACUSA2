@@ -38,9 +38,7 @@ public class BaseSubstitutionBED6adder implements BED6adder {
 	public void addData(StringBuilder sb, int valueIndex, Result result) {
 		bed6adder.addData(sb, valueIndex, result);
 		sb.append(InputOutput.FIELD_SEP);
-		// TODO use something else than -1
-		// per default -1 corresponds to not stratified data
-		if (valueIndex == -1) { 
+		if (valueIndex == Result.TOTAL) { 
 			sb.append(InputOutput.EMPTY_FIELD);
 		} else if (valueIndex >= 0){
 			sb.append(baseSubs.get(valueIndex).toString());
