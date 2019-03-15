@@ -19,10 +19,8 @@ public class DefaultInfoAdder implements InfoAdder {
 		sb.append("info");
 
 		// add filtering info
-		if (parameter.getFilterConfig().hasFiters()) {
-			sb.append(InputOutput.FIELD_SEP);
-			sb.append("filter_info");
-		}
+		sb.append(InputOutput.FIELD_SEP);
+		sb.append("filter_info");
 
 		// always show reference base
 		sb.append(InputOutput.FIELD_SEP);
@@ -33,13 +31,16 @@ public class DefaultInfoAdder implements InfoAdder {
 	public void addData(StringBuilder sb, int valueIndex, Result result) {
 		final ParallelData parallelData = result.getParellelData();
 
+		// add result info
 		sb.append(InputOutput.FIELD_SEP);
 		sb.append(result.getResultInfo(valueIndex).combine());
 		
 		// add filtering info
+		sb.append(InputOutput.FIELD_SEP);
 		if (parameter.getFilterConfig().hasFiters()) {
-			sb.append(InputOutput.FIELD_SEP);
 			sb.append(result.getFilterInfo(valueIndex).combine());
+		} else {
+			sb.append(InputOutput.EMPTY_FIELD);
 		}
 
 		// always show reference

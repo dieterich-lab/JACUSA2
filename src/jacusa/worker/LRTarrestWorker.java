@@ -16,13 +16,14 @@ import lib.stat.sample.provider.EstimationSampleProvider;
 import lib.stat.sample.provider.pileup.RobustEstimationSamplePileupProvider;
 import lib.util.Info;
 import lib.util.ReplicateContainer;
+import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 import lib.worker.AbstractWorker;
 
 public class LRTarrestWorker
 extends AbstractWorker {
 
-	public static final String INFO_VARIANT_SCORE = "callStat";
+	public static final String INFO_VARIANT_SCORE = "call_score";
 	
 	private ParallelDataValidator validator;
 	
@@ -60,13 +61,13 @@ extends AbstractWorker {
 	@Override
 	protected Result process(final ParallelData parallelData) {
 		final Result result = stat.filter(parallelData);
-	
+		
 		if (validator.isValid(parallelData)) {
 			// store variant call result in info field
-			final Info info = result.getResultInfo();
+			final Info resultInfo = result.getResultInfo();
 			final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
 			final double score = dirMult.getScore(estimationSamples);;
-			info.add(INFO_VARIANT_SCORE, Double.toString(score));
+			resultInfo.add(INFO_VARIANT_SCORE, Util.format(score));
 		}
 		
 		return result;

@@ -21,15 +21,15 @@ implements Result {
 	private final SortedSet<Integer> valueIndex;
 	
 	public OneStatResult(final double stat, final ParallelData parallelData) {
-		this.stat = stat;
-		this.parallelData = parallelData;
+		this.stat 			= stat;
+		this.parallelData 	= parallelData;
 		
-		markedFiltered = false;
-		filterInfo = new Info();
-		resultInfo = new Info();
+		markedFiltered 	= false;
+		filterInfo 		= new Info();
+		resultInfo 		= new Info();
 		
 		valueIndex = new TreeSet<>();
-		valueIndex.add(-1);
+		valueIndex.add(Result.TOTAL);
 	}
 	
 	@Override
@@ -63,7 +63,7 @@ implements Result {
 	}
 	
 	@Override
-	public SortedSet<Integer> getValueIndex() {
+	public SortedSet<Integer> getValuesIndex() {
 		return valueIndex;
 	}
 	

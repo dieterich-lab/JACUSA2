@@ -27,16 +27,12 @@ public class LRTarrestBED6adder implements BED6adder {
 		bed6Adder.addData(sb, valueIndex, result);
 		sb.append(InputOutput.FIELD_SEP);
 		final DataContainer combinedPooledContainer = result.getParellelData().getCombinedPooledData();
-		if (isArrestPosition(valueIndex)) {
+		if (valueIndex == Result.TOTAL) {
 			sb.append(InputOutput.EMPTY_FIELD);
 		} else {
 			final List<Integer> arrestPositions = combinedPooledContainer.getArrestPos2BaseCallCount().getPositions();
 			sb.append(arrestPositions.get(valueIndex));
 		}
-	}
-	
-	private boolean isArrestPosition(final int valueIndex) {
-		return valueIndex == Result.TOTAL;
 	}
 	
 }

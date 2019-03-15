@@ -25,9 +25,9 @@ public class RTarrestBaseSubstitutionDataAdder implements DataAdder {
 			final List<BaseSubstitution> baseSubs, 
 			final DataAdder dataAdder) {		
 		
-		this.bccParser = bccParser;
-		this.baseSubs = baseSubs;
-		this.dataAdder = dataAdder;
+		this.bccParser 	= bccParser;
+		this.baseSubs 	= baseSubs;
+		this.dataAdder 	= dataAdder;
 	}
 
 	@Override
@@ -37,8 +37,8 @@ public class RTarrestBaseSubstitutionDataAdder implements DataAdder {
 
 	@Override
 	public void addData(StringBuilder sb, int valueIndex, int conditionIndex, int replicateIndex, Result result) {
-		final BaseSubstitution baseSub = baseSubs.get(valueIndex);
-		final DataContainer container = result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
+		final BaseSubstitution baseSub 	= baseSubs.get(valueIndex);
+		final DataContainer container 	= result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
 		addBaseCallCount(sb, baseSub, container.getArrestBaseSubstitutionCount());
 		addBaseCallCount(sb, baseSub, container.getThroughBaseSubstitutionCount());
 	}

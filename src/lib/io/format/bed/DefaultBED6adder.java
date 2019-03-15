@@ -3,6 +3,7 @@ package lib.io.format.bed;
 import lib.data.ParallelData;
 import lib.data.result.Result;
 import lib.io.InputOutput;
+import lib.util.Util;
 
 public class DefaultBED6adder implements BED6adder {
 
@@ -62,7 +63,7 @@ public class DefaultBED6adder implements BED6adder {
 		if (Double.isNaN(stat)) {
 			return Character.toString(InputOutput.EMPTY_FIELD);
 		}
-		return String.format("%.5f%", Double.toString(stat));
+		return Util.format(stat);
 	}
 	
 }

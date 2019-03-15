@@ -40,7 +40,7 @@ extends AbstractResultFormat {
 		return new BEDlikeResultFileWriterBuilder(outputFileName, getParameter())
 				.addBED6Adder(
 						new LRTarrestBED6adder(
-								new DefaultBED6adder(getMethodName(), "stat")))
+								new DefaultBED6adder(getMethodName(), "pvalue")))
 				.addDataAdder(
 						new LRTarrestDataAdder(bccParser))
 				.addInfoAdder(

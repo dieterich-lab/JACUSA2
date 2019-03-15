@@ -15,7 +15,7 @@ import lib.stat.sample.EstimationSample;
 import lib.stat.sample.provider.EstimationSampleProvider;
 import lib.util.Base;
 
-abstract class AbstractEstimationSamplePileupProvider 
+public abstract class AbstractEstimationSamplePileupProvider 
 implements EstimationSampleProvider {
 
 	private final boolean calcPValue; 

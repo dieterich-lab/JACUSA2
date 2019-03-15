@@ -1,20 +1,16 @@
 package lib.stat.dirmult;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-
 import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.estimate.MinkaParameter;
 import lib.stat.initalpha.AbstractAlphaInit;
 import lib.stat.sample.EstimationSample;
 import lib.util.Info;
+import lib.util.Util;
 
 public class EstimateDirMult {
 
 	private final MinkaParameter minkaParameter;
 	private final MinkaEstimateDirMultAlpha minkaEstimateAlpha;
-
-	private DecimalFormat decimalFormat;
 	
 	private EstimationSample[] estimationSamples;	
 	private Info estimateInfo;
@@ -22,11 +18,6 @@ public class EstimateDirMult {
 	public EstimateDirMult(final MinkaParameter minkaParameter) {
 		minkaEstimateAlpha		= new MinkaEstimateDirMultAlpha(minkaParameter);
 		this.minkaParameter 	= minkaParameter;
-		
-		final DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-		otherSymbols.setDecimalSeparator('.');
-		otherSymbols.setGroupingSeparator(',');
-		decimalFormat = new DecimalFormat("#.##", otherSymbols);
 	}
 
 	public void addStatResultInfo(final Info info) {
@@ -123,16 +114,16 @@ public class EstimateDirMult {
 			final double[] alpha 		= estimationSample.getAlpha(iteration);
 			final double logLikelihood	= estimationSample.getLogLikelihood(iteration);
 			
-			estimateInfo.add("initAlpha" + id, decimalFormat.format(initAlpha[0]));			
+			estimateInfo.add("initAlpha" + id, Util.format(initAlpha[0]));			
 			for (int i = 1; i < initAlpha.length; ++i) {
 				estimateInfo.add("initAlpha" + id, ":");
-				estimateInfo.add("initAlpha" + id, decimalFormat.format(initAlpha[i]));
+				estimateInfo.add("initAlpha" + id, Util.format(initAlpha[i]));
 			}
 			
-			estimateInfo.add("alpha" + id, decimalFormat.format(alpha[0]));			
+			estimateInfo.add("alpha" + id, Util.format(alpha[0]));			
 			for (int i = 1; i < alpha.length; ++i) {
 				estimateInfo.add("alpha" + id, ":");
-				estimateInfo.add("alpha" + id, decimalFormat.format(alpha[i]));
+				estimateInfo.add("alpha" + id, Util.format(alpha[i]));
 			}
 		
 			estimateInfo.add("iteration" + id, Integer.toString(iteration));

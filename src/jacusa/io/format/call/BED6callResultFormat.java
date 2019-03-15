@@ -1,14 +1,9 @@
 package jacusa.io.format.call;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import jacusa.io.format.BaseSubstitutionBED6adder;
-import jacusa.io.format.BaseSubstitutionDeletionCountAdder;
 import jacusa.io.format.BaseSubstitution2BaseCallCountAdder;
-import jacusa.io.format.CombinedDataAdder;
-import jacusa.io.format.DeletionCountDataAdder;
 import jacusa.io.format.StratifiedDataAdder;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.cli.parameter.GeneralParameter;
@@ -56,29 +51,13 @@ extends AbstractResultFileFormat {
 		
 		if (getParameter().getReadSubstitutions().size() > 0) {
 			final List<BaseSubstitution> baseSubs = new ArrayList<>(getParameter().getReadSubstitutions());
-			bed6adder = new BaseSubstitutionBED6adder(baseSubs, bed6adder);
 			dataAdder = new StratifiedDataAdder(
 					dataAdder, 
 					new BaseSubstitution2BaseCallCountAdder(bccParser, baseSubs, dataAdder));
-			if (getParameter().showDeletionCount()) {
-				final DataAdder delDataAder = new DeletionCountDataAdder();
-				builder.addDataAdder(
-						new CombinedDataAdder(
-								Arrays.asList(								
-										dataAdder,
-										new StratifiedDataAdder(
-											delDataAder, 
-											new BaseSubstitutionDeletionCountAdder(baseSubs, delDataAder)))));
-			}
-		} else {
-			if (getParameter().showDeletionCount()) {
-				builder.addDataAdder(new CombinedDataAdder(Arrays.asList(dataAdder, new DeletionCountDataAdder())));
-			} else {
-				builder.addDataAdder(dataAdder);
-			}	
 		}
-
+		
 		builder.addBED6Adder(bed6adder);
+		builder.addDataAdder(dataAdder);
 		builder.addInfoAdder(new DefaultInfoAdder(getParameter()));
 		return builder.build();
 	}

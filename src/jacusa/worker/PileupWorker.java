@@ -5,9 +5,11 @@ import java.util.SortedSet;
 import jacusa.method.pileup.PileupMethod;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.ParallelData.Builder;
 import lib.data.result.BaseSubstitutionResult;
+import lib.data.result.DeletionCountResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.util.ReplicateContainer;
@@ -39,11 +41,15 @@ extends AbstractWorker {
 	
 	@Override
 	protected Result process(final ParallelData parallelData) {
-		final Result result = stat.filter(parallelData); 
+		Result result = stat.filter(parallelData); 
 		
 		final SortedSet<BaseSubstitution> baseSubs = getParameter().getReadSubstitutions();
-		if (! getParameter().getReadSubstitutions().isEmpty()) {
-			return new BaseSubstitutionResult(baseSubs, result);
+		if (! baseSubs.isEmpty()) {
+			result = new BaseSubstitutionResult(baseSubs, DataType.BASE_SUBST2BCC.getFetcher(), result);
+		}
+		
+		if (getParameter().showDeletionCount()) {
+			result = new DeletionCountResult(baseSubs, result);
 		}
 		
 		return result;

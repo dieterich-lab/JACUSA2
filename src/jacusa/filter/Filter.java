@@ -33,7 +33,7 @@ public interface Filter {
 		final ParallelData parallelData = result.getParellelData();
 		// if filter finds potential false positive variant, mark result and return true
 		boolean filter = false;
-		for (final int valueIndex : result.getValueIndex()) {
+		for (final int valueIndex : result.getValuesIndex()) {
 			if (filter(parallelData)) {
 				markResult(valueIndex, result);
 				filter = true;

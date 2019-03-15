@@ -17,6 +17,11 @@ public final class Util {
 	public static int noRehashCapacity(final int size) {
 		return (int)(Math.ceil(size / 0.75d)) + 1;
 	}
+
+	public static String format(final double value) {
+		return Double.toString(value);
+		// return String.format(Locale.ENGLISH, "%.3f", value);
+	}
 	
 	/**
 	 * 
@@ -49,35 +54,5 @@ public final class Util {
 		}
 		return sb.toString();
 	}
-	
-	/*
-	public static String printAlpha2(double a[]) {
-		DecimalFormat df = new DecimalFormat("0.0000"); 
-		StringBuilder sb = new StringBuilder();
-
-		sb.append(df.format(a[0]));
-		for (int i = 1; i < a.length; ++i) {
-			sb.append("  ");
-			sb.append(df.format(a[i]));
-		}
-		return sb.toString();
-	}
-	
-	public static String printMatrix(final double m[][]) {
-		StringBuilder sb = new StringBuilder();
-
-		for (int i = 0; i < m.length; ++i) {
-			for (int j = 0; j < m[i].length; ++j) {
-				if (j > 0) {
-					sb.append('\t');
-				}
-				sb.append(m[i][j]);
-			}
-			sb.append('\n');
-		}
-
-		return sb.toString();
-	}
-	*/
 
 }

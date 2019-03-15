@@ -53,7 +53,7 @@ import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.DefaultFilteredDataFetcher;
 import lib.data.fetcher.Fetcher;
 import lib.data.fetcher.FilteredDataFetcher;
-import lib.data.fetcher.TotalBaseCallCountAggregator;
+import lib.data.fetcher.BaseCallCountAggregator;
 import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.filter.BooleanFilteredData;
@@ -85,7 +85,7 @@ extends AbstractMethod {
 		super(name, parameter, dataAssemblerFactory);
 		arrestBccFetcher 	= DataType.ARREST_BCC.getFetcher();
 		throughBccFetcher 	= DataType.THROUGH_BCC.getFetcher();
-		totalBccAggregator 	= new TotalBaseCallCountAggregator(
+		totalBccAggregator 	= new BaseCallCountAggregator(
 				Arrays.asList(arrestBccFetcher, throughBccFetcher));
 	}
 

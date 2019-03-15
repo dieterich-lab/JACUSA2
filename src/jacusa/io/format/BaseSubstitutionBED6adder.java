@@ -12,6 +12,7 @@ import lib.io.format.bed.BED6adder;
  * This class corresponds to the a column of a BEDlike output file that contains read base substitution 
  * information, specifically which base substitution is being considered
  */
+@Deprecated
 public class BaseSubstitutionBED6adder implements BED6adder {
 
 	// list of chosen base substitutions

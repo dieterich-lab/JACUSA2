@@ -5,11 +5,11 @@ import java.util.List;
 import lib.data.DataContainer;
 import lib.data.count.basecall.BaseCallCount;
 
-public class TotalBaseCallCountAggregator implements Fetcher<BaseCallCount> {
+public class BaseCallCountAggregator implements Fetcher<BaseCallCount> {
 
 	private final List<Fetcher<BaseCallCount>> bccFetchers;
 	
-	public TotalBaseCallCountAggregator(final List<Fetcher<BaseCallCount>> bccFetchers) {
+	public BaseCallCountAggregator(final List<Fetcher<BaseCallCount>> bccFetchers) {
 		this.bccFetchers = bccFetchers;
 	}
 	

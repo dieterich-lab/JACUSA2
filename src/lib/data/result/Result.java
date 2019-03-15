@@ -31,7 +31,7 @@ public interface Result extends HasParallelData, Serializable {
 	void setFiltered(boolean isFiltered);
 	boolean isFiltered();
 
-	SortedSet<Integer> getValueIndex();
+	SortedSet<Integer> getValuesIndex();
 	int getValueSize();
 	
 	double getStat();

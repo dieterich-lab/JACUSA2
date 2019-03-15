@@ -42,13 +42,6 @@ public class BaseSubstitution2IntegerData implements Data<BaseSubstitution2Integ
 		}
 	}
 
-	/*
-	public BaseSubstitutionCount add(final BaseSubstitution baseSubstitution, final Base base) {
-		count.get(baseSubstitution).increment(base);
-		return this;
-	}
-	*/
-
 	public BaseSubstitution2IntegerData set(final BaseSubstitution baseSubstitution, final IntegerData integerData) {
 		if (count.containsKey(baseSubstitution)) {
 			throw new IllegalStateException();

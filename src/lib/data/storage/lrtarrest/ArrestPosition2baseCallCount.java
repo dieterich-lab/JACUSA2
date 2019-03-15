@@ -3,6 +3,7 @@ package lib.data.storage.lrtarrest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,20 +22,20 @@ public class ArrestPosition2baseCallCount
 implements Serializable, Data<ArrestPosition2baseCallCount> {
 	
 	private static final long serialVersionUID = 1L;
-
-	private static final int NO_ARREST_POS = -1;
 	
 	/**
 	 * stores base call count information for each position
 	 */
 	private Map<Integer, BaseCallCount> aPos2bcc;
+	private BaseCallCount tBcc;
 	
 	// cached arrest positions
 	private List<Integer> cApos;
 	private BaseCallCount cTotBcc;
 	
 	public ArrestPosition2baseCallCount() {
-		aPos2bcc = new HashMap<Integer, BaseCallCount>();
+		aPos2bcc 	= new HashMap<Integer, BaseCallCount>();
+		tBcc		= BaseCallCount.create();
 	}
 	
 	/**
@@ -48,7 +49,8 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	}
 
 	public ArrestPosition2baseCallCount addBaseCall(final Base base) {
-		return addBaseCall(NO_ARREST_POS, base);
+		tBcc.increment(base);
+		return this;
 	}
 	
 	/**
@@ -76,7 +78,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	 */
 	public List<Integer> getPositions() {
 		if (cApos == null) {
-			cApos = new ArrayList<>(new TreeSet<>(aPos2bcc.keySet()));
+			cApos = Collections.unmodifiableList(new ArrayList<>(new TreeSet<>(aPos2bcc.keySet())));
 		}
 		return cApos;
 	}
@@ -84,36 +86,39 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	/**
 	 * Returns base call count for position.
 	 * 
-	 * @param refPos of interest
+	 * @param arrestPos of interest
 	 * @return base call count at requested position;
 	 */
-	public BaseCallCount getArrestBaseCallCount(final int refPos) {
-		if (! contains(refPos)) {
+	public BaseCallCount getArrestBaseCallCount(final int arrestPos) {
+		if (! contains(arrestPos)) {
 			return BaseCallCount.EMPTY;
 		}
-		return new UnmodifiableBaseCallCount(aPos2bcc.get(refPos));
+		return new UnmodifiableBaseCallCount(aPos2bcc.get(arrestPos));
 	}
 	
 	/**
 	 * Returns base call count where position != pos (total - arrest = through)
 	 * 
-	 * @param refPos arrest position to be excluded
+	 * @param arrestPos arrest position to be excluded
 	 * @return base call count excluding arrest position pos
 	 */
-	public BaseCallCount getThroughBaseCallCount(final int refPos) {
-		final BaseCallCount tmpTotalBcc = getTotalBaseCallCountHelper();
-		if (contains(refPos)) {
-			tmpTotalBcc.subtract(getArrestBaseCallCount(refPos));
+	public BaseCallCount getThroughBaseCallCount(final int arrestPos) {
+		final BaseCallCount tmpTotalBcc = BaseCallCount.create();
+		tmpTotalBcc.add(getTotalBaseCallCountHelper());
+		if (contains(arrestPos)) {
+			tmpTotalBcc.subtract(getArrestBaseCallCount(arrestPos));
 		}
 		return new UnmodifiableBaseCallCount(tmpTotalBcc);
 	}
 
 	private BaseCallCount getTotalBaseCallCountHelper() {
 		if (cTotBcc == null) {
-			cTotBcc = BaseCallCount.create();
+			final BaseCallCount tmpTotBcc = BaseCallCount.create();
 			for (final BaseCallCount tmpBcc : aPos2bcc.values()) {
-				cTotBcc.add(tmpBcc);
+				tmpTotBcc.add(tmpBcc);
 			}
+			tmpTotBcc.add(tBcc);
+			cTotBcc = new UnmodifiableBaseCallCount(tmpTotBcc);
 		}
 		return cTotBcc;
 	}
@@ -124,7 +129,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	 * @return base call count, summed over all arrest positions
 	 */
 	public BaseCallCount getTotalBaseCallCount() {
-		return new UnmodifiableBaseCallCount(getTotalBaseCallCountHelper());
+		return getTotalBaseCallCountHelper();
 	}
 
 	/**
@@ -138,10 +143,10 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 			if (! contains(position)) {
 				aPos2bcc.put(position, src.aPos2bcc.get(position).copy());
 			} else {
-				aPos2bcc.get(position)
-					.add(src.aPos2bcc.get(position));
+				aPos2bcc.get(position).add(src.aPos2bcc.get(position));
 			}
 		}
+		tBcc.add(src.tBcc);
 		
 		if (cTotBcc != null && src.cTotBcc != null) {
 			cTotBcc.merge(src.cTotBcc);
@@ -149,9 +154,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 			cTotBcc = null;
 		}
 		
-		if (cApos != null) {
-			cApos = null;
-		}
+		cApos = null;
 	}
 	
 	/**
@@ -172,6 +175,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 			aPos2bcc.clear();
 			cApos 	= null;
 			cTotBcc = null;
+			tBcc.clear();
 		}
 	}
 
@@ -209,7 +213,8 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 		}
 		return sb.toString();
 	}
-	
+
+	// FIXME add new field cBcc
 	public static class Parser implements lib.util.Parser<ArrestPosition2baseCallCount> {
 		
 		public static final char POS_SEP = ',';
@@ -249,13 +254,6 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 				return o;
 			}
 			
-			/*
-			final int i = s.indexOf(Character.toString(POS_SEP)); 
-			if (i < 0) {
-				throw new IllegalStateException("Current Position could not be parsed");
-			}
-			*/
-
 			final int arrestPositions = s.split(Character.toString(posSep)).length;
 
 			final Matcher match = pattern.matcher(s);

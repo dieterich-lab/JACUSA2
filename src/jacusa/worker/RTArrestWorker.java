@@ -1,13 +1,19 @@
 package jacusa.worker;
 
+import java.util.Arrays;
 import java.util.SortedSet;
 
 import jacusa.method.rtarrest.RTarrestMethod;
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.ParallelData.Builder;
-import lib.data.result.RTarrestBaseSubstitutionResult;
+import lib.data.count.BaseSubstitution2BaseCallCount;
+import lib.data.fetcher.BaseSubstitution2BaseCallCountAggregator;
+import lib.data.fetcher.Fetcher;
+import lib.data.result.BaseSubstitutionResult;
+import lib.data.result.DeletionCountResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.util.ReplicateContainer;
@@ -19,10 +25,17 @@ extends AbstractWorker {
 
 	private final AbstractStat stat;
 	
+	private final Fetcher<BaseSubstitution2BaseCallCount> bs2bccFetcher;
+	
 	public RTArrestWorker(final RTarrestMethod method, final int threadId) {
 		super(method, threadId);
 		stat = method.getParameter().getStatParameter()
 				.newInstance(method.getParameter().getConditionsSize());
+		
+		bs2bccFetcher = new BaseSubstitution2BaseCallCountAggregator(
+				Arrays.asList(
+						DataType.ARREST_BASE_SUBST.getFetcher(), 
+						DataType.THROUGH_BASE_SUBST.getFetcher()));
 	}
 
 	@Override
@@ -42,11 +55,15 @@ extends AbstractWorker {
 	
 	@Override
 	protected Result process(final ParallelData parallelData) {
-		final Result result = stat.filter(parallelData); 
+		Result result = stat.filter(parallelData); 
 		
 		final SortedSet<BaseSubstitution> baseSubs = getParameter().getReadSubstitutions();
-		if (! getParameter().getReadSubstitutions().isEmpty()) {
-			return new RTarrestBaseSubstitutionResult(baseSubs, result);
+		if (! baseSubs.isEmpty()) {
+			result = new BaseSubstitutionResult(baseSubs, bs2bccFetcher, result);
+		}
+		
+		if (getParameter().showDeletionCount()) {
+			result = new DeletionCountResult(baseSubs, result);
 		}
 		
 		return result;

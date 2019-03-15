@@ -1,14 +1,18 @@
 package lib.stat.betabin;
 
+import java.util.List;
+
 import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 
 import lib.data.ParallelData;
+import lib.data.result.MultiStatResult;
 import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.stat.dirmult.EstimateDirMult;
 import lib.stat.sample.EstimationSample;
 import lib.stat.sample.provider.arrest.LRTarrestCountSampleProvider;
+import lib.util.Util;
 
 public class LRTarrestStat extends AbstractStat {
 
@@ -41,16 +45,25 @@ public class LRTarrestStat extends AbstractStat {
 		dirMult.addStatResultInfo(statResult.getResultInfo());
 	}
 	
-	private double getPValue(final EstimationSample[] estimationSamples) {
-		final double lrt = dirMult.getLRT(estimationSamples);
+	private double getPValue(final double lrt) {
 		return 1 - dist.cumulativeProbability(lrt);
-	}
+	} 
 	
 	@Override
 	public Result calculate(ParallelData parallelData) {
 		final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
-		final double pvalue = getPValue(estimationSamples);
-		return new OneStatResult(pvalue, parallelData);
+		final double lrt 	= dirMult.getLRT(estimationSamples);
+		final double pvalue = getPValue(lrt);
+		final Result oneStatResult = new OneStatResult(pvalue, parallelData);
+		oneStatResult.getResultInfo().add(RTarrestStat.ARREST_SCORE, Util.format(lrt));
+		
+		final List<Integer> arrestPositions = parallelData.getCombinedPooledData()
+				.getArrestPos2BaseCallCount().getPositions();
+		MultiStatResult multiStatResult = new MultiStatResult(oneStatResult);
+		for (int i = 0; i < arrestPositions.size(); ++i) {
+			multiStatResult.addStat(Double.NaN);
+		}
+		return multiStatResult;
 	}
 	
 	@Override

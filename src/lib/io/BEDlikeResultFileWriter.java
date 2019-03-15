@@ -47,7 +47,7 @@ public class BEDlikeResultFileWriter extends AbstractResultFileWriter {
 	@Override
 	public void writeResult(Result result) {
 		final ParallelData parallelData = result.getParellelData();
-		for (final int valueIndex : result.getValueIndex()) {
+		for (final int valueIndex : result.getValuesIndex()) {
 			final StringBuilder sb = new StringBuilder();
 			bed6Adder.addData(sb, valueIndex, result);
 			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {

@@ -4,42 +4,66 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import lib.data.ParallelData;
 import lib.util.Info;
-import lib.util.Util;
 
 public class MultiStatResult 
 implements Result {
 
 	private static final long serialVersionUID = 1L;
-	private static final int MAIN_VALUE_INDEX = -1;
-	
-	private final SortedMap<Integer, Double> stat;
+
+	private final SortedMap<Integer, Double> value2stat;
 	private final ParallelData parallelData;
 	
 	private boolean markedFiltered;
 	private final Map<Integer, Info> filterInfo;
 	private final Map<Integer, Info> resultInfo;
-
-	public MultiStatResult(final SortedMap<Integer, Double> stat, final ParallelData parallelData) {
-		this.stat = stat;
-		this.parallelData = parallelData;
+	
+	public MultiStatResult(final Result result) {
+		value2stat = new TreeMap<>();
+		copyStat(result, value2stat);
 		
-		final int n = Util.noRehashCapacity(stat.size());
-		markedFiltered = false;
-		filterInfo = new HashMap<>(n);
-		resultInfo = new HashMap<>(n);
-		for (final int valueIndex : stat.keySet()) {
-			filterInfo.put(valueIndex, new Info());
-			resultInfo.put(valueIndex, new Info());			
+		markedFiltered 	= result.isFiltered();
+		final int n		= result.getValueSize();
+		filterInfo 		= new HashMap<>(n);
+		resultInfo 		= new HashMap<>(n);
+		copyInfo(filterInfo, resultInfo, result);
+		
+		this.parallelData = result.getParellelData();
+	}
+	
+	private void copyStat(final Result src, final Map<Integer, Double> dest) {
+		for (final int valueIndex : src.getValuesIndex()) {
+			if (dest.containsKey(valueIndex)) {
+				throw new IllegalStateException("Duplicate keys are not allowed!");
+			}
+			dest.put(valueIndex, src.getStat(valueIndex));
 		}
 	}
-
+	
+	private void copyInfo(final Map<Integer, Info> filterInfos, final Map<Integer, Info> resultInfos, 
+			final Result result) {
+		
+		for (final int valueIndex : result.getValuesIndex()) {
+			copyInfoHelper(valueIndex, filterInfos, result.getFilterInfo(valueIndex));
+			copyInfoHelper(valueIndex, resultInfos, result.getResultInfo(valueIndex));
+		}
+	}
+	
+	private void copyInfoHelper(final int valueIndex, final Map<Integer, Info> infos, final Info info) {
+		if (infos.containsKey(valueIndex)) {
+			throw new IllegalStateException("Duplicate keys are not allowed!");
+		}
+		infos.put(valueIndex, new Info());
+		infos.get(valueIndex).addAll(info);
+	}
+	
 	@Override
 	public double getStat(final int valueIndex) {
-		return stat.get(valueIndex);
+		return value2stat.get(valueIndex);
 	}
 
 	@Override
@@ -63,8 +87,8 @@ implements Result {
 	}
 
 	@Override
-	public SortedSet<Integer> getValueIndex() {
-		return new TreeSet<>(stat.keySet());
+	public SortedSet<Integer> getValuesIndex() {
+		return new TreeSet<>(value2stat.keySet());
 	}
 	
 	@Override
@@ -74,22 +98,34 @@ implements Result {
 
 	@Override
 	public int getValueSize() {
-		return stat.size();
+		return value2stat.size();
 	}
 	
 	@Override
 	public Info getFilterInfo() {
-		return filterInfo.get(MAIN_VALUE_INDEX);
+		return filterInfo.get(Result.TOTAL);
 	}
 	
 	@Override
 	public Info getResultInfo() {
-		return resultInfo.get(MAIN_VALUE_INDEX);
+		return resultInfo.get(Result.TOTAL);
 	}
 	
 	@Override
 	public double getStat() {
-		return stat.get(MAIN_VALUE_INDEX);
+		return value2stat.get(Result.TOTAL);
+	}
+
+	private int getNewValueIndex() {
+		return value2stat.lastKey() + 1;
+	}
+	
+	public int addStat(final double stat) {
+		final int newValueIndex = getNewValueIndex();
+		value2stat.put(newValueIndex, stat);
+		filterInfo.put(newValueIndex, new Info());
+		resultInfo.put(newValueIndex, new Info());
+		return newValueIndex;
 	}
 	
 }

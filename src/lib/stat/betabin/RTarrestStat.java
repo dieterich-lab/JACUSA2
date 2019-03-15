@@ -9,9 +9,12 @@ import lib.stat.AbstractStat;
 import lib.stat.dirmult.EstimateDirMult;
 import lib.stat.sample.EstimationSample;
 import lib.stat.sample.provider.arrest.RTarrestCountSampleProvider;
+import lib.util.Util;
 
 public class RTarrestStat extends AbstractStat {
 
+	public static final String ARREST_SCORE = "arrest_score";
+	
 	private final RTarrestCountSampleProvider estimationSampleProvider;
 	private final RTarrestBetaBinParameter dirMultParameter;
 
@@ -41,16 +44,18 @@ public class RTarrestStat extends AbstractStat {
 		dirMult.addStatResultInfo(statResult.getResultInfo());
 	}
 	
-	private double getPValue(final EstimationSample[] estimationSamples) {
-		final double lrt = dirMult.getLRT(estimationSamples);
+	private double getPValue(final double lrt) {
 		return 1 - dist.cumulativeProbability(lrt);
-	}
+	} 
 	
 	@Override
 	public Result calculate(ParallelData parallelData) {
 		final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
-		final double pvalue = getPValue(estimationSamples);
-		return new OneStatResult(pvalue, parallelData);
+		final double lrt 	= dirMult.getLRT(estimationSamples);
+		final double pvalue = getPValue(lrt);
+		final Result result = new OneStatResult(pvalue, parallelData);
+		result.getResultInfo().add(ARREST_SCORE, Util.format(lrt));
+		return result;
 	}
 	
 	@Override

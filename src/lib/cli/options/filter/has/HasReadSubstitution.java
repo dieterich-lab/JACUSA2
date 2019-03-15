@@ -6,7 +6,7 @@ import lib.util.Base;
 
 public interface HasReadSubstitution {
 
-	public static String READ_SUB 		= "read_sub";
+	public static final String READ_SUB = "read_sub";
 	
 	SortedSet<BaseSubstitution> getReadSubstitutions();
 	void addReadSubstitution(BaseSubstitution baseSubstitution);
