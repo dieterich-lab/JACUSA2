@@ -24,7 +24,7 @@ public class DefaultInfoAdder implements InfoAdder {
 
 		// always show reference base
 		sb.append(InputOutput.FIELD_SEP);
-		sb.append("refBase");
+		sb.append("ref_base");
 	}
 
 	@Override
