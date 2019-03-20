@@ -30,13 +30,13 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
 	private int currentMatches;
 	
 	public MDRecordReferenceProvider(final SAMRecordExtended recordExtended) {
-		final int n = 5;
-		mismatchPositions = new ArrayList<AlignedPosition>(n);
-		refPos2base = new HashMap<Integer, Byte>(Util.noRehashCapacity(n));
+		final int n 		= 5;
+		mismatchPositions 	= new ArrayList<AlignedPosition>(n);
+		refPos2base 		= new HashMap<Integer, Byte>(Util.noRehashCapacity(n));
 
-		it = recordExtended.getCigarElementExtended().iterator();
-		current = it.next();
-		currentMatches = 0;		
+		it 				= recordExtended.getCigarElementExtended().iterator();
+		current 		= it.next();
+		currentMatches 	= 0;		
 		
 		process(recordExtended);
 	}
@@ -91,7 +91,7 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
                 // i = 1 -> don't include caret
             	for (int i = 1; i < matchGroup.length(); ++i) {
             		final byte base = (byte)matchGroup.charAt(i);
-            		refPos2base.put(refPos + i, base);
+            		refPos2base.put(refPos + i - 1, base);
             	}
             	advance(matchGroup.length() - 1);
             }
