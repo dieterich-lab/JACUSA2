@@ -20,7 +20,6 @@ public class RTarrestStat extends AbstractStat {
 
 	private final double threshold;
 	private final EstimateDirMult dirMult;
-	
 	private final ChiSquaredDistribution dist;
 	
 	public RTarrestStat(
@@ -33,7 +32,7 @@ public class RTarrestStat extends AbstractStat {
 		this.dirMultParameter 			= dirMultParameter;
 		
 		dirMult							= new EstimateDirMult(dirMultParameter.getMinkaEstimateParameter());
-		dist = new ChiSquaredDistribution(1);
+		dist 							= new ChiSquaredDistribution(1);
 	}
 
 	@Override

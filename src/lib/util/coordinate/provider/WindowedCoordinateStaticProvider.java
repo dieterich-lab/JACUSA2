@@ -73,7 +73,7 @@ public class WindowedCoordinateStaticProvider implements CoordinateProvider {
 		
 		int start 	= coordinate.getStart();
 		int end 	= Math.min(start + windowSize - 1, coordinate.getEnd());
-		while (end < coordinate.getEnd()) {
+		while (end <= coordinate.getEnd() && start <= end) {
 			final Coordinate tmp = new OneCoordinate(
 					coordinate.getContig(), 
 					start, end, 
@@ -83,8 +83,8 @@ public class WindowedCoordinateStaticProvider implements CoordinateProvider {
 			}
 			coordinates.add(tmp);
 
-			start = end + 1;
-			end = Math.min(start + windowSize - 1, coordinate.getEnd());
+			start	= end + 1;
+			end 	= Math.min(start + windowSize - 1, coordinate.getEnd());
 		}
 
 		return coordinates;

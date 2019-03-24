@@ -22,6 +22,14 @@ implements Result {
 	private final Map<Integer, Info> filterInfo;
 	private final Map<Integer, Info> resultInfo;
 	
+	public MultiStatResult(final ParallelData parallelData) {
+		value2stat 			= new TreeMap<>();
+		markedFiltered 		= false;
+		filterInfo			= new HashMap<Integer, Info>();
+		resultInfo			= new HashMap<Integer, Info>();
+		this.parallelData	= parallelData;
+	}
+	
 	public MultiStatResult(final Result result) {
 		value2stat = new TreeMap<>();
 		copyStat(result, value2stat);

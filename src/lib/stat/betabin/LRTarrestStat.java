@@ -6,7 +6,6 @@ import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 
 import lib.data.ParallelData;
 import lib.data.result.MultiStatResult;
-import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.stat.dirmult.EstimateDirMult;
@@ -54,14 +53,17 @@ public class LRTarrestStat extends AbstractStat {
 		final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
 		final double lrt 	= dirMult.getLRT(estimationSamples);
 		final double pvalue = getPValue(lrt);
-		final Result oneStatResult = new OneStatResult(pvalue, parallelData);
-		oneStatResult.getResultInfo().add(RTarrestStat.ARREST_SCORE, Util.format(lrt));
 		
 		final List<Integer> arrestPositions = parallelData.getCombinedPooledData()
 				.getArrestPos2BaseCallCount().getPositions();
-		MultiStatResult multiStatResult = new MultiStatResult(oneStatResult);
-		for (int i = 0; i < arrestPositions.size(); ++i) {
-			multiStatResult.addStat(Double.NaN);
+		final MultiStatResult multiStatResult = new MultiStatResult(parallelData);
+		for (final int arrestPosition : arrestPositions) {
+			if (arrestPosition == parallelData.getCoordinate().get1Position()) {
+				final int newValueIndex = multiStatResult.addStat(pvalue);
+				multiStatResult.getResultInfo(newValueIndex).add(RTarrestStat.ARREST_SCORE, Util.format(lrt));				
+			} else {
+				multiStatResult.addStat(Double.NaN);
+			}
 		}
 		return multiStatResult;
 	}
