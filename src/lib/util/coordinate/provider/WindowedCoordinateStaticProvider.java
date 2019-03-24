@@ -67,20 +67,24 @@ public class WindowedCoordinateStaticProvider implements CoordinateProvider {
 			return coordinates;
 		}
 		
-		final int length = coordinate.getEnd() - coordinate.getStart() + 1;
-		final int n = length / windowSize;
+		final int length 	= coordinate.get1End() - coordinate.get1Start() + 1;
+		final int n 		= length / windowSize;
 		final List<Coordinate> coordinates = new ArrayList<Coordinate>(n < 0 ? 1 : n);
 		
-		int start = coordinate.getStart();
-		while (start < coordinate.getEnd()) {
-			final int end = Math.min(start + windowSize - 1, coordinate.getEnd());
+		int start 	= coordinate.getStart();
+		int end 	= Math.min(start + windowSize - 1, coordinate.getEnd());
+		while (end < coordinate.getEnd()) {
 			final Coordinate tmp = new OneCoordinate(
-					coordinate.getContig(), start, end, coordinate.getStrand());
+					coordinate.getContig(), 
+					start, end, 
+					coordinate.getStrand());
 			if (stranded && coordinate.getStrand() == STRAND.UNKNOWN) {
 				tmp.setStrand(STRAND.FORWARD);
 			}
 			coordinates.add(tmp);
-			start += windowSize;
+
+			start = end + 1;
+			end = Math.min(start + windowSize - 1, coordinate.getEnd());
 		}
 
 		return coordinates;

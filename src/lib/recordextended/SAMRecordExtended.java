@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import htsjdk.samtools.CigarElement;
+import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.StringUtil;
@@ -179,6 +180,10 @@ public class SAMRecordExtended {
 					cigarElement.getLength() : 0;
 		}
 		
+		public int getNonSkippedMatches() {
+			return cigarElement.getOperator() == CigarOperator.N ? 0 : getReferenceBlockLength();
+		}
+		
 		public int getReadBlockLength() {
 			return cigarElement.getOperator().consumesReadBases() ?
 					cigarElement.getLength() : 0;
@@ -191,7 +196,16 @@ public class SAMRecordExtended {
 		public CigarElement getCigarElement() {
 			return cigarElement;
 		}
-	
+			
+		public String toString() {
+			return new StringBuilder()
+					.append(cigarElement.getOperator()).append(' ')
+					.append(position.getReferencePosition()).append(' ')
+					.append(position.getReadPosition()).append(' ')
+					.append(position.getNonSkippedMatches()).append(' ')
+					.toString();
+		}
+		
 	}
 
 	@Override

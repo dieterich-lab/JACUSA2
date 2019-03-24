@@ -8,27 +8,28 @@ public class AlignedPosition implements Copyable<AlignedPosition>{
 	
 	private int readPos;
 	private int refPos;
-	private int matches;
+	private int nonSkippedMatches;
 	
 	public AlignedPosition(final int refPos) {
 		this(0, refPos, 0);
 	}
 	
 	public AlignedPosition(final AlignedPosition alignedPosition) {
-		this(alignedPosition.readPos, alignedPosition.refPos, alignedPosition.matches);
+		this(alignedPosition.readPos, alignedPosition.refPos, alignedPosition.nonSkippedMatches);
 	}
 	
 	private AlignedPosition(final int readPos, final int refPos, final int matches) {
-		this.readPos 	= readPos;
-		this.refPos 	= refPos;
-		this.matches 	= matches;
+		this.readPos 			= readPos;
+		this.refPos 			= refPos;
+		this.nonSkippedMatches 	= matches;
 	}
 
 	public void advance(final CigarElement e) {
 		if (e.getOperator().consumesReferenceBases()) {
 			refPos += e.getLength();
+			// reference bases from skipped regions aka introns are not counted in MD field 
 			if (e.getOperator() != CigarOperator.N) { 
-				matches += e.getLength();
+				nonSkippedMatches += e.getLength();
 			}
 		}
 		
@@ -36,11 +37,12 @@ public class AlignedPosition implements Copyable<AlignedPosition>{
 			readPos += e.getLength();
 		}
 	}
-	
+
+	// FIXME
 	public AlignedPosition advance(final int offset) {
-		refPos 	+= offset;
-		matches += offset;
-		readPos += offset;
+		refPos 				+= offset;
+		nonSkippedMatches 	+= offset;
+		readPos 			+= offset;
 		return this;
 	}
 	
@@ -52,13 +54,13 @@ public class AlignedPosition implements Copyable<AlignedPosition>{
 		return refPos;
 	}
 
-	public int getMatches() {
-		return matches;
+	public int getNonSkippedMatches() {
+		return nonSkippedMatches;
 	}
 	
 	@Override
 	public AlignedPosition copy() {
-		return new AlignedPosition(readPos, refPos, matches);
+		return new AlignedPosition(readPos, refPos, nonSkippedMatches);
 	}
 	
 }

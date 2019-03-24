@@ -96,9 +96,7 @@ public class DeletionCountResult implements Result {
 			}
 		}
 	}
-	
-	
-	
+		
 	private String getKey(final int condition, final int replicate) {
 		return new StringBuilder()
 				.append(InputOutput.DELETION_FIELD)

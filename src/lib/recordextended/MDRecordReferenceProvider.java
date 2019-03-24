@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import htsjdk.samtools.AlignmentBlock;
+import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMException;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMTag;
@@ -25,19 +26,18 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
 	private final List<AlignedPosition> mismatchPositions;
 	private final Map<Integer, Byte> refPos2base;
 
-	private final Iterator<CigarElementExtended> it;
-	private CigarElementExtended current;
-	private int currentMatches;
+	private final Iterator<CigarElementExtended> cigarElementExtendedIterator;
+	private CigarElementExtended currentCigarElementExtended;
+	private int currentMatchedBases;
 	
 	public MDRecordReferenceProvider(final SAMRecordExtended recordExtended) {
 		final int n 		= 5;
 		mismatchPositions 	= new ArrayList<AlignedPosition>(n);
 		refPos2base 		= new HashMap<Integer, Byte>(Util.noRehashCapacity(n));
 
-		it 				= recordExtended.getCigarElementExtended().iterator();
-		current 		= it.next();
-		currentMatches 	= 0;		
-		
+		cigarElementExtendedIterator 	= recordExtended.getCigarElementExtended().iterator();
+		currentCigarElementExtended	= cigarElementExtendedIterator.next();
+		currentMatchedBases 			= 0;		
 		process(recordExtended);
 	}
 	
@@ -58,9 +58,10 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
         }
         
         for (final AlignmentBlock block : record.getAlignmentBlocks()) {
-			final int readPos = block.getReadStart() - 1;
-			final int refPos = block.getReferenceStart();
-			final int length = block.getLength();
+			final int readPos 	= block.getReadStart() - 1;
+			final int refPos 	= block.getReferenceStart();
+			final int length 	= block.getLength();
+			
 			for (int i = 0; i < length; ++i) {
 				final byte base = record.getReadBases()[readPos + i];
 				refPos2base.put(refPos + i, base);
@@ -80,7 +81,7 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
             	final byte base = (byte)matchGroup.charAt(0);
             	final AlignedPosition position = getCurrentPosition();
             	int refPos = position.getReferencePosition();
-        		refPos2base.put(refPos, base);
+            	refPos2base.put(refPos, base);
         		mismatchPositions.add(position.copy());
         		advance(1);
             } else if ((matchGroup = match.group(3)) != null) {
@@ -88,6 +89,7 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
 
             	final AlignedPosition position = getCurrentPosition();
             	int refPos = position.getReferencePosition();
+            	
                 // i = 1 -> don't include caret
             	for (int i = 1; i < matchGroup.length(); ++i) {
             		final byte base = (byte)matchGroup.charAt(i);
@@ -103,20 +105,28 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
 	}
 		
 	private void advance(final int matches) {
-		currentMatches += matches;
-		while (currentMatches > getMatches() && it.hasNext()) {
-			current = it.next();
+		currentMatchedBases += matches;
+		
+		while (cigarElementExtendedIterator.hasNext()) {
+			final int matchedBases = getMatchedBases();
+			if (matchedBases <= currentMatchedBases && currentMatchedBases < matchedBases + currentCigarElementExtended.getNonSkippedMatches()) {
+				if (currentCigarElementExtended.getCigarElement().getOperator() == CigarOperator.N) {
+					currentCigarElementExtended = cigarElementExtendedIterator.next();
+				}
+				return;
+			} else {
+				currentCigarElementExtended = cigarElementExtendedIterator.next();
+			}
 		}
 	}
-
+	
 	private AlignedPosition getCurrentPosition() {
-		final int offset = currentMatches - current.getPosition().getMatches();
-		return current.getPosition().copy()
-				.advance(offset);
+		final int offset = currentMatchedBases - getMatchedBases();
+		return currentCigarElementExtended.getPosition().copy().advance(offset);
 	}
-		
-	private int getMatches() {
-		return current.getPosition().getMatches();
+	
+	private int getMatchedBases() {
+		return currentCigarElementExtended.getPosition().getNonSkippedMatches();
 	}
 	
 }
