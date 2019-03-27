@@ -151,14 +151,14 @@ class ArrestPosition2baseCallCountTest {
 		return Stream.of(
 				Arguments.of(
 						"*",
-						new ArrestPosition2baseCallCount()),
+						new ArrestPosition2baseCallCount(-1)),
 				Arguments.of(
 						StringUtil.join(Character.toString(','),
 								"9:1;0;0;0",
 								"10:0;1;0;0",
 								"50:0;0;1;0",
 								"101:0;0;0;1"),
-						new ArrestPosition2baseCallCount()
+						new ArrestPosition2baseCallCount(-1)
 							.addBaseCall(9, Base.A)
 							.addBaseCall(10, Base.C)
 							.addBaseCall(50, Base.G)
@@ -169,10 +169,10 @@ class ArrestPosition2baseCallCountTest {
 		//ArrestPos2BaseCallCount o, String expected
 		return Stream.of(
 				Arguments.of(
-						new ArrestPosition2baseCallCount()
+						new ArrestPosition2baseCallCount(-1)
 						, "*"),
 				Arguments.of(						
-						new ArrestPosition2baseCallCount()
+						new ArrestPosition2baseCallCount(-1)
 							.addBaseCall(9, Base.A)
 							.addBaseCall(10, Base.C)
 							.addBaseCall(50, Base.G)

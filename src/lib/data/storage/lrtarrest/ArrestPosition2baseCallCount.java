@@ -26,6 +26,8 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	/**
 	 * stores base call count information for each position
 	 */
+	private int refPos;
+
 	private Map<Integer, BaseCallCount> aPos2bcc;
 	private BaseCallCount tBcc;
 	
@@ -34,8 +36,18 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	private BaseCallCount cTotBcc;
 	
 	public ArrestPosition2baseCallCount() {
+		this(-1);
+	}
+	
+	public ArrestPosition2baseCallCount(final int refPos) {
+		this.refPos = refPos;
+		
 		aPos2bcc 	= new HashMap<Integer, BaseCallCount>();
 		tBcc		= BaseCallCount.create();
+	}
+	
+	public void setReferencePosition(final int refPos) {
+		this.refPos = refPos;
 	}
 	
 	/**
@@ -44,7 +56,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	 * @param src
 	 */
 	public ArrestPosition2baseCallCount(final ArrestPosition2baseCallCount src) {
-		this();
+		this(-1);
 		merge(src);
 	}
 
@@ -108,6 +120,9 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 		if (contains(arrestPos)) {
 			tmpTotalBcc.subtract(getArrestBaseCallCount(arrestPos));
 		}
+		if (arrestPos != refPos) {
+			tmpTotalBcc.subtract(getArrestBaseCallCount(refPos));
+		}
 		return new UnmodifiableBaseCallCount(tmpTotalBcc);
 	}
 
@@ -139,6 +154,8 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 	 */
 	@Override
 	public void merge(final ArrestPosition2baseCallCount src) {
+		this.refPos = src.refPos;
+		
 		for (final int position : src.getPositions()) {
 			if (! contains(position)) {
 				aPos2bcc.put(position, src.aPos2bcc.get(position).copy());
@@ -249,7 +266,7 @@ implements Serializable, Data<ArrestPosition2baseCallCount> {
 		
 		@Override
 		public ArrestPosition2baseCallCount parse(String s) {
-			final ArrestPosition2baseCallCount o = new ArrestPosition2baseCallCount();
+			final ArrestPosition2baseCallCount o = new ArrestPosition2baseCallCount(-1);
 			if (s.equals(Character.toString(empty))) {
 				return o;
 			}

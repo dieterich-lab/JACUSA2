@@ -72,12 +72,12 @@ implements WindowCoverage {
 		ArrestPosition2baseCallCount ap2bcc = null;
 		if (winPos >= 0) {
 			if (winPos2ap2bcc[winPos] == null) {
-				winPos2ap2bcc[winPos] = new ArrestPosition2baseCallCount();
+				winPos2ap2bcc[winPos] = new ArrestPosition2baseCallCount(refPos);
 			}
 			ap2bcc = winPos2ap2bcc[winPos];
 		} else {
 			if (! refPos2ap2bcc.containsKey(refPos)) {
-				refPos2ap2bcc.put(refPos, new ArrestPosition2baseCallCount());
+				refPos2ap2bcc.put(refPos, new ArrestPosition2baseCallCount(refPos));
 			}
 			ap2bcc = refPos2ap2bcc.get(refPos);
 		}
