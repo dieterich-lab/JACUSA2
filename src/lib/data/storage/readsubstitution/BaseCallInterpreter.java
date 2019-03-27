@@ -2,12 +2,13 @@ package lib.data.storage.readsubstitution;
 
 import lib.util.Base;
 import lib.util.LibraryType;
+import lib.util.position.Position;
 import lib.recordextended.SAMRecordExtended;
 
 public interface BaseCallInterpreter {
 
 	Base getReadBase(SAMRecordExtended recordExtended, int readPos);
-	Base getRefBase(SAMRecordExtended recordExtended, int refPos);
+	Base getRefBase(SAMRecordExtended recordExtended, Position pos);
 
 	public static BaseCallInterpreter build(final LibraryType libraryType) { 
 		switch (libraryType) {

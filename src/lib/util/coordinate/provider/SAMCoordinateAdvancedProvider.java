@@ -81,7 +81,7 @@ public class SAMCoordinateAdvancedProvider implements CoordinateProvider {
 		// init
 		final String contig = sequenceRecord.getSequenceName();
 		final STRAND strand = isStranded ? STRAND.FORWARD : STRAND.UNKNOWN;
-		currentCoordinate 	= new OneCoordinate(contig, 0, 0, strand);
+		currentCoordinate 	= searchNext(new OneCoordinate(contig, 0, 0, strand));
 	}
 
 	@Override

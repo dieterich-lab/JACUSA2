@@ -1,6 +1,7 @@
 package lib.data.storage.readsubstitution;
 
 import lib.util.Base;
+import lib.util.position.Position;
 import lib.recordextended.SAMRecordExtended;
 import htsjdk.samtools.SAMRecord;
 
@@ -18,9 +19,11 @@ implements BaseCallInterpreter {
 	}
 	
 	@Override
-	public Base getRefBase(SAMRecordExtended recordExtended, int refPos) {
+	public Base getRefBase(SAMRecordExtended recordExtended, Position pos) {
 		final SAMRecord record = recordExtended.getSAMRecord();
-		final Base base = recordExtended.getRecordReferenceProvider().getReferenceBase(refPos);
+		final Base base = recordExtended
+				.getRecordReferenceProvider()
+				.getReferenceBase(pos.getReferencePosition(), pos.getReadPosition());
 		if (record.getReadNegativeStrandFlag()) {
 			return base.getComplement();
 		}

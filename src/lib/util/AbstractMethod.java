@@ -191,7 +191,7 @@ public abstract class AbstractMethod {
 			coordinateProvider = new SAMCoordinateAdvancedProvider(isStranded, sequenceRecords, parameter);
 			// coordinateProvider = new SAMCoordinateProvider(isStranded, sequenceRecords);
 		} else {
-			coordinateProvider = new BedCoordinateProvider(isStranded, parameter.getInputBedFilename());
+			coordinateProvider = new BedCoordinateProvider(parameter.getInputBedFilename(), isStranded);
 			// wrap chosen provider
 			if (parameter.getMaxThreads() > 1) {
 				coordinateProvider = new WindowedCoordinateStaticProvider(isStranded,

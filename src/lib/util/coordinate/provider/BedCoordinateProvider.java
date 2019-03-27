@@ -6,9 +6,11 @@ package lib.util.coordinate.provider;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
@@ -20,84 +22,63 @@ import lib.util.coordinate.OneCoordinate;
  */
 public class BedCoordinateProvider implements CoordinateProvider {
 
-	private boolean isStranded;
+	private final String filename;
 	
-	private String filename;
-	private BufferedReader br;
-
-	private int total;
+	private final List<Coordinate> coordinates;
+	private final Iterator<Coordinate> coordinateIterator;
 	
-	public BedCoordinateProvider(final boolean isStranded, String filename) {
-		this.isStranded = isStranded;
-		this.filename = filename;
+	public BedCoordinateProvider(final String filename, final boolean isStranded) {
+		this.filename 	= filename;
 
-		total = 0;
-		reset();
-		while (hasNext()) {
-			next();
-			total++;
-		}
-		reset();
+		coordinates 		= read(filename, isStranded);
+		coordinateIterator 	= coordinates.iterator();
 	}
 
-	private void reset() {
-		File file = new File(filename);
-
+	private List<Coordinate> read(final String fileName, final boolean isStranded) {
+		final List<Coordinate> coordinates = new ArrayList<Coordinate>();
+		
+		final File file = new File(fileName);
+		
 		try {
+			final BufferedReader br = new BufferedReader(new FileReader(file));	
+			while(br.ready()) {
+				String line = br.readLine().trim();
+				if(line.startsWith("#") || line.isEmpty()) {
+					continue;
+				}
+
+				String[] cols = line.split("\t");
+				final Coordinate coordinate = new OneCoordinate(
+						cols[0], 
+						Integer.parseInt(cols[1]) + 1, Integer.parseInt(cols[2]));
+
+				// try to get strand
+				if (cols.length >= 6) {
+					coordinate.setStrand(STRAND.valueOf(cols[6]));
+				} else if (isStranded) {
+					coordinate.setStrand(STRAND.FORWARD);
+				}
+
+				coordinates.add(coordinate);
+			}
 			if (br != null) {
 				br.close();
 			}
-			br = new BufferedReader(new FileReader(file));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return;
-		} catch (IOException e) {
+		} catch (NumberFormatException | IOException e) {
 			e.printStackTrace();
 		}
+		return coordinates;
 	}
 	
 	@Override
 	public boolean hasNext() {
-		try {
-			return br.ready();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return coordinateIterator.hasNext();
 	}
 
 	@Override
 	public Coordinate next() {
-		if (hasNext()) {
-			String line;
-			try {
-				line = br.readLine();
-				line = line.trim();
-				if(line.startsWith("#") || line.isEmpty()) {
-					return next();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				return null;
-			}
+		return coordinateIterator.next();
 
-			String[] cols = line.split("\t");
-			final Coordinate coordinate = 
-					new OneCoordinate(
-							cols[0], 
-							Integer.parseInt(cols[1]) + 1, Integer.parseInt(cols[2]));
-
-			// try to get strand
-			if (cols.length >= 6) {
-				coordinate.setStrand(STRAND.valueOf(cols[6]));
-			} else if (isStranded) {
-				coordinate.setStrand(STRAND.FORWARD);
-			}
-
-			return coordinate;
-		}
-
-		return null;
 	}
 
 	@Override
@@ -107,7 +88,7 @@ public class BedCoordinateProvider implements CoordinateProvider {
 
 	@Override
 	public void close() throws IOException {
-		br.close();
+		// nothing to be done closed in read()
 	}
 
 	public String getFilename() {
@@ -115,7 +96,7 @@ public class BedCoordinateProvider implements CoordinateProvider {
 	}
 
 	public int getTotal() {
-		return total;
+		return coordinates.size();
 	}
 
 }

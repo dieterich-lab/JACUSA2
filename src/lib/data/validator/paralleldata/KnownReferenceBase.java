@@ -10,7 +10,8 @@ implements ParallelDataValidator {
 	
 	@Override
 	public boolean isValid(final ParallelData parallelData) {
-		return parallelData.getCombinedPooledData().getReferenceBase() != Base.N;
+		final Base refBase = parallelData.getCombinedPooledData().getReferenceBase();
+		return refBase != Base.N;
 	}
 
 }

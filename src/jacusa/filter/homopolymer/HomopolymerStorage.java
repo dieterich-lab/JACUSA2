@@ -52,9 +52,13 @@ public class HomopolymerStorage extends AbstractStorage {
 	}
 	
 	public void increment(final int refPos, final int length) {
-		final int winPos = getCoordinateController()
-				.getCoordinateTranslator().reference2windowPosition(refPos);
-		Arrays.fill(isHomopolymer, winPos, winPos + length, true);
+		for (int i = 0; i < length; ++i) {
+			final int winPos = getCoordinateController()
+				.getCoordinateTranslator().reference2windowPosition(refPos + i);
+			if (winPos >= 0) {
+				isHomopolymer[winPos] = true;
+			}
+		}
 	}
 	
 	@Override

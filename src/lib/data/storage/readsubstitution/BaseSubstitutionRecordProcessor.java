@@ -236,8 +236,7 @@ implements RecordExtendedPrePostProcessor {
 			
 			final int readMismatchPos 	= pos.getReadPosition();
 			final Base readBase 		= bci.getReadBase(recordExtended, readMismatchPos);
-			final int refPos 			= pos.getReferencePosition();
-			final Base refBase 			= bci.getRefBase(recordExtended, refPos);
+			final Base refBase 			= bci.getRefBase(recordExtended, pos);
 			
 			final BaseSubstitution observedBaseSub = BaseSubstitution.bases2enum(refBase, readBase);
 			if (queryBaseSubs.contains(observedBaseSub)) {

@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMException;
 import htsjdk.samtools.SAMRecord;
@@ -23,6 +22,8 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
 	// from htsjdk SequenceUtils
 	static final Pattern MD_PATTERN = Pattern.compile("\\G(?:([0-9]+)|([ACTGNactgn])|(\\^[ACTGNactgn]+))");
 	
+	private final SAMRecordExtended recordExtended;
+	
 	private final List<AlignedPosition> mismatchPositions;
 	private final Map<Integer, Byte> refPos2base;
 
@@ -31,23 +32,24 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
 	private int currentMatchedBases;
 	
 	public MDRecordReferenceProvider(final SAMRecordExtended recordExtended) {
+		this.recordExtended = recordExtended;
+		
 		final int n 		= 5;
 		mismatchPositions 	= new ArrayList<AlignedPosition>(n);
 		refPos2base 		= new HashMap<Integer, Byte>(Util.noRehashCapacity(n));
 
 		cigarElementExtendedIterator 	= recordExtended.getCigarElementExtended().iterator();
-		currentCigarElementExtended	= cigarElementExtendedIterator.next();
+		currentCigarElementExtended		= cigarElementExtendedIterator.next();
 		currentMatchedBases 			= 0;		
 		process(recordExtended);
 	}
 	
 	@Override
-	public Base getReferenceBase(int refPos) {
-		if (! refPos2base.containsKey(refPos)) {
-			return Base.N;
+	public Base getReferenceBase(int refPos, int readPos) {
+		if (refPos2base.containsKey(refPos)) {
+			return Base.valueOf(refPos2base.get(refPos));
 		}
-		
-		return Base.valueOf(refPos2base.get(refPos));
+		return Base.valueOf(recordExtended.getSAMRecord().getReadBases()[readPos]);
 	}
 
 	private void process(final SAMRecordExtended recordExtended) {
@@ -56,17 +58,6 @@ public class MDRecordReferenceProvider implements RecordReferenceProvider {
         if (md == null) {
             throw new SAMException("Cannot create reference from SAMRecord with no MD tag, read: " + record.getReadName());
         }
-        
-        for (final AlignmentBlock block : record.getAlignmentBlocks()) {
-			final int readPos 	= block.getReadStart() - 1;
-			final int refPos 	= block.getReferenceStart();
-			final int length 	= block.getLength();
-			
-			for (int i = 0; i < length; ++i) {
-				final byte base = record.getReadBases()[readPos + i];
-				refPos2base.put(refPos + i, base);
-			}
-		}
         
 		// correct refBase based on MD and add missing base calls from deletions
 		final Matcher match = MD_PATTERN.matcher(md);

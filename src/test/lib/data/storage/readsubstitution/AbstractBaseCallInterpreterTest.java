@@ -2,6 +2,8 @@ package test.lib.data.storage.readsubstitution;
 
 import lib.data.storage.readsubstitution.BaseCallInterpreter;
 import lib.util.Base;
+import lib.util.position.Position;
+import lib.util.position.UnmodifiablePosition;
 import test.utlis.ReferenceSequence;
 import test.utlis.SAMRecordBuilder;
 import lib.recordextended.SAMRecordExtended;
@@ -43,9 +45,9 @@ abstract class AbstractBaseCallInterpreterTest {
 
 	@ParameterizedTest(name = "{3}")
 	@MethodSource("testGetRefBase")
-	void testGetRefBase(SAMRecord record, int refPos, Base expected, String info) {
+	void testGetRefBase(SAMRecord record, Position pos, Base expected, String info) {
 		final SAMRecordExtended recordExtended = new SAMRecordExtended(record);
-		final Base actual = testInstance.getRefBase(recordExtended, refPos);
+		final Base actual = testInstance.getRefBase(recordExtended, pos);
 		assertEquals(expected, actual);
 	}
 	
@@ -74,13 +76,13 @@ abstract class AbstractBaseCallInterpreterTest {
 				Integer.toString(refStart) + ":" + 
 				(negativeStrand ? "-" : "+");
 		final String simReadSeq	= StringUtil.bytesToString(record.getReadBases());
-		final int readPos		= record.getReadPositionAtReferencePosition(refPos);
-		final Base readBase		= Base.valueOf(record.getReadBases()[readPos - 1]);
-		final char refBase		= ReferenceSequence.getReferenceSequence(contig).charAt(refPos);
+		final int readPos		= record.getReadPositionAtReferencePosition(refPos) - 1;
+		final Base readBase		= Base.valueOf(record.getReadBases()[readPos]);
+		final char refBase		= ReferenceSequence.getReferenceSequence(contig).charAt(refPos - 1);
 		
 		return Arguments.of(
 				record,
-				readPos,
+				new UnmodifiablePosition(refPos, readPos, -1, new SAMRecordExtended(record)),
 				expected,
 				String.format("Read: %s %s %s; readPos: %d %s; refPos: %d %c", 
 						coord, simReadSeq, cigarStr, readPos, readBase, refPos, refBase) );
@@ -113,15 +115,15 @@ abstract class AbstractBaseCallInterpreterTest {
 		final String simReadSeq	= StringUtil.bytesToString(record.getReadBases());
 		final Base readBase		= Base.valueOf(record.getReadBases()[readPos]);
 		
-		final int refPos		= record.getReferencePositionAtReadPosition(readPos);
-		final char refBase		= ReferenceSequence.getReferenceSequence(contig).charAt(refPos);
+		final int refPos		= record.getReferencePositionAtReadPosition(readPos + 1);
+		final char refBase		= ReferenceSequence.getReferenceSequence(contig).charAt(refPos - 1);
 		
 		return Arguments.of(
 				record,
 				readPos,
 				expected,
 				String.format("Read: %s %s %s; readPos: %d %s; refPos: %d %c", 
-						coord, simReadSeq, cigarStr, readPos, readBase, refPos, refBase) );
+						coord, simReadSeq, cigarStr, readPos + 1, readBase, refPos, refBase) );
 	}
 	
 }

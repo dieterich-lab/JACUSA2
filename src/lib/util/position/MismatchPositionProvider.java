@@ -16,7 +16,7 @@ public class MismatchPositionProvider implements PositionProvider {
 	private final CoordinateTranslator translator;
 	private final Validator validator;
 	
-	private final Iterator<AlignedPosition> combPosIt;
+	private final Iterator<AlignedPosition> misMatchPosIt;
 	
 	private Position nextPos;
 
@@ -39,23 +39,25 @@ public class MismatchPositionProvider implements PositionProvider {
 		List<AlignedPosition> mismatchPositions = recordExtended.getRecordReferenceProvider()
 				.getMismatchPositions();
 		
-		combPosIt 			= mismatchPositions.iterator();
+		misMatchPosIt = mismatchPositions.iterator();
 	}
 
 	@Override
 	public boolean hasNext() {
-		while (nextPos == null && combPosIt.hasNext()) {
-			final AlignedPosition combPos = combPosIt.next();
-			final int refPos 	= combPos.getReferencePosition();
-			final Base refBase 	= recordExtended.getRecordReferenceProvider().getReferenceBase(refPos);
+		while (nextPos == null && misMatchPosIt.hasNext()) {
+			final AlignedPosition tmpMisMatchPos = misMatchPosIt.next();
+			final int refPos 	= tmpMisMatchPos.getReferencePosition();
+			final int readPos 	= tmpMisMatchPos.getReadPosition();
+			final int winPos 	= translator.reference2windowPosition(refPos);
+			final Position misMatchPos 	= new UnmodifiablePosition(refPos, readPos, winPos, recordExtended);
+			final Base refBase 			= recordExtended
+					.getRecordReferenceProvider()
+					.getReferenceBase(misMatchPos.getReferencePosition(), misMatchPos.getReadPosition());
 			if (refBase == Base.N) {
 				continue;
 			}
-			final int readPos 	= combPos.getReadPosition();
-			final int winPos	= translator.reference2windowPosition(refPos);
-			final Position tmpNextPos = new UnmodifiablePosition(refPos, readPos, winPos, recordExtended);
-			if (validator.isValid(tmpNextPos)) {
-				nextPos = tmpNextPos;
+			if (validator.isValid(misMatchPos)) {
+				nextPos = misMatchPos;
 				return true;
 			}
 		}

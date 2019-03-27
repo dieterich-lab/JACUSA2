@@ -1,6 +1,5 @@
 package lib.data.storage.container;
 
-import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
 import htsjdk.samtools.SamReader;
@@ -9,8 +8,10 @@ import htsjdk.samtools.util.SequenceUtil;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lib.cli.parameter.ConditionParameter;
@@ -29,12 +30,11 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 	
 	private final CoordinateController coordinateController;
 	
-	private final byte[] reference;
-	private Coordinate window;
+	private final byte[] winPos2refBase;
 
 	private final List<SamReader> samReaders;
 	
-	private Map<Integer, Byte> referenceBaseBuffer;
+	private Map<Integer, Byte> refPos2refBase;
 	
 	public SimpleMDReferenceProvider(
 			final CoordinateController coordinateController,
@@ -42,12 +42,12 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 
 		this.coordinateController = coordinateController;		
 
-		reference = new byte[coordinateController.getActiveWindowSize()];
-		Arrays.fill(reference, (byte)'N');
+		winPos2refBase = new byte[coordinateController.getActiveWindowSize()];
+		Arrays.fill(winPos2refBase, (byte)'N');
 
 		samReaders = createSamReaders(recordFilenames);
 
-		referenceBaseBuffer = new HashMap<Integer, Byte>(Util.noRehashCapacity(READ_AHEAD));
+		refPos2refBase = new HashMap<Integer, Byte>(Util.noRehashCapacity(READ_AHEAD));
 	}
 
 	private CoordinateTranslator getTranslator() {
@@ -61,25 +61,21 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 		
 		while (positionProvider.hasNext()) {
 			final Position position = positionProvider.next();
-			reference[position.getWindowPosition()] = 
-					recordExtended
-						.getRecordReferenceProvider()
-						.getReferenceBase(position.getReferencePosition())
-						.getByte();
+			winPos2refBase[position.getWindowPosition()] = recordExtended
+					.getRecordReferenceProvider()
+					.getReferenceBase(position.getReferencePosition(), position.getReadPosition())
+					.getByte();
 		}
 	}
 
 	@Override
 	public void update() {
-		if (window == null || window != coordinateController.getActive()) {
-			window = coordinateController.getActive();
-			Arrays.fill(reference, (byte)'N');
+		Arrays.fill(winPos2refBase, (byte)'N');
 
-			if (referenceBaseBuffer.size() > 3 * READ_AHEAD) {
-				referenceBaseBuffer = new HashMap<Integer, Byte>(Util.noRehashCapacity(READ_AHEAD));
-			} else {
-				referenceBaseBuffer.clear();
-			}
+		if (refPos2refBase.size() > 3 * READ_AHEAD) {
+			refPos2refBase = new HashMap<Integer, Byte>(Util.noRehashCapacity(READ_AHEAD));
+		} else {
+			refPos2refBase.clear();
 		}
 	}
 	
@@ -91,23 +87,23 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 		}
 		
 		final int onePosition = coordinate.get1Position();
-		if (! referenceBaseBuffer.containsKey(onePosition)) {
+		if (! refPos2refBase.containsKey(onePosition)) {
 			for (SamReader samReader : samReaders) {
-				addReference(referenceBaseBuffer, samReader, coordinate, READ_AHEAD);
-				if (referenceBaseBuffer.containsKey(onePosition) && 
-						SequenceUtil.isValidBase(referenceBaseBuffer.get(onePosition))) {
-					return Base.valueOf(referenceBaseBuffer.get(onePosition));
+				addReference(samReader, coordinate, READ_AHEAD);
+				if (refPos2refBase.containsKey(onePosition) && 
+						SequenceUtil.isValidBase(refPos2refBase.get(onePosition))) {
+					return Base.valueOf(refPos2refBase.get(onePosition));
 				}
 			}
 
 			// FALLBACK - just return N
-			referenceBaseBuffer.put(onePosition, Base.N.getByte());
+			refPos2refBase.put(onePosition, Base.N.getByte());
 		}
 
-		return Base.valueOf(referenceBaseBuffer.get(onePosition));
+		return Base.valueOf(refPos2refBase.get(onePosition));
 	}
 
-	private void addReference(final Map<Integer, Byte> ref2base, 
+	private void addReference( 
 			final SamReader samReader, 
 			final Coordinate coordinate, 
 			final int readAhead) {
@@ -115,29 +111,40 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 		final String contig = coordinate.getContig();
 		final int start 	= coordinate.get1Position();
 		final int end 	   	= start + readAhead - 1;
+		final Set<Integer>  visited = new HashSet<>(readAhead + end - start + 1);
+		int covered 		= 0;
+		
 		final SAMRecordIterator it = samReader.query(contig, start, end, false);
 		while (it.hasNext()) {
 			final SAMRecord record = it.next();
 			final SAMRecordExtended recordExtended = new SAMRecordExtended(record);
+			final AllAlignmentBlocksPositionProvider positionProvider = 
+					new AllAlignmentBlocksPositionProvider(recordExtended, getTranslator());
 			
-			for (final AlignmentBlock block : record.getAlignmentBlocks()) {
-				final int refStart = block.getReferenceStart();
-				for (int i = 0; i < block.getLength(); ++i) {
-					final int refPos = refStart + 0;
-					if (refPos > end) {
-						it.close();
-						return;
-					}
-					if (refPos >= start) {
-						ref2base.put(
-								refPos, 
-								recordExtended
-									.getRecordReferenceProvider()
-									.getReferenceBase(refPos)
-									.getByte() );
-					}	
+			while (positionProvider.hasNext() && covered < end - start + 1) {
+				final Position position = positionProvider.next();
+				final int refPos = position.getReferencePosition();
+				if (visited.contains(refPos)) {
+					continue;
 				}
-	        }
+				visited.add(refPos);
+				if (refPos >= start && refPos <= end) {
+					covered++;
+				}
+				if (! position.isWithinWindow()) {
+					refPos2refBase.put(
+							refPos, 
+							recordExtended
+								.getRecordReferenceProvider()
+								.getReferenceBase(position.getReferencePosition(), position.getReadPosition())
+								.getByte() );					
+				} else {
+					winPos2refBase[position.getWindowPosition()] = recordExtended
+							.getRecordReferenceProvider()
+							.getReferenceBase(position.getReferencePosition(), position.getReadPosition())
+							.getByte();
+				}
+			}
 		}
 		it.close();
 	}
@@ -150,7 +157,7 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 	
 	@Override
 	public Base getReferenceBase(final int winPos) {
-		return Base.valueOf(reference[winPos]);
+		return Base.valueOf(winPos2refBase[winPos]);
 	}
 
 	@Override

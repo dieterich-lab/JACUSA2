@@ -2,12 +2,10 @@ package jacusa.filter.homopolymer;
 
 import java.util.Collection;
 
+import htsjdk.samtools.AlignmentBlock;
 import jacusa.filter.homopolymer.Homopolymer.HomopolymerBuilder;
 import lib.data.storage.processor.RecordExtendedPrePostProcessor;
-import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.AllAlignmentBlocksPositionProvider;
-import lib.util.position.Position;
-import lib.util.position.PositionProvider;
+import lib.util.Base;
 import lib.recordextended.SAMRecordExtended;
 
 /**
@@ -41,34 +39,25 @@ public class HomopolymerReadRecordProcessor implements RecordExtendedPrePostProc
 	
 	@Override
 	public void process(final SAMRecordExtended recordExtended) {
-		// ignore all non aligned positions such as insertions
-		final PositionProvider positionProvider = new AllAlignmentBlocksPositionProvider(
-				recordExtended, getTranslator());
-		
-		if (! positionProvider.hasNext()) {
-			return;
- 		}
-		// get the first position and base call to start the first homopolymer
-		Position pos 		= positionProvider.next();
-		final int refPos 	= pos.getReferencePosition();
-		final HomopolymerBuilder builder = new HomopolymerBuilder(refPos, getMinLength());
-		
-		// continue search for homopolymers as long as there are aligned position
-		while (positionProvider.hasNext()) {
-			pos = positionProvider.next();
-			builder.add(pos.getReadBaseCall());
-		}
-		
-		// create collection of identified homopolymers and save them in storage
-		final Collection<Homopolymer> homopolymers = builder.build();
-		for (final Homopolymer homopolymer : homopolymers) {
-			storage.increment(homopolymer.getPosition(), homopolymer.getLength());
+		final byte[] readBases = recordExtended.getSAMRecord().getReadBases(); 
+		for (final AlignmentBlock block : recordExtended.getSAMRecord().getAlignmentBlocks()) {
+			final int refPos 	= block.getReferenceStart();
+			final int readPos 	= block.getReadStart() - 1;
+			final int length 	= block.getLength();
+			
+			final HomopolymerBuilder builder = new HomopolymerBuilder(refPos, getMinLength());
+			for (int i = 0; i < length; ++i) {
+				final Base base = Base.valueOf(readBases[readPos + i]);
+				builder.add(base);
+			}
+
+			final Collection<Homopolymer> homopolymers = builder.build();
+			for (final Homopolymer homopolymer : homopolymers) {
+				storage.increment(homopolymer.getPosition(), homopolymer.getLength());
+			}
 		}
 	}
 
-	private CoordinateTranslator getTranslator() {
-		return storage.getCoordinateController().getCoordinateTranslator();
-	}
 
 	public int getMinLength() {
 		return minLength;
