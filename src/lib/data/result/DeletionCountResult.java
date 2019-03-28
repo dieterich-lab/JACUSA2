@@ -4,17 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 
-import org.apache.commons.math3.distribution.ChiSquaredDistribution;
-
 import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.io.InputOutput;
-import lib.stat.dirmult.EstimateDirMult;
-import lib.stat.sample.EstimationSample;
-import lib.stat.sample.provider.EstimationSampleProvider;
 import lib.util.Info;
-import lib.util.Util;
 
 public class DeletionCountResult implements Result {
 
@@ -26,28 +20,24 @@ public class DeletionCountResult implements Result {
 	private final List<BaseSubstitution> baseSubs;
 	private final Result result;
 
+	/*
 	private final EstimationSampleProvider estimationSampleProvider;
 	private final EstimateDirMult dirMult;
 	private final ChiSquaredDistribution dist;
-	
-	public DeletionCountResult(
-			final SortedSet<BaseSubstitution> baseSubs, final Result result,
-			final EstimationSampleProvider estimationSampleProvider, 
-			final EstimateDirMult dirMult,
-			final ChiSquaredDistribution dist) {
-		
-		this.baseSubs 	= new ArrayList<>(baseSubs);
-		this.result 	= result;
-		
-		this.estimationSampleProvider 	= estimationSampleProvider;
-		this.dirMult					= dirMult;
-		this.dist						= dist;
-		
-		init();
-	}
+	*/
 	
 	public DeletionCountResult(final SortedSet<BaseSubstitution> baseSubs, final Result result) {
-		this(baseSubs, result, null, null, null);
+		this.baseSubs 	= new ArrayList<>(baseSubs);
+		this.result 	= result;
+	
+		/*
+		final MinkaParameter minkaParameter = new MinkaParameter();
+		this.estimationSampleProvider 		= new DeletionCountSampleProvider(minkaParameter.getMaxIterations());
+		this.dirMult						= new EstimateDirMult(minkaParameter);
+		this.dist							= new ChiSquaredDistribution(1);
+		*/
+		
+		init();
 	}
 
 	@Override
@@ -118,20 +108,23 @@ public class DeletionCountResult implements Result {
 					}
 				}
 			}
+			/* FIXME uncomment
 			if (valueIndex == Result.TOTAL) {
 				final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
 				final double lrt 	= dirMult.getLRT(estimationSamples);
 				final double pvalue = getPValue(lrt);
-				final Result result = new OneStatResult(pvalue, parallelData);
 				result.getResultInfo(valueIndex).add(DELETION_PVALUE, Util.format(pvalue));
 				result.getResultInfo(valueIndex).add(DELETION_SCORE, Util.format(lrt));
 			}
+			*/
 		}
 	}
-	
+
+	/*
 	private double getPValue(final double lrt) {
 		return 1 - dist.cumulativeProbability(lrt);
 	} 
+	*/
 	
 	private String getKey(final int condition, final int replicate) {
 		return new StringBuilder()

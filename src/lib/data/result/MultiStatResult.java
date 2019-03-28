@@ -111,20 +111,35 @@ implements Result {
 	
 	@Override
 	public Info getFilterInfo() {
-		return filterInfo.get(Result.TOTAL);
+		if (value2stat.size() == 0) {
+			return null;
+		}
+		final int value = value2stat.firstKey();
+		return filterInfo.get(value);			
 	}
 	
 	@Override
 	public Info getResultInfo() {
-		return resultInfo.get(Result.TOTAL);
+		if (value2stat.size() == 0) {
+			return null;
+		}
+		final int value = value2stat.firstKey();
+		return resultInfo.get(value);
 	}
 	
 	@Override
 	public double getStat() {
-		return value2stat.get(Result.TOTAL);
+		if (value2stat.size() == 0) {
+			return Double.NaN;
+		}
+		final int value = value2stat.firstKey();
+		return value2stat.get(value);
 	}
 
 	private int getNewValueIndex() {
+		if (value2stat.size() == 0) {
+			return 0;
+		}
 		return value2stat.lastKey() + 1;
 	}
 	
