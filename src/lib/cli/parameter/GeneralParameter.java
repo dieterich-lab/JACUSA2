@@ -217,6 +217,10 @@ implements HasConditionParameter, HasReadSubstitution {
 	public boolean showDeletionCount() {
 		return showDeletionCount;
 	}
+	
+	public boolean showInsertionCount() {
+		return true;
+	}
 
 	/**
 	 * @param showDeletionCount the showDeletionCount to set

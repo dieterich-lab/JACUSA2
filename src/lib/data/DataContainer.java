@@ -50,8 +50,11 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	
 	BaseSubstitution2IntegerData getBaseSubstitution2Coverage();
 	BaseSubstitution2IntegerData getBaseSubstitution2DeletionCount();
+	BaseSubstitution2IntegerData getBaseSubstitution2InsertionCount();
 	
 	IntegerData getDeletionCount();
+
+	IntegerData getInsertionCount();
 	IntegerData getCoverage();
 	
 	<T extends Data<T>> boolean contains(DataType<T> dataType);
@@ -147,6 +150,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			add(builder, DataType.ARREST_BASE_SUBST);
 			add(builder, DataType.THROUGH_BASE_SUBST);
 			add(builder, DataType.DELETION_COUNT);
+			add(builder, DataType.INSERTION_COUNT);
 		}
 		
 		@Override
@@ -223,6 +227,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		}
 		
 	}
+
 
 	/*
 	public static abstract class AbstractParser 

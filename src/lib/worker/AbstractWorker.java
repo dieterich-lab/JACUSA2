@@ -197,6 +197,7 @@ implements Iterator<ParallelData> {
 
 	@Override
 	public final void run() {
+		try {
 		while (status != STATUS.FINISHED) {
 			switch (status) {
 
@@ -223,7 +224,10 @@ implements Iterator<ParallelData> {
 		synchronized (getWorkerDispatcherInstance()) {
 			getWorkerDispatcherInstance().notify();
 		}
-
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
 	}
 
 	public STATUS getStatus() {

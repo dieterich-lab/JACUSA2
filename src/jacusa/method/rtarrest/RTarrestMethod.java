@@ -295,6 +295,10 @@ extends AbstractMethod {
 				add(builder, DataType.DELETION_COUNT);
 				add(builder, DataType.COVERAGE);
 			}
+			if (parameter.showInsertionCount()) {
+				add(builder, DataType.INSERTION_COUNT);
+//				add(builder, DataType.COVERAGE);
+			}
 			if (parameter.getReadSubstitutions().size() > 0 && parameter.showDeletionCount()) {
 				addDeletionCount(builder, DataType.BASE_SUBST2DELETION_COUNT);
 				addCoverage(builder, DataType.BASE_SUBST2COVERAGE);

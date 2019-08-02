@@ -10,6 +10,7 @@ import lib.data.ParallelData;
 import lib.data.ParallelData.Builder;
 import lib.data.result.BaseSubstitutionResult;
 import lib.data.result.DeletionCountResult;
+import lib.data.result.InsertionCountResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.util.ReplicateContainer;
@@ -49,9 +50,13 @@ public class CallWorker extends AbstractWorker {
 		if (! baseSubs.isEmpty()) {
 			result = new BaseSubstitutionResult(baseSubs, DataType.BASE_SUBST2BCC.getFetcher(), result);
 		}
-		
+
 		if (getParameter().showDeletionCount()) {
 			result = new DeletionCountResult(baseSubs, result);
+		}
+
+		if (getParameter().showInsertionCount()) {
+			result = new InsertionCountResult(baseSubs, result);
 		}
 		
 		return result;
