@@ -35,6 +35,7 @@ import lib.cli.options.FilterModusOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
 import lib.cli.options.ResultFormatOption;
 import lib.cli.options.ShowDeletionCountOption;
+import lib.cli.options.ShowInsertionCountOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.MaxThreadOption;
 import lib.cli.options.ResultFileOption;
@@ -117,6 +118,7 @@ extends AbstractMethod {
 
 		addACOption(new CollectReadSubstituionOption(getParameter()));
 		addACOption(new ShowDeletionCountOption(getParameter()));
+		addACOption(new ShowInsertionCountOption(getParameter()));
 		
 		addACOption(new BedCoordinatesOption(getParameter()));
 		addACOption(new ResultFileOption(getParameter()));

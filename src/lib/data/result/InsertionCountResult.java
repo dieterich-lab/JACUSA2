@@ -108,13 +108,13 @@ public class InsertionCountResult implements Result {
 					}
 				}
 			} else {
-			}
-			if (valueIndex == Result.TOTAL) {
-				for (int condition = 0; condition < parallelData.getConditions(); ++condition) {
-					final int replicates = parallelData.getReplicates(condition);
-					for (int replicate = 0; replicate < replicates; ++replicate) 
-						result.getResultInfo(valueIndex).add("insertions", result.getParellelData().getDataContainer(condition, replicate)
-								.getInsertionCount().getValue());
+				if (valueIndex == Result.TOTAL) {
+					for (int condition = 0; condition < parallelData.getConditions(); ++condition) {
+						final int replicates = parallelData.getReplicates(condition);
+						for (int replicate = 0; replicate < replicates; ++replicate) 
+							result.getResultInfo(valueIndex).add("insertions", result.getParellelData().getDataContainer(condition, replicate)
+									.getInsertionCount().getValue());
+					}
 				}
 			}
 		}

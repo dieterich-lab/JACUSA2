@@ -74,6 +74,19 @@ extends AbstractDataAssemblerFactory {
 								DataType.DELETION_COUNT.getFetcher()));
 		}
 	}
+	
+	protected void addInserctionCache(
+			final GeneralParameter parameter, 
+			final SharedStorage sharedStorage,
+			final Cache cache) {
+		
+		if (parameter.showInsertionCount()) {
+				cache.addCache(createInsertionCache(
+								sharedStorage, 
+								DataType.COVERAGE.getFetcher(), 
+								DataType.INSERTION_COUNT.getFetcher()));
+		}
+	}
 
 	Cache createDeletionCache(
 			final SharedStorage sharedStorage, 
@@ -94,19 +107,6 @@ extends AbstractDataAssemblerFactory {
 				covStorage, delStorage));
 		
 		return cache;
-	}
-	
-	protected void addInserctionCache(
-			final GeneralParameter parameter, 
-			final SharedStorage sharedStorage,
-			final Cache cache) {
-		
-		if (parameter.showInsertionCount()) {
-				cache.addCache(createInsertionCache(
-								sharedStorage, 
-								DataType.COVERAGE.getFetcher(), 
-								DataType.INSERTION_COUNT.getFetcher()));
-		}
 	}
 
 	Cache createInsertionCache(
