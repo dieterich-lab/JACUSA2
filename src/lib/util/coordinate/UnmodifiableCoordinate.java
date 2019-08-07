@@ -113,6 +113,11 @@ public class UnmodifiableCoordinate implements Coordinate {
 	}
 
 	@Override
+	public boolean isReverseStrand() {
+		return false;
+	}
+	
+	@Override
 	public int getLength() {
 		return coordinate.getLength();
 	}
