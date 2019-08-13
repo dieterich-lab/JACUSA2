@@ -27,9 +27,9 @@ public class MDtraverse {
 	            totalMatchedBases += Integer.parseInt(matchGroup);
 	        } else if ((matchGroup = match.group(2)) != null) { // mismatch(es)
 	        	totalMatchedBases += matchGroup.length();
-	        	matched2nonRefSeq.put(totalMatchedBases, match.group(2));
+	        	matched2nonRefSeq.put(totalMatchedBases, match.group(2).toUpperCase());
 	        } else if ((matchGroup = match.group(3)) != null) { // deletion
-	        	matched2nonRefSeq.put(totalMatchedBases, match.group(3));
+	        	matched2nonRefSeq.put(totalMatchedBases, match.group(3).toUpperCase());
 	        	totalMatchedBases += matchGroup.length();
 	        } else {
 	            throw new IllegalStateException();
