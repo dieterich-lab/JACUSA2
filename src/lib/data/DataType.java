@@ -45,11 +45,13 @@ public final class DataType<T extends Data<T>> implements Serializable {
 
 	public static final DataType<BaseSubstitution2IntegerData> BASE_SUBST2COVERAGE = 
 			create("BaseSub to coverage", BaseSubstitution2IntegerData.class);
-	
+
 	public static final DataType<BaseSubstitution2IntegerData> BASE_SUBST2DELETION_COUNT = 
 			create("BaseSub to deletion", BaseSubstitution2IntegerData.class);
-	
-	
+
+	public static final DataType<BaseSubstitution2IntegerData> BASE_SUBST2INSERTION_COUNT = 
+			create("BaseSub to insertion", BaseSubstitution2IntegerData.class);
+		
 	public static final DataType<BaseSubstitution2BaseCallCount> ARREST_BASE_SUBST = 
 			create("Arrest", BaseSubstitution2BaseCallCount.class);
 	
@@ -58,9 +60,12 @@ public final class DataType<T extends Data<T>> implements Serializable {
 
 	public static final DataType<IntegerData> COVERAGE = 
 			create("Total coverage", IntegerData.class);
-	
+
 	public static final DataType<IntegerData> DELETION_COUNT = 
 			create("Deletion count", IntegerData.class);
+
+	public static final DataType<IntegerData> INSERTION_COUNT = 
+			create("Insertion count", IntegerData.class);
 	
 	public static final DataType<BaseCallCountFilteredData> F_BCC = 
 			create(DEFAULT, BaseCallCountFilteredData.class);

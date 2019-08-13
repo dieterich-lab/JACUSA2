@@ -44,6 +44,7 @@ implements HasConditionParameter, HasReadSubstitution {
 	
 	private final SortedSet<BaseSubstitution> baseSubstitutions;
 	private boolean showDeletionCount;
+	private boolean showInsertionCount;
 	
 	// debug flag
 	private boolean debug;
@@ -217,12 +218,23 @@ implements HasConditionParameter, HasReadSubstitution {
 	public boolean showDeletionCount() {
 		return showDeletionCount;
 	}
+	
+	public boolean showInsertionCount() {
+		return showInsertionCount;
+	}
 
 	/**
 	 * @param showDeletionCount the showDeletionCount to set
 	 */
 	public void showDeletionCount(boolean showDeletionCount) {
 		this.showDeletionCount = showDeletionCount;
+	}
+
+	/**
+	 * @param showInsertionCount the showInsertionCount to set
+	 */
+	public void showInsertionCount(boolean showInsertionCount) {
+		this.showInsertionCount = showInsertionCount;
 	}
 	
 	/**

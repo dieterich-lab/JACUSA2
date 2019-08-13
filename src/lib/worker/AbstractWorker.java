@@ -197,33 +197,37 @@ implements Iterator<ParallelData> {
 
 	@Override
 	public final void run() {
-		while (status != STATUS.FINISHED) {
-			switch (status) {
-
-			case WAITING:
-				processWaiting();
-				break;
-			
-			case READY:
-				synchronized (this) {
-					processReady();
-				}
-				break;
+		try {
+			while (status != STATUS.FINISHED) {
+				switch (status) {
+	
+				case WAITING:
+					processWaiting();
+					break;
 				
-			case INIT:
-				processInit();
-				break;
-
-			
-			default:
-				break;
+				case READY:
+					synchronized (this) {
+						processReady();
+					}
+					break;
+					
+				case INIT:
+					processInit();
+					break;
+	
+				
+				default:
+					break;
+				}
 			}
+	
+			synchronized (getWorkerDispatcherInstance()) {
+				getWorkerDispatcherInstance().notify();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(-1);
 		}
-
-		synchronized (getWorkerDispatcherInstance()) {
-			getWorkerDispatcherInstance().notify();
-		}
-
 	}
 
 	public STATUS getStatus() {

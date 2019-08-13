@@ -52,8 +52,9 @@ public interface Coordinate extends Locatable, Serializable, Copyable<Coordinate
 	 * @param strand the strand to set
 	 */
 	void setStrand(STRAND strand);
-	
+
 	STRAND getStrand();
+	boolean isReverseStrand();
 
 	int getLength();
 

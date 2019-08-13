@@ -67,5 +67,9 @@ public class Info implements Serializable {
 	public boolean isEmpty() {
 		return map.size() == 0;
 	}
+
+	public void add(String key, int value) {
+		add(key, Integer.toString(value));
+	}
 	
 }

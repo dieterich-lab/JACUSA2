@@ -6,7 +6,6 @@ import java.util.List;
 import htsjdk.samtools.Cigar;
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.CigarOperator;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class CigarBuilder {
 	
@@ -53,9 +52,9 @@ public class CigarBuilder {
 		return this;
 	}
 	
-	public CigarBuilder addPadding(final int length) {
-		throw new NotImplementedException();
-	}
+//	public CigarBuilder addPadding(final int length) {
+//		throw new NotImplementedException();
+//	}
 	
 	public Cigar build() {
 		if (tmpElement != null) {
