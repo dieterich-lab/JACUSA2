@@ -204,7 +204,6 @@ implements Iterator<ParallelData> {
 				case WAITING:
 					processWaiting();
 					break;
-				
 				case READY:
 					synchronized (this) {
 						processReady();

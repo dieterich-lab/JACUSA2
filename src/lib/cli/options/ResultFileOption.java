@@ -36,7 +36,7 @@ public class ResultFileOption extends AbstractACOption {
 	@Override
 	public void process(final CommandLine line) throws FileAlreadyExistsException {
     	final String resultFilename = line.getOptionValue(getOpt());
-    	final File file = new File(resultFilename);
+//    	final File file = new File(resultFilename);
 //	 	if (file.exists()) {
 //	 		throw new FileAlreadyExistsException(resultFilename);
 //	 	}
