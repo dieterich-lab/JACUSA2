@@ -8,6 +8,7 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.StringUtil;
+import lib.data.global.Insertions;
 
 public class SAMRecordExtended {
 
@@ -44,7 +45,6 @@ public class SAMRecordExtended {
 		insertions 	= new ArrayList<Integer>(2);
 		deletions 	= new ArrayList<Integer>(2);
 		INDELs 		= new ArrayList<Integer>(4);
-		
 		process();
 	}
 	
@@ -74,6 +74,8 @@ public class SAMRecordExtended {
 		final AlignedPosition position = new AlignedPosition(record.getAlignmentStart());
 
 		int index = 0;
+		boolean reverse = (record.getFlags() & 0x10) == 0x10;
+		String read = record.getReadString();
 		
 		// process CIGAR -> SNP, INDELs
 		for (final CigarElement cigarElement : record.getCigar().getCigarElements()) {
@@ -86,6 +88,11 @@ public class SAMRecordExtended {
 			case I:
 				insertions.add(index);
 				INDELs.add(index);
+				Insertions.addUps(reverse ? read.substring(position.getReadPosition()+cigarElement.getLength(),
+						position.getReadPosition()+cigarElement.getLength()+1) : read.substring(position.getReadPosition()-1,
+								position.getReadPosition()));
+				Insertions.addIns(read.substring(position.getReadPosition(),
+						position.getReadPosition() + cigarElement.getLength()));
 				break;
 			
 			/*

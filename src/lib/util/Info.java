@@ -71,5 +71,9 @@ public class Info implements Serializable {
 	public void add(String key, int value) {
 		add(key, Integer.toString(value));
 	}
+
+	public String get(String key) {
+		return map.get(key).toString();
+	}
 	
 }
