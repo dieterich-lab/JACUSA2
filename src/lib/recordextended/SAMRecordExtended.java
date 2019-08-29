@@ -89,10 +89,9 @@ public class SAMRecordExtended {
 			case I:
 				insertions.add(index);
 				INDELs.add(index);
-				//System.out.print(record.getReadName()+"\t"+reverse+"\t"+position.getReferencePosition()+"\t");
-				Insertions.addUps(reverse ? new StringBuilder(read.substring(position.getReadPosition()+cigarElement.getLength()-1,
-						position.getReadPosition()+cigarElement.getLength()+1)).reverse().toString() : 
-							read.substring(position.getReadPosition()-1, position.getReadPosition()+1));
+				Insertions.addUps(reverse ? read.substring(position.getReadPosition()+cigarElement.getLength(),
+						position.getReadPosition()+cigarElement.getLength()+1) : read.substring(position.getReadPosition()-1,
+								position.getReadPosition()));
 				Insertions.addIns(read.substring(position.getReadPosition(),
 						position.getReadPosition() + cigarElement.getLength()));
 				BaseCounts.add(read.substring(position.getReadPosition(),
