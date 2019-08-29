@@ -110,6 +110,7 @@ implements Iterator<ParallelData> {
 					comparisons++;
 					return true;
 				}
+				
 				coordinateController.advance();
 			}
 			
@@ -196,7 +197,7 @@ implements Iterator<ParallelData> {
 	}
 
 	@Override
-	public final void run() {
+	public void run() {
 		try {
 			while (status != STATUS.FINISHED) {
 				switch (status) {
