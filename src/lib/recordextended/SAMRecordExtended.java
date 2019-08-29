@@ -8,7 +8,6 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.StringUtil;
-import lib.data.global.BaseCounts;
 import lib.data.global.Insertions;
 
 public class SAMRecordExtended {
@@ -94,8 +93,6 @@ public class SAMRecordExtended {
 								position.getReadPosition()));
 				Insertions.addIns(read.substring(position.getReadPosition(),
 						position.getReadPosition() + cigarElement.getLength()));
-				BaseCounts.add(read.substring(position.getReadPosition(),
-						position.getReadPosition() + cigarElement.getLength()));
 				break;
 			
 			/*
@@ -114,8 +111,6 @@ public class SAMRecordExtended {
 				break;
 				
 			default:
-				BaseCounts.add(read.substring(position.getReadPosition(),
-						position.getReadPosition() + cigarElement.getLength()));
 				break;
 			}
 		

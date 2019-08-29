@@ -98,6 +98,11 @@ public class JACUSA extends AbstractTool {
 		final JACUSA jacusa = new JACUSA(args);
 		try {
 			jacusa.run();
+			for(int a : Insertions.ins)
+				System.out.println(a);
+			System.out.println();
+			for(int a : Insertions.ups)
+				System.out.println(a);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
