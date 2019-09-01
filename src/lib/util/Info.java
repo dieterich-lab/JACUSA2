@@ -20,7 +20,11 @@ public class Info implements Serializable {
 	public void add(final String key) {
 		map.put(key, null);
 	}
-
+	
+	public void remove(final String key) {
+		map.remove(key);
+	}
+	
 	public void add(final String key, final String value) {
 		StringBuilder sb;
 		if (! map.containsKey(key)) {
@@ -62,6 +66,10 @@ public class Info implements Serializable {
 
 	public boolean isEmpty() {
 		return map.size() == 0;
+	}
+
+	public void add(String key, int value) {
+		add(key, Integer.toString(value));
 	}
 	
 }

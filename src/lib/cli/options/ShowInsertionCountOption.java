@@ -5,12 +5,12 @@ import lib.cli.parameter.GeneralParameter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class ShowDeletionCountOption extends AbstractACOption {
+public class ShowInsertionCountOption extends AbstractACOption {
 
 	final private GeneralParameter parameter;
 	
-	public ShowDeletionCountOption(final GeneralParameter parameter) {
-		super("D", "show-deletions");
+	public ShowInsertionCountOption(final GeneralParameter parameter) {
+		super("I", "show-insertions");
 		this.parameter = parameter;
 	}
 	
@@ -18,13 +18,17 @@ public class ShowDeletionCountOption extends AbstractACOption {
 	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
 				.hasArg(false)
-		        .desc("Show deletion score")
+		        .desc("Show insertion score")
 		        .build();
 	}
 	
+	/**
+	 * Tested in @see test.lib.cli.options.FilterModusOptionTest
+	 */
+	
 	@Override
 	public void process(final CommandLine line) throws Exception {
-		parameter.showDeletionCount(true);
+		parameter.showInsertionCount(true);
 	}
 
 }

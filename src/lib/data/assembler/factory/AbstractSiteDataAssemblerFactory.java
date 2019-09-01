@@ -28,6 +28,7 @@ import lib.data.storage.container.SharedStorage;
 import lib.data.storage.integer.ArrayIntegerStorage;
 import lib.data.storage.integer.MapIntegerStorage;
 import lib.data.storage.processor.DeletionRecordProcessor;
+import lib.data.storage.processor.InsertionRecordProcessor;
 import lib.data.storage.readsubstitution.BaseCallInterpreter;
 import lib.data.storage.readsubstitution.BaseSubstitutionRecordProcessor;
 import lib.data.validator.CombinedValidator;
@@ -73,6 +74,19 @@ extends AbstractDataAssemblerFactory {
 								DataType.DELETION_COUNT.getFetcher()));
 		}
 	}
+	
+	protected void addInserctionCache(
+			final GeneralParameter parameter, 
+			final SharedStorage sharedStorage,
+			final Cache cache) {
+		
+		if (parameter.showInsertionCount()) {
+				cache.addCache(createInsertionCache(
+								sharedStorage, 
+								DataType.COVERAGE.getFetcher(), 
+								DataType.INSERTION_COUNT.getFetcher()));
+		}
+	}
 
 	Cache createDeletionCache(
 			final SharedStorage sharedStorage, 
@@ -89,6 +103,27 @@ extends AbstractDataAssemblerFactory {
 				.getCoordinateTranslator();
 
 		cache.addRecordProcessor(new DeletionRecordProcessor(
+				translator,
+				covStorage, delStorage));
+		
+		return cache;
+	}
+
+	Cache createInsertionCache(
+			final SharedStorage sharedStorage, 
+			final Fetcher<IntegerData> covFetcher, final Fetcher<IntegerData> delFetcher) {
+		
+		final Cache cache = new Cache();
+		final Storage covStorage = new ArrayIntegerStorage(sharedStorage, covFetcher);
+		cache.addStorage(covStorage);
+		
+		final Storage delStorage = new MapIntegerStorage(sharedStorage, delFetcher);
+		cache.addStorage(delStorage);
+
+		final CoordinateTranslator translator = sharedStorage.getCoordinateController()
+				.getCoordinateTranslator();
+
+		cache.addRecordProcessor(new InsertionRecordProcessor(
 				translator,
 				covStorage, delStorage));
 		

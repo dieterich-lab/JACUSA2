@@ -122,6 +122,16 @@ public class DefaultDataContainer implements DataContainer {
 	public IntegerData getDeletionCount() {
 		return get(DataType.DELETION_COUNT);
 	}
+
+	@Override
+	public BaseSubstitution2IntegerData getBaseSubstitution2InsertionCount() {
+		return get(DataType.BASE_SUBST2INSERTION_COUNT);
+	}
+
+	@Override
+	public IntegerData getInsertionCount() {
+		return get(DataType.INSERTION_COUNT);
+	}
 	
 	@Override
 	public IntegerData getCoverage() {

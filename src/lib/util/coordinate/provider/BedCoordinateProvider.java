@@ -43,7 +43,10 @@ public class BedCoordinateProvider implements CoordinateProvider {
 			final BufferedReader br = new BufferedReader(new FileReader(file));	
 			while(br.ready()) {
 				String line = br.readLine().trim();
-				if(line.startsWith("#") || line.isEmpty()) {
+				if (line.startsWith("#") || 
+						line.startsWith("track ") ||
+						line.startsWith("browser ") ||
+						line.isEmpty()) {
 					continue;
 				}
 

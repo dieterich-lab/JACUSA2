@@ -154,6 +154,11 @@ abstract class AbstractCoordinate implements Coordinate {
 	public STRAND getStrand() {
 		return strand;
 	}
+
+	@Override
+	public boolean isReverseStrand() {
+		return strand == STRAND.REVERSE;
+	}
 	
 	@Override
 	public boolean equals(Object obj) {

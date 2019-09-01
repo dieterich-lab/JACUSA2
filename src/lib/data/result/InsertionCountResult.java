@@ -18,10 +18,10 @@ import lib.stat.sample.provider.EstimationSampleProvider;
 import lib.util.Info;
 import lib.util.Util;
 
-public class DeletionCountResult implements Result {
+public class InsertionCountResult implements Result {
 
-	public static final String DELETION_SCORE 	= "deletion_score";
-	public static final String DELETION_PVALUE 	= "deletion_pvalue";
+	public static final String INSERTION_SCORE 	= "insertion_score";
+	public static final String INSERTION_PVALUE = "insertion_pvalue";
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -31,16 +31,16 @@ public class DeletionCountResult implements Result {
 	private final EstimationSampleProvider estimationSampleProvider;
 	private final EstimateDirMult dirMult;
 	private final ChiSquaredDistribution dist;
-	
-	public DeletionCountResult(final SortedSet<BaseSubstitution> baseSubs, final Result result) {
+
+	public InsertionCountResult(final SortedSet<BaseSubstitution> baseSubs, final Result result) {
 		this.baseSubs 	= new ArrayList<>(baseSubs);
 		this.result 	= result;
-	
+		
 		final MinkaParameter minkaParameter = new MinkaParameter();
 		this.estimationSampleProvider 		= new DeletionCountSampleProvider(minkaParameter.getMaxIterations());
 		this.dirMult						= new EstimateDirMult(minkaParameter);
 		this.dist							= new ChiSquaredDistribution(1);
-		
+
 		init();
 	}
 
@@ -107,9 +107,9 @@ public class DeletionCountResult implements Result {
 				final int replicates = parallelData.getReplicates(condition);
 				for (int replicate = 0; replicate < replicates; ++replicate) {
 					if (valueIndex == Result.TOTAL) {
-						check |= addTotalDeletionCount(valueIndex, condition, replicate);
+						check |= addTotalInsertionCount(valueIndex, condition, replicate);
 					} else {
-						check |= addStratifiedDeletionCount(valueIndex, condition, replicate);
+						check |= addStratifiedInsertionCount(valueIndex, condition, replicate);
 					}
 				}
 			}
@@ -128,8 +128,8 @@ public class DeletionCountResult implements Result {
 					final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
 					final double lrt 	= dirMult.getLRT(estimationSamples);
 					final double pvalue = getPValue(lrt);
-					result.getResultInfo(valueIndex).add(DELETION_PVALUE, Util.format(pvalue));
-					result.getResultInfo(valueIndex).add(DELETION_SCORE, Util.format(lrt));
+					result.getResultInfo(valueIndex).add(INSERTION_PVALUE, Util.format(pvalue));
+					result.getResultInfo(valueIndex).add(INSERTION_SCORE, Util.format(lrt));
 				}
 			}
 		}
@@ -141,46 +141,46 @@ public class DeletionCountResult implements Result {
 	
 	private String getKey(final int condition, final int replicate) {
 		return new StringBuilder()
-				.append(InputOutput.DELETION_FIELD)
+				.append(InputOutput.INSERTION_FIELD)
 				.append(condition + 1)
 				.append(replicate + 1)
 				.toString();
 	}
 	
-	private String getValue(final int deletionCount, final int coverage) {
+	private String getValue(final int insertionCount, final int coverage) {
 		return new StringBuilder()
-				.append(deletionCount)
+				.append(insertionCount)
 				.append(InputOutput.VALUE_SEP)
 				.append(coverage)
 				.toString();
 	}
 	
-	private boolean addTotalDeletionCount(final int valueIndex, final int condition, final int replicate) {
+	private boolean addTotalInsertionCount(final int valueIndex, final int condition, final int replicate) {
 		final DataContainer container = 
 				result.getParellelData().getDataContainer(condition, replicate);
-		final int deletionCount = container.getDeletionCount().getValue();
+		final int insertionCount = container.getInsertionCount().getValue();
 		final int coverage		= container.getCoverage().getValue();
-		addDeletionCount(valueIndex, condition, replicate, deletionCount, coverage);
-		return deletionCount > 0;
+		addInsertionCount(valueIndex, condition, replicate, insertionCount, coverage);
+		return insertionCount > 0;
 	}
 	
 	// stratified by base substitutions
-	private boolean addStratifiedDeletionCount(final int valueIndex, final int condition, final int replicate) {
+	private boolean addStratifiedInsertionCount(final int valueIndex, final int condition, final int replicate) {
 		final BaseSubstitution baseSub 	= baseSubs.get(valueIndex);
 		final DataContainer container 	= result.getParellelData().getDataContainer(condition, replicate);
-		final int deletionCount 		= container.getBaseSubstitution2DeletionCount().get(baseSub).getValue();
+		final int insertionCount 		= container.getBaseSubstitution2InsertionCount().get(baseSub).getValue();
 		final int coverage				= container.getBaseSubstitution2Coverage().get(baseSub).getValue();
-		addDeletionCount(valueIndex, condition, replicate, deletionCount, coverage);
-		return deletionCount > 0;
+		addInsertionCount(valueIndex, condition, replicate, insertionCount, coverage);
+		return insertionCount > 0;
 	}
 	
-	private void addDeletionCount(
+	private void addInsertionCount(
 			final int valueIndex, 
 			final int condition, final int replicate, 
-			final int deletionCount, final int coverage) {
+			final int insertionCount, final int coverage) {
 	
 		final String key 		= getKey(condition, replicate);
-		final String value 		= getValue(deletionCount, coverage); 
+		final String value 		= getValue(insertionCount, coverage); 
 		final Info resultInfo 	= result.getResultInfo(valueIndex);
 		resultInfo.add(key, value);
 	}

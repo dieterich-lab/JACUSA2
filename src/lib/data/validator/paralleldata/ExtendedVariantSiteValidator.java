@@ -39,8 +39,7 @@ implements ParallelDataValidator {
 			}
 
 			// there has to be at least one non-reference base call in the data
-			
-			return bcc.getCoverage() - bcc.getBaseCall(referenceBase) > 0;
+			return (bcc.getCoverage() - bcc.getBaseCall(referenceBase)) > 0;
 		}
 
 		return false;
