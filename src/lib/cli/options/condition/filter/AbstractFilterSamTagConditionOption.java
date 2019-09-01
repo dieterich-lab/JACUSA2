@@ -20,7 +20,7 @@ public abstract class AbstractFilterSamTagConditionOption extends AbstractCondit
 	}
 
 	public AbstractFilterSamTagConditionOption(final List<ConditionParameter> conditionParameters, final String tag) {
-		super(LONG_OPT + tag + "_", LONG_OPT + tag + "_", conditionParameters);
+		super(LONG_OPT + tag, LONG_OPT + tag, conditionParameters);
 		this.tag = tag;
 	}
 
