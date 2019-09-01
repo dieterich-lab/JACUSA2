@@ -1,7 +1,12 @@
 package lib.cli;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -105,6 +110,73 @@ public class CLI {
 		}
 		return null;
 	}
+	// TODO
+	private void generateLatex() {
+		final Map<String, Map<String, List<AbstractACOption>>> opt2method2acOption = new HashMap<String, Map<String,List<AbstractACOption>>>();
+		
+		final List<String> methods = new ArrayList<String>();
+		
+		// collect into Map...
+		for (final AbstractMethod.AbstractFactory methodFactory : methodFactories) {
+			final String name = methodFactory.getName();
+			methods.add(name);
+			// TODO change number of conditions?
+			final AbstractMethod method = methodFactory.createMethod();
+			method.initACOptions();
+			
+			final List<AbstractACOption> acOptions = method.getACOptions();
+			for (final AbstractACOption acOption : acOptions) {
+				final String opt = acOption.getOpt();
+				
+				if (! opt2method2acOption.containsKey(opt)) {
+					opt2method2acOption.put(opt, new HashMap<String, List<AbstractACOption>>());
+				}
+				final Map<String, List<AbstractACOption>> method2acOption = opt2method2acOption.get(opt);
+				if (! method2acOption.containsKey(name)) {
+					method2acOption.put(name, new ArrayList<AbstractACOption>());
+				}
+				final List<AbstractACOption> tmpAcOptions = method2acOption.get(name);
+				tmpAcOptions.add(acOption);
+			}
+		}
+		
+		// output
+		for (final String opt : opt2method2acOption.keySet()) {
+			final String fileName = opt + ".tex";
+			final File file = new File(fileName);
+		
+			try {
+				final BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+				final StringBuilder sb = new StringBuilder();
+			
+				final Map<String, List<AbstractACOption>> method2acOption = opt2method2acOption.get(opt);
+				for (final String method : methods) {
+					if (! method2acOption.containsKey(method)) {
+						continue;
+					}
+					for (final AbstractACOption acOption : method2acOption.get(method)) {
+						sb
+						.append('-').append(escape(acOption.getOpt()))
+						.append(" & ")
+						.append(escape(acOption.getOption(false).getDescription()))
+						.append(" & ")
+						.append(escape(method))
+						.append(" \\\\\n");
+					}
+				}
+				bw.write("\\begin{tabular}{p{.175\\textwidth}p{.7\\textwidth}c}\n");
+				bw.write(sb.toString());
+				bw.write("\\end{tabular}\n");
+				bw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private String escape(final String s) {
+		return s.replaceAll("(_|\\$|\\^|#)", "\\\\$1");
+	}
 	
 	/**
 	 * 
@@ -116,6 +188,11 @@ public class CLI {
 			printToolUsage();
 			System.exit(0);
 		} else if (args.length > 0 && ! contains(args[0].toLowerCase())) {
+			if (args[0].equals("generate-latex")) {
+				generateLatex();
+				System.exit(0);				
+			}
+			
 			printVersion(args);
 			AbstractTool.getLogger().addError("Unknown method: " + args[0]);
 			System.exit(1);
