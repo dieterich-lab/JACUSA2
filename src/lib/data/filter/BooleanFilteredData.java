@@ -23,7 +23,7 @@ public class BooleanFilteredData extends AbstractFilteredData<BooleanFilteredDat
 			return true;
 		}
 
-		return equals(getClass().cast(obj));
+		return specificEquals(getClass().cast(obj));
 	}
 	
 	@Override

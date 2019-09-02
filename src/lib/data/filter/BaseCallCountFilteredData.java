@@ -30,7 +30,7 @@ public class BaseCallCountFilteredData extends AbstractFilteredData<BaseCallCoun
 			return true;
 		}
 
-		return equals(getClass().cast(obj));
+		return specificEquals(getClass().cast(obj));
 	}
 	
 	public static class Parser extends AbstractFilteredData.AbstractParser<BaseCallCountFilteredData, BaseCallCount> {

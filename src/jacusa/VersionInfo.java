@@ -8,7 +8,7 @@ import htsjdk.samtools.util.StringUtil;
 public final class VersionInfo {
 
 	public final static String BRANCH 	= "master";
-	public final static String TAG 	= "2.0.0-RC6";
+	public final static String TAG 	= "2.0.0-RC8";
 
 	public final static String[] LIBS	= new String[] {
 			"htsjdk 2.12.0",

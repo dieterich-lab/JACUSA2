@@ -68,12 +68,12 @@ class AbstractNominalData implements NominalData {
 
 	public static class Parser implements lib.util.Parser<AbstractNominalData> {
 		
-		public static final char SEP = ',';
+		public static final char DEFAULT_SEP = ',';
 		
 		private final char sep;
 		
 		public Parser() {
-			this(SEP);
+			this(DEFAULT_SEP);
 		}
 		
 		public Parser(final char sep) {

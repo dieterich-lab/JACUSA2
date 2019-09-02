@@ -31,7 +31,7 @@ extends AbstractStorage {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof AbstractIntegerStorage)) {
+		if (! (obj instanceof AbstractIntegerStorage)) {
 			return false;
 		}
 		if (obj == this) {

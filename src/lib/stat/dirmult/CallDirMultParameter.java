@@ -4,12 +4,12 @@ import lib.estimate.MinkaParameter;
 
 public class CallDirMultParameter extends AbstractDirMultParameter {
 
-	public final static double ESTIMATED_ERROR = 0.01;
+	public static final double ESTIMATED_ERROR = 0.01;
 	
 	private double estimatedError;
 	
 	public CallDirMultParameter() {
-		super(false, false, new MinkaParameter(), Double.NaN);
+		super(false, false, new MinkaParameter());
 		estimatedError = ESTIMATED_ERROR;
 	}
 

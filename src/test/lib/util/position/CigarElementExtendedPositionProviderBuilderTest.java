@@ -41,7 +41,6 @@ class CigarElementExtendedPositionProviderBuilderTest implements PositionProvide
 		assertEquals(expected, actual);
 	}
 
-	// TODO Qi add more complicated tests, e.g.: INDEL + spliced + partially outside window
 	Stream<Arguments> testBuilder() {
 		// Reference Sequence
 		//ACGAACGT
@@ -50,7 +49,7 @@ class CigarElementExtendedPositionProviderBuilderTest implements PositionProvide
 				
 				createArguments(
 						1, 1, 
-						2, "2M2N2M", new String(), 
+						2, "2M2N2M", "", 
 						1, 8, 
 						//ACGAACGT
 						//12345678
@@ -60,7 +59,7 @@ class CigarElementExtendedPositionProviderBuilderTest implements PositionProvide
 
 				createArguments(
 						1, 2, 
-						2, "2M2N2M", new String(), 
+						2, "2M2N2M", "", 
 						1, 8, 
 						//ACGAACGT
 						//12345678
@@ -70,7 +69,7 @@ class CigarElementExtendedPositionProviderBuilderTest implements PositionProvide
 
 				createArguments(
 						1, 3, 
-						2, "2M2N2M", new String(), 
+						2, "2M2N2M", "", 
 						1, 8, 
 						//ACGAACGT
 						//12345678
@@ -80,7 +79,7 @@ class CigarElementExtendedPositionProviderBuilderTest implements PositionProvide
 				
 				createArguments(
 						1, 1, 
-						2, "2M2D2M", new String(), 
+						2, "2M2D2M", "", 
 						1, 8, 
 						//ACGAACGT
 						//12345678

@@ -12,16 +12,16 @@ extends AbstractFilteredData<ArrestPos2BaseCallCountFilteredData, ArrestPosition
 	public ArrestPos2BaseCallCountFilteredData() {
 		super();
 	}
-	
+
 	protected ArrestPos2BaseCallCountFilteredData(Map<Character, ArrestPosition2baseCallCount> map) {
 		super(map);
 	}
-	
+
 	@Override
 	protected ArrestPos2BaseCallCountFilteredData newInstance(Map<Character, ArrestPosition2baseCallCount> map) {
 		return new ArrestPos2BaseCallCountFilteredData(map);
 	}
-	
+
 	@Override
 	public final boolean equals(Object obj) {
 		if (obj == null || ! getClass().isInstance(obj)) {
@@ -31,7 +31,7 @@ extends AbstractFilteredData<ArrestPos2BaseCallCountFilteredData, ArrestPosition
 			return true;
 		}
 
-		return equals(getClass().cast(obj));
+		return specificEquals(getClass().cast(obj));
 	}
 	
 }

@@ -60,7 +60,7 @@ public abstract class AbstractStatFactory {
 
 	public void processCLI(final String line) {
 		final Options options = getOptions();
-		if (options.getOptions().size() == 0 || line == null || line.isEmpty()) {
+		if (options.getOptions().isEmpty() || line == null || line.isEmpty()) {
 			return;
 		}
 
@@ -79,7 +79,7 @@ public abstract class AbstractStatFactory {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof AbstractStatFactory)) {
+		if (! (obj instanceof AbstractStatFactory)) {
 			return false;
 		}
 		if (obj == this) {

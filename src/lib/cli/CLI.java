@@ -64,8 +64,6 @@ public class CLI {
 				printToolUsage();
 				System.exit(0);
 			}
-		} catch (ParseException e) {
-			// ignore
 		} catch (Exception e) {
 			// ignore
 		}
@@ -86,8 +84,6 @@ public class CLI {
 				printMethodFactoryUsage();
 				System.exit(0);
 			}
-		} catch (ParseException e) {
-			// ignore
 		} catch (Exception e) {
 			// ignore
 		}

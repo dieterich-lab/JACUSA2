@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -85,7 +86,7 @@ class BaseSubstitutionRecordProcessorTest {
 		// 012345678901
 		// ACGAACGTACGT ref.
 		// 123456789012
-		final List<Arguments> args = new ArrayList<Arguments>();
+		final List<Arguments> args = new ArrayList<>();
 		final LibraryType[] libs = 
 				new LibraryType[] { 
 						LibraryType.UNSTRANDED, 
@@ -99,7 +100,7 @@ class BaseSubstitutionRecordProcessorTest {
 				args.add(cSE(
 						lib, 
 						1, 7,
-						1, negativeStrand, "3M", new String(),
+						1, negativeStrand, "3M", "",
 						new HashSet<BaseSubstitution>(),
 						new String[] {} ) );
 			}
@@ -220,7 +221,7 @@ class BaseSubstitutionRecordProcessorTest {
 
 		final BaseCallInterpreter bci = BaseCallInterpreter.build(libraryType);
 		final Map<BaseSubstitution, Storage> expected = parseExpected(expectedStr, sharedStorage);
-		final Map<BaseSubstitution, Storage> actual = new HashMap<>();
+		final Map<BaseSubstitution, Storage> actual = new EnumMap<>(BaseSubstitution.class);
 		
 		return Arguments.of(
 				createTestInstance(bci, sharedStorage, validator, queryBaseSubs, actual, expected),
@@ -283,7 +284,7 @@ class BaseSubstitutionRecordProcessorTest {
 
 		final BaseCallInterpreter bci = BaseCallInterpreter.build(libraryType);
 		final Map<BaseSubstitution, Storage> expected = parseExpected(expectedStr, sharedStorage);
-		final Map<BaseSubstitution, Storage> actual = new HashMap<>();
+		final Map<BaseSubstitution, Storage> actual = new EnumMap<>(BaseSubstitution.class);
 		
 		return Arguments.of(
 				createTestInstance(bci, sharedStorage, validator, queryBaseSubs, actual, expected),
@@ -301,7 +302,7 @@ class BaseSubstitutionRecordProcessorTest {
 		} else if (records.size() == 2) {
 			final SAMRecord record1 = records.get(0).getSAMRecord();
 			final SAMRecord record2 = records.get(1).getSAMRecord();
-			return String.format("Lib.: %s, %d-%d %s d-%d %s", 
+			return String.format("Lib.: %s, %d-%d %s %d-%d %s", 
 					libraryType, 
 					record1.getAlignmentStart(), record1.getAlignmentEnd(), record1.getCigar(),
 					record2.getAlignmentStart(), record2.getAlignmentEnd(), record2.getCigar());
@@ -322,7 +323,8 @@ class BaseSubstitutionRecordProcessorTest {
 			throw new IllegalStateException();
 		}
 		
-		final Map<BaseSubstitution, PositionProcessor> baseSub2positionProcessors = new HashMap<>();
+		final Map<BaseSubstitution, PositionProcessor> baseSub2positionProcessors = 
+				new EnumMap<>(BaseSubstitution.class);
 		for (final BaseSubstitution baseSub : queryBaseSubs) {
 			final Storage storage = new DefaultBaseCallCountStorage(sharedStorage, null);
 			actual.put(baseSub, storage);
@@ -345,7 +347,7 @@ class BaseSubstitutionRecordProcessorTest {
 	// ',' separated array of strings of the following form: "x2y,winPos,{A|C|G|T}" 
 	// where x,y in {A,C,G,T}
 	Map<BaseSubstitution, Storage> parseExpected(final String[] str, final SharedStorage sharedStorage) {
-		final Map<BaseSubstitution, Storage> expected = new HashMap<>(str.length);
+		final Map<BaseSubstitution, Storage> expected = new EnumMap<>(BaseSubstitution.class);
 		for (final String tmpStr : str) {
 			final String[] cols 			= tmpStr.split(",");
 			final BaseSubstitution baseSub 	= BaseSubstitution.valueOf(cols[0]);

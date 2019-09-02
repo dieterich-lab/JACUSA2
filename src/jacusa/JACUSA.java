@@ -14,7 +14,7 @@ import lib.util.AbstractTool;
 /**
  * JACUSA2 identifies variants and read arrest events.
  * 
- * Copyright (C) 2018  Michael Piechotta
+ * Copyright (C) 2019  Michael Piechotta
  * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,7 @@ import lib.util.AbstractTool;
  */
 public class JACUSA extends AbstractTool {
 
-	public JACUSA(final String args[]) {
+	public JACUSA(final String[] args) {
 		super(
 				"JACUSA", new VersionInfo(), 
 				args,

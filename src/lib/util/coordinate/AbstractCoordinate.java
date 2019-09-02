@@ -24,7 +24,7 @@ abstract class AbstractCoordinate implements Coordinate {
 	}
 	
 	protected AbstractCoordinate() {
-		this(new String(), DEFAULT_START, DEFAULT_END, STRAND.UNKNOWN);
+		this("", DEFAULT_START, DEFAULT_END, STRAND.UNKNOWN);
 	}
 	
 	protected AbstractCoordinate(final AbstractCoordinate coordinate) {
@@ -67,7 +67,7 @@ abstract class AbstractCoordinate implements Coordinate {
 	
 	@Override
 	public int getEnd() {
-		return end;
+		return get0End();
 	}
 
 	@Override
@@ -87,7 +87,7 @@ abstract class AbstractCoordinate implements Coordinate {
 
 	@Override
 	public int get1Position() {
-		return start;
+		return get1Start();
 	}
 
 	@Override
@@ -162,7 +162,7 @@ abstract class AbstractCoordinate implements Coordinate {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof AbstractCoordinate)) {
+		if (! (obj instanceof AbstractCoordinate)) {
 			return false;
 		}
 		if (obj == this) {

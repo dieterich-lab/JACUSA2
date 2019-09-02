@@ -25,23 +25,25 @@ public abstract class AbstractDataAssemblerFactory {
 			final FilterContainer filterContainer,
 			final SharedStorage sharedStorage, 
 			final ConditionParameter conditionParameter,
-			final int replicateIndex) throws IllegalArgumentException;
+			final int replicateIndex);
 	
 	protected AbstractBuilderFactory getBuilderFactory() {
 		return builderFactory;
 	}
+
+	
+	
 	
 	protected CacheContainer createContainer(
 			final GeneralParameter parameter,
 			final FilterContainer filterContainer,
 			final SharedStorage sharedStorage, 
-			final ConditionParameter conditionParameter,
-			final int replicateIndex) {
+			final ConditionParameter conditionParameter) {
 
 		CacheContainer cacheContainer = null; 
-		
+
 		switch (conditionParameter.getLibraryType()) {
-		
+
 		case RF_FIRSTSTRAND: {
 			final CacheContainer forwardCacheContainer = 
 				new UnstrandedCacheContainter(
@@ -53,9 +55,8 @@ public abstract class AbstractDataAssemblerFactory {
 									parameter, filterContainer, sharedStorage, conditionParameter) );
 
 			cacheContainer = new RFPairedEnd1CacheContainer(forwardCacheContainer, reverseCacheContainer);
-			break;
 		}
-			
+
 		case FR_SECONDSTRAND: {
 			final CacheContainer forwardCacheContainer = 
 				new UnstrandedCacheContainter(
@@ -69,26 +70,26 @@ public abstract class AbstractDataAssemblerFactory {
 			cacheContainer = new FRPairedEnd2CacheContainer(forwardCacheContainer, reverseCacheContainer);
 			break;
 		}
-			
+
 		case UNSTRANDED: {
 			cacheContainer = new UnstrandedCacheContainter(
 					sharedStorage, 
 					combineCaches(parameter, filterContainer, sharedStorage, conditionParameter));
 			break;
 		}
-			
+
 		case MIXED:
 			throw new IllegalArgumentException("Cannot create cache for library type: " + conditionParameter.getLibraryType().toString());
 		}
-		
+
 		return cacheContainer;
 	}
-	
+
 	protected abstract Cache createCache(
 			final GeneralParameter parameter,
 			final SharedStorage sharedStorage, 
 			final ConditionParameter conditionParameter);
-	
+
 	private Cache combineCaches(
 			final GeneralParameter parameter,
 			final FilterContainer filterContainer, 

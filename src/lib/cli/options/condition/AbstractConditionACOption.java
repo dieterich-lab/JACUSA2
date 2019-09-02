@@ -25,7 +25,7 @@ extends AbstractACOption {
 				longOpt != null ? longOpt + (conditionParameter.getConditionIndex()) : null);
 
 		this.conditionIndex = conditionParameter.getConditionIndex();
-		conditionParameters = new ArrayList<ConditionParameter>(1);
+		conditionParameters = new ArrayList<>(1);
 		conditionParameters.add(conditionParameter);
 	}
 

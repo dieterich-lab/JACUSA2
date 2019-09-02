@@ -58,7 +58,7 @@ abstract class AbstractBaseCallInterpreterTest {
 			final int refPos,
 			final Base expected) {
 		
-		return createRefArgs(refStart, negativeStrand, cigarStr, new String(), refPos, expected);
+		return createRefArgs(refStart, negativeStrand, cigarStr, "", refPos, expected);
 	}
 	
 	Arguments createRefArgs(
@@ -95,7 +95,7 @@ abstract class AbstractBaseCallInterpreterTest {
 			final int readPos,
 			final Base expected) {
 		
-		return createReadArgs(refStart, negativeStrand, cigarStr, new String(), readPos, expected);
+		return createReadArgs(refStart, negativeStrand, cigarStr, "", readPos, expected);
 	}
 	
 	Arguments createReadArgs(

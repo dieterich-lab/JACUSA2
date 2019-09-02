@@ -138,7 +138,7 @@ implements HasFilterDistance, HasFilterMinRatio {
 				new ArrayBaseCallStorage(sharedStorage, filteredBccFetcher);
 		storages.add(bccStorage);
 		
-		final List<Validator> validators = new ArrayList<Validator>();
+		final List<Validator> validators = new ArrayList<>();
 		UniqueVisitReadPositionValidator uniqueValidator = 
 				new UniqueVisitReadPositionValidator(visitedStorage);
 		validators.add(uniqueValidator);

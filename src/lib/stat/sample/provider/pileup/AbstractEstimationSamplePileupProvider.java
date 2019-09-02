@@ -120,7 +120,7 @@ implements EstimationSampleProvider {
 				pileupVector[index] += colSumCount[index];
 				for (final Base base2 : bases) {
 					if (base != base2) {
-						double combinedError = (colMeanError[base2.getIndex()] + estimatedError) * (double)colSumCount[index] / 
+						double combinedError = (colMeanError[base2.getIndex()] + estimatedError) * colSumCount[index] / 
 								(double)(bases.length - 1);
 						pileupVector[base2.getIndex()] += combinedError;
 					}

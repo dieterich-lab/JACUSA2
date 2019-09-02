@@ -1,7 +1,7 @@
 package lib.data.assembler.factory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -50,11 +50,10 @@ extends AbstractDataAssemblerFactory {
 			final FilterContainer filterContainer,
 			final SharedStorage sharedStorage, 
 			final ConditionParameter conditionParameter, 
-			final int replicateIndex)
-			throws IllegalArgumentException {
-		
+			final int replicateIndex) {
+
 		final CacheContainer cacheContainer = createContainer(
-				parameter, filterContainer, sharedStorage, conditionParameter, replicateIndex);
+				parameter, filterContainer, sharedStorage, conditionParameter);
 		return new SiteDataAssembler(
 				replicateIndex, 
 				getBuilderFactory(), 
@@ -137,12 +136,12 @@ extends AbstractDataAssemblerFactory {
 			final Cache cache) {
 
 		final SortedSet<BaseSubstitution> baseSubs = parameter.getReadSubstitutions();
-		if (baseSubs.size() == 0) {
+		if (baseSubs.isEmpty()) {
 			return;
 		}
-		
+
 		final byte minBASQ = conditionParameter.getMinBASQ();
-		final List<Validator> validators = new ArrayList<Validator>();
+		final List<Validator> validators = new ArrayList<>();
 		validators.add(new DefaultBaseCallValidator());
 		if (minBASQ > 0) {
 			validators.add(new MinBASQValidator(minBASQ));
@@ -150,11 +149,14 @@ extends AbstractDataAssemblerFactory {
 
 		final BaseCallInterpreter bci = BaseCallInterpreter.build(conditionParameter.getLibraryType());
 
-		final Map<BaseSubstitution, PositionProcessor> baseSub2alignedPosProcessor = new HashMap<>();
+		final Map<BaseSubstitution, PositionProcessor> baseSub2alignedPosProcessor = 
+				new EnumMap<>(BaseSubstitution.class);
 
-		final Map<BaseSubstitution, PositionProcessor> baseSub2covPosProcessor 	= new HashMap<>();
-		final Map<BaseSubstitution, PositionProcessor> baseSub2delPosProcessor 	= new HashMap<>();
-		
+		final Map<BaseSubstitution, PositionProcessor> baseSub2covPosProcessor = 
+				new EnumMap<>(BaseSubstitution.class);
+		final Map<BaseSubstitution, PositionProcessor> baseSub2delPosProcessor = 
+				new EnumMap<>(BaseSubstitution.class);
+
 		for (final BaseSubstitution baseSub : baseSubs) {
 			final PositionProcessor alignedPosProcessor = new PositionProcessor();
 			// deletions don't need validation

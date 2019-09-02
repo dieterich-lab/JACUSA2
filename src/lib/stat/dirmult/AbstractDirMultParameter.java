@@ -11,8 +11,8 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	public AbstractDirMultParameter(
 			final boolean showAlpha,
 			final boolean calcPValue,
-			final MinkaParameter minkaParameter,
-			final double threshold) {
+			final MinkaParameter minkaParameter) {
+
 		this.showAlpha 		= showAlpha;
 		this.calcPValue		= calcPValue;
 		this.minkaParameter	= minkaParameter;

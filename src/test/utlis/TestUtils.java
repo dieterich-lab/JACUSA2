@@ -4,6 +4,8 @@ import java.util.Set;
 
 public abstract class TestUtils {
 
+	private TestUtils() {}
+
 	public static <T> boolean equalSets(Set<T> expected, Set<T> actual) {
 		if (expected.size() != actual.size()) {
 			return false;
@@ -26,12 +28,12 @@ public abstract class TestUtils {
 		final StringBuilder sb = new StringBuilder();
 		for (final T e : set) {
 			if (sb.length() > 0) {
-				sb.append(sep.toString());
+				sb.append(sep);
 			}
 			sb.append(e);
 		}
 		
 		return sb.toString();
 	}
-	
+
 }

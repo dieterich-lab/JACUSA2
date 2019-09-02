@@ -58,7 +58,7 @@ public abstract class AbstractResultWriterTest {
 	}
 	
 	@AfterEach
-	void AfterEach() {
+	void afterEach() {
 		closeTestInstance();
 		closeActualFile();
 	}

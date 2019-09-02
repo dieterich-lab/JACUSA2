@@ -19,7 +19,7 @@ import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 import test.utlis.SAMRecordBuilder;
 
-// TODO Qi this class exemplifies how traverse of an alignment block is tested
+// This class exemplifies how traverse of an alignment block is tested
 // the aligned position contains 3 positional fields: refPos, readPos, and winPos
 // winPos is guaranteed to be correct ONLY if adjustWindowPos() has been called!
 // The expected field is an String array where each string is of the following format: 
@@ -64,27 +64,27 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 				
 				createArguments(
 						0, 3, 
-						1, "3M", new String(), 
+						1, "3M", "", 
 						1, 3, false, 
 						new String[] { "1,0,0", "2,1,1", "3,2,2"}), // position format: "ref,read,win"
 				
 				createArguments(
 						0, 3, 
-						1, "3M", new String(), 
+						1, "3M", "", 
 						1, 3, true, 
 						new String[] { "1,0,0", "2,1,1", "3,2,2"}),
 
 				// test length < blockLength
 				createArguments(
 						0, 2, 
-						1, "3M", new String(), 
+						1, "3M", "", 
 						1, 3, false, 
 						new String[] { "1,0,0", "2,1,1"}),
 
 				// test length > blockLength
 				createArguments(
 						0, 4, 
-						1, "3M", new String(), 
+						1, "3M", "", 
 						1, 3, false, 
 						new String[] { "1,0,0", "2,1,1", "3,2,2"}) );
 	}
@@ -118,27 +118,27 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 				
 				createArguments(
 						0, 3, 
-						1, "3M", new String(), 
+						1, "3M", "", 
 						1, 3, false, 
 						new String[] { "1,0,0", "2,1,1", "3,2,2"}), // position format: "ref,read,win"
 				
 				createArguments(
 						0, 3, 
-						1, "3M", new String(), 
+						1, "3M", "", 
 						1, 3, true, 
 						new String[] { "1,0,0", "2,1,1", "3,2,2"}),
 
 				// test length < blockLength
 				createArguments(
 						0, 2, 
-						1, "3M", new String(), 
+						1, "3M", "", 
 						1, 3, false, 
 						new String[] { "2,1,1", "3,2,2"}),
 
 				// test length > blockLength
 				createArguments(
 						0, 4, 
-						1, "3M", new String(), 
+						1, "3M", "", 
 						1, 3, false, 
 						new String[] { "1,0,0", "2,1,1", "3,2,2"}) );
 	}
@@ -173,27 +173,27 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 				
 				createArguments(
 						0, 3, 
-						1, "3M", new String(), 
+						1, "3M", "", 
 						1, 3, false, 
 						new String[] { }), // position format: "ref,read,win"
 				
 				createArguments(
 						0, 3, 
-						1, "3M", new String(), 
+						1, "3M", "", 
 						1, 3, true, 
 						new String[] { }),
 
 				// test length < blockLength
 				createArguments(
 						0, 1, 
-						1, "3M", new String(), 
+						1, "3M", "", 
 						1, 3, false, 
 						new String[] { "2,1,1", "3,2,2"}),
 
 				// test length > blockLength
 				createArguments(
 						0, 4, 
-						1, "3M", new String(), 
+						1, "3M", "", 
 						1, 3, false, 
 						new String[] { }) );
 	}
@@ -225,37 +225,37 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 				
 				createArguments(
 						0, 
-						3, "3M", new String(), 
+						3, "3M", "", 
 						1, 3, true, 
 						new String[] { "3,0,2" }), // position format: "ref,read,win"
 				
 				createArguments(
 						0, 
-						3, "3M", new String(), 
+						3, "3M", "", 
 						1, 3, false, 
 						new String[] { "3,0,2", "4,1,3", "5,2,4"}),
 
 				createArguments(
 						0, 
-						3, "3M", new String(), 
+						3, "3M", "", 
 						3, 3, false, 
 						new String[] { "3,0,0", "4,1,1", "5,2,2"}),
 
 				createArguments(
 						0, 
-						3, "3M", new String(), 
+						3, "3M", "", 
 						3, 3, true, 
 						new String[] { "3,0,0", "4,1,1", "5,2,2"}), 
 				
 				createArguments(
 						0, 
-						5, "3M", new String(), 
+						5, "3M", "", 
 						3, 3, false, 
 						new String[] { "5,0,2", "6,1,3", "7,2,4"}),
 
 				createArguments(
 						0, 
-						5, "3M", new String(), 
+						5, "3M", "", 
 						3, 3, true, 
 						new String[] { "5,0,2"} )
 				

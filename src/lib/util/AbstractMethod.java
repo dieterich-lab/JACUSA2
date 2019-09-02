@@ -44,7 +44,7 @@ public abstract class AbstractMethod {
 		this.parameter = parameter;
 		this.dataAssemblerFactory = dataAssemblerFactory;
 		
-		acOptions = new ArrayList<AbstractACOption>(10);
+		acOptions = new ArrayList<>(10);
 	}
 
 	public String getName() {
@@ -80,7 +80,7 @@ public abstract class AbstractMethod {
 	protected abstract void initGlobalACOptions();
 	
 	// check state after parameters have been set
-	final public boolean checkState() {
+	public final boolean checkState() {
 		if (getParameter().getActiveWindowSize() >= getParameter().getReservedWindowSize()) {
 			AbstractTool.getLogger().addError("THREAD-WINDOW-SIZE must be << WINDOW-SIZE");
 			return false;
@@ -90,22 +90,21 @@ public abstract class AbstractMethod {
 	}
 	
 	protected void addACOption(AbstractACOption newACOption) {
-		if (checkDuplicate(newACOption)) {
-			acOptions.add(newACOption);
-		}
+		checkDuplicate(newACOption);
+		acOptions.add(newACOption);
 	}
 	
-	private boolean checkDuplicate(final AbstractACOption newACOption) {
+	private void checkDuplicate(final AbstractACOption newACOption) {
 		for (final AbstractACOption ACOption : acOptions) {
 			try {
 				if (ACOption.getOpt() != null && 
 						ACOption.getOpt().equals(newACOption.getOpt())) {
-					throw new Exception("Duplicate opt '" + newACOption.getOpt() + 
+					throw new IllegalArgumentException("Duplicate opt '" + newACOption.getOpt() + 
 							"' for object: " + newACOption.toString() + " and " + ACOption.toString());
 				}
 				if (ACOption.getOpt() != null && 
 						ACOption.getLongOpt().equals(newACOption.getLongOpt())) {
-					throw new Exception("Duplicate longOpt '" + newACOption.getLongOpt() + 
+					throw new IllegalArgumentException("Duplicate longOpt '" + newACOption.getLongOpt() + 
 							"' for object" + newACOption.toString() + " and " + ACOption.toString());
 				}
 			} catch (Exception e) {
@@ -113,8 +112,6 @@ public abstract class AbstractMethod {
 				System.exit(1);
 			}
 		}
-
-		return true;
 	}
 
 	/**
@@ -156,9 +153,9 @@ public abstract class AbstractMethod {
 	}
 	
 	protected Options getOptions(final boolean printExtendedHelp) {
-		final List<AbstractACOption> acOptions = getACOptions();
+		final List<AbstractACOption> tmpAcOptions = getACOptions();
 		final Options options = new Options();
-		for (final AbstractACOption acOption : acOptions) {
+		for (final AbstractACOption acOption : tmpAcOptions) {
 			if (! acOption.isHidden()) {
 				options.addOption(acOption.getOption(printExtendedHelp));
 			}
@@ -189,7 +186,6 @@ public abstract class AbstractMethod {
 		final List<SAMSequenceRecord> sequenceRecords = getSAMSequenceRecords(recordFilenames);
 		if (parameter.getInputBedFilename().isEmpty()) {
 			coordinateProvider = new SAMCoordinateAdvancedProvider(isStranded, sequenceRecords, parameter);
-			// coordinateProvider = new SAMCoordinateProvider(isStranded, sequenceRecords);
 		} else {
 			coordinateProvider = new BedCoordinateProvider(parameter.getInputBedFilename(), isStranded);
 			// wrap chosen provider
@@ -243,11 +239,9 @@ public abstract class AbstractMethod {
 				if (lastSequenceDictionary == null) {
 					lastSequenceDictionary = sequenceDictionary;
 					lastRecordFilename = recordFilename;
-				} else if (! lastSequenceDictionary.isSameDictionary(sequenceDictionary)) {
+				}
+				if (! lastSequenceDictionary.isSameDictionary(sequenceDictionary)) {
 					throw new SAMException(error + " " + lastRecordFilename + " and " + recordFilename);
-				} else {
-					lastSequenceDictionary = sequenceDictionary;
-					lastRecordFilename = recordFilename;
 				}
 			}
 		}
@@ -255,18 +249,18 @@ public abstract class AbstractMethod {
 		return lastSequenceDictionary.getSequences();
 	}
 
-	public void debug() {};
+	public void debug() {}
 
 	/*
 	 * Builder
 	 */
 
-	public static abstract class AbstractFactory {
-		
+	public abstract static class AbstractFactory {
+
 		private final String name;
 		private final String desc;
 		private final int conditions;
-	
+
 		public AbstractFactory(final String name, final String desc, final int conditions) {
 			this.name = name;
 			this.desc = desc;
@@ -284,10 +278,10 @@ public abstract class AbstractMethod {
 		public int getConditions() {
 			return conditions;
 		}
-		
+
 		public abstract AbstractMethod createMethod();
 		public abstract AbstractFactory createFactory(final int conditions);
 
 	}
-	
+
 }

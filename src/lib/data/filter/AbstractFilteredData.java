@@ -16,7 +16,7 @@ implements FilteredDataContainer<F, T> {
 	private final Map<Character, T> map;
 	
 	public AbstractFilteredData() {
-		map = new HashMap<Character, T>();
+		map = new HashMap<>();
 	}
 	
 	protected AbstractFilteredData(final Map<Character, T> map) {
@@ -59,11 +59,11 @@ implements FilteredDataContainer<F, T> {
 
 	@Override
 	public F copy() {
-		final Map<Character, T> map = new HashMap<Character, T>();
+		final Map<Character, T> newMap = new HashMap<>();
 		for (final char c : getFilters()) {
-			map.put(c, get(c).copy());
+			newMap.put(c, get(c).copy());
 		}
-		return newInstance(map);
+		return newInstance(newMap);
 	}
 
 	protected abstract F newInstance(Map<Character, T> map);
@@ -96,8 +96,8 @@ implements FilteredDataContainer<F, T> {
 	public boolean isEmpty() {
 		return map.isEmpty();
 	}
-	
-	protected boolean equals(final AbstractFilteredData<F, T> filteredData) {
+
+	protected boolean specificEquals(final AbstractFilteredData<F, T> filteredData) {
 		return map.equals(filteredData.map);
 	}
 
@@ -105,8 +105,8 @@ implements FilteredDataContainer<F, T> {
 	public int hashCode() {
 		return map.hashCode();
 	}
-	
-	public static abstract class AbstractParser<F extends FilteredDataContainer<F, T>, T extends Data<T>>
+
+	public abstract static class AbstractParser<F extends FilteredDataContainer<F, T>, T extends Data<T>>
 	implements lib.util.Parser<F> {
 
 		public static final char FILTER_SEP = ',';
@@ -169,7 +169,7 @@ implements FilteredDataContainer<F, T> {
 			if (filters != filteredDataContainer.getFilters().size()) {
 	        	throw new IllegalArgumentException("Size of parsed filteredData != filters: " + s);
 			}
-			if (filteredDataContainer.getFilters().size() == 0) {
+			if (filteredDataContainer.getFilters().isEmpty()) {
 				throw new IllegalArgumentException("Cannot parse filter from: " + s);
 			}
 		}

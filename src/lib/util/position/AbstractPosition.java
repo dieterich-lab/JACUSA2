@@ -2,7 +2,6 @@ package lib.util.position;
 
 import lib.recordextended.SAMRecordExtended;
 
-// TODO Qi all PositionProviders need testing
 abstract class AbstractPosition implements Position {
 	
 	protected int refPos;
@@ -39,7 +38,7 @@ abstract class AbstractPosition implements Position {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof Position)) {
+		if (!(obj instanceof Position)) {
 			return false;
 		}
 		if (obj == this) {
@@ -114,7 +113,7 @@ abstract class AbstractPosition implements Position {
 		return String.format("(%d,%d,%d)", refPos, readPos, winPos);
 	}
 	
-	static abstract class AbstractBuilder<T extends AbstractPosition> implements lib.util.Builder<T> {
+	abstract static class AbstractBuilder<T extends AbstractPosition> implements lib.util.Builder<T> {
 		
 		private int refPos;
 		private int readPos;

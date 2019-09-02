@@ -54,7 +54,7 @@ implements WindowCoverage {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof AbstractBaseCallCountStorage)) {
+		if (! (obj instanceof AbstractBaseCallCountStorage)) {
 			return false;
 		}
 		if (obj == this) {
@@ -97,7 +97,7 @@ implements WindowCoverage {
 	}
 	
 	@Override
-	final public void clear() {
+	public final void clear() {
 		clearSpecific();
 		Arrays.fill(coverage, 0);
 	}

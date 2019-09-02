@@ -448,7 +448,7 @@ public abstract class AbstractBaseCallCountTest {
 	 * Helper methods
 	 */
 	
-	static public void myAssertEquals(final List<Integer> expected, final BaseCallCount actual) {
+	public static void myAssertEquals(final List<Integer> expected, final BaseCallCount actual) {
 		if (expected.size() != Base.validValues().length) {
 			throw new IllegalArgumentException("expectedBaseCall must be of size 4 but is " + expected.size());
 		}
@@ -458,7 +458,7 @@ public abstract class AbstractBaseCallCountTest {
 		}
 	}
 	
-	static public void myAssertEquals(final BaseCallCount expected, final BaseCallCount actual) {
+	public static void myAssertEquals(final BaseCallCount expected, final BaseCallCount actual) {
 		if (expected.equals(actual)) {
 			return;
 		}

@@ -29,7 +29,7 @@ public abstract class AbstractWorker
 extends Thread
 implements Iterator<ParallelData> {
 
-	public static enum STATUS {INIT, READY, FINISHED, BUSY, WAITING};
+	public enum STATUS {INIT, READY, FINISHED, BUSY, WAITING}
 
 	private final AbstractMethod method;
 	
@@ -146,6 +146,7 @@ implements Iterator<ParallelData> {
 			copyTmpResult.addResult(result);
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 	

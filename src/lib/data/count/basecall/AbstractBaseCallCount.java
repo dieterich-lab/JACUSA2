@@ -9,7 +9,7 @@ abstract class AbstractBaseCallCount implements BaseCallCount {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof BaseCallCount)) {
+		if (! (obj instanceof BaseCallCount)) {
 			return false;
 		}
 		if (obj == this) {
