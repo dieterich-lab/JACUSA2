@@ -11,10 +11,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import lib.recordextended.SAMRecordExtended;
+import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.coordinate.DefaultCoordinateTranslator;
-import lib.util.position.AllAlignmentBlocksPositionProvider;
+import lib.util.position.AllAlignmentBlocksPosProvider;
 import lib.util.position.Position;
 import test.utlis.SAMRecordBuilder;
 
@@ -26,13 +26,13 @@ class AllAlignmentBlocksPositionProviderTest implements PositionProviderTest {
 	@ParameterizedTest(name = "{3}")
 	@MethodSource("testIterator")
 	void testIterator(
-			SAMRecordExtended recordExtended,
+			Record record,
 			CoordinateTranslator translator,
 			List<Position> expected,
 			String info) {
 		
-		final AllAlignmentBlocksPositionProvider testInstance = createTestInstance(
-				recordExtended, translator);
+		final AllAlignmentBlocksPosProvider testInstance = createTestInstance(
+				record, translator);
 		final List<Position> actual = testInstance.flat();
 		assertEquals(expected, actual);
 	}
@@ -76,11 +76,11 @@ class AllAlignmentBlocksPositionProviderTest implements PositionProviderTest {
 				);
 	}
 	
-	AllAlignmentBlocksPositionProvider createTestInstance(
-			final SAMRecordExtended recordExtended, 
+	AllAlignmentBlocksPosProvider createTestInstance(
+			final Record record, 
 			final CoordinateTranslator translator) {
 		
-		return new AllAlignmentBlocksPositionProvider(recordExtended, translator);
+		return new AllAlignmentBlocksPosProvider(record, translator);
 	}
 
 	Arguments createArguments(
@@ -88,21 +88,21 @@ class AllAlignmentBlocksPositionProviderTest implements PositionProviderTest {
 			final int refPosWinStart, final int winLength,
 			String[] expectedStrs) {
 		
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(
+		final Record record = new Record(
 				SAMRecordBuilder.createSERead(CONTIG, refStart, cigarStr, readSeq));
 		
 		final CoordinateTranslator translator = 
 				new DefaultCoordinateTranslator(refPosWinStart, winLength); 
-		final List<Position> expectedPositions = parseExpected(expectedStrs, recordExtended);
+		final List<Position> expectedPositions = parseExpected(expectedStrs, record);
 		final String info = String.format(
 				"read %d-%d, cigar: %s, win: %d-%d",
-				recordExtended.getSAMRecord().getAlignmentStart(),
-				recordExtended.getSAMRecord().getAlignmentEnd(),
-				recordExtended.getSAMRecord().getCigar(),
+				record.getSAMRecord().getAlignmentStart(),
+				record.getSAMRecord().getAlignmentEnd(),
+				record.getSAMRecord().getCigar(),
 				translator.getRefPosStart(), translator.getRefPosEnd());
 		
 		return Arguments.of(
-				recordExtended,
+				record,
 				translator,
 				expectedPositions,
 				info);

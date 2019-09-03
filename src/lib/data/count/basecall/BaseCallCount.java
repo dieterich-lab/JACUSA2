@@ -59,7 +59,7 @@ public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Seriali
 	 * Parser
 	 */
 	
-	static abstract class AbstractParser implements lib.util.Parser<BaseCallCount> {
+	abstract static class AbstractParser implements lib.util.Parser<BaseCallCount> {
 
 		public static final char BASE_CALL_SEP = ';';
 		public static final char EMPTY = '*';

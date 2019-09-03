@@ -8,8 +8,10 @@ import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
 import lib.util.Base;
-import lib.util.coordinate.CoordinateUtil.STRAND;
 
+/**
+ * TODO
+ */
 public class ExtendedVariantSiteValidator 
 implements ParallelDataValidator {
 	
@@ -21,7 +23,7 @@ implements ParallelDataValidator {
 	
 	@Override
 	public boolean isValid(final ParallelData parallelData) {
-		final DataContainer container = parallelData.getCombinedPooledData();
+		final DataContainer container = parallelData.getCombPooledData();
 		final BaseCallCount bcc = bccFetcher.fetch(container);
 		final Set<Base> alleles = bcc.getAlleles();
 		// more than one non-reference allele
@@ -31,13 +33,8 @@ implements ParallelDataValidator {
 
 		// pick reference base by MD or by majority.
 		// all other bases will be converted in pileup2 to refBaseI
-		Base referenceBase = container.getReferenceBase();
+		Base referenceBase = container.getAutoReferenceBase();
 		if (SequenceUtil.isValidBase(referenceBase.getByte())) {
-			
-			if (parallelData.getCoordinate().getStrand() == STRAND.REVERSE) {
-				referenceBase = referenceBase.getComplement();
-			}
-
 			// there has to be at least one non-reference base call in the data
 			return (bcc.getCoverage() - bcc.getBaseCall(referenceBase)) > 0;
 		}

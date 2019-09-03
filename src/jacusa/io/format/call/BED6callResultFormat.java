@@ -5,7 +5,7 @@ import java.util.List;
 
 import jacusa.io.format.BaseSubstitution2BaseCallCountAdder;
 import jacusa.io.format.StratifiedDataAdder;
-import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBaseCallCount;
@@ -20,9 +20,6 @@ import lib.io.format.bed.DefaultInfoAdder;
 
 /**
  * This class implements an extended BED6 format to represent variants identified by "call" method. 
- *
- * @param <T>
- * @param <R>
  */
 public class BED6callResultFormat 
 extends AbstractResultFileFormat {
@@ -49,8 +46,8 @@ extends AbstractResultFileFormat {
 		DataAdder dataAdder = new CallDataAdder(bccParser);
 		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
 		
-		if (getParameter().getReadSubstitutions().size() > 0) {
-			final List<BaseSubstitution> baseSubs = new ArrayList<>(getParameter().getReadSubstitutions());
+		if (! getParameter().getReadSubstitutions().isEmpty()) {
+			final List<BaseSub> baseSubs = new ArrayList<>(getParameter().getReadSubstitutions());
 			dataAdder = new StratifiedDataAdder(
 					dataAdder, 
 					new BaseSubstitution2BaseCallCountAdder(bccParser, baseSubs, dataAdder));

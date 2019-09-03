@@ -1,14 +1,14 @@
 package lib.data.storage.arrest;
 
-import lib.recordextended.SAMRecordExtended;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.data.storage.processor.RecordExtendedPrePostProcessor;
+import lib.data.storage.processor.GeneralRecordProcessor;
+import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.Position;
 
 public class RTarrestRecordProcessor 
-implements RecordExtendedPrePostProcessor {
+implements GeneralRecordProcessor {
 
 	private final SharedStorage sharedStorage;
 	
@@ -41,16 +41,16 @@ implements RecordExtendedPrePostProcessor {
 	}
 	
 	@Override
-	public void process(SAMRecordExtended recordExtended) {
-		if (locInterpreter.hasArrestPosition(recordExtended)) {
-			final Position arrestPos = locInterpreter.getArrestPosition(recordExtended, getTranslator());
+	public void process(Record record) {
+		if (locInterpreter.hasArrestPosition(record)) {
+			final Position arrestPos = locInterpreter.getArrestPosition(record, getTranslator());
 			if (arrestPos != null && arrestPositionProcessor.checkValidators(arrestPos)) {
 				arrestPositionProcessor.processStorages(arrestPos);
 			}
 		}
 
 		throughPositionProcessor.process(
-				locInterpreter.getThroughPositionProvider(recordExtended, getTranslator()));
+				locInterpreter.getThroughPositionProvider(record, getTranslator()));
 	}
 
 	@Override

@@ -7,15 +7,15 @@ import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.stat.dirmult.EstimateDirMult;
-import lib.stat.sample.EstimationSample;
-import lib.stat.sample.provider.arrest.RTarrestCountSampleProvider;
+import lib.stat.estimation.EstimationContainer;
+import lib.stat.estimation.provider.arrest.RTarrestEstimationCountProvider;
 import lib.util.Util;
 
 public class RTarrestStat extends AbstractStat {
 
 	public static final String ARREST_SCORE = "arrest_score";
 	
-	private final RTarrestCountSampleProvider estimationSampleProvider;
+	private final RTarrestEstimationCountProvider estimationSampleProvider;
 	private final RTarrestBetaBinParameter dirMultParameter;
 
 	private final double threshold;
@@ -24,7 +24,7 @@ public class RTarrestStat extends AbstractStat {
 	
 	public RTarrestStat(
 			final double threshold,
-			final RTarrestCountSampleProvider estimationSampleProvider,
+			final RTarrestEstimationCountProvider estimationSampleProvider,
 			final RTarrestBetaBinParameter dirMultParameter) {
 
 		this.threshold					= threshold;
@@ -49,7 +49,7 @@ public class RTarrestStat extends AbstractStat {
 	
 	@Override
 	public Result calculate(ParallelData parallelData) {
-		final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
+		final EstimationContainer[] estimationSamples = estimationSampleProvider.convert(parallelData);
 		final double lrt 	= dirMult.getLRT(estimationSamples);
 		final double pvalue = getPValue(lrt);
 		final Result result = new OneStatResult(pvalue, parallelData);

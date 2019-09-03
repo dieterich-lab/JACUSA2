@@ -2,6 +2,9 @@ package lib.io.format.bed;
 
 import lib.data.result.Result;
 
+/**
+ * TODO
+ */
 public interface DataAdder {
 	
 	void addHeader(StringBuilder sb, int conditionIndex, int replicateIndex);

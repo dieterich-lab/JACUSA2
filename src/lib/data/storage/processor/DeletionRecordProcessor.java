@@ -1,15 +1,17 @@
 package lib.data.storage.processor;
 
-import lib.recordextended.SAMRecordExtended;
-
 import lib.data.storage.Storage;
+import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AllDeletionsPositionProvider;
-import lib.util.position.ConsumingReferencePositionProviderBuilder;
+import lib.util.position.ConsumingRefPosProviderBuilder;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 
-public class DeletionRecordProcessor implements RecordExtendedPrePostProcessor {
+/**
+ * TODO
+ */
+public class DeletionRecordProcessor implements GeneralRecordProcessor {
 
 	private final CoordinateTranslator translator;
 	
@@ -32,10 +34,10 @@ public class DeletionRecordProcessor implements RecordExtendedPrePostProcessor {
 	}
 	
 	@Override
-	public void process(final SAMRecordExtended recordExtended) {
+	public void process(final Record record) {
 		// store total coverage
 		final PositionProvider covPosProvider = 
-				new ConsumingReferencePositionProviderBuilder(recordExtended, translator).build();
+				new ConsumingRefPosProviderBuilder(record, translator).build();
 		while (covPosProvider.hasNext()) {
 			final Position pos = covPosProvider.next();
 			covStorage.increment(pos);
@@ -43,7 +45,7 @@ public class DeletionRecordProcessor implements RecordExtendedPrePostProcessor {
 		
 		// store deletions
 		final PositionProvider delPosProvider = 
-				new AllDeletionsPositionProvider(recordExtended, translator);
+				new AllDeletionsPositionProvider(record, translator);
 		while (delPosProvider.hasNext()) {
 			final Position pos = delPosProvider.next();
 			delStorage.increment(pos);

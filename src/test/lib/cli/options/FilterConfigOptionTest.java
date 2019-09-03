@@ -18,7 +18,7 @@ import jacusa.filter.factory.FilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.basecall.CombinedFilterFactory;
-import jacusa.filter.factory.basecall.INDEL_FilterFactory;
+import jacusa.filter.factory.basecall.INDELfilterFactory;
 import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import lib.cli.options.AbstractACOption;
@@ -77,7 +77,7 @@ implements ACOptionTest<Set<Character>> {
 						DataType.BCC.getFetcher(), 
 						new DefaultFilteredDataFetcher<>(DataType.F_BCC)),
 				
-				new INDEL_FilterFactory(
+				new INDELfilterFactory(
 						DataType.BCC.getFetcher(), 
 						new DefaultFilteredDataFetcher<>(DataType.F_BCC)),
 				
@@ -91,7 +91,7 @@ implements ACOptionTest<Set<Character>> {
 				new MaxAlleleCountFilterFactory(DataType.BCC.getFetcher()),
 				new HomopolymerFilterFactory(getParameter(), new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN)))
 				.stream()
-				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()));
+				.collect(Collectors.toMap(FilterFactory::getID, Function.identity()));
 	}
 	
 	GeneralParameter getParameter() {
@@ -106,7 +106,7 @@ implements ACOptionTest<Set<Character>> {
 	@Override
 	public Set<Character> getActualValue() {
 		return getGeneralParamter().getFilterConfig().getFilterFactories().stream()
-				.map(FilterFactory::getC)
+				.map(FilterFactory::getID)
 				.collect(Collectors.toSet() );
 	}
 	

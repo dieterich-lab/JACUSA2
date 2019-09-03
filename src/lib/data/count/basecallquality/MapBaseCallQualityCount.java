@@ -1,5 +1,6 @@
 package lib.data.count.basecallquality;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class MapBaseCallQualityCount implements BaseCallQualityCount {
 	private final Map<Base, Map<Byte, Integer>> baseCallQuals;
 	
 	public MapBaseCallQualityCount() {
-		baseCallQuals = new HashMap<>(4);
+		baseCallQuals = new EnumMap<>(Base.class);
 	}
 	
 	public MapBaseCallQualityCount(final Map<Base, Map<Byte, Integer>> baseCallQuals) {
@@ -131,7 +132,7 @@ public class MapBaseCallQualityCount implements BaseCallQualityCount {
 	public MapBaseCallQualityCount invert() {
 		for (final Base base : new Base[] {Base.A, Base.C}) {
 			final Base complement = base.getComplement();
-			if (getBaseCallQuality(base).size() == 0 && getBaseCallQuality(complement).size() == 0) {
+			if (getBaseCallQuality(base).isEmpty() && getBaseCallQuality(complement).isEmpty()) {
 				continue;
 			}
 			final Map<Byte, Integer> tmpCount = baseCallQuals.get(base);
@@ -143,9 +144,9 @@ public class MapBaseCallQualityCount implements BaseCallQualityCount {
 
 	@Override
 	public Set<Base> getAlleles() {
-		final Set<Base> alleles = new HashSet<Base>(2);
+		final Set<Base> alleles = new HashSet<>(2);
 		for (final Base base : baseCallQuals.keySet()) {
-			if (getBaseCallQuality(base).size() > 0) {
+			if (! getBaseCallQuality(base).isEmpty()) {
 				alleles.add(base);
 			}
 		}
@@ -159,7 +160,7 @@ public class MapBaseCallQualityCount implements BaseCallQualityCount {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof MapBaseCallQualityCount)) {
+		if (! (obj instanceof MapBaseCallQualityCount)) {
 			return false;
 		}
 		if (obj == this) {

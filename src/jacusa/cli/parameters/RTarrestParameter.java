@@ -7,7 +7,8 @@ import lib.cli.parameter.GeneralParameter;
 import lib.stat.betabin.RTarrestStatFactory;
 
 /**
- * Class defines parameters and default values that are need for Reverse Transcription arrest (rt-arrest).
+ * Class defines parameters and default values that are need for Reverse 
+ * Transcription arrest (rt-arrest).
  */
 public class RTarrestParameter
 extends GeneralParameter 
@@ -17,10 +18,14 @@ implements HasStatParameter {
 
 	public RTarrestParameter(final int conditions) {
 		super(conditions);
+		// change default values
+		
 		// related to test-statistic
-		setStatParameter(new StatParameter(new RTarrestStatFactory(), Double.NaN));
+		setStatParameter(
+				new StatParameter(new RTarrestStatFactory(), Double.NaN));
 		// default result format
-		setResultFormat(new BED6rtArrestResultFormat(RTarrestMethod.Factory.NAME, this));
+		setResultFormat(
+				new BED6rtArrestResultFormat(RTarrestMethod.Factory.NAME, this));
 	}
 
 	@Override

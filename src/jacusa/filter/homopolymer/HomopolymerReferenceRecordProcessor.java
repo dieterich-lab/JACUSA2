@@ -4,12 +4,12 @@ import java.util.Collection;
 
 import jacusa.filter.homopolymer.Homopolymer.HomopolymerBuilder;
 import lib.data.storage.container.ReferenceProvider;
-import lib.data.storage.processor.RecordExtendedPrePostProcessor;
+import lib.data.storage.processor.GeneralRecordProcessor;
+import lib.record.Record;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.OneCoordinate;
-import lib.recordextended.SAMRecordExtended;
 
 
 /**
@@ -18,7 +18,7 @@ import lib.recordextended.SAMRecordExtended;
  *  
  * Tested in @see jacusa.filter.homopolymer.HomopolymerReferenceFilterCacheTest
  */
-public class HomopolymerReferenceRecordProcessor implements RecordExtendedPrePostProcessor {
+public class HomopolymerReferenceRecordProcessor implements GeneralRecordProcessor {
 
 	private final int minLength;
 	private final HomopolymerReferenceStorage storage;
@@ -32,7 +32,7 @@ public class HomopolymerReferenceRecordProcessor implements RecordExtendedPrePos
 	}
 	
 	@Override
-	public void process(final SAMRecordExtended recordExtended) {
+	public void process(final Record record) {
 		// nothing to be done
 		// the main work is done in preProcess
 	}

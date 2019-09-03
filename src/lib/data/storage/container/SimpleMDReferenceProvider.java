@@ -15,15 +15,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lib.cli.parameter.ConditionParameter;
+import lib.record.Record;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.AllAlignmentBlocksPositionProvider;
+import lib.util.position.AllAlignmentBlocksPosProvider;
 import lib.util.position.Position;
-import lib.recordextended.SAMRecordExtended;
 import lib.util.Base;
 import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 
+/**
+ * TODO
+ */
 public class SimpleMDReferenceProvider implements ReferenceProvider {
 
 	private static final int READ_AHEAD = 10;
@@ -47,7 +50,7 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 
 		samReaders = createSamReaders(recordFilenames);
 
-		refPos2refBase = new HashMap<Integer, Byte>(Util.noRehashCapacity(READ_AHEAD));
+		refPos2refBase = new HashMap<>(Util.noRehashCapacity(READ_AHEAD));
 	}
 
 	private CoordinateTranslator getTranslator() {
@@ -55,15 +58,15 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 	}
 
 	@Override
-	public void addRecordExtended(final SAMRecordExtended recordExtended) {
-		final AllAlignmentBlocksPositionProvider positionProvider = 
-				new AllAlignmentBlocksPositionProvider(recordExtended, getTranslator());
+	public void addrecord(final Record record) {
+		final AllAlignmentBlocksPosProvider positionProvider = 
+				new AllAlignmentBlocksPosProvider(record, getTranslator());
 		
 		while (positionProvider.hasNext()) {
 			final Position position = positionProvider.next();
-			winPos2refBase[position.getWindowPosition()] = recordExtended
+			winPos2refBase[position.getWindowPosition()] = record
 					.getRecordReferenceProvider()
-					.getReferenceBase(position.getReferencePosition(), position.getReadPosition())
+					.getRefBase(position.getReferencePosition(), position.getReadPosition())
 					.getByte();
 		}
 	}
@@ -73,7 +76,7 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 		Arrays.fill(winPos2refBase, (byte)'N');
 
 		if (refPos2refBase.size() > 3 * READ_AHEAD) {
-			refPos2refBase = new HashMap<Integer, Byte>(Util.noRehashCapacity(READ_AHEAD));
+			refPos2refBase = new HashMap<>(Util.noRehashCapacity(READ_AHEAD));
 		} else {
 			refPos2refBase.clear();
 		}
@@ -81,7 +84,7 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 	
 	@Override
 	public Base getReferenceBase(final Coordinate coordinate) {
-		final int winPos = coordinateController.getCoordinateTranslator().coordinate2windowPosition(coordinate);
+		final int winPos = coordinateController.getCoordinateTranslator().coord2winPos(coordinate);
 		if (winPos >= 0) {
 			return getReferenceBase(winPos);
 		}
@@ -116,10 +119,10 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 		
 		final SAMRecordIterator it = samReader.query(contig, start, end, false);
 		while (it.hasNext()) {
-			final SAMRecord record = it.next();
-			final SAMRecordExtended recordExtended = new SAMRecordExtended(record);
-			final AllAlignmentBlocksPositionProvider positionProvider = 
-					new AllAlignmentBlocksPositionProvider(recordExtended, getTranslator());
+			final SAMRecord samRecord = it.next();
+			final Record record = new Record(samRecord);
+			final AllAlignmentBlocksPosProvider positionProvider = 
+					new AllAlignmentBlocksPosProvider(record, getTranslator());
 			
 			while (positionProvider.hasNext() && covered < end - start + 1) {
 				final Position position = positionProvider.next();
@@ -134,14 +137,14 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 				if (! position.isWithinWindow()) {
 					refPos2refBase.put(
 							refPos, 
-							recordExtended
+							record
 								.getRecordReferenceProvider()
-								.getReferenceBase(position.getReferencePosition(), position.getReadPosition())
+								.getRefBase(position.getReferencePosition(), position.getReadPosition())
 								.getByte() );					
 				} else {
-					winPos2refBase[position.getWindowPosition()] = recordExtended
+					winPos2refBase[position.getWindowPosition()] = record
 							.getRecordReferenceProvider()
-							.getReferenceBase(position.getReferencePosition(), position.getReadPosition())
+							.getRefBase(position.getReferencePosition(), position.getReadPosition())
 							.getByte();
 				}
 			}

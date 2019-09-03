@@ -15,7 +15,7 @@ public class PileupCountBaseCallCountExtractor implements Fetcher<BaseCallCount>
 
 	@Override
 	public BaseCallCount fetch(DataContainer container) {
-		return pcFetcher.fetch(container).getBaseCallCount();
+		return pcFetcher.fetch(container).getBCC();
 	}
 	
 }

@@ -6,7 +6,7 @@ import java.util.Collection;
 import lib.util.Base;
 
 /**
- * Simple class to define a homopolyme
+ * Simple class to define a homopolymer
  */
 public class Homopolymer {
 	
@@ -45,7 +45,7 @@ public class Homopolymer {
 	}
 
 	/**
-	 * This class will identify a collection of hompolymers in a series of base call counts at user
+	 * This class will identify a collection of hompolymers in a series of base call counts with user
 	 * defined minLength values.
 	 * 
 	 * Tested in @see test.jacusa.filter.homopolymer.HomopolymerBuilderTest
@@ -69,7 +69,7 @@ public class Homopolymer {
 		}
 		
 		public HomopolymerBuilder add(Base base) {
-			if (current.getBase() == base){ // extend if last and new base ist identical
+			if (current.getBase() == base){ // extend if last and new base are identical
 				extend(current);
 			} else {
 				if (check(current, minLength)) { // check if the last sequence of base call is a homopolymer
@@ -85,7 +85,7 @@ public class Homopolymer {
 			if (check(current, minLength)) {
 				homopolymers.add(current);
 			}
-
+			
 			return homopolymers;
 		}
 
@@ -106,7 +106,7 @@ public class Homopolymer {
 		private boolean check(final Homopolymer homopolymer, final int minLength) {
 			return homopolymer.getBase() != Base.N && homopolymer.getLength() >= minLength;
 		}
-
+		
 	}
 	
 }

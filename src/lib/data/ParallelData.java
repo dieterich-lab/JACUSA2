@@ -26,7 +26,6 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 	private List<DataContainer> cachedPooledData;
 	private DataContainer cachedCombinedPooledData;
 
-	// private Base cachedCommonRefBase;
 	private Coordinate cachedCommonCoordinates;
 	private LibraryType cachedCommonLibraryType;
 
@@ -76,7 +75,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		return cachedPooledData.get(conditionIndex);
 	}
 
-	public DataContainer getCombinedPooledData() {
+	public DataContainer getCombPooledData() {
 		if (cachedCombinedPooledData == null && getConditions() > 0) {
 			cachedCombinedPooledData = merge(getPooledData());
 		}
@@ -95,16 +94,6 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 
 		return Collections.unmodifiableList(cachedCombinedData);
 	}
-
-	/*
-	@Override
-	public Base getReferenceBase() {
-		if (cachedCommonRefBase == null) {
-			cachedCommonRefBase = getCommonReferenceBase(getCombinedData());
-		}
-		return cachedCommonRefBase;
-	}
-	*/
 	
 	@Override
 	public Coordinate getCoordinate() {
@@ -156,10 +145,10 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		public Builder(final ParallelData parallelData) {
 			this(parallelData.getConditions(), parallelData.getReplicates());
 			final int conditions = parallelData.getConditions();
-			final List<Integer> replicates = parallelData.getReplicates();
+			final List<Integer> tmpReplicates = parallelData.getReplicates();
 
 			for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
-				for (int replicateIndex = 0; replicateIndex < replicates.get(replicateIndex); ++replicateIndex) {
+				for (int replicateIndex = 0; replicateIndex < tmpReplicates.get(replicateIndex); ++replicateIndex) {
 					DataContainer replicate = parallelData.getDataContainer(conditionIndex, replicateIndex).copy();
 					withReplicate(conditionIndex, replicateIndex, replicate);
 				}
@@ -220,27 +209,15 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 
 	}
 
-	// this will be according to STRAND
-	public static Set<Base> getNonReferenceBases(final Coordinate coordinate, final LibraryType libraryType,
-			Base referenceBase) {
-
+	public static Set<Base> getNonReferenceBases(Base referenceBase) {
 		if (!SequenceUtil.isValidBase(referenceBase.getByte())) {
-			return new HashSet<Base>(0);
+			return new HashSet<>(0);
 		}
-
-		switch (coordinate.getStrand()) {
-		case REVERSE:
-			referenceBase = referenceBase.getComplement();
-			break;
-
-		default:
-			break;
-		}
-
+		
 		return Base.getNonRefBases(referenceBase);
 	}
 
-	public static Set<Base> getVariantBases(final Base refBase, final BaseCallCount bcc1, final BaseCallCount bcc2) {
+	public static Set<Base> getVariantBases(final BaseCallCount bcc1, final BaseCallCount bcc2) {
 		final Set<Base> alleles1 = new HashSet<>(bcc1.getAlleles());
 		final Set<Base> alleles2 = new HashSet<>(bcc2.getAlleles());
 		
@@ -260,7 +237,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 			throw new IllegalArgumentException();
 		}
 
-		final Set<Base> variantBases = new HashSet<Base>(observedBases.size());
+		final Set<Base> variantBases = new HashSet<>(observedBases.size());
 		for (final Base base : observedBases) {
 			int n = 0;
 			for (final BaseCallCount bcc : bccs) {
@@ -280,63 +257,6 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 	public String toString() {
 		return String.format("cond.: %s", getConditions());
 	}
-
-	// for RRDs RNA RNA differences
-	/*
-	 * @depracted public static <S extends AbstractData & hasBaseCallCount &
-	 * hasReferenceBase> int[] getNonRefBaseIndexs(final ParallelData<S>
-	 * parallelData) { final int conditions = parallelData.getConditions(); final
-	 * byte referenceBase = parallelData.getCombinedPooledData().getReferenceBase();
-	 * if (referenceBase == 'N') { throw new
-	 * IllegalStateException("Missing reference information"); }
-	 * 
-	 * final int[] alleles =
-	 * parallelData.getCombinedPooledData().getBaseCallCount().getAlleles();
-	 * 
-	 * int[] observedAlleleCount = new int[BaseCallConfig.BASES.length]; for (int
-	 * conditionIndex = 0; conditionIndex < conditions; conditionIndex++) { for (int
-	 * baseIndex :
-	 * parallelData.getPooledData(conditionIndex).getBaseCallCount().getAlleles()) {
-	 * observedAlleleCount[baseIndex]++; } }
-	 * 
-	 * // A | G // define all non-reference base as potential variants if
-	 * (alleles.length == 2 && observedAlleleCount[alleles[0]] +
-	 * observedAlleleCount[alleles[1]] == conditions) { // define non-reference base
-	 * as potential variants if (referenceBase == 'N') { return new int[0]; }
-	 * 
-	 * final int referenceBaseIndex =
-	 * BaseCallConfig.getInstance().getBaseIndex((byte)referenceBase); for (final
-	 * int baseIndex : alleles) { if (baseIndex != referenceBaseIndex) { return new
-	 * int[] {baseIndex}; } } }
-	 * 
-	 * // A | AG if (alleles.length == 2 && observedAlleleCount[alleles[0]] +
-	 * observedAlleleCount[alleles[1]] > conditions) { return
-	 * ParallelData.getVariantBaseIndexs(parallelData); }
-	 * 
-	 * // condition1: AG | AG AND condition2: AGC |AGC // return allelesIs; return
-	 * new int[0]; }
-	 */
-
-	/*
-	public static Base getCommonReferenceBase(final List<DataContainer> containers) {
-		Base commonRefBase = Base.N;
-		for (final DataContainer container : containers) {
-			final Base specificRefBase = container.getReferenceBase();
-			if (specificRefBase != Base.N) {
-				if (commonRefBase == Base.N) {
-					commonRefBase = specificRefBase;
-				} else if(commonRefBase != specificRefBase) {
-					throw new IllegalStateException("Replicate data have different refBase: "
-						+ commonRefBase + " != " + specificRefBase.toString());
-				} else {
-					commonRefBase = specificRefBase;
-				}
-			}
-		}
-
-		return commonRefBase;
-	}
-	*/
 	
 	public static Coordinate getCommonCoordinate(final List<DataContainer> containers) {
 		Coordinate commonCoordinate = null;
@@ -349,10 +269,10 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 						+ commonCoordinate.toString() + " != " + specificCoordinate.toString());
 			}
 		}
-
+		
 		return commonCoordinate;
 	}
-
+	
 	public static LibraryType getCommonLibraryType(final List<DataContainer> containers) {
 		LibraryType commonLibraryType = null;
 		for (final DataContainer container : containers) {

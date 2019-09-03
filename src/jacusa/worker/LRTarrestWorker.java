@@ -11,9 +11,9 @@ import lib.estimate.MinkaParameter;
 import lib.stat.AbstractStat;
 import lib.stat.dirmult.DirMultParameter;
 import lib.stat.dirmult.EstimateDirMult;
-import lib.stat.sample.EstimationSample;
-import lib.stat.sample.provider.EstimationSampleProvider;
-import lib.stat.sample.provider.pileup.RobustEstimationSamplePileupProvider;
+import lib.stat.estimation.EstimationContainer;
+import lib.stat.estimation.provider.EstimationContainerProvider;
+import lib.stat.estimation.provider.pileup.RobustEstimationPileupProvider;
 import lib.util.Info;
 import lib.util.ReplicateContainer;
 import lib.util.Util;
@@ -28,7 +28,7 @@ extends AbstractWorker {
 	private ParallelDataValidator validator;
 	
 	private final AbstractStat stat;
-	private final EstimationSampleProvider estimationSampleProvider;
+	private final EstimationContainerProvider estimationSampleProvider;
 	private final EstimateDirMult dirMult;
 	
 	public LRTarrestWorker(final LRTarrestMethod method, final int threadId) {
@@ -38,7 +38,7 @@ extends AbstractWorker {
 		
 		validator = new ExtendedVariantSiteValidator(method.getTotalBaseCallCountFetcher());
 		final MinkaParameter minkaParameter = new MinkaParameter();
-		estimationSampleProvider = new RobustEstimationSamplePileupProvider(
+		estimationSampleProvider = new RobustEstimationPileupProvider(
 				false, minkaParameter.getMaxIterations(), DirMultParameter.ESTIMATED_ERROR);
 		dirMult	= new EstimateDirMult(minkaParameter);
 	}
@@ -65,8 +65,8 @@ extends AbstractWorker {
 		if (validator.isValid(parallelData)) {
 			// store variant call result in info field
 			final Info resultInfo = result.getResultInfo();
-			final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
-			final double score = dirMult.getScore(estimationSamples);;
+			final EstimationContainer[] estimationSamples = estimationSampleProvider.convert(parallelData);
+			final double score = dirMult.getScore(estimationSamples);
 			resultInfo.add(INFO_VARIANT_SCORE, Util.format(score));
 		}
 		

@@ -2,8 +2,8 @@ package lib.stat.dirmult;
 
 import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.estimate.MinkaParameter;
+import lib.stat.estimation.EstimationContainer;
 import lib.stat.initalpha.AbstractAlphaInit;
-import lib.stat.sample.EstimationSample;
 import lib.util.Info;
 import lib.util.Util;
 
@@ -12,7 +12,7 @@ public class EstimateDirMult {
 	private final MinkaParameter minkaParameter;
 	private final MinkaEstimateDirMultAlpha minkaEstimateAlpha;
 	
-	private EstimationSample[] estimationSamples;	
+	private EstimationContainer[] estimationSamples;	
 	private Info estimateInfo;
 
 	public EstimateDirMult(final MinkaParameter minkaParameter) {
@@ -29,8 +29,8 @@ public class EstimateDirMult {
 		}
 	}
 	
-	public boolean isNumericallyStable(final EstimationSample[] estimationSamples) {
-		for (final EstimationSample estimationSample : estimationSamples) {
+	public boolean isNumericallyStable(final EstimationContainer[] estimationSamples) {
+		for (final EstimationContainer estimationSample : estimationSamples) {
 			if (! estimationSample.isNumericallyStable()) {
 				return false;
 			}
@@ -39,7 +39,7 @@ public class EstimateDirMult {
 		return true;
 	}
 	
-	public boolean estimate(final EstimationSample estimationSample, final AbstractAlphaInit alphaInit, final boolean backtrack) {
+	public boolean estimate(final EstimationContainer estimationSample, final AbstractAlphaInit alphaInit, final boolean backtrack) {
 		// perform an initial guess of alpha
 		final double[] initAlpha 	= alphaInit.init(estimationSample.getNominalData());
 		final double logLikelihood 	= minkaEstimateAlpha.getLogLikelihood(initAlpha, estimationSample.getNominalData());
@@ -52,7 +52,7 @@ public class EstimateDirMult {
 	private boolean estimate(final AbstractAlphaInit alphaInit, final boolean backtrack) {
 		boolean flag = true;
 		// estimate alpha(s), capture info(s), and store log-likelihood
-		for (final EstimationSample estimationSample : estimationSamples) {
+		for (final EstimationContainer estimationSample : estimationSamples) {
 			try {
 				flag &= estimate(estimationSample, alphaInit, backtrack);
 			} catch (StackOverflowError e) {
@@ -63,12 +63,12 @@ public class EstimateDirMult {
 		return flag;
 	}
 	
-	public double getScore(final EstimationSample[] estimationSamples) {
+	public double getScore(final EstimationContainer[] estimationSamples) {
 		estimate(estimationSamples);
 		return getObservedlogLikeliood() - getEstimationSamplePooled().getLogLikelihood();
 	}
 
-	private void estimate(final EstimationSample[] estimationSamples) { 
+	private void estimate(final EstimationContainer[] estimationSamples) { 
 		this.estimationSamples 	= estimationSamples;
 		estimateInfo 			= new Info();
 	
@@ -76,7 +76,7 @@ public class EstimateDirMult {
 		final AbstractAlphaInit fallbackAlphaInit 	= minkaParameter.getFallbackAlphaInit();
 	
 		if (! estimate(defaultAlphaInit, false)) {
-			for (final EstimationSample estimationSample : estimationSamples) {
+			for (final EstimationContainer estimationSample : estimationSamples) {
 				estimationSample.clear();
 			}
 			estimate(fallbackAlphaInit, true);
@@ -92,22 +92,22 @@ public class EstimateDirMult {
 		return tmpLogLikelihood;
 	}
 	
-	public double getLRT(final EstimationSample[] estimationSamples) {
+	public double getLRT(final EstimationContainer[] estimationSamples) {
 		estimate(estimationSamples);
 		return - 2 * (getEstimationSamplePooled().getLogLikelihood() - 
 				getObservedlogLikeliood());
 	}
 	
-	private  EstimationSample getEstimationSampleCondition(final int conditionIndex) {
+	private  EstimationContainer getEstimationSampleCondition(final int conditionIndex) {
 		return estimationSamples[conditionIndex];
 	}
 	
-	private  EstimationSample getEstimationSamplePooled() {
+	private  EstimationContainer getEstimationSamplePooled() {
 		return estimationSamples[estimationSamples.length - 1];
 	}
 
 	public void addShowAlpha() {
-		for (final EstimationSample estimationSample : estimationSamples) {
+		for (final EstimationContainer estimationSample : estimationSamples) {
 			final String id 			= estimationSample.getId();
 			final int iteration			= estimationSample.getIteration();
 			final double[] initAlpha 	= estimationSample.getAlpha(0);

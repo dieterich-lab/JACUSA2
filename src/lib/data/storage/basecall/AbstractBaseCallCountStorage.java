@@ -13,6 +13,9 @@ import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.position.Position;
 
+/**
+ * TODO
+ */
 public abstract class AbstractBaseCallCountStorage
 extends AbstractStorage 
 implements WindowCoverage {

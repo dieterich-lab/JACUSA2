@@ -16,12 +16,11 @@ import org.apache.commons.cli.Options;
 
 public class FilterConfigOption extends AbstractACOption {
 
-	final private GeneralParameter parameters;
+	private final GeneralParameter parameters;
 
 	public static final char OR = ',';
-	//public static char AND = '&';
 
-	final private Map<Character, FilterFactory> filterFactories;
+	private final Map<Character, FilterFactory> filterFactories;
 
 	public FilterConfigOption(final GeneralParameter parameter, 
 			final Map<Character, FilterFactory> filterFactories) {
@@ -33,13 +32,13 @@ public class FilterConfigOption extends AbstractACOption {
 
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
-		final StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 		
 		final Options options = new Options(); 
-		for (final char c : filterFactories.keySet()) {
-			final FilterFactory filterFactory = filterFactories.get(c);
+		for (final char id : filterFactories.keySet()) {
+			final FilterFactory filterFactory = filterFactories.get(id);
 
-			final String opt = "___REMOVE___" + Character.toString(c);
+			final String opt = "___REMOVE___" + Character.toString(id);
 			Option option = Option.builder(opt)
 					.desc(filterFactory.getDesc())
 					.build();
@@ -55,7 +54,7 @@ public class FilterConfigOption extends AbstractACOption {
 		sb.append(s.replaceAll("-___REMOVE___", ""));
 
 		final String argName = "FEATURE-FILTER";
-		String desc = new String();
+		String desc = "";
 		if (printExtendedHelp) {
 			desc = "Chain of " + argName + ". Join " + argName + " D and I with '" + OR + "' and add options with ':'\n" +
 					"e.g.: D" + OR + "I:I_OPTION1:I_OPTION2=I_VALUE2\n" + 
@@ -89,7 +88,7 @@ public class FilterConfigOption extends AbstractACOption {
 				a = a.substring(1);
 				filterFactory.processCLI(a.replaceAll(":", " --").trim());
 			} else {
-				filterFactory.processCLI(new String());
+				filterFactory.processCLI("");
 			}
 			parameters.getFilterConfig().addFactory(filterFactory);
 		}

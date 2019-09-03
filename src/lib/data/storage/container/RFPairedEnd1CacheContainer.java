@@ -1,7 +1,7 @@
 package lib.data.storage.container;
 
 import htsjdk.samtools.SAMRecord;
-import lib.recordextended.SAMRecordExtended;
+import lib.record.Record;
 
 public class RFPairedEnd1CacheContainer 
 extends AbstractStrandedCacheContainer {
@@ -13,20 +13,20 @@ extends AbstractStrandedCacheContainer {
 	}
 	
 	@Override
-	protected CacheContainer getCacheContainer(final SAMRecordExtended recordExtended) {
-		final SAMRecord record = recordExtended.getSAMRecord();
+	protected CacheContainer getCacheContainer(final Record record) {
+		final SAMRecord samRecord = record.getSAMRecord();
 	
 		// paired end
-		if (record.getReadPairedFlag()) { 
-			if (record.getFirstOfPairFlag() && record.getReadNegativeStrandFlag() || 
-					record.getSecondOfPairFlag() && ! record.getReadNegativeStrandFlag()) {
+		if (samRecord.getReadPairedFlag()) { 
+			if (samRecord.getFirstOfPairFlag() && samRecord.getReadNegativeStrandFlag() || 
+					samRecord.getSecondOfPairFlag() && ! samRecord.getReadNegativeStrandFlag()) {
 				return getForwardContainer();
 			}
 			return getReverseContainer();
 		} 
 
 		// single end
-		if (record.getReadNegativeStrandFlag()) {
+		if (samRecord.getReadNegativeStrandFlag()) {
 			return getForwardContainer();
 		} 
 		return getReverseContainer();

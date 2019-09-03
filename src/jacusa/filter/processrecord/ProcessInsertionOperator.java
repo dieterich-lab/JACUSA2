@@ -2,8 +2,8 @@ package jacusa.filter.processrecord;
 
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.recordextended.SAMRecordExtended;
-import lib.util.position.CigarElementExtendedPositionProviderBuilder;
+import lib.record.Record;
+import lib.util.position.CigarElementPositionProviderBuilder;
 import lib.util.position.PositionProvider;
 
 /**
@@ -13,7 +13,7 @@ import lib.util.position.PositionProvider;
  * 
  * Tested in test.jacusa.filter.processrecord.ProcessInsertionOperatorTest
  */
-public class ProcessInsertionOperator extends AbstractFilterRecordExtendedProcessor {
+public class ProcessInsertionOperator extends AbstractFilterRecordProcessor {
 
 	public ProcessInsertionOperator(
 			final SharedStorage sharedStorage,
@@ -24,18 +24,18 @@ public class ProcessInsertionOperator extends AbstractFilterRecordExtendedProces
 	}
 	
 	@Override
-	public void process(SAMRecordExtended recordExtended) {
+	public void process(Record record) {
 		// iterate over cigarElement indices of deletions
-		for (final int cigarElementExtendedIndex : recordExtended.getInsertion()) {
-			processInsertionOperator(cigarElementExtendedIndex, recordExtended);
+		for (final int cigarElementExtendedIndex : record.getInsertion()) {
+			processInsertionOperator(cigarElementExtendedIndex, record);
 		}
 	}
 	
 	private void processInsertionOperator(
-			final int cigarElementExtendedIndex, final SAMRecordExtended recordExtended) {
+			final int cigarElementIndex, final Record record) {
 
-		final PositionProvider positionProvider = new CigarElementExtendedPositionProviderBuilder(
-				cigarElementExtendedIndex, getDistance(), recordExtended, getTranslator())
+		final PositionProvider positionProvider = new CigarElementPositionProviderBuilder(
+				cigarElementIndex, getDistance(), record, getTranslator())
 				.build();
 		getPositionProcessor().process(positionProvider);
 	}

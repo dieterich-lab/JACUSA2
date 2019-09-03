@@ -6,8 +6,11 @@ import java.util.List;
 import lib.cli.options.AbstractACOption;
 import lib.cli.parameter.ConditionParameter;
 
-public abstract class AbstractConditionACOption 
-extends AbstractACOption {
+/**
+ * Represents the CLI options that can be provided for each condition, e.g.: 
+ * minimal BASQ, minimal coverage, etc. 
+ */
+public abstract class AbstractConditionACOption extends AbstractACOption {
 
 	private int conditionIndex;
 	private final List<ConditionParameter> conditionParameters;

@@ -1,5 +1,8 @@
 package lib.util.coordinate;
 
+/**
+ * TODO
+ */
 public class DynamicCoordinateTranslator implements CoordinateTranslator {
 
 	private final CoordinateController coordinateController;
@@ -10,7 +13,7 @@ public class DynamicCoordinateTranslator implements CoordinateTranslator {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof CoordinateTranslator)) {
+		if (! (obj instanceof CoordinateTranslator)) {
 			return false;
 		}
 		if (obj == this) {
@@ -42,7 +45,7 @@ public class DynamicCoordinateTranslator implements CoordinateTranslator {
 	}
 	
 	@Override
-	public int reference2windowPosition(final int refPos) {
+	public int ref2winPos(final int refPos) {
 		if (refPos > getRefPosEnd() || refPos < getRefPosStart()){
 			return -1;
 		}

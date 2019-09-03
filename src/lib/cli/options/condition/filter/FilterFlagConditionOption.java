@@ -23,7 +23,7 @@ public class FilterFlagConditionOption extends AbstractConditionACOption {
 	
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
-		String s = new String();
+		String s = "";
 		
 		int filterFlags = getConditionParameter().getFilterFlags();
 		if (getConditionIndex() >= 0) {

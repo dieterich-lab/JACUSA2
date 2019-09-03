@@ -1,21 +1,24 @@
 package lib.util.position;
 
-import lib.recordextended.SAMRecordExtended;
+import lib.record.Record;
 
+/**
+ * TODO
+ */
 abstract class AbstractPosition implements Position {
 	
 	protected int refPos;
 	protected int readPos;
 	protected int winPos;
 	
-	private final SAMRecordExtended recordExtended;
+	private final Record record;
 	
 	protected AbstractPosition(AbstractBuilder<? extends AbstractPosition> builder) {
 		this.refPos		= builder.refPos;
 		this.readPos	= builder.readPos;
 		this.winPos		= builder.winPos;
 		
-		this.recordExtended 	= builder.recordExtended;
+		this.record 	= builder.record;
 	}
 	
 	protected AbstractPosition(final AbstractPosition pos) {
@@ -23,17 +26,17 @@ abstract class AbstractPosition implements Position {
 		this.readPos		= pos.readPos;
 		this.winPos			= pos.winPos;
 		
-		this.recordExtended = pos.recordExtended;
+		this.record = pos.record;
 	}
 	
 	protected AbstractPosition(
 			final int refPos, final int readPos, final int winPos, 
-			final SAMRecordExtended recordExtended) {
+			final Record record) {
 		this.refPos			= refPos;
 		this.readPos		= readPos;
 		this.winPos			= winPos;
 		
-		this.recordExtended 	= recordExtended;
+		this.record 	= record;
 	}
 	
 	@Override
@@ -46,8 +49,8 @@ abstract class AbstractPosition implements Position {
 		}
 		final Position pos = (Position)obj;
 		
-		if (recordExtended != null && pos.getRecordExtended() != null && 
-				! recordExtended.getSAMRecord().equals(pos.getRecordExtended().getSAMRecord())) {
+		if (record != null && pos.getRecord() != null && 
+				! record.getSAMRecord().equals(pos.getRecord().getSAMRecord())) {
 			
 			return false;
 		}
@@ -64,8 +67,8 @@ abstract class AbstractPosition implements Position {
 		hash = 31 * hash + refPos;
 		hash = 31 * hash + readPos;
 		hash = 31 * hash + winPos;
-		if (getRecordExtended() != null) {
-			hash = 31 * hash + getRecord().hashCode();
+		if (getRecord() != null) {
+			hash = 31 * hash + getSAMRecord().hashCode();
 		}
 		return hash;
 	}
@@ -86,8 +89,8 @@ abstract class AbstractPosition implements Position {
 	}
 	
 	@Override
-	public SAMRecordExtended getRecordExtended() {
-		return recordExtended;
+	public Record getRecord() {
+		return record;
 	}
 
 	void update(final int refPos, final int readPos, final int winPos) {
@@ -119,17 +122,17 @@ abstract class AbstractPosition implements Position {
 		private int readPos;
 		private int winPos;
 		
-		private final SAMRecordExtended recordExtended;
+		private final Record record;
 		
 		protected AbstractBuilder(
 				final int refPos, final int readPos, final int winPos,
-				final SAMRecordExtended recordExtended) {
+				final Record record) {
 			
 			this.refPos			= refPos;
 			this.readPos 		= readPos;
 			this.winPos			= winPos;
 			
-			this.recordExtended	= recordExtended;
+			this.record	= record;
 		}
 		
 		protected void update(final int refPos, final int readPos, final int winPos) {

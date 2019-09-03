@@ -23,7 +23,7 @@ public class MinBASQConditionOption extends AbstractConditionACOption {
 	
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
-		String s = new String();
+		String s = "";
 		
 		byte minBasq = getConditionParameter().getMinBASQ();
 		if (getConditionIndex() >= 0) {

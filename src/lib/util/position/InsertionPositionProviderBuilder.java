@@ -1,11 +1,12 @@
 package lib.util.position;
 
+import lib.record.AlignedPosition;
+import lib.record.Record;
+import lib.record.Record.CigarElementExtended;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.recordextended.AlignedPosition;
-import lib.recordextended.SAMRecordExtended;
-import lib.recordextended.SAMRecordExtended.CigarElementExtended;
 
-public class InsertionPositionProviderBuilder implements lib.util.Builder<IntervalPositionProvider> {
+// TODO
+public class InsertionPositionProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
 	
 	// position of the insertion
 	private final InsertedPosition pos;
@@ -15,21 +16,21 @@ public class InsertionPositionProviderBuilder implements lib.util.Builder<Interv
 	private CoordinateTranslator translator;
 
 	public InsertionPositionProviderBuilder(
-			final int insertionIndex, final SAMRecordExtended recordExtended, 
+			final int insI, final Record record, 
 			final CoordinateTranslator translator) {
 		
 		// extract corresponding cigar element 
-		final int cigarElementExtendedIndex 	= recordExtended.getInsertion().get(insertionIndex);
-		final CigarElementExtended cigarElement = recordExtended
-				.getCigarElementExtended().get(cigarElementExtendedIndex);
+		final int cigarElementI 	= record.getInsertion().get(insI);
+		final CigarElementExtended cigarElement = record
+				.getCigarElementExtended().get(cigarElementI);
 		
 		// prepare to create Position
 		final AlignedPosition alignedPos 	= cigarElement.getPosition(); 
-		final int refPos 					= alignedPos.getReferencePosition();
-		final int readPos 					= alignedPos.getReadPosition();
-		final int winPos					= translator.reference2windowPosition(refPos);
+		final int refPos 					= alignedPos.getRefPos();
+		final int readPos 					= alignedPos.getReadPos();
+		final int winPos					= translator.ref2winPos(refPos);
 		
-		pos 	= new InsertedPosition(refPos, readPos, winPos, recordExtended);
+		pos 	= new InsertedPosition(refPos, readPos, winPos, record);
 		length 	= cigarElement.getCigarElement().getLength();
 		
 		this.translator = translator;
@@ -42,8 +43,8 @@ public class InsertionPositionProviderBuilder implements lib.util.Builder<Interv
 	} 
 	
 	@Override
-	public IntervalPositionProvider build() {
-		return new IntervalPositionProvider(pos, length); 
+	public IntervalPosProvider build() {
+		return new IntervalPosProvider(pos, length); 
 	}
 	
 }

@@ -47,7 +47,7 @@ implements HasMaxAlleleCount {
 			CoordinateController coordinateController,
 			ConditionContainer conditionContainer) {
 		
-		return new MaxAlleleFilter(getC(), maxAlleles, bccFetcher);
+		return new MaxAlleleFilter(getID(), maxAlleles, bccFetcher);
 	}
 	
 	@Override

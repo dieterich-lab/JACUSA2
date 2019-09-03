@@ -1,17 +1,17 @@
 package lib.data.fetcher.basecall;
 
-import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
-import lib.data.count.BaseSubstitution2BaseCallCount;
+import lib.data.count.BaseSub2BaseCallCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
 
 public class BaseCallCountExtractor implements Fetcher<BaseCallCount> {
 
-	private final BaseSubstitution baseSub;
-	private final Fetcher<BaseSubstitution2BaseCallCount> fetcher;
+	private final BaseSub baseSub;
+	private final Fetcher<BaseSub2BaseCallCount> fetcher;
 	
-	public BaseCallCountExtractor(final BaseSubstitution baseSub, final Fetcher<BaseSubstitution2BaseCallCount> fetcher) {
+	public BaseCallCountExtractor(final BaseSub baseSub, final Fetcher<BaseSub2BaseCallCount> fetcher) {
 		this.baseSub = baseSub;
 		this.fetcher = fetcher;
 	}
@@ -21,7 +21,7 @@ public class BaseCallCountExtractor implements Fetcher<BaseCallCount> {
 		return fetcher.fetch(container).get(baseSub);
 	}
 
-	public BaseSubstitution getBaseSubstitution() {
+	public BaseSub getBaseSubstitution() {
 		return baseSub;
 	}
 	

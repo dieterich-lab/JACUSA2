@@ -22,7 +22,7 @@ public class MinCoverageConditionOption extends AbstractConditionACOption {
 	
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
-		String s = new String();
+		String s = "";
 		
 		int minCoverage = getConditionParameter().getMinCoverage();
 		if (getConditionIndex() >= 0) {

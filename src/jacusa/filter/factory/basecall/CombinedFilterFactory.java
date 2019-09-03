@@ -14,7 +14,7 @@ import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.data.storage.processor.RecordExtendedProcessor;
+import lib.data.storage.processor.RecordProcessor;
 
 /**
  * This FilterFactory configures and helps to create the combined filter which aggregates the counts 
@@ -34,34 +34,43 @@ public class CombinedFilterFactory extends AbstractBaseCallCountFilterFactory {
 	}
 
 	@Override
-	protected List<RecordExtendedProcessor> createRecordProcessors(SharedStorage sharedStorage, PositionProcessor positionProcessor) {
+	protected List<RecordProcessor> createRecordProcessors(
+			SharedStorage sharedStorage, PositionProcessor positionProcessor) {
+		
 		return createRecordProcessors(sharedStorage, getFilterDistance(), positionProcessor);
 	}
 	
 	// make the collection of recordProcessors available to other factories
-	public static List<RecordExtendedProcessor> createRecordProcessors(
+	public static List<RecordProcessor> createRecordProcessors(
 			final SharedStorage sharedStorage,
 			final int filterDistance, 
 			final PositionProcessor positionProcessor) {
 		
-		final List<RecordExtendedProcessor> processRecords = new ArrayList<>();
+		final List<RecordProcessor> processRecords = new ArrayList<>();
 		// INDELs
 		processRecords.addAll(
-				INDEL_FilterFactory.createRecordProcessor(sharedStorage, filterDistance, positionProcessor));
+				INDELfilterFactory.createRecordProcessor(
+						sharedStorage, filterDistance, positionProcessor));
 		// read start end 
 		processRecords.addAll(
-				ReadPositionFilterFactory.createRecordProcessor(sharedStorage, filterDistance, positionProcessor));
+				ReadPositionFilterFactory.createRecordProcessor(
+						sharedStorage, filterDistance, positionProcessor));
 		// introns
 		processRecords.addAll(
-				SpliceSiteFilterFactory.createRecordProcessors(sharedStorage, filterDistance, positionProcessor));
+				SpliceSiteFilterFactory.createRecordProcessors(
+						sharedStorage, filterDistance, positionProcessor));
+		
 		return processRecords;
 	}
 	
 	public static Builder getOptionBuilder() {
+		final List<Character> factories = Arrays.asList(
+				INDELfilterFactory.FILTER, 
+				ReadPositionFilterFactory.FILTER, 
+				SpliceSiteFilterFactory.FILTER);
+		
 		return Option.builder(Character.toString(FILTER))
-				.desc("Combines Filters: " + StringUtil.join(" + ", Arrays.asList(INDEL_FilterFactory.FILTER, ReadPositionFilterFactory.FILTER, SpliceSiteFilterFactory.FILTER)));
-				
-		// old message .desc("Filter artefacts in the vicinity of read start/end, INDELs, and splice site position(s).");
+				.desc("Combines Filters: " + StringUtil.join(" + ", factories));
 	}
 	
 }

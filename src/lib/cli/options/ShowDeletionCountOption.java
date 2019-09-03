@@ -7,7 +7,7 @@ import org.apache.commons.cli.Option;
 
 public class ShowDeletionCountOption extends AbstractACOption {
 
-	final private GeneralParameter parameter;
+	private final GeneralParameter parameter;
 	
 	public ShowDeletionCountOption(final GeneralParameter parameter) {
 		super("D", "show-deletions");

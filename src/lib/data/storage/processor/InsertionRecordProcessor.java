@@ -1,15 +1,17 @@
 package lib.data.storage.processor;
 
-import lib.recordextended.SAMRecordExtended;
-
 import lib.data.storage.Storage;
+import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AllInsertionsPositionProvider;
-import lib.util.position.ConsumingReferencePositionProviderBuilder;
+import lib.util.position.ConsumingRefPosProviderBuilder;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 
-public class InsertionRecordProcessor implements RecordExtendedPrePostProcessor {
+/**
+ * TODO
+ */
+public class InsertionRecordProcessor implements GeneralRecordProcessor {
 
 	private final CoordinateTranslator translator;
 	
@@ -32,10 +34,10 @@ public class InsertionRecordProcessor implements RecordExtendedPrePostProcessor 
 	}
 	
 	@Override
-	public void process(final SAMRecordExtended recordExtended) {
+	public void process(final Record record) {
 		// store total coverage
 		final PositionProvider covPosProvider = 
-				new ConsumingReferencePositionProviderBuilder(recordExtended, translator).build();
+				new ConsumingRefPosProviderBuilder(record, translator).build();
 		while (covPosProvider.hasNext()) {
 			final Position pos = covPosProvider.next();
 			covStorage.increment(pos);
@@ -43,7 +45,7 @@ public class InsertionRecordProcessor implements RecordExtendedPrePostProcessor 
 		
 		// store insetions
 		final PositionProvider insPosProvider = 
-				new AllInsertionsPositionProvider(recordExtended, translator);
+				new AllInsertionsPositionProvider(record, translator);
 		while (insPosProvider.hasNext()) {
 			final Position pos = insPosProvider.next();
 			insStorage.increment(pos);

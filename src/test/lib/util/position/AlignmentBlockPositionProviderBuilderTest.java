@@ -11,10 +11,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import lib.recordextended.SAMRecordExtended;
+import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.coordinate.DefaultCoordinateTranslator;
-import lib.util.position.AlignmentBlockPositionProviderBuilder;
+import lib.util.position.AlgnBlockPosProviderBuilder;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 import test.utlis.SAMRecordBuilder;
@@ -38,15 +38,15 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 	@MethodSource("testTryFirst")
 	void testTryFirst(
 			int blockIndex,
-			SAMRecordExtended recordExtended,
+			Record record,
 			CoordinateTranslator translator,
 			int length,
 			boolean adjustWinPos,
 			List<Position> expected,
 			String info) {
 		
-		final AlignmentBlockPositionProviderBuilder testInstance = createTestInstace(
-				blockIndex, recordExtended, translator);
+		final AlgnBlockPosProviderBuilder testInstance = createTestInstace(
+				blockIndex, record, translator);
 		testInstance.tryFirst(length);
 		if (adjustWinPos) {
 			testInstance.adjustWindowPos();
@@ -92,15 +92,15 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 	@ParameterizedTest(name = "{6}")
 	@MethodSource("testTryLast")
 	void testTryLast(int blockIndex,
-			SAMRecordExtended recordExtended,
+			Record record,
 			CoordinateTranslator translator,
 			int length,
 			boolean adjustWinPos,
 			List<Position> expected,
 			String info) {
 		
-		final AlignmentBlockPositionProviderBuilder testInstance = createTestInstace(
-				blockIndex, recordExtended, translator);
+		final AlgnBlockPosProviderBuilder testInstance = createTestInstace(
+				blockIndex, record, translator);
 		testInstance.tryLast(length);
 		if (adjustWinPos) {
 			testInstance.adjustWindowPos();
@@ -147,15 +147,15 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 	@MethodSource("testIgnoreFirst")
 	void testIgnoreFirst(
 			int blockIndex,
-			SAMRecordExtended recordExtended,
+			Record record,
 			CoordinateTranslator translator,
 			int length,
 			boolean adjustWinPos,
 			List<Position> expected,
 			String info) {
 		
-		final AlignmentBlockPositionProviderBuilder testInstance = createTestInstace(
-				blockIndex, recordExtended, translator);
+		final AlgnBlockPosProviderBuilder testInstance = createTestInstace(
+				blockIndex, record, translator);
 		testInstance.ignoreFirst(length);
 		if (adjustWinPos) {
 			testInstance.adjustWindowPos();
@@ -201,14 +201,14 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 	@ParameterizedTest(name = "{5}")
 	@MethodSource("testAdjustForWindow")
 	void testAdjustForWindow(int blockIndex,
-			SAMRecordExtended recordExtended,
+			Record record,
 			CoordinateTranslator translator,
 			boolean adjustWinPos,
 			List<Position> expected,
 			String info) {
 		
-		final AlignmentBlockPositionProviderBuilder testInstance = createTestInstace(
-				blockIndex, recordExtended, translator);
+		final AlgnBlockPosProviderBuilder testInstance = createTestInstace(
+				blockIndex, record, translator);
 		if (adjustWinPos) {
 			testInstance.adjustWindowPos();
 		}
@@ -263,12 +263,12 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 
 	}
 
-	AlignmentBlockPositionProviderBuilder createTestInstace(
+	AlgnBlockPosProviderBuilder createTestInstace(
 			final int blockIndex, 
-			final SAMRecordExtended recordExtended, 
+			final Record record, 
 			final CoordinateTranslator translator) {
 		
-		return new AlignmentBlockPositionProviderBuilder(blockIndex, recordExtended, translator);
+		return new AlgnBlockPosProviderBuilder(blockIndex, record, translator);
 	}
 
 	Arguments createArguments(
@@ -277,23 +277,23 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 			final int refPosWinStart, final int winLength, final boolean adjustWinPos,
 			String[] expectedStrs) {
 		
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(
+		final Record record = new Record(
 				SAMRecordBuilder.createSERead(CONTIG, refStart, cigarStr, readSeq));
 		
 		final CoordinateTranslator translator = 
 				new DefaultCoordinateTranslator(refPosWinStart, winLength); 
-		final List<Position> expectedPositions = parseExpected(expectedStrs, recordExtended);
+		final List<Position> expectedPositions = parseExpected(expectedStrs, record);
 		final String info = String.format(
 				"blockIndex: %d, read %d-%d, win: %d-%d, adjustWinPos: %s",
 				blockIndex,
-				recordExtended.getSAMRecord().getAlignmentStart(),
-				recordExtended.getSAMRecord().getAlignmentEnd(),
+				record.getSAMRecord().getAlignmentStart(),
+				record.getSAMRecord().getAlignmentEnd(),
 				translator.getRefPosStart(), translator.getRefPosEnd(), 
 				adjustWinPos);
 		
 		return Arguments.of(
 				blockIndex,
-				recordExtended,
+				record,
 				translator,
 				adjustWinPos,
 				expectedPositions,
@@ -306,19 +306,19 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 			final int refPosWinStart, final int winLength, final boolean adjustWinPos,
 			String[] expectedStrs) {
 		
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(
+		final Record record = new Record(
 				SAMRecordBuilder.createSERead(CONTIG, refStart, cigarStr, readSeq));
 		
 		final CoordinateTranslator translator = 
 				new DefaultCoordinateTranslator(refPosWinStart, winLength); 
-		final List<Position> expectedPositions = parseExpected(expectedStrs, recordExtended);
+		final List<Position> expectedPositions = parseExpected(expectedStrs, record);
 		final String info = String.format(
 				"blockIndex: %d, length: %d, adjustWinPos: %s",
 				blockIndex, length, adjustWinPos);
 		
 		return Arguments.of(
 				blockIndex,
-				recordExtended,
+				record,
 				translator,
 				length, 
 				adjustWinPos,

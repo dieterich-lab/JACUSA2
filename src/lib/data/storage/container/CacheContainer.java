@@ -6,15 +6,18 @@ import java.util.List;
 import lib.data.DataContainer;
 import lib.data.storage.Cache;
 import lib.data.storage.Storage;
-import lib.data.storage.processor.RecordExtendedPrePostProcessor;
+import lib.data.storage.processor.GeneralRecordProcessor;
+import lib.record.Record;
 import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
-import lib.recordextended.SAMRecordExtended;
 
+/**
+ * TODO
+ */
 public interface CacheContainer {
 
 	void preProcess();
-	void process(SAMRecordExtended recordExtended);
+	void process(Record record);
 	void postProcess();
 	
 	int getNextWindowPosition(int winPos);
@@ -22,7 +25,7 @@ public interface CacheContainer {
 	
 	void populate(DataContainer dataContainer, Coordinate coordinate);
 	
-	List<RecordExtendedPrePostProcessor> getRecordProcessors();
+	List<GeneralRecordProcessor> getRecordProcessors();
 	List<Storage> getStorages();
 	
 	default void clearStorage() {
@@ -37,8 +40,8 @@ public interface CacheContainer {
 		private final LibraryType libraryType;
 		private final SharedStorage sharedStorage;
 
-		private List<RecordExtendedPrePostProcessor> recordProcessors1;
-		private List<RecordExtendedPrePostProcessor> recordProcessors2;
+		private List<GeneralRecordProcessor> recordProcessors1;
+		private List<GeneralRecordProcessor> recordProcessors2;
 		
 		private List<Storage> storages1;
 		private List<Storage> storages2;
@@ -55,16 +58,16 @@ public interface CacheContainer {
 			
 			this.sharedStorage = sharedStorage;
 			
-			recordProcessors1 	= new ArrayList<RecordExtendedPrePostProcessor>();
-			recordProcessors2 	= new ArrayList<RecordExtendedPrePostProcessor>();
+			recordProcessors1 	= new ArrayList<GeneralRecordProcessor>();
+			recordProcessors2 	= new ArrayList<GeneralRecordProcessor>();
 			
 			storages1 			= new ArrayList<>();
 			storages2 			= new ArrayList<>();
 		}
 
 		public StrandedBuilder withRecordProcessors(
-				final List<RecordExtendedPrePostProcessor> recordProcessors1,
-				final List<RecordExtendedPrePostProcessor> recordProcessors2) {
+				final List<GeneralRecordProcessor> recordProcessors1,
+				final List<GeneralRecordProcessor> recordProcessors2) {
 			
 			recordProcessors1.addAll(recordProcessors1);
 			recordProcessors2.addAll(recordProcessors2);
@@ -115,22 +118,22 @@ public interface CacheContainer {
 		
 		private final SharedStorage sharedStorage;
 
-		private List<RecordExtendedPrePostProcessor> recordProcessors;
+		private List<GeneralRecordProcessor> recordProcessors;
 		private List<Storage> storages;
 		
 		public UnstrandedBuilder(final SharedStorage sharedStorage) {
 			this.sharedStorage = sharedStorage;
 			
-			recordProcessors 	= new ArrayList<RecordExtendedPrePostProcessor>();
+			recordProcessors 	= new ArrayList<GeneralRecordProcessor>();
 			storages 				= new ArrayList<>();
 		}
 		
-		public UnstrandedBuilder withProcessor(final RecordExtendedPrePostProcessor processor) {
+		public UnstrandedBuilder withProcessor(final GeneralRecordProcessor processor) {
 			recordProcessors.add(processor);
 			return this;
 		}
 		
-		public UnstrandedBuilder withRecordProcessors(final List<RecordExtendedPrePostProcessor> recordProcessors) {
+		public UnstrandedBuilder withRecordProcessors(final List<GeneralRecordProcessor> recordProcessors) {
 			recordProcessors.addAll(recordProcessors);
 			return this;
 		}

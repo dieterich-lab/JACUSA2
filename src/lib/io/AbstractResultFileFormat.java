@@ -8,9 +8,6 @@ import lib.worker.WorkerDispatcher;
 
 /**
  * TODO add comments.
- *
- * @param <T>
- * @param <R>
  */
 public abstract class AbstractResultFileFormat 
 implements ResultFormat {
@@ -33,7 +30,7 @@ implements ResultFormat {
 	}
 
 	@Override
-	public final char getC() {
+	public final char getID() {
 		return c;
 	}
 

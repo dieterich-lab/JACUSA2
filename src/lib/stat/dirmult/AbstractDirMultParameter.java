@@ -2,6 +2,9 @@ package lib.stat.dirmult;
 
 import lib.estimate.MinkaParameter;
 
+/**
+ * TODO
+ */
 public abstract class AbstractDirMultParameter implements DirMultParameter {
 	
 	private boolean showAlpha;

@@ -7,7 +7,7 @@ import org.apache.commons.cli.Option;
 
 public class WindowSizeOption extends AbstractACOption {
 
-	final private GeneralParameter parameters; 
+	private final GeneralParameter parameters; 
 	
 	public WindowSizeOption(GeneralParameter parameter) {
 		super("w", "window-size");

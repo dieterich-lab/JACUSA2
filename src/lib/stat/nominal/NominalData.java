@@ -1,5 +1,8 @@
 package lib.stat.nominal;
 
+/**
+ * TODO
+ */
 public interface NominalData {
 
 	int getReplicates();

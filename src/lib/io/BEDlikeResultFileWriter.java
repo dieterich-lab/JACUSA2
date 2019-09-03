@@ -88,8 +88,8 @@ public class BEDlikeResultFileWriter extends AbstractResultFileWriter {
 			return this;
 		}
 		
-		public BEDlikeResultFileWriterBuilder addBED6Adder(BED6adder BED6adder) {
-			this.bed6adder = BED6adder;
+		public BEDlikeResultFileWriterBuilder addBED6Adder(BED6adder bed6adder) {
+			this.bed6adder = bed6adder;
 			return this;
 		}
 		

@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jacusa.filter.factory.FilterFactory;
-import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.GeneralParameter;
-import lib.data.count.BaseSubstitution2BaseCallCount;
-import lib.data.count.BaseSubstitution2IntegerData;
+import lib.data.count.BaseSub2BaseCallCount;
+import lib.data.count.BaseSub2IntData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.BaseCallCountFilteredData;
@@ -17,40 +17,52 @@ import lib.data.filter.BooleanFilteredData;
 import lib.data.has.HasCoordinate;
 import lib.data.has.HasLibraryType;
 import lib.data.has.HasReferenceBase;
-import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.storage.lrtarrest.ArrestPos2BCC;
 import lib.util.Base;
 import lib.util.LibraryType;
 import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 
+/**
+ * Defines interface for container that holds all data that can be referenced by
+ * DataType.
+ */
 public interface DataContainer 
 extends HasCoordinate, HasLibraryType, HasReferenceBase, 
 		Data<DataContainer>, 
 		Serializable {
-
+	
 	<T extends Data<T>> T get(DataType<T> dataType);
+	
+	/* 
+	 * the following methods are provided for convenience
+	 * T get(DataType<T> dataType)
+	 * is actually
+	 * PileupCount get(DataType.PileupCount)
+	 */
+	
 	
 	PileupCount getPileupCount();
 	
 	BaseCallCount getBaseCallCount();
 	
-	BaseSubstitution2BaseCallCount getBaseSubstitution2BaseCallCount();
+	BaseSub2BaseCallCount getBaseSub2BCC();
 	
-	BaseCallCountFilteredData getBaseCallCountFilteredData();
+	BaseCallCountFilteredData getBCCFilteredData();
 	BooleanFilteredData getBooleanFilteredData();
 	
 	BaseCallCount getArrestBaseCallCount();
 	BaseCallCount getThroughBaseCallCount();
 	
-	BaseSubstitution2BaseCallCount getArrestBaseSubstitutionCount();
-	BaseSubstitution2BaseCallCount getThroughBaseSubstitutionCount();
+	BaseSub2BaseCallCount getArrestBaseSub2BCC();
+	BaseSub2BaseCallCount getThroughBaseSub2BCC();
 	
-	ArrestPosition2baseCallCount getArrestPos2BaseCallCount();
-	BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData();
+	ArrestPos2BCC getArrestPos2BCC();
+	BaseCallCountFilteredData getArrestPos2BCCFilteredData();
 	
-	BaseSubstitution2IntegerData getBaseSubstitution2Coverage();
-	BaseSubstitution2IntegerData getBaseSubstitution2DeletionCount();
-	BaseSubstitution2IntegerData getBaseSubstitution2InsertionCount();
+	BaseSub2IntData getBaseSub2Coverage();
+	BaseSub2IntData getBaseSub2DeletionCount();
+	BaseSub2IntData getBaseSub2InsertionCount();
 	
 	IntegerData getDeletionCount();
 
@@ -70,7 +82,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 
 	}
 	
-	public static abstract class AbstractBuilderFactory implements BuilderFactory {
+	public abstract static class AbstractBuilderFactory implements BuilderFactory {
 		
 		private final GeneralParameter parameter;
 		
@@ -88,32 +100,34 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			return builder;
 		}
 		
+		protected <T extends Data<T>> void guardedAdd(final AbstractBuilder builder, final DataType<T> dataType) {
+			
+			builder.with(
+					dataType,
+					dataType.newInstance());
+		}
+		
 		protected <T extends Data<T>> void add(final AbstractBuilder builder, final DataType<T> dataType) {
 			builder.with(
 					dataType,
 					dataType.newInstance());
 		}
 		
-		protected void addBaseSubstitution(final AbstractBuilder builder, final DataType<BaseSubstitution2BaseCallCount> dataType) {
+		protected void addBaseSubstitution2bcc(final AbstractBuilder builder, final DataType<BaseSub2BaseCallCount> dataType) {
 			add(builder, dataType);
-			final BaseSubstitution2BaseCallCount bsc = builder.get(dataType);
-			for (final BaseSubstitution baseSub : parameter.getReadSubstitutions()) {
+			final BaseSub2BaseCallCount bsc = builder.get(dataType);
+			for (final BaseSub baseSub : parameter.getReadSubstitutions()) {
 				bsc.set(baseSub, BaseCallCount.create());
 			}
 		}
 		
-		protected void addDeletionCount(final AbstractBuilder builder, final DataType<BaseSubstitution2IntegerData> dataType) {
-			add(builder, dataType);
-			final BaseSubstitution2IntegerData bsc = builder.get(dataType);
-			for (final BaseSubstitution baseSub : parameter.getReadSubstitutions()) {
-				bsc.set(baseSub, new IntegerData());
+		protected void addBaseSubstitution2int(final AbstractBuilder builder, final DataType<BaseSub2IntData> dataType) {
+			if (builder.contains(dataType)) {
+				return;
 			}
-		}
-		
-		protected void addCoverage(final AbstractBuilder builder, final DataType<BaseSubstitution2IntegerData> dataType) {
 			add(builder, dataType);
-			final BaseSubstitution2IntegerData bsc = builder.get(dataType);
-			for (final BaseSubstitution baseSub : parameter.getReadSubstitutions()) {
+			final BaseSub2IntData bsc = builder.get(dataType);
+			for (final BaseSub baseSub : parameter.getReadSubstitutions()) {
 				bsc.set(baseSub, new IntegerData());
 			}
 		}
@@ -143,9 +157,12 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			add(builder, DataType.ARREST_BCC);
 			add(builder, DataType.THROUGH_BCC);
 			add(builder, DataType.AP2BCC);
+			add(builder, DataType.COVERAGE);
 			
 			add(builder, DataType.BASE_SUBST2BCC);
 			add(builder, DataType.BASE_SUBST2DELETION_COUNT);
+			add(builder, DataType.BASE_SUBST2INSERTION_COUNT);
+			add(builder, DataType.BASE_SUBST2COVERAGE);
 			
 			add(builder, DataType.ARREST_BASE_SUBST);
 			add(builder, DataType.THROUGH_BASE_SUBST);
@@ -161,7 +178,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 
 	}
 
-	public static abstract class AbstractBuilder
+	public abstract static class AbstractBuilder
 	implements lib.util.Builder<DataContainer> {
 		
 		private final Coordinate coordinate;
@@ -175,7 +192,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			this.libraryType = libraryType;
 			referenceBase = Base.N;
 			
-			map = new HashMap<DataType<?>, Object>(Util.noRehashCapacity(20));
+			map = new HashMap<>(Util.noRehashCapacity(20));
 		}
 		
 		public AbstractBuilder withReferenceBase(final Base referenceBase) {
@@ -194,11 +211,25 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			return dataType.getEnclosingClass().cast(map.get(dataType));
 		}
 		
+		public <T extends Data<T>> AbstractBuilder guardedWith(final DataType<T> dataType) {
+			if(! contains(dataType)) {
+				return with(dataType);
+			}
+			return this;
+		}
+		
 		public <T extends Data<T>> AbstractBuilder with(final DataType<T> dataType) {
 			if (map.containsKey(dataType)) {
 				throw new IllegalArgumentException("Duplicate dataType: " + dataType); 
 			}
 			map.put(dataType, dataType.newInstance());
+			return this;
+		}
+		
+		public <T extends Data<T>> AbstractBuilder guardedWith(final DataType<T> dataType, T data) {
+			if(! contains(dataType)) {
+				return with(dataType, data);
+			}
 			return this;
 		}
 		
@@ -227,83 +258,5 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		}
 		
 	}
-
-
-	/*
-	public static abstract class AbstractParser 
-	implements lib.util.Parser<DataContainer> {
-
-		public static final char FIELD_SEP = '\t';
-	
-		private final char fieldSep;
-				
-		private final Coordinate.AbstractParser coordinateParser;
-		
-		protected AbstractParser() {
-			this(FIELD_SEP, new OneCoordinate.Parser());
-		}
-		
-		protected AbstractParser(final char fieldSep, final Coordinate.AbstractParser coordinateParser) {
-			this.fieldSep = fieldSep;
-			this.coordinateParser = coordinateParser;
-		}
-
-		public final String wrap(DataContainer dataContainer) {
-			final List<String> e = Arrays.asList(
-					wrapBase(dataContainer.getReferenceBase()),
-					wrapLibraryType(dataContainer.getLibraryType()),
-					wrapCoordinate(dataContainer.getCoordinate()) );
-			wrapSpecific(dataContainer, e);
-			return StringUtil.join(Character.toString(fieldSep), e);
-		}
-		
-		public final DataContainer parse(String s) {
-			final String[] cols = s.split(Character.toString(fieldSep));
-			return parseSpecific(
-					new DefaultBuilderFactory()
-						.createBuilder(parseCoordinate(cols[0]), parseLibraryType(cols[1]))
-						.withReferenceBase(parseBase(cols[2])),
-					Arrays.copyOfRange(cols, 3, cols.length));
-		}
-		
-		protected abstract DataContainer parseSpecific(AbstractBuilder builder, String[] cols);
-		protected abstract void wrapSpecific(DataContainer data, List<String> e);
-		
-		protected final String wrapBase(final Base base) {
-			return base.toString();
-		}
-		
-		protected final String wrapLibraryType(final LibraryType libraryType) {
-			return libraryType.toString();
-		}
-
-		protected final String wrapCoordinate(final Coordinate coordinate) {
-			return coordinateParser.wrap(coordinate);
-		}
-
-		protected final Base parseBase(final String s) {
-			if (s == null || s.length() != 1) {
-				throw new IllegalArgumentException("s cannot be parsed to Base: " + s);
-			}
-			return Base.valueOf(s.charAt(0));
-		}
-
-		protected final LibraryType parseLibraryType(final String s) {
-			if (s == null) {
-				throw new IllegalArgumentException("s cannot be null");
-			}
-			final LibraryType l = LibraryType.valueOf(s);
-			if (l == null) {
-				throw new IllegalStateException("s cannot be parsed to LIBRARY_TYPE: " + s);
-			}
-			return l;
-		}
-		
-		protected final Coordinate parseCoordinate(final String s) {
-			return coordinateParser.parse(s);
-		}
-		
-	}
-	*/
 	
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 import jacusa.io.format.RTarrestBaseSubstitutionDataAdder;
 import jacusa.io.format.StratifiedDataAdder;
-import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBaseCallCount;
@@ -18,8 +18,11 @@ import lib.io.format.bed.DataAdder;
 import lib.io.format.bed.DefaultBED6adder;
 import lib.io.format.bed.DefaultInfoAdder;
 
-public class BED6rtArrestResultFormat 
-extends AbstractResultFileFormat {
+/**
+ * This class implements an extended BED6 format to represent 
+ * variants and read arrest events by "rt-arrest" method.
+ */
+public class BED6rtArrestResultFormat extends AbstractResultFileFormat {
 
 	public static final char CHAR = 'A';
 	
@@ -48,8 +51,8 @@ extends AbstractResultFileFormat {
 		DataAdder dataAdder = new RTarrestDataAdder(bccParser);
 		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
 		
-		if (getParameter().getReadSubstitutions().size() > 0) {
-			final List<BaseSubstitution> baseSubs = new ArrayList<>(getParameter().getReadSubstitutions());
+		if (! getParameter().getReadSubstitutions().isEmpty()) {
+			final List<BaseSub> baseSubs = new ArrayList<>(getParameter().getReadSubstitutions());
 			dataAdder = new StratifiedDataAdder(
 					dataAdder, 
 					new RTarrestBaseSubstitutionDataAdder(bccParser, baseSubs, dataAdder));

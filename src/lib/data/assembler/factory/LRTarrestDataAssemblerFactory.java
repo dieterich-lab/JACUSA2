@@ -12,12 +12,12 @@ import lib.data.fetcher.Fetcher;
 import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.Storage;
-import lib.data.storage.arrest.FR_SECONDSTRAND_LocationInterpreter;
+import lib.data.storage.arrest.ForRevSecondStrandlocInterpreter;
 import lib.data.storage.arrest.LocationInterpreter;
-import lib.data.storage.arrest.RF_FIRSTSTRAND_LocationInterpreter;
-import lib.data.storage.basecall.MapBaseCallQualityStorage;
+import lib.data.storage.arrest.RevForFirstStrandLocInterpreter;
+import lib.data.storage.basecall.MapBCQStorage;
 import lib.data.storage.container.SharedStorage;
-import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.storage.lrtarrest.ArrestPos2BCC;
 import lib.data.storage.lrtarrest.LRTarrestBaseCallStorage;
 import lib.data.storage.processor.AlignmentBlockProcessor;
 import lib.data.validator.DefaultBaseCallValidator;
@@ -40,7 +40,7 @@ extends AbstractSiteDataAssemblerFactory {
 		
 		final LibraryType libraryType = conditionParameter.getLibraryType();
 		
-		final Fetcher<ArrestPosition2baseCallCount> ap2bccFetcher =
+		final Fetcher<ArrestPos2BCC> ap2bccFetcher =
 				DataType.AP2BCC.getFetcher();
 
 		LocationInterpreter li = null;
@@ -48,25 +48,25 @@ extends AbstractSiteDataAssemblerFactory {
 		switch (libraryType) {
 
 		case RF_FIRSTSTRAND:
-			li = new RF_FIRSTSTRAND_LocationInterpreter();
+			li = new RevForFirstStrandLocInterpreter();
 			break;
 
 		case FR_SECONDSTRAND:
-			li = new FR_SECONDSTRAND_LocationInterpreter();
+			li = new ForRevSecondStrandlocInterpreter();
 			break;
 			
 		default:
 			throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
 		}
 
-		final List<Storage> storages = new ArrayList<Storage>(2);
+		final List<Storage> storages = new ArrayList<>(2);
 		final Fetcher<PileupCount> pileupFetcher = DataType.PILEUP_COUNT.getFetcher();
-		final Storage pileupStorage = new MapBaseCallQualityStorage(sharedStorage, pileupFetcher);
+		final Storage pileupStorage = new MapBCQStorage(sharedStorage, pileupFetcher);
 		final Storage arrestPosStorage = new LRTarrestBaseCallStorage(sharedStorage, li, ap2bccFetcher);
 		storages.add(arrestPosStorage);
 		storages.add(pileupStorage);
 		
-		final List<Validator> validators = new ArrayList<Validator>();
+		final List<Validator> validators = new ArrayList<>();
 		validators.add(new DefaultBaseCallValidator());
 		if (conditionParameter.getMinBASQ() > 0) {
 			validators.add(new MinBASQValidator(conditionParameter.getMinBASQ()));

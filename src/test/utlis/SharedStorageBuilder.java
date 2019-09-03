@@ -56,7 +56,7 @@ public class SharedStorageBuilder implements lib.util.Builder<SharedStorage> {
 		}
 
 		if (active != null) {
-			coordinateController._setActive(active);
+			coordinateController.helperSetActive(active);
 		}
 		
 		final ReferenceProvider referenceProvider = 

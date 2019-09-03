@@ -104,7 +104,7 @@ implements ResultWriter  {
 
 		// add filter descriptions to header
 		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {
-			header.addMetaDataLine(new VCFFilterHeaderLine(Character.toString(filterFactory.getC()), filterFactory.getDesc()));
+			header.addMetaDataLine(new VCFFilterHeaderLine(Character.toString(filterFactory.getID()), filterFactory.getDesc()));
 		}
 
 		// filename of condition and replicate BAMs
@@ -123,11 +123,11 @@ implements ResultWriter  {
 		final ParallelData parallelData = result.getParellelData();
 		final Coordinate coordinate = parallelData.getCoordinate();
 		
-		final BaseCallCount baseCallCount = parallelData.getCombinedPooledData().getPileupCount().getBaseCallCount();
+		final BaseCallCount baseCallCount = parallelData.getCombPooledData().getPileupCount().getBCC();
 		final Set<Base> observedBases = baseCallCount.getAlleles();
 		
-		final Collection<Allele> alleles = new ArrayList<Allele>(observedBases.size());
-		final Base refBase = parallelData.getCombinedPooledData().getReferenceBase();
+		final Collection<Allele> alleles = new ArrayList<>(observedBases.size());
+		final Base refBase = parallelData.getCombPooledData().getUnstrandedReferenceBase();
 		alleles.add(Allele.create(refBase.getByte(), true));
 		
 		for (final Base base : Base.getNonRefBases(refBase)) {
@@ -144,14 +144,14 @@ implements ResultWriter  {
 		}
 		
 		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {
-			final String c = Character.toString(filterFactory.getC());
+			final String c = Character.toString(filterFactory.getID());
 			if (result.getFilterInfo(0).contains(c)) {
 				vcb.filter(c);
 			}
 		}
 
 		final int conditions = parallelData.getConditions();
-		final List<Genotype> genotypes = new ArrayList<Genotype>(conditions);
+		final List<Genotype> genotypes = new ArrayList<>(conditions);
 
 		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
 			final int replicates = parallelData.getReplicates(conditionIndex);
@@ -159,8 +159,8 @@ implements ResultWriter  {
 				final String sampleName = new String("TODO " +  conditionIndex + replicateIndex);
 				final BaseCallCount tmpBaseCallCount = 
 						parallelData.getDataContainer(conditionIndex, replicateIndex)
-							.getPileupCount().getBaseCallCount();
-				final List<Allele> tmpAlleles = new ArrayList<Allele>(tmpBaseCallCount.getAlleles().size());
+							.getPileupCount().getBCC();
+				final List<Allele> tmpAlleles = new ArrayList<>(tmpBaseCallCount.getAlleles().size());
 
 				for (final Base base : tmpBaseCallCount.getAlleles()) {
 					tmpAlleles.add(Allele.create(base.getByte()));

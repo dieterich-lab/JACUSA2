@@ -6,32 +6,32 @@ import lib.data.ParallelData;
 import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
-import lib.stat.sample.EstimationSample;
-import lib.stat.sample.provider.EstimationSampleProvider;
+import lib.stat.estimation.EstimationContainer;
+import lib.stat.estimation.provider.EstimationContainerProvider;
 
 public class CallStat extends AbstractStat {
 
 	private final double threshold;
-	private final EstimationSampleProvider estimationSampleProvider;
-	private final DirMultParameter dirMultParameter;
+	private final EstimationContainerProvider estimationSampleProvider;
+	private final DirMultParameter dirMultPrm;
 
 	private final EstimateDirMult dirMult;
 	
 	public CallStat(
 			final double threshold,
-			final EstimationSampleProvider estimationSampleProvider,
-			final DirMultParameter dirMultParameter) {
+			final EstimationContainerProvider estimationSampleProvider,
+			final DirMultParameter dirMultPrm) {
 
-		this.threshold 					= threshold;
+		this.threshold 				= threshold;
 		this.estimationSampleProvider 	= estimationSampleProvider;
-		this.dirMultParameter 			= dirMultParameter;
+		this.dirMultPrm 			= dirMultPrm;
 
-		dirMult							= new EstimateDirMult(dirMultParameter.getMinkaEstimateParameter()); 
+		dirMult						= new EstimateDirMult(dirMultPrm.getMinkaEstimateParameter()); 
 	}
 
 	@Override
 	public void addStatResultInfo(final Result statResult) {
-		if (dirMultParameter.isShowAlpha()) {
+		if (dirMultPrm.isShowAlpha()) {
 			dirMult.addShowAlpha();
 		}
 		dirMult.addStatResultInfo(statResult.getResultInfo());
@@ -39,9 +39,9 @@ public class CallStat extends AbstractStat {
 	
 	@Override
 	public Result calculate(ParallelData parallelData) {
-		final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
+		final EstimationContainer[] estimationSamples = estimationSampleProvider.convert(parallelData);
 		double stat = Double.NaN;
-		if (dirMultParameter.isCalcPValue()) {
+		if (dirMultPrm.isCalcPValue()) {
 			stat = dirMult.getLRT(estimationSamples);
 			// TODO degrees of freedom
 			final ChiSquaredDistribution dist = new ChiSquaredDistribution(1); 
@@ -61,7 +61,7 @@ public class CallStat extends AbstractStat {
 		}
 
 		// if p-value interpret threshold as upper bound
-		if (dirMultParameter.isCalcPValue()) {
+		if (dirMultPrm.isCalcPValue()) {
 			return threshold < statValue;
 		}
 

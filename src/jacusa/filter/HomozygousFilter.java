@@ -16,14 +16,14 @@ public class HomozygousFilter extends AbstractFilter {
 	private final Fetcher<BaseCallCount> bccFetcher;
 	
 	public HomozygousFilter(
-			final char c,
+			final char id,
 			final int homozygousConditionIndex,
 			final Fetcher<BaseCallCount> bccFetcher) {
 
-		super(c);
+		super(id);
 		
-		this.homozygousConditionIndex = homozygousConditionIndex;
-		this.bccFetcher = bccFetcher;
+		this.homozygousConditionIndex 	= homozygousConditionIndex;
+		this.bccFetcher 				= bccFetcher;
 	}
 
 	/**
@@ -31,8 +31,10 @@ public class HomozygousFilter extends AbstractFilter {
 	 */
 	@Override
 	public boolean filter(final ParallelData parallelData) {
-		final DataContainer container = parallelData.getPooledData(homozygousConditionIndex);
+		final DataContainer container = 
+				parallelData.getPooledData(homozygousConditionIndex);
 		final int alleles = bccFetcher.fetch(container).getAlleles().size();
+		
 		return alleles > 1;
 	}
 	
@@ -40,6 +42,5 @@ public class HomozygousFilter extends AbstractFilter {
 	public int getOverhang() { 
 		return 0; 
 	}
-
 
 }

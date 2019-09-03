@@ -18,6 +18,9 @@ import lib.util.LibraryType;
 import lib.util.Parser;
 import lib.util.coordinate.Coordinate;
 
+/**
+ * TODO
+ */
 public interface Result extends HasParallelData, Serializable {
 	
 	public static int TOTAL = -1;
@@ -59,10 +62,10 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 			this.referenceBase 	= referenceBase;
 			
 			final int conditions = libraryTypes.size();
-			builders = new ArrayList<List<DataContainer.AbstractBuilder>>(conditions);
+			builders = new ArrayList<>(conditions);
 			for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
 				final List<DataContainer.AbstractBuilder> replicates = 
-						new ArrayList<DataContainer.AbstractBuilder>();
+						new ArrayList<>();
 				builders.add(replicates);
 			}
 		}

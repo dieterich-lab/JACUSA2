@@ -4,6 +4,11 @@ import java.util.Set;
 
 import lib.data.Data;
 
+/**
+ * TODO
+ * @param <F>
+ * @param <T>
+ */
 public interface FilteredDataContainer<F extends FilteredDataContainer<F, T>, T extends Data<T>> 
 extends Data<F> {
 

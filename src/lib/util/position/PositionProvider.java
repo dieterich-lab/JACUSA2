@@ -6,6 +6,9 @@ import java.util.List;
 
 import lib.util.coordinate.CoordinateTranslator;
 
+/**
+ * TODO
+ */
 public interface PositionProvider extends Iterator<Position> {
 
 	default List<Position> flat() {

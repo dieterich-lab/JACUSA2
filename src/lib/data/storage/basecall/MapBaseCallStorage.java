@@ -21,7 +21,7 @@ implements Storage {
 
 		super(sharedStorage, bccFetcher);
 		final int n = Util.noRehashCapacity(getCoordinateController().getActiveWindowSize() / 2);
-		winPos2bcc 	= new HashMap<Integer, BaseCallCount>(n);
+		winPos2bcc 	= new HashMap<>(n);
 	}
 
 	@Override

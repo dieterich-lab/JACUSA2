@@ -2,8 +2,8 @@ package lib.estimate;
 
 import java.util.Arrays;
 
+import lib.stat.estimation.EstimationContainer;
 import lib.stat.nominal.NominalData;
-import lib.stat.sample.EstimationSample;
 import lib.util.Info;
 import lib.util.MathUtil;
 
@@ -32,11 +32,11 @@ public class MinkaEstimateDirMultAlpha {
 	 * 
 	 * Tested in test.lib.estimate.MinkaEstimateDirMultAlphaTest
 	 */
-	public boolean maximizeLogLikelihood(final EstimationSample estimationSample, final Info estimateInfo, final boolean backtrack) {
+	public boolean maximizeLogLikelihood(final EstimationContainer estimationSample, final Info estimateInfo, final boolean backtrack) {
 		final NominalData nominalData 	= estimationSample.getNominalData();
 		final int categories 			= nominalData.getCategories();  
 		
-		final double localSums[] 		= getRowWiseSums(nominalData);
+		final double[] localSums 		= getRowWiseSums(nominalData);
 		
 		boolean converged 				= false;
 

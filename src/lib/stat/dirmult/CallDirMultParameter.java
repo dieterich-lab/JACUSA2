@@ -6,19 +6,19 @@ public class CallDirMultParameter extends AbstractDirMultParameter {
 
 	public static final double ESTIMATED_ERROR = 0.01;
 	
-	private double estimatedError;
+	private double estError;
 	
 	public CallDirMultParameter() {
 		super(false, false, new MinkaParameter());
-		estimatedError = ESTIMATED_ERROR;
+		estError = ESTIMATED_ERROR;
 	}
 
 	public double getEstimatedError() {
-		return estimatedError;
+		return estError;
 	}
 
-	public void setEstimatedError(final double estimatedError) {
-		this.estimatedError = estimatedError;
+	public void setEstimatedError(final double estError) {
+		this.estError = estError;
 	}
 	
 }

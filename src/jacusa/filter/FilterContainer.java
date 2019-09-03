@@ -21,22 +21,24 @@ public class FilterContainer {
 	private final FilterConfig filterConfig;
 
 	// map of filters - contains both: AbstractFilter and AbstractDataFilter 
-	private final Map<Character, Filter> filters;
+	private final Map<Character, Filter> id2filter;
 
-	// max overhang that is required by some filter
+	// max overhang over all filters
+	// overhang is defined as the number of nucleotides that are required by
+	// a filter down- and or upstream of the current coordinates
 	private int overhang;
 
 	public FilterContainer(final FilterConfig filterConfig) {
 		this.filterConfig 	= filterConfig;
 		overhang 			= 0;
-		filters				= new HashMap<Character, Filter>(
+		id2filter			= new HashMap<>(
 				Util.noRehashCapacity(filterConfig.getFilterFactories().size()));
 	}
 
 	/**
 	 * Returns the maximum of all used filters. 
 	 * 
-	 * @return maximum overhang of filters
+	 * @return maximum overhang over all filters
 	 */
 	public int getOverhang() {
 		return overhang;
@@ -57,7 +59,7 @@ public class FilterContainer {
 	 * @param filter the filter to be added
 	 */
 	public void addFilter(final Filter filter) {
-		filters.put(filter.getC(), filter);
+		id2filter.put(filter.getID(), filter);
 	}
 
 	/**
@@ -66,21 +68,24 @@ public class FilterContainer {
 	 * @return list of active filters
 	 */
 	public List<Filter> getFilters() {
-		return Collections.unmodifiableList(new ArrayList<>(filters.values()));
+		return Collections.unmodifiableList(new ArrayList<>(id2filter.values()));
 	}
 	
 	/**
-	 * Creates Cache for all chosen filters.
+	 * Creates Cache for all selected filters.
 	 * @param conditionParameter	conditionParameter for one condition
 	 * @param sharedStorage			cache that is shared between conditions for ONE thread
 	 * @return
 	 */
 	public Cache createFilterCache(
-			final ConditionParameter conditionParameter, final SharedStorage sharedStorage) {
+			final ConditionParameter conditionParameter, 
+			final SharedStorage sharedStorage) {
 		
 		final Cache filterCache = new Cache();
 		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {
 			final Cache tmpCache = filterFactory.createFilterCache(conditionParameter, sharedStorage);
+			// Some filterFactories don't have caches
+			// therefore != null test needed
 			if (tmpCache != null) {
 				filterCache.addCache(tmpCache);
 			}

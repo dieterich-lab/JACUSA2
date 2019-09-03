@@ -25,7 +25,7 @@ public class MaxDepthConditionOption extends AbstractConditionACOption {
 	
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
-		String s = new String();
+		String s = "";
 
 		int maxDepth = getConditionParameter().getMaxDepth();
 		if (getConditionIndex() >= 0) {

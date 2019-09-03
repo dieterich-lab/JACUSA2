@@ -7,7 +7,7 @@ import org.apache.commons.cli.Option;
 
 public class ShowInsertionCountOption extends AbstractACOption {
 
-	final private GeneralParameter parameter;
+	private final GeneralParameter parameter;
 	
 	public ShowInsertionCountOption(final GeneralParameter parameter) {
 		super("I", "show-insertions");

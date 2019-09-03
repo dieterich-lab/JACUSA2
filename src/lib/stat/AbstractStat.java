@@ -4,8 +4,7 @@ import lib.data.ParallelData;
 import lib.data.result.Result;
 
 /**
- * 
- * 
+ * TODO
  */
 public abstract class AbstractStat {
 

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import jacusa.filter.FilterContainer;
-import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
@@ -22,7 +22,7 @@ import lib.data.fetcher.basecall.IntegerDataExtractor;
 import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.Storage;
-import lib.data.storage.basecall.DefaultBaseCallCountStorage;
+import lib.data.storage.basecall.DefaultBCCStorage;
 import lib.data.storage.container.CacheContainer;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.integer.ArrayIntegerStorage;
@@ -30,7 +30,7 @@ import lib.data.storage.integer.MapIntegerStorage;
 import lib.data.storage.processor.DeletionRecordProcessor;
 import lib.data.storage.processor.InsertionRecordProcessor;
 import lib.data.storage.readsubstitution.BaseCallInterpreter;
-import lib.data.storage.readsubstitution.BaseSubstitutionRecordProcessor;
+import lib.data.storage.readsubstitution.BaseSubRecordProcessor;
 import lib.data.validator.CombinedValidator;
 import lib.data.validator.DefaultBaseCallValidator;
 import lib.data.validator.MinBASQValidator;
@@ -61,7 +61,7 @@ extends AbstractDataAssemblerFactory {
 				cacheContainer);
 	}
 	
-	protected void addDelectionCache(
+	protected void addDeletionCache(
 			final GeneralParameter parameter, 
 			final SharedStorage sharedStorage,
 			final Cache cache) {
@@ -74,7 +74,7 @@ extends AbstractDataAssemblerFactory {
 		}
 	}
 	
-	protected void addInserctionCache(
+	protected void addInsertionCache(
 			final GeneralParameter parameter, 
 			final SharedStorage sharedStorage,
 			final Cache cache) {
@@ -110,32 +110,33 @@ extends AbstractDataAssemblerFactory {
 
 	Cache createInsertionCache(
 			final SharedStorage sharedStorage, 
-			final Fetcher<IntegerData> covFetcher, final Fetcher<IntegerData> delFetcher) {
+			final Fetcher<IntegerData> covFetcher, final Fetcher<IntegerData> insFetcher) {
 		
 		final Cache cache = new Cache();
 		final Storage covStorage = new ArrayIntegerStorage(sharedStorage, covFetcher);
 		cache.addStorage(covStorage);
 		
-		final Storage delStorage = new MapIntegerStorage(sharedStorage, delFetcher);
-		cache.addStorage(delStorage);
+		final Storage insStorage = new MapIntegerStorage(sharedStorage, insFetcher);
+		cache.addStorage(insStorage);
 
 		final CoordinateTranslator translator = sharedStorage.getCoordinateController()
 				.getCoordinateTranslator();
 
 		cache.addRecordProcessor(new InsertionRecordProcessor(
 				translator,
-				covStorage, delStorage));
+				covStorage, insStorage));
 		
 		return cache;
 	}
 	
+	// TODO
 	protected void stratifyByBaseSubstitution(
 			final GeneralParameter parameter,
 			final SharedStorage sharedStorage, 
 			final ConditionParameter conditionParameter,
 			final Cache cache) {
 
-		final SortedSet<BaseSubstitution> baseSubs = parameter.getReadSubstitutions();
+		final SortedSet<BaseSub> baseSubs = parameter.getReadSubstitutions();
 		if (baseSubs.isEmpty()) {
 			return;
 		}
@@ -149,29 +150,31 @@ extends AbstractDataAssemblerFactory {
 
 		final BaseCallInterpreter bci = BaseCallInterpreter.build(conditionParameter.getLibraryType());
 
-		final Map<BaseSubstitution, PositionProcessor> baseSub2alignedPosProcessor = 
-				new EnumMap<>(BaseSubstitution.class);
+		final Map<BaseSub, PositionProcessor> baseSub2alignedPosProcessor = 
+				new EnumMap<>(BaseSub.class);
 
-		final Map<BaseSubstitution, PositionProcessor> baseSub2covPosProcessor = 
-				new EnumMap<>(BaseSubstitution.class);
-		final Map<BaseSubstitution, PositionProcessor> baseSub2delPosProcessor = 
-				new EnumMap<>(BaseSubstitution.class);
+		final Map<BaseSub, PositionProcessor> baseSub2covPosProcessor = 
+				new EnumMap<>(BaseSub.class);
+		final Map<BaseSub, PositionProcessor> baseSub2insPosProcessor = 
+				new EnumMap<>(BaseSub.class);
+		final Map<BaseSub, PositionProcessor> baseSub2delPosProcessor = 
+				new EnumMap<>(BaseSub.class);
 
-		for (final BaseSubstitution baseSub : baseSubs) {
+		for (final BaseSub baseSub : baseSubs) {
 			final PositionProcessor alignedPosProcessor = new PositionProcessor();
 			// deletions don't need validation
 			alignedPosProcessor.addValidator(new CombinedValidator(validators));
 			final Fetcher<BaseCallCount> bccFetcher = new BaseCallCountExtractor(
 					baseSub, 
 					DataType.BASE_SUBST2BCC.getFetcher());
-			final Storage bccStorage = new DefaultBaseCallCountStorage(
+			final Storage bccStorage = new DefaultBCCStorage(
 					sharedStorage, 
 					bccFetcher);
 			cache.addStorage(bccStorage);
 			alignedPosProcessor.addStorage(bccStorage);
 			baseSub2alignedPosProcessor.put(baseSub, alignedPosProcessor);
 			
-			if (parameter.showDeletionCount()) {
+			if (parameter.showInsertionCount() || parameter.showDeletionCount()) {
 				final PositionProcessor covPosProcessor = new PositionProcessor();
 				final Fetcher<IntegerData> covFetcher = new IntegerDataExtractor(
 						baseSub, 
@@ -182,7 +185,20 @@ extends AbstractDataAssemblerFactory {
 				cache.addStorage(covStorage);
 				covPosProcessor.addStorage(covStorage);
 				baseSub2covPosProcessor.put(baseSub, covPosProcessor);
-				
+			}
+			if (parameter.showInsertionCount()) {
+				final PositionProcessor insPosProcessor = new PositionProcessor();
+				final Fetcher<IntegerData> insFetcher = new IntegerDataExtractor(
+						baseSub, 
+						DataType.BASE_SUBST2INSERTION_COUNT.getFetcher());
+				final Storage insStorage = new MapIntegerStorage(
+						sharedStorage, 
+						insFetcher);
+				cache.addStorage(insStorage);
+				insPosProcessor.addStorage(insStorage);
+				baseSub2insPosProcessor.put(baseSub, insPosProcessor);
+			}
+			if (parameter.showDeletionCount()) {
 				final PositionProcessor delPosProcessor = new PositionProcessor();
 				final Fetcher<IntegerData> delFetcher = new IntegerDataExtractor(
 						baseSub, 
@@ -197,14 +213,15 @@ extends AbstractDataAssemblerFactory {
 		}
 		
 		cache.addRecordProcessor(
-				new BaseSubstitutionRecordProcessor(
+				new BaseSubRecordProcessor(
 				sharedStorage, 
 				bci, 
 				new CombinedValidator(validators),
 				baseSubs,
 				baseSub2alignedPosProcessor,
 				baseSub2covPosProcessor,
-				baseSub2delPosProcessor) );
+				baseSub2insPosProcessor,
+				baseSub2delPosProcessor));
 	}
 	
 }

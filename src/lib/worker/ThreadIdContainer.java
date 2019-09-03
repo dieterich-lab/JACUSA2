@@ -1,5 +1,8 @@
 package lib.worker;
 
+/**
+ * TODO
+ */
 public class ThreadIdContainer {
 
 	private final int threadId;

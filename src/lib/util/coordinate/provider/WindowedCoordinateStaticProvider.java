@@ -10,6 +10,9 @@ import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.coordinate.OneCoordinate;
 
+/**
+ * TODO
+ */
 public class WindowedCoordinateStaticProvider implements CoordinateProvider {
 
 	private Iterator<Coordinate> it;
@@ -58,7 +61,7 @@ public class WindowedCoordinateStaticProvider implements CoordinateProvider {
 	
 	private List<Coordinate> makeWindows(final boolean stranded, final Coordinate coordinate, final int windowSize) {
 		if (windowSize == ThreadWindowSizeOption.NO_WINDOWS) {
-			final List<Coordinate> coordinates = new ArrayList<Coordinate>(1);
+			final List<Coordinate> coordinates = new ArrayList<>(1);
 			final Coordinate tmp = coordinate.copy();
 			if (stranded && coordinate.getStrand() == STRAND.UNKNOWN) {
 				tmp.setStrand(STRAND.FORWARD);
@@ -69,7 +72,7 @@ public class WindowedCoordinateStaticProvider implements CoordinateProvider {
 		
 		final int length 	= coordinate.get1End() - coordinate.get1Start() + 1;
 		final int n 		= length / windowSize;
-		final List<Coordinate> coordinates = new ArrayList<Coordinate>(n < 0 ? 1 : n);
+		final List<Coordinate> coordinates = new ArrayList<>(n < 0 ? 1 : n);
 		
 		int start 	= coordinate.getStart();
 		int end 	= Math.min(start + windowSize - 1, coordinate.getEnd());

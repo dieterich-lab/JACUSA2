@@ -1,12 +1,11 @@
 package lib.data.count.basecall;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import lib.util.Base;
-import lib.util.Util;
 
 public class MapBaseCallCount extends AbstractBaseCallCount {
 
@@ -16,7 +15,7 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 	private final Map<Base, Integer> baseCalls;
 
 	public MapBaseCallCount() {
-		baseCalls = new HashMap<>(4);
+		baseCalls = new EnumMap<>(Base.class);
 	}
 	
 	public MapBaseCallCount(final Map<Base, Integer> baseCalls) {
@@ -28,7 +27,7 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 	
 	@Override
 	public MapBaseCallCount copy() {
-		return new MapBaseCallCount(new HashMap<>(baseCalls));
+		return new MapBaseCallCount(new EnumMap<>(baseCalls));
 	}
 	
 	@Override
@@ -125,7 +124,7 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 	@Override
 	public Set<Base> getAlleles() {
 		// make this allele
-		Set<Base> alleles = new TreeSet<Base>();
+		Set<Base> alleles = new TreeSet<>();
 		for (final Base base : baseCalls.keySet()) {
 			if (getBaseCall(base) > 0) {
 				alleles.add(base);
@@ -156,11 +155,10 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 		@Override
 		public MapBaseCallCount parse(String s) {
 			final String[] cols = split(s);
-			final Map<Base, Integer> baseCalls = new HashMap<>(Util.noRehashCapacity(cols.length));
+			final Map<Base, Integer> baseCalls = new EnumMap<>(Base.class);
 			for (int baseIndex = 0; baseIndex < cols.length; ++baseIndex) {
 				final Base base = Base.valueOf(baseIndex);
 				baseCalls.put(base, Integer.parseInt(cols[baseIndex]));
-				Integer.parseInt(cols[baseIndex]);
 				if (baseCalls.get(base) < 0) {
 					throw new IllegalArgumentException(); 
 				}

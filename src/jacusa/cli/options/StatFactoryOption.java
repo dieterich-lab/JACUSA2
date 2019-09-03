@@ -31,38 +31,39 @@ public class StatFactoryOption extends AbstractACOption {
 
 	public StatFactoryOption(final StatParameter statParameter, 
 			final Map<String, AbstractStatFactory> factories) {
-
+		
 		super(OPT, LONG_OPT);
 		this.statParameter	= statParameter;
-		this.name2factory 		= factories;
+		this.name2factory 	= factories;
 	}
 
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
-		// magic string
+		// magic string - added to fake nested CLI 
 		final String REMOVE = "___REMOVE___";
 		
 		final StringBuilder sb = new StringBuilder();
-
+		
 		// name of default stat factory
-		final String defaultValue = statParameter.getFactory().getName();
+		final String defaultFactoryName = statParameter.getFactory().getName();
 		
 		// container for stat options
 		final Options options = new Options(); 
-		for (final String statName : name2factory.keySet()) {
-			final AbstractStatFactory factory = name2factory.get(statName);
-
+		for (final String factoryName : name2factory.keySet()) {
+			final AbstractStatFactory factory = name2factory.get(factoryName);
+			
 			// add magic string to identify main option
-			final String opt = REMOVE + statName;
+			final String opt = REMOVE + factoryName;
 			// create main option
 			Option option = Option.builder(opt)
 					.desc(factory.getDescription())
 					.build();
-
+			
 			options.addOption(option);
 		}
 
-		// print usage/description magic string is used to suppress normal options handling
+		// print usage/description magic string is used to suppress normal 
+		// options handling
 		final HelpFormatter helpFormatter = new HelpFormatter();
 		final StringWriter sw 	= new StringWriter();
 		final PrintWriter pw 	= new PrintWriter(sw);
@@ -70,15 +71,16 @@ public class StatFactoryOption extends AbstractACOption {
 		final String s = sw.toString();
 		// replace magic string with "-" to enable parsing of options
 		sb.append(s.replaceAll("-" + REMOVE, ""));
-
+		
 		// print extended or normal help
-		String desc = new String();
+		String desc = "";
 		if (printExtendedHelp) {
-			desc = "Choose between different modes (Default: " + defaultValue + "):\n" 
+			desc = "Choose between different modes (Default: " + defaultFactoryName + "):\n" 
 					+ sb.toString();
 		} else {
 			desc = HelpOption.SHORT_MSG;
 		}
+
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
@@ -87,34 +89,36 @@ public class StatFactoryOption extends AbstractACOption {
 	}
 
 
-	/**
-	 * Process CLI for stat: e.g.: for DirMult showAlpha etc.
+	/*
+	 * Process CLI for statFactory: e.g.: prcoess options showAlpha etc. for 
+	 * DirMult.
+	 * 
 	 * Tested in @see test.jacusa.cli.options.StatFactoryOptionTest 
 	 */
 	@Override
 	public void process(final CommandLine line) throws Exception {
-		final String optionValue = line.getOptionValue(getOpt());
+		final String statOptions = line.getOptionValue(getOpt());
 		// separator for optional arguments
 		// e.g.: statNameWITHIN_FIELD_SEPopt1=arg1WITHIN_FIELD_SEPopt2=arg2
-		final String[] t = optionValue.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
-
+		final String[] t = statOptions.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
+		
 		// name of the statistic
 		final String statName = t[0];
-		// check if statName is a valid statistic name
+		// check if statName is a valid statFactory name
 		if (! name2factory.containsKey(statName)) {
 			throw new IllegalArgumentException("Unknown statistic or wrong option: " + statName);
 		}
-
-		final int beginIndex = optionValue.indexOf(Character.toString(InputOutput.WITHIN_FIELD_SEP));
-		String CLIoption = new String();
+		
+		final int beginIndex = statOptions.indexOf(Character.toString(InputOutput.WITHIN_FIELD_SEP));
+		String statFactoryCLI = "";
 		// if there are options, make regular options for DefaultParser by adding "--"
 		if (beginIndex > -1) {
-			CLIoption = optionValue.substring(beginIndex).replaceAll(
+			statFactoryCLI = statOptions.substring(beginIndex).replaceAll(
 					Character.toString(InputOutput.WITHIN_FIELD_SEP), "--"); 
 		}
-
+		
 		// update statistic factory and set command line options
-		statParameter.setFactory(CLIoption, name2factory.get(statName));
+		statParameter.setFactory(statFactoryCLI, name2factory.get(statName));
 	}
 
 }

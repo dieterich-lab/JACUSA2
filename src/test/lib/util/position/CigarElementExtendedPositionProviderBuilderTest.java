@@ -11,10 +11,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import lib.recordextended.SAMRecordExtended;
+import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.coordinate.DefaultCoordinateTranslator;
-import lib.util.position.CigarElementExtendedPositionProviderBuilder;
+import lib.util.position.CigarElementPositionProviderBuilder;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 import test.utlis.SAMRecordBuilder;
@@ -29,13 +29,13 @@ class CigarElementExtendedPositionProviderBuilderTest implements PositionProvide
 	void testBuilder(
 			int index,
 			int upDownStream,
-			SAMRecordExtended recordExtended,
+			Record record,
 			CoordinateTranslator translator,
 			List<Position> expected,
 			String info) {
 		
-		final CigarElementExtendedPositionProviderBuilder testInstance = createTestInstance(
-				index, upDownStream, recordExtended, translator);
+		final CigarElementPositionProviderBuilder testInstance = createTestInstance(
+				index, upDownStream, record, translator);
 		final PositionProvider positionProvider = testInstance.build();
 		final List<Position> actual = positionProvider.flat();
 		assertEquals(expected, actual);
@@ -116,37 +116,37 @@ class CigarElementExtendedPositionProviderBuilderTest implements PositionProvide
 			final int refPosWinStart, final int winLength,
 			String[] expectedStrs) {
 		
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(
+		final Record record = new Record(
 				SAMRecordBuilder.createSERead(CONTIG, refStart, cigarStr, readSeq));
 		
 		final CoordinateTranslator translator = 
 				new DefaultCoordinateTranslator(refPosWinStart, winLength); 
-		final List<Position> expectedPositions = parseExpected(expectedStrs, recordExtended);
+		final List<Position> expectedPositions = parseExpected(expectedStrs, record);
 		final String info = String.format(
 				"cigarEEIndex: %d, upDownStream: %d, read %d-%d, win: %d-%d",
 				cigarEEIndex,
 				upDownStream,
-				recordExtended.getSAMRecord().getAlignmentStart(),
-				recordExtended.getSAMRecord().getAlignmentEnd(),
+				record.getSAMRecord().getAlignmentStart(),
+				record.getSAMRecord().getAlignmentEnd(),
 				translator.getRefPosStart(), translator.getRefPosEnd());
 		
 		return Arguments.of(
 				cigarEEIndex,
 				upDownStream,
-				recordExtended,
+				record,
 				translator,
 				expectedPositions,
 				info);
 	}
 	
-	CigarElementExtendedPositionProviderBuilder createTestInstance(
+	CigarElementPositionProviderBuilder createTestInstance(
 			final int cigarElementExtendedIndex,
 			final int upDownStream,
-			final SAMRecordExtended recordExtended,
+			final Record record,
 			final CoordinateTranslator translator) {
 		
-		return new CigarElementExtendedPositionProviderBuilder(
-				cigarElementExtendedIndex, upDownStream, recordExtended, 
+		return new CigarElementPositionProviderBuilder(
+				cigarElementExtendedIndex, upDownStream, record, 
 				translator);
 	}
 	

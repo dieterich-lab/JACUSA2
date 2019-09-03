@@ -55,7 +55,7 @@ public class DefaultBED6adder implements BED6adder {
 		sb.append(getStatistic(valueIndex, result));
 
 		sb.append(InputOutput.FIELD_SEP);
-		sb.append(parallelData.getCombinedPooledData().getCoordinate().getStrand().character());
+		sb.append(parallelData.getCombPooledData().getCoordinate().getStrand().character());
 	}
 	
 	private String getStatistic(final int valueIndex, final Result result) {

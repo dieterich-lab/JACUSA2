@@ -4,11 +4,14 @@ import java.util.Map;
 
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateUtil.STRAND;
-import lib.recordextended.SAMRecordExtended;
 import lib.util.coordinate.OneCoordinate;
+import lib.record.Record;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
+/**
+ * TODO
+ */
 public class SimpleReferenceProvider implements ReferenceProvider {
 
 	private final CoordinateController coordinateController;
@@ -23,7 +26,7 @@ public class SimpleReferenceProvider implements ReferenceProvider {
 		this.contig2refSeq 			= chr2refSeq;
 	}
 
-	public void addRecordExtended(final SAMRecordExtended recordExtended) {}
+	public void addrecord(final Record record) {}
 
 	@Override
 	public void update() {
@@ -49,7 +52,7 @@ public class SimpleReferenceProvider implements ReferenceProvider {
 	@Override
 	public Base getReferenceBase(final int winPos) {
 		final String contig = window.getContig();
-		final int position 	= coordinateController.getCoordinateTranslator().window2referencePosition(winPos);
+		final int position 	= coordinateController.getCoordinateTranslator().win2refPos(winPos);
 		return getReferenceBase(new OneCoordinate(contig, position, STRAND.UNKNOWN));
 	}
 

@@ -8,6 +8,11 @@ import java.util.regex.Pattern;
 
 import lib.data.Data;
 
+/**
+ * TODO
+ * @param <F>
+ * @param <T>
+ */
 public abstract class AbstractFilteredData<F extends FilteredDataContainer<F, T>, T extends Data<T>>
 implements FilteredDataContainer<F, T> {
 

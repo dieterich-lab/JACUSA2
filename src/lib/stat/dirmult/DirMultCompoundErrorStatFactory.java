@@ -6,9 +6,9 @@ import org.apache.commons.cli.Options;
 
 import lib.io.ResultFormat;
 import lib.stat.AbstractStatFactory;
-import lib.stat.sample.provider.EstimationSampleProvider;
-import lib.stat.sample.provider.pileup.DefaultEstimationSamplePileupProvider;
-import lib.stat.sample.provider.pileup.InSilicoEstimationSamplePileupProvider;
+import lib.stat.estimation.provider.EstimationContainerProvider;
+import lib.stat.estimation.provider.pileup.DefaultEstimationPileupProvider;
+import lib.stat.estimation.provider.pileup.InSilicoEstimationPileupProvider;
 
 public class DirMultCompoundErrorStatFactory
 extends AbstractStatFactory {
@@ -16,50 +16,50 @@ extends AbstractStatFactory {
 	private static final String NAME 	= "DirMultCE";
 	public static final String DESC 	= "Compound Error (estimated error {" + DirMultParameter.ESTIMATED_ERROR + "} + phred score)";
 	
-	private final CallDirMultParameter dirMultParameter;
-	private final DirMultCLIprocessing CLIprocessing;
+	private final CallDirMultParameter dirMultPrm;
+	private final DirMultCLIprocessing CLIproc;
 	
-	public DirMultCompoundErrorStatFactory(final ResultFormat resultFormat) {
+	public DirMultCompoundErrorStatFactory(final ResultFormat resFormat) {
 
 		super(Option.builder(NAME)
 				.desc(DESC)
 				.build());
-		dirMultParameter 	= new CallDirMultParameter();
-		CLIprocessing 		= new CallDirMultCLIProcessing(resultFormat, dirMultParameter);
+		dirMultPrm 	= new CallDirMultParameter();
+		CLIproc 	= new CallDirMultCLIProcessing(resFormat, dirMultPrm);
 	}
 
 	@Override
 	public CallStat newInstance(double threshold, final int conditions) {
-		EstimationSampleProvider dirMultPileupCountProvider;
+		EstimationContainerProvider dirMultPileupCountProvider;
 		switch (conditions) {
 		case 1:
-			dirMultPileupCountProvider = new InSilicoEstimationSamplePileupProvider(
-					dirMultParameter.isCalcPValue(),
-					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
-					dirMultParameter.getEstimatedError());
+			dirMultPileupCountProvider = new InSilicoEstimationPileupProvider(
+					dirMultPrm.isCalcPValue(),
+					dirMultPrm.getMinkaEstimateParameter().getMaxIterations(),
+					dirMultPrm.getEstimatedError());
 			break;
 			
 		case 2:
-			dirMultPileupCountProvider = new DefaultEstimationSamplePileupProvider(
-					dirMultParameter.isCalcPValue(),
-					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
-					dirMultParameter.getEstimatedError()); 
+			dirMultPileupCountProvider = new DefaultEstimationPileupProvider(
+					dirMultPrm.isCalcPValue(),
+					dirMultPrm.getMinkaEstimateParameter().getMaxIterations(),
+					dirMultPrm.getEstimatedError()); 
 			break;
 
 		default:
 			throw new IllegalStateException("Number of conditions not supported: " + conditions);
 		}
-		return new CallStat(threshold, dirMultPileupCountProvider, dirMultParameter);
+		return new CallStat(threshold, dirMultPileupCountProvider, dirMultPrm);
 	}
 
 	@Override
 	protected Options getOptions() {
-		return CLIprocessing.getOptions();
+		return CLIproc.getOptions();
 	}
 	
 	@Override
 	public void processCLI(final CommandLine cmd) {
-		CLIprocessing.processCLI(cmd);
+		CLIproc.processCLI(cmd);
 	}
 	
 }

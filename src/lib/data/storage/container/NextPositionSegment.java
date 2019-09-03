@@ -2,6 +2,9 @@ package lib.data.storage.container;
 
 import lib.data.storage.container.NextPositionSegmentContainer.TYPE;
 
+/**
+ * TODO
+ */
 public class NextPositionSegment {
 
 	private int id;

@@ -5,15 +5,15 @@ import java.util.List;
 import lib.data.DataContainer;
 import lib.data.storage.Cache;
 import lib.data.storage.Storage;
-import lib.data.storage.processor.RecordExtendedPrePostProcessor;
+import lib.data.storage.processor.GeneralRecordProcessor;
+import lib.record.Record;
 import lib.util.coordinate.Coordinate;
-import lib.recordextended.SAMRecordExtended;
 
 public class UnstrandedCacheContainter 
 implements CacheContainer {
 
 	private final SharedStorage sharedStorage;
-	private final List<RecordExtendedPrePostProcessor> recordProcessors;
+	private final List<GeneralRecordProcessor> recordProcessors;
 	private final List<Storage> storages;
 	
 	public UnstrandedCacheContainter(
@@ -37,23 +37,23 @@ implements CacheContainer {
 	
 	@Override
 	public void preProcess() {
-		for (final RecordExtendedPrePostProcessor processor : recordProcessors) {
+		for (final GeneralRecordProcessor processor : recordProcessors) {
 			processor.preProcess();
 		}
 	}
 	
 	@Override
-	public void process(final SAMRecordExtended recordExtended) {
-		sharedStorage.addRecordExtended(recordExtended);
+	public void process(final Record record) {
+		sharedStorage.addrecord(record);
 
-		for (final RecordExtendedPrePostProcessor recordProcessor : recordProcessors) {
-			recordProcessor.process(recordExtended);
+		for (final GeneralRecordProcessor recordProcessor : recordProcessors) {
+			recordProcessor.process(record);
 		}
 	}
 	
 	@Override
 	public void postProcess() {
-		for (final RecordExtendedPrePostProcessor processor : recordProcessors) {
+		for (final GeneralRecordProcessor processor : recordProcessors) {
 			processor.postProcess();
 		}
 	}
@@ -62,7 +62,7 @@ implements CacheContainer {
 	public void populate(DataContainer dataContainer, Coordinate coordinate) {
 		final int winPos = sharedStorage
 				.getCoordinateController().getCoordinateTranslator()
-				.coordinate2windowPosition(coordinate);
+				.coord2winPos(coordinate);
 		for (final Storage cache : storages) {
 			cache.populate(dataContainer, winPos, coordinate);
 		}
@@ -74,7 +74,7 @@ implements CacheContainer {
 	}
 
 	@Override
-	public List<RecordExtendedPrePostProcessor> getRecordProcessors() {
+	public List<GeneralRecordProcessor> getRecordProcessors() {
 		return recordProcessors;
 	}
 	

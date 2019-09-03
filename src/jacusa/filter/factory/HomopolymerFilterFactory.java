@@ -6,7 +6,7 @@ import org.apache.commons.cli.Option.Builder;
 import jacusa.filter.Filter;
 import jacusa.filter.HomopolymerFilter;
 import jacusa.filter.homopolymer.HomopolymerStorage;
-import jacusa.filter.homopolymer.HomopolymerReadRecordProcessor;
+import jacusa.filter.homopolymer.HomopolymerRecordProcessor;
 import jacusa.filter.homopolymer.HomopolymerReferenceRecordProcessor;
 import jacusa.filter.homopolymer.HomopolymerReferenceStorage;
 import lib.cli.options.filter.HomopolymerLengthOption;
@@ -27,10 +27,13 @@ import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
 /**
- * This FilterFactory configures and creates the Homopolymer Filter. The user can chosen the minLength
- * that is needed for a consecutive sequence of identical base calls to be called a homopolymer.
- * In the future the user will be able to decide how to define a homopolyer: reference or read based.
- * While both methods are implemented, currently only the read based homopolymer definition is available.
+ * This FilterFactory configures and creates the Homopolymer Filter. 
+ * The user can chosen the minLength that is needed for a consecutive sequence 
+ * of identical base calls to be called a homopolymer.
+ * In the future the user will be able to decide how to define a homopolyer: 
+ * reference or read based.
+ * While both methods are implemented, currently only the read based homopolymer 
+ * definition is available.
  * Reference based homopolyer calling needs more testing and optimization.
  */
 public class HomopolymerFilterFactory
@@ -85,29 +88,29 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 		switch (method) {
 		case REFERENCE:
 			// since the reference will be identical for all BAMs and conditions within a 
-			// thread window make sure that homopolymers get called only once in the reference and
+			// thread window make sure that homopolymers gets called only once in the reference and
 			// the result gets shared with all the other instances - needs optimization
 			final int bamFileCount = parameter.getBAMfileCount();
-			final HomopolymerReferenceStorage refStorage = new HomopolymerReferenceStorage(
-					sharedStorage,
-					getC(), filteredBooleanFetcher, 
-					length,
-					bamFileCount);
+			final HomopolymerReferenceStorage refStorage = 
+					new HomopolymerReferenceStorage(
+							sharedStorage,
+							getID(), filteredBooleanFetcher, 
+							length,
+							bamFileCount);
 			cache.addStorage(refStorage);
-
+			
 			final HomopolymerReferenceRecordProcessor refRecordProcessor = 
 					new HomopolymerReferenceRecordProcessor(length, refStorage);
 			cache.addRecordProcessor(refRecordProcessor);
-			
 			break;
 
 		case READ:
 			final HomopolymerStorage readStorage = new HomopolymerStorage(
-					sharedStorage, getC(), filteredBooleanFetcher, length);
+					sharedStorage, getID(), filteredBooleanFetcher, length);
 			cache.addStorage(readStorage);
 			
-			final HomopolymerReadRecordProcessor readRecordProcessor = 
-					new HomopolymerReadRecordProcessor(length, readStorage);
+			final HomopolymerRecordProcessor readRecordProcessor = 
+					new HomopolymerRecordProcessor(length, readStorage);
 			cache.addRecordProcessor(readRecordProcessor);
 			break;
 			
@@ -120,24 +123,23 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 	
 	@Override
 	public void initDataContainer(AbstractBuilder builder) {
-		if (! builder.contains(dataType)) { 
-			builder.with(dataType);
-		}
+		builder.guardedWith(dataType);
 	}
 	
 	@Override
-	public Filter createFilter(final CoordinateController coordinateController,
+	public Filter createFilter(
+			final CoordinateController coordinateController,
 			final ConditionContainer conditionContainer) {
- 
+		
 		return new HomopolymerFilter(
-				getC(), 
+				getID(), 
 				length, 
-				new SpecificFilteredDataFetcher<>(getC(), filteredBooleanFetcher));
+				new SpecificFilteredDataFetcher<>(getID(), filteredBooleanFetcher));
 	}
 	
 	@Override
 	public void addFilteredData(StringBuilder sb, DataContainer container) {
-		if (filteredBooleanFetcher.fetch(container).contains(getC())) {
+		if (filteredBooleanFetcher.fetch(container).contains(getID())) {
 			sb.append('1');
 		} else {
 			sb.append('0');

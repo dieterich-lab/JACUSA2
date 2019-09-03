@@ -33,15 +33,15 @@ public class SimpleTimer {
 	}
 
 	public String getTotalTimestring(){
-		long totalTime = getTotalTime();
+		long tmpTotalTime = getTotalTime();
 		
-		final long d = TimeUnit.MILLISECONDS.toDays(totalTime);
+		final long d = TimeUnit.MILLISECONDS.toDays(tmpTotalTime);
 		final long hr = TimeUnit.MILLISECONDS.toHours(
-				totalTime - TimeUnit.DAYS.toMillis(d));
+				tmpTotalTime - TimeUnit.DAYS.toMillis(d));
         final long min = TimeUnit.MILLISECONDS.toMinutes(
-        		totalTime - TimeUnit.DAYS.toMillis(d) - TimeUnit.HOURS.toMillis(hr));
+        		tmpTotalTime - TimeUnit.DAYS.toMillis(d) - TimeUnit.HOURS.toMillis(hr));
         final long sec = TimeUnit.MILLISECONDS.toSeconds(
-        		totalTime - TimeUnit.DAYS.toMillis(d) - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
+        		tmpTotalTime - TimeUnit.DAYS.toMillis(d) - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
 
         if (d > 0) {
         	return String.format("(%02d) %02d:%02d:%02d", d, hr, min, sec);

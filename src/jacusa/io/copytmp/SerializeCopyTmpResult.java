@@ -54,14 +54,14 @@ public class SerializeCopyTmpResult implements CopyTmpResult {
 			objectOutputStream				= new ObjectOutputStream(bos);
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
-
+		
 		iteration2storedResults = new ArrayList<Integer>(1000);
 	}
 	
 	/**
 	 * Helper function - create temporary file for a specific thread.
-	 * TODO add comments.
 	 * 
 	 * @param threadId 
 	 * @return

@@ -16,7 +16,7 @@ public interface ResultFormat {
 	 * 
 	 * @return unique char 
 	 */
-	char getC();
+	char getID();
 	
 	/**
 	 * TODO add comments.

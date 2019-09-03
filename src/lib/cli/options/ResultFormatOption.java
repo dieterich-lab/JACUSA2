@@ -24,19 +24,19 @@ extends AbstractACOption {
 
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		boolean required = true;
-		for (char c : resultFormats.keySet()) {
-			ResultFormat resultFormat = resultFormats.get(c);
+		for (char rf_id : resultFormats.keySet()) {
+			ResultFormat resultFormat = resultFormats.get(rf_id);
 			if (parameter.getResultFormat() != null && 
-					resultFormat.getC() == parameter.getResultFormat().getC()) {
+					resultFormat.getID() == parameter.getResultFormat().getID()) {
 				sb.append("<*>");
 				required = false;
 			} else {
 				sb.append("< >");
 			}
-			sb.append(" " + c);
+			sb.append(" " + rf_id);
 			sb.append(": ");
 			sb.append(resultFormat.getDesc());
 			sb.append("\n");

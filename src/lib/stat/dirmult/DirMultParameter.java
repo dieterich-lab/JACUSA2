@@ -2,9 +2,12 @@ package lib.stat.dirmult;
 
 import lib.estimate.MinkaParameter;
 
+/**
+ * TODO
+ */
 public interface DirMultParameter {
 
-	public final static double ESTIMATED_ERROR = 0.01;
+	public static final double ESTIMATED_ERROR = 0.01;
 	
 	boolean isShowAlpha();
 	void setShowAlpha(boolean showAlpha);

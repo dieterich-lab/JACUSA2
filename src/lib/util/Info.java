@@ -6,6 +6,9 @@ import java.util.TreeMap;
 
 import lib.io.InputOutput;
 
+/**
+ * TODO
+ */
 public class Info implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -14,7 +17,7 @@ public class Info implements Serializable {
 	private Map<String, StringBuilder> map;
 	
 	public Info() {
-		map = new TreeMap<String, StringBuilder>();
+		map = new TreeMap<>();
 	}
 
 	public void add(final String key) {

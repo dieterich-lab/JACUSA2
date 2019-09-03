@@ -7,8 +7,8 @@ import jacusa.method.rtarrest.RTarrestMethod;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
+import htsjdk.samtools.util.StringUtil;
 import lib.util.AbstractTool;
 
 /**
@@ -48,7 +48,6 @@ public class JACUSA extends AbstractTool {
 						new PileupMethod.Factory(2),
 						
 						// reverse transcription read arrest
-						
 						new RTarrestMethod.Factory(),
 						
 						// linked reverse transcription read arrest
@@ -60,23 +59,21 @@ public class JACUSA extends AbstractTool {
 	protected String getEpilog() {
 		final StringBuilder sb = new StringBuilder();
 		
-		// number of threads
 		final int maxThreads = getCLI().getMethodFactory().getParameter().getMaxThreads();
 		sb.append("Screening done using ");
 		sb.append(maxThreads);
 		sb.append(" thread(s)");
 		sb.append('\n');
-
+		
 		// location of result
 		sb.append("Results can be found in: ");
 		sb.append(getCLI().getMethodFactory().getParameter().getResultFilename());
 		sb.append('\n');
-
-		// create line
-		final String lineSep = Collections.nCopies(80, '-').stream()
-			.map(e->e.toString()).collect(Collectors.joining());
-
-		// # of results and total elapsed time
+		
+		// create line: "--"
+		final String lineSep = StringUtil.join("", Collections.nCopies(80, '-'));
+		
+		// number of results and total elapsed time
 		sb.append(lineSep);
 		sb.append('\n');
 		sb.append("Analyzed sites:\t");
@@ -84,12 +81,12 @@ public class JACUSA extends AbstractTool {
 		sb.append('\n');
 		sb.append("Elapsed time:\t");
 		sb.append(getLogger().getTimer().getTotalTimestring());
-
+		
 		return sb.toString();
 	}
 	
 	/**
-	 * Main method for JACUSA.
+	 * Main method for JACUSA 2.x.
 	 * 
 	 * @param args command line arguments
 	 */

@@ -2,9 +2,9 @@ package jacusa.io.format;
 
 import java.util.List;
 
-import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
-import lib.data.count.BaseSubstitution2BaseCallCount;
+import lib.data.count.BaseSub2BaseCallCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.result.Result;
 import lib.io.InputOutput;
@@ -17,12 +17,12 @@ import lib.io.format.bed.DataAdder;
 public class RTarrestBaseSubstitutionDataAdder implements DataAdder {
 
 	private final BaseCallCount.AbstractParser bccParser;
-	private final List<BaseSubstitution> baseSubs; 
+	private final List<BaseSub> baseSubs; 
 	private final DataAdder dataAdder;
 	
 	public RTarrestBaseSubstitutionDataAdder(
 			final BaseCallCount.AbstractParser bccParser, 
-			final List<BaseSubstitution> baseSubs, 
+			final List<BaseSub> baseSubs, 
 			final DataAdder dataAdder) {		
 		
 		this.bccParser 	= bccParser;
@@ -37,16 +37,16 @@ public class RTarrestBaseSubstitutionDataAdder implements DataAdder {
 
 	@Override
 	public void addData(StringBuilder sb, int valueIndex, int conditionIndex, int replicateIndex, Result result) {
-		final BaseSubstitution baseSub 	= baseSubs.get(valueIndex);
+		final BaseSub baseSub 	= baseSubs.get(valueIndex);
 		final DataContainer container 	= result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
-		addBaseCallCount(sb, baseSub, container.getArrestBaseSubstitutionCount());
-		addBaseCallCount(sb, baseSub, container.getThroughBaseSubstitutionCount());
+		addBaseCallCount(sb, baseSub, container.getArrestBaseSub2BCC());
+		addBaseCallCount(sb, baseSub, container.getThroughBaseSub2BCC());
 	}
 	
 	private void addBaseCallCount(
 			final StringBuilder sb, 
-			final BaseSubstitution baseSub, 
-			final BaseSubstitution2BaseCallCount baseSubstitutionCount) {
+			final BaseSub baseSub, 
+			final BaseSub2BaseCallCount baseSubstitutionCount) {
 
 		BaseCallCount bcc = baseSubstitutionCount.get(baseSub);
 		if (bcc == null) {

@@ -11,7 +11,7 @@ import lib.data.count.PileupCount;
 import lib.data.fetcher.Fetcher;
 import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
-import lib.data.storage.basecall.ArrayBaseCallQualityStorage;
+import lib.data.storage.basecall.ArrayBCQStorage;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.AlignmentBlockProcessor;
 import lib.data.validator.DefaultBaseCallValidator;
@@ -38,7 +38,7 @@ extends AbstractSiteDataAssemblerFactory {
 
 		final Cache cache = new Cache();
 		
-		final ArrayBaseCallQualityStorage bcqcStorage = new ArrayBaseCallQualityStorage(
+		final ArrayBCQStorage bcqcStorage = new ArrayBCQStorage(
 				sharedStorage, pcFetcher);
 		cache.addStorage(bcqcStorage);
 		
@@ -56,11 +56,9 @@ extends AbstractSiteDataAssemblerFactory {
 		
 		final PositionProcessor positionProcessor = new PositionProcessor(validators, bcqcStorage);
 		cache.addRecordProcessor(new AlignmentBlockProcessor(translator, positionProcessor));
-
-		addDelectionCache(parameter, sharedStorage, cache);
-		stratifyByBaseSubstitution(parameter, sharedStorage,  conditionParameter, cache);
-
-		addInserctionCache(parameter, sharedStorage, cache);
+		
+		addDeletionCache(parameter, sharedStorage, cache);
+		addInsertionCache(parameter, sharedStorage, cache);
 		stratifyByBaseSubstitution(parameter, sharedStorage,  conditionParameter, cache);
 		
 		return cache;

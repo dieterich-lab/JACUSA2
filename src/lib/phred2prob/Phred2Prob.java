@@ -47,7 +47,7 @@ public final class Phred2Prob {
 		final double[] c = new double[Base.validValues().length];
 
 		for (final Base base : bases) {
-			final int count = o.getBaseCallCount().getBaseCall(base);
+			final int count = o.getBCC().getBaseCall(base);
 			c[base.getIndex()] = count;
 		}
 		return c;		
@@ -109,7 +109,7 @@ public final class Phred2Prob {
 		final double[] p = colSumErrorProb(bases, pileupCount);
 		
 		for (final Base base : bases) {
-			p[base.getIndex()] /= (double)pileupCount.getBaseCallCount().getCoverage();
+			p[base.getIndex()] /= (double)pileupCount.getBCC().getCoverage();
 		}
 		
 		return p;

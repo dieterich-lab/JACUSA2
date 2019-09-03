@@ -54,7 +54,7 @@ implements CoordinateAdvancer {
 	private void jumpingAdvance() {
 		final int refPos = getCurrentCoordinate().get1Position();
 		final int winPos = coordinateController.getCoordinateTranslator()
-				.reference2windowPosition(refPos);
+				.ref2winPos(refPos);
 		
 		if (winPos < 0) {
 			return;
@@ -75,7 +75,7 @@ implements CoordinateAdvancer {
 		if (newWindowPosition > winPos) {
 			getCurrentCoordinate().setStrand(STRAND.FORWARD);
 			getCurrentCoordinate().set1Position(coordinateController
-					.getCoordinateTranslator().window2referencePosition(newWindowPosition));
+					.getCoordinateTranslator().win2refPos(newWindowPosition));
 		} else {
 			getCurrentCoordinate().setMaxPosition();
 		}

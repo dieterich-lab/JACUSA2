@@ -6,7 +6,7 @@ import java.util.List;
 import jacusa.io.format.BaseSubstitution2BaseCallCountAdder;
 import jacusa.io.format.StratifiedDataAdder;
 import jacusa.io.format.call.CallDataAdder;
-import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBaseCallCount;
@@ -19,8 +19,12 @@ import lib.io.format.bed.DataAdder;
 import lib.io.format.bed.DefaultBED6adder;
 import lib.io.format.bed.DefaultInfoAdder;
 
-public class BED6pileupResultFormat 
-extends AbstractResultFileFormat {
+/**
+ * This class implements an extended BED6 format to represent variants identified by "pileup" method.
+ * It is very similar to BED6callResultFormat.
+ */
+
+public class BED6pileupResultFormat extends AbstractResultFileFormat {
 
 	public static final char CHAR = 'B';
 	
@@ -40,8 +44,8 @@ extends AbstractResultFileFormat {
 		DataAdder dataAdder = new CallDataAdder(bccParser);
 		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
 		
-		if (getParameter().getReadSubstitutions().size() > 0) {
-			final List<BaseSubstitution> baseSubs = new ArrayList<>(getParameter().getReadSubstitutions());
+		if (! getParameter().getReadSubstitutions().isEmpty()) {
+			final List<BaseSub> baseSubs = new ArrayList<>(getParameter().getReadSubstitutions());
 			dataAdder = new StratifiedDataAdder(
 					dataAdder, 
 					new BaseSubstitution2BaseCallCountAdder(bccParser, baseSubs, dataAdder));

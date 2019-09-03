@@ -16,7 +16,7 @@ implements ParallelDataValidator {
 	
 	@Override
 	public boolean isValid(final ParallelData parallelData) {
-		final DataContainer container = parallelData.getCombinedPooledData();
+		final DataContainer container = parallelData.getCombPooledData();
 		final BaseCallCount bcc = bccFetcher.fetch(container);
 		// more than one non-reference allele
 		return bcc.getAlleles().size() > 1;

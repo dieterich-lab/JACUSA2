@@ -10,7 +10,7 @@ import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.basecall.CombinedFilterFactory;
-import jacusa.filter.factory.basecall.INDEL_FilterFactory;
+import jacusa.filter.factory.basecall.INDELfilterFactory;
 import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import jacusa.io.format.call.BED6callResultFormat;
@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import lib.cli.options.BedCoordinatesOption;
-import lib.cli.options.CollectReadSubstituionOption;
+import lib.cli.options.StratifyByReadSubstituionOption;
 import lib.cli.options.DebugModusOption;
 import lib.cli.options.FilterConfigOption;
 import lib.cli.options.FilterModusOption;
@@ -72,8 +72,7 @@ import lib.util.LibraryType;
 
 import org.apache.commons.cli.ParseException;
 
-public class CallMethod 
-extends AbstractMethod {
+public class CallMethod extends AbstractMethod {
 
 	private final Fetcher<BaseCallCount> bccFetcher;
 	
@@ -116,7 +115,7 @@ extends AbstractMethod {
 		addACOption(new WindowSizeOption(getParameter()));
 		addACOption(new ThreadWindowSizeOption(getParameter()));
 
-		addACOption(new CollectReadSubstituionOption(getParameter()));
+		addACOption(new StratifyByReadSubstituionOption(getParameter()));
 		addACOption(new ShowDeletionCountOption(getParameter()));
 		addACOption(new ShowInsertionCountOption(getParameter()));
 		
@@ -138,7 +137,7 @@ extends AbstractMethod {
 		addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
 		addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
 
-		final Set<LibraryType> availableLibType = new HashSet<LibraryType>(
+		final Set<LibraryType> availableLibType = new HashSet<>(
 				Arrays.asList(
 						LibraryType.UNSTRANDED, 
 						LibraryType.RF_FIRSTSTRAND,
@@ -169,7 +168,7 @@ extends AbstractMethod {
 	
 	public Map<String, AbstractStatFactory> getStatistics() {
 		final Map<String, AbstractStatFactory> statistics = 
-				new TreeMap<String, AbstractStatFactory>();
+				new TreeMap<>();
 
 		AbstractStatFactory statFactory = null;
 		statFactory = new DirMultRobustCompoundErrorStatFactory(
@@ -190,7 +189,7 @@ extends AbstractMethod {
 				new CombinedFilterFactory(
 						bccFetcher,
 						filteredBccData),
-				new INDEL_FilterFactory(
+				new INDELfilterFactory(
 						bccFetcher, 
 						filteredBccData),
 				new ReadPositionFilterFactory(
@@ -203,21 +202,21 @@ extends AbstractMethod {
 				new MaxAlleleCountFilterFactory(bccFetcher),
 				new HomopolymerFilterFactory(getParameter(), filteredBooleanData))
 				.stream()
-				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()) );
+				.collect(Collectors.toMap(FilterFactory::getID, Function.identity()) );
 	}
 
 	public Map<Character, ResultFormat> getResultFormats() {
 		final Map<Character, ResultFormat> resultFormats = 
-				new HashMap<Character, ResultFormat>();
+				new HashMap<>();
 
 		ResultFormat resultFormat = null;
 
 		// BED like output
 		resultFormat = new BED6callResultFormat(getName(), getParameter());
-		resultFormats.put(resultFormat.getC(), resultFormat);
+		resultFormats.put(resultFormat.getID(), resultFormat);
 
 		resultFormat = new VCFcallFormat(getParameter());
-		resultFormats.put(resultFormat.getC(), resultFormat);
+		resultFormats.put(resultFormat.getID(), resultFormat);
 
 		return resultFormats;
 	}
@@ -264,20 +263,25 @@ extends AbstractMethod {
 		@Override
 		protected void addRequired(final AbstractBuilder builder) {
 			add(builder, DataType.PILEUP_COUNT);
-			if (parameter.getReadSubstitutions().size() > 0) {
-				addBaseSubstitution(builder, DataType.BASE_SUBST2BCC);
+			if (! parameter.getReadSubstitutions().isEmpty()) {
+				addBaseSubstitution2bcc(builder, DataType.BASE_SUBST2BCC);
+				
+				if (parameter.showDeletionCount()) {
+					addBaseSubstitution2int(builder, DataType.BASE_SUBST2DELETION_COUNT);
+					addBaseSubstitution2int(builder, DataType.BASE_SUBST2COVERAGE);
+				}
+				if (parameter.showInsertionCount()) {
+					addBaseSubstitution2int(builder, DataType.BASE_SUBST2INSERTION_COUNT);
+					addBaseSubstitution2int(builder, DataType.BASE_SUBST2COVERAGE);
+				}
 			}
 			if (parameter.showDeletionCount()) {
 				add(builder, DataType.DELETION_COUNT);
-				add(builder, DataType.COVERAGE);
+				guardedAdd(builder, DataType.COVERAGE);
 			}
 			if (parameter.showInsertionCount()) {
 				add(builder, DataType.INSERTION_COUNT);
-//				add(builder, DataType.COVERAGE);
-			}
-			if (parameter.getReadSubstitutions().size() > 0 && parameter.showDeletionCount()) {
-				addDeletionCount(builder, DataType.BASE_SUBST2DELETION_COUNT);
-				addCoverage(builder, DataType.BASE_SUBST2COVERAGE);
+				guardedAdd(builder, DataType.COVERAGE);
 			}
 		}
 		

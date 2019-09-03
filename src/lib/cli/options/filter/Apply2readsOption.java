@@ -11,6 +11,12 @@ import lib.cli.options.AbstractACOption;
 import lib.cli.options.filter.has.HasApply2reads;
 import lib.io.InputOutput;
 
+/**
+ * Class implements CLI option that enables to chose read type: 
+ * arrest, through, or all.
+ * This is useful in the context of artefact filtering for rt-arrest and lrt-arrest
+ * methods. 
+ */
 public class Apply2readsOption extends AbstractACOption {
 
 	private final HasApply2reads hasApply2reads;
@@ -26,7 +32,7 @@ public class Apply2readsOption extends AbstractACOption {
 	@Override
 	public void process(CommandLine line) throws Exception {
 		final String optionValue = line.getOptionValue(getLongOpt());
-		final Set<RT_READS> apply2reads = new HashSet<RT_READS>(2);
+		final Set<RT_READS> apply2reads = new HashSet<>(2);
 		
 		final String[] options = optionValue.toUpperCase().split(Character.toString(InputOutput.AND));
 		for (final String option : options) {

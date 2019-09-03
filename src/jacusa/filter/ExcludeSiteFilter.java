@@ -9,21 +9,22 @@ import lib.data.ParallelData;
 import lib.util.coordinate.Coordinate;
 
 /**
- * This class adds a filter that enables to mark sites as contained in an other BED or VCF file, e. g.:
- * polymorphic positions etc. The file has to be sorted - there is no check!
+ * This class adds a filter that enables to mark sites as contained in an other 
+ * BED or VCF file, e. g.: polymorphic positions etc. 
+ * The file has to be sorted - this is not checked!
  * TODO test 
  */
 public class ExcludeSiteFilter extends AbstractFilter {
 
-	// this is a file type independent representation of the file
+	// file type independent representation of the file
 	private final ContainedCoordinate containedCoordinate; 
 	
 	public ExcludeSiteFilter(
-			final char c, 
-			final String fileName, 
+			final char id,
+			final String fileName,
 			final FeatureCodec<? extends Feature, LineIterator> codec) {
 		
-		super(c);
+		super(id);
 		containedCoordinate = new FileBasedContainedCoordinate(fileName, codec);
 	}
 
@@ -32,10 +33,10 @@ public class ExcludeSiteFilter extends AbstractFilter {
 		final Coordinate coordinate = parallelData.getCoordinate();
 		return containedCoordinate.isContained(coordinate);
 	}
-
+	
 	@Override
 	public int getOverhang() { 
 		return 0; 
 	}
-
+	
 }

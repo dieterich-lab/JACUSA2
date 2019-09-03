@@ -25,7 +25,7 @@ implements ParallelDataValidator {
 
 	@Override
 	public boolean isValid(final ParallelData parallelData) {
-		final DataContainer combinedPooledContainer = parallelData.getCombinedPooledData();
+		final DataContainer combinedPooledContainer = parallelData.getCombPooledData();
 		return variantSite.isValid(parallelData) || 
 				arrestBccFetcher.fetch(combinedPooledContainer).getCoverage() > 0 &&
 				throughBccFetcher.fetch(combinedPooledContainer).getCoverage() > 0;

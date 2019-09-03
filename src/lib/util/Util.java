@@ -20,7 +20,7 @@ public final class Util {
 
 	public static String format(final double value) {
 		return Double.toString(value);
-		// return String.format(Locale.ENGLISH, "%.3f", value);
+		// return String.format(Locale.ENGLISH, "%.3f", value)
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public final class Util {
 		return sequenceDictionary;
 	}
 	
-	public static String printAlpha(final double a[]) {
+	public static String printAlpha(final double[] a) {
 		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < a.length; ++i) {

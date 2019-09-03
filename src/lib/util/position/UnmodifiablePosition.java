@@ -1,13 +1,16 @@
 package lib.util.position;
 
-import lib.recordextended.SAMRecordExtended;
+import lib.record.Record;
 
+/**
+ * Wrapper for an instance of Position that modification of positional data.
+ */
 public class UnmodifiablePosition extends AbstractPosition {
 	
 	public UnmodifiablePosition(
 			final int refPos, final int readPos, final int winPos,
-			final SAMRecordExtended recordExtended) {
-		super(refPos, readPos, winPos, recordExtended);
+			final Record record) {
+		super(refPos, readPos, winPos, record);
 	}
 	
 	public UnmodifiablePosition(final Position pos) {
@@ -15,7 +18,7 @@ public class UnmodifiablePosition extends AbstractPosition {
 				pos.getReferencePosition(),
 				pos.getReadPosition(),
 				pos.getWindowPosition(),
-				pos.getRecordExtended());
+				pos.getRecord());
 	}
 	
 	@Override
@@ -38,7 +41,7 @@ public class UnmodifiablePosition extends AbstractPosition {
 	}
 	
 	@Override
-	public boolean isValidReferencePosition() {
+	public boolean isValidRefPos() {
 		return getReferencePosition() > 0;
 	}
 	

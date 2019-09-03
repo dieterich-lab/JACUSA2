@@ -2,8 +2,10 @@ package lib.data.storage;
 
 import lib.data.storage.container.SharedStorage;
 
-public abstract class AbstractStorage
-implements Storage {
+/**
+ * TODO
+ */
+public abstract class AbstractStorage implements Storage {
 	
 	private final SharedStorage sharedStorage;
 	

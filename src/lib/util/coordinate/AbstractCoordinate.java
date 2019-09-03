@@ -2,6 +2,9 @@ package lib.util.coordinate;
 
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
+/**
+ * TODO
+ */
 abstract class AbstractCoordinate implements Coordinate {
 	
 	protected static final int DEFAULT_START 	= 0;

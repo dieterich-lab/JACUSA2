@@ -1,29 +1,28 @@
 package lib.data;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import lib.data.count.BaseSubstitution2IntegerData;
-import lib.data.count.BaseSubstitution2BaseCallCount;
+import lib.data.count.BaseSub2IntData;
+import lib.data.count.BaseSub2BaseCallCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.DataTypeFetcher;
 import lib.data.fetcher.Fetcher;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.filter.BooleanFilteredData;
-import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.storage.lrtarrest.ArrestPos2BCC;
 
 public final class DataType<T extends Data<T>> implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	private static int ID = 0;
+	private static int dataTypeID = 0;
 	private static Map<Class<?>, Map<String, DataType<?>>> CLASS2NAME2TYPE = new HashMap<>();
 
-	private static String DEFAULT = "Default";
+	private static final String DEFAULT = "Default";
 	
 	public static final DataType<PileupCount> PILEUP_COUNT = 
 			create(DEFAULT, PileupCount.class);
@@ -37,26 +36,26 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	public static final DataType<BaseCallCount> THROUGH_BCC = 
 			create("Through", BaseCallCount.class);
 	
-	public static final DataType<ArrestPosition2baseCallCount> AP2BCC = 
-			create(DEFAULT, ArrestPosition2baseCallCount.class);
+	public static final DataType<ArrestPos2BCC> AP2BCC = 
+			create(DEFAULT, ArrestPos2BCC.class);
 	
-	public static final DataType<BaseSubstitution2BaseCallCount> BASE_SUBST2BCC = 
-			create(DEFAULT, BaseSubstitution2BaseCallCount.class);
+	public static final DataType<BaseSub2BaseCallCount> BASE_SUBST2BCC = 
+			create(DEFAULT, BaseSub2BaseCallCount.class);
 
-	public static final DataType<BaseSubstitution2IntegerData> BASE_SUBST2COVERAGE = 
-			create("BaseSub to coverage", BaseSubstitution2IntegerData.class);
+	public static final DataType<BaseSub2IntData> BASE_SUBST2COVERAGE = 
+			create("BaseSub to coverage", BaseSub2IntData.class);
 
-	public static final DataType<BaseSubstitution2IntegerData> BASE_SUBST2DELETION_COUNT = 
-			create("BaseSub to deletion", BaseSubstitution2IntegerData.class);
+	public static final DataType<BaseSub2IntData> BASE_SUBST2DELETION_COUNT = 
+			create("BaseSub to deletion", BaseSub2IntData.class);
 
-	public static final DataType<BaseSubstitution2IntegerData> BASE_SUBST2INSERTION_COUNT = 
-			create("BaseSub to insertion", BaseSubstitution2IntegerData.class);
+	public static final DataType<BaseSub2IntData> BASE_SUBST2INSERTION_COUNT = 
+			create("BaseSub to insertion", BaseSub2IntData.class);
 		
-	public static final DataType<BaseSubstitution2BaseCallCount> ARREST_BASE_SUBST = 
-			create("Arrest", BaseSubstitution2BaseCallCount.class);
+	public static final DataType<BaseSub2BaseCallCount> ARREST_BASE_SUBST = 
+			create("Arrest", BaseSub2BaseCallCount.class);
 	
-	public static final DataType<BaseSubstitution2BaseCallCount> THROUGH_BASE_SUBST = 
-			create("Through", BaseSubstitution2BaseCallCount.class);
+	public static final DataType<BaseSub2BaseCallCount> THROUGH_BASE_SUBST = 
+			create("Through", BaseSub2BaseCallCount.class);
 
 	public static final DataType<IntegerData> COVERAGE = 
 			create("Total coverage", IntegerData.class);
@@ -80,7 +79,7 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	private final Fetcher<T> fetcher;
 	
 	private DataType(final String name, final Class<T> enclosingClass) {
-		this.id 			= ++ID;
+		this.id 			= ++dataTypeID;
 		this.name 			= name;
 		this.enclosingClass = enclosingClass;
 		fetcher 			= new DataTypeFetcher<>(this);
@@ -88,7 +87,7 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof DataType)) {
+		if (! (obj instanceof DataType)) {
 			return false;
 		}
 		if (obj == this) {
@@ -126,19 +125,11 @@ public final class DataType<T extends Data<T>> implements Serializable {
 				return enclosingClass.cast(method.invoke(null));
 			}
 			return enclosingClass.newInstance();
-		} catch (InstantiationException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
+			System.exit(1);
 		}
+		
 		return null;
 	}
 	
@@ -151,7 +142,7 @@ public final class DataType<T extends Data<T>> implements Serializable {
 		return String.format("id: %d, name: %s, class: %s", id, name, enclosingClass.getName());
 	}
 	
-	public synchronized static <T extends Data<T>> DataType<T> retrieve(final String name, final Class<T> enclosingClass) {
+	public static synchronized <T extends Data<T>> DataType<T> retrieve(final String name, final Class<T> enclosingClass) {
 		DataType<T> dataType = get(name, enclosingClass);
 		if (dataType == null) {
 			dataType = create(name, enclosingClass);
@@ -159,7 +150,7 @@ public final class DataType<T extends Data<T>> implements Serializable {
 		return dataType;
 	}
 	
-	public synchronized static <T extends Data<T>> DataType<T> create(final String name, final Class<T> enclosingClass) {
+	public static synchronized  <T extends Data<T>> DataType<T> create(final String name, final Class<T> enclosingClass) {
 		if (! CLASS2NAME2TYPE.containsKey(enclosingClass)) {
 			CLASS2NAME2TYPE.put(enclosingClass, new HashMap<>());
 		}
@@ -169,7 +160,7 @@ public final class DataType<T extends Data<T>> implements Serializable {
 					"Duplicate name: " + name +  
 					" for class: " + enclosingClass.getCanonicalName());
 		}
-		final DataType<T> dataType = new DataType<T>(name, enclosingClass);
+		final DataType<T> dataType = new DataType<>(name, enclosingClass);
 		name2type.put(name, dataType);		
 		return dataType;
 	}

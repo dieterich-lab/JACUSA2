@@ -23,15 +23,18 @@ import htsjdk.samtools.SAMException;
 import htsjdk.samtools.SAMSequenceDictionary;
 import htsjdk.samtools.SAMSequenceRecord;
 
+/**
+ * TODO
+ */
 public abstract class AbstractMethod {
-
+	
 	private final String name;
 	
 	private final GeneralParameter parameter;
 	private final AbstractDataAssemblerFactory dataAssemblerFactory;
 	
 	private final List<AbstractACOption> acOptions;
-
+	
 	private CoordinateProvider coordinateProvider;
 	private WorkerDispatcher workerDispatcher;
 	
@@ -46,15 +49,15 @@ public abstract class AbstractMethod {
 		
 		acOptions = new ArrayList<>(10);
 	}
-
+	
 	public String getName() {
 		return name;
 	}
-
+	
 	public GeneralParameter getParameter() {
 		return parameter;
 	}
-
+	
 	public final WorkerDispatcher getWorkerDispatcherInstance() {
 		if (workerDispatcher == null) {
 			workerDispatcher = new WorkerDispatcher(this);
@@ -62,7 +65,7 @@ public abstract class AbstractMethod {
 		
 		return workerDispatcher;
 	}
-
+	
 	public abstract AbstractWorker createWorker(final int threadId);
 	
 	public AbstractDataAssemblerFactory getDataAssemblerFactory() {
@@ -115,7 +118,7 @@ public abstract class AbstractMethod {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @return
 	 */
 	public List<AbstractACOption> getACOptions() {
@@ -123,7 +126,7 @@ public abstract class AbstractMethod {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param options
 	 */
 	public void printUsage(final boolean printExtendedHelp) {
@@ -164,7 +167,7 @@ public abstract class AbstractMethod {
 	}
 	
 	/**
-	 * 
+	 * TODO
 	 * @throws Exception
 	 */
 	public void initCoordinateProvider() throws Exception {
@@ -197,7 +200,7 @@ public abstract class AbstractMethod {
 	}
 	
 	/**
-	 * 
+	 * TODO
 	 * @param args
 	 * @return
 	 * @throws Exception
@@ -212,7 +215,7 @@ public abstract class AbstractMethod {
 	}
 	
 	/**
-	 * 
+	 * TODO
 	 * @return
 	 */
 	public CoordinateProvider getCoordinateProvider() {
@@ -222,7 +225,7 @@ public abstract class AbstractMethod {
 	public abstract List<ParallelDataValidator> createParallelDataValidators();
 	
 	/**
-	 * 
+	 * TODO
 	 * @param recordFilenames
 	 * @return
 	 * @throws Exception

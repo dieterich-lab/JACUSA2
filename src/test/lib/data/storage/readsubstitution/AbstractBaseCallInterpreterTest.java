@@ -1,12 +1,12 @@
 package test.lib.data.storage.readsubstitution;
 
 import lib.data.storage.readsubstitution.BaseCallInterpreter;
+import lib.record.Record;
 import lib.util.Base;
 import lib.util.position.Position;
 import lib.util.position.UnmodifiablePosition;
 import test.utlis.ReferenceSequence;
 import test.utlis.SAMRecordBuilder;
-import lib.recordextended.SAMRecordExtended;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -37,17 +37,17 @@ abstract class AbstractBaseCallInterpreterTest {
 	
 	@ParameterizedTest(name = "{3}")
 	@MethodSource("testGetReadBase")
-	void testGetReadBase(SAMRecord record, int readPos, Base expected, String info) {
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(record);
-		final Base actual = testInstance.getReadBase(recordExtended, readPos);
+	void testGetReadBase(SAMRecord samRecord, int readPos, Base expected, String info) {
+		final Record record = new Record(samRecord);
+		final Base actual = testInstance.getReadBase(record, readPos);
 		assertEquals(expected, actual);
 	}
 
 	@ParameterizedTest(name = "{3}")
 	@MethodSource("testGetRefBase")
-	void testGetRefBase(SAMRecord record, Position pos, Base expected, String info) {
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(record);
-		final Base actual = testInstance.getRefBase(recordExtended, pos);
+	void testGetRefBase(SAMRecord samRecord, Position pos, Base expected, String info) {
+		final Record record = new Record(samRecord);
+		final Base actual = testInstance.getRefBase(record, pos);
 		assertEquals(expected, actual);
 	}
 	
@@ -82,7 +82,7 @@ abstract class AbstractBaseCallInterpreterTest {
 		
 		return Arguments.of(
 				record,
-				new UnmodifiablePosition(refPos, readPos, -1, new SAMRecordExtended(record)),
+				new UnmodifiablePosition(refPos, readPos, -1, new Record(record)),
 				expected,
 				String.format("Read: %s %s %s; readPos: %d %s; refPos: %d %c", 
 						coord, simReadSeq, cigarStr, readPos, readBase, refPos, refBase) );

@@ -9,7 +9,7 @@ import jacusa.filter.Filter;
 import jacusa.filter.FilterByRatio;
 import jacusa.filter.GenericBaseCallCountFilter;
 import jacusa.filter.factory.AbstractFilterFactory;
-import jacusa.filter.processrecord.UniquePositionRecordExtendedProcessors;
+import jacusa.filter.processrecord.UniquePositionRecordProcessors;
 import lib.cli.options.filter.FilterDistanceOption;
 import lib.cli.options.filter.FilterMinRatioOption;
 import lib.cli.options.filter.has.HasFilterDistance;
@@ -31,7 +31,7 @@ import lib.data.storage.basecall.AbstractBaseCallCountStorage;
 import lib.data.storage.basecall.ArrayBaseCallStorage;
 import lib.data.storage.basecall.VisitedReadPositionStorage;
 import lib.data.storage.container.SharedStorage;
-import lib.data.storage.processor.RecordExtendedProcessor;
+import lib.data.storage.processor.RecordProcessor;
 import lib.data.validator.DefaultBaseCallValidator;
 import lib.data.validator.MaxDepthValidator;
 import lib.data.validator.MinBASQValidator;
@@ -61,7 +61,7 @@ implements HasFilterDistance, HasFilterMinRatio {
 	
 	private int filterDistance;
 	private double filterMinRatio;
-
+	
 	private final BaseCallCount.AbstractParser baseCallCountParser;
 	
 	public AbstractBaseCallCountFilterFactory(
@@ -84,12 +84,13 @@ implements HasFilterDistance, HasFilterMinRatio {
 		super(option);
 		
 		this.observedBccFetcher = observedBccFetcher;
-		filteredBccFetcher 		= new SpecificFilteredDataFetcher<>(getC(), filteredDataFetcher);
+		filteredBccFetcher 		= new SpecificFilteredDataFetcher<>(getID(), filteredDataFetcher);
 		dataType 				= filteredDataFetcher.getDataType();
 		
 		filterDistance = defaultFilterDistance;
 		filterMinRatio = defaultFilterMinRatio;
 
+		// CLI options
 		getACOption().add(new FilterDistanceOption(this));
 		getACOption().add(new FilterMinRatioOption(this));
 		
@@ -100,13 +101,11 @@ implements HasFilterDistance, HasFilterMinRatio {
 	@Override
 	public void initDataContainer(AbstractBuilder builder) {
 		// create a container for base call count filtered data
-		if (! builder.contains(dataType)) { 
-			builder.with(dataType);
-		}
+		builder.guardedWith(dataType);
 		final BaseCallCountFilteredData filteredData = builder.get(dataType);
 		// make sure that in base call count filtered data there is a bcc for this filter
-		if (! filteredData.contains(getC())) {
-			filteredData.add(getC(), BaseCallCount.create());
+		if (! filteredData.contains(getID())) {
+			filteredData.add(getID(), BaseCallCount.create());
 		}
 	}
 	
@@ -117,7 +116,7 @@ implements HasFilterDistance, HasFilterMinRatio {
 		
 		// create an instance of a base call count filter
 		// use fetchers to locate observed and filtered counts
-		return new GenericBaseCallCountFilter(getC(),
+		return new GenericBaseCallCountFilter(getID(),
 				observedBccFetcher,
 				filteredBccFetcher,	
 				filterDistance, new FilterByRatio(getFilterMinRatio()));
@@ -127,10 +126,10 @@ implements HasFilterDistance, HasFilterMinRatio {
 	public Cache createFilterCache(
 			final ConditionParameter conditionParameter,
 			final SharedStorage sharedStorage) {
-
-		final Cache cache = new Cache();
+		
 		final List<Storage> storages = new ArrayList<>();
 		
+		// make sure each read positions get used only once
 		final VisitedReadPositionStorage visitedStorage = new VisitedReadPositionStorage(sharedStorage);
 		storages.add(visitedStorage);
 		
@@ -138,6 +137,7 @@ implements HasFilterDistance, HasFilterMinRatio {
 				new ArrayBaseCallStorage(sharedStorage, filteredBccFetcher);
 		storages.add(bccStorage);
 		
+		// add validators
 		final List<Validator> validators = new ArrayList<>();
 		UniqueVisitReadPositionValidator uniqueValidator = 
 				new UniqueVisitReadPositionValidator(visitedStorage);
@@ -150,10 +150,11 @@ implements HasFilterDistance, HasFilterMinRatio {
 			validators.add(new MinBASQValidator(conditionParameter.getMinBASQ()));
 		}
 		
-		final PositionProcessor positionProcessor = new PositionProcessor(
-				validators, storages);
+		final PositionProcessor positionProcessor = 
+				new PositionProcessor(validators, storages);
 		
-		cache.addRecordProcessor(new UniquePositionRecordExtendedProcessors(
+		final Cache cache = new Cache();
+		cache.addRecordProcessor(new UniquePositionRecordProcessors(
 				visitedStorage,
 				createRecordProcessors(sharedStorage, positionProcessor)));
 		cache.addStorages(storages);
@@ -186,7 +187,14 @@ implements HasFilterDistance, HasFilterMinRatio {
 		baseCallCountParser.wrap(filteredBccFetcher.fetch(filteredData));
 	}
 	
-	protected abstract List<RecordExtendedProcessor> createRecordProcessors(
+	/**
+	 * Returs a list of custom record processors.
+	 * 
+	 * @param sharedStorage 
+	 * @param positionProcessor
+	 * @return list of record processors
+	 */
+	protected abstract List<RecordProcessor> createRecordProcessors(
 			SharedStorage sharedStorage, final PositionProcessor positionProcessor);
-	
+		
 }

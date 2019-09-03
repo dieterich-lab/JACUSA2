@@ -1,5 +1,8 @@
 package lib.stat.nominal;
 
+/**
+ * TODO
+ */
 class AbstractNominalData implements NominalData {
 
 	private final int categories;

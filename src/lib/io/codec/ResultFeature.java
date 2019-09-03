@@ -4,6 +4,9 @@ import htsjdk.tribble.Feature;
 import lib.data.result.Result;
 import lib.util.coordinate.Coordinate;
 
+/**
+ * TODO
+ */
 public class ResultFeature implements Feature {
 
 	private final Result result;

@@ -10,7 +10,7 @@ import lib.io.format.bed.DataAdder;
 
 /**
  * This class allows to add additional filter related data to the output. 
- * All chosen filters will be represented by their unique char.
+ * All chosen filters will be represented by their unique id.
  */
 public class FilterDebugAdder implements DataAdder {
 
@@ -32,7 +32,7 @@ public class FilterDebugAdder implements DataAdder {
 
 		for (final FilterFactory filterFactory : filterFactories) {
 			sb.append(InputOutput.FIELD_SEP);
-			sb.append(filterFactory.getC());
+			sb.append(filterFactory.getID());
 			sb.append(conditionIndex + 1);
 			sb.append(replicateIndex + 1);
 		}

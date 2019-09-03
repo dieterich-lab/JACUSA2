@@ -9,7 +9,8 @@ import lib.cli.options.AbstractACOption;
 import lib.util.CLIUtil;
 
 /**
- * This factory creates an artefact/false positive variant filter object and registers it.  
+ * This factory creates an artefact/false positive variant filter object and 
+ * registers it.  
  */
 public abstract class AbstractFilterFactory implements FilterFactory {
 
@@ -23,7 +24,7 @@ public abstract class AbstractFilterFactory implements FilterFactory {
 	}
 
 	@Override
-	public char getC() {
+	public char getID() {
 		return option.getOpt().charAt(0);
 	}
 
@@ -41,10 +42,10 @@ public abstract class AbstractFilterFactory implements FilterFactory {
 		CLIUtil.adjustOption(tmp, getOptions(), tmp.getOpt().length());
 		return tmp.getDescription();
 	}
-
+	
 	@Override
 	public String toString() {
-		return Character.toString(getC());
+		return Character.toString(getID());
 	}
 	
 }

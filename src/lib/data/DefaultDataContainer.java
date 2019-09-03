@@ -5,13 +5,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import lib.data.count.BaseSubstitution2BaseCallCount;
-import lib.data.count.BaseSubstitution2IntegerData;
+import lib.data.count.BaseSub2BaseCallCount;
+import lib.data.count.BaseSub2IntData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.filter.BooleanFilteredData;
-import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.storage.lrtarrest.ArrestPos2BCC;
 import lib.util.Base;
 import lib.util.LibraryType;
 import lib.util.Util;
@@ -24,21 +24,21 @@ public class DefaultDataContainer implements DataContainer {
 
 	private Coordinate coordinate;
 	private LibraryType libraryType;
-	private Base referenceBase;
+	private Base unstrandedRefBase;
 	
 	private final Map<DataType<?>, Object> map;
 	
 	private DefaultDataContainer(final AbstractBuilder builder) {
 		coordinate 		= builder.getCoordinate();
 		libraryType 	= builder.getLibraryType();
-		referenceBase 	= builder.getReferenceBase();
+		unstrandedRefBase = builder.getReferenceBase();
 		map 			= builder.getMap();
 	}
 	
 	private DefaultDataContainer(DefaultDataContainer template) {
 		coordinate 		= template.getCoordinate().copy();
 		libraryType 	= template.getLibraryType();
-		referenceBase 	= template.getReferenceBase();
+		unstrandedRefBase 	= template.getUnstrandedReferenceBase();
 		map 			= new HashMap<>(Util.noRehashCapacity(template.getDataTypes().size()));
 		for (final DataType<?> dataType : template.getDataTypes()) {
 			map.put(dataType, template.get(dataType).copy());
@@ -64,42 +64,42 @@ public class DefaultDataContainer implements DataContainer {
 	}
 	
 	@Override
-	public ArrestPosition2baseCallCount getArrestPos2BaseCallCount() {
+	public ArrestPos2BCC getArrestPos2BCC() {
 		return get(DataType.AP2BCC);
 	}
 	
 	@Override
-	public BaseCallCountFilteredData getArrestPos2BaseCallCountFilteredData() {
+	public BaseCallCountFilteredData getArrestPos2BCCFilteredData() {
 		return get(DataType.F_BCC);
 	}
 	
 	@Override
-	public BaseSubstitution2IntegerData getBaseSubstitution2Coverage() {
+	public BaseSub2IntData getBaseSub2Coverage() {
 		return get(DataType.BASE_SUBST2COVERAGE);
 	}
 	
 	@Override
-	public BaseSubstitution2IntegerData getBaseSubstitution2DeletionCount() {
+	public BaseSub2IntData getBaseSub2DeletionCount() {
 		return get(DataType.BASE_SUBST2DELETION_COUNT);
 	}
 	
 	@Override
-	public BaseCallCountFilteredData getBaseCallCountFilteredData() {
+	public BaseCallCountFilteredData getBCCFilteredData() {
 		return get(DataType.F_BCC);
 	}
 	
 	@Override
-	public BaseSubstitution2BaseCallCount getBaseSubstitution2BaseCallCount() {
+	public BaseSub2BaseCallCount getBaseSub2BCC() {
 		return get(DataType.BASE_SUBST2BCC);
 	}
 	
 	@Override
-	public BaseSubstitution2BaseCallCount getArrestBaseSubstitutionCount() {
+	public BaseSub2BaseCallCount getArrestBaseSub2BCC() {
 		return get(DataType.ARREST_BASE_SUBST);
 	}
 	
 	@Override
-	public BaseSubstitution2BaseCallCount getThroughBaseSubstitutionCount() {
+	public BaseSub2BaseCallCount getThroughBaseSub2BCC() {
 		return get(DataType.THROUGH_BASE_SUBST);
 	}
 	
@@ -124,7 +124,7 @@ public class DefaultDataContainer implements DataContainer {
 	}
 
 	@Override
-	public BaseSubstitution2IntegerData getBaseSubstitution2InsertionCount() {
+	public BaseSub2IntData getBaseSub2InsertionCount() {
 		return get(DataType.BASE_SUBST2INSERTION_COUNT);
 	}
 
@@ -150,7 +150,7 @@ public class DefaultDataContainer implements DataContainer {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof DefaultDataContainer)) {
+		if (! (obj instanceof DefaultDataContainer)) {
 			return false;
 		}
 		if (obj == this) {
@@ -159,7 +159,7 @@ public class DefaultDataContainer implements DataContainer {
 
 		final DefaultDataContainer container = (DefaultDataContainer)obj;
 		return
-				referenceBase.equals(container.referenceBase) &&
+				unstrandedRefBase.equals(container.unstrandedRefBase) &&
 				libraryType.equals(container.libraryType) &&
 				coordinate.equals(container.coordinate) && 
 				map.equals(container.map);
@@ -168,7 +168,7 @@ public class DefaultDataContainer implements DataContainer {
 	@Override
 	public int hashCode() {
 		int hash = 1;
-		hash = 31 * hash + referenceBase.hashCode();
+		hash = 31 * hash + unstrandedRefBase.hashCode();
 		hash = 31 * hash + libraryType.hashCode();
 		hash = 31 * hash + coordinate.hashCode();
 		hash = 31 * hash + map.hashCode();
@@ -177,7 +177,7 @@ public class DefaultDataContainer implements DataContainer {
 	
 	@Override
 	public void merge(final DataContainer provider) {
-		referenceBase 	= Base.mergeBase(referenceBase, provider.getReferenceBase());
+		unstrandedRefBase 	= Base.mergeBase(unstrandedRefBase, provider.getUnstrandedReferenceBase());
 		libraryType 	= LibraryType.mergeLibraryType(libraryType, provider.getLibraryType());
 		coordinate 		= CoordinateUtil.mergeCoordinate(coordinate, provider.getCoordinate());
 		
@@ -208,8 +208,19 @@ public class DefaultDataContainer implements DataContainer {
 	}
 	
 	@Override
-	public Base getReferenceBase() {
-		return referenceBase;
+	public Base getUnstrandedReferenceBase() {
+		return unstrandedRefBase;
+	}
+	
+	@Override
+	public Base getAutoReferenceBase() {
+		if (! LibraryType.isStranded(libraryType)) {
+			return unstrandedRefBase;
+		}
+		if (coordinate.isReverseStrand()) {
+			return unstrandedRefBase.getComplement();
+		}
+		return unstrandedRefBase;
 	}
 	
 	@Override
@@ -227,8 +238,6 @@ public class DefaultDataContainer implements DataContainer {
 		for (final DataType<?> dataType : getDataTypes()) {
 			sb.append(dataType.toString());
 			sb.append('\n');
-			// sb.append(get(dataType).toString());
-			// sb.append('\n');
 		}
 
 		return sb.toString();

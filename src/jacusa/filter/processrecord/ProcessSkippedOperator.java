@@ -2,8 +2,8 @@ package jacusa.filter.processrecord;
 
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.recordextended.SAMRecordExtended;
-import lib.util.position.CigarElementExtendedPositionProviderBuilder;
+import lib.record.Record;
+import lib.util.position.CigarElementPositionProviderBuilder;
 
 /**
  * This class will identify all splice sites within a read and mark/count +/- distance up- and downstream 
@@ -12,7 +12,7 @@ import lib.util.position.CigarElementExtendedPositionProviderBuilder;
  * 
  * Tested in @see test.jacusa.filter.processrecord.ProcessSkippedOperatorTest
  */
-public class ProcessSkippedOperator extends AbstractFilterRecordExtendedProcessor {
+public class ProcessSkippedOperator extends AbstractFilterRecordProcessor {
 
 	public ProcessSkippedOperator(
 			final SharedStorage sharedStorage, 
@@ -23,10 +23,10 @@ public class ProcessSkippedOperator extends AbstractFilterRecordExtendedProcesso
 	}
 
 	@Override
-	public void process(SAMRecordExtended recordExtended) {
+	public void process(Record record) {
 		// iterate over cigarElement indices of splice sites
-		for (final int cigarElementExtendedIndex : recordExtended.getSkipped()) {
-			processSkippedOperator(cigarElementExtendedIndex, recordExtended);
+		for (final int cigarElementExtendedIndex : record.getSkipped()) {
+			processSkippedOperator(cigarElementExtendedIndex, record);
 		}
 	}
 	
@@ -34,14 +34,14 @@ public class ProcessSkippedOperator extends AbstractFilterRecordExtendedProcesso
 	 * Helper method.
 	 * 
 	 * @param cigarElementExtendedIndex
-	 * @param recordExtended
+	 * @param record
 	 */
 	private void processSkippedOperator(
-			final int cigarElementExtendedIndex, final SAMRecordExtended recordExtended) {
+			final int cigarElementExtendedIndex, final Record record) {
 		
 		getPositionProcessor().process(
-				new CigarElementExtendedPositionProviderBuilder(
-						cigarElementExtendedIndex, getDistance(), recordExtended, getTranslator())
+				new CigarElementPositionProviderBuilder(
+						cigarElementExtendedIndex, getDistance(), record, getTranslator())
 				.build());
 	}
 

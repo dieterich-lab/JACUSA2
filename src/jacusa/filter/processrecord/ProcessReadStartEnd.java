@@ -7,8 +7,8 @@ import java.util.List;
 
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.recordextended.SAMRecordExtended;
-import lib.util.position.AlignmentBlockPositionProviderBuilder;
+import lib.record.Record;
+import lib.util.position.AlgnBlockPosProviderBuilder;
 
 /**
  * This class will mark all read start/end position +/- distance up- and downstream 
@@ -17,7 +17,7 @@ import lib.util.position.AlignmentBlockPositionProviderBuilder;
  * 
  * Tested in test.jacusa.filter.processrecord.ProcessReadStartEndTest
  */
-public class ProcessReadStartEnd extends AbstractFilterRecordExtendedProcessor {
+public class ProcessReadStartEnd extends AbstractFilterRecordProcessor {
 	
 	public ProcessReadStartEnd(
 			final SharedStorage sharedStorage, 
@@ -27,16 +27,16 @@ public class ProcessReadStartEnd extends AbstractFilterRecordExtendedProcessor {
 		super(sharedStorage, distance, positionProcessor);
 	}
 
-	public void process(final SAMRecordExtended recordExtended) {
-		final SAMRecord record = recordExtended.getSAMRecord();
+	public void process(final Record record) {
+		final SAMRecord samRecord = record.getSAMRecord();
 		// note: alignmentBlock.getReadStart() is 1-indexed
-		final List<AlignmentBlock> alignmentBlocks = record.getAlignmentBlocks();
+		final List<AlignmentBlock> alignmentBlocks = samRecord.getAlignmentBlocks();
 
 		// read start
 		getPositionProcessor().process(
-				new AlignmentBlockPositionProviderBuilder(
+				new AlgnBlockPosProviderBuilder(
 						0, 
-						recordExtended, 
+						record, 
 						getTranslator())
 				.tryFirst(getDistance())
 				.adjustWindowPos()
@@ -44,9 +44,9 @@ public class ProcessReadStartEnd extends AbstractFilterRecordExtendedProcessor {
 		
 		// read end
 		getPositionProcessor().process(
-				new AlignmentBlockPositionProviderBuilder(
+				new AlgnBlockPosProviderBuilder(
 						alignmentBlocks.size() - 1, 
-						recordExtended, 
+						record, 
 						getTranslator())
 				.tryLast(getDistance())
 				.adjustWindowPos()

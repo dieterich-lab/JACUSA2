@@ -8,9 +8,6 @@ import lib.stat.AbstractStat;
 
 /**
  * This is a dummy statistic... 
- * TODO add comments
- *  
- * @param 
  */
 public class CoverageStatistic 
 extends AbstractStat {
@@ -22,8 +19,8 @@ extends AbstractStat {
 
 	@Override
 	public Result calculate(final ParallelData parallelData) {
-		final PileupCount pileupCount = parallelData.getCombinedPooledData().getPileupCount();
-		final int coverage = pileupCount.getBaseCallCount().getCoverage();
+		final PileupCount pileupCount = parallelData.getCombPooledData().getPileupCount();
+		final int coverage = pileupCount.getBCC().getCoverage();
 		return new OneStatResult(coverage, parallelData);
 	}
 

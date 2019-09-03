@@ -8,8 +8,8 @@ public class MaxValueSamTagFilter {
 	private String tag;
 
 	public MaxValueSamTagFilter(String tag, int value) {
-		this.value = value;
-		this.tag = tag;
+		this.value 	= value;
+		this.tag 	= tag;
 	}
 
 	public boolean filter(SAMRecord samRecord) {

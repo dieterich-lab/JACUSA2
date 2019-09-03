@@ -20,17 +20,17 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import htsjdk.samtools.SAMRecord;
-import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.BaseSub;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.Storage;
 import lib.data.storage.basecall.AbstractBaseCallCountStorage;
-import lib.data.storage.basecall.DefaultBaseCallCountStorage;
+import lib.data.storage.basecall.DefaultBCCStorage;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.readsubstitution.BaseCallInterpreter;
-import lib.data.storage.readsubstitution.BaseSubstitutionRecordProcessor;
+import lib.data.storage.readsubstitution.BaseSubRecordProcessor;
 import lib.data.validator.CombinedValidator;
 import lib.data.validator.Validator;
-import lib.recordextended.SAMRecordExtended;
+import lib.record.Record;
 import lib.util.Base;
 import lib.util.LibraryType;
 import lib.util.coordinate.OneCoordinate;
@@ -48,22 +48,22 @@ class BaseSubstitutionRecordProcessorTest {
 	@ParameterizedTest(name = "{4}")
 	@MethodSource("testProcess")
 	void testProcess(
-			BaseSubstitutionRecordProcessor testInstance,
-			List<SAMRecordExtended> records, 			// currently this is only Single End
-			Map<BaseSubstitution, Storage> actual,	// reference to internal map of testInstance
-			Map<BaseSubstitution, Storage> expected,	// this is what we expect
+			BaseSubRecordProcessor testInstance,
+			List<Record> records, 			// currently this is only Single End
+			Map<BaseSub, Storage> actual,	// reference to internal map of testInstance
+			Map<BaseSub, Storage> expected,	// this is what we expect
 			String info 								// JUNIT related; gives more informative test message
 			) {
 		
 		testInstance.preProcess();
 		// let testInstance process reads
-		for (final SAMRecordExtended recordExtended : records) {
-			testInstance.process(recordExtended);
+		for (final Record record : records) {
+			testInstance.process(record);
 		}
 		testInstance.postProcess();
 		assertEquals(expected.keySet(), actual.keySet());
 		
-		for (final BaseSubstitution baseSub : expected.keySet()) {
+		for (final BaseSub baseSub : expected.keySet()) {
 			final AbstractBaseCallCountStorage expectedBccStorage = 
 					(AbstractBaseCallCountStorage)expected.get(baseSub);
 			final int winSize = expectedBccStorage.getCoordinateController().getActiveWindowSize();
@@ -101,14 +101,14 @@ class BaseSubstitutionRecordProcessorTest {
 						lib, 
 						1, 7,
 						1, negativeStrand, "3M", "",
-						new HashSet<BaseSubstitution>(),
+						new HashSet<BaseSub>(),
 						new String[] {} ) );
 			}
 			args.add(cSE(
 					lib, 
 					1, 7,
 					1, false, "3M", "ATG", // ref:ACG
-					new HashSet<BaseSubstitution>(Arrays.asList(BaseSubstitution.C2T)),
+					new HashSet<BaseSub>(Arrays.asList(BaseSub.C2T)),
 					new String[] { "C2T,0,A", "C2T,1,T", "C2T,2,G" } ));
 		}
 		/*
@@ -146,28 +146,28 @@ class BaseSubstitutionRecordProcessorTest {
 				5, 8,
 				5, true, "2M", "AT", // ref:AC
 				9, true, "2M", "AC",
-				new HashSet<BaseSubstitution>(Arrays.asList(BaseSubstitution.C2T)),
+				new HashSet<BaseSub>(Arrays.asList(BaseSub.C2T)),
 				new String[] {"C2T,0,A","C2T,1,T" } ));
 		args.add(cPE(
 				LibraryType.UNSTRANDED, 
 				5, 8,
 				5, true, "2M", "TC", // ref:AC
 				8, true, "2M", "AC", // ref:TA
-				new HashSet<BaseSubstitution>(Arrays.asList(BaseSubstitution.A2T)),
+				new HashSet<BaseSub>(Arrays.asList(BaseSub.A2T)),
 				new String[] { "A2T,0,T" ,"A2T,1,C", "A2T,3,A"} ));
 		args.add(cPE(
 				LibraryType.UNSTRANDED, 
 				5, 8,
 				4, true, "2M", "AT", // ref:AA
 				9, true, "2M", "AC",
-				new HashSet<BaseSubstitution>(Arrays.asList(BaseSubstitution.A2T)),
+				new HashSet<BaseSub>(Arrays.asList(BaseSub.A2T)),
 				new String[] {"A2T,0,T" } ));
 		args.add(cPE(
 				LibraryType.UNSTRANDED, 
 				5, 8,
 				4, true, "2M", "AT", // ref:AA
 				1, true, "2M", "AC",
-				new HashSet<BaseSubstitution>(Arrays.asList(BaseSubstitution.A2T)),
+				new HashSet<BaseSub>(Arrays.asList(BaseSub.A2T)),
 				new String[] {"A2T,0,T" } ));
 		// ACGAACGTACGT
 		// 123456789012
@@ -179,7 +179,7 @@ class BaseSubstitutionRecordProcessorTest {
 				5, 8,
 				4, true, "2M", "AT", // ref:AA
 				5, true, "2M", "AC",
-				new HashSet<BaseSubstitution>(Arrays.asList(BaseSubstitution.A2T)),
+				new HashSet<BaseSub>(Arrays.asList(BaseSub.A2T)),
 				new String[] {"A2T,0,A", "A2T,0,T", "A2T,1,C" } ));
 		return args.stream();
 	}
@@ -190,7 +190,7 @@ class BaseSubstitutionRecordProcessorTest {
 			final LibraryType libraryType,
 			final int refWinStart, final int refWinEnd, 
 			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq,
-			final Set<BaseSubstitution> queryBaseSub,
+			final Set<BaseSub> queryBaseSub,
 			final String[] expectedStr) {
 		
 		return cSE(
@@ -207,11 +207,11 @@ class BaseSubstitutionRecordProcessorTest {
 			final int refWinStart, final int refWinEnd,
 			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq, 
 			final Validator validator,
-			final Set<BaseSubstitution> queryBaseSubs,
+			final Set<BaseSub> queryBaseSubs,
 			final String[] expectedStr) {
 		
 		// simulate Single End Read
-		final List<SAMRecordExtended> records = simulateSEreads(refStart, negativeStrand, cigarStr, readSeq);
+		final List<Record> records = simulateSEreads(refStart, negativeStrand, cigarStr, readSeq);
 		
 		// make nice informative message to output along the test 
 		final String info = info(libraryType, records);
@@ -220,8 +220,8 @@ class BaseSubstitutionRecordProcessorTest {
 		final SharedStorage sharedStorage = createSharedStorage(refWinStart, refWinEnd, libraryType);
 
 		final BaseCallInterpreter bci = BaseCallInterpreter.build(libraryType);
-		final Map<BaseSubstitution, Storage> expected = parseExpected(expectedStr, sharedStorage);
-		final Map<BaseSubstitution, Storage> actual = new EnumMap<>(BaseSubstitution.class);
+		final Map<BaseSub, Storage> expected = parseExpected(expectedStr, sharedStorage);
+		final Map<BaseSub, Storage> actual = new EnumMap<>(BaseSub.class);
 		
 		return Arguments.of(
 				createTestInstance(bci, sharedStorage, validator, queryBaseSubs, actual, expected),
@@ -240,16 +240,16 @@ class BaseSubstitutionRecordProcessorTest {
 				.build();
 	}
 	
-	List<SAMRecordExtended> simulateSEreads(
+	List<Record> simulateSEreads(
 			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq) {
 		// simulate Single End Read
 		final SAMRecord record = SAMRecordBuilder.createSERead(
 						CONTIG, refStart, negativeStrand, cigarStr, readSeq);
-		return Arrays.asList(new SAMRecordExtended(record));
+		return Arrays.asList(new Record(record));
 	}
 	
 	// simulate Paired End Reads
-	List<SAMRecordExtended> simulatePEreads(
+	List<Record> simulatePEreads(
 			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq, 
 			final int refStart2, final boolean negativeStrand2, final String cigarStr2, final String readSeq2) {
 		
@@ -258,7 +258,7 @@ class BaseSubstitutionRecordProcessorTest {
 						refStart2, negativeStrand2, cigarStr2, readSeq2)
 			
 				.getRecords().stream()
-				.map(r -> new SAMRecordExtended(r, r.getFileSource().getReader()))
+				.map(r -> new Record(r, r.getFileSource().getReader()))
 				.collect(Collectors.toList());
 	}
 	
@@ -267,12 +267,12 @@ class BaseSubstitutionRecordProcessorTest {
 			final int refWinStart, final int refWinEnd,
 			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq, 
 			final int refStart2, final boolean negativeStrand2, final String cigarStr2, final String readSeq2,
-			final Set<BaseSubstitution> queryBaseSubs,
+			final Set<BaseSub> queryBaseSubs,
 			final String[] expectedStr) {
 		
 		final Validator validator = new CombinedValidator(new ArrayList<Validator>());
 		
-		final List<SAMRecordExtended> records = simulatePEreads(
+		final List<Record> records = simulatePEreads(
 				refStart, negativeStrand, cigarStr, readSeq, 
 				refStart2, negativeStrand2, cigarStr2, readSeq2);
 		
@@ -283,8 +283,8 @@ class BaseSubstitutionRecordProcessorTest {
 		final SharedStorage sharedStorage = createSharedStorage(refWinStart, refWinEnd, libraryType);
 
 		final BaseCallInterpreter bci = BaseCallInterpreter.build(libraryType);
-		final Map<BaseSubstitution, Storage> expected = parseExpected(expectedStr, sharedStorage);
-		final Map<BaseSubstitution, Storage> actual = new EnumMap<>(BaseSubstitution.class);
+		final Map<BaseSub, Storage> expected = parseExpected(expectedStr, sharedStorage);
+		final Map<BaseSub, Storage> actual = new EnumMap<>(BaseSub.class);
 		
 		return Arguments.of(
 				createTestInstance(bci, sharedStorage, validator, queryBaseSubs, actual, expected),
@@ -294,7 +294,7 @@ class BaseSubstitutionRecordProcessorTest {
 				info);
 	}
 		
-	String info(final LibraryType libraryType, List<SAMRecordExtended> records) {
+	String info(final LibraryType libraryType, List<Record> records) {
 		if (records.size() == 1) {
 			final SAMRecord record = records.get(0).getSAMRecord();
 			return String.format("Lib.: %s, %d-%d %s", libraryType, record.getAlignmentStart(), record.getAlignmentEnd(), record.getCigar());
@@ -311,50 +311,51 @@ class BaseSubstitutionRecordProcessorTest {
 		}
 	}
 	
-	BaseSubstitutionRecordProcessor createTestInstance(
+	BaseSubRecordProcessor createTestInstance(
 			final BaseCallInterpreter bci,
 			final SharedStorage sharedStorage,
 			final Validator validator, 
-			Set<BaseSubstitution> queryBaseSubs,
-			final Map<BaseSubstitution, Storage> actual,
-			final Map<BaseSubstitution, Storage> expected) {
+			Set<BaseSub> queryBaseSubs,
+			final Map<BaseSub, Storage> actual,
+			final Map<BaseSub, Storage> expected) {
 		
 		if (! queryBaseSubs.equals(expected.keySet())) {
 			throw new IllegalStateException();
 		}
 		
-		final Map<BaseSubstitution, PositionProcessor> baseSub2positionProcessors = 
-				new EnumMap<>(BaseSubstitution.class);
-		for (final BaseSubstitution baseSub : queryBaseSubs) {
-			final Storage storage = new DefaultBaseCallCountStorage(sharedStorage, null);
+		final Map<BaseSub, PositionProcessor> baseSub2posProcs = 
+				new EnumMap<>(BaseSub.class);
+		for (final BaseSub baseSub : queryBaseSubs) {
+			final Storage storage = new DefaultBCCStorage(sharedStorage, null);
 			actual.put(baseSub, storage);
-			final PositionProcessor positionProcessor = new PositionProcessor();
-			positionProcessor.addValidator(validator);
-			positionProcessor.addStorage(storage);
-			baseSub2positionProcessors.put(baseSub, positionProcessor);
+			final PositionProcessor posProc = new PositionProcessor();
+			posProc.addValidator(validator);
+			posProc.addStorage(storage);
+			baseSub2posProcs.put(baseSub, posProc);
 		}
 		
-		return new BaseSubstitutionRecordProcessor(
+		return new BaseSubRecordProcessor(
 				sharedStorage,
 				bci,
 				validator,
 				queryBaseSubs,
-				baseSub2positionProcessors,
+				baseSub2posProcs,
+				new HashMap<>(),
 				new HashMap<>(),
 				new HashMap<>());
 	}
 	
 	// ',' separated array of strings of the following form: "x2y,winPos,{A|C|G|T}" 
 	// where x,y in {A,C,G,T}
-	Map<BaseSubstitution, Storage> parseExpected(final String[] str, final SharedStorage sharedStorage) {
-		final Map<BaseSubstitution, Storage> expected = new EnumMap<>(BaseSubstitution.class);
+	Map<BaseSub, Storage> parseExpected(final String[] str, final SharedStorage sharedStorage) {
+		final Map<BaseSub, Storage> expected = new EnumMap<>(BaseSub.class);
 		for (final String tmpStr : str) {
 			final String[] cols 			= tmpStr.split(",");
-			final BaseSubstitution baseSub 	= BaseSubstitution.valueOf(cols[0]);
+			final BaseSub baseSub 	= BaseSub.valueOf(cols[0]);
 			final int winPos 				= Integer.parseInt(cols[1]);
 			final Base base					= Base.valueOf(cols[2]);
 			if (! expected.containsKey(baseSub)) {
-				expected.put(baseSub, new DefaultBaseCallCountStorage(sharedStorage, null));
+				expected.put(baseSub, new DefaultBCCStorage(sharedStorage, null));
 			}
 			final Storage tmp = expected.get(baseSub);
 			final Position toyPos = new ToyPosition(winPos, base);
@@ -384,7 +385,7 @@ class BaseSubstitutionRecordProcessorTest {
 		}
 		
 		@Override
-		public SAMRecordExtended getRecordExtended() {
+		public Record getRecord() {
 			return null;
 		}
 		
@@ -399,7 +400,7 @@ class BaseSubstitutionRecordProcessorTest {
 		}
 		
 		@Override
-		public boolean isValidReferencePosition() {
+		public boolean isValidRefPos() {
 			return true;
 		}
 		
@@ -409,7 +410,7 @@ class BaseSubstitutionRecordProcessorTest {
 		}
 		
 		@Override
-		public SAMRecord getRecord() {
+		public SAMRecord getSAMRecord() {
 			return null;
 		}
 		

@@ -3,6 +3,9 @@ package lib.data.validator;
 import lib.data.storage.basecall.VisitedReadPositionStorage;
 import lib.util.position.Position;
 
+/**
+ * TODO
+ */
 public class UniqueVisitReadPositionValidator 
 implements Validator {
 

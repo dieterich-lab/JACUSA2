@@ -3,14 +3,14 @@ package lib.data.fetcher.basecall;
 import lib.data.DataContainer;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
-import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.storage.lrtarrest.ArrestPos2BCC;
 
 public class ThroughBaseCallCountExtractor implements Fetcher<BaseCallCount> {
 
-	private final Fetcher<ArrestPosition2baseCallCount> pos2bccFetcher;
+	private final Fetcher<ArrestPos2BCC> pos2bccFetcher;
 	
 	public ThroughBaseCallCountExtractor(
-			final Fetcher<ArrestPosition2baseCallCount> pos2bccFetcher) {
+			final Fetcher<ArrestPos2BCC> pos2bccFetcher) {
 		this.pos2bccFetcher = pos2bccFetcher;
 	}
 

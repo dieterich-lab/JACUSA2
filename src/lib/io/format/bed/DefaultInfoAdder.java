@@ -4,7 +4,6 @@ import lib.cli.parameter.GeneralParameter;
 import lib.data.ParallelData;
 import lib.data.result.Result;
 import lib.io.InputOutput;
-import lib.util.Base;
 
 public class DefaultInfoAdder implements InfoAdder {
 	
@@ -46,13 +45,7 @@ public class DefaultInfoAdder implements InfoAdder {
 
 		// always show reference
 		sb.append(InputOutput.FIELD_SEP);
-		sb.append(getStrandSpecificBase(parallelData));
+		sb.append(parallelData.getCombPooledData().getAutoReferenceBase());
 	}
 
-	// FIXME move this to ParallelData
-	private Base getStrandSpecificBase(ParallelData parallelData) {
-		Base base = parallelData.getCombinedPooledData().getReferenceBase();
-		return (parallelData.getCombinedPooledData().getCoordinate().isReverseStrand()) ?
-			base.getComplement() : base;
-	}
 }

@@ -1,9 +1,9 @@
 package lib.util.position;
 
 import htsjdk.samtools.AlignmentBlock;
+import lib.record.AlignedPosition;
+import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.recordextended.AlignedPosition;
-import lib.recordextended.SAMRecordExtended;
 
 public class MatchPosition extends AbstractPosition {
 
@@ -13,20 +13,20 @@ public class MatchPosition extends AbstractPosition {
 	
 	public MatchPosition(
 			final AlignedPosition alignPos, 
-			final SAMRecordExtended recordExtended,
+			final Record record,
 			final CoordinateTranslator translator) {
 		super(
-				alignPos.getReferencePosition(), 
-				alignPos.getReadPosition(), 
-				translator.reference2windowPosition(alignPos.getReferencePosition()), 
-				recordExtended);
+				alignPos.getRefPos(), 
+				alignPos.getReadPos(), 
+				translator.ref2winPos(alignPos.getRefPos()), 
+				record);
 	}
 	
 	MatchPosition(
 			final int refPos, final int readPos, final int winPos, 
-			final SAMRecordExtended recordExtended) {
+			final Record record) {
 
-		super(refPos, readPos, winPos, recordExtended);
+		super(refPos, readPos, winPos, record);
 	}
 	
 	@Override
@@ -53,31 +53,31 @@ public class MatchPosition extends AbstractPosition {
 	}
 	
 	@Override
-	public boolean isValidReferencePosition() {
+	public boolean isValidRefPos() {
 		return true;
 	}
 	
 	public static class Builder extends AbstractBuilder<MatchPosition> {
 		
 		public Builder(
-				final int alignmentBlockIndex, final SAMRecordExtended recordExtended, 
+				final int alignmentBlockIndex, final Record record, 
 				final CoordinateTranslator translator) {
 			
 			this(
-					recordExtended.getSAMRecord().getAlignmentBlocks().get(alignmentBlockIndex),
-					recordExtended, 
+					record.getSAMRecord().getAlignmentBlocks().get(alignmentBlockIndex),
+					record, 
 					translator);
 		}
 		
 		private Builder(
-				final AlignmentBlock alignmentBlock, final SAMRecordExtended recordExtended, 
+				final AlignmentBlock alignmentBlock, final Record record, 
 				final CoordinateTranslator translator) {
 			
 			super(
 					alignmentBlock.getReferenceStart(), 
 					alignmentBlock.getReadStart() - 1,
-					translator.reference2windowPosition(alignmentBlock.getReferenceStart()),
-					recordExtended);
+					translator.ref2winPos(alignmentBlock.getReferenceStart()),
+					record);
 		}
 		
 		@Override

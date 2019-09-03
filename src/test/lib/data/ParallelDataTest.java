@@ -46,7 +46,7 @@ class ParallelDataTest {
 			LibraryType libraryType, 
 			Base referenceBase, 
 			@ConvertWith(BaseSetArgumentConverter.class) Set<Base> expected) {
-		final Set<Base> actual = ParallelData.getNonReferenceBases(coordinate, libraryType, referenceBase);
+		final Set<Base> actual = ParallelData.getNonReferenceBases(referenceBase);
 		assertEquals(expected, actual);
 	}
 	

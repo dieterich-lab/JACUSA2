@@ -30,9 +30,6 @@ public class CLI {
 	private AbstractMethod method;
 	private boolean printExtendedHelp;
 	
-	/**
-	 * 
-	 */
 	public CLI(final List<AbstractMethod.AbstractFactory> methodFactories) {
 		this.methodFactories = methodFactories;
 		printExtendedHelp = false;
@@ -108,19 +105,20 @@ public class CLI {
 	}
 	// TODO
 	private void generateLatex() {
-		final Map<String, Map<String, List<AbstractACOption>>> opt2method2acOption = new HashMap<String, Map<String,List<AbstractACOption>>>();
+		final Map<String, Map<String, List<AbstractACOption>>> opt2method2acOption = 
+				new HashMap<>();
 		
-		final List<String> methods = new ArrayList<String>();
+		final List<String> methodNames = new ArrayList<>();
 		
 		// collect into Map...
 		for (final AbstractMethod.AbstractFactory methodFactory : methodFactories) {
 			final String name = methodFactory.getName();
-			methods.add(name);
+			methodNames.add(name);
 			// TODO change number of conditions?
-			final AbstractMethod method = methodFactory.createMethod();
-			method.initACOptions();
+			final AbstractMethod tmpMethod = methodFactory.createMethod();
+			tmpMethod.initACOptions();
 			
-			final List<AbstractACOption> acOptions = method.getACOptions();
+			final List<AbstractACOption> acOptions = tmpMethod.getACOptions();
 			for (final AbstractACOption acOption : acOptions) {
 				final String opt = acOption.getOpt();
 				
@@ -145,18 +143,19 @@ public class CLI {
 				final BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 				final StringBuilder sb = new StringBuilder();
 			
-				final Map<String, List<AbstractACOption>> method2acOption = opt2method2acOption.get(opt);
-				for (final String method : methods) {
-					if (! method2acOption.containsKey(method)) {
+				final Map<String, List<AbstractACOption>> method2acOption = 
+						opt2method2acOption.get(opt);
+				for (final String methodName : methodNames) {
+					if (! method2acOption.containsKey(methodName)) {
 						continue;
 					}
-					for (final AbstractACOption acOption : method2acOption.get(method)) {
+					for (final AbstractACOption acOption : method2acOption.get(methodName)) {
 						sb
 						.append('-').append(escape(acOption.getOpt()))
 						.append(" & ")
 						.append(escape(acOption.getOption(false).getDescription()))
 						.append(" & ")
-						.append(escape(method))
+						.append(escape(methodName))
 						.append(" \\\\\n");
 					}
 				}
@@ -166,6 +165,7 @@ public class CLI {
 				bw.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+				System.exit(1);
 			}
 		}
 	}
@@ -242,7 +242,6 @@ public class CLI {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			// methodFactory.printUsage();
 			return false;
 		}
 

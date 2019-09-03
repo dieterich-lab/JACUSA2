@@ -8,9 +8,12 @@ import lib.cli.parameter.GeneralParameter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
+/**
+ * CLI option to set input BED file that enables coordinate specific BAM traversal.
+ */
 public class BedCoordinatesOption extends AbstractACOption {
 
-	final private GeneralParameter parameters;
+	private final GeneralParameter parameters;
 	
 	public BedCoordinatesOption(GeneralParameter parameters) {
 		super("b", "bed");

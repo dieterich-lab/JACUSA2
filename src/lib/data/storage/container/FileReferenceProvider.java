@@ -7,11 +7,14 @@ import java.util.Map;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
 import lib.util.coordinate.CoordinateController;
-import lib.recordextended.SAMRecordExtended;
+import lib.record.Record;
 import lib.util.Base;
 import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 
+/**
+ * TODO
+ */
 public class FileReferenceProvider implements ReferenceProvider {
 
 	private static final int READ_AHEAD = 10;
@@ -34,7 +37,7 @@ public class FileReferenceProvider implements ReferenceProvider {
 	}
 	
 	@Override
-	public void addRecordExtended(SAMRecordExtended recordExtended) {
+	public void addrecord(Record record) {
 		// nothing to be done here
 	}
 	
@@ -60,7 +63,7 @@ public class FileReferenceProvider implements ReferenceProvider {
 	
 	@Override
 	public Base getReferenceBase(final Coordinate coordinate) {
-		final int winPos = coordinateController.getCoordinateTranslator().coordinate2windowPosition(coordinate);
+		final int winPos = coordinateController.getCoordinateTranslator().coord2winPos(coordinate);
 		if (winPos >= 0 ) {
 			return getReferenceBase(winPos);
 		}

@@ -8,6 +8,9 @@ import jacusa.io.format.call.VCFcallFormat;
 import lib.estimate.MinkaParameter;
 import lib.io.ResultFormat;
 
+/**
+ * TODO
+ */
 public class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 
 	private final ResultFormat resultFormat;
@@ -74,7 +77,7 @@ public class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 				break;
 				
 			case "showAlpha":
-				if (resultFormat.getC() == VCFcallFormat.CHAR) {
+				if (resultFormat.getID() == VCFcallFormat.CHAR) {
 					throw new IllegalStateException("VCF output format does not support showAlpha");
 				}
 				dirMultParameter.setShowAlpha(true);

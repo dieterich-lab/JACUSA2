@@ -4,7 +4,11 @@ import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.OneCoordinate;
 
-// has JUNIT tests
+/**
+ * TODO
+ * // has JUNIT tests
+ */
+
 public interface CoordinateAdvancer {
 
 	Coordinate getCurrentCoordinate();

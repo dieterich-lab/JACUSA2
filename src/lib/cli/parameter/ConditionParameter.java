@@ -53,7 +53,7 @@ public class ConditionParameter {
 		filterFlags 	= 0;
 		retainFlags	 	= 0;
 		
-		samTagFilters 	= new ArrayList<MaxValueSamTagFilter>();
+		samTagFilters 	= new ArrayList<>();
 		
 		recordFilenames = new String[0];
 	}
@@ -228,13 +228,12 @@ public class ConditionParameter {
 
 	public static SamReader createSamReader(final String inputFilename) {
 		final File file = new File(inputFilename);
-		final SamReader reader = SamReaderFactory
+		return SamReaderFactory
 				.make()
 				.setOption(Option.CACHE_FILE_BASED_INDEXES, true)
 				.setOption(Option.DONT_MEMORY_MAP_INDEX, false)
 				.validationStringency(ValidationStringency.LENIENT)
 				.open(file);
-		return reader;
 	}
 
 }

@@ -56,7 +56,7 @@ public interface BaseCallQualityCount extends Serializable {
 				}
 			}
 			sb.append(' ');
-			if (baseQualStr.size() == 0) {
+			if (baseQualStr.isEmpty()) {
 				sb.append('*');
 			} else {
 				sb.append(StringUtil.join(",", baseQualStr));
@@ -66,7 +66,7 @@ public interface BaseCallQualityCount extends Serializable {
 		return sb.toString();
 	}
 	
-	default boolean equals(final BaseCallQualityCount bcqc) {
+	default boolean specificEquals(final BaseCallQualityCount bcqc) {
 		if (bcqc == null) {
 			return false;
 		}
@@ -97,7 +97,7 @@ public interface BaseCallQualityCount extends Serializable {
 	 * Parser
 	 */
 	
-	public static abstract class AbstractParser implements lib.util.Parser<BaseCallQualityCount> {
+	public abstract static class AbstractParser implements lib.util.Parser<BaseCallQualityCount> {
 		
 		public static final char BASE_CALL_SEP 	= ',';
 		public static final char QUAL_SEP 		= ';';
@@ -165,7 +165,7 @@ public interface BaseCallQualityCount extends Serializable {
 					qualList.addAll(tmpQualList);
 					count += tmpCount;
 				}
-				if (qualList.size() == 0) {
+				if (qualList.isEmpty()) {
 					sb.append(Character.toString(empty));
 				} else {
 					sb.append(StringUtil.join(

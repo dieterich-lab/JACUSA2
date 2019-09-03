@@ -25,7 +25,7 @@ public interface HasConditionParameter {
 	ConditionParameter getConditionParameter(int conditionIndex);
 	
 	/**
-	 * Updates 
+	 * Updates the list of condition parameters.
 	 * 
 	 * @param conditionParameters the new list of condition parameters
 	 */

@@ -51,7 +51,7 @@ implements HasCondition {
 			CoordinateController coordinateController, 
 			ConditionContainer conditionContainer) {
 
-		return new HomozygousFilter(getC(), conditionIndex, bccFetcher);
+		return new HomozygousFilter(getID(), conditionIndex, bccFetcher);
 	}
 
 	@Override

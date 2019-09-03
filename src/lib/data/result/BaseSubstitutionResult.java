@@ -4,15 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 
+import lib.cli.options.filter.has.BaseSub;
 import lib.cli.options.filter.has.HasReadSubstitution;
-import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
 import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.count.BaseSubstitution2BaseCallCount;
+import lib.data.count.BaseSub2BaseCallCount;
 import lib.data.fetcher.Fetcher;
 import lib.io.InputOutput;
 import lib.util.Info;
 
+/**
+ * TODO
+ */
 public class BaseSubstitutionResult implements Result {
 
 	private static final long serialVersionUID = 1L;
@@ -21,23 +24,23 @@ public class BaseSubstitutionResult implements Result {
 	
 
 	public BaseSubstitutionResult(
-			final SortedSet<BaseSubstitution> baseSubs,
-			final Fetcher<BaseSubstitution2BaseCallCount> fetcher,
+			final SortedSet<BaseSub> baseSubs,
+			final Fetcher<BaseSub2BaseCallCount> fetcher,
 			final Result result) {
 		
-		if (result.getValuesIndex().size() > 1 || result.getValuesIndex().size() == 0) {
+		if (result.getValuesIndex().size() > 1 || result.getValuesIndex().isEmpty()) {
 			throw new IllegalStateException("Multi-level stratification not supported");
 		}
 		
 		// get all observed base substitutions
-		final DataContainer container 					= result.getParellelData().getCombinedPooledData();
-		final BaseSubstitution2BaseCallCount bsc 		= fetcher.fetch(container);
+		final DataContainer container 				= result.getParellelData().getCombPooledData();
+		final BaseSub2BaseCallCount bsc 	= fetcher.fetch(container);
 
 		// store valueIndex 2 base substitution
-		final Map<Integer, BaseSubstitution> value2bs 	= new HashMap<Integer, HasReadSubstitution.BaseSubstitution>();
+		final Map<Integer, BaseSub> value2bs 	= new HashMap<>();
 
 		multiResult = new MultiStatResult(result);
-		for (final BaseSubstitution baseSub : baseSubs) {
+		for (final BaseSub baseSub : baseSubs) {
 			if (bsc.get(baseSub).getCoverage() > 0) {
 				final int newValueIndex = multiResult.addStat(Double.NaN);
 				value2bs.put(newValueIndex, baseSub);

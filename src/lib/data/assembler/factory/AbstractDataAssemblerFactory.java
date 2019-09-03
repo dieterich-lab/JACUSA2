@@ -12,6 +12,9 @@ import lib.data.storage.container.RFPairedEnd1CacheContainer;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.container.UnstrandedCacheContainter;
 
+/**
+ * 
+ */
 public abstract class AbstractDataAssemblerFactory {
 	
 	private final AbstractBuilderFactory builderFactory;
@@ -30,9 +33,6 @@ public abstract class AbstractDataAssemblerFactory {
 	protected AbstractBuilderFactory getBuilderFactory() {
 		return builderFactory;
 	}
-
-	
-	
 	
 	protected CacheContainer createContainer(
 			final GeneralParameter parameter,
@@ -90,6 +90,7 @@ public abstract class AbstractDataAssemblerFactory {
 			final SharedStorage sharedStorage, 
 			final ConditionParameter conditionParameter);
 
+	// combine data and filter cache
 	private Cache combineCaches(
 			final GeneralParameter parameter,
 			final FilterContainer filterContainer, 

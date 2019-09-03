@@ -4,18 +4,22 @@ import java.util.Arrays;
 import java.util.SortedSet;
 
 import jacusa.method.rtarrest.RTarrestMethod;
-import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
 import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.ParallelData.Builder;
-import lib.data.count.BaseSubstitution2BaseCallCount;
+import lib.data.count.BaseSub2BaseCallCount;
 import lib.data.fetcher.BaseSubstitution2BaseCallCountAggregator;
 import lib.data.fetcher.Fetcher;
 import lib.data.result.BaseSubstitutionResult;
 import lib.data.result.DeletionCountResult;
+import lib.data.result.InsertionCountResult;
 import lib.data.result.Result;
+import lib.estimate.MinkaParameter;
 import lib.stat.AbstractStat;
+import lib.stat.estimation.provider.DeletionEstimationCountProvider;
+import lib.stat.estimation.provider.InsertionEstimationCountProvider;
 import lib.util.ReplicateContainer;
 import lib.util.coordinate.Coordinate;
 import lib.worker.AbstractWorker;
@@ -25,7 +29,7 @@ extends AbstractWorker {
 
 	private final AbstractStat stat;
 	
-	private final Fetcher<BaseSubstitution2BaseCallCount> bs2bccFetcher;
+	private final Fetcher<BaseSub2BaseCallCount> bs2bccFetcher;
 	
 	public RTArrestWorker(final RTarrestMethod method, final int threadId) {
 		super(method, threadId);
@@ -57,13 +61,23 @@ extends AbstractWorker {
 	protected Result process(final ParallelData parallelData) {
 		Result result = stat.filter(parallelData); 
 		
-		final SortedSet<BaseSubstitution> baseSubs = getParameter().getReadSubstitutions();
+		final SortedSet<BaseSub> baseSubs = getParameter().getReadSubstitutions();
 		if (! baseSubs.isEmpty()) {
 			result = new BaseSubstitutionResult(baseSubs, bs2bccFetcher, result);
 		}
 		
 		if (getParameter().showDeletionCount()) {
-			result = new DeletionCountResult(baseSubs, result);
+			final MinkaParameter minkaPrm = new MinkaParameter();
+			final DeletionEstimationCountProvider delCountProv = 
+					new DeletionEstimationCountProvider(minkaPrm.getMaxIterations());
+			result = new DeletionCountResult(baseSubs, result, minkaPrm, delCountProv);
+		}
+		
+		if (getParameter().showInsertionCount()) {
+			final MinkaParameter minkaPrm = new MinkaParameter();
+			final InsertionEstimationCountProvider insCountProv = 
+					new InsertionEstimationCountProvider(minkaPrm.getMaxIterations());
+			result = new InsertionCountResult(baseSubs, result, minkaPrm, insCountProv);
 		}
 		
 		return result;

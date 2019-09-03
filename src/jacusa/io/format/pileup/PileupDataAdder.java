@@ -26,7 +26,7 @@ public class PileupDataAdder implements DataAdder {
 	public void addData(StringBuilder sb, int valueIndex, int conditionIndex, int replicateIndex, Result result) {
 		final DataContainer container = result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
 		sb.append(InputOutput.FIELD_SEP);
-		final BaseCallCount bcc = container.getPileupCount().getBaseCallCount();
+		final BaseCallCount bcc = container.getPileupCount().getBCC();
 		sb.append(bccParser.wrap(bcc));
 	}
 	

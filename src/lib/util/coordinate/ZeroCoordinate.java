@@ -2,6 +2,9 @@ package lib.util.coordinate;
 
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
+/**
+ * TODO
+ */
 public class ZeroCoordinate extends AbstractCoordinate {
 	
 	private static final long serialVersionUID = 1L;

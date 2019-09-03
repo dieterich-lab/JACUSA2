@@ -2,9 +2,9 @@ package test.lib.estimate;
 
 import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.estimate.MinkaParameter;
+import lib.stat.estimation.EstimationContainer;
+import lib.stat.estimation.FastEstimationResult;
 import lib.stat.nominal.NominalData;
-import lib.stat.sample.EstimationSample;
-import lib.stat.sample.FastEstimationResult;
 import lib.util.Info;
 import test.lib.stat.dirmult.NominalDataArgumentConverter;
 import test.utlis.DoubleArrayArgumentConverter;
@@ -47,7 +47,7 @@ class MinkaEstimateDirMultAlphaTest {
 			@ConvertWith(DoubleArrayArgumentConverter.class) double[] expectedAlpha, 
 			double expectedLL) {
 		
-		final EstimationSample estimationSample = 
+		final EstimationContainer estimationSample = 
 				new FastEstimationResult("TEST", nominalData, minkaParameter.getMaxIterations());  
 		estimationSample.add(initAlpha, Double.NaN);
 		testInstance.maximizeLogLikelihood(estimationSample, new Info(), false);

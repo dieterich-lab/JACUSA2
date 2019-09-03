@@ -16,11 +16,11 @@ public class HomopolymerFilter extends AbstractFilter {
 	private final Fetcher<BooleanData> fetcher;
 	
 	public HomopolymerFilter(
-			final char c, 
+			final char id, 
 			final int overhang, 
 			final Fetcher<BooleanData> fetcher) {
 		
-		super(c, overhang);
+		super(id, overhang);
 		this.fetcher = fetcher;
 	}
 
@@ -29,10 +29,11 @@ public class HomopolymerFilter extends AbstractFilter {
 	 */
 	@Override
 	public boolean filter(final ParallelData parallelData) {
-		// if in any condition there is a homopolyer mark site as such
-		final DataContainer dataContainer 	= parallelData.getCombinedPooledData();
-		final BooleanData bw 				= fetcher.fetch(dataContainer);
-		return bw != null && bw.getValue();
+		// combine conditions - one condition with a homopolymer suffices for filtering
+		final DataContainer dataContainer 	= parallelData.getCombPooledData();
+		final BooleanData booleanData 		= fetcher.fetch(dataContainer);
+		
+		return booleanData != null && booleanData.getValue();
 	}
 	
 }

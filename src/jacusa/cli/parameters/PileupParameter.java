@@ -8,16 +8,18 @@ import lib.cli.parameter.GeneralParameter;
 /**
  * Class defines parameters and default values that are need for pileup method.
  */
-public class PileupParameter
-extends GeneralParameter
+public class PileupParameter extends GeneralParameter 
 implements HasStatParameter {
 
 	private StatParameter statParameter;
 	
 	public PileupParameter(final int conditions) {
 		super(conditions);
-		setStatParameter(new StatParameter(new CoverageStatisticFactory(), Double.NaN));
-		setResultFormat(new BED6pileupResultFormat(PileupMethod.Factory.NAME, this));
+		// change default values
+		setStatParameter(
+				new StatParameter(new CoverageStatisticFactory(), Double.NaN));
+		setResultFormat(
+				new BED6pileupResultFormat(PileupMethod.Factory.NAME, this));
 	}
 
 	@Override

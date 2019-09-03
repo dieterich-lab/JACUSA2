@@ -8,7 +8,7 @@ import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.HomozygousFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.basecall.CombinedFilterFactory;
-import jacusa.filter.factory.basecall.INDEL_FilterFactory;
+import jacusa.filter.factory.basecall.INDELfilterFactory;
 import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import jacusa.io.format.pileup.BED6pileupResultFormat;
@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lib.cli.options.BedCoordinatesOption;
-import lib.cli.options.CollectReadSubstituionOption;
+import lib.cli.options.StratifyByReadSubstituionOption;
 import lib.cli.options.DebugModusOption;
 import lib.cli.options.FilterConfigOption;
 import lib.cli.options.FilterModusOption;
@@ -74,8 +74,7 @@ extends AbstractMethod {
 	protected PileupMethod(
 			final String name, 
 			final PileupParameter parameter, 
-			final PileupDataAssemblerFactory dataAssemblerFactory,
-			final PileupBuilderFactory builderFactory) {
+			final PileupDataAssemblerFactory dataAssemblerFactory) {
 
 		super(name, parameter, dataAssemblerFactory);
 		bccFetcher = new PileupCountBaseCallCountExtractor(DataType.PILEUP_COUNT.getFetcher());
@@ -97,7 +96,7 @@ extends AbstractMethod {
 		addACOption(new WindowSizeOption(getParameter()));
 		addACOption(new ThreadWindowSizeOption(getParameter()));
 		
-		addACOption(new CollectReadSubstituionOption(getParameter()));
+		addACOption(new StratifyByReadSubstituionOption(getParameter()));
 		addACOption(new ShowDeletionCountOption(getParameter()));
 		addACOption(new ShowInsertionCountOption(getParameter()));
 		
@@ -119,7 +118,7 @@ extends AbstractMethod {
 		addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
 		addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
 		
-		final Set<LibraryType> availableLibType = new HashSet<LibraryType>(
+		final Set<LibraryType> availableLibType = new HashSet<>(
 				Arrays.asList(
 						LibraryType.UNSTRANDED, 
 						LibraryType.RF_FIRSTSTRAND,
@@ -150,13 +149,13 @@ extends AbstractMethod {
 
 	public Map<Character, ResultFormat> getResultFormats() {
 		final Map<Character, ResultFormat> outputFormats = 
-				new HashMap<Character, ResultFormat>();
+				new HashMap<>();
 
 		ResultFormat outputFormat = new PileupLikeFormat(getName(), getParameter());
-		outputFormats.put(outputFormat.getC(), outputFormat);
+		outputFormats.put(outputFormat.getID(), outputFormat);
 
 		outputFormat = new BED6pileupResultFormat(getName(), getParameter());
-		outputFormats.put(outputFormat.getC(), outputFormat);
+		outputFormats.put(outputFormat.getID(), outputFormat);
 		
 		return outputFormats;
 	}
@@ -172,7 +171,7 @@ extends AbstractMethod {
 				new CombinedFilterFactory(
 						bccFetcher,
 						filteredBccData),
-				new INDEL_FilterFactory(
+				new INDELfilterFactory(
 						bccFetcher, 
 						filteredBccData),
 				new ReadPositionFilterFactory(
@@ -185,7 +184,7 @@ extends AbstractMethod {
 				new MaxAlleleCountFilterFactory(bccFetcher),
 				new HomopolymerFilterFactory(getParameter(), filteredBooleanData))
 				.stream()
-				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()) );
+				.collect(Collectors.toMap(FilterFactory::getID, Function.identity()) );
 	}
 
 	@Override
@@ -233,20 +232,25 @@ extends AbstractMethod {
 		
 		protected void addRequired(final AbstractBuilder builder) {
 			add(builder, DataType.PILEUP_COUNT);
-			if (parameter.getReadSubstitutions().size() > 0) {
-				addBaseSubstitution(builder, DataType.BASE_SUBST2BCC);
+			if (! parameter.getReadSubstitutions().isEmpty()) {
+				addBaseSubstitution2bcc(builder, DataType.BASE_SUBST2BCC);
+				
+				if (parameter.showDeletionCount()) {
+					addBaseSubstitution2int(builder, DataType.BASE_SUBST2DELETION_COUNT);
+					addBaseSubstitution2int(builder, DataType.BASE_SUBST2COVERAGE);
+				}
+				if (parameter.showInsertionCount()) {
+					addBaseSubstitution2int(builder, DataType.BASE_SUBST2INSERTION_COUNT);
+					addBaseSubstitution2int(builder, DataType.BASE_SUBST2COVERAGE);
+				}
 			}
 			if (parameter.showDeletionCount()) {
 				add(builder, DataType.DELETION_COUNT);
-				add(builder, DataType.COVERAGE);
+				guardedAdd(builder, DataType.COVERAGE);
 			}
 			if (parameter.showInsertionCount()) {
 				add(builder, DataType.INSERTION_COUNT);
-//				add(builder, DataType.COVERAGE);
-			}
-			if (parameter.getReadSubstitutions().size() > 0 && parameter.showDeletionCount()) {
-				addDeletionCount(builder, DataType.BASE_SUBST2DELETION_COUNT);
-				addCoverage(builder, DataType.BASE_SUBST2COVERAGE);
+				guardedAdd(builder, DataType.COVERAGE);
 			}
 		}
 		
@@ -277,8 +281,7 @@ extends AbstractMethod {
 			return new PileupMethod(
 					getName(),
 					parameter,
-					dataAssemblerFactory, 
-					builderFactory);
+					dataAssemblerFactory);
 		}
 		
 		@Override

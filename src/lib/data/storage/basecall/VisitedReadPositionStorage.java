@@ -1,9 +1,9 @@
 package lib.data.storage.basecall;
 
-import lib.recordextended.SAMRecordExtended;
 import lib.data.DataContainer;
 import lib.data.storage.Storage;
 import lib.data.storage.container.SharedStorage;
+import lib.record.Record;
 import lib.util.coordinate.Coordinate;
 import lib.util.position.Position;
 
@@ -41,8 +41,8 @@ public class VisitedReadPositionStorage implements Storage {
 		return visited[readPos];
 	}
 	
-	public void reset(final SAMRecordExtended recordExtended) {
-		visited = new boolean[recordExtended.getSAMRecord().getReadLength()];
+	public void reset(final Record record) {
+		visited = new boolean[record.getSAMRecord().getReadLength()];
 	}
 	
 }

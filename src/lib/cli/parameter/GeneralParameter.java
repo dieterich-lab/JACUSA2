@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 
 import jacusa.cli.parameters.HasConditionParameter;
 import jacusa.filter.FilterConfig;
+import lib.cli.options.filter.has.BaseSub;
 import lib.cli.options.filter.has.HasReadSubstitution;
 import lib.io.ResultFormat;
 import lib.util.AbstractTool;
@@ -42,7 +43,7 @@ implements HasConditionParameter, HasReadSubstitution {
 
 	private boolean splitFiltered;
 	
-	private final SortedSet<BaseSubstitution> baseSubstitutions;
+	private final SortedSet<BaseSub> baseSubstitutions;
 	private boolean showDeletionCount;
 	private boolean showInsertionCount;
 	
@@ -55,8 +56,8 @@ implements HasConditionParameter, HasReadSubstitution {
 
 		maxThreads			= 1;
 		
-		inputBedFilename	= new String();
-		conditionParameters	= new ArrayList<ConditionParameter>(2);
+		inputBedFilename	= "";
+		conditionParameters	= new ArrayList<>(2);
 
 		filterConfig		= new FilterConfig();
 		
@@ -145,12 +146,12 @@ implements HasConditionParameter, HasReadSubstitution {
 	
 
 	@Override
-	public SortedSet<BaseSubstitution> getReadSubstitutions() {
+	public SortedSet<BaseSub> getReadSubstitutions() {
 		return Collections.unmodifiableSortedSet(baseSubstitutions);
 	}
 	
 	@Override
-	public void addReadSubstitution(BaseSubstitution baseSubstitution) {
+	public void addReadSubstitution(BaseSub baseSubstitution) {
 		baseSubstitutions.add(baseSubstitution);
 	}
 	
@@ -265,6 +266,7 @@ implements HasConditionParameter, HasReadSubstitution {
 				referenceFile = new IndexedFastaSequenceFile(file);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
+				System.exit(1);
 			}
 		}
 
@@ -283,7 +285,8 @@ implements HasConditionParameter, HasReadSubstitution {
 	}
 	
 	/**
-	 * TODO add comments
+	 * Change if filtered sites will be split to other output file
+	 * @param split boolean indicates if output should be split.
 	 */
 	public void splitFiltered(boolean split) {
 		this.splitFiltered = split;

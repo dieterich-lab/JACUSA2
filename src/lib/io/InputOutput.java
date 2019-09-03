@@ -32,6 +32,13 @@ public final class InputOutput {
 		new AssertionError();
 	}
 
+	/**
+	 * TODO
+	 * @param sb
+	 * @param str
+	 * @param prefix
+	 * @param width
+	 */
 	public static void formatStr(final StringBuilder sb, final String str, final String prefix, final int width) {
 		// container for output lines - should be < width
 		final List<String> outputLines = new ArrayList<String>();

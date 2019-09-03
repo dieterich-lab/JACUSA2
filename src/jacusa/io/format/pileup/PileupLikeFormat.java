@@ -14,7 +14,7 @@ public class PileupLikeFormat
 extends AbstractResultFileFormat {
 
 	// unique char id for CLI
-	public final static char CHAR = 'M';
+	public static final char CHAR = 'M';
 	
 	public PileupLikeFormat(
 			final String methodName, 

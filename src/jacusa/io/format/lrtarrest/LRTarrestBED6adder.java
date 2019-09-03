@@ -19,15 +19,15 @@ public class LRTarrestBED6adder implements BED6adder {
 	public void addHeader(StringBuilder sb) {
 		bed6Adder.addHeader(sb);
 		sb.append(InputOutput.FIELD_SEP);
-		sb.append("arrest_pos"); // 1-index
+		sb.append("arrest_pos"); // expected to be given 1-indexed
 	}
-
+	
 	@Override
 	public void addData(StringBuilder sb, int valueIndex, Result result) {
 		bed6Adder.addData(sb, valueIndex, result);
 		sb.append(InputOutput.FIELD_SEP);
-		final DataContainer combinedPooledContainer = result.getParellelData().getCombinedPooledData();
-		final List<Integer> arrestPositions = combinedPooledContainer.getArrestPos2BaseCallCount().getPositions();
+		final DataContainer combinedPooledContainer = result.getParellelData().getCombPooledData();
+		final List<Integer> arrestPositions = combinedPooledContainer.getArrestPos2BCC().getPositions();
 		sb.append(arrestPositions.get(valueIndex));
 	}
 	

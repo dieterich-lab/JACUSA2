@@ -12,15 +12,15 @@ import lib.data.DataContainer;
 import lib.data.assembler.DataAssembler;
 import lib.data.assembler.DataAssembler.CACHE_STATUS;
 import lib.data.storage.container.SharedStorage;
+import lib.record.RecordIterator;
+import lib.record.RecordIteratorProvider;
 import lib.util.coordinate.Coordinate;
-import lib.recordextended.SAMRecordExtendedIterator;
-import lib.recordextended.SAMRecordExtendedIteratorProvider;
 
 public class ReplicateContainer {
 
-	private final ConditionParameter conditionParameter;
+	private final ConditionParameter condPrm;
 	
-	private final List<SAMRecordExtendedIteratorProvider> iteratorProviders;
+	private final List<RecordIteratorProvider> itProvs;
 	private final List<DataAssembler> dataAssemblers;
 	
 	public ReplicateContainer(
@@ -30,21 +30,21 @@ public class ReplicateContainer {
 			final ConditionParameter conditionParameter,
 			final AbstractMethod method) {
 
-		this.conditionParameter = conditionParameter;
+		this.condPrm = conditionParameter;
 
-		iteratorProviders = createRecordIteratorProviders(conditionParameter);
+		itProvs = createRecordIteratorProviders(conditionParameter);
 		dataAssemblers = createDataAssemblers(
 				parameter, filterContainer, sharedStorage, conditionParameter, method);
 	}
 
-	public List<SAMRecordExtendedIteratorProvider> getIteratorProviders() {
-		return iteratorProviders;
+	public List<RecordIteratorProvider> getIteratorProviders() {
+		return itProvs;
 	}
 	
 	public void createIterators(final Coordinate activeWindowCoordinate) {
-		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); ++replicateIndex) {
-			final SAMRecordExtendedIterator recordIterator = 
-					iteratorProviders.get(replicateIndex).getIterator(activeWindowCoordinate);
+		for (int replicateIndex = 0; replicateIndex < condPrm.getReplicateSize(); ++replicateIndex) {
+			final RecordIterator recordIterator = 
+					itProvs.get(replicateIndex).getIterator(activeWindowCoordinate);
 			final DataAssembler dataAssembler = dataAssemblers.get(replicateIndex);
 			dataAssembler.buildCache(activeWindowCoordinate, recordIterator);
 			recordIterator.close();
@@ -102,11 +102,11 @@ public class ReplicateContainer {
 		return dataAssemblers;
 	}
 	
-	private List<SAMRecordExtendedIteratorProvider> createRecordIteratorProviders(
+	private List<RecordIteratorProvider> createRecordIteratorProviders(
 			final ConditionParameter conditionParameter) {
 
 		return Stream.of(conditionParameter.getRecordFilenames())
-				.map(f -> new SAMRecordExtendedIteratorProvider(conditionParameter, f))
+				.map(f -> new RecordIteratorProvider(conditionParameter, f))
 				.collect(Collectors.toList());
 	}
 
