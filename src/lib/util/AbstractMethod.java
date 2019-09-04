@@ -131,7 +131,7 @@ public abstract class AbstractMethod {
 	 */
 	public void printUsage(final boolean printExtendedHelp) {
 		final HelpFormatter formatter = new HelpFormatter();
-		formatter.setWidth(160);
+		formatter.setWidth(200);
 
 		formatter.printHelp(
 				AbstractTool.getLogger().getTool().getName() + 

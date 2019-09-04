@@ -50,7 +50,7 @@ public abstract class AbstractStatFactory {
 	 * Return a short description of this StatisticCalculator.
 	 * @return
 	 */
-	public String getDescription() {
+	public String getDesc() {
 		// HACK
 		Option tmp = (Option)option.clone();
 		CLIUtil.adjustOption(tmp, getOptions(), tmp.getOpt().length());
@@ -86,14 +86,14 @@ public abstract class AbstractStatFactory {
 		}
 		
 		final AbstractStatFactory asf = (AbstractStatFactory) obj;
-		return getName().equals(asf.getName()) && getDescription().equals(asf.getDescription()); 
+		return getName().equals(asf.getName()) && getDesc().equals(asf.getDesc()); 
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 1;
 		hash = 31 * hash + getName().hashCode();
-		hash = 31 * hash + getDescription().hashCode();
+		hash = 31 * hash + getDesc().hashCode();
 		return hash;
 	}
 	

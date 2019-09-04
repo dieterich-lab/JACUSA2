@@ -32,13 +32,16 @@ public class FilterConfigOption extends AbstractACOption {
 
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
+		// magic string - added to fake nested CLI 
+		final String REMOVE = "___REMOVE___";
+		
 		final StringBuilder sb = new StringBuilder();
 		
 		final Options options = new Options(); 
 		for (final char id : filterFactories.keySet()) {
 			final FilterFactory filterFactory = filterFactories.get(id);
 
-			final String opt = "___REMOVE___" + Character.toString(id);
+			final String opt = REMOVE + Character.toString(id);
 			Option option = Option.builder(opt)
 					.desc(filterFactory.getDesc())
 					.build();
@@ -49,9 +52,9 @@ public class FilterConfigOption extends AbstractACOption {
 		final HelpFormatter helpFormatter = new HelpFormatter();
 		final StringWriter sw = new StringWriter();
 		final PrintWriter pw = new PrintWriter(sw);
-		helpFormatter.printOptions(pw, 100, options, 0, 1);
+		helpFormatter.printOptions(pw, 200, options, 0, 1);
 		final String s = sw.toString();
-		sb.append(s.replaceAll("-___REMOVE___", ""));
+		sb.append(s.replaceAll("-" + REMOVE, ""));
 
 		final String argName = "FEATURE-FILTER";
 		String desc = "";

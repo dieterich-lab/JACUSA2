@@ -186,7 +186,7 @@ public class CLI {
 		} else if (args.length > 0 && ! contains(args[0].toLowerCase())) {
 			if (args[0].equals("generate-latex")) {
 				generateLatex();
-				System.exit(0);				
+				System.exit(0);
 			}
 			
 			printVersion(args);

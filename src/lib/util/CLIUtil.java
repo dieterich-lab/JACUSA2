@@ -49,7 +49,7 @@ public final class CLIUtil {
 			sb.append(o.getLongOpt());
 	
 			space = new char[max - o.getLongOpt().length() + 1];
-			Arrays.fill(space, ' ');		
+			Arrays.fill(space, ' ');
 			sb.append(space);
 			
 			space = new char[max + 4];

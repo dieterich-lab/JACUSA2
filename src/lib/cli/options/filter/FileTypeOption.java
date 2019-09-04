@@ -46,8 +46,7 @@ public class FileTypeOption extends AbstractACOption {
 			.argName(getLongOpt().toUpperCase())
 			.required()
 			.hasArg()
-			.desc("File type: " +
-					sb.toString() + ". Default: " + "TODO AUTO")
+			.desc("File type: " + sb.toString())
 			.build();
 
 	}

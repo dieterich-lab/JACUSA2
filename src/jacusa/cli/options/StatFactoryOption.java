@@ -56,7 +56,7 @@ public class StatFactoryOption extends AbstractACOption {
 			final String opt = REMOVE + factoryName;
 			// create main option
 			Option option = Option.builder(opt)
-					.desc(factory.getDescription())
+					.desc(factory.getDesc())
 					.build();
 			
 			options.addOption(option);
@@ -67,7 +67,7 @@ public class StatFactoryOption extends AbstractACOption {
 		final HelpFormatter helpFormatter = new HelpFormatter();
 		final StringWriter sw 	= new StringWriter();
 		final PrintWriter pw 	= new PrintWriter(sw);
-		helpFormatter.printOptions(pw, 100, options, 0, 1);
+		helpFormatter.printOptions(pw, 200, options, 0, 1);
 		final String s = sw.toString();
 		// replace magic string with "-" to enable parsing of options
 		sb.append(s.replaceAll("-" + REMOVE, ""));
