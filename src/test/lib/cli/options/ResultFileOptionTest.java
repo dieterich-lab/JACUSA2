@@ -4,6 +4,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
@@ -30,6 +31,7 @@ implements ACOptionTest<String> {
 				fullPath);
 	}
 	
+	@Disabled
 	@Test
 	void testProcessFails() throws Exception {
 		final String fullPath = PATH + "ResultFileOptionTest_File1.out";

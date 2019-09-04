@@ -37,9 +37,9 @@ class ParallelDataTest {
 		"1:1-2:+,UNSTRANDED,A,CGT",
 		"1:1-2:+,RF_FIRSTSTRAND,A,CGT",
 		"1:1-2:+,FR_SECONDSTRAND,A,CGT",
-		"1:1-2:-,UNSTRANDED,A,ACG",
-		"1:1-2:-,RF_FIRSTSTRAND,A,ACG",
-		"1:1-2:-,FR_SECONDSTRAND,A,ACG",
+		"1:1-2:-,UNSTRANDED,A,CGT",
+		"1:1-2:-,RF_FIRSTSTRAND,A,CGT",
+		"1:1-2:-,FR_SECONDSTRAND,A,CGT",
 	})
 	void testGetNonReferenceBases(
 			@ConvertWith(OneCoordinateArgumentConverter.class) Coordinate coordinate, 
