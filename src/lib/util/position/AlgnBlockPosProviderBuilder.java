@@ -60,7 +60,7 @@ public class AlgnBlockPosProviderBuilder implements lib.util.Builder<IntervalPos
 	}
 	
 	// make sure to run this last
-	public AlgnBlockPosProviderBuilder adjustWindowPos() {
+	public AlgnBlockPosProviderBuilder adjustWinPos() {
 		length = PositionProvider.adjustWindowPos(pos, length, translator);
 		return this;
 	} 

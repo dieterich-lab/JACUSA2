@@ -28,7 +28,7 @@ public abstract class AbstractDataAssemblerFactory {
 			final FilterContainer filterContainer,
 			final SharedStorage sharedStorage, 
 			final ConditionParameter conditionParameter,
-			final int replicateIndex);
+			final int replicateI);
 	
 	protected AbstractBuilderFactory getBuilderFactory() {
 		return builderFactory;

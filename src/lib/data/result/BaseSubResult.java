@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import lib.cli.options.filter.has.BaseSub;
-import lib.cli.options.filter.has.HasReadSubstitution;
+import lib.cli.options.filter.has.HasReadSub;
 import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.count.BaseSub2BaseCallCount;
+import lib.data.count.BaseSub2BCC;
 import lib.data.fetcher.Fetcher;
 import lib.io.InputOutput;
 import lib.util.Info;
@@ -16,16 +16,16 @@ import lib.util.Info;
 /**
  * TODO
  */
-public class BaseSubstitutionResult implements Result {
+public class BaseSubResult implements Result {
 
 	private static final long serialVersionUID = 1L;
 
 	private final MultiStatResult multiResult;
 	
 
-	public BaseSubstitutionResult(
+	public BaseSubResult(
 			final SortedSet<BaseSub> baseSubs,
-			final Fetcher<BaseSub2BaseCallCount> fetcher,
+			final Fetcher<BaseSub2BCC> fetcher,
 			final Result result) {
 		
 		if (result.getValuesIndex().size() > 1 || result.getValuesIndex().isEmpty()) {
@@ -34,7 +34,7 @@ public class BaseSubstitutionResult implements Result {
 		
 		// get all observed base substitutions
 		final DataContainer container 				= result.getParellelData().getCombPooledData();
-		final BaseSub2BaseCallCount bsc 	= fetcher.fetch(container);
+		final BaseSub2BCC bsc 	= fetcher.fetch(container);
 
 		// store valueIndex 2 base substitution
 		final Map<Integer, BaseSub> value2bs 	= new HashMap<>();
@@ -48,7 +48,7 @@ public class BaseSubstitutionResult implements Result {
 		}
 		
 		// add field for stratification
-		final String key = HasReadSubstitution.READ_SUB;
+		final String key = HasReadSub.READ_SUB;
 		for (final int valueIndex : multiResult.getValuesIndex()) {
 			final String value = valueIndex == Result.TOTAL ? 
 					Character.toString(InputOutput.EMPTY_FIELD) : value2bs.get(valueIndex).toString();

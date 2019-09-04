@@ -8,8 +8,7 @@ import lib.stat.AbstractStat;
 /**
  * This is a dummy statistic... to display a dummy value 
  */
-public class DummyStatistic 
-extends AbstractStat {
+class DummyStatistic extends AbstractStat {
 
 	private final double defaultValue;
 

@@ -30,26 +30,26 @@ public class ProcessReadStartEnd extends AbstractFilterRecordProcessor {
 	public void process(final Record record) {
 		final SAMRecord samRecord = record.getSAMRecord();
 		// note: alignmentBlock.getReadStart() is 1-indexed
-		final List<AlignmentBlock> alignmentBlocks = samRecord.getAlignmentBlocks();
+		final List<AlignmentBlock> algnBlocks = samRecord.getAlignmentBlocks();
 
 		// read start
-		getPositionProcessor().process(
+		getPosProcessor().process(
 				new AlgnBlockPosProviderBuilder(
 						0, 
 						record, 
 						getTranslator())
 				.tryFirst(getDistance())
-				.adjustWindowPos()
+				.adjustWinPos()
 				.build());
 		
 		// read end
-		getPositionProcessor().process(
+		getPosProcessor().process(
 				new AlgnBlockPosProviderBuilder(
-						alignmentBlocks.size() - 1, 
+						algnBlocks.size() - 1, 
 						record, 
 						getTranslator())
 				.tryLast(getDistance())
-				.adjustWindowPos()
+				.adjustWinPos()
 				.build());
 	}
 	

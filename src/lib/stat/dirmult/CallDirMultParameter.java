@@ -2,8 +2,8 @@ package lib.stat.dirmult;
 
 import lib.estimate.MinkaParameter;
 
-public class CallDirMultParameter extends AbstractDirMultParameter {
-
+class CallDirMultParameter extends AbstractDirMultParameter {
+	
 	public static final double ESTIMATED_ERROR = 0.01;
 	
 	private double estError;

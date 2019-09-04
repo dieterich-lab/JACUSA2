@@ -12,7 +12,7 @@ import lib.record.Record;
 /**
  * TODO
  */
-public abstract class AbstractStrandedCacheContainer 
+abstract class AbstractStrandedCacheContainer 
 implements CacheContainer {
 
 	private final CacheContainer forwardContainer; 
@@ -21,7 +21,7 @@ implements CacheContainer {
 	private final List<GeneralRecordProcessor> recordProcessors;
 	private final List<Storage> storages;
 	
-	public AbstractStrandedCacheContainer(
+	AbstractStrandedCacheContainer(
 			final CacheContainer forwardContainer, 
 			final CacheContainer reverseContainer) {
 

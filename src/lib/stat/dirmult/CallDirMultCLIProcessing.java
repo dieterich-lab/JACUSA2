@@ -11,12 +11,12 @@ import lib.io.ResultFormat;
 /**
  * TODO
  */
-public class CallDirMultCLIProcessing implements DirMultCLIprocessing {
-
+class CallDirMultCLIProcessing implements DirMultCLIprocessing {
+	
 	private final ResultFormat resultFormat;
 	private final DirMultParameter dirMultParameter;
-
-	public CallDirMultCLIProcessing(final ResultFormat resultFormat, final DirMultParameter dirMultParameter) {
+	
+	CallDirMultCLIProcessing(final ResultFormat resultFormat, final DirMultParameter dirMultParameter) {
 		this.resultFormat		= resultFormat;
 		this.dirMultParameter 	= dirMultParameter;
 	}

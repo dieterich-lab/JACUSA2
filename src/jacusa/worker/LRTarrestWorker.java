@@ -28,7 +28,7 @@ extends AbstractWorker {
 	private ParallelDataValidator validator;
 	
 	private final AbstractStat stat;
-	private final EstimationContainerProvider estimationSampleProvider;
+	private final EstimationContainerProvider estContainerProv;
 	private final EstimateDirMult dirMult;
 	
 	public LRTarrestWorker(final LRTarrestMethod method, final int threadId) {
@@ -38,21 +38,21 @@ extends AbstractWorker {
 		
 		validator = new ExtendedVariantSiteValidator(method.getTotalBaseCallCountFetcher());
 		final MinkaParameter minkaParameter = new MinkaParameter();
-		estimationSampleProvider = new RobustEstimationPileupProvider(
+		estContainerProv = new RobustEstimationPileupProvider(
 				false, minkaParameter.getMaxIterations(), DirMultParameter.ESTIMATED_ERROR);
 		dirMult	= new EstimateDirMult(minkaParameter);
 	}
 
 	@Override
-	protected ParallelData createParallelData(Builder parallelDataBuilder, Coordinate coordinate) {
-		for (int conditionIndex = 0; conditionIndex < getConditionContainer().getConditionSize() ; ++conditionIndex) {
-			final ReplicateContainer replicateContainer = getConditionContainer().getReplicatContainer(conditionIndex);
-			for (int replicateIndex = 0; replicateIndex < replicateContainer.getReplicateSize() ; ++replicateIndex) {
-				final DataContainer replicate = getConditionContainer().getNullDataContainer(conditionIndex, replicateIndex, coordinate);
+	protected ParallelData createParallelData(Builder parallelDataBuilder, Coordinate coord) {
+		for (int condI = 0; condI < getConditionContainer().getConditionSize() ; ++condI) {
+			final ReplicateContainer replicateContainer = getConditionContainer().getReplicatContainer(condI);
+			for (int replicateI = 0; replicateI < replicateContainer.getReplicateSize() ; ++replicateI) {
+				final DataContainer replicate = getConditionContainer().getNullDataContainer(condI, replicateI, coord);
 				if (replicate == null) {
 					return null;
 				}
-				parallelDataBuilder.withReplicate(conditionIndex, replicateIndex, replicate);
+				parallelDataBuilder.withReplicate(condI, replicateI, replicate);
 			}	
 		}
 		return parallelDataBuilder.build();
@@ -65,8 +65,8 @@ extends AbstractWorker {
 		if (validator.isValid(parallelData)) {
 			// store variant call result in info field
 			final Info resultInfo = result.getResultInfo();
-			final EstimationContainer[] estimationSamples = estimationSampleProvider.convert(parallelData);
-			final double score = dirMult.getScore(estimationSamples);
+			final EstimationContainer[] estContainers = estContainerProv.convert(parallelData);
+			final double score = dirMult.getScore(estContainers);
 			resultInfo.add(INFO_VARIANT_SCORE, Util.format(score));
 		}
 		

@@ -20,7 +20,7 @@ import lib.data.storage.processor.RecordProcessor;
  * sites adjacent to splices sites.
  */
 public class SpliceSiteFilterFactory
-extends AbstractBaseCallCountFilterFactory {
+extends AbstractBCCfilterFactory {
 
 	public static final char FILTER = 'S';
 	

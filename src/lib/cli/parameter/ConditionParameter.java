@@ -17,7 +17,7 @@ import lib.util.LibraryType;
 
 public class ConditionParameter {
 	
-	private int conditionIndex;
+	private int condI;
 	
 	private LibraryType libraryType;
 	
@@ -39,8 +39,8 @@ public class ConditionParameter {
 	// path to BAM files
 	private String[] recordFilenames;
 	
-	public ConditionParameter(final int conditionIndex) {
-		this.conditionIndex = conditionIndex; 
+	public ConditionParameter(final int condI) {
+		this.condI = condI; 
 		libraryType = LibraryType.UNSTRANDED;
 
 		maxDepth 		= -1;
@@ -214,8 +214,8 @@ public class ConditionParameter {
 	}
 
 	// 1-based
-	public int getConditionIndex() {
-		return conditionIndex;
+	public int getcondI() {
+		return condI;
 	}
 	
 	public LibraryType getLibraryType() {

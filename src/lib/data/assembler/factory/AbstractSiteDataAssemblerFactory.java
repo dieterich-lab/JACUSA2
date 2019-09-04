@@ -17,7 +17,7 @@ import lib.data.assembler.DataAssembler;
 import lib.data.assembler.SiteDataAssembler;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
-import lib.data.fetcher.basecall.BaseCallCountExtractor;
+import lib.data.fetcher.basecall.BCCextractor;
 import lib.data.fetcher.basecall.IntegerDataExtractor;
 import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
@@ -37,10 +37,10 @@ import lib.data.validator.MinBASQValidator;
 import lib.data.validator.Validator;
 import lib.util.coordinate.CoordinateTranslator;
 
-public abstract class AbstractSiteDataAssemblerFactory
+abstract class AbstractSiteDataAssemblerFactory
 extends AbstractDataAssemblerFactory {
 	
-	public AbstractSiteDataAssemblerFactory(final AbstractBuilderFactory builderFactory) {
+	AbstractSiteDataAssemblerFactory(final AbstractBuilderFactory builderFactory) {
 		super(builderFactory);
 	}
 	
@@ -50,12 +50,12 @@ extends AbstractDataAssemblerFactory {
 			final FilterContainer filterContainer,
 			final SharedStorage sharedStorage, 
 			final ConditionParameter conditionParameter, 
-			final int replicateIndex) {
+			final int replicateI) {
 
 		final CacheContainer cacheContainer = createContainer(
 				parameter, filterContainer, sharedStorage, conditionParameter);
 		return new SiteDataAssembler(
-				replicateIndex, 
+				replicateI, 
 				getBuilderFactory(), 
 				conditionParameter, 
 				cacheContainer);
@@ -129,53 +129,52 @@ extends AbstractDataAssemblerFactory {
 		return cache;
 	}
 	
-	// TODO
-	protected void stratifyByBaseSubstitution(
-			final GeneralParameter parameter,
+	protected void stratifyByBaseSub(
+			final GeneralParameter prm,
 			final SharedStorage sharedStorage, 
-			final ConditionParameter conditionParameter,
+			final ConditionParameter condPrm,
 			final Cache cache) {
 
-		final SortedSet<BaseSub> baseSubs = parameter.getReadSubstitutions();
+		final SortedSet<BaseSub> baseSubs = prm.getReadSubs();
 		if (baseSubs.isEmpty()) {
 			return;
 		}
 
-		final byte minBASQ = conditionParameter.getMinBASQ();
+		final byte minBASQ = condPrm.getMinBASQ();
 		final List<Validator> validators = new ArrayList<>();
 		validators.add(new DefaultBaseCallValidator());
 		if (minBASQ > 0) {
 			validators.add(new MinBASQValidator(minBASQ));
 		}
 
-		final BaseCallInterpreter bci = BaseCallInterpreter.build(conditionParameter.getLibraryType());
+		final BaseCallInterpreter bci = BaseCallInterpreter.build(condPrm.getLibraryType());
 
-		final Map<BaseSub, PositionProcessor> baseSub2alignedPosProcessor = 
+		final Map<BaseSub, PositionProcessor> baseSub2algnPosProc = 
 				new EnumMap<>(BaseSub.class);
 
-		final Map<BaseSub, PositionProcessor> baseSub2covPosProcessor = 
+		final Map<BaseSub, PositionProcessor> baseSub2covPosProc = 
 				new EnumMap<>(BaseSub.class);
-		final Map<BaseSub, PositionProcessor> baseSub2insPosProcessor = 
+		final Map<BaseSub, PositionProcessor> baseSub2insPosProc = 
 				new EnumMap<>(BaseSub.class);
-		final Map<BaseSub, PositionProcessor> baseSub2delPosProcessor = 
+		final Map<BaseSub, PositionProcessor> baseSub2delPosProc = 
 				new EnumMap<>(BaseSub.class);
 
 		for (final BaseSub baseSub : baseSubs) {
-			final PositionProcessor alignedPosProcessor = new PositionProcessor();
+			final PositionProcessor algnPosProc = new PositionProcessor();
 			// deletions don't need validation
-			alignedPosProcessor.addValidator(new CombinedValidator(validators));
-			final Fetcher<BaseCallCount> bccFetcher = new BaseCallCountExtractor(
+			algnPosProc.addValidator(new CombinedValidator(validators));
+			final Fetcher<BaseCallCount> bccFetcher = new BCCextractor(
 					baseSub, 
 					DataType.BASE_SUBST2BCC.getFetcher());
 			final Storage bccStorage = new DefaultBCCStorage(
 					sharedStorage, 
 					bccFetcher);
 			cache.addStorage(bccStorage);
-			alignedPosProcessor.addStorage(bccStorage);
-			baseSub2alignedPosProcessor.put(baseSub, alignedPosProcessor);
+			algnPosProc.addStorage(bccStorage);
+			baseSub2algnPosProc.put(baseSub, algnPosProc);
 			
-			if (parameter.showInsertionCount() || parameter.showDeletionCount()) {
-				final PositionProcessor covPosProcessor = new PositionProcessor();
+			if (prm.showInsertionCount() || prm.showDeletionCount()) {
+				final PositionProcessor covPosProc = new PositionProcessor();
 				final Fetcher<IntegerData> covFetcher = new IntegerDataExtractor(
 						baseSub, 
 						DataType.BASE_SUBST2COVERAGE.getFetcher());
@@ -183,11 +182,11 @@ extends AbstractDataAssemblerFactory {
 						sharedStorage, 
 						covFetcher);
 				cache.addStorage(covStorage);
-				covPosProcessor.addStorage(covStorage);
-				baseSub2covPosProcessor.put(baseSub, covPosProcessor);
+				covPosProc.addStorage(covStorage);
+				baseSub2covPosProc.put(baseSub, covPosProc);
 			}
-			if (parameter.showInsertionCount()) {
-				final PositionProcessor insPosProcessor = new PositionProcessor();
+			if (prm.showInsertionCount()) {
+				final PositionProcessor insPosProc = new PositionProcessor();
 				final Fetcher<IntegerData> insFetcher = new IntegerDataExtractor(
 						baseSub, 
 						DataType.BASE_SUBST2INSERTION_COUNT.getFetcher());
@@ -195,11 +194,11 @@ extends AbstractDataAssemblerFactory {
 						sharedStorage, 
 						insFetcher);
 				cache.addStorage(insStorage);
-				insPosProcessor.addStorage(insStorage);
-				baseSub2insPosProcessor.put(baseSub, insPosProcessor);
+				insPosProc.addStorage(insStorage);
+				baseSub2insPosProc.put(baseSub, insPosProc);
 			}
-			if (parameter.showDeletionCount()) {
-				final PositionProcessor delPosProcessor = new PositionProcessor();
+			if (prm.showDeletionCount()) {
+				final PositionProcessor delPosProc = new PositionProcessor();
 				final Fetcher<IntegerData> delFetcher = new IntegerDataExtractor(
 						baseSub, 
 						DataType.BASE_SUBST2DELETION_COUNT.getFetcher());
@@ -207,8 +206,8 @@ extends AbstractDataAssemblerFactory {
 						sharedStorage, 
 						delFetcher);
 				cache.addStorage(delStorage);
-				delPosProcessor.addStorage(delStorage);
-				baseSub2delPosProcessor.put(baseSub, delPosProcessor);
+				delPosProc.addStorage(delStorage);
+				baseSub2delPosProc.put(baseSub, delPosProc);
 			}
 		}
 		
@@ -218,10 +217,10 @@ extends AbstractDataAssemblerFactory {
 				bci, 
 				new CombinedValidator(validators),
 				baseSubs,
-				baseSub2alignedPosProcessor,
-				baseSub2covPosProcessor,
-				baseSub2insPosProcessor,
-				baseSub2delPosProcessor));
+				baseSub2algnPosProc,
+				baseSub2covPosProc,
+				baseSub2insPosProc,
+				baseSub2delPosProc));
 	}
 	
 }

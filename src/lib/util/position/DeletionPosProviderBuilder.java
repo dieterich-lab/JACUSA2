@@ -2,29 +2,29 @@ package lib.util.position;
 
 import lib.record.AlignedPosition;
 import lib.record.Record;
-import lib.record.Record.CigarElementExtended;
+import lib.record.Record.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
  * TODO
  */
-public class DeletionPosProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
+class DeletionPosProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
 	
 	// position of the deletion
 	private final DeletedPosition pos;
 	// length of deletion
 	private int length;
-
+	
 	private CoordinateTranslator translator;
-
-	public DeletionPosProviderBuilder(
+	
+	DeletionPosProviderBuilder(
 			final int delI, final Record record, 
 			final CoordinateTranslator translator) {
 		
 		// extract corresponding cigar element 
 		final int cigarElementI 	= record.getDeletion().get(delI);
-		final CigarElementExtended cigarElement = record
-				.getCigarElementExtended().get(cigarElementI);
+		final CigarDetail cigarElement = record
+				.getCigarDetail().get(cigarElementI);
 		
 		// prepare to create Position
 		final AlignedPosition alignedPos 	= cigarElement.getPosition(); 

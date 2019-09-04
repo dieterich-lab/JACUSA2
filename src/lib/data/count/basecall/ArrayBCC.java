@@ -6,18 +6,18 @@ import java.util.Set;
 
 import lib.util.Base;
 
-public class ArrayBaseCallCount extends AbstractBaseCallCount {
+public class ArrayBCC extends AbstractBCC {
 
 	private static final long serialVersionUID = 1L;
 
 	// container
 	private final int[] baseCalls;
 
-	public ArrayBaseCallCount() {
+	public ArrayBCC() {
 		this.baseCalls = new int[Base.validValues().length];
 	}
 
-	public ArrayBaseCallCount(final int[] baseCalls) {
+	public ArrayBCC(final int[] baseCalls) {
 		if (baseCalls.length != Base.validValues().length) {
 			throw new IllegalArgumentException("baseCalls != Base.validValues().length");
 		}
@@ -25,8 +25,8 @@ public class ArrayBaseCallCount extends AbstractBaseCallCount {
 	}
 
 	@Override
-	public ArrayBaseCallCount copy() {
-		return new ArrayBaseCallCount(Arrays.copyOf(baseCalls, baseCalls.length));
+	public ArrayBCC copy() {
+		return new ArrayBCC(Arrays.copyOf(baseCalls, baseCalls.length));
 	}
 
 	@Override
@@ -44,65 +44,65 @@ public class ArrayBaseCallCount extends AbstractBaseCallCount {
 	}
 
 	@Override
-	public ArrayBaseCallCount increment(final Base base) {
+	public ArrayBCC increment(final Base base) {
 		baseCalls[base.getIndex()]++;
 		return this;
 	}
 
 	@Override
-	public ArrayBaseCallCount clear() {
+	public ArrayBCC clear() {
 		Arrays.fill(baseCalls, 0);
 		return this;
 	}
 
 	@Override
-	public ArrayBaseCallCount add(final BaseCallCount baseCallCount) {
-		for (final Base base : baseCallCount.getAlleles()) {
-			add(base, baseCallCount);
+	public ArrayBCC add(final BaseCallCount bcc) {
+		for (final Base base : bcc.getAlleles()) {
+			add(base, bcc);
 		}
 		return this;
 	}
 
 	@Override
-	public ArrayBaseCallCount set(final Base base, final int count) {
+	public ArrayBCC set(final Base base, final int count) {
 		baseCalls[base.getIndex()] = count;
 		return this;
 	}
 
 	@Override
-	public ArrayBaseCallCount add(final Base base, final BaseCallCount baseCallCount) {
-		add(base, base, baseCallCount);
+	public ArrayBCC add(final Base base, final BaseCallCount bcc) {
+		add(base, base, bcc);
 		return this;
 	}
 
 	@Override
-	public ArrayBaseCallCount add(final Base dest, final Base src, final BaseCallCount baseCallCount) {
-		baseCalls[dest.getIndex()] += baseCallCount.getBaseCall(src);
+	public ArrayBCC add(final Base dest, final Base src, final BaseCallCount bcc) {
+		baseCalls[dest.getIndex()] += bcc.getBaseCall(src);
 		return this;
 	}
 
 	@Override
-	public ArrayBaseCallCount subtract(final Base base, final BaseCallCount baseCallCount) {
-		subtract(base, base, baseCallCount);
+	public ArrayBCC subtract(final Base base, final BaseCallCount bcc) {
+		subtract(base, base, bcc);
 		return this;
 	}
 
 	@Override
-	public ArrayBaseCallCount subtract(final Base dest, final Base src, final BaseCallCount baseCallCount) {
-		this.baseCalls[dest.getIndex()] -= baseCallCount.getBaseCall(src);
+	public ArrayBCC subtract(final Base dest, final Base src, final BaseCallCount bcc) {
+		this.baseCalls[dest.getIndex()] -= bcc.getBaseCall(src);
 		return this;
 	}
 
 	@Override
-	public ArrayBaseCallCount subtract(final BaseCallCount baseCallCount) {
-		for (final Base base : baseCallCount.getAlleles()) {
-			subtract(base, baseCallCount);
+	public ArrayBCC subtract(final BaseCallCount bcc) {
+		for (final Base base : bcc.getAlleles()) {
+			subtract(base, bcc);
 		}
 		return this;
 	}
 
 	@Override
-	public ArrayBaseCallCount invert() {
+	public ArrayBCC invert() {
 		for (final Base base : new Base[] { Base.A, Base.C }) {
 			final Base complement = base.getComplement();
 			if (baseCalls[base.getIndex()] == 0 && baseCalls[complement.getIndex()] == 0) {
@@ -149,7 +149,7 @@ public class ArrayBaseCallCount extends AbstractBaseCallCount {
 		}
 
 		@Override
-		public ArrayBaseCallCount parse(String s) {
+		public ArrayBCC parse(String s) {
 			final String[] cols = split(s);
 			final int[] baseCalls = new int[cols.length];
 			for (int baseIndex = 0; baseIndex < cols.length; ++baseIndex) {
@@ -158,7 +158,7 @@ public class ArrayBaseCallCount extends AbstractBaseCallCount {
 					throw new IllegalArgumentException(); 
 				}
 			}
-			return new ArrayBaseCallCount(baseCalls);
+			return new ArrayBCC(baseCalls);
 		}
 
 	}

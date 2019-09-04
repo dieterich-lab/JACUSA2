@@ -13,7 +13,7 @@ import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
 import lib.data.IntegerData;
 import lib.data.fetcher.Fetcher;
-import lib.data.fetcher.basecall.BaseCallCountExtractor;
+import lib.data.fetcher.basecall.BCCextractor;
 import lib.data.fetcher.basecall.IntegerDataExtractor;
 import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
@@ -53,7 +53,7 @@ extends AbstractSiteDataAssemblerFactory {
 		final LibraryType libraryType = conditionParameter.getLibraryType();
 
 		final LocationInterpreter locInterpreter = LocationInterpreter.create(libraryType);
-		final SortedSet<BaseSub> baseSubs = parameter.getReadSubstitutions();
+		final SortedSet<BaseSub> baseSubs = parameter.getReadSubs();
 		
 		final List<Validator> validators = new ArrayList<>();
 		validators.add(new DefaultBaseCallValidator());
@@ -70,7 +70,7 @@ extends AbstractSiteDataAssemblerFactory {
 		
 		// stratify by base substitutions
 		if (! baseSubs.isEmpty()) {
-			cache.addCache(createStratifyByBaseSubstitution(
+			cache.addCache(createStratifyByBaseSub(
 					parameter,
 					conditionParameter,
 					baseSubs,
@@ -116,7 +116,7 @@ extends AbstractSiteDataAssemblerFactory {
 		return cache;
 	}
 	
-	private Cache createStratifyByBaseSubstitution(
+	private Cache createStratifyByBaseSub(
 			final GeneralParameter parameter, 
 			final ConditionParameter conditionParameter,
 			final SortedSet<BaseSub> baseSubs,
@@ -138,13 +138,13 @@ extends AbstractSiteDataAssemblerFactory {
 			alignedPosProcessor.addValidator(new CombinedValidator(validators));
 			final AbstractBaseCallCountStorage arrestBccStorage = new DefaultBCCStorage(
 					sharedStorage,
-					new BaseCallCountExtractor(
+					new BCCextractor(
 							baseSub, 
 							DataType.ARREST_BASE_SUBST.getFetcher()));
 			
 			final AbstractBaseCallCountStorage throughBccStorage = new DefaultBCCStorage(
 					sharedStorage,
-					new BaseCallCountExtractor(
+					new BCCextractor(
 							baseSub, 
 							DataType.THROUGH_BASE_SUBST.getFetcher()));
 			

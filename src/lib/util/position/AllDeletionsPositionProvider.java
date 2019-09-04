@@ -16,9 +16,9 @@ public class AllDeletionsPositionProvider implements PositionProvider {
 	public AllDeletionsPositionProvider(
 			final Record record, final CoordinateTranslator translator) {
 
-		final List<Integer> cigarElementExtendedIndices = record.getDeletion();
-		final int deletions = cigarElementExtendedIndices.size();
-		final List<PositionProvider> positionProviders = new ArrayList<PositionProvider>(deletions);
+		final List<Integer> cigarDetailIs = record.getDeletion();
+		final int deletions = cigarDetailIs.size();
+		final List<PositionProvider> positionProviders = new ArrayList<>(deletions);
 		
 		for (int index = 0; index < deletions; ++index) {
 			positionProviders.add(

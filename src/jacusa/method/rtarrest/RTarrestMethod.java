@@ -140,18 +140,18 @@ extends AbstractMethod {
 				availableLibType, getParameter().getConditionParameters(), getParameter()));
 		
 		// condition specific
-		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-			addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+		for (int condI = 0; condI < getParameter().getConditionsSize(); ++condI) {
+			addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters().get(condI)));
+			addACOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(condI)));
+			addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(condI)));
+			addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(condI)));
 			
-			addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(condI)));
+			addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(condI)));
 			
 			addACOption(new nConditionLibraryTypeOption(
 					availableLibType, 
-					getParameter().getConditionParameters().get(conditionIndex),
+					getParameter().getConditionParameters().get(condI),
 					getParameter()));
 		}
 	}
@@ -285,17 +285,17 @@ extends AbstractMethod {
 			add(builder, DataType.ARREST_BCC);
 			add(builder, DataType.THROUGH_BCC);
 			
-			if (! parameter.getReadSubstitutions().isEmpty()) {
-				addBaseSubstitution2bcc(builder, DataType.ARREST_BASE_SUBST);
-				addBaseSubstitution2bcc(builder, DataType.THROUGH_BASE_SUBST);
+			if (! parameter.getReadSubs().isEmpty()) {
+				addBaseSub2bcc(builder, DataType.ARREST_BASE_SUBST);
+				addBaseSub2bcc(builder, DataType.THROUGH_BASE_SUBST);
 				
 				if (parameter.showDeletionCount()) {
-					addBaseSubstitution2int(builder, DataType.BASE_SUBST2DELETION_COUNT);
-					addBaseSubstitution2int(builder, DataType.BASE_SUBST2COVERAGE);
+					addBaseSub2int(builder, DataType.BASE_SUBST2DELETION_COUNT);
+					addBaseSub2int(builder, DataType.BASE_SUBST2COVERAGE);
 				}
 				if (parameter.showInsertionCount()) {
-					addBaseSubstitution2int(builder, DataType.BASE_SUBST2INSERTION_COUNT);
-					addBaseSubstitution2int(builder, DataType.BASE_SUBST2COVERAGE);
+					addBaseSub2int(builder, DataType.BASE_SUBST2INSERTION_COUNT);
+					addBaseSub2int(builder, DataType.BASE_SUBST2COVERAGE);
 				}
 			}
 			if (parameter.showDeletionCount()) {

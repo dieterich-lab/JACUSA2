@@ -4,7 +4,7 @@ import java.util.Set;
 
 import org.apache.commons.cli.Option;
 
-import jacusa.filter.factory.basecall.AbstractBaseCallCountFilterFactory;
+import jacusa.filter.factory.basecall.AbstractBCCfilterFactory;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
 import lib.cli.options.filter.has.HasApply2reads;
 import lib.data.count.basecall.BaseCallCount;
@@ -18,7 +18,7 @@ import lib.data.filter.BaseCallCountFilteredData;
  * carried out, see Apply2readsBaseCallCountSwitch
  */
 public abstract class AbstractRTarrestBaseCallcountFilterFactory 
-extends AbstractBaseCallCountFilterFactory 
+extends AbstractBCCfilterFactory 
 implements HasApply2reads {
 
 	private final Apply2readsBaseCallCountSwitch bccSwitch;
@@ -31,8 +31,8 @@ implements HasApply2reads {
 		this(
 				option, 
 				bccSwitch, filteredDataFetcher,
-				AbstractBaseCallCountFilterFactory.DEFAULT_FILTER_DISTANCE,
-				AbstractBaseCallCountFilterFactory.DEFAULT_FILTER_MINRATIO);
+				AbstractBCCfilterFactory.DEFAULT_FILTER_DISTANCE,
+				AbstractBCCfilterFactory.DEFAULT_FILTER_MINRATIO);
 		
 	}
 	

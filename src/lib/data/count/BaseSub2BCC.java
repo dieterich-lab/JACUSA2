@@ -5,32 +5,36 @@ import java.util.Map;
 
 import lib.cli.options.filter.has.BaseSub;
 import lib.data.Data;
-import lib.data.IntegerData;
+import lib.data.count.basecall.BaseCallCount;
 
-public class BaseSub2IntData implements Data<BaseSub2IntData> {
+public class BaseSub2BCC implements Data<BaseSub2BCC> {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Map<BaseSub, IntegerData> count;
+	private final Map<BaseSub, BaseCallCount> count;
 	
-	public BaseSub2IntData() {
+	public BaseSub2BCC() {
 		count = new EnumMap<>(BaseSub.class);
 	}
 	
-	public BaseSub2IntData(final BaseSub2IntData bsc) {
+	public BaseSub2BCC(final BaseSub2BCC bsc) {
 		this();
 		for (final BaseSub baseSub : bsc.count.keySet()) {
 			count.put(baseSub, bsc.get(baseSub).copy());
 		}
 	}
-	
-	@Override
-	public BaseSub2IntData copy() {
-		return new BaseSub2IntData(this);
+
+	public BaseSub2BCC newInstance() {
+		return new BaseSub2BCC();
 	}
 	
 	@Override
-	public void merge(BaseSub2IntData bsc) {
+	public BaseSub2BCC copy() {
+		return new BaseSub2BCC(this);
+	}
+	
+	@Override
+	public void merge(BaseSub2BCC bsc) {
 		for (final BaseSub baseSub : bsc.count.keySet()) {
 			if (! count.containsKey(baseSub)) {
 				count.put(
@@ -41,16 +45,16 @@ public class BaseSub2IntData implements Data<BaseSub2IntData> {
 			}
 		}
 	}
-
-	public BaseSub2IntData set(final BaseSub baseSub, final IntegerData integerData) {
+	
+	public BaseSub2BCC set(final BaseSub baseSub, final BaseCallCount bcc) {
 		if (count.containsKey(baseSub)) {
 			throw new IllegalStateException();
 		}
-		count.put(baseSub, integerData);
+		count.put(baseSub, bcc);
 		return this;
 	}
 	
-	public IntegerData get(final BaseSub baseSub) {
+	public BaseCallCount get(final BaseSub baseSub) {
 		return count.get(baseSub);
 	}
 	

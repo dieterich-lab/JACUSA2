@@ -13,7 +13,7 @@ import lib.util.Base;
 public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Serializable {
 	
 	// empty 
-	static final BaseCallCount EMPTY = new UnmodifiableBaseCallCount(create());
+	static final BaseCallCount EMPTY = new UnmodifiableBCC(create());
 	
 	int getBaseCall(Base base);
 	Set<Base> getAlleles();
@@ -24,9 +24,9 @@ public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Seriali
 
 	BaseCallCount set(Base base, int count);
 
-	BaseCallCount add(Base base, BaseCallCount baseCallCount);
-	BaseCallCount add(BaseCallCount baseCallCount);
-	BaseCallCount add(Base dest, Base src, BaseCallCount baseCallCount);
+	BaseCallCount add(Base base, BaseCallCount bcc);
+	BaseCallCount add(BaseCallCount bcc);
+	BaseCallCount add(Base dest, Base src, BaseCallCount bcc);
 	
 	@Override
 	default void merge(BaseCallCount o) {
@@ -39,20 +39,20 @@ public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Seriali
 
 	// factory to globally create BaseCallCount objects - there are different implementations
 	public static BaseCallCount create() { 
-		return new DefaultBaseCallCount();
+		return new DefaultBCC();
 	}
 	
-	BaseCallCount subtract(Base base, BaseCallCount baseCallCount);
-	BaseCallCount subtract(BaseCallCount baseCallCount);
-	BaseCallCount subtract(Base dest, Base src, BaseCallCount baseCallCount);
+	BaseCallCount subtract(Base base, BaseCallCount bcc);
+	BaseCallCount subtract(BaseCallCount bcc);
+	BaseCallCount subtract(Base dest, Base src, BaseCallCount bcc);
 
 	BaseCallCount invert();
 	
 	String toString();
 
-	static String toString(BaseCallCount baseCallCount) {
-		return new ArrayBaseCallCount.Parser(InputOutput.SEP4, InputOutput.EMPTY_FIELD)
-				.wrap(baseCallCount);
+	static String toString(BaseCallCount bcc) {
+		return new ArrayBCC.Parser(InputOutput.SEP4, InputOutput.EMPTY_FIELD)
+				.wrap(bcc);
 	}
 	
 	/*

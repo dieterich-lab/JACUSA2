@@ -19,7 +19,7 @@ import lib.data.storage.processor.RecordProcessor;
  * false positive variants at the read start and end.
  */
 public class ReadPositionFilterFactory 
-extends AbstractBaseCallCountFilterFactory {
+extends AbstractBCCfilterFactory {
 	
 	public static final char FILTER = 'B';
 	

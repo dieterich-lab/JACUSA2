@@ -2,7 +2,7 @@ package lib.util.position;
 
 import lib.record.AlignedPosition;
 import lib.record.Record;
-import lib.record.Record.CigarElementExtended;
+import lib.record.Record.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import java.util.Arrays;
 /**
  * TODO
  */
-public class CigarElementPositionProviderBuilder implements lib.util.Builder<PositionProvider> {
+public class CigarDetailPosProviderBuilder implements lib.util.Builder<PositionProvider> {
 	
 	private final int cigarElementIndex;
 	private final int offset;
@@ -19,12 +19,12 @@ public class CigarElementPositionProviderBuilder implements lib.util.Builder<Pos
 	
 	/**
 	 * 
-	 * @param CigarElementExtended
+	 * @param CigarDetail
 	 * @param upDownStream
 	 * @param record
 	 * @param translator
 	 */
-	public CigarElementPositionProviderBuilder(
+	public CigarDetailPosProviderBuilder(
 			final int cigarElementIndex, 
 			final int upDownStream,
 			final Record record, 
@@ -46,7 +46,7 @@ public class CigarElementPositionProviderBuilder implements lib.util.Builder<Pos
 	private PositionProvider buildUpstream(final int offset) {
 		final int upstreamMatch = record.getUpstreamMatch(cigarElementIndex);
 		final int length 		= Math.min(upstreamMatch, offset);
-		final AlignedPosition position = record.getCigarElementExtended()
+		final AlignedPosition position = record.getCigarDetail()
 				.get(cigarElementIndex).getPosition();
 		final int refPos 		= position.getRefPos() - length;
 		final int readPos 		= position.getReadPos() - length;
@@ -54,11 +54,11 @@ public class CigarElementPositionProviderBuilder implements lib.util.Builder<Pos
 	}
 	
 	private PositionProvider buildDownstream(final int offset) {
-		final CigarElementExtended cigarElementExtended = record.getCigarElementExtended()
+		final CigarDetail cigarDetail = record.getCigarDetail()
 				.get(cigarElementIndex);
-		final AlignedPosition position = new AlignedPosition(record.getCigarElementExtended()
+		final AlignedPosition position = new AlignedPosition(record.getCigarDetail()
 				.get(cigarElementIndex).getPosition());
-		position.advance(cigarElementExtended.getCigarElement());
+		position.advance(cigarDetail.getCigarElement());
 		final int downstreamMatch = record.getDownstreamMatch(cigarElementIndex);
 		final int length 	= Math.min(downstreamMatch, offset);
 		final int refPos 	= position.getRefPos();

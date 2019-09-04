@@ -19,7 +19,7 @@ import lib.data.storage.processor.RecordProcessor;
 /**
  * This FilterFactory configures and helps to create the filter that will filter sites around INDELs.
  */
-public class INDELfilterFactory extends AbstractBaseCallCountFilterFactory {
+public class INDELfilterFactory extends AbstractBCCfilterFactory {
 
 	public static final char FILTER = 'I';
 	

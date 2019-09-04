@@ -23,7 +23,7 @@ extends AbstractEstimationContainerProvider {
 
 	@Override
 	protected List<List<PileupCount>> process(final ParallelData parallelData) {
-		final Base refBase = parallelData.getCombPooledData().getAutoReferenceBase();
+		final Base refBase = parallelData.getCombPooledData().getAutoRefBase();
 		final BaseCallCount bcc = BaseCallCount.create();
 		bcc.merge(parallelData.getCombPooledData().getPileupCount().getBCC());
 		final SortedSet<Base> alleles = new TreeSet<>(bcc.getAlleles());
@@ -41,10 +41,10 @@ extends AbstractEstimationContainerProvider {
 		return modifiedPileupCounts;
 	}
 	
-	private List<PileupCount> getPileupCounts(final int conditionIndex, final ParallelData parallelData) {
+	private List<PileupCount> getPileupCounts(final int condI, final ParallelData parallelData) {
 		final List<PileupCount> pileupCounts = 
-				new ArrayList<>(parallelData.getReplicates().get(conditionIndex));
-		for (final DataContainer container : parallelData.getData(conditionIndex)) {
+				new ArrayList<>(parallelData.getReplicates().get(condI));
+		for (final DataContainer container : parallelData.getData(condI)) {
 			pileupCounts.add(container.getPileupCount());
 		}
 		return pileupCounts;

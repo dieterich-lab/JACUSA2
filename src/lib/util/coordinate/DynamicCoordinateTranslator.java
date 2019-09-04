@@ -3,11 +3,11 @@ package lib.util.coordinate;
 /**
  * TODO
  */
-public class DynamicCoordinateTranslator implements CoordinateTranslator {
+class DynamicCoordinateTranslator implements CoordinateTranslator {
 
 	private final CoordinateController coordinateController;
 	
-	public DynamicCoordinateTranslator(final CoordinateController coordinateController) {
+	DynamicCoordinateTranslator(final CoordinateController coordinateController) {
 		this.coordinateController = coordinateController;
 	}
 

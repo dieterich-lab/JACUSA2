@@ -3,7 +3,7 @@ package jacusa.io.format.lrtarrest;
 import jacusa.io.copytmp.SerializeCopyTmpResult;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.data.count.basecall.DefaultBCC;
 import lib.io.AbstractResultFormat;
 import lib.io.BEDlikeResultFileWriter;
 import lib.io.BEDlikeResultFileWriter.BEDlikeResultFileWriterBuilder;
@@ -40,7 +40,7 @@ public class BED6lrtArrestResultFormat extends AbstractResultFormat {
 	@Override
 	public BEDlikeResultFileWriter createWriter(final String outputFileName) {
 		final BaseCallCount.AbstractParser bccParser = 
-				new DefaultBaseCallCount.Parser(InputOutput.VALUE_SEP, InputOutput.EMPTY_FIELD);
+				new DefaultBCC.Parser(InputOutput.VALUE_SEP, InputOutput.EMPTY_FIELD);
 		
 		return new BEDlikeResultFileWriterBuilder(outputFileName, getParameter())
 				.addBED6Adder(

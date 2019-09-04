@@ -13,7 +13,7 @@ implements ParallelDataValidator {
 	@Override
 	public boolean isValid(final ParallelData parallelData) {
 		final Base refBase = 
-				parallelData.getCombPooledData().getAutoReferenceBase();
+				parallelData.getCombPooledData().getAutoRefBase();
 		return refBase != Base.N;
 	}
 

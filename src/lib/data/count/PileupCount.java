@@ -3,7 +3,7 @@ package lib.data.count;
 import lib.data.Data;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.count.basecall.UnmodifiableBaseCallCount;
+import lib.data.count.basecall.UnmodifiableBCC;
 import lib.data.count.basecallquality.BaseCallQualityCount;
 import lib.util.Base;
 
@@ -38,7 +38,7 @@ public class PileupCount implements Data<PileupCount> {
 			}
 			bcc.set(base, count);
 		}
-		return new UnmodifiableBaseCallCount(bcc);
+		return new UnmodifiableBCC(bcc);
 	}
 	
 	public BaseCallQualityCount getBaseCallQualityCount() {

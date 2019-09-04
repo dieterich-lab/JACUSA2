@@ -21,28 +21,25 @@ import lib.util.Util;
 /**
  * TODO
  */
-public abstract class INDELCountResult implements Result {
-	
-	public static final String SCORE 	= "score";
-	public static final String PVALUE 	= "pvalue";
+abstract class INDELCountResult implements Result {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private final List<BaseSub> baseSubs;
 	private final Result result;
 
-	private final INDELestimationCountProvider countSampleProvider;
+	private final INDELestimationCountProvider estContainerProv;
 	private final EstimateDirMult dirMult;
 	private final ChiSquaredDistribution dist;
 	
-	public INDELCountResult(
+	INDELCountResult(
 			final SortedSet<BaseSub> baseSubs, final Result result,
 			final MinkaParameter minkaParameter,
 			final INDELestimationCountProvider countSampleProvider) {
 		this.baseSubs 	= new ArrayList<>(baseSubs);
 		this.result 	= result;
 		
-		this.countSampleProvider 		= countSampleProvider;
+		this.estContainerProv 		= countSampleProvider;
 		this.dirMult					= new EstimateDirMult(minkaParameter);
 		this.dist						= new ChiSquaredDistribution(1);
 		
@@ -130,8 +127,8 @@ public abstract class INDELCountResult implements Result {
 				}
 			} else {
 				if (valueIndex == Result.TOTAL) {
-					final EstimationContainer[] estimationSamples = countSampleProvider.convert(parallelData);
-					final double lrt 	= dirMult.getLRT(estimationSamples);
+					final EstimationContainer[] estContainers = estContainerProv.convert(parallelData);
+					final double lrt 	= dirMult.getLRT(estContainers);
 					final double pvalue = getPValue(lrt);
 					addPValue(result, valueIndex, Util.format(pvalue));
 					addScore(result, valueIndex, Util.format(lrt));

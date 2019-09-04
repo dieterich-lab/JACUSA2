@@ -49,7 +49,7 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 				blockIndex, record, translator);
 		testInstance.tryFirst(length);
 		if (adjustWinPos) {
-			testInstance.adjustWindowPos();
+			testInstance.adjustWinPos();
 		}
 		final PositionProvider positionProvider = testInstance.build();
 		final List<Position> actual = positionProvider.flat();
@@ -103,7 +103,7 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 				blockIndex, record, translator);
 		testInstance.tryLast(length);
 		if (adjustWinPos) {
-			testInstance.adjustWindowPos();
+			testInstance.adjustWinPos();
 		}
 		final PositionProvider positionProvider = testInstance.build();
 		final List<Position> actual = positionProvider.flat();
@@ -158,7 +158,7 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 				blockIndex, record, translator);
 		testInstance.ignoreFirst(length);
 		if (adjustWinPos) {
-			testInstance.adjustWindowPos();
+			testInstance.adjustWinPos();
 		}
 		final PositionProvider positionProvider = testInstance.build();
 		final List<Position> actual = positionProvider.flat();
@@ -210,7 +210,7 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 		final AlgnBlockPosProviderBuilder testInstance = createTestInstace(
 				blockIndex, record, translator);
 		if (adjustWinPos) {
-			testInstance.adjustWindowPos();
+			testInstance.adjustWinPos();
 		}
 		final PositionProvider positionProvider = testInstance.build();
 		final List<Position> actual = positionProvider.flat();

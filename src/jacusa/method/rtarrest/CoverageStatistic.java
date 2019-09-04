@@ -9,8 +9,7 @@ import lib.stat.AbstractStat;
 /**
  * This is a dummy statistic... 
  */
-public class CoverageStatistic 
-extends AbstractStat {
+class CoverageStatistic extends AbstractStat {
 
 	@Override
 	protected boolean filter(final Result statResult) {

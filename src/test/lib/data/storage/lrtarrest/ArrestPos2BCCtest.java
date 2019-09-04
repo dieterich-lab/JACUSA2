@@ -16,18 +16,18 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import htsjdk.samtools.util.StringUtil;
-import lib.data.count.basecall.ArrayBaseCallCount;
+import lib.data.count.basecall.ArrayBCC;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.storage.lrtarrest.ArrestPos2BCC;
 import lib.util.Base;
 import test.lib.data.count.basecall.ArrayBaseCallCountTest.ToArrayBaseCallCountArgumentConverter;
 
 @TestInstance(Lifecycle.PER_CLASS)
-class ArrestPosition2baseCallCountTest {
+class ArrestPos2BCCtest {
 
 	private final ArrestPos2BCC.Parser parser;
 	
-	public ArrestPosition2baseCallCountTest() {
+	public ArrestPos2BCCtest() {
 		parser = new ArrestPos2BCC.Parser();
 	}
 
@@ -87,7 +87,7 @@ class ArrestPosition2baseCallCountTest {
 	void testGetArrestBaseCallCount(
 		int arrestPos,
 		@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC o,
-		@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBaseCallCount expected) {
+		@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBCC expected) {
 
 	final BaseCallCount actual = o.getArrestBCC(arrestPos); 
 	assertEquals(expected, actual);
@@ -102,7 +102,7 @@ class ArrestPosition2baseCallCountTest {
 	void testGetThroughBaseCallCount(
 			int pos,
 			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC o,
-			@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBaseCallCount expected) {
+			@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBCC expected) {
 		final BaseCallCount actual = o.getThroughBaseCallCount(pos); 
 		assertEquals(expected, actual);
 	}
@@ -113,7 +113,7 @@ class ArrestPosition2baseCallCountTest {
 			"1:1;0;0;0,2:0;2;0;0,3:0;0;3;0,4:0;0;0;4	1;2;3;4" } )
 	void testGetTotalBaseCallCount(
 			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC o,
-			@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBaseCallCount expected) {
+			@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBCC expected) {
 
 		final BaseCallCount actual = o.getTotalBCC(); 
 		assertEquals(expected, actual);

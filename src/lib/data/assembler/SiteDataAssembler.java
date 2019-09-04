@@ -12,7 +12,7 @@ import lib.util.coordinate.Coordinate;
 
 public class SiteDataAssembler implements DataAssembler {
 
-	private final int replicateIndex;
+	private final int replicateI;
 	
 	private final AbstractBuilderFactory builderFactory;
 	private final ConditionParameter conditionParameter;
@@ -21,12 +21,12 @@ public class SiteDataAssembler implements DataAssembler {
 	private CACHE_STATUS cacheStatus;
 
 	public SiteDataAssembler(
-			final int replicateIndex,
+			final int replicateI,
 			final AbstractBuilderFactory builderFactory, 
 			final ConditionParameter conditionParameter,
 			final CacheContainer cacheContainer) {
 		
-		this.replicateIndex 	= replicateIndex;
+		this.replicateI 	= replicateI;
 		
 		this.builderFactory 	= builderFactory;
 		this.conditionParameter	= conditionParameter;
@@ -61,7 +61,7 @@ public class SiteDataAssembler implements DataAssembler {
 		} catch (Exception e){
 			if (record != null) {
 				AbstractTool.getLogger().addError("Problem with read: " + record.getSAMRecord().getReadName() + 
-						" in " + conditionParameter.getRecordFilenames()[replicateIndex]);
+						" in " + conditionParameter.getRecordFilenames()[replicateI]);
 			}
 			e.printStackTrace();
 			System.exit(1);

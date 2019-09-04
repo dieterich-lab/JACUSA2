@@ -24,7 +24,7 @@ public class AllAlignmentBlocksPosProvider implements PositionProvider {
 		for (int blockIndex = 0; blockIndex < blocksSize; ++blockIndex) {
 			positionProviders.add(
 					new AlgnBlockPosProviderBuilder(blockIndex, record, translator)
-					.adjustWindowPos()
+					.adjustWinPos()
 					.build());
 		}
 		positionProvider = new CombinedPositionProvider(positionProviders);

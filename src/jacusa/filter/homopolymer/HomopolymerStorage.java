@@ -80,16 +80,16 @@ public class HomopolymerStorage extends AbstractStorage {
 	
 	/**
 	 * Search and cache homopolymers within windows
-	 * @param windowPositionStart
-	 * @param windowPositionEnd
+	 * @param winPosStart
+	 * @param winPosEnd
 	 * @param minLength
 	 */
 	void cacheWindowPosition(
-			final int windowPositionStart, final int windowPositionEnd, final int minLength) {
+			final int winPosStart, final int winPosEnd, final int minLength) {
 
-		final HomopolymerBuilder builder = new HomopolymerBuilder(windowPositionStart, minLength);
+		final HomopolymerBuilder builder = new HomopolymerBuilder(winPosStart, minLength);
 		// collect bases within window...
-		for (int winPos = windowPositionStart; winPos < windowPositionEnd; winPos++) {
+		for (int winPos = winPosStart; winPos < winPosEnd; winPos++) {
 			final Base base = getReferenceProvider().getReferenceBase(winPos);
 			builder.add(base);
 		}

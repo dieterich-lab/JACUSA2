@@ -33,7 +33,7 @@ implements ParallelDataValidator {
 
 		// pick reference base by MD or by majority.
 		// all other bases will be converted in pileup2 to refBaseI
-		Base referenceBase = container.getAutoReferenceBase();
+		Base referenceBase = container.getAutoRefBase();
 		if (SequenceUtil.isValidBase(referenceBase.getByte())) {
 			// there has to be at least one non-reference base call in the data
 			return (bcc.getCoverage() - bcc.getBaseCall(referenceBase)) > 0;

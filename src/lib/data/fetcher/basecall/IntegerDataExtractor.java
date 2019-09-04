@@ -21,7 +21,7 @@ public class IntegerDataExtractor implements Fetcher<IntegerData> {
 		return fetcher.fetch(container).get(baseSub);
 	}
 
-	public BaseSub getBaseSubstitution() {
+	public BaseSub getBaseSub() {
 		return baseSub;
 	}
 	

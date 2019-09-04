@@ -13,7 +13,7 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMException;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMTag;
-import lib.record.Record.CigarElementExtended;
+import lib.record.Record.CigarDetail;
 import lib.util.Base;
 import lib.util.Util;
 
@@ -30,8 +30,8 @@ public class MDRecordRefProvider implements RecordRefProvider {
 	private final List<AlignedPosition> mismatchPoss;
 	private final Map<Integer, Byte> refPos2base;
 
-	private final Iterator<CigarElementExtended> cigarElementIt;
-	private CigarElementExtended curCigarElement;
+	private final Iterator<CigarDetail> cigarElementIt;
+	private CigarDetail curCigarElement;
 	private int curMatchedBases;
 	
 	public MDRecordRefProvider(final Record record) {
@@ -41,7 +41,7 @@ public class MDRecordRefProvider implements RecordRefProvider {
 		mismatchPoss 	= new ArrayList<>(n);
 		refPos2base 		= new HashMap<>(Util.noRehashCapacity(n));
 
-		cigarElementIt 	= record.getCigarElementExtended().iterator();
+		cigarElementIt 	= record.getCigarDetail().iterator();
 		curCigarElement	= cigarElementIt.next();
 		curMatchedBases = 0;		
 		process(record);

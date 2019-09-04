@@ -23,9 +23,9 @@ class SAMPathnameArgTest {
 	
 	@BeforeEach
 	void beforeEach() {
-		final int conditionIndex 	= 2;
-		conditionParameter 			= new ConditionParameter(conditionIndex);
-		testInstance 				= new SAMPathnameArg(conditionIndex, conditionParameter);
+		final int condI 	= 2;
+		conditionParameter 			= new ConditionParameter(condI);
+		testInstance 				= new SAMPathnameArg(condI, conditionParameter);
 	}
 
 	private String toFilename(int i) {

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import lib.data.count.BaseSub2BaseCallCount;
+import lib.data.count.BaseSub2BCC;
 import lib.data.count.BaseSub2IntData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
@@ -38,7 +38,7 @@ public class DefaultDataContainer implements DataContainer {
 	private DefaultDataContainer(DefaultDataContainer template) {
 		coordinate 		= template.getCoordinate().copy();
 		libraryType 	= template.getLibraryType();
-		unstrandedRefBase 	= template.getUnstrandedReferenceBase();
+		unstrandedRefBase 	= template.getUnstrandedRefBase();
 		map 			= new HashMap<>(Util.noRehashCapacity(template.getDataTypes().size()));
 		for (final DataType<?> dataType : template.getDataTypes()) {
 			map.put(dataType, template.get(dataType).copy());
@@ -89,17 +89,17 @@ public class DefaultDataContainer implements DataContainer {
 	}
 	
 	@Override
-	public BaseSub2BaseCallCount getBaseSub2BCC() {
+	public BaseSub2BCC getBaseSub2BCC() {
 		return get(DataType.BASE_SUBST2BCC);
 	}
 	
 	@Override
-	public BaseSub2BaseCallCount getArrestBaseSub2BCC() {
+	public BaseSub2BCC getArrestBaseSub2BCC() {
 		return get(DataType.ARREST_BASE_SUBST);
 	}
 	
 	@Override
-	public BaseSub2BaseCallCount getThroughBaseSub2BCC() {
+	public BaseSub2BCC getThroughBaseSub2BCC() {
 		return get(DataType.THROUGH_BASE_SUBST);
 	}
 	
@@ -177,7 +177,7 @@ public class DefaultDataContainer implements DataContainer {
 	
 	@Override
 	public void merge(final DataContainer provider) {
-		unstrandedRefBase 	= Base.mergeBase(unstrandedRefBase, provider.getUnstrandedReferenceBase());
+		unstrandedRefBase 	= Base.mergeBase(unstrandedRefBase, provider.getUnstrandedRefBase());
 		libraryType 	= LibraryType.mergeLibraryType(libraryType, provider.getLibraryType());
 		coordinate 		= CoordinateUtil.mergeCoordinate(coordinate, provider.getCoordinate());
 		
@@ -208,12 +208,12 @@ public class DefaultDataContainer implements DataContainer {
 	}
 	
 	@Override
-	public Base getUnstrandedReferenceBase() {
+	public Base getUnstrandedRefBase() {
 		return unstrandedRefBase;
 	}
 	
 	@Override
-	public Base getAutoReferenceBase() {
+	public Base getAutoRefBase() {
 		if (! LibraryType.isStranded(libraryType)) {
 			return unstrandedRefBase;
 		}

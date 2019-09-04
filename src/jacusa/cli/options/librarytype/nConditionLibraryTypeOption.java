@@ -49,10 +49,10 @@ public class nConditionLibraryTypeOption extends AbstractConditionACOption {
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
 		String desc = "Choose the library type";
-		if (generalParameter.getConditionsSize() >= 1 && getConditionIndex() == -1) {
+		if (generalParameter.getConditionsSize() >= 1 && getcondI() == -1) {
 			desc += " for all conditions";
 		} else {
-			desc += " for condition " + getConditionIndex();
+			desc += " for condition " + getcondI();
 		}
 		desc += ":\n" + getAvailableValues(availableLibTypes) + 
 				"\n default: " + LibraryType.UNSTRANDED;

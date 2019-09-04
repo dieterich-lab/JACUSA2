@@ -27,9 +27,9 @@ public class LRTarrestEstimationCountProvider implements EstimationContainerProv
 		final int conditions = parallelData.getConditions();
 		final EstimationContainer[] estContainers = new EstimationContainer[conditions + 1];
 		
-		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
-			final NominalData nominalData 	= createData(parallelData.getData(conditionIndex)); 
-			estContainers[conditionIndex] 	= createContainer(Integer.toString(conditionIndex + 1), nominalData, maxIterations);
+		for (int condI = 0; condI < conditions; ++condI) {
+			final NominalData nominalData 	= createData(parallelData.getData(condI)); 
+			estContainers[condI] 	= createContainer(Integer.toString(condI + 1), nominalData, maxIterations);
 		}
 
 		// conditions pooled
@@ -45,15 +45,15 @@ public class LRTarrestEstimationCountProvider implements EstimationContainerProv
 	public NominalData createData(final List<DataContainer> dataContainers) {
 		final int catergories = 2;
 		final double[][] dataMatrix  = new double[dataContainers.size()][catergories]; // -> 2 because BetaBin
-		for (int replicateIndex = 0; replicateIndex < dataContainers.size(); replicateIndex++) {
-			final DataContainer dataContainer = dataContainers.get(replicateIndex);
+		for (int replicateI = 0; replicateI < dataContainers.size(); replicateI++) {
+			final DataContainer dataContainer = dataContainers.get(replicateI);
 			final int onePosition 		= dataContainer.getCoordinate().get1Position();
 			final int readArrestCount 	= dataContainer.getArrestPos2BCC()
 					.getArrestBCC(onePosition).getCoverage();
 			final int readThroughCount 	= dataContainer.getArrestPos2BCC()
 					.getTotalBCC().getCoverage() - readArrestCount;
-			dataMatrix[replicateIndex][READ_ARREST_INDEX] 	= readArrestCount + pseudoCount;
-			dataMatrix[replicateIndex][READ_THROUGH_INDEX] 	= readThroughCount + pseudoCount;
+			dataMatrix[replicateI][READ_ARREST_INDEX] 	= readArrestCount + pseudoCount;
+			dataMatrix[replicateI][READ_THROUGH_INDEX] 	= readThroughCount + pseudoCount;
 			
 		}
 		return NominalData.build(catergories, dataMatrix);

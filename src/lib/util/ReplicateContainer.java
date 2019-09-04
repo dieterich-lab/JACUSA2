@@ -42,10 +42,10 @@ public class ReplicateContainer {
 	}
 	
 	public void createIterators(final Coordinate activeWindowCoordinate) {
-		for (int replicateIndex = 0; replicateIndex < condPrm.getReplicateSize(); ++replicateIndex) {
+		for (int replicateI = 0; replicateI < condPrm.getReplicateSize(); ++replicateI) {
 			final RecordIterator recordIterator = 
-					itProvs.get(replicateIndex).getIterator(activeWindowCoordinate);
-			final DataAssembler dataAssembler = dataAssemblers.get(replicateIndex);
+					itProvs.get(replicateI).getIterator(activeWindowCoordinate);
+			final DataAssembler dataAssembler = dataAssemblers.get(replicateI);
 			dataAssembler.buildCache(activeWindowCoordinate, recordIterator);
 			recordIterator.close();
 		}
@@ -56,20 +56,20 @@ public class ReplicateContainer {
 	}
 	
 	// returns null if cache is empty
-	public DataContainer getNullDataContainer(final int replicateIndex, final Coordinate coordinate) {
-		if (dataAssemblers.get(replicateIndex).getCacheStatus() == CACHE_STATUS.CACHED) {
-			return dataAssemblers.get(replicateIndex).assembleData(coordinate);
+	public DataContainer getNullDataContainer(final int replicateI, final Coordinate coordinate) {
+		if (dataAssemblers.get(replicateI).getCacheStatus() == CACHE_STATUS.CACHED) {
+			return dataAssemblers.get(replicateI).assembleData(coordinate);
 		}
 		
 		return null;
 	}
 	// returns default container if cache emptry
-	public DataContainer getDefaultDataContainer(final int replicateIndex, final Coordinate coordinate) {
-		if (dataAssemblers.get(replicateIndex).getCacheStatus() == CACHE_STATUS.CACHED) {
-			return dataAssemblers.get(replicateIndex).assembleData(coordinate);
+	public DataContainer getDefaultDataContainer(final int replicateI, final Coordinate coordinate) {
+		if (dataAssemblers.get(replicateI).getCacheStatus() == CACHE_STATUS.CACHED) {
+			return dataAssemblers.get(replicateI).assembleData(coordinate);
 		}
 		
-		return 	dataAssemblers.get(replicateIndex).createDefaultDataContainer(coordinate);
+		return 	dataAssemblers.get(replicateI).createDefaultDataContainer(coordinate);
 	}
 	
 	private List<DataAssembler> createDataAssemblers(
@@ -80,11 +80,11 @@ public class ReplicateContainer {
 			final AbstractMethod method) {
 
 		final List<DataAssembler> dataAssemblers = new ArrayList<DataAssembler>(conditionParameter.getReplicateSize());
-		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); ++replicateIndex) {
+		for (int replicateI = 0; replicateI < conditionParameter.getReplicateSize(); ++replicateI) {
 			dataAssemblers.add(
 				method.getDataAssemblerFactory()
 					.newInstance(
-							parameter, filterContainer, sharedStorage, conditionParameter, replicateIndex) );
+							parameter, filterContainer, sharedStorage, conditionParameter, replicateI) );
 		}
 		return dataAssemblers;
 	}

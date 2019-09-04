@@ -63,7 +63,7 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 			
 			final int conditions = libraryTypes.size();
 			builders = new ArrayList<>(conditions);
-			for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
+			for (int condI = 0; condI < conditions; ++condI) {
 				final List<DataContainer.AbstractBuilder> replicates = 
 						new ArrayList<>();
 				builders.add(replicates);

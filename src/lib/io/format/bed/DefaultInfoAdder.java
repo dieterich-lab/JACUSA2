@@ -45,7 +45,7 @@ public class DefaultInfoAdder implements InfoAdder {
 
 		// always show reference
 		sb.append(InputOutput.FIELD_SEP);
-		sb.append(parallelData.getCombPooledData().getAutoReferenceBase());
+		sb.append(parallelData.getCombPooledData().getAutoRefBase());
 	}
 
 }

@@ -6,7 +6,7 @@ import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
 import lib.data.IntegerData;
 import lib.estimate.MinkaParameter;
-import lib.stat.estimation.provider.InsertionEstimationCountProvider;
+import lib.stat.estimation.provider.InsertionEstCountProvider;
 
 /**
  * TODO
@@ -21,7 +21,7 @@ public class InsertionCountResult extends INDELCountResult {
 	public InsertionCountResult(
 			final SortedSet<BaseSub> baseSubs, final Result result,
 			final MinkaParameter minkaParameter,
-			final InsertionEstimationCountProvider countSampleProvider) {
+			final InsertionEstCountProvider countSampleProvider) {
 		
 		super(baseSubs, result, minkaParameter,countSampleProvider);
 	}

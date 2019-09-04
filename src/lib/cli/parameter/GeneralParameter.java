@@ -15,35 +15,35 @@ import java.util.stream.IntStream;
 import jacusa.cli.parameters.HasConditionParameter;
 import jacusa.filter.FilterConfig;
 import lib.cli.options.filter.has.BaseSub;
-import lib.cli.options.filter.has.HasReadSubstitution;
+import lib.cli.options.filter.has.HasReadSub;
 import lib.io.ResultFormat;
 import lib.util.AbstractTool;
 
 public class GeneralParameter
-implements HasConditionParameter, HasReadSubstitution {
+implements HasConditionParameter, HasReadSub {
 	
 	// cache related
-	private int activeWindowSize;
-	private int reservedWindowSize;
+	private int activeWinSize;
+	private int reservedWinSize;
 
 	private int maxThreads;
 
-	private String referenceFilename;
-	private IndexedFastaSequenceFile referenceFile;
+	private String refFilename;
+	private IndexedFastaSequenceFile refFile;
 		
 	// bed file to scan for variants
 	private String inputBedFilename;
 
-	protected List<ConditionParameter> conditionParameters;
+	protected List<ConditionParameter> condPrms;
 
-	private String resultFilename;
-	private ResultFormat resultFormat;
+	private String resFilename;
+	private ResultFormat resFormat;
 	
-	private FilterConfig filterConfig;
+	private FilterConfig filterConf;
 
 	private boolean splitFiltered;
 	
-	private final SortedSet<BaseSub> baseSubstitutions;
+	private final SortedSet<BaseSub> baseSubs;
 	private boolean showDeletionCount;
 	private boolean showInsertionCount;
 	
@@ -51,19 +51,19 @@ implements HasConditionParameter, HasReadSubstitution {
 	private boolean debug;
 	
 	protected GeneralParameter() {
-		activeWindowSize 	= 10000;
-		reservedWindowSize	= 10 * activeWindowSize;
+		activeWinSize 	= 10000;
+		reservedWinSize	= 10 * activeWinSize;
 
 		maxThreads			= 1;
 		
 		inputBedFilename	= "";
-		conditionParameters	= new ArrayList<>(2);
+		condPrms	= new ArrayList<>(2);
 
-		filterConfig		= new FilterConfig();
+		filterConf		= new FilterConfig();
 		
 		splitFiltered		= false;
 		
-		baseSubstitutions	= new TreeSet<>();
+		baseSubs	= new TreeSet<>();
 		showDeletionCount	= false;
 		
 		debug				= false;
@@ -72,101 +72,101 @@ implements HasConditionParameter, HasReadSubstitution {
 	public GeneralParameter(final int conditionSize) {
 		this();
 		
-		for (int conditionIndex = 1; conditionIndex <= conditionSize; conditionIndex++) {
-			conditionParameters.add(new ConditionParameter(conditionIndex));
+		for (int condI = 1; condI <= conditionSize; condI++) {
+			condPrms.add(new ConditionParameter(condI));
 		}
 	}
 	
-	public ConditionParameter createConditionParameter(final int conditionIndex) {
-		return new ConditionParameter(conditionIndex);
+	public ConditionParameter createConditionParameter(final int condI) {
+		return new ConditionParameter(condI);
 	}
 	
 	public ResultFormat getResultFormat() {
-		return resultFormat;
+		return resFormat;
 	}
 
 	public void setResultFormat(ResultFormat resultFormat) {
-		this.resultFormat = resultFormat;
+		this.resFormat = resultFormat;
 	}
 	
 	/**
 	 * @return the filterConfig
 	 */
 	public FilterConfig getFilterConfig() {
-		return filterConfig;
+		return filterConf;
 	}
 	
 	public void setResultFilename(final String resultFilename) {
-		this.resultFilename = resultFilename;
+		this.resFilename = resultFilename;
 	}
 	
 	public String getResultFilename() {
-		return resultFilename;
+		return resFilename;
 	}
 
 	@Override
 	public List<ConditionParameter> getConditionParameters() {
-		return conditionParameters;
+		return condPrms;
 	}
 	
 	@Override
 	public void setConditionParameters(
 			final List<ConditionParameter> conditionParameters) {
-		this.conditionParameters = conditionParameters;
+		this.condPrms = conditionParameters;
 	}
 	
 	@Override
-	public ConditionParameter getConditionParameter(int conditionIndex) {
-		return conditionParameters.get(conditionIndex);
+	public ConditionParameter getConditionParameter(int condI) {
+		return condPrms.get(condI);
 	}
 	
 	@Override
 	public int getConditionsSize() {
-		return conditionParameters.size();
+		return condPrms.size();
 	}
 	
 	@Override
-	public int getReplicates(int conditionIndex) {
-		return getConditionParameter(conditionIndex).getRecordFilenames().length;
+	public int getReplicates(int condI) {
+		return getConditionParameter(condI).getRecordFilenames().length;
 	}
 	
 	/**
 	 * @return the windowSize
 	 */
 	public int getActiveWindowSize() {
-		return activeWindowSize;
+		return activeWinSize;
 	}
 
 	/**
 	 * @return the reservedWindowSize
 	 */
 	public int getReservedWindowSize() {
-		return reservedWindowSize;
+		return reservedWinSize;
 	}
 	
 
 	@Override
-	public SortedSet<BaseSub> getReadSubstitutions() {
-		return Collections.unmodifiableSortedSet(baseSubstitutions);
+	public SortedSet<BaseSub> getReadSubs() {
+		return Collections.unmodifiableSortedSet(baseSubs);
 	}
 	
 	@Override
-	public void addReadSubstitution(BaseSub baseSubstitution) {
-		baseSubstitutions.add(baseSubstitution);
+	public void addReadSub(BaseSub baseSub) {
+		baseSubs.add(baseSub);
 	}
 	
 	/**
 	 * @param activeWindowSize the windowSize to set
 	 */
 	public void setActiveWindowSize(final int activeWindowSize) {
-		this.activeWindowSize = activeWindowSize;
+		this.activeWinSize = activeWindowSize;
 	}
 
 	/**
 	 * @param reservedWindowSize the threadWindowSize to set
 	 */
 	public void setReservedWindowSize(final int reservedWindowSize) {
-		this.reservedWindowSize = reservedWindowSize;
+		this.reservedWinSize = reservedWindowSize;
 	}
 	
 	/**
@@ -246,11 +246,11 @@ implements HasConditionParameter, HasReadSubstitution {
 	}
 	
 	public String getReferenceFilename() {
-		return referenceFilename;
+		return refFilename;
 	}
 	
 	public void setReferernceFilename(final String referenceFilename) {
-		this.referenceFilename = referenceFilename;
+		this.refFilename = referenceFilename;
 	}
 
 	public int getBAMfileCount() {
@@ -260,27 +260,27 @@ implements HasConditionParameter, HasReadSubstitution {
 	}
 	
 	public IndexedFastaSequenceFile getReferenceFile() {
-		if (referenceFile == null && getReferenceFilename() != null && ! getReferenceFilename().isEmpty()) {
+		if (refFile == null && getReferenceFilename() != null && ! getReferenceFilename().isEmpty()) {
 			final File file = new File(getReferenceFilename());
 			try {
-				referenceFile = new IndexedFastaSequenceFile(file);
+				refFile = new IndexedFastaSequenceFile(file);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				System.exit(1);
 			}
 		}
 
-		return referenceFile;
+		return refFile;
 	}
 	
 	public void resetReferenceFile() {
-		if (referenceFile != null) {
+		if (refFile != null) {
 			try {
-				referenceFile.close();
+				refFile.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			referenceFile = null;
+			refFile = null;
 		}
 	}
 	

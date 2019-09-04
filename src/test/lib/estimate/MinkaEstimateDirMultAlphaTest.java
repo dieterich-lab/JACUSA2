@@ -34,7 +34,7 @@ class MinkaEstimateDirMultAlphaTest {
 	// resources = "src/test/jacusa/estimate/dataMaximizeLogLikelihood.csv",
 	@Disabled
 	/**
-	 * Tests @see lib.estimate.MinkaEstimateDirMultAlpha#maximizeLogLikelihood(EstimationSample, Info, boolean)
+	 * Tests @see lib.estimate.MinkaEstimateDirMultAlpha#maximizeLogLikelihood(EstimationContainer, Info, boolean)
 	 */
 	@DisplayName("Should calculate the correct alpha(s) and log likelihood")
 	@ParameterizedTest(name = "Test on: {arguments}")
@@ -47,15 +47,15 @@ class MinkaEstimateDirMultAlphaTest {
 			@ConvertWith(DoubleArrayArgumentConverter.class) double[] expectedAlpha, 
 			double expectedLL) {
 		
-		final EstimationContainer estimationSample = 
+		final EstimationContainer estContainer = 
 				new FastEstimationResult("TEST", nominalData, minkaParameter.getMaxIterations());  
-		estimationSample.add(initAlpha, Double.NaN);
-		testInstance.maximizeLogLikelihood(estimationSample, new Info(), false);
+		estContainer.add(initAlpha, Double.NaN);
+		testInstance.maximizeLogLikelihood(estContainer, new Info(), false);
 		
-		final double[] actualAlpha = estimationSample.getAlpha();
+		final double[] actualAlpha = estContainer.getAlpha();
 		assertArrayEquals(expectedAlpha, actualAlpha, DELTA_ALPHA);
 		
-		final double calculatedLL = estimationSample.getLogLikelihood();
+		final double calculatedLL = estContainer.getLogLikelihood();
 		assertEquals(expectedLL, calculatedLL, DELTA_LL);
 	}
 	

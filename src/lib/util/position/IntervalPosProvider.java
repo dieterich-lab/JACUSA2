@@ -1,6 +1,6 @@
 package lib.util.position;
 
-public class IntervalPosProvider implements PositionProvider {
+class IntervalPosProvider implements PositionProvider {
 	
 	private final AbstractPosition pos;
 	private final int length;

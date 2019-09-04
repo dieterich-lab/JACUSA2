@@ -16,9 +16,9 @@ public class Record {
 	private final SamReader mateReader;
 	private Record mate;
 	
-	private final List<CigarElementExtended> cigarElementExtended;
+	private final List<CigarDetail> cigarDetail;
 
-	// indices to cigarElementExtended
+	// indices to cigarDetail
 	private final List<Integer> skipped;
 	private final List<Integer> insertions;
 	private final List<Integer> deletions;
@@ -39,7 +39,7 @@ public class Record {
 		this.mate		= mate;
 		this.mateReader = mateReader; 
 		
-		cigarElementExtended = new ArrayList<>(samRecord.getCigarLength());
+		cigarDetail = new ArrayList<>(samRecord.getCigarLength());
 		skipped 	= new ArrayList<>(2);
 		insertions 	= new ArrayList<>(2);
 		deletions 	= new ArrayList<>(2);
@@ -107,14 +107,14 @@ public class Record {
 				break;
 			}
 		
-			cigarElementExtended.add(new CigarElementExtended(position.copy(), cigarElement));
-			index = cigarElementExtended.size();
+			cigarDetail.add(new CigarDetail(position.copy(), cigarElement));
+			index = cigarDetail.size();
 			position.advance(cigarElement);
 		}
 	}
 
-	public List<CigarElementExtended> getCigarElementExtended() {
-		return cigarElementExtended;
+	public List<CigarDetail> getCigarDetail() {
+		return cigarDetail;
 	}
 	
 	public List<Integer> getSkipped() {
@@ -144,7 +144,7 @@ public class Record {
 			return 0;
 		}
 		
-		final CigarElementExtended upstream = cigarElementExtended.get(index - 1);
+		final CigarDetail upstream = cigarDetail.get(index - 1);
 		if (! upstream.getCigarElement().getOperator().isAlignment()) {
 			return 0;
 		}
@@ -153,11 +153,11 @@ public class Record {
 	}
 	
 	public int getDownstreamMatch(final int index) {
-		if (index == cigarElementExtended.size() - 1) {
+		if (index == cigarDetail.size() - 1) {
 			return 0;
 		}
 		
-		final CigarElementExtended downstream = cigarElementExtended.get(index + 1);
+		final CigarDetail downstream = cigarDetail.get(index + 1);
 		if (! downstream.getCigarElement().getOperator().isAlignment()) {
 			return 0;
 		}
@@ -166,12 +166,12 @@ public class Record {
 	}
 	
 	// TODO change name
-	public class CigarElementExtended {
+	public class CigarDetail {
 		
 		private AlignedPosition position;
 		private CigarElement cigarElement;
 		
-		public CigarElementExtended(final AlignedPosition position, final CigarElement cigarElement) {
+		public CigarDetail(final AlignedPosition position, final CigarElement cigarElement) {
 			this.position 		= position;
 			this.cigarElement 	= cigarElement;
 		}

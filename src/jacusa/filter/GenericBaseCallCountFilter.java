@@ -47,7 +47,7 @@ public class GenericBaseCallCountFilter extends AbstractFilter {
 		// false positive variants
 		if (parallelData.getConditions() == 1) {
 			variantBases = ParallelData.getNonReferenceBases(
-					parallelData.getCombPooledData().getAutoReferenceBase());
+					parallelData.getCombPooledData().getAutoRefBase());
 		} else if (parallelData.getConditions() == 2){
 			final BaseCallCount pooledBcc1 = observedBccFetcher.fetch(parallelData.getPooledData(0));
 			final BaseCallCount pooledBcc2 = observedBccFetcher.fetch(parallelData.getPooledData(1));
@@ -66,10 +66,10 @@ public class GenericBaseCallCountFilter extends AbstractFilter {
 			int count 			= 0;
 			int filteredCount 	= 0;
 
-			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
-				final int replicates = parallelData.getReplicates(conditionIndex);
-				for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
-					final DataContainer container = parallelData.getDataContainer(conditionIndex, replicateIndex);
+			for (int condI = 0; condI < parallelData.getConditions(); ++condI) {
+				final int replicates = parallelData.getReplicates(condI);
+				for (int replicateI = 0; replicateI < replicates; replicateI++) {
+					final DataContainer container = parallelData.getDataContainer(condI, replicateI);
 					// observed count
 					final BaseCallCount observedbcc = observedBccFetcher.fetch(container);
 					final int observed 				= observedbcc.getBaseCall(variantBase);

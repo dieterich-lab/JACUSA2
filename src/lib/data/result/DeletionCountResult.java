@@ -6,7 +6,7 @@ import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
 import lib.data.IntegerData;
 import lib.estimate.MinkaParameter;
-import lib.stat.estimation.provider.DeletionEstimationCountProvider;
+import lib.stat.estimation.provider.DeletionEstCountProvider;
 
 /**
  * TODO
@@ -20,7 +20,7 @@ public class DeletionCountResult extends INDELCountResult {
 	
 	public DeletionCountResult(		final SortedSet<BaseSub> baseSubs, final Result result,
 			final MinkaParameter minkaParameter,
-			final DeletionEstimationCountProvider countSampleProvider) {
+			final DeletionEstCountProvider countSampleProvider) {
 		
 		super(baseSubs, result, minkaParameter,countSampleProvider);
 	}

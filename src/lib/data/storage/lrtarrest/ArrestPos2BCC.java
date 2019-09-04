@@ -13,9 +13,9 @@ import java.util.regex.Pattern;
 
 import htsjdk.samtools.util.StringUtil;
 import lib.data.Data;
-import lib.data.count.basecall.ArrayBaseCallCount;
+import lib.data.count.basecall.ArrayBCC;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.count.basecall.UnmodifiableBaseCallCount;
+import lib.data.count.basecall.UnmodifiableBCC;
 import lib.util.Base;
 
 /**
@@ -108,7 +108,7 @@ implements Serializable, Data<ArrestPos2BCC> {
 		if (! contains(arrestPos)) {
 			return BaseCallCount.EMPTY;
 		}
-		return new UnmodifiableBaseCallCount(aPos2bcc.get(arrestPos));
+		return new UnmodifiableBCC(aPos2bcc.get(arrestPos));
 	}
 	
 	/**
@@ -126,7 +126,7 @@ implements Serializable, Data<ArrestPos2BCC> {
 		if (arrestPos != refPos) {
 			tmpTotalBcc.subtract(getArrestBCC(refPos));
 		}
-		return new UnmodifiableBaseCallCount(tmpTotalBcc);
+		return new UnmodifiableBCC(tmpTotalBcc);
 	}
 
 	private BaseCallCount getTotalBaseCallCountHelper() {
@@ -136,7 +136,7 @@ implements Serializable, Data<ArrestPos2BCC> {
 				tmpTotBcc.add(tmpBcc);
 			}
 			tmpTotBcc.add(tBcc);
-			cTotBcc = new UnmodifiableBaseCallCount(tmpTotBcc);
+			cTotBcc = new UnmodifiableBCC(tmpTotBcc);
 		}
 		return cTotBcc;
 	}
@@ -252,7 +252,7 @@ implements Serializable, Data<ArrestPos2BCC> {
 			this(POS_SEP,
 					FIELD_SEP,
 					EMPTY,
-					new ArrayBaseCallCount.Parser() );
+					new ArrayBCC.Parser() );
 		}
 
 		public Parser(final char posSep, final char fieldSep, final char empty, final BaseCallCount.AbstractParser bccParser) {

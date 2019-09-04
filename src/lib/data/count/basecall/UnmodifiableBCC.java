@@ -5,13 +5,13 @@ import java.util.Set;
 
 import lib.util.Base;
 
-public class UnmodifiableBaseCallCount extends AbstractBaseCallCount {
+public class UnmodifiableBCC extends AbstractBCC {
 
 	private static final long serialVersionUID = 1L;
 
 	private final BaseCallCount bcc;
 	
-	public UnmodifiableBaseCallCount(final BaseCallCount bcc) {
+	public UnmodifiableBCC(final BaseCallCount bcc) {
 		this.bcc = bcc;
 	}
 
@@ -22,7 +22,7 @@ public class UnmodifiableBaseCallCount extends AbstractBaseCallCount {
 
 	@Override
 	public BaseCallCount copy() {
-		return new UnmodifiableBaseCallCount(bcc.copy());
+		return new UnmodifiableBCC(bcc.copy());
 	}
 	
 	@Override
@@ -42,52 +42,52 @@ public class UnmodifiableBaseCallCount extends AbstractBaseCallCount {
 	}
 
 	@Override
-	public UnmodifiableBaseCallCount increment(Base base) {
+	public UnmodifiableBCC increment(Base base) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public UnmodifiableBaseCallCount clear() {
+	public UnmodifiableBCC clear() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public UnmodifiableBaseCallCount set(Base base, int count) {
+	public UnmodifiableBCC set(Base base, int count) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public UnmodifiableBaseCallCount add(Base base, BaseCallCount baseCallCount) {
+	public UnmodifiableBCC add(Base base, BaseCallCount bcc) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public UnmodifiableBaseCallCount add(BaseCallCount baseCallCount) {
+	public UnmodifiableBCC add(BaseCallCount bcc) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public UnmodifiableBaseCallCount add(Base dest, Base src, BaseCallCount baseCallCount) {
+	public UnmodifiableBCC add(Base dest, Base src, BaseCallCount bcc) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public UnmodifiableBaseCallCount subtract(Base base, BaseCallCount baseCallCount) {
+	public UnmodifiableBCC subtract(Base base, BaseCallCount bcc) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public UnmodifiableBaseCallCount subtract(BaseCallCount baseCallCount) {
+	public UnmodifiableBCC subtract(BaseCallCount bcc) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public UnmodifiableBaseCallCount subtract(Base dest, Base src, BaseCallCount baseCallCount) {
+	public UnmodifiableBCC subtract(Base dest, Base src, BaseCallCount bcc) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public UnmodifiableBaseCallCount invert() {
+	public UnmodifiableBCC invert() {
 		throw new UnsupportedOperationException();
 	}
 	

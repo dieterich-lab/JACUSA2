@@ -20,7 +20,7 @@ import lib.data.storage.processor.RecordProcessor;
  * This FilterFactory configures and helps to create the combined filter which aggregates the counts 
  * of other more basic filters.
  */
-public class CombinedFilterFactory extends AbstractBaseCallCountFilterFactory {
+public class CombinedFilterFactory extends AbstractBCCfilterFactory {
 
 	public static final char FILTER = 'D';
 	

@@ -3,7 +3,7 @@ package jacusa.filter.processrecord;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
 import lib.record.Record;
-import lib.util.position.CigarElementPositionProviderBuilder;
+import lib.util.position.CigarDetailPosProviderBuilder;
 
 /**
  * This class will identify all splice sites within a read and mark/count +/- distance up- and downstream 
@@ -25,23 +25,23 @@ public class ProcessSkippedOperator extends AbstractFilterRecordProcessor {
 	@Override
 	public void process(Record record) {
 		// iterate over cigarElement indices of splice sites
-		for (final int cigarElementExtendedIndex : record.getSkipped()) {
-			processSkippedOperator(cigarElementExtendedIndex, record);
+		for (final int cigarDetailI : record.getSkipped()) {
+			processSkippedOperator(cigarDetailI, record);
 		}
 	}
 	
 	/**
 	 * Helper method.
 	 * 
-	 * @param cigarElementExtendedIndex
+	 * @param cigarDetailI
 	 * @param record
 	 */
 	private void processSkippedOperator(
-			final int cigarElementExtendedIndex, final Record record) {
+			final int cigarDetailI, final Record record) {
 		
-		getPositionProcessor().process(
-				new CigarElementPositionProviderBuilder(
-						cigarElementExtendedIndex, getDistance(), record, getTranslator())
+		getPosProcessor().process(
+				new CigarDetailPosProviderBuilder(
+						cigarDetailI, getDistance(), record, getTranslator())
 				.build());
 	}
 

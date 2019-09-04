@@ -11,18 +11,18 @@ import lib.data.fetcher.Fetcher;
 public class HomozygousFilter extends AbstractFilter {
 
 	// defines the conditions that requires to be homomorph
-	private final int homozygousConditionIndex;
+	private final int homozygouscondI;
 	// defines what base call counts to use for filtering
 	private final Fetcher<BaseCallCount> bccFetcher;
 	
 	public HomozygousFilter(
 			final char id,
-			final int homozygousConditionIndex,
+			final int homozygouscondI,
 			final Fetcher<BaseCallCount> bccFetcher) {
 
 		super(id);
 		
-		this.homozygousConditionIndex 	= homozygousConditionIndex;
+		this.homozygouscondI 	= homozygouscondI;
 		this.bccFetcher 				= bccFetcher;
 	}
 
@@ -32,7 +32,7 @@ public class HomozygousFilter extends AbstractFilter {
 	@Override
 	public boolean filter(final ParallelData parallelData) {
 		final DataContainer container = 
-				parallelData.getPooledData(homozygousConditionIndex);
+				parallelData.getPooledData(homozygouscondI);
 		final int alleles = bccFetcher.fetch(container).getAlleles().size();
 		
 		return alleles > 1;

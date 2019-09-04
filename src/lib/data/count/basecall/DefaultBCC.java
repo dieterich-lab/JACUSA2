@@ -5,7 +5,7 @@ import java.util.Set;
 
 import lib.util.Base;
 
-public class DefaultBaseCallCount extends AbstractBaseCallCount {
+public class DefaultBCC extends AbstractBCC {
 
 	private static final long serialVersionUID = 1L;
 
@@ -14,14 +14,14 @@ public class DefaultBaseCallCount extends AbstractBaseCallCount {
 	private int g;
 	private int t;
 	
-	public DefaultBaseCallCount(final int a, final int c, final int g, final int t) {
+	public DefaultBCC(final int a, final int c, final int g, final int t) {
 		this.a = a;
 		this.c = c;
 		this.g = g;
 		this.t = t;
 	}
 	
-	public DefaultBaseCallCount() {
+	public DefaultBCC() {
 		a = 0;
 		c = 0;
 		g = 0;
@@ -35,7 +35,7 @@ public class DefaultBaseCallCount extends AbstractBaseCallCount {
 
 	@Override
 	public BaseCallCount copy() {
-		return new DefaultBaseCallCount(a, c, g, t);
+		return new DefaultBCC(a, c, g, t);
 	}
 	
 	@Override
@@ -129,22 +129,22 @@ public class DefaultBaseCallCount extends AbstractBaseCallCount {
 	}
 
 	@Override
-	public BaseCallCount add(Base base, BaseCallCount baseCallCount) {
+	public BaseCallCount add(Base base, BaseCallCount bcc) {
 		switch (base) {
 		case A:
-			a += baseCallCount.getBaseCall(base);
+			a += bcc.getBaseCall(base);
 			break;
 
 		case C:
-			c += baseCallCount.getBaseCall(base);
+			c += bcc.getBaseCall(base);
 			break;
 
 		case G:
-			g += baseCallCount.getBaseCall(base);
+			g += bcc.getBaseCall(base);
 			break;
 
 		case T:
-			t += baseCallCount.getBaseCall(base);
+			t += bcc.getBaseCall(base);
 			break;
 			
 		default:
@@ -154,30 +154,30 @@ public class DefaultBaseCallCount extends AbstractBaseCallCount {
 	}
 
 	@Override
-	public BaseCallCount add(BaseCallCount baseCallCount) {
-		for (final Base base : baseCallCount.getAlleles()) {
-			add(base, baseCallCount);
+	public BaseCallCount add(BaseCallCount bcc) {
+		for (final Base base : bcc.getAlleles()) {
+			add(base, bcc);
 		}
 		return this;
 	}
 
 	@Override
-	public BaseCallCount add(Base dest, Base src, BaseCallCount baseCallCount) {
+	public BaseCallCount add(Base dest, Base src, BaseCallCount bcc) {
 		switch (dest) {
 		case A:
-			a += baseCallCount.getBaseCall(src);
+			a += bcc.getBaseCall(src);
 			break;
 
 		case C:
-			c += baseCallCount.getBaseCall(src);
+			c += bcc.getBaseCall(src);
 			break;
 
 		case G:
-			g += baseCallCount.getBaseCall(src);
+			g += bcc.getBaseCall(src);
 			break;
 
 		case T:
-			t += baseCallCount.getBaseCall(src);
+			t += bcc.getBaseCall(src);
 			break;
 			
 		default:
@@ -187,22 +187,22 @@ public class DefaultBaseCallCount extends AbstractBaseCallCount {
 	}
 
 	@Override
-	public BaseCallCount subtract(Base base, BaseCallCount baseCallCount) {
+	public BaseCallCount subtract(Base base, BaseCallCount bcc) {
 		switch (base) {
 		case A:
-			a -= baseCallCount.getBaseCall(base);
+			a -= bcc.getBaseCall(base);
 			break;
 
 		case C:
-			c -= baseCallCount.getBaseCall(base);
+			c -= bcc.getBaseCall(base);
 			break;
 
 		case G:
-			g -= baseCallCount.getBaseCall(base);
+			g -= bcc.getBaseCall(base);
 			break;
 
 		case T:
-			t -= baseCallCount.getBaseCall(base);
+			t -= bcc.getBaseCall(base);
 			break;
 			
 		default:
@@ -212,30 +212,30 @@ public class DefaultBaseCallCount extends AbstractBaseCallCount {
 	}
 
 	@Override
-	public BaseCallCount subtract(BaseCallCount baseCallCount) {
-		for (final Base base : baseCallCount.getAlleles()) {
-			subtract(base, baseCallCount);
+	public BaseCallCount subtract(BaseCallCount bcc) {
+		for (final Base base : bcc.getAlleles()) {
+			subtract(base, bcc);
 		}
 		return this;
 	}
 
 	@Override
-	public BaseCallCount subtract(Base dest, Base src, BaseCallCount baseCallCount) {
+	public BaseCallCount subtract(Base dest, Base src, BaseCallCount bcc) {
 		switch (dest) {
 		case A:
-			a -= baseCallCount.getBaseCall(src);
+			a -= bcc.getBaseCall(src);
 			break;
 
 		case C:
-			c -= baseCallCount.getBaseCall(src);
+			c -= bcc.getBaseCall(src);
 			break;
 
 		case G:
-			g -= baseCallCount.getBaseCall(src);
+			g -= bcc.getBaseCall(src);
 			break;
 
 		case T:
-			t -= baseCallCount.getBaseCall(src);
+			t -= bcc.getBaseCall(src);
 			break;
 			
 		default:
@@ -276,7 +276,7 @@ public class DefaultBaseCallCount extends AbstractBaseCallCount {
 			super(baseCallSep, empty);
 		}
 		@Override
-		public DefaultBaseCallCount parse(String s) {
+		public DefaultBCC parse(String s) {
 			final String[] cols = split(s);
 			int a = 0;
 			int c = 0;
@@ -311,7 +311,7 @@ public class DefaultBaseCallCount extends AbstractBaseCallCount {
 				}
 
 			}
-			return new DefaultBaseCallCount(a, c, g, t);
+			return new DefaultBCC(a, c, g, t);
 		}
 		
 	}

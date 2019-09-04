@@ -13,7 +13,7 @@ import jacusa.filter.GenericBaseCallCountFilter;
 import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.data.count.basecall.DefaultBCC;
 import lib.data.fetcher.DataTypeFetcher;
 import lib.data.result.Result;
 import lib.util.Base;
@@ -37,7 +37,7 @@ class GenericBaseCallCountFilterTest extends AbstractFilterTest {
 	private int testNumber;
 	
 	public GenericBaseCallCountFilterTest() {
-		parser 			= new DefaultBaseCallCount.Parser(baseCallSep, '*');
+		parser 			= new DefaultBCC.Parser(baseCallSep, '*');
 		
 		observedFetcher = new DataTypeFetcher<>(DataType.retrieve("Observed", BaseCallCount.class));
 		filteredFetcher = new DataTypeFetcher<>(DataType.retrieve("Filtered", BaseCallCount.class));

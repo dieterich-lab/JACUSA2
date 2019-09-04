@@ -2,11 +2,11 @@ package lib.util.position;
 
 import lib.record.AlignedPosition;
 import lib.record.Record;
-import lib.record.Record.CigarElementExtended;
+import lib.record.Record.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
 // TODO
-public class InsertionPositionProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
+class InsertionPositionProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
 	
 	// position of the insertion
 	private final InsertedPosition pos;
@@ -15,14 +15,14 @@ public class InsertionPositionProviderBuilder implements lib.util.Builder<Interv
 
 	private CoordinateTranslator translator;
 
-	public InsertionPositionProviderBuilder(
+	InsertionPositionProviderBuilder(
 			final int insI, final Record record, 
 			final CoordinateTranslator translator) {
 		
 		// extract corresponding cigar element 
 		final int cigarElementI 	= record.getInsertion().get(insI);
-		final CigarElementExtended cigarElement = record
-				.getCigarElementExtended().get(cigarElementI);
+		final CigarDetail cigarElement = record
+				.getCigarDetail().get(cigarElementI);
 		
 		// prepare to create Position
 		final AlignedPosition alignedPos 	= cigarElement.getPosition(); 

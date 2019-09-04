@@ -86,17 +86,17 @@ class CoordinateControllerTest {
 	}
 
 	@Test
-	void testConvert2windowPositionCoordinate() {
+	void testConvert2winPosCoord() {
 		fail("Not yet implemented"); // TODO
 	}
 
 	@Test
-	void testConvert2windowPositionInt() {
+	void testConvert2winPosInt() {
 		fail("Not yet implemented"); // TODO
 	}
 
 	@Test
-	void testConvert2referencePosition() {
+	void testConvert2refPos() {
 		fail("Not yet implemented"); // TODO
 	}
 

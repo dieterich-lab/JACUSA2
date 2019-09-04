@@ -14,13 +14,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.coordinate.DefaultCoordinateTranslator;
-import lib.util.position.CigarElementPositionProviderBuilder;
+import lib.util.position.CigarDetailPosProviderBuilder;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 import test.utlis.SAMRecordBuilder;
 
 @TestInstance(Lifecycle.PER_CLASS)
-class CigarElementExtendedPositionProviderBuilderTest implements PositionProviderTest {
+class CigarDetailPosProviderBuilderTest implements PositionProviderTest {
 
 	private static final String CONTIG = "PositionProviderTest";
 	
@@ -34,7 +34,7 @@ class CigarElementExtendedPositionProviderBuilderTest implements PositionProvide
 			List<Position> expected,
 			String info) {
 		
-		final CigarElementPositionProviderBuilder testInstance = createTestInstance(
+		final CigarDetailPosProviderBuilder testInstance = createTestInstance(
 				index, upDownStream, record, translator);
 		final PositionProvider positionProvider = testInstance.build();
 		final List<Position> actual = positionProvider.flat();
@@ -139,14 +139,14 @@ class CigarElementExtendedPositionProviderBuilderTest implements PositionProvide
 				info);
 	}
 	
-	CigarElementPositionProviderBuilder createTestInstance(
-			final int cigarElementExtendedIndex,
+	CigarDetailPosProviderBuilder createTestInstance(
+			final int cigarDetailI,
 			final int upDownStream,
 			final Record record,
 			final CoordinateTranslator translator) {
 		
-		return new CigarElementPositionProviderBuilder(
-				cigarElementExtendedIndex, upDownStream, record, 
+		return new CigarDetailPosProviderBuilder(
+				cigarDetailI, upDownStream, record, 
 				translator);
 	}
 	

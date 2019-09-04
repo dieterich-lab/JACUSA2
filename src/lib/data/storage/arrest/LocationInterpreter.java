@@ -80,7 +80,7 @@ public interface LocationInterpreter {
 			positionProviders.add(
 					new AlgnBlockPosProviderBuilder(
 							i, record, translator)
-					.adjustWindowPos()
+					.adjustWinPos()
 					.build()); 
 		}
 		return positionProviders;

@@ -44,7 +44,7 @@ abstract class AbstractFilterRecordProcessor implements RecordProcessor {
 	 * 
 	 * @return the positionProcessor that is used to traverse the read
 	 */
-	PositionProcessor getPositionProcessor() {
+	PositionProcessor getPosProcessor() {
 		return positionProcessor;
 	}
 	

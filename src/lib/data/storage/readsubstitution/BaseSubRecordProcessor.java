@@ -6,7 +6,7 @@ import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AllAlignmentBlocksPosProvider;
 import lib.util.position.AllDeletionsPositionProvider;
-import lib.util.position.AllInsertionsPositionProvider;
+import lib.util.position.AllInsertionsPosProvider;
 import lib.util.position.ConsumingRefPosProviderBuilder;
 import lib.util.position.MismatchPosProvider;
 import lib.util.position.Position;
@@ -142,7 +142,7 @@ implements GeneralRecordProcessor {
 		
 		if (! insPosProcs.isEmpty()) {
 			// process insertions and store dependent on base substitutions
-			final PositionProvider insPosProvider = new AllInsertionsPositionProvider(record, getTranslator());
+			final PositionProvider insPosProvider = new AllInsertionsPosProvider(record, getTranslator());
 			while (insPosProvider.hasNext()) {
 				final Position insPos = insPosProvider.next();
 				for (final BaseSub baseSub : observedBaseSubs) {

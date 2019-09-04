@@ -40,7 +40,7 @@ import test.utlis.SAMRecordBuilder;
 import test.utlis.SharedStorageBuilder;
 
 @TestInstance(Lifecycle.PER_CLASS)
-class BaseSubstitutionRecordProcessorTest {
+class BaseSubRecordProcessorTest {
 
 	// use this contig from ReferenceSequence to generate reads from
 	private static final String CONTIG = "BaseSubstitutionTest";

@@ -93,12 +93,12 @@ implements LocationInterpreter {
 			positionProviders.addAll(getThroughPositionProvider(0, size - 1, record, translator));
 			positionProviders.add(new AlgnBlockPosProviderBuilder(size - 1, record, translator)
 					.ignoreLast(1)
-					.adjustWindowPos()
+					.adjustWinPos()
 					.build());
 		} else {
 			positionProviders.add(new AlgnBlockPosProviderBuilder(0, record, translator)
 					.ignoreFirst(1)
-					.adjustWindowPos()
+					.adjustWinPos()
 					.build());
 			positionProviders.addAll(getThroughPositionProvider(1, size - 1, record, translator));
 		}
@@ -121,12 +121,12 @@ implements LocationInterpreter {
 				positionProviders.addAll(getThroughPositionProvider(0, size - 1, record, translator));
 				positionProviders.add(new AlgnBlockPosProviderBuilder(size - 1, record, translator)
 						.ignoreLast(1)
-						.adjustWindowPos()
+						.adjustWinPos()
 						.build());
 			} else {
 				positionProviders.add(new AlgnBlockPosProviderBuilder(0, record, translator)
 						.ignoreFirst(1)
-						.adjustWindowPos()
+						.adjustWinPos()
 						.build());
 				positionProviders.addAll(getThroughPositionProvider(1, size - 1, record, translator));
 			}

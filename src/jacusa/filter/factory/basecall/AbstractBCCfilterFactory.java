@@ -19,7 +19,7 @@ import lib.data.DataType;
 import lib.data.DataContainer;
 import lib.data.DataContainer.AbstractBuilder;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.data.count.basecall.DefaultBCC;
 import lib.data.fetcher.Fetcher;
 import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.fetcher.SpecificFilteredDataFetcher;
@@ -45,7 +45,7 @@ import lib.util.coordinate.CoordinateController;
  * This abstract FilterFactory configures and helps to create filters that need an observed and filtered
  * base call count, e.g.: Read/Start filter, etc.
  */
-public abstract class AbstractBaseCallCountFilterFactory
+public abstract class AbstractBCCfilterFactory
 extends AbstractFilterFactory 
 implements HasFilterDistance, HasFilterMinRatio {
 
@@ -62,9 +62,9 @@ implements HasFilterDistance, HasFilterMinRatio {
 	private int filterDistance;
 	private double filterMinRatio;
 	
-	private final BaseCallCount.AbstractParser baseCallCountParser;
+	private final BaseCallCount.AbstractParser bccParser;
 	
-	public AbstractBaseCallCountFilterFactory(
+	public AbstractBCCfilterFactory(
 			final Option option,
 			final Fetcher<BaseCallCount> observedBccFetcher, 
 			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
@@ -75,7 +75,7 @@ implements HasFilterDistance, HasFilterMinRatio {
 				DEFAULT_FILTER_DISTANCE, DEFAULT_FILTER_MINRATIO);
 	}
 	
-	public AbstractBaseCallCountFilterFactory(
+	public AbstractBCCfilterFactory(
 			final Option option,
 			final Fetcher<BaseCallCount> observedBccFetcher, 
 			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher, 
@@ -94,7 +94,7 @@ implements HasFilterDistance, HasFilterMinRatio {
 		getACOption().add(new FilterDistanceOption(this));
 		getACOption().add(new FilterMinRatioOption(this));
 		
-		baseCallCountParser = new DefaultBaseCallCount.Parser(
+		bccParser = new DefaultBCC.Parser(
 				InputOutput.EMPTY_FIELD, InputOutput.VALUE_SEP);
 	}
 	
@@ -184,7 +184,7 @@ implements HasFilterDistance, HasFilterMinRatio {
 	
 	@Override
 	public void addFilteredData(StringBuilder sb, DataContainer filteredData) {
-		baseCallCountParser.wrap(filteredBccFetcher.fetch(filteredData));
+		bccParser.wrap(filteredBccFetcher.fetch(filteredData));
 	}
 	
 	/**

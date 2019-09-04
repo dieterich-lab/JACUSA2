@@ -10,7 +10,7 @@ import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.data.count.basecall.DefaultBCC;
 
 // JUNIT: A
 public class BaseCallCountListArgumentConverter extends SimpleArgumentConverter {
@@ -19,7 +19,7 @@ public class BaseCallCountListArgumentConverter extends SimpleArgumentConverter 
 	protected Object convert(Object arg0, Class<?> arg1) throws ArgumentConversionException {
 		assertEquals(List.class, arg1, "Can only convert to List");
 		final BaseCallCount.AbstractParser parser = 
-				new DefaultBaseCallCount.Parser(',', BaseCallCount.AbstractParser.BASE_CALL_SEP);
+				new DefaultBCC.Parser(',', BaseCallCount.AbstractParser.BASE_CALL_SEP);
 		final String s = String.valueOf(arg0);
 		return Stream.of(s.split(";"))
 			.map(c -> parser.parse(c))

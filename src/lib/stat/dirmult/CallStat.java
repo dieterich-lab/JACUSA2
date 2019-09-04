@@ -9,24 +9,24 @@ import lib.stat.AbstractStat;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.EstimationContainerProvider;
 
-public class CallStat extends AbstractStat {
+class CallStat extends AbstractStat {
 
 	private final double threshold;
-	private final EstimationContainerProvider estimationSampleProvider;
+	private final EstimationContainerProvider estContainerProv;
 	private final DirMultParameter dirMultPrm;
 
 	private final EstimateDirMult dirMult;
 	
-	public CallStat(
+	CallStat(
 			final double threshold,
-			final EstimationContainerProvider estimationSampleProvider,
+			final EstimationContainerProvider estContainerProv,
 			final DirMultParameter dirMultPrm) {
 
-		this.threshold 				= threshold;
-		this.estimationSampleProvider 	= estimationSampleProvider;
-		this.dirMultPrm 			= dirMultPrm;
+		this.threshold 			= threshold;
+		this.estContainerProv 	= estContainerProv;
+		this.dirMultPrm 		= dirMultPrm;
 
-		dirMult						= new EstimateDirMult(dirMultPrm.getMinkaEstimateParameter()); 
+		dirMult	= new EstimateDirMult(dirMultPrm.getMinkaEstimateParameter()); 
 	}
 
 	@Override
@@ -39,15 +39,15 @@ public class CallStat extends AbstractStat {
 	
 	@Override
 	public Result calculate(ParallelData parallelData) {
-		final EstimationContainer[] estimationSamples = estimationSampleProvider.convert(parallelData);
-		double stat = Double.NaN;
+		final EstimationContainer[] estContainers = estContainerProv.convert(parallelData);
+		double stat;
 		if (dirMultPrm.isCalcPValue()) {
-			stat = dirMult.getLRT(estimationSamples);
+			stat = dirMult.getLRT(estContainers);
 			// TODO degrees of freedom
 			final ChiSquaredDistribution dist = new ChiSquaredDistribution(1); 
 			stat = 1 - dist.cumulativeProbability(stat);
 		} else {
-			stat = dirMult.getScore(estimationSamples);;
+			stat = dirMult.getScore(estContainers);
 		}
 		return new OneStatResult(stat, parallelData);
 	}

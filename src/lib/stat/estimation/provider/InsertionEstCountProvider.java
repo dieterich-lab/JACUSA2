@@ -3,9 +3,9 @@ package lib.stat.estimation.provider;
 import lib.data.DataContainer;
 import lib.data.IntegerData;
 
-public class InsertionEstimationCountProvider extends INDELestimationCountProvider {
+public class InsertionEstCountProvider extends INDELestimationCountProvider {
 
-	public InsertionEstimationCountProvider(final int maxIterations) {
+	public InsertionEstCountProvider(final int maxIterations) {
 		super(maxIterations);
 	}
 	

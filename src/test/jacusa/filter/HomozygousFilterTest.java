@@ -10,7 +10,7 @@ import jacusa.filter.HomozygousFilter;
 import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.data.count.basecall.DefaultBCC;
 import lib.data.fetcher.DataTypeFetcher;
 import lib.data.result.Result;
 import lib.util.LibraryType;
@@ -28,7 +28,7 @@ class HomozygousFilterTest extends AbstractFilterTest {
 	private int testNumber;
 	
 	public HomozygousFilterTest() {
-		bccParser 	= new DefaultBaseCallCount.Parser(',', '*');
+		bccParser 	= new DefaultBCC.Parser(',', '*');
 		bccFetcher 	= new DataTypeFetcher<>(DataType.retrieve("Observed", BaseCallCount.class));
 		
 		testNumber	= 0;
@@ -138,20 +138,20 @@ class HomozygousFilterTest extends AbstractFilterTest {
 	}
 	
 	Arguments createArguments(
-			final int conditionIndex, final ParallelData parallelData, final boolean expected) {
+			final int condI, final ParallelData parallelData, final boolean expected) {
 		
 		return Arguments.of(
-				createTestInstance(conditionIndex),
+				createTestInstance(condI),
 				parallelData,
 				expected,
 				new StringBuilder()
-				.append("conditionIndex: ").append(conditionIndex).append(' ')
+				.append("condI: ").append(condI).append(' ')
 				.append("test: ").append(++testNumber)
 				.toString() );
 	}
 	
-	Filter createTestInstance(final int conditionIndex) {
-		return new HomozygousFilter(' ', conditionIndex, bccFetcher);
+	Filter createTestInstance(final int condI) {
+		return new HomozygousFilter(' ', condI, bccFetcher);
 	}
 
 }

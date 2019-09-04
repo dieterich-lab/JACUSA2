@@ -34,10 +34,10 @@ public class BEDlikeResultFileWriter extends AbstractResultFileWriter {
 		final StringBuilder sb = new StringBuilder();
 		headerDetailAdder.add(sb, conditionParameter);
 		bed6Adder.addHeader(sb);
-		for (int conditionIndex = 0; conditionIndex < conditionParameter.size(); ++conditionIndex) {
-			final int replicateSize = conditionParameter.get(conditionIndex).getReplicateSize();
-			for (int replicateIndex = 0; replicateIndex < replicateSize; ++replicateIndex) {
-				dataAdder.addHeader(sb, conditionIndex, replicateIndex);
+		for (int condI = 0; condI < conditionParameter.size(); ++condI) {
+			final int replicateSize = conditionParameter.get(condI).getReplicateSize();
+			for (int replicateI = 0; replicateI < replicateSize; ++replicateI) {
+				dataAdder.addHeader(sb, condI, replicateI);
 			}
 		}
 		infoAdder.addHeader(sb);
@@ -50,10 +50,10 @@ public class BEDlikeResultFileWriter extends AbstractResultFileWriter {
 		for (final int valueIndex : result.getValuesIndex()) {
 			final StringBuilder sb = new StringBuilder();
 			bed6Adder.addData(sb, valueIndex, result);
-			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
-				final int replicateSize = parallelData.getReplicates(conditionIndex);
-				for (int replicateIndex = 0; replicateIndex < replicateSize; ++replicateIndex) {
-					dataAdder.addData(sb, valueIndex, conditionIndex, replicateIndex, result);
+			for (int condI = 0; condI < parallelData.getConditions(); ++condI) {
+				final int replicateSize = parallelData.getReplicates(condI);
+				for (int replicateI = 0; replicateI < replicateSize; ++replicateI) {
+					dataAdder.addData(sb, valueIndex, condI, replicateI, result);
 				}
 			}
 			infoAdder.addData(sb, valueIndex, result);

@@ -8,7 +8,7 @@ import java.util.Map;
 import jacusa.filter.factory.FilterFactory;
 import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.GeneralParameter;
-import lib.data.count.BaseSub2BaseCallCount;
+import lib.data.count.BaseSub2BCC;
 import lib.data.count.BaseSub2IntData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
@@ -46,7 +46,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	
 	BaseCallCount getBaseCallCount();
 	
-	BaseSub2BaseCallCount getBaseSub2BCC();
+	BaseSub2BCC getBaseSub2BCC();
 	
 	BaseCallCountFilteredData getBCCFilteredData();
 	BooleanFilteredData getBooleanFilteredData();
@@ -54,8 +54,8 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	BaseCallCount getArrestBaseCallCount();
 	BaseCallCount getThroughBaseCallCount();
 	
-	BaseSub2BaseCallCount getArrestBaseSub2BCC();
-	BaseSub2BaseCallCount getThroughBaseSub2BCC();
+	BaseSub2BCC getArrestBaseSub2BCC();
+	BaseSub2BCC getThroughBaseSub2BCC();
 	
 	ArrestPos2BCC getArrestPos2BCC();
 	BaseCallCountFilteredData getArrestPos2BCCFilteredData();
@@ -113,21 +113,21 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 					dataType.newInstance());
 		}
 		
-		protected void addBaseSubstitution2bcc(final AbstractBuilder builder, final DataType<BaseSub2BaseCallCount> dataType) {
+		protected void addBaseSub2bcc(final AbstractBuilder builder, final DataType<BaseSub2BCC> dataType) {
 			add(builder, dataType);
-			final BaseSub2BaseCallCount bsc = builder.get(dataType);
-			for (final BaseSub baseSub : parameter.getReadSubstitutions()) {
+			final BaseSub2BCC bsc = builder.get(dataType);
+			for (final BaseSub baseSub : parameter.getReadSubs()) {
 				bsc.set(baseSub, BaseCallCount.create());
 			}
 		}
 		
-		protected void addBaseSubstitution2int(final AbstractBuilder builder, final DataType<BaseSub2IntData> dataType) {
+		protected void addBaseSub2int(final AbstractBuilder builder, final DataType<BaseSub2IntData> dataType) {
 			if (builder.contains(dataType)) {
 				return;
 			}
 			add(builder, dataType);
 			final BaseSub2IntData bsc = builder.get(dataType);
-			for (final BaseSub baseSub : parameter.getReadSubstitutions()) {
+			for (final BaseSub baseSub : parameter.getReadSubs()) {
 				bsc.set(baseSub, new IntegerData());
 			}
 		}

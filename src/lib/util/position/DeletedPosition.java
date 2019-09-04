@@ -2,19 +2,19 @@ package lib.util.position;
 
 import lib.record.AlignedPosition;
 import lib.record.Record;
-import lib.record.Record.CigarElementExtended;
+import lib.record.Record.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
  * TODO
  */
-public class DeletedPosition extends AbstractPosition {
+class DeletedPosition extends AbstractPosition {
 
-	public DeletedPosition(final DeletedPosition deletedPosition) {
+	DeletedPosition(final DeletedPosition deletedPosition) {
 		super(deletedPosition);
 	}
 	
-	public DeletedPosition(
+	DeletedPosition(
 			final AlignedPosition alignPos, 
 			final Record record,
 			final CoordinateTranslator translator) {
@@ -66,13 +66,13 @@ public class DeletedPosition extends AbstractPosition {
 				final CoordinateTranslator translator) {
 			
 			this(
-					record.getCigarElementExtended().get(deletionIndex),
+					record.getCigarDetail().get(deletionIndex),
 					record, 
 					translator);
 		}
 		
 		private Builder(
-				final CigarElementExtended cigarElement, final Record record, 
+				final CigarDetail cigarElement, final Record record, 
 				final CoordinateTranslator translator) {
 			
 			super(

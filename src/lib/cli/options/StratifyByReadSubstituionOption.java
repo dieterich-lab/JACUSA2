@@ -4,7 +4,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 import lib.cli.options.filter.has.BaseSub;
-import lib.cli.options.filter.has.HasReadSubstitution;
+import lib.cli.options.filter.has.HasReadSub;
 
 /**
  * This option enables data stratification by chosen read substitutions. 
@@ -15,11 +15,11 @@ public class StratifyByReadSubstituionOption extends AbstractACOption {
 
 	public static final char SEP = ',';
 	
-	private final HasReadSubstitution hasReadReadSubstitution;
+	private final HasReadSub hasReadReadSub;
 	
-	public StratifyByReadSubstituionOption(final HasReadSubstitution hasReadReadSubstitution) {
+	public StratifyByReadSubstituionOption(final HasReadSub hasReadReadSubstitution) {
 		super("B", "read-substitution");
-		this.hasReadReadSubstitution = hasReadReadSubstitution;
+		this.hasReadReadSub = hasReadReadSubstitution;
 	}
 	
 	/**
@@ -44,8 +44,8 @@ public class StratifyByReadSubstituionOption extends AbstractACOption {
 	public void process(CommandLine line) throws Exception {
 		final String v = line.getOptionValue(getOpt());
 		for (final String s : v.split(Character.toString(SEP))) {
-			final BaseSub baseSubstitution = BaseSub.string2enum(s);
-	    	hasReadReadSubstitution.addReadSubstitution(baseSubstitution);
+			final BaseSub baseSub = BaseSub.string2enum(s);
+	    	hasReadReadSub.addReadSub(baseSub);
 		}
 	}
 

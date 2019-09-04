@@ -7,18 +7,18 @@ import java.util.TreeSet;
 
 import lib.util.Base;
 
-public class MapBaseCallCount extends AbstractBaseCallCount {
+public class MapBCC extends AbstractBCC {
 
 	private static final long serialVersionUID = 1L;
 	
 	// container
 	private final Map<Base, Integer> baseCalls;
 
-	public MapBaseCallCount() {
+	public MapBCC() {
 		baseCalls = new EnumMap<>(Base.class);
 	}
 	
-	public MapBaseCallCount(final Map<Base, Integer> baseCalls) {
+	public MapBCC(final Map<Base, Integer> baseCalls) {
 		if (baseCalls == null) {
 			throw new IllegalArgumentException("baseCalls == null");
 		}
@@ -26,8 +26,8 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 	}
 	
 	@Override
-	public MapBaseCallCount copy() {
-		return new MapBaseCallCount(new EnumMap<>(baseCalls));
+	public MapBCC copy() {
+		return new MapBCC(new EnumMap<>(baseCalls));
 	}
 	
 	@Override
@@ -45,70 +45,70 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 	}
 
 	@Override
-	public MapBaseCallCount increment(final Base base) {
+	public MapBCC increment(final Base base) {
 		final int count = getBaseCall(base);
 		set(base, count + 1);
 		return this;
 	}
 
 	@Override
-	public MapBaseCallCount clear() {
+	public MapBCC clear() {
 		baseCalls.clear();
 		return this;
 	}
 
 	@Override
-	public MapBaseCallCount add(final BaseCallCount baseCallCount) {
-		for (final Base base : baseCallCount.getAlleles()) {
-			add(base, baseCallCount);
+	public MapBCC add(final BaseCallCount bcc) {
+		for (final Base base : bcc.getAlleles()) {
+			add(base, bcc);
 		}
 		return this;
 	}
 
 	@Override
-	public MapBaseCallCount set(final Base base, final int count) {
+	public MapBCC set(final Base base, final int count) {
 		baseCalls.put(base, count);
 		return this;
 	}
 
 	@Override
-	public MapBaseCallCount add(final Base base, final BaseCallCount baseQualCount) {
+	public MapBCC add(final Base base, final BaseCallCount baseQualCount) {
 		add(base, base, baseQualCount);
 		return this;
 	}
 
 	@Override
-	public MapBaseCallCount add(final Base dest, final Base src, final BaseCallCount baseCallCount) {
+	public MapBCC add(final Base dest, final Base src, final BaseCallCount bcc) {
 		final int countDest = getBaseCall(dest);
-		final int countSrc = baseCallCount.getBaseCall(src);
+		final int countSrc = bcc.getBaseCall(src);
 		set(dest, countDest + countSrc);
 		return this;
 	}
 	
 	@Override
-	public MapBaseCallCount subtract(final Base base, final BaseCallCount baseCallCount) {
-		subtract(base, base, baseCallCount);
+	public MapBCC subtract(final Base base, final BaseCallCount bcc) {
+		subtract(base, base, bcc);
 		return this;
 	}
 
 	@Override
-	public MapBaseCallCount subtract(final Base dest, final Base src, final BaseCallCount baseCallCount) {
+	public MapBCC subtract(final Base dest, final Base src, final BaseCallCount bcc) {
 		final int countDest = getBaseCall(dest);
-		final int countSrc = baseCallCount.getBaseCall(src);
+		final int countSrc = bcc.getBaseCall(src);
 		set(dest, countDest - countSrc);
 		return this;
 	}
 	
 	@Override
-	public MapBaseCallCount subtract(final BaseCallCount baseCallCount) {
-		for (final Base base : baseCallCount.getAlleles()) {
-			subtract(base, baseCallCount);
+	public MapBCC subtract(final BaseCallCount bcc) {
+		for (final Base base : bcc.getAlleles()) {
+			subtract(base, bcc);
 		}
 		return this;
 	}
 	
 	@Override
-	public MapBaseCallCount invert() {
+	public MapBCC invert() {
 		for (final Base base : new Base[] {Base.A, Base.C}) {
 			final Base complement = base.getComplement();
 			if (getBaseCall(base) == 0 && getBaseCall(complement) == 0) {
@@ -153,7 +153,7 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 		}
 		
 		@Override
-		public MapBaseCallCount parse(String s) {
+		public MapBCC parse(String s) {
 			final String[] cols = split(s);
 			final Map<Base, Integer> baseCalls = new EnumMap<>(Base.class);
 			for (int baseIndex = 0; baseIndex < cols.length; ++baseIndex) {
@@ -163,7 +163,7 @@ public class MapBaseCallCount extends AbstractBaseCallCount {
 					throw new IllegalArgumentException(); 
 				}
 			}
-			return new MapBaseCallCount(baseCalls);
+			return new MapBCC(baseCalls);
 		}
 		
 	}

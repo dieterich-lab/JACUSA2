@@ -174,8 +174,8 @@ public abstract class AbstractMethod {
 		final int conditionSize = parameter.getConditionsSize();
 		final String[][] recordFilenames = new String[conditionSize][];
 
-		for (int conditionIndex = 0; conditionIndex < conditionSize; conditionIndex++) {
-			recordFilenames[conditionIndex] = parameter.getConditionParameter(conditionIndex).getRecordFilenames();
+		for (int condI = 0; condI < conditionSize; condI++) {
+			recordFilenames[condI] = parameter.getConditionParameter(condI).getRecordFilenames();
 		}
 		
 		boolean isStranded = false;
@@ -206,9 +206,9 @@ public abstract class AbstractMethod {
 	 * @throws Exception
 	 */
 	public boolean parseArgs(final String[] args) throws Exception {
-		for (int conditionIndex = 0; conditionIndex < args.length; conditionIndex++) {
-			SAMPathnameArg pa = new SAMPathnameArg(conditionIndex + 1, parameter.getConditionParameter(conditionIndex));
-			pa.processArg(args[conditionIndex]);
+		for (int condI = 0; condI < args.length; condI++) {
+			SAMPathnameArg pa = new SAMPathnameArg(condI + 1, parameter.getConditionParameter(condI));
+			pa.processArg(args[condI]);
 		}
 		
 		return true;

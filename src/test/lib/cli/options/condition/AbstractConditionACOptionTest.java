@@ -69,7 +69,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 		
 		for (final ConditionParameter conditionParameter : conditionParameters) {
 			final T actual = getActualValue(conditionParameter);
-			assertEquals(expected.get(conditionParameter.getConditionIndex() - 1), actual);
+			assertEquals(expected.get(conditionParameter.getcondI() - 1), actual);
 		}
 	}
 

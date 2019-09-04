@@ -13,14 +13,14 @@ import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import lib.data.count.basecall.ArrayBaseCallCount;
+import lib.data.count.basecall.ArrayBCC;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.BaseCallCountFilteredData;
 
 public class BaseCallFilteredDataTest extends AbstractFilteredDataTest<BaseCallCountFilteredData, BaseCallCount> {
 
 	public BaseCallFilteredDataTest() {
-		super(new BaseCallCountFilteredData.Parser(new ArrayBaseCallCount.Parser()));
+		super(new BaseCallCountFilteredData.Parser(new ArrayBCC.Parser()));
 	}
 
 	/*
@@ -69,12 +69,12 @@ public class BaseCallFilteredDataTest extends AbstractFilteredDataTest<BaseCallC
 				Arguments.of("*", new BaseCallCountFilteredData()),
 				Arguments.of(
 						"A=0;0;0;0", 
-						new BaseCallCountFilteredData().add('A', new ArrayBaseCallCount())),
+						new BaseCallCountFilteredData().add('A', new ArrayBCC())),
 				Arguments.of(
 						"A=0;0;0;0,B=1;1;1;1", 
 						new BaseCallCountFilteredData()
-							.add('A', new ArrayBaseCallCount())
-							.add('B', new ArrayBaseCallCount(new int [] { 1, 1, 1, 1 } ))) );
+							.add('A', new ArrayBCC())
+							.add('B', new ArrayBCC(new int [] { 1, 1, 1, 1 } ))) );
 	}
 	
 	@Override
@@ -82,12 +82,12 @@ public class BaseCallFilteredDataTest extends AbstractFilteredDataTest<BaseCallC
 		return Stream.of(
 				Arguments.of(new BaseCallCountFilteredData(), "*"),
 				Arguments.of(
-						new BaseCallCountFilteredData().add('A', new ArrayBaseCallCount()),
+						new BaseCallCountFilteredData().add('A', new ArrayBCC()),
 						"A=*"),
 				Arguments.of(
 						new BaseCallCountFilteredData()
-							.add('A', new ArrayBaseCallCount())
-							.add('B', new ArrayBaseCallCount(new int [] { 1, 1, 1, 1 } )),
+							.add('A', new ArrayBCC())
+							.add('B', new ArrayBCC(new int [] { 1, 1, 1, 1 } )),
 						"A=*,B=1;1;1;1") );
 	}
 	
@@ -106,7 +106,7 @@ public class BaseCallFilteredDataTest extends AbstractFilteredDataTest<BaseCallC
 		protected Object convert(Object src, Class<?> target) throws ArgumentConversionException {
 			assertEquals(BaseCallCountFilteredData.class, target, "Can only convert to BaseCallFilteredData");
 			final String s = String.valueOf(src);
-			return new BaseCallCountFilteredData.Parser(new ArrayBaseCallCount.Parser()).parse(s);
+			return new BaseCallCountFilteredData.Parser(new ArrayBCC.Parser()).parse(s);
 		}
 		
 	}

@@ -60,7 +60,7 @@ implements ACOptionTest<SortedSet<BaseSub>> {
 
 	@Override
 	public SortedSet<BaseSub> getActualValue() {
-		return getGeneralParamter().getReadSubstitutions();
+		return getGeneralParamter().getReadSubs();
 	}
 	
 }

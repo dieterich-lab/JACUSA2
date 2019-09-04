@@ -7,8 +7,8 @@ import lib.util.coordinate.CoordinateTranslator;
 
 public class MatchPosition extends AbstractPosition {
 
-	public MatchPosition(final MatchPosition matchPosition) {
-		super(matchPosition);
+	public MatchPosition(final MatchPosition matchPos) {
+		super(matchPos);
 	}
 	
 	public MatchPosition(
@@ -60,23 +60,23 @@ public class MatchPosition extends AbstractPosition {
 	public static class Builder extends AbstractBuilder<MatchPosition> {
 		
 		public Builder(
-				final int alignmentBlockIndex, final Record record, 
+				final int algnBlockI, final Record record, 
 				final CoordinateTranslator translator) {
 			
 			this(
-					record.getSAMRecord().getAlignmentBlocks().get(alignmentBlockIndex),
+					record.getSAMRecord().getAlignmentBlocks().get(algnBlockI),
 					record, 
 					translator);
 		}
 		
 		private Builder(
-				final AlignmentBlock alignmentBlock, final Record record, 
+				final AlignmentBlock algnBlock, final Record record, 
 				final CoordinateTranslator translator) {
 			
 			super(
-					alignmentBlock.getReferenceStart(), 
-					alignmentBlock.getReadStart() - 1,
-					translator.ref2winPos(alignmentBlock.getReferenceStart()),
+					algnBlock.getReferenceStart(), 
+					algnBlock.getReadStart() - 1,
+					translator.ref2winPos(algnBlock.getReferenceStart()),
 					record);
 		}
 		

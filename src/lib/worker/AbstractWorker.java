@@ -102,13 +102,13 @@ implements Iterator<ParallelData> {
 	@Override
 	public boolean hasNext() {
 		while (true) {
-			while (coordControl.checkCoordinateAdvancerWithinActiveWindow()) {
-				final Coordinate coordinate = coordControl.getCoordinateAdvancer()
+			while (coordControl.checkCoordAdvancerWithinActiveWindow()) {
+				final Coordinate coord = coordControl.getCoordAdvancer()
 						.getCurrentCoordinate().copy();
 				
 				final ParallelData.Builder parallelDataBuilder = new ParallelData.Builder(
 								condContainer.getConditionSize(), condContainer.getReplicateSizes());
-				parallelData = createParallelData(parallelDataBuilder, coordinate);
+				parallelData = createParallelData(parallelDataBuilder, coord);
 				if (parallelData != null && parallelDataValidator.isValid(parallelData)) {
 					comparisons++;
 					return true;
@@ -117,8 +117,8 @@ implements Iterator<ParallelData> {
 			}
 			
 			if (coordControl.hasNext()) {
-				final Coordinate activeWindowCoordinate = coordControl.next();
-				condContainer.updateActiveWindowCoordinates(activeWindowCoordinate);
+				final Coordinate activeWinCoord = coordControl.next();
+				condContainer.updateActiveWinCoord(activeWinCoord);
 			} else {
 				return false;
 			}
@@ -127,7 +127,7 @@ implements Iterator<ParallelData> {
 	
 	protected abstract ParallelData createParallelData(
 			final ParallelData.Builder parallelDataBuilder,
-			final Coordinate coordinate) ;
+			final Coordinate coord) ;
 	
 	@Override
 	public ParallelData next() {

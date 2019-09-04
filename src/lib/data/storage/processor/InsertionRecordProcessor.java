@@ -3,7 +3,7 @@ package lib.data.storage.processor;
 import lib.data.storage.Storage;
 import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.AllInsertionsPositionProvider;
+import lib.util.position.AllInsertionsPosProvider;
 import lib.util.position.ConsumingRefPosProviderBuilder;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
@@ -45,7 +45,7 @@ public class InsertionRecordProcessor implements GeneralRecordProcessor {
 		
 		// store insetions
 		final PositionProvider insPosProvider = 
-				new AllInsertionsPositionProvider(record, translator);
+				new AllInsertionsPosProvider(record, translator);
 		while (insPosProvider.hasNext()) {
 			final Position pos = insPosProvider.next();
 			insStorage.increment(pos);

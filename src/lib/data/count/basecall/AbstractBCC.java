@@ -3,7 +3,7 @@ package lib.data.count.basecall;
 
 import lib.util.Base;
 
-abstract class AbstractBaseCallCount implements BaseCallCount {
+abstract class AbstractBCC implements BaseCallCount {
 	
 	private static final long serialVersionUID = 1L;
 

@@ -103,7 +103,7 @@ public class CoordinateController {
 	}
 
 	public boolean advance() {
-		if (! checkCoordinateAdvancerWithinActiveWindow()) {
+		if (! checkCoordAdvancerWithinActiveWindow()) {
 			return false;
 		}
 		
@@ -111,7 +111,7 @@ public class CoordinateController {
 		return true;
 	}
 
-	public CoordinateAdvancer getCoordinateAdvancer() {
+	public CoordinateAdvancer getCoordAdvancer() {
 		return coordAdvancer;
 	}
 
@@ -127,7 +127,7 @@ public class CoordinateController {
 		return active.overlaps(coordinate);
 	}
 	
-	public boolean checkCoordinateAdvancerWithinActiveWindow() {
+	public boolean checkCoordAdvancerWithinActiveWindow() {
 		return checkCoordinateWithinActiveWindow(coordAdvancer.getCurrentCoordinate());
 	}
 

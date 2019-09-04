@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import jacusa.filter.factory.basecall.AbstractBaseCallCountFilterFactory;
+import jacusa.filter.factory.basecall.AbstractBCCfilterFactory;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.filter.FilterDistanceOption;
 import lib.cli.options.filter.has.HasFilterDistance;
@@ -24,7 +24,7 @@ implements ACOptionTest<Integer> {
 	@BeforeEach
 	void beforeEach() {
 		hasFilterDistance = 
-				new TestHasFilterDistance(AbstractBaseCallCountFilterFactory.DEFAULT_FILTER_DISTANCE);
+				new TestHasFilterDistance(AbstractBCCfilterFactory.DEFAULT_FILTER_DISTANCE);
 	}
 	
 	@Test

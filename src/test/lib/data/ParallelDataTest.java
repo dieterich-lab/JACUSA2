@@ -62,13 +62,13 @@ class ParallelDataTest {
 					"1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,1	ACGT	ACGT"
 					})
 	void testGetVariantBases(
-			@ConvertWith(BaseCallCountListArgumentConverter.class) List<BaseCallCount> baseCallCounts,
+			@ConvertWith(BaseCallCountListArgumentConverter.class) List<BaseCallCount> bccs,
 			@ConvertWith(BaseSetArgumentConverter.class) Set<Base> observedAlleles,
 			@ConvertWith(BaseSetArgumentConverter.class) Set<Base> expected) {
 		
 		final Set<Base> actual = ParallelData.getVariantBases(
 				observedAlleles,
-				baseCallCounts);
+				bccs);
 		assertEquals(expected, actual);
 	}
 
