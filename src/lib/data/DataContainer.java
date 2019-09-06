@@ -101,7 +101,9 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		}
 		
 		protected <T extends Data<T>> void guardedAdd(final AbstractBuilder builder, final DataType<T> dataType) {
-			
+			if (builder.contains(dataType)) {
+				return;
+			}
 			builder.with(
 					dataType,
 					dataType.newInstance());

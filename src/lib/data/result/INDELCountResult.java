@@ -1,4 +1,4 @@
-package lib.data.result;
+	package lib.data.result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +39,9 @@ abstract class INDELCountResult implements Result {
 		this.baseSubs 	= new ArrayList<>(baseSubs);
 		this.result 	= result;
 		
-		this.estContainerProv 		= countSampleProvider;
-		this.dirMult					= new EstimateDirMult(minkaParameter);
-		this.dist						= new ChiSquaredDistribution(1);
+		this.estContainerProv 	= countSampleProvider;
+		this.dirMult			= new EstimateDirMult(minkaParameter);
+		this.dist				= new ChiSquaredDistribution(1);
 		
 		init();
 	}
@@ -126,7 +126,7 @@ abstract class INDELCountResult implements Result {
 					}
 				}
 			} else {
-				if (valueIndex == Result.TOTAL) {
+				if (valueIndex == Result.TOTAL && parallelData.getConditions() == 2) {
 					final EstimationContainer[] estContainers = estContainerProv.convert(parallelData);
 					final double lrt 	= dirMult.getLRT(estContainers);
 					final double pvalue = getPValue(lrt);
@@ -142,11 +142,13 @@ abstract class INDELCountResult implements Result {
 	
 	private double getPValue(final double lrt) {
 		return 1 - dist.cumulativeProbability(lrt);
-	} 
+	}
+	
+	abstract String getField();
 	
 	private String getKey(final int condition, final int replicate) {
 		return new StringBuilder()
-				.append(InputOutput.DELETION_FIELD)
+				.append(getField())
 				.append(condition + 1)
 				.append(replicate + 1)
 				.toString();
@@ -163,8 +165,8 @@ abstract class INDELCountResult implements Result {
 	private boolean addTotalCount(final int valueIndex, final int condition, final int replicate) {
 		final DataContainer container = 
 				result.getParellelData().getDataContainer(condition, replicate);
-		final int count 	= container.getDeletionCount().getValue();
-		final int coverage	= getCount(container).getValue();
+		final int count 	= getCount(container).getValue();
+		final int coverage	= container.getCoverage().getValue();
 		addCount(valueIndex, condition, replicate, count, coverage);
 		return count > 0;
 	}
@@ -175,11 +177,13 @@ abstract class INDELCountResult implements Result {
 	private boolean addStratifiedCount(final int valueIndex, final int condition, final int replicate) {
 		final BaseSub baseSub 			= baseSubs.get(valueIndex);
 		final DataContainer container 	= result.getParellelData().getDataContainer(condition, replicate);
-		final int count 				= container.getBaseSub2DeletionCount().get(baseSub).getValue();
+		final int count 				= getStratifiedCount(container, baseSub).getValue();
 		final int coverage				= container.getBaseSub2Coverage().get(baseSub).getValue();
 		addCount(valueIndex, condition, replicate, count, coverage);
 		return count > 0;
 	}
+	
+	abstract IntegerData getStratifiedCount(DataContainer container, final BaseSub baseSub);
 	
 	private void addCount(
 			final int valueIndex, 

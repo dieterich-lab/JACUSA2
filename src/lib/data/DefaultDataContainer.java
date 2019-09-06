@@ -214,7 +214,7 @@ public class DefaultDataContainer implements DataContainer {
 	
 	@Override
 	public Base getAutoRefBase() {
-		if (! LibraryType.isStranded(libraryType)) {
+		if (libraryType == LibraryType.UNSTRANDED) {
 			return unstrandedRefBase;
 		}
 		if (coordinate.isReverseStrand()) {

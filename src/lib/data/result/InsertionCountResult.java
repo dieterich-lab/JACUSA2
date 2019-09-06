@@ -6,6 +6,7 @@ import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
 import lib.data.IntegerData;
 import lib.estimate.MinkaParameter;
+import lib.io.InputOutput;
 import lib.stat.estimation.provider.InsertionEstCountProvider;
 
 /**
@@ -39,6 +40,16 @@ public class InsertionCountResult extends INDELCountResult {
 	@Override
 	IntegerData getCount(DataContainer container) {
 		return container.getInsertionCount();
+	}
+	
+	@Override
+	String getField() {
+		return InputOutput.INSERTION_FIELD;
+	}
+	
+	@Override
+	IntegerData getStratifiedCount(DataContainer container, BaseSub baseSub) {
+		return container.getBaseSub2InsertionCount().get(baseSub);
 	}
 	
 }
