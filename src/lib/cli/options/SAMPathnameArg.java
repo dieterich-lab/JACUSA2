@@ -11,11 +11,11 @@ public class SAMPathnameArg {
 
 	public static final char SEP = ',';
 
-	private int conditionIndex;
+	private int condI;
 	private ConditionParameter condition;
 	
-	public SAMPathnameArg(final int conditionIndex, ConditionParameter conditionParameter) {
-		this.conditionIndex = conditionIndex;
+	public SAMPathnameArg(final int condI, ConditionParameter conditionParameter) {
+		this.condI = condI;
 		this.condition = conditionParameter;
 	}
 
@@ -37,8 +37,8 @@ public class SAMPathnameArg {
 		condition.setRecordFilenames(recordFilenames);
 	}
 
-	public int getConditionIndex() {
-		return conditionIndex;
+	public int getcondI() {
+		return condI;
 	}
 	
 }

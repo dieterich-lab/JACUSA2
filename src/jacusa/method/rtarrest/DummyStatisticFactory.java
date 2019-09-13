@@ -7,15 +7,15 @@ import org.apache.commons.cli.Options;
 import lib.stat.AbstractStatFactory;
 
 /**
- * This is a dummy statistic... TODO add comments
+ * This is a dummy statistic... to display a dummy value
  *  
  * @param 
  */
 public class DummyStatisticFactory 
 extends AbstractStatFactory {
 
-	private final static String NAME = "Dummy"; 
-	private final static String DESC = "Does not do anything";
+	private static final String NAME = "Dummy"; 
+	private static final String DESC = "Does not do anything";
 	
 	public DummyStatisticFactory() {
 		super(Option.builder(NAME)
@@ -33,7 +33,7 @@ extends AbstractStatFactory {
 	
 	@Override
 	public DummyStatistic newInstance(double threshold, final int conditions) {
-		return new DummyStatistic(this);
+		return new DummyStatistic();
 	}
 	
 }

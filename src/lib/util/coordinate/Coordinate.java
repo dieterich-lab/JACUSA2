@@ -9,7 +9,7 @@ import lib.util.Copyable;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
 /**
- *
+ * TODO
  */
 public interface Coordinate extends Locatable, Serializable, Copyable<Coordinate> {
 
@@ -59,7 +59,7 @@ public interface Coordinate extends Locatable, Serializable, Copyable<Coordinate
 	int getLength();
 
 	// has JUNIT tests
-	public static abstract class AbstractParser implements lib.util.Parser<Coordinate> {
+	public abstract static class AbstractParser implements lib.util.Parser<Coordinate> {
 
 		public static final char CONTIG_POS_SEP = ':';
 		public static final char START_END_SEP 	= '-';

@@ -11,7 +11,7 @@ import lib.data.count.PileupCount;
 import lib.data.fetcher.Fetcher;
 import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
-import lib.data.storage.basecall.MapBaseCallQualityStorage;
+import lib.data.storage.basecall.MapBCQStorage;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.AlignmentBlockProcessor;
 import lib.data.validator.DefaultBaseCallValidator;
@@ -35,9 +35,9 @@ extends AbstractSiteDataAssemblerFactory {
 			final SharedStorage sharedStorage, 
 			final ConditionParameter conditionParameter) {
 
-		final MapBaseCallQualityStorage bcqcStorage = new MapBaseCallQualityStorage(sharedStorage, pcFetcher);
+		final MapBCQStorage bcqcStorage = new MapBCQStorage(sharedStorage, pcFetcher);
 
-		final List<Validator> validators = new ArrayList<Validator>();
+		final List<Validator> validators = new ArrayList<>();
 		validators.add(new DefaultBaseCallValidator());
 		if (conditionParameter.getMinBASQ() > 0) {
 			validators.add(new MinBASQValidator(conditionParameter.getMinBASQ()));
@@ -54,8 +54,8 @@ extends AbstractSiteDataAssemblerFactory {
 				positionProcessor));
 		cache.addStorage(bcqcStorage);
 		
-		addDelectionCache(parameter, sharedStorage, cache);
-		stratifyByBaseSubstitution(parameter, sharedStorage,  conditionParameter, cache);
+		addDeletionCache(parameter, sharedStorage, cache);
+		stratifyByBaseSub(parameter, sharedStorage,  conditionParameter, cache);
 		
 		return cache;
 	}

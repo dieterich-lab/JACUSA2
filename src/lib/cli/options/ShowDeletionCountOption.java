@@ -7,7 +7,7 @@ import org.apache.commons.cli.Option;
 
 public class ShowDeletionCountOption extends AbstractACOption {
 
-	final private GeneralParameter parameter;
+	private final GeneralParameter parameter;
 	
 	public ShowDeletionCountOption(final GeneralParameter parameter) {
 		super("D", "show-deletions");
@@ -21,10 +21,6 @@ public class ShowDeletionCountOption extends AbstractACOption {
 		        .desc("Show deletion score")
 		        .build();
 	}
-	
-	/**
-	 * Tested in @see test.lib.cli.options.FilterModusOptionTest
-	 */
 	
 	@Override
 	public void process(final CommandLine line) throws Exception {

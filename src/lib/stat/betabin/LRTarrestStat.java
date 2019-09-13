@@ -9,14 +9,14 @@ import lib.data.result.MultiStatResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.stat.dirmult.EstimateDirMult;
-import lib.stat.sample.EstimationSample;
-import lib.stat.sample.provider.arrest.LRTarrestCountSampleProvider;
+import lib.stat.estimation.EstimationContainer;
+import lib.stat.estimation.provider.arrest.LRTarrestEstimationCountProvider;
 import lib.util.Util;
 
 public class LRTarrestStat extends AbstractStat {
 
-	private final LRTarrestCountSampleProvider estimationSampleProvider;
-	private final LRTarrestBetaBinParameter dirMultParameter;
+	private final LRTarrestEstimationCountProvider estContainerProv;
+	private final LRTarrestBetaBinParameter dirMultPrm;
 
 	private final double threshold;
 	private final EstimateDirMult dirMult;
@@ -25,20 +25,20 @@ public class LRTarrestStat extends AbstractStat {
 	
 	public LRTarrestStat(
 			final double threshold,
-			final LRTarrestCountSampleProvider estimationSampleProvider,
-			final LRTarrestBetaBinParameter dirMultParameter) {
+			final LRTarrestEstimationCountProvider estCountProv,
+			final LRTarrestBetaBinParameter dirMultPrm) {
 
-		this.threshold					= threshold;
-		this.estimationSampleProvider 	= estimationSampleProvider;
-		this.dirMultParameter 			= dirMultParameter;
+		this.threshold		= threshold;
+		this.estContainerProv 	= estCountProv;
+		this.dirMultPrm 	= dirMultPrm;
 		
-		dirMult							= new EstimateDirMult(dirMultParameter.getMinkaEstimateParameter());
-		dist = new ChiSquaredDistribution(1);
+		dirMult	= new EstimateDirMult(dirMultPrm.getMinkaEstimateParameter());
+		dist 	= new ChiSquaredDistribution(1);
 	}
 
 	@Override
 	public void addStatResultInfo(final Result statResult) {
-		if (dirMultParameter.isShowAlpha()) {
+		if (dirMultPrm.isShowAlpha()) {
 			dirMult.addShowAlpha();
 		}
 		dirMult.addStatResultInfo(statResult.getResultInfo());
@@ -50,15 +50,15 @@ public class LRTarrestStat extends AbstractStat {
 	
 	@Override
 	public Result calculate(ParallelData parallelData) {
-		final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
-		final double lrt 	= dirMult.getLRT(estimationSamples);
+		final EstimationContainer[] estContainers = estContainerProv.convert(parallelData);
+		final double lrt 	= dirMult.getLRT(estContainers);
 		final double pvalue = getPValue(lrt);
 		
-		final List<Integer> arrestPositions = parallelData.getCombinedPooledData()
-				.getArrestPos2BaseCallCount().getPositions();
+		final List<Integer> arrestPositions = parallelData.getCombPooledData()
+				.getArrestPos2BCC().getPositions();
 		final MultiStatResult multiStatResult = new MultiStatResult(parallelData);
-		for (final int arrestPosition : arrestPositions) {
-			if (arrestPosition == parallelData.getCoordinate().get1Position()) {
+		for (final int arrestPos : arrestPositions) {
+			if (arrestPos == parallelData.getCoordinate().get1Position()) {
 				final int newValueIndex = multiStatResult.addStat(pvalue);
 				multiStatResult.getResultInfo(newValueIndex).add(RTarrestStat.ARREST_SCORE, Util.format(lrt));				
 			} else {

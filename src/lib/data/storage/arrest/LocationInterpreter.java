@@ -4,26 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import htsjdk.samtools.AlignmentBlock;
+import lib.record.Record;
 import lib.util.LibraryType;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.AlignmentBlockPositionProviderBuilder;
+import lib.util.position.AlgnBlockPosProviderBuilder;
 import lib.util.position.UnmodifiablePosition;
 import lib.util.position.MatchPosition;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
-import lib.recordextended.SAMRecordExtended;
 
+/**
+ * TODO
+ */
 public interface LocationInterpreter {
 
-	Position getArrestPosition(SAMRecordExtended recordExtended, CoordinateTranslator translator);
+	Position getArrestPosition(Record record, CoordinateTranslator translator);
 	
 	PositionProvider getThroughPositionProvider(
-			SAMRecordExtended recordExtended, CoordinateTranslator translator);
+			Record record, CoordinateTranslator translator);
 	
-	boolean hasArrestPosition(SAMRecordExtended recordExtended);
+	boolean hasArrestPosition(Record record);
 	
 	default boolean isArrestPosition(final Position position, final CoordinateTranslator translator) {
-		final Position arrestPos = getArrestPosition(position.getRecordExtended(), translator);
+		final Position arrestPos = getArrestPosition(position.getRecord(), translator);
 		if (arrestPos == null) {
 			return false;
 		}
@@ -34,10 +37,10 @@ public interface LocationInterpreter {
 		switch (libraryType) {
 
 		case RF_FIRSTSTRAND:
-			return new RF_FIRSTSTRAND_LocationInterpreter();
+			return new RevForFirstStrandLocInterpreter();
 
 		case FR_SECONDSTRAND:
-			return new FR_SECONDSTRAND_LocationInterpreter();
+			return new ForRevSecondStrandlocInterpreter();
 			
 		default:
 			throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
@@ -45,39 +48,39 @@ public interface LocationInterpreter {
 	}
 	
 	default Position getFirstAlignmentPosition(
-			final SAMRecordExtended recordExtended, 
+			final Record record, 
 			final CoordinateTranslator translator) {
 		
-		Position pos = new MatchPosition.Builder(0, recordExtended, translator).build();
+		Position pos = new MatchPosition.Builder(0, record, translator).build();
 		return new UnmodifiablePosition(pos);
 	}
 	
 	default Position getLastAlignmentPosition(
-			final SAMRecordExtended recordExtended, 
+			final Record record, 
 			final CoordinateTranslator translator) {
 		
-		final int size 				= recordExtended.getSAMRecord().getAlignmentBlocks().size() - 1;
-		final AlignmentBlock block 	= recordExtended.getSAMRecord().getAlignmentBlocks().get(size);
+		final int size 				= record.getSAMRecord().getAlignmentBlocks().size() - 1;
+		final AlignmentBlock block 	= record.getSAMRecord().getAlignmentBlocks().get(size);
 		final int length			= block.getLength() - 1;
 		final int refPos 			= block.getReferenceStart() + length;
 		final int readPos			= block.getReadStart() - 1 + length;
-		final int winPos			= translator.reference2windowPosition(refPos);
-		return new UnmodifiablePosition(refPos, readPos, winPos, recordExtended);
+		final int winPos			= translator.ref2winPos(refPos);
+		return new UnmodifiablePosition(refPos, readPos, winPos, record);
 	}
 	
 	default List<PositionProvider> getThroughPositionProvider(
 			final int startIndex, 
 			final int size, 
-			final SAMRecordExtended recordExtended,
+			final Record record,
 			final CoordinateTranslator translator) {
 		
 		final int endIndex = startIndex + size;
 		final List<PositionProvider> positionProviders = new ArrayList<>(size);
 		for (int i = startIndex; i < endIndex; ++i) {
 			positionProviders.add(
-					new AlignmentBlockPositionProviderBuilder(
-							i, recordExtended, translator)
-					.adjustWindowPos()
+					new AlgnBlockPosProviderBuilder(
+							i, record, translator)
+					.adjustWinPos()
 					.build()); 
 		}
 		return positionProviders;

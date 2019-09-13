@@ -14,7 +14,6 @@ public class CallParameter extends GeneralParameter implements HasStatParameter 
 	
 	public CallParameter(final int conditionSize) {
 		super(conditionSize);
-		
 		// set defaults
 		
 		// result format

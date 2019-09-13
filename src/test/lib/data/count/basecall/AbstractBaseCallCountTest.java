@@ -62,8 +62,8 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should wrap BaseCallCount")
 	@ParameterizedTest(name = "BaseCallCount: {0} should be wrapped to {1}")
 	@MethodSource("testParserWrap")
-	void testParserWrap(BaseCallCount baseCallCount, String expected) {
-		assertEquals(expected, parser.wrap(baseCallCount));
+	void testParserWrap(BaseCallCount bcc, String expected) {
+		assertEquals(expected, parser.wrap(bcc));
 	}
 
 	/**
@@ -72,8 +72,8 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should calculate the correct alleles")
 	@ParameterizedTest(name = "BaseCallCount: {0} should have following alleles {1}")
 	@MethodSource("testGetAlleles")
-	void testGetAlleles(BaseCallCount baseCallCount, Set<Base> expected) {
-		assertEquals(expected, baseCallCount.getAlleles());
+	void testGetAlleles(BaseCallCount bcc, Set<Base> expected) {
+		assertEquals(expected, bcc.getAlleles());
 	}
 	
 	/**
@@ -82,9 +82,9 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should increment correctly")
 	@ParameterizedTest(name = "BaseCallCount: {0} should increment {1} giving {2}")
 	@MethodSource("testIncrement")
-	void testIncrement(BaseCallCount baseCallCount, Base base, BaseCallCount expected) {
-		baseCallCount.increment(base);
-		myAssertEquals(baseCallCount, expected);
+	void testIncrement(BaseCallCount bcc, Base base, BaseCallCount expected) {
+		bcc.increment(base);
+		myAssertEquals(bcc, expected);
 	}
 	
 	/**
@@ -93,10 +93,10 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should clear correctly")
 	@ParameterizedTest(name = "BaseCallCount: {0} should be empty")
 	@MethodSource("testClear")
-	void testClear(BaseCallCount baseCallCount) {
-		baseCallCount.clear();
+	void testClear(BaseCallCount bcc) {
+		bcc.clear();
 		final List<Integer> expected = Collections.nCopies(Base.validValues().length, 0);
-		myAssertEquals(expected, baseCallCount);
+		myAssertEquals(expected, bcc);
 	}
 
 	/**
@@ -105,9 +105,9 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should set base call count correctly")
 	@ParameterizedTest(name = "Given BaseCallCount {0}, set base {1} to {2} resulting in {3}")
 	@MethodSource("testSet")
-	void testSet(BaseCallCount baseCallCount, Base base, int count, BaseCallCount expected) {
-		baseCallCount.set(base, count);
-		myAssertEquals(expected, baseCallCount);
+	void testSet(BaseCallCount bcc, Base base, int count, BaseCallCount expected) {
+		bcc.set(base, count);
+		myAssertEquals(expected, bcc);
 	}
 	
 	/**
@@ -116,9 +116,9 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should add base call count correctly")
 	@ParameterizedTest(name = "{0} should add base {1} from {2} giving {3} ")
 	@MethodSource("testAddBaseBaseCallCount")
-	void testAddBaseBaseCallCount(BaseCallCount baseCallCount1, Base base, BaseCallCount baseCallCount2, BaseCallCount expected) {
-		baseCallCount1.add(base, baseCallCount2);
-		myAssertEquals(expected, baseCallCount1);
+	void testAddBaseBaseCallCount(BaseCallCount bcc1, Base base, BaseCallCount bcc2, BaseCallCount expected) {
+		bcc1.add(base, bcc2);
+		myAssertEquals(expected, bcc1);
 	}
 
 	/**
@@ -127,9 +127,9 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should add base call count correctly")
 	@ParameterizedTest(name = "Adding {0} and {1} should result in {3} ")
 	@MethodSource("testAddBaseCallCount")
-	void testAddBaseCallCount(BaseCallCount baseCallCount1, BaseCallCount baseCallCount2, BaseCallCount expected) {
-		baseCallCount1.add(baseCallCount2);
-		myAssertEquals(expected, baseCallCount1);
+	void testAddBaseCallCount(BaseCallCount bcc1, BaseCallCount bcc2, BaseCallCount expected) {
+		bcc1.add(bcc2);
+		myAssertEquals(expected, bcc1);
 	}
 
 	/**
@@ -138,9 +138,9 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should add base call count correctly")
 	@ParameterizedTest(name = "Add to base {1} in {0} from base {2} in {3} resulting in {3} ")
 	@MethodSource("testAddDestSrcBaseCallCount")
-	void testAddDestSrcBaseCallCount(BaseCallCount baseCallCount1, Base dest, Base src, BaseCallCount baseCallCount2, BaseCallCount expected) {
-		baseCallCount1.add(dest, src, baseCallCount2);
-		myAssertEquals(expected, baseCallCount1);
+	void testAddDestSrcBaseCallCount(BaseCallCount bcc1, Base dest, Base src, BaseCallCount bcc2, BaseCallCount expected) {
+		bcc1.add(dest, src, bcc2);
+		myAssertEquals(expected, bcc1);
 	}
 
 	/**
@@ -149,9 +149,9 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should subtract base call count correctly")
 	@ParameterizedTest(name = "In {0} subtract base {1} from {2} giving {3}")
 	@MethodSource("testSubtractBaseBaseCallCount")
-	void testSubtractBaseBaseCallCount(BaseCallCount baseCallCount1, Base base, BaseCallCount baseCallCount2, BaseCallCount expected) {
-		baseCallCount1.subtract(base, baseCallCount2);
-		myAssertEquals(expected, baseCallCount1);
+	void testSubtractBaseBaseCallCount(BaseCallCount bcc1, Base base, BaseCallCount bcc2, BaseCallCount expected) {
+		bcc1.subtract(base, bcc2);
+		myAssertEquals(expected, bcc1);
 	}
 
 	/**
@@ -160,9 +160,9 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should add base call count correctly")
 	@ParameterizedTest(name = "Adding {0} and {1} should result in {3} ")
 	@MethodSource("testSubtractBaseCallCount")
-	void testSubtractBaseCallCount(BaseCallCount baseCallCount1, BaseCallCount baseCallCount2, BaseCallCount expected) {
-		baseCallCount1.subtract(baseCallCount2);
-		myAssertEquals(expected, baseCallCount1);
+	void testSubtractBaseCallCount(BaseCallCount bcc1, BaseCallCount bcc2, BaseCallCount expected) {
+		bcc1.subtract(bcc2);
+		myAssertEquals(expected, bcc1);
 	}
 
 	/**
@@ -171,12 +171,12 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should subtract base call count correctly")
 	@ParameterizedTest(name = "Subtract Base {1} in BaseCallCount {0} and base {2} in {3} resulting {4} ")
 	@MethodSource("testSubtractDestSrcBaseCallCount")
-	void testSubtractDestSrcBaseCallCount(BaseCallCount baseCallCount1, 
-			Base dest, Base src, BaseCallCount baseCallCount2, 
+	void testSubtractDestSrcBaseCallCount(BaseCallCount bcc1, 
+			Base dest, Base src, BaseCallCount bcc2, 
 			BaseCallCount expected) {
 
-		baseCallCount1.subtract(dest, src, baseCallCount2);
-		myAssertEquals(expected, baseCallCount1);
+		bcc1.subtract(dest, src, bcc2);
+		myAssertEquals(expected, bcc1);
 	}
 	
 	/**
@@ -185,9 +185,9 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should invert base call count correctly")
 	@ParameterizedTest(name = "{0} should be invert to {1} ")
 	@MethodSource("testInvert")
-	void testInvert(BaseCallCount baseCallCount, BaseCallCount expected) {
-		baseCallCount.invert();
-		myAssertEquals(expected, baseCallCount);
+	void testInvert(BaseCallCount bcc, BaseCallCount expected) {
+		bcc.invert();
+		myAssertEquals(expected, bcc);
 	}
 	
 	/**
@@ -196,8 +196,8 @@ public abstract class AbstractBaseCallCountTest {
 	@DisplayName("Should calculate the correct coverage")
 	@ParameterizedTest(name = "BaseCallCount: {0} should have coverage {1}")
 	@MethodSource("testGetCoverage")
-	void testGetCoverage(BaseCallCount baseCallCount, int expectedCoverage) {
-		assertEquals(expectedCoverage, baseCallCount.getCoverage());
+	void testGetCoverage(BaseCallCount bcc, int expectedCoverage) {
+		assertEquals(expectedCoverage, bcc.getCoverage());
 	}
 
 	/*
@@ -448,7 +448,7 @@ public abstract class AbstractBaseCallCountTest {
 	 * Helper methods
 	 */
 	
-	static public void myAssertEquals(final List<Integer> expected, final BaseCallCount actual) {
+	public static void myAssertEquals(final List<Integer> expected, final BaseCallCount actual) {
 		if (expected.size() != Base.validValues().length) {
 			throw new IllegalArgumentException("expectedBaseCall must be of size 4 but is " + expected.size());
 		}
@@ -458,7 +458,7 @@ public abstract class AbstractBaseCallCountTest {
 		}
 	}
 	
-	static public void myAssertEquals(final BaseCallCount expected, final BaseCallCount actual) {
+	public static void myAssertEquals(final BaseCallCount expected, final BaseCallCount actual) {
 		if (expected.equals(actual)) {
 			return;
 		}

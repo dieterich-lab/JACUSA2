@@ -78,6 +78,4 @@ implements HasApply2reads {
 		homozygousFilterFactory.initDataContainer(builder);
 	}
 	
-	
-	
 }

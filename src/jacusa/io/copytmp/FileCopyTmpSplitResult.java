@@ -57,5 +57,5 @@ implements CopyTmpResult {
 		copyResult.copy(iteration);
 		copyFilteredResult.copy(iteration);
 	}
-
+	
 }

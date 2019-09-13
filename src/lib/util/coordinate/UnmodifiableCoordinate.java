@@ -2,6 +2,9 @@ package lib.util.coordinate;
 
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
+/**
+ * Wrapper for coordinates that prevents changes to underlying data.
+ */
 public class UnmodifiableCoordinate implements Coordinate {
 
 	private static final long serialVersionUID = 1L;

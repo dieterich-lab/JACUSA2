@@ -10,7 +10,7 @@ import org.apache.commons.cli.Option;
 
 public class ReferenceFastaFilenameOption extends AbstractACOption {
 
-	final private GeneralParameter parameters;
+	private final GeneralParameter parameters;
 	
 	public ReferenceFastaFilenameOption(GeneralParameter parameter) {
 		super("R", "ref-fasta");

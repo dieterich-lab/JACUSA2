@@ -1,13 +1,16 @@
 package lib.data.storage.container;
 
+import lib.record.Record;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
-import lib.recordextended.SAMRecordExtended;
 
+/**
+ * TODO
+ */
 public interface ReferenceProvider {
 
-	void addRecordExtended(final SAMRecordExtended recordExtended);
+	void addrecord(final Record record);
 	Base getReferenceBase(Coordinate coordinate);
 	Base getReferenceBase(int winPos);
 	void update();

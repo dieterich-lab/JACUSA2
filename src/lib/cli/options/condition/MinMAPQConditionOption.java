@@ -22,11 +22,11 @@ public class MinMAPQConditionOption extends AbstractConditionACOption {
 	
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
-		String s = new String();
+		String s = "";
 
 		int minMapq = -1;
-		if (getConditionIndex() >= 0) {
-			s = " for condition " + getConditionIndex();
+		if (getcondI() >= 0) {
+			s = " for condition " + getcondI();
 			minMapq = getConditionParameter().getMinMAPQ();
 		} else if (getConditionParameters().size() > 1) {
 			s = " for all conditions";

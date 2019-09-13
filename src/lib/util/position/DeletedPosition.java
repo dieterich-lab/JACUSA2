@@ -1,33 +1,36 @@
 package lib.util.position;
 
+import lib.record.AlignedPosition;
+import lib.record.Record;
+import lib.record.Record.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.recordextended.AlignedPosition;
-import lib.recordextended.SAMRecordExtended;
-import lib.recordextended.SAMRecordExtended.CigarElementExtended;
 
-public class DeletedPosition extends AbstractPosition {
+/**
+ * TODO
+ */
+class DeletedPosition extends AbstractPosition {
 
-	public DeletedPosition(final DeletedPosition deletedPosition) {
+	DeletedPosition(final DeletedPosition deletedPosition) {
 		super(deletedPosition);
 	}
 	
-	public DeletedPosition(
+	DeletedPosition(
 			final AlignedPosition alignPos, 
-			final SAMRecordExtended recordExtended,
+			final Record record,
 			final CoordinateTranslator translator) {
 
 		super(
-				alignPos.getReferencePosition(), 
-				alignPos.getReadPosition(), 
-				translator.reference2windowPosition(alignPos.getReferencePosition()), 
-				recordExtended);
+				alignPos.getRefPos(), 
+				alignPos.getReadPos(), 
+				translator.ref2winPos(alignPos.getRefPos()), 
+				record);
 	}
 	
 	DeletedPosition(
 			final int refPos, final int readPos, final int winPos, 
-			final SAMRecordExtended recordExtended) {
+			final Record record) {
 
-		super(refPos, readPos, winPos, recordExtended);
+		super(refPos, readPos, winPos, record);
 	}
 	
 	private DeletedPosition(Builder builder) {
@@ -52,31 +55,31 @@ public class DeletedPosition extends AbstractPosition {
 	}
 	
 	@Override
-	public boolean isValidReferencePosition() {
+	public boolean isValidRefPos() {
 		return true;
 	}
 	
 	public static class Builder extends AbstractBuilder<DeletedPosition> {
 		
 		public Builder(
-				final int deletionIndex, final SAMRecordExtended recordExtended, 
+				final int deletionIndex, final Record record, 
 				final CoordinateTranslator translator) {
 			
 			this(
-					recordExtended.getCigarElementExtended().get(deletionIndex),
-					recordExtended, 
+					record.getCigarDetail().get(deletionIndex),
+					record, 
 					translator);
 		}
 		
 		private Builder(
-				final CigarElementExtended cigarElementExtended, final SAMRecordExtended recordExtended, 
+				final CigarDetail cigarElement, final Record record, 
 				final CoordinateTranslator translator) {
 			
 			super(
-					cigarElementExtended.getPosition().getReferencePosition(), 
-					cigarElementExtended.getPosition().getReadPosition(),
-					translator.reference2windowPosition(cigarElementExtended.getPosition().getReferencePosition()),
-					recordExtended);
+					cigarElement.getPosition().getRefPos(), 
+					cigarElement.getPosition().getReadPos(),
+					translator.ref2winPos(cigarElement.getPosition().getRefPos()),
+					record);
 		}
 		
 		@Override

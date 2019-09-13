@@ -9,7 +9,7 @@ import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.data.storage.processor.RecordExtendedProcessor;
+import lib.data.storage.processor.RecordProcessor;
 
 /**
  * This FilterFactory configures and helps to create the combined filter which aggregates the counts 
@@ -29,7 +29,7 @@ extends AbstractLRTarrestBaseCallCountFilterFactory {
 	}
 
 	@Override
-	protected List<RecordExtendedProcessor> createRecordProcessors(
+	protected List<RecordProcessor> createRecordProcessors(
 			final SharedStorage sharedStorage, PositionProcessor positionProcessor) {
 		
 		return RTarrestCombinedFilterFactory.createRecordProcessors(

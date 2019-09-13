@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import htsjdk.samtools.SAMRecord;
 import lib.data.storage.arrest.LocationInterpreter;
-import lib.recordextended.SAMRecordExtended;
+import lib.record.Record;
 import lib.util.LibraryType;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.coordinate.DefaultCoordinateTranslator;
@@ -31,12 +31,12 @@ interface LocationInterpreterTest {
 	@MethodSource("testGetThroughPositionProvider")
 	default void testGetThroughPositionProvider(
 			CoordinateTranslator translator,
-			SAMRecordExtended recordExtended,
+			Record record,
 			List<Position> expected,
 			String info) {
 
 		final PositionProvider throughPositionProvider = 
-				createTestInstance().getThroughPositionProvider(recordExtended, translator);
+				createTestInstance().getThroughPositionProvider(record, translator);
 	
 		final List<Position> actual = new ArrayList<>(expected.size());
 		while (throughPositionProvider.hasNext())
@@ -48,12 +48,12 @@ interface LocationInterpreterTest {
 	@MethodSource("testGetArrestPosition")
 	default void testGetArrestPosition(
 			CoordinateTranslator translator,
-			SAMRecordExtended recordExtended,
+			Record record,
 			Position expected,
 			String info) {
 		
 		final LocationInterpreter testInstance 	= createTestInstance();
-		final Position actual = testInstance.getArrestPosition(recordExtended, translator);
+		final Position actual = testInstance.getArrestPosition(record, translator);
 		assertEquals(expected, actual);
 	}
 	
@@ -66,14 +66,14 @@ interface LocationInterpreterTest {
 	LibraryType getLibraryType();
 	
 	// ',' separated array of strings of the following form: "ref,winPos,read,{A|C|G|T}" 
-	default List<Position> parseExpected(final SAMRecordExtended recordExtended, final String[] str) {
+	default List<Position> parseExpected(final Record record, final String[] str) {
 		final List<Position> expected = new ArrayList<Position>(str.length);
 		for (final String tmpStr : str) {
 			final String[] cols = tmpStr.split(",");
 			final int refPos	= Integer.parseInt(cols[0]);
 			final int readPos 	= Integer.parseInt(cols[1]);
 			final int winPos 	= Integer.parseInt(cols[2]);
-			expected.add(new UnmodifiablePosition(refPos, readPos, winPos, recordExtended));
+			expected.add(new UnmodifiablePosition(refPos, readPos, winPos, record));
 		}
 		return expected;
 	}
@@ -83,36 +83,36 @@ interface LocationInterpreterTest {
 		return new DefaultCoordinateTranslator(refPosWinStart, length);
 	}
 
-	default void addReadInfo(final SAMRecordExtended recordExtended, final StringBuilder infoBuilder) {
-		final SAMRecord record = recordExtended.getSAMRecord();
+	default void addReadInfo(final Record record, final StringBuilder infoBuilder) {
+		final SAMRecord samRecord = record.getSAMRecord();
 		infoBuilder.append("Read: ");
-		if (record.getReadPairedFlag()) {
+		if (samRecord.getReadPairedFlag()) {
 			infoBuilder.append("PE ");
-			if (record.getFirstOfPairFlag()) {
-				addReadDetailsInfo(1, recordExtended, infoBuilder);
-				addReadDetailsInfo(2, recordExtended.getMate(), infoBuilder);
+			if (samRecord.getFirstOfPairFlag()) {
+				addReadDetailsInfo(1, record, infoBuilder);
+				addReadDetailsInfo(2, record.getMate(), infoBuilder);
 			} else {
-				addReadDetailsInfo(1, recordExtended.getMate(), infoBuilder);
-				addReadDetailsInfo(2, recordExtended, infoBuilder);
+				addReadDetailsInfo(1, record.getMate(), infoBuilder);
+				addReadDetailsInfo(2, record, infoBuilder);
 			}
 		} else {
 			infoBuilder.append("SE ");
-			addReadDetailsInfo(recordExtended, infoBuilder);
+			addReadDetailsInfo(record, infoBuilder);
 		}
 	}
 	
-	default void addReadDetailsInfo(final int readNumber, final SAMRecordExtended recordExtended, final StringBuilder infoBuilder) {
+	default void addReadDetailsInfo(final int readNumber, final Record record, final StringBuilder infoBuilder) {
 		infoBuilder.append("Mate: ").append(readNumber).append(" ");
-		addReadDetailsInfo(recordExtended, infoBuilder);
+		addReadDetailsInfo(record, infoBuilder);
 	}
 	
-	default void addReadDetailsInfo(final SAMRecordExtended recordExtended, final StringBuilder infoBuilder) {
-		final SAMRecord record = recordExtended.getSAMRecord();
+	default void addReadDetailsInfo(final Record record, final StringBuilder infoBuilder) {
+		final SAMRecord samRecord = record.getSAMRecord();
 		infoBuilder
-		.append(record.getAlignmentStart())
+		.append(samRecord.getAlignmentStart())
 		.append('-')
-		.append(record.getAlignmentEnd()).append(':')
-		.append(record.getReadNegativeStrandFlag() ? '-' : '+')
+		.append(samRecord.getAlignmentEnd()).append(':')
+		.append(samRecord.getReadNegativeStrandFlag() ? '-' : '+')
 		.append(' ');
 	}
 
@@ -122,16 +122,16 @@ interface LocationInterpreterTest {
 			final int refExpected, final int readExpected, final int winExpected) {
 
 		
-		final SAMRecord record = new SAMRecordBuilder().createSERecord(getContig(), refStart, negativeStrand, cigarStr, "");
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(record);
+		final SAMRecord samRecord = new SAMRecordBuilder().createSERecord(getContig(), refStart, negativeStrand, cigarStr, "");
+		final Record record = new Record(samRecord);
 		
 		final StringBuilder infoBuilder = new StringBuilder()
 				.append("Lib.: ").append(getLibraryType()).append("; ");
 		
 		return cArrestArgs(
 				cT(refWinStart, refWinEnd),
-				recordExtended,
-				new UnmodifiablePosition(refExpected, readExpected, winExpected, recordExtended),
+				record,
+				new UnmodifiablePosition(refExpected, readExpected, winExpected, record),
 				infoBuilder);
 	}
 
@@ -148,26 +148,26 @@ interface LocationInterpreterTest {
 				getContig(), 
 				refStart1, negativeStrand1, cigarStr1, "", 
 				refStart2, negativeStrand2, cigarStr2, "").getRecords().iterator();
-		final SAMRecord record = it.next();
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(record, record.getFileSource().getReader());
+		final SAMRecord samRecord = it.next();
+		final Record record = new Record(samRecord, samRecord.getFileSource().getReader());
 		
 		return cArrestArgs(
 				cT(refWinStart, refWinEnd),
-				recordExtended,
+				record,
 				new UnmodifiablePosition(refExpected, readExpected, winExpected, null),
 				infoBuilder);
 	}
 	
 	default Arguments cArrestArgs(
 			final CoordinateTranslator translator, 
-			final SAMRecordExtended recordExtended,
+			final Record record,
 			final Position expected, 
 			final StringBuilder infoBuilder) {
 		
-		addReadInfo(recordExtended, infoBuilder);
+		addReadInfo(record, infoBuilder);
 		
 		return Arguments.of(
-				translator, recordExtended, 
+				translator, record, 
 				expected, infoBuilder.toString());
 	}
 	
@@ -179,14 +179,14 @@ interface LocationInterpreterTest {
 		final StringBuilder infoBuilder = new StringBuilder()
 				.append("Lib.: ").append(getLibraryType()).append("; ");
 		
-		final SAMRecord record = new SAMRecordBuilder().createSERecord(
+		final SAMRecord samRecord = new SAMRecordBuilder().createSERecord(
 				getContig(), refStart, negativeStrand, cigarStr, "");
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(record); 
+		final Record record = new Record(samRecord); 
 		
 		return cThroughArgs(
 				cT(refWinStart, refWinEnd),
-				recordExtended,
-				parseExpected(recordExtended, expectedStr),
+				record,
+				parseExpected(record, expectedStr),
 				infoBuilder);
 	}
 	
@@ -203,26 +203,26 @@ interface LocationInterpreterTest {
 						getContig(), 
 						refStart1, negativeStrand1, cigarStr1, "", 
 						refStart2, negativeStrand2, cigarStr2, "").getRecords().iterator();
-		final SAMRecord record = it.next();
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(record, record.getFileSource().getReader());
+		final SAMRecord samRecord = it.next();
+		final Record record = new Record(samRecord, samRecord.getFileSource().getReader());
 		
 		return cThroughArgs(
 				cT(refWinStart, refWinEnd),
-				recordExtended,
-				parseExpected(recordExtended, expectedStr),
+				record,
+				parseExpected(record, expectedStr),
 				infoBuilder);
 	}
 	
 	default Arguments cThroughArgs(
 			final CoordinateTranslator translator, 
-			final SAMRecordExtended recordExtended,
+			final Record record,
 			final List<Position> expected, 
 			final StringBuilder infoBuilder) {
 
-		addReadInfo(recordExtended, infoBuilder);
+		addReadInfo(record, infoBuilder);
 		
 		return Arguments.of(
-				translator, recordExtended, 
+				translator, record, 
 				expected, infoBuilder.toString());
 	}
 

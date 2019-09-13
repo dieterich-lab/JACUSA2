@@ -7,15 +7,13 @@ import org.apache.commons.cli.Options;
 import lib.stat.AbstractStatFactory;
 
 /**
- * This fake test-statistic calculates the total coverage... TODO add comments
- *  
- * @param 
+ * This fake test-statistic calculates the total coverage...
  */
 public class CoverageStatisticFactory 
 extends AbstractStatFactory {
 
-	private final static String NAME = "Coverage"; 
-	private final static String DESC = "Calculates the total coverage";
+	private static final String NAME = "Coverage"; 
+	private static final String DESC = "Calculates the total coverage";
 	
 	public CoverageStatisticFactory() {
 		super(Option.builder(NAME)
@@ -24,7 +22,9 @@ extends AbstractStatFactory {
 	}
 
 	@Override
-	public void processCLI(CommandLine cmd) {}
+	public void processCLI(CommandLine cmd) {
+		// not needed
+	}
 	
 	@Override
 	protected Options getOptions() {

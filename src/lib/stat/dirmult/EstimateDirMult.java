@@ -2,26 +2,26 @@ package lib.stat.dirmult;
 
 import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.estimate.MinkaParameter;
+import lib.stat.estimation.EstimationContainer;
 import lib.stat.initalpha.AbstractAlphaInit;
-import lib.stat.sample.EstimationSample;
 import lib.util.Info;
 import lib.util.Util;
 
 public class EstimateDirMult {
 
-	private final MinkaParameter minkaParameter;
-	private final MinkaEstimateDirMultAlpha minkaEstimateAlpha;
+	private final MinkaParameter minkaPrm;
+	private final MinkaEstimateDirMultAlpha minkaEstAlpha;
 	
-	private EstimationSample[] estimationSamples;	
+	private EstimationContainer[] estContainers;	
 	private Info estimateInfo;
 
-	public EstimateDirMult(final MinkaParameter minkaParameter) {
-		minkaEstimateAlpha		= new MinkaEstimateDirMultAlpha(minkaParameter);
-		this.minkaParameter 	= minkaParameter;
+	public EstimateDirMult(final MinkaParameter minkaPrm) {
+		minkaEstAlpha	= new MinkaEstimateDirMultAlpha(minkaPrm);
+		this.minkaPrm 	= minkaPrm;
 	}
 
 	public void addStatResultInfo(final Info info) {
-		if (! isNumericallyStable(estimationSamples)) {
+		if (! isNumericallyStable(estContainers)) {
 			info.add("NumericallyInstable");
 		}
 		if (! estimateInfo.isEmpty()) {
@@ -29,9 +29,9 @@ public class EstimateDirMult {
 		}
 	}
 	
-	public boolean isNumericallyStable(final EstimationSample[] estimationSamples) {
-		for (final EstimationSample estimationSample : estimationSamples) {
-			if (! estimationSample.isNumericallyStable()) {
+	public boolean isNumericallyStable(final EstimationContainer[] estContainers) {
+		for (final EstimationContainer estContainer : estContainers) {
+			if (! estContainer.isNumericallyStable()) {
 				return false;
 			}
 		}
@@ -39,45 +39,45 @@ public class EstimateDirMult {
 		return true;
 	}
 	
-	public boolean estimate(final EstimationSample estimationSample, final AbstractAlphaInit alphaInit, final boolean backtrack) {
+	public boolean estimate(final EstimationContainer estContainer, final AbstractAlphaInit alphaInit, final boolean backtrack) {
 		// perform an initial guess of alpha
-		final double[] initAlpha 	= alphaInit.init(estimationSample.getNominalData());
-		final double logLikelihood 	= minkaEstimateAlpha.getLogLikelihood(initAlpha, estimationSample.getNominalData());
-		estimationSample.add(initAlpha, logLikelihood);
+		final double[] initAlpha 	= alphaInit.init(estContainer.getNominalData());
+		final double logLikelihood 	= minkaEstAlpha.getLogLikelihood(initAlpha, estContainer.getNominalData());
+		estContainer.add(initAlpha, logLikelihood);
 
 		// estimate alpha(s), capture and info(s), and store log-likelihood
-		return minkaEstimateAlpha.maximizeLogLikelihood(estimationSample, estimateInfo, backtrack);
+		return minkaEstAlpha.maximizeLogLikelihood(estContainer, estimateInfo, backtrack);
 	}
 	
 	private boolean estimate(final AbstractAlphaInit alphaInit, final boolean backtrack) {
 		boolean flag = true;
 		// estimate alpha(s), capture info(s), and store log-likelihood
-		for (final EstimationSample estimationSample : estimationSamples) {
+		for (final EstimationContainer estContainer : estContainers) {
 			try {
-				flag &= estimate(estimationSample, alphaInit, backtrack);
+				flag &= estimate(estContainer, alphaInit, backtrack);
 			} catch (StackOverflowError e) {
 				// catch numerical instabilities and report
-				estimationSample.setNumericallyUnstable();
+				estContainer.setNumericallyUnstable();
 			}
 		}
 		return flag;
 	}
 	
-	public double getScore(final EstimationSample[] estimationSamples) {
-		estimate(estimationSamples);
-		return getObservedlogLikeliood() - getEstimationSamplePooled().getLogLikelihood();
+	public double getScore(final EstimationContainer[] estContainers) {
+		estimate(estContainers);
+		return getObservedlogLikeliood() - getPooledEstContainers().getLogLikelihood();
 	}
 
-	private void estimate(final EstimationSample[] estimationSamples) { 
-		this.estimationSamples 	= estimationSamples;
-		estimateInfo 			= new Info();
+	private void estimate(final EstimationContainer[] estContainers) { 
+		this.estContainers 	= estContainers;
+		estimateInfo 		= new Info();
 	
-		final AbstractAlphaInit defaultAlphaInit 	= minkaParameter.getAlphaInit();
-		final AbstractAlphaInit fallbackAlphaInit 	= minkaParameter.getFallbackAlphaInit();
+		final AbstractAlphaInit defaultAlphaInit 	= minkaPrm.getAlphaInit();
+		final AbstractAlphaInit fallbackAlphaInit 	= minkaPrm.getFallbackAlphaInit();
 	
 		if (! estimate(defaultAlphaInit, false)) {
-			for (final EstimationSample estimationSample : estimationSamples) {
-				estimationSample.clear();
+			for (final EstimationContainer estContainer : estContainers) {
+				estContainer.clear();
 			}
 			estimate(fallbackAlphaInit, true);
 		}
@@ -85,34 +85,34 @@ public class EstimateDirMult {
 	
 	private double getObservedlogLikeliood() {
 		double tmpLogLikelihood = 0.0;
-		final int conditions = estimationSamples.length - 1;
-		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
-			tmpLogLikelihood += getEstimationSampleCondition(conditionIndex).getLogLikelihood();
+		final int conditions = estContainers.length - 1;
+		for (int condI = 0; condI < conditions; condI++) {
+			tmpLogLikelihood += getEstContainer(condI).getLogLikelihood();
 		}
 		return tmpLogLikelihood;
 	}
 	
-	public double getLRT(final EstimationSample[] estimationSamples) {
-		estimate(estimationSamples);
-		return - 2 * (getEstimationSamplePooled().getLogLikelihood() - 
+	public double getLRT(final EstimationContainer[] estContainers) {
+		estimate(estContainers);
+		return - 2 * (getPooledEstContainers().getLogLikelihood() - 
 				getObservedlogLikeliood());
 	}
 	
-	private  EstimationSample getEstimationSampleCondition(final int conditionIndex) {
-		return estimationSamples[conditionIndex];
+	private  EstimationContainer getEstContainer(final int condI) {
+		return estContainers[condI];
 	}
 	
-	private  EstimationSample getEstimationSamplePooled() {
-		return estimationSamples[estimationSamples.length - 1];
+	private  EstimationContainer getPooledEstContainers() {
+		return estContainers[estContainers.length - 1];
 	}
 
 	public void addShowAlpha() {
-		for (final EstimationSample estimationSample : estimationSamples) {
-			final String id 			= estimationSample.getId();
-			final int iteration			= estimationSample.getIteration();
-			final double[] initAlpha 	= estimationSample.getAlpha(0);
-			final double[] alpha 		= estimationSample.getAlpha(iteration);
-			final double logLikelihood	= estimationSample.getLogLikelihood(iteration);
+		for (final EstimationContainer estContainer : estContainers) {
+			final String id 			= estContainer.getId();
+			final int iteration			= estContainer.getIteration();
+			final double[] initAlpha 	= estContainer.getAlpha(0);
+			final double[] alpha 		= estContainer.getAlpha(iteration);
+			final double logLikelihood	= estContainer.getLogLikelihood(iteration);
 			
 			estimateInfo.add("initAlpha" + id, Util.format(initAlpha[0]));			
 			for (int i = 1; i < initAlpha.length; ++i) {

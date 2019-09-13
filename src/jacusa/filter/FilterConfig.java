@@ -17,10 +17,10 @@ import lib.util.coordinate.CoordinateController;
 public class FilterConfig implements Cloneable {
 
 	// Map holds chosen filter factories, indexed by unique char id
-	private final Map<Character, FilterFactory> c2factory;
+	private final Map<Character, FilterFactory> id2factory;
 	
 	public FilterConfig() {
-		c2factory = new HashMap<Character, FilterFactory>();
+		id2factory = new HashMap<Character, FilterFactory>();
 	}
 
 	/**
@@ -31,52 +31,56 @@ public class FilterConfig implements Cloneable {
 	 * @throws Exception if filter has been already added
 	 */
 	public void addFactory(final FilterFactory filterFactory) throws Exception {
-		final char c = filterFactory.getC();
+		final char id = filterFactory.getID();
 
-		if (c2factory.containsKey(c)) {
-			throw new Exception("Duplicate value: " + c);
+		if (id2factory.containsKey(id)) {
+			throw new Exception("Duplicate value: " + id);
 		} else {
-			c2factory.put(c, filterFactory);	
+			id2factory.put(id, filterFactory);	
 		}
 	}
 
 	/**
 	 * Create FilterContainers with the current filter configuration.
 	 * 
-	 * @return
+	 * @return FiterContainer with current filter configuration
 	 */
 	public FilterContainer createFilterContainer() {
 		return new FilterContainer(this);
 	}
 	
 	/**
-	 * Register all chosen filters
+	 * Register configured filters by supplying coordinatesController and 
+	 * all a conditionContainer
 	 * 
-	 * @param coordinateController
-	 * @param conditionContainer
+	 * @param coordinateController controls and translates coordinates
+	 * @param conditionContainer contains condition related data structures
 	 */
-	public void registerFilters(final CoordinateController coordinateController, final ConditionContainer conditionContainer) {
-		for (final FilterFactory filterFactory : c2factory.values()) {
+	public void registerFilters(
+			final CoordinateController coordinateController, 
+			final ConditionContainer conditionContainer) {
+
+		for (final FilterFactory filterFactory : id2factory.values()) {
 			filterFactory.registerFilter(coordinateController, conditionContainer);
 		}
 	}
 
 	/**
-	 * Indicates if any filter has been chosen.
+	 * Indicates if any filter has been selected.
 	 * 
 	 * @return true if at least one filter has been added
 	 */
 	public boolean hasFiters() {
-		return ! c2factory.isEmpty();
+		return ! id2factory.isEmpty();
 	}
 
 	/**
-	 * Returns a list of the chosen filters.
+	 * Returns a list of selected filters.
 	 * 
 	 * @return a list of FilterFactories
 	 */
 	public List<FilterFactory> getFilterFactories() {
-		return new ArrayList<FilterFactory>(c2factory.values());
+		return new ArrayList<>(id2factory.values());
 	}
 	
 }

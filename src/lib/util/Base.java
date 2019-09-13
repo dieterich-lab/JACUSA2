@@ -2,6 +2,7 @@ package lib.util;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,32 +15,30 @@ public enum Base {
 	G(2, 1, (byte)'G'), 
 	T(3, 0, (byte)'T'), 
 	N(4, 4, (byte)'N');
-
+	
 	private static final Base[] VALID = new Base[] {A, C, G, T};
 	private static final Map<Byte, Base> BYTE2BASE;
 	private static final Map<Base, Set<Base>> REF2NON_REF;
 	
 	static {
-		final Map<Base, Set<Base>> REF2NON_REF_TMP = new HashMap<Base, Set<Base>>(
-				Util.noRehashCapacity(validValues().length + 1));
+		final Map<Base, Set<Base>> tmpREF2NON_REF = new EnumMap<>(Base.class);
 		for (final Base base : validValues()) {
-			final Set<Base> nonRefBases = new HashSet<Base>(VALID.length);
+			final Set<Base> nonRefBases = new HashSet<>(VALID.length);
 			for (final Base tmp : validValues()) {
 				nonRefBases.add(tmp);
 			}
 			nonRefBases.remove(base);
-			REF2NON_REF_TMP.put(base, Collections.unmodifiableSet(nonRefBases));
+			tmpREF2NON_REF.put(base, Collections.unmodifiableSet(nonRefBases));
 		}
-		REF2NON_REF_TMP.put(Base.N, Collections.unmodifiableSet(new HashSet<>(Arrays.asList(Base.N))));
-		REF2NON_REF = Collections.unmodifiableMap(REF2NON_REF_TMP);
+		tmpREF2NON_REF.put(Base.N, Collections.unmodifiableSet(new HashSet<>(Arrays.asList(Base.N))));
+		REF2NON_REF = Collections.unmodifiableMap(tmpREF2NON_REF);
 		
-		final Map<Byte, Base> BYTE2BASE_TMP = new HashMap<Byte, Base>();
+		final Map<Byte, Base> tmpBYTE2BASE = new HashMap<>();
 		for (Base b : Base.values()) {
-			BYTE2BASE_TMP.put(b.bite, b);
+			tmpBYTE2BASE.put(b.bite, b);
 		}
-		BYTE2BASE = Collections.unmodifiableMap(BYTE2BASE_TMP);
+		BYTE2BASE = Collections.unmodifiableMap(tmpBYTE2BASE);
 	}
-	
 	
 	private final int index;
 	private final byte bite;

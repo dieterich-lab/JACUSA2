@@ -69,15 +69,13 @@ public abstract class AbstractConditionACOptionTest<T> {
 		
 		for (final ConditionParameter conditionParameter : conditionParameters) {
 			final T actual = getActualValue(conditionParameter);
-			assertEquals(expected.get(conditionParameter.getConditionIndex() - 1), actual);
+			assertEquals(expected.get(conditionParameter.getcondI() - 1), actual);
 		}
 	}
 
 	void process(final AbstractConditionACOption testInstance, final CommandLine cmd) throws Exception {
-		if (! testInstance.getOpt().isEmpty()) {
-			if (cmd.hasOption(testInstance.getOpt())) {
-				testInstance.process(cmd);
-			}
+		if (! testInstance.getOpt().isEmpty() && cmd.hasOption(testInstance.getOpt())) {
+			testInstance.process(cmd);
 		}
 	}
 
@@ -109,7 +107,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 	protected <E extends Throwable> void myAssertOptThrows(
 			final Class<E> expectedType,
 			final AbstractConditionACOption testInstance,
-			final String value) throws Exception{
+			final String value) {
 
 		final Options options				= new Options();
 		options.addOption(testInstance.getOption(false));

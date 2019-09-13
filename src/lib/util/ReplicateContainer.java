@@ -12,15 +12,15 @@ import lib.data.DataContainer;
 import lib.data.assembler.DataAssembler;
 import lib.data.assembler.DataAssembler.CACHE_STATUS;
 import lib.data.storage.container.SharedStorage;
+import lib.record.RecordIterator;
+import lib.record.RecordIteratorProvider;
 import lib.util.coordinate.Coordinate;
-import lib.recordextended.SAMRecordExtendedIterator;
-import lib.recordextended.SAMRecordExtendedIteratorProvider;
 
 public class ReplicateContainer {
 
-	private final ConditionParameter conditionParameter;
+	private final ConditionParameter condPrm;
 	
-	private final List<SAMRecordExtendedIteratorProvider> iteratorProviders;
+	private final List<RecordIteratorProvider> itProvs;
 	private final List<DataAssembler> dataAssemblers;
 	
 	public ReplicateContainer(
@@ -30,22 +30,22 @@ public class ReplicateContainer {
 			final ConditionParameter conditionParameter,
 			final AbstractMethod method) {
 
-		this.conditionParameter = conditionParameter;
+		this.condPrm = conditionParameter;
 
-		iteratorProviders = createRecordIteratorProviders(conditionParameter);
+		itProvs = createRecordIteratorProviders(conditionParameter);
 		dataAssemblers = createDataAssemblers(
 				parameter, filterContainer, sharedStorage, conditionParameter, method);
 	}
 
-	public List<SAMRecordExtendedIteratorProvider> getIteratorProviders() {
-		return iteratorProviders;
+	public List<RecordIteratorProvider> getIteratorProviders() {
+		return itProvs;
 	}
 	
 	public void createIterators(final Coordinate activeWindowCoordinate) {
-		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); ++replicateIndex) {
-			final SAMRecordExtendedIterator recordIterator = 
-					iteratorProviders.get(replicateIndex).getIterator(activeWindowCoordinate);
-			final DataAssembler dataAssembler = dataAssemblers.get(replicateIndex);
+		for (int replicateI = 0; replicateI < condPrm.getReplicateSize(); ++replicateI) {
+			final RecordIterator recordIterator = 
+					itProvs.get(replicateI).getIterator(activeWindowCoordinate);
+			final DataAssembler dataAssembler = dataAssemblers.get(replicateI);
 			dataAssembler.buildCache(activeWindowCoordinate, recordIterator);
 			recordIterator.close();
 		}
@@ -56,20 +56,20 @@ public class ReplicateContainer {
 	}
 	
 	// returns null if cache is empty
-	public DataContainer getNullDataContainer(final int replicateIndex, final Coordinate coordinate) {
-		if (dataAssemblers.get(replicateIndex).getCacheStatus() == CACHE_STATUS.CACHED) {
-			return dataAssemblers.get(replicateIndex).assembleData(coordinate);
+	public DataContainer getNullDataContainer(final int replicateI, final Coordinate coordinate) {
+		if (dataAssemblers.get(replicateI).getCacheStatus() == CACHE_STATUS.CACHED) {
+			return dataAssemblers.get(replicateI).assembleData(coordinate);
 		}
 		
 		return null;
 	}
 	// returns default container if cache emptry
-	public DataContainer getDefaultDataContainer(final int replicateIndex, final Coordinate coordinate) {
-		if (dataAssemblers.get(replicateIndex).getCacheStatus() == CACHE_STATUS.CACHED) {
-			return dataAssemblers.get(replicateIndex).assembleData(coordinate);
+	public DataContainer getDefaultDataContainer(final int replicateI, final Coordinate coordinate) {
+		if (dataAssemblers.get(replicateI).getCacheStatus() == CACHE_STATUS.CACHED) {
+			return dataAssemblers.get(replicateI).assembleData(coordinate);
 		}
 		
-		return 	dataAssemblers.get(replicateIndex).createDefaultDataContainer(coordinate);
+		return 	dataAssemblers.get(replicateI).createDefaultDataContainer(coordinate);
 	}
 	
 	private List<DataAssembler> createDataAssemblers(
@@ -80,11 +80,11 @@ public class ReplicateContainer {
 			final AbstractMethod method) {
 
 		final List<DataAssembler> dataAssemblers = new ArrayList<DataAssembler>(conditionParameter.getReplicateSize());
-		for (int replicateIndex = 0; replicateIndex < conditionParameter.getReplicateSize(); ++replicateIndex) {
+		for (int replicateI = 0; replicateI < conditionParameter.getReplicateSize(); ++replicateI) {
 			dataAssemblers.add(
 				method.getDataAssemblerFactory()
 					.newInstance(
-							parameter, filterContainer, sharedStorage, conditionParameter, replicateIndex) );
+							parameter, filterContainer, sharedStorage, conditionParameter, replicateI) );
 		}
 		return dataAssemblers;
 	}
@@ -102,11 +102,11 @@ public class ReplicateContainer {
 		return dataAssemblers;
 	}
 	
-	private List<SAMRecordExtendedIteratorProvider> createRecordIteratorProviders(
+	private List<RecordIteratorProvider> createRecordIteratorProviders(
 			final ConditionParameter conditionParameter) {
 
 		return Stream.of(conditionParameter.getRecordFilenames())
-				.map(f -> new SAMRecordExtendedIteratorProvider(conditionParameter, f))
+				.map(f -> new RecordIteratorProvider(conditionParameter, f))
 				.collect(Collectors.toList());
 	}
 

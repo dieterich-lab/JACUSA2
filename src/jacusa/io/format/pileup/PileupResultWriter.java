@@ -13,14 +13,7 @@ import lib.io.AbstractResultFileWriter;
 import lib.util.Base;
 import htsjdk.samtools.SAMUtils;
 
-/**
- * TODO add comments.
- *
- * @param 
- * @param <R>
- */
-public class PileupResultWriter
-extends AbstractResultFileWriter {
+public class PileupResultWriter extends AbstractResultFileWriter {
 
 	// char to start a comment
 	// split columns by
@@ -48,37 +41,31 @@ extends AbstractResultFileWriter {
 
 		// add reference
 		sb.append(SEP);
-		sb.append(parallelData.getCombinedPooledData().getReferenceBase());
+		sb.append(parallelData.getCombPooledData().getAutoRefBase());
 
 		// add strand
 		sb.append(SEP);
 		sb.append(parallelData.getCoordinate().getStrand().character());
 		
 		// add pileup data
-		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
-			addPileupData(sb, parallelData.getData(conditionIndex));
+		for (int condI = 0; condI < parallelData.getConditions(); condI++) {
+			addPileupData(sb, parallelData.getData(condI));
 		}
 
 		return sb.toString();		
 	}
 	
-	/**
-	 * TODO add comments.
-	 * 
-	 * @param sb
-	 * @param containers
-	 */
 	protected void addPileupData(final StringBuilder sb, final List<DataContainer> containers) {
 		for (final DataContainer container : containers) {
 			final PileupCount pileupCount = container.getPileupCount();
 			sb.append(SEP);
-			sb.append(pileupCount.getBaseCallCount().getCoverage());
+			sb.append(pileupCount.getBCC().getCoverage());
 			sb.append(SEP);
 			
-			final Set<Base> alleles = pileupCount.getBaseCallCount().getAlleles();
+			final Set<Base> alleles = pileupCount.getBCC().getAlleles();
 			// print bases
 			for (final Base base : alleles) {
-				final int count = pileupCount.getBaseCallCount().getBaseCall(base);
+				final int count = pileupCount.getBCC().getBaseCall(base);
 				// repeat count times
 				for (int i = 0; i < count; ++i) {
 					sb.append(base.getByte());
@@ -89,7 +76,7 @@ extends AbstractResultFileWriter {
 
 			// print quals
 			for (final Base base : alleles) {
-				final Set<Byte> baseQuals = new TreeSet<Byte>(pileupCount.getBaseCallQualityCount().getBaseCallQuality(base));
+				final Set<Byte> baseQuals = new TreeSet<>(pileupCount.getBaseCallQualityCount().getBaseCallQuality(base));
 				for (final byte baseQual : baseQuals) {
 					final int count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, baseQual);
 					// repeat count times

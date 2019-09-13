@@ -10,12 +10,15 @@ import lib.util.coordinate.advancer.StrandedJumpingCoordinateAdvancer;
 import lib.util.coordinate.advancer.UnstrandedJumpingCoordinateAdvancer;
 import lib.util.coordinate.provider.WindowedCoordinateStaticProvider;
 
+/**
+ * TODO
+ */
 public class CoordinateController {
 
-	private final int activeWindowSize;
-	private CoordinateAdvancer coordinateAdvancer;
+	private final int activeWinSize;
+	private CoordinateAdvancer coordAdvancer;
 
-	private CoordinateTranslator coordinateTranslator;
+	private CoordinateTranslator coordTrans;
 	
 	private Coordinate reserved;
 	private WindowedCoordinateStaticProvider provider;
@@ -23,18 +26,18 @@ public class CoordinateController {
 	
 	private CoordinateController(final int activeWindowSize) {
 		this.active = null;
-		this.activeWindowSize = activeWindowSize;
-		coordinateTranslator = new DynamicCoordinateTranslator(this);
+		this.activeWinSize = activeWindowSize;
+		coordTrans = new DynamicCoordinateTranslator(this);
 	}
 	
 	public CoordinateController(final int activeWindowSize, final CoordinateAdvancer coordinateAdvancer) {
 		this(activeWindowSize);
-		this.coordinateAdvancer = coordinateAdvancer;
+		this.coordAdvancer = coordinateAdvancer;
 	}
 	
 	public CoordinateController(final int activeWindowSize, final ConditionContainer conditionContainer) {
 		this(activeWindowSize);
-		coordinateAdvancer = createCoordinateAdvancer(conditionContainer);
+		coordAdvancer = createCoordinateAdvancer(conditionContainer);
 	}
 	
 	private CoordinateAdvancer createCoordinateAdvancer(
@@ -53,10 +56,10 @@ public class CoordinateController {
 		reserved 	= reservedWindowCoordinate;
 		provider 	= new WindowedCoordinateStaticProvider(
 				reservedWindowCoordinate.getStrand() != STRAND.UNKNOWN, 
-				reservedWindowCoordinate, activeWindowSize);
+				reservedWindowCoordinate, activeWinSize);
 
 		
-		coordinateAdvancer.getCurrentCoordinate().resetPosition(reservedWindowCoordinate);
+		coordAdvancer.getCurrentCoordinate().resetPosition(reservedWindowCoordinate);
 	}
 
 	public boolean hasNext() {
@@ -74,7 +77,7 @@ public class CoordinateController {
 	}
 
 	// don't use only for JUNIT TODO remove
-	public void _setActive(final Coordinate active) {
+	public void helperSetActive(final Coordinate active) {
 		this.active = active;
 		updateCoordinateAdvancer(active);
 	}
@@ -100,40 +103,36 @@ public class CoordinateController {
 	}
 
 	public boolean advance() {
-		if (! checkCoordinateAdvancerWithinActiveWindow()) {
+		if (! checkCoordAdvancerWithinActiveWindow()) {
 			return false;
 		}
 		
-		coordinateAdvancer.advance();
+		coordAdvancer.advance();
 		return true;
 	}
 
-	public CoordinateAdvancer getCoordinateAdvancer() {
-		return coordinateAdvancer;
+	public CoordinateAdvancer getCoordAdvancer() {
+		return coordAdvancer;
 	}
 
 	public int getActiveWindowSize() {
-		return activeWindowSize;
+		return activeWinSize;
 	}
 
 	private void updateCoordinateAdvancer(final Coordinate coordinate) {
-		coordinateAdvancer.adjustPosition(coordinate);
+		coordAdvancer.adjustPosition(coordinate);
 	}
 	
 	public boolean checkCoordinateWithinActiveWindow(final Coordinate coordinate) {
 		return active.overlaps(coordinate);
-		
-		// old code
-		// final int position = coordinate.getPosition();
-		// return position >= active.getStart() && position <= active.getEnd(); 		
 	}
 	
-	public boolean checkCoordinateAdvancerWithinActiveWindow() {
-		return checkCoordinateWithinActiveWindow(coordinateAdvancer.getCurrentCoordinate());
+	public boolean checkCoordAdvancerWithinActiveWindow() {
+		return checkCoordinateWithinActiveWindow(coordAdvancer.getCurrentCoordinate());
 	}
 
 	public CoordinateTranslator getCoordinateTranslator() {
-		return coordinateTranslator;
+		return coordTrans;
 	}
 
 	public WindowPositionGuard convert(int refPos, int length) {
@@ -152,12 +151,12 @@ public class CoordinateController {
 			winPos 	+= -winPos;
 		}
 
-		final int offset = activeWindowSize - (winPos + length);
+		final int offset = activeWinSize - (winPos + length);
 		if (offset < 0) {
 			length = Math.max(0, length + offset);
 		}
 
-		if (winPos < 0 || winPos >= activeWindowSize) {
+		if (winPos < 0 || winPos >= activeWinSize) {
 			winPos = -1;
 		}
 

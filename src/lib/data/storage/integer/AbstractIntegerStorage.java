@@ -7,12 +7,11 @@ import lib.data.storage.AbstractStorage;
 import lib.data.storage.container.SharedStorage;
 import lib.util.coordinate.Coordinate;
 
-public abstract class AbstractIntegerStorage
-extends AbstractStorage {
+abstract class AbstractIntegerStorage extends AbstractStorage {
 
 	private final Fetcher<IntegerData> bccFetcher;
 	
-	public AbstractIntegerStorage(
+	AbstractIntegerStorage(
 			final SharedStorage sharedStorage, final Fetcher<IntegerData> fetcher) {
 		
 		super(sharedStorage);
@@ -31,7 +30,7 @@ extends AbstractStorage {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof AbstractIntegerStorage)) {
+		if (! (obj instanceof AbstractIntegerStorage)) {
 			return false;
 		}
 		if (obj == this) {

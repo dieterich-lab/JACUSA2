@@ -7,6 +7,9 @@ import lib.data.validator.Validator;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 
+/**
+ * 
+ */
 public class PositionProcessor {
 	
 	private final List<Validator> validators;
@@ -22,7 +25,7 @@ public class PositionProcessor {
 		this.validators.addAll(validators);
 		this.storages.addAll(storages);
 	}
-
+	
 	public PositionProcessor(final List<Storage> storages) {
 		this();
 		this.storages.addAll(storages);

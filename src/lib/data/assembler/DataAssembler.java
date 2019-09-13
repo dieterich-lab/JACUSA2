@@ -7,24 +7,45 @@ import lib.data.DataContainer;
 import lib.data.DataContainer.AbstractBuilderFactory;
 import lib.data.has.HasLibraryType;
 import lib.data.storage.container.CacheContainer;
+import lib.record.Record;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
-import lib.recordextended.SAMRecordExtended;
 
-public interface DataAssembler 
-extends HasLibraryType {
-
-	void buildCache(Coordinate activeWindowCoordinate, Iterator<SAMRecordExtended> iterator);
-
-	// Reset storage in windows
+/**
+ * Defines an interface that will build a cache and use it to assemble Data into 
+ * DataContainers.
+ */
+public interface DataAssembler extends HasLibraryType {
+	
+	/**
+	 * Build cache for activeWindowCoordinate using reads from iterator
+	 * @param activeWindowCoordinate to be used
+	 * @param iterator to be used
+	 */
+	void buildCache(Coordinate activeWindowCoordinate, Iterator<Record> iterator);
+	
+	// 
+	/**
+	 * Reset storage in cache of "current" window
+	 */
 	void clearStorage();
-
+	
+	/**
+	 * Create a DataContainer and populate it from window cache with data referenced by coordinate. 
+	 * @param coordinate to use
+	 * @return DataContainer with data from window cache 
+	 */
 	default DataContainer assembleData(Coordinate coordinate) {
 		final DataContainer container = createDefaultDataContainer(coordinate);
 		getCacheContainer().populate(container, coordinate);
 		return container;
 	}
-	
+
+	/**
+	 * Create a default DataContainer.
+	 * @param coordinate to be used
+	 * @return default DataContainer
+	 */
 	default DataContainer createDefaultDataContainer(Coordinate coordinate) {
 		final Base referenceBase = getCacheContainer().getReferenceProvider().getReferenceBase(coordinate);
 		return getBuilderFactory().createBuilder(coordinate, getLibraryType())
@@ -35,11 +56,11 @@ extends HasLibraryType {
 	AbstractBuilderFactory getBuilderFactory();
 	
 	CacheContainer getCacheContainer();
-
+	
 	ConditionParameter getConditionParameter();
-
+	
 	CACHE_STATUS getCacheStatus();
-
+	
 	public enum CACHE_STATUS {NOT_CACHED,CACHED,NOT_FOUND};
 	
 }

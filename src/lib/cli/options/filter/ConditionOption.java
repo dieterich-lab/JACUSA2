@@ -23,7 +23,7 @@ public class ConditionOption extends AbstractACOption {
 	@Override
 	public void process(CommandLine line) throws Exception {
 		final int condition = Integer.parseInt(line.getOptionValue(getLongOpt()));
-		// make sure conditionIndex is within provided conditions
+		// make sure condI is within provided conditions
 		if (condition >= 1 && condition <= conditionSize) {
 			// convert to [0, conditionSize)
 			hasCondition.setCondition(condition - 1); 

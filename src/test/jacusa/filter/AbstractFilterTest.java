@@ -26,7 +26,7 @@ abstract class AbstractFilterTest {
 		final boolean actual = testInstance.filter(parallelData);
 		assertEquals(expected, actual);
 	}
-	
+
 	abstract Stream<Arguments> testFilter();
 
 }

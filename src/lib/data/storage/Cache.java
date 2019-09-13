@@ -4,15 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import lib.data.storage.processor.RecordExtendedPrePostProcessor;
+import lib.data.storage.processor.GeneralRecordProcessor;
 
+/**
+ * TODO
+ */
 public class Cache {
 
-	private final List<RecordExtendedPrePostProcessor> processors;
+	private final List<GeneralRecordProcessor> processors;
 	private final List<Storage> storages;
 	
 	public Cache() {
-		processors 	= new ArrayList<RecordExtendedPrePostProcessor>();
+		processors 	= new ArrayList<>();
 		storages 	= new ArrayList<>();
 	}
 
@@ -25,7 +28,7 @@ public class Cache {
 		storages.add(storage);
 	}
 	
-	public void addRecordProcessor(final RecordExtendedPrePostProcessor processor) {
+	public void addRecordProcessor(final GeneralRecordProcessor processor) {
 		processors.add(processor);
 	}
 	
@@ -33,11 +36,11 @@ public class Cache {
 		this.storages.addAll(storages);
 	}
 	
-	public void addRecordProcessors(final List<RecordExtendedPrePostProcessor> processors) {
+	public void addRecordProcessors(final List<GeneralRecordProcessor> processors) {
 		this.processors.addAll(processors);
 	}
 	
-	public List<RecordExtendedPrePostProcessor> getRecordProcessors() {
+	public List<GeneralRecordProcessor> getRecordProcessors() {
 		return Collections.unmodifiableList(processors);
 	}
 	

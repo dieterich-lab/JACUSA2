@@ -28,7 +28,7 @@ implements HasCondition {
 	public static final char FILTER = 'H';
 	
 	// which condition is required to be homozygous
-	private int conditionIndex;
+	private int condI;
 	private final Fetcher<BaseCallCount> bccFetcher;
 	
 	public HomozygousFilterFactory(
@@ -36,7 +36,7 @@ implements HasCondition {
 		
 		super(getOptionBuilder().build());
 				
-		conditionIndex 				= -1;
+		condI 				= -1;
 		getACOption().add(new ConditionOption(this, conditionSize));
 		this.bccFetcher 			= bccFetcher;
 	}
@@ -51,7 +51,7 @@ implements HasCondition {
 			CoordinateController coordinateController, 
 			ConditionContainer conditionContainer) {
 
-		return new HomozygousFilter(getC(), conditionIndex, bccFetcher);
+		return new HomozygousFilter(getID(), condI, bccFetcher);
 	}
 
 	@Override
@@ -76,12 +76,12 @@ implements HasCondition {
 
 	@Override
 	public int getCondition() {
-		return conditionIndex;
+		return condI;
 	}
 	
 	@Override
 	public void setCondition(int condition) {
-		this.conditionIndex = condition;
+		this.condI = condition;
 	}
 	
 }

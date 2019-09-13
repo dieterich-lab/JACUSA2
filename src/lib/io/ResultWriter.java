@@ -7,6 +7,11 @@ import java.util.List;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.result.Result;
 
+/**
+ * 
+ * @author michael
+ *
+ */
 public interface ResultWriter 
 extends Closeable {
 

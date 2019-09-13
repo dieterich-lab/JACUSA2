@@ -1,8 +1,8 @@
 package lib.data.storage.readsubstitution;
 
+import lib.record.Record;
 import lib.util.Base;
 import lib.util.position.Position;
-import lib.recordextended.SAMRecordExtended;
 
 public class UnstrandedBaseCallInterpreter
 implements BaseCallInterpreter {
@@ -10,15 +10,15 @@ implements BaseCallInterpreter {
 	protected UnstrandedBaseCallInterpreter() {}
 	
 	@Override
-	public Base getReadBase(SAMRecordExtended recordExtended, int readPos) {
-		return Base.valueOf(recordExtended.getSAMRecord().getReadBases()[readPos]);
+	public Base getReadBase(Record record, int readPos) {
+		return Base.valueOf(record.getSAMRecord().getReadBases()[readPos]);
 	}
 	
 	@Override
-	public Base getRefBase(SAMRecordExtended recordExtended, Position pos) {
-		return recordExtended
+	public Base getRefBase(Record record, Position pos) {
+		return record
 				.getRecordReferenceProvider()
-				.getReferenceBase(pos.getReferencePosition(), pos.getReadPosition());
+				.getRefBase(pos.getReferencePosition(), pos.getReadPosition());
 	}
 	
 }

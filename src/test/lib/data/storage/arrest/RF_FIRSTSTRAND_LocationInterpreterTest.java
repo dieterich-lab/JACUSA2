@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.provider.Arguments;
 
 import lib.data.storage.arrest.LocationInterpreter;
-import lib.data.storage.arrest.RF_FIRSTSTRAND_LocationInterpreter;
+import lib.data.storage.arrest.RevForFirstStrandLocInterpreter;
 import lib.util.LibraryType;
 
 class RF_FIRSTSTRAND_LocationInterpreterTest implements LocationInterpreterTest {
@@ -128,7 +128,7 @@ class RF_FIRSTSTRAND_LocationInterpreterTest implements LocationInterpreterTest 
 	
 	@Override
 	public LocationInterpreter createTestInstance() {
-		return new RF_FIRSTSTRAND_LocationInterpreter();
+		return new RevForFirstStrandLocInterpreter();
 	}
 
 }

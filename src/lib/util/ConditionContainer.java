@@ -13,45 +13,45 @@ import lib.util.coordinate.Coordinate;
 
 public class ConditionContainer {
 
-	private GeneralParameter parameter;
-	private List<ReplicateContainer> replicateContainers;
+	private GeneralParameter prm;
+	private List<ReplicateContainer> repContainers;
 
-	private List<Integer> replicateSizes;
+	private List<Integer> repSizes;
 	
 	private FilterContainer filterContainer;
 
-	public ConditionContainer(final GeneralParameter parameter) {
-		this.parameter = parameter;
+	public ConditionContainer(final GeneralParameter prm) {
+		this.prm = prm;
 	}
 
 	public void updateWindowCoordinates(final Coordinate activeWindowCoordinate) {
-		replicateContainers.stream()
+		repContainers.stream()
 			.forEach(r -> r.createIterators(activeWindowCoordinate));
 	}
 	
-	public void updateActiveWindowCoordinates(final Coordinate activeWindowCoordinate) {
-		replicateContainers.stream()
+	public void updateActiveWinCoord(final Coordinate activeWindowCoordinate) {
+		repContainers.stream()
 			.forEach(r -> r.updateIterators(activeWindowCoordinate));
 	}
 	
-	public ReplicateContainer getReplicatContainer(final int conditionIndex) {
-		return replicateContainers.get(conditionIndex);
+	public ReplicateContainer getReplicatContainer(final int condI) {
+		return repContainers.get(condI);
 	}
 
-	public DataContainer getNullDataContainer(final int conditionIndex, final int replicateIndex, final Coordinate coordinate) {
-		return replicateContainers.get(conditionIndex).getNullDataContainer(replicateIndex, coordinate);
+	public DataContainer getNullDataContainer(final int condI, final int replicateI, final Coordinate coordinate) {
+		return repContainers.get(condI).getNullDataContainer(replicateI, coordinate);
 	}
 	
-	public DataContainer getDefaultDataContainer(final int conditionIndex, final int replicateIndex, final Coordinate coordinate) {
-		return replicateContainers.get(conditionIndex).getDefaultDataContainer(replicateIndex, coordinate);
+	public DataContainer getDefaultDataContainer(final int condI, final int replicateI, final Coordinate coordinate) {
+		return repContainers.get(condI).getDefaultDataContainer(replicateI, coordinate);
 	}
 
 	public List<Integer> getReplicateSizes() {
-		return replicateSizes;
+		return repSizes;
 	}
 	
 	public int getConditionSize() {
-		return replicateContainers.size();
+		return repContainers.size();
 	}
 	
 	public void initReplicateContainer(
@@ -61,11 +61,11 @@ public class ConditionContainer {
 
 		filterContainer = parameter.getFilterConfig().createFilterContainer();
 		parameter.getFilterConfig().registerFilters(sharedStorage.getCoordinateController(), this);
-		replicateContainers = parameter.getConditionParameters().stream()
+		repContainers = parameter.getConditionParameters().stream()
 				.map(cp -> new ReplicateContainer(
 						parameter, filterContainer, sharedStorage, cp, method))
 				.collect(Collectors.toList());
-		replicateSizes = replicateContainers.stream()
+		repSizes = repContainers.stream()
 				.map(rc -> rc.getReplicateSize())
 				.collect(Collectors.toList());
 	}
@@ -75,7 +75,7 @@ public class ConditionContainer {
 	}
 
 	public List<ConditionParameter> getConditionParameter() {
-		return parameter.getConditionParameters();
+		return prm.getConditionParameters();
 	}
 	
 }

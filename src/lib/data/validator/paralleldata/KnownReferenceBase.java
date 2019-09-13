@@ -6,11 +6,14 @@ import lib.util.Base;
 public class KnownReferenceBase 
 implements ParallelDataValidator {
 
-	public KnownReferenceBase() {}
+	public KnownReferenceBase() {
+		// nothing needed
+	}
 	
 	@Override
 	public boolean isValid(final ParallelData parallelData) {
-		final Base refBase = parallelData.getCombinedPooledData().getReferenceBase();
+		final Base refBase = 
+				parallelData.getCombPooledData().getAutoRefBase();
 		return refBase != Base.N;
 	}
 

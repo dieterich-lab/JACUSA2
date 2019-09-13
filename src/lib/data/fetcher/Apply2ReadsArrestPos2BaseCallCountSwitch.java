@@ -5,16 +5,16 @@ import java.util.Set;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
 import lib.data.DataContainer;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.storage.lrtarrest.ArrestPos2BCC;
 
 public class Apply2ReadsArrestPos2BaseCallCountSwitch implements Fetcher<BaseCallCount> {
 
 	private final Set<RT_READS> apply2reads;
-	private final Fetcher<ArrestPosition2baseCallCount> fetcher;
+	private final Fetcher<ArrestPos2BCC> fetcher;
 	
 	public Apply2ReadsArrestPos2BaseCallCountSwitch(
 			final Set<RT_READS> apply2reads,
-			final Fetcher<ArrestPosition2baseCallCount> fetcher) {
+			final Fetcher<ArrestPos2BCC> fetcher) {
 
 		this.apply2reads = apply2reads;
 		this.fetcher = fetcher;
@@ -22,7 +22,7 @@ public class Apply2ReadsArrestPos2BaseCallCountSwitch implements Fetcher<BaseCal
 	
 	@Override
 	public BaseCallCount fetch(DataContainer container) {
-		final ArrestPosition2baseCallCount ap2bcc = fetcher.fetch(container);
+		final ArrestPos2BCC ap2bcc = fetcher.fetch(container);
 
 		if (apply2reads.size() == 2) {
 			return container.getBaseCallCount();
@@ -30,7 +30,7 @@ public class Apply2ReadsArrestPos2BaseCallCountSwitch implements Fetcher<BaseCal
 		
 		final int onePosition = container.getCoordinate().get1Position();
 		if (apply2reads.contains(RT_READS.ARREST)) {
-			return ap2bcc.getArrestBaseCallCount(onePosition);
+			return ap2bcc.getArrestBCC(onePosition);
 		} else if (apply2reads.contains(RT_READS.THROUGH)) {
 			return ap2bcc.getThroughBaseCallCount(onePosition);	
 		} else {

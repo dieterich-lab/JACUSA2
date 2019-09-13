@@ -15,22 +15,23 @@ import lib.io.copytmp.CopyTmpResult;
 import lib.util.AbstractTool;
 
 /**
- * This class enables to store temporary results from multithreaded runs and allows to restore order
- * of output by keeping track of the number of results per iteration of a thread. Each thread has its own 
- * instance of CopyTmpResult. This implementation uses ResultWriter to write temporary results to a 
- * temporary file. When JACUSA2 finishes computation, temporary results are read and written to final output.
+ * This class enables to store temporary results from multi-threaded runs and 
+ * allows to restore order of output by keeping track of the number of results 
+ * per iteration of a thread. Each thread has its own instance of CopyTmpResult. 
+ * This implementation uses ResultWriter to write temporary results to a 
+ * temporary file. When JACUSA2 finishes computation, temporary results are 
+ * read, merged, and written to final output.
  */
-public class FileCopyTmpResult 
-implements CopyTmpResult {
-
+public class FileCopyTmpResult implements CopyTmpResult {
+	
 	// this is a reference to main output
 	private final AbstractResultFileWriter resultFileWriter;
-
+	
 	// temporary result files are written by this object
 	private ResultWriter tmpResultWriter;
 	// temporary result files are read by this object
 	private BufferedReader tmpResultReader;
-
+	
 	// stores the number of stored result 
 	// per iteration/window for this thread 
 	private final List<Integer> iteration2storedResults;
@@ -49,8 +50,9 @@ implements CopyTmpResult {
 			tmpResultReader = new BufferedReader(new FileReader(new File(tmpResultFilename)));
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
-
+		
 		iteration2storedResults = new ArrayList<Integer>(2000);
 	}
 	
@@ -58,7 +60,7 @@ implements CopyTmpResult {
 	 * Helper function - create temporary file for a specific thread.
 	 * 
 	 * @param threadId 
-	 * @return
+	 * @return path of temporary file
 	 * @throws IOException
 	 */
 	private String createTmpResultFilename(final int threadId) throws IOException {
@@ -66,7 +68,7 @@ implements CopyTmpResult {
 		final String prefix = "jacusa2_" + threadId + "_";
 		// use OS to place temporary files
 		final File file = File.createTempFile(prefix, ".gz");
-
+		
 		if (! AbstractTool.getLogger().isDebug()) {
 			// don't delete tmp files when in debug mode
 			file.deleteOnExit();
@@ -83,12 +85,12 @@ implements CopyTmpResult {
 	public void closeTmpWriter() throws IOException {
 		tmpResultWriter.close();
 	}
-
+	
 	@Override
 	public void newIteration() {
 		iteration2storedResults.add(0);
 	}
-
+	
 	@Override
 	public void addResult(final Result result) throws Exception {
 		tmpResultWriter.writeResult(result);
@@ -109,7 +111,7 @@ implements CopyTmpResult {
 	public void copy(int iteration) throws IOException {
 		int copiedResults 		= 0;
 		final int storedResults = iteration2storedResults.get(iteration);
-
+		
 		// copy results from temporary file to main result file
 		String line;
 		while (storedResults > copiedResults && (line = tmpResultReader.readLine()) != null) {

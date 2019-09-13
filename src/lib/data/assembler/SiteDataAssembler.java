@@ -5,15 +5,14 @@ import java.util.Iterator;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataContainer.AbstractBuilderFactory;
 import lib.data.storage.container.CacheContainer;
+import lib.record.Record;
 import lib.util.AbstractTool;
 import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
-import lib.recordextended.SAMRecordExtended;
 
-public class SiteDataAssembler
-implements DataAssembler {
+public class SiteDataAssembler implements DataAssembler {
 
-	private final int replicateIndex;
+	private final int replicateI;
 	
 	private final AbstractBuilderFactory builderFactory;
 	private final ConditionParameter conditionParameter;
@@ -22,12 +21,12 @@ implements DataAssembler {
 	private CACHE_STATUS cacheStatus;
 
 	public SiteDataAssembler(
-			final int replicateIndex,
+			final int replicateI,
 			final AbstractBuilderFactory builderFactory, 
 			final ConditionParameter conditionParameter,
 			final CacheContainer cacheContainer) {
 		
-		this.replicateIndex 	= replicateIndex;
+		this.replicateI 	= replicateI;
 		
 		this.builderFactory 	= builderFactory;
 		this.conditionParameter	= conditionParameter;
@@ -39,32 +38,33 @@ implements DataAssembler {
 
 	@Override
 	public void buildCache(final Coordinate activeWindowCoordinate,
-			final Iterator<SAMRecordExtended> iterator) {
-
+			final Iterator<Record> iterator) {
+		
 		int records = 0;
-
+		
 		if (cacheStatus == CACHE_STATUS.CACHED) {
 			clearStorage();
 		}
 		getCacheContainer().clearSharedStorage();
 		
-		SAMRecordExtended recordExtended = null;
+		Record record = null;
 		try {
 			if (iterator.hasNext()) {
 				cacheContainer.preProcess();
 				while (iterator.hasNext()) {
-					recordExtended = iterator.next();
-					cacheContainer.process(recordExtended);
+					record = iterator.next();
+					cacheContainer.process(record);
 					records++;
 				}
 				cacheContainer.postProcess();
 			}
 		} catch (Exception e){
-			if (recordExtended != null) {
-				AbstractTool.getLogger().addError("Problem with read: " + recordExtended.getSAMRecord().getReadName() + 
-						" in " + conditionParameter.getRecordFilenames()[replicateIndex]);
+			if (record != null) {
+				AbstractTool.getLogger().addError("Problem with read: " + record.getSAMRecord().getReadName() + 
+						" in " + conditionParameter.getRecordFilenames()[replicateI]);
 			}
 			e.printStackTrace();
+			System.exit(1);
 		}
 		
 		cacheStatus = records > 0 ? CACHE_STATUS.CACHED : CACHE_STATUS.NOT_FOUND; 

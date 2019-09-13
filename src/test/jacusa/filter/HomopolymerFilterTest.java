@@ -128,7 +128,7 @@ class HomopolymerFilterTest extends AbstractFilterTest {
 				createTestInstance(overhang),
 				parallelData,
 				expected,
-				"conditionIndex: " + Integer.toString(overhang));
+				"condI: " + Integer.toString(overhang));
 	}
 	
 	Filter createTestInstance(final int overhang) {

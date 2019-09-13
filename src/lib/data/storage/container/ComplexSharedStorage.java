@@ -1,10 +1,13 @@
 package lib.data.storage.container;
 
 import htsjdk.samtools.AlignmentBlock;
+import lib.record.Record;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
-import lib.recordextended.SAMRecordExtended;
 
+/**
+ * TODO
+ */
 public class ComplexSharedStorage implements SharedStorage {
 
 	private final ReferenceProvider referenceProvider;
@@ -43,11 +46,11 @@ public class ComplexSharedStorage implements SharedStorage {
 	}
 
 	@Override
-	public void addRecordExtended(final SAMRecordExtended recordExtended) {
-		referenceProvider.addRecordExtended(recordExtended);
+	public void addrecord(final Record record) {
+		referenceProvider.addrecord(record);
 
 		AlignmentBlock previousBlock = null;
-		for (final AlignmentBlock currentBlock : recordExtended.getSAMRecord().getAlignmentBlocks()) {
+		for (final AlignmentBlock currentBlock : record.getSAMRecord().getAlignmentBlocks()) {
 			
 			final int currentRefPos 	= currentBlock.getReferenceStart();	
 			final int currentReadPos 	= currentBlock.getReadStart() - 1;

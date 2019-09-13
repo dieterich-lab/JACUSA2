@@ -5,6 +5,9 @@ import java.util.List;
 
 import lib.worker.AbstractWorker;
 
+/**
+ * TODO
+ */
 public class CopyTmpExecuter {
 
 	private final List<Integer> threadIds;

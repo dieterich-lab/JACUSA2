@@ -6,7 +6,8 @@ import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
 
 /**
- * This class implements a filter that restricts the number of observed alleles at a site.
+ * This class implements a filter that restricts the number of observed alleles 
+ * at a site.
  */
 public class MaxAlleleFilter extends AbstractFilter {
 
@@ -15,11 +16,11 @@ public class MaxAlleleFilter extends AbstractFilter {
 	private final Fetcher<BaseCallCount> bccFetcher;
 	
 	public MaxAlleleFilter(
-			final char c, 
+			final char id, 
 			final int maxAlleles, 
 			final Fetcher<BaseCallCount> bccFetcher) {
 		
-		super(c);
+		super(id);
 		this.maxAlleles = maxAlleles;
 		this.bccFetcher = bccFetcher;
 	}
@@ -29,8 +30,10 @@ public class MaxAlleleFilter extends AbstractFilter {
 	 */
 	@Override
 	public boolean filter(final ParallelData parallelData) {
-		final DataContainer container 	= parallelData.getCombinedPooledData();
-		final int alleles 				= bccFetcher.fetch(container).getAlleles().size();
+		final DataContainer container 	= parallelData.getCombPooledData();
+		final int alleles 				= 
+				bccFetcher.fetch(container).getAlleles().size();
+
 		return alleles > maxAlleles;
 	}
 

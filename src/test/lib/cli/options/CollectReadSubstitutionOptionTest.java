@@ -10,8 +10,8 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import htsjdk.samtools.util.StringUtil;
 import lib.cli.options.AbstractACOption;
-import lib.cli.options.CollectReadSubstituionOption;
-import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.StratifyByReadSubstituionOption;
+import lib.cli.options.filter.has.BaseSub;
 import lib.util.Base;
 
 /**
@@ -19,22 +19,22 @@ import lib.util.Base;
  */
 class CollectReadSubstitutionOptionTest 
 extends AbstractGeneralParameterProvider
-implements ACOptionTest<SortedSet<BaseSubstitution>> {
+implements ACOptionTest<SortedSet<BaseSub>> {
 
 	@Override
 	public Stream<Arguments> testProcess() {
 		return Stream.of(
-				createArguments(BaseSubstitution.A2G),
-				createArguments(BaseSubstitution.A2G, BaseSubstitution.T2C),
+				createArguments(BaseSub.A2G),
+				createArguments(BaseSub.A2G, BaseSub.T2C),
 				createArguments(
-						BaseSubstitution.A2G, BaseSubstitution.G2A, 
-						BaseSubstitution.C2T, BaseSubstitution.T2C) );
+						BaseSub.A2G, BaseSub.G2A, 
+						BaseSub.C2T, BaseSub.T2C) );
 	}
 
-	Arguments createArguments(final BaseSubstitution... baseSubs) {
-		final SortedSet<BaseSubstitution> expected = new TreeSet<>(Arrays.asList(baseSubs));
+	Arguments createArguments(final BaseSub... baseSubs) {
+		final SortedSet<BaseSub> expected = new TreeSet<>(Arrays.asList(baseSubs));
 		final String value = StringUtil.join(
-				Character.toString(CollectReadSubstituionOption.SEP), 
+				Character.toString(StratifyByReadSubstituionOption.SEP), 
 				Arrays.asList(baseSubs) );
 		return Arguments.of(
 				createOptLine(value),
@@ -45,7 +45,7 @@ implements ACOptionTest<SortedSet<BaseSubstitution>> {
 	void testProcessFails() throws Exception {
 		// test A2A -> no substitution
 		for (Base base : Base.validValues()) {
-			String value = base.toString() + BaseSubstitution.SEP + base.toString();
+			String value = base.toString() + BaseSub.SEP + base.toString();
 			myAssertOptThrows(IllegalArgumentException.class, value);
 		}
 		// wrong
@@ -55,12 +55,12 @@ implements ACOptionTest<SortedSet<BaseSubstitution>> {
 	
 	@Override
 	public AbstractACOption createTestInstance() {
-		return new CollectReadSubstituionOption(getGeneralParamter());
+		return new StratifyByReadSubstituionOption(getGeneralParamter());
 	}
 
 	@Override
-	public SortedSet<BaseSubstitution> getActualValue() {
-		return getGeneralParamter().getReadSubstitutions();
+	public SortedSet<BaseSub> getActualValue() {
+		return getGeneralParamter().getReadSubs();
 	}
 	
 }

@@ -38,14 +38,6 @@ implements CoordinateAdvancer {
 
 	@Override
 	public void advance() {
-		/*
-		final int refPos = getCurrentCoordinate().getPosition();
-		final int winPos = coordinateController.convert2windowPosition(refPos);
-		// jump on window init
-		if (winPos == 0) {
-			jumpingAdvance();
-		} else
-		*/
 		if (missCounter < MAX_MISS_COUNT) { // try to do a "simple" advance
 			simpleAdvance();
 		} else { // or try to jump to next position
@@ -62,7 +54,7 @@ implements CoordinateAdvancer {
 	private void jumpingAdvance() {
 		final int refPos = getCurrentCoordinate().get1Position();
 		final int winPos = coordinateController.getCoordinateTranslator()
-				.reference2windowPosition(refPos);
+				.ref2winPos(refPos);
 		
 		if (winPos < 0) {
 			return;
@@ -70,8 +62,8 @@ implements CoordinateAdvancer {
 
 		int newWindowPosition = winPos;
 
-		for (int conditionIndex = 0; conditionIndex < conditionContainer.getConditionSize(); conditionIndex++) {
-			final int tmpNextPosition = getNextWindowPosition(winPos, conditionContainer.getReplicatContainer(conditionIndex));
+		for (int condI = 0; condI < conditionContainer.getConditionSize(); condI++) {
+			final int tmpNextPosition = getNextWindowPosition(winPos, conditionContainer.getReplicatContainer(condI));
 			if (tmpNextPosition == -1) {
 				// advance to the end
 				getCurrentCoordinate().setMaxPosition();
@@ -82,7 +74,7 @@ implements CoordinateAdvancer {
 		
 		if (newWindowPosition > winPos) {
 			getCurrentCoordinate().set1Position(coordinateController.getCoordinateTranslator()
-					.window2referencePosition(newWindowPosition));
+					.win2refPos(newWindowPosition));
 		} else {
 			getCurrentCoordinate().setMaxPosition();
 		}

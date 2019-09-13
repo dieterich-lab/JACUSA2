@@ -31,7 +31,7 @@ public class ExcludeSiteFilterFactory
 extends AbstractFilterFactory 
 implements HasFileName, HasFileType {
 
-	private final static char FILTER = 'E';
+	private static final char FILTER = 'E';
 	
 	private String fileName;
 	private FileType fileType;
@@ -79,7 +79,7 @@ implements HasFileName, HasFileType {
 			CoordinateController coordinateController,
 			ConditionContainer conditionContainer) {
 		
-		return new ExcludeSiteFilter(getC(), fileName, getCodec());
+		return new ExcludeSiteFilter(getID(), fileName, getCodec());
 	}
 	
 	@Override

@@ -4,9 +4,6 @@ import lib.cli.parameter.GeneralParameter;
 
 /**
  * TODO add comments.
- *
- * @param 
- * @param <R>
  */
 public abstract class AbstractResultFormat 
 implements ResultFormat{
@@ -29,7 +26,7 @@ implements ResultFormat{
 	}
 
 	@Override
-	public final char getC() {
+	public final char getID() {
 		return c;
 	}
 

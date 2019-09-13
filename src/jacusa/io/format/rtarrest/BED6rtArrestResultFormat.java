@@ -3,12 +3,12 @@ package jacusa.io.format.rtarrest;
 import java.util.ArrayList;
 import java.util.List;
 
-import jacusa.io.format.RTarrestBaseSubstitutionDataAdder;
+import jacusa.io.format.RTarrestBaseSubDataAdder;
 import jacusa.io.format.StratifiedDataAdder;
-import lib.cli.options.filter.has.HasReadSubstitution.BaseSubstitution;
+import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.data.count.basecall.DefaultBCC;
 import lib.io.AbstractResultFileFormat;
 import lib.io.BEDlikeResultFileWriter;
 import lib.io.BEDlikeResultFileWriter.BEDlikeResultFileWriterBuilder;
@@ -18,8 +18,11 @@ import lib.io.format.bed.DataAdder;
 import lib.io.format.bed.DefaultBED6adder;
 import lib.io.format.bed.DefaultInfoAdder;
 
-public class BED6rtArrestResultFormat 
-extends AbstractResultFileFormat {
+/**
+ * This class implements an extended BED6 format to represent 
+ * variants and read arrest events by "rt-arrest" method.
+ */
+public class BED6rtArrestResultFormat extends AbstractResultFileFormat {
 
 	public static final char CHAR = 'A';
 	
@@ -42,17 +45,17 @@ extends AbstractResultFileFormat {
 	@Override
 	public BEDlikeResultFileWriter createWriter(final String outputFileName) {
 		final BaseCallCount.AbstractParser bccParser = 
-				new DefaultBaseCallCount.Parser(InputOutput.VALUE_SEP, InputOutput.EMPTY_FIELD);
+				new DefaultBCC.Parser(InputOutput.VALUE_SEP, InputOutput.EMPTY_FIELD);
 		
 		BED6adder bed6adder = new DefaultBED6adder(getMethodName(), "pvalue");
 		DataAdder dataAdder = new RTarrestDataAdder(bccParser);
 		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
 		
-		if (getParameter().getReadSubstitutions().size() > 0) {
-			final List<BaseSubstitution> baseSubs = new ArrayList<>(getParameter().getReadSubstitutions());
+		if (! getParameter().getReadSubs().isEmpty()) {
+			final List<BaseSub> baseSubs = new ArrayList<>(getParameter().getReadSubs());
 			dataAdder = new StratifiedDataAdder(
 					dataAdder, 
-					new RTarrestBaseSubstitutionDataAdder(bccParser, baseSubs, dataAdder));
+					new RTarrestBaseSubDataAdder(bccParser, baseSubs, dataAdder));
 		}
 		
 		builder.addBED6Adder(bed6adder);

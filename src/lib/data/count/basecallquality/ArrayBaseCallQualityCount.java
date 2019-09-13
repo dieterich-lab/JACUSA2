@@ -46,7 +46,7 @@ public class ArrayBaseCallQualityCount implements BaseCallQualityCount {
 
 	@Override
 	public Set<Byte> getBaseCallQuality(final Base base) {
-		final Set<Byte> ret = new TreeSet<Byte>();
+		final Set<Byte> ret = new TreeSet<>();
 		for (int baseQual = 0; baseQual < Phred2Prob.MAX_Q; baseQual++) {
 			if (baseCallQuals[base.getIndex()][baseQual] > 0) {
 				ret.add((byte)baseQual);
@@ -131,11 +131,11 @@ public class ArrayBaseCallQualityCount implements BaseCallQualityCount {
 	public ArrayBaseCallQualityCount invert() {
 		for (final Base base : new Base[] {Base.A, Base.C}) {
 			final Base complement = base.getComplement();
-			if (getBaseCallQuality(base).size() == 0 && getBaseCallQuality(complement).size() == 0) {
+			if (getBaseCallQuality(base).isEmpty() && getBaseCallQuality(complement).isEmpty()) {
 				continue;
 			}
 			final int[] tmpCount 					= baseCallQuals[base.getIndex()];
-			baseCallQuals[base.getIndex()]		= baseCallQuals[complement.getIndex()];
+			baseCallQuals[base.getIndex()]			= baseCallQuals[complement.getIndex()];
 			baseCallQuals[complement.getIndex()]	= tmpCount;
 		}
 		return this;
@@ -143,9 +143,9 @@ public class ArrayBaseCallQualityCount implements BaseCallQualityCount {
 
 	@Override
 	public Set<Base> getAlleles() {
-		final Set<Base> alleles = new HashSet<Base>();
+		final Set<Base> alleles = new HashSet<>();
 		for (final Base base : Base.validValues()) {
-			if (getBaseCallQuality(base).size() > 0) {
+			if (! getBaseCallQuality(base).isEmpty()) {
 				alleles.add(base);
 			}
 		}
@@ -159,7 +159,7 @@ public class ArrayBaseCallQualityCount implements BaseCallQualityCount {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof ArrayBaseCallQualityCount)) {
+		if (! (obj instanceof ArrayBaseCallQualityCount)) {
 			return false;
 		}
 		if (obj == this) {
@@ -172,7 +172,7 @@ public class ArrayBaseCallQualityCount implements BaseCallQualityCount {
 	
 	@Override
 	public int hashCode() {
-		return baseCallQuals.hashCode();
+		return Arrays.hashCode(baseCallQuals);
 	}
 	
 	/*

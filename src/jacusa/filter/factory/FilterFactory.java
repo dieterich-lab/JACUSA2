@@ -23,8 +23,8 @@ import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
 /**
- * Interface defines methods for a FilterFactory that allows to configure filter options via 
- * processCLI and create new instance of filters.
+ * Interface defines methods for a FilterFactory that allows to configure filter 
+ * options via processCLI and create new instance of filters.
  */
 public interface FilterFactory {
 
@@ -33,7 +33,7 @@ public interface FilterFactory {
 	 * 
 	 * @return unique char id 
 	 */
-	char getC();
+	char getID();
 
 	/**
 	 * Gets the description for this filter.
@@ -43,10 +43,9 @@ public interface FilterFactory {
 	String getDesc();
 
 	/**
-	 * TODO add comments.
+	 * Process CLI options.
 	 * 
-	 * @param line
-	 * @throws Exception 
+	 * @param line to be parsed
 	 */
 	default void processCLI(String line) throws Exception {
 		processCLI(CLIUtil.processCLI(line, getOptions()));
@@ -55,54 +54,75 @@ public interface FilterFactory {
 	default  Set<Option> processCLI(final CommandLine cmd) throws Exception {
 		final Set<Option> parsed = new HashSet<>();
 
-		final Map<String, AbstractACOption> longOpt2acOption = getACOption().stream()
-				.collect(Collectors.toMap(AbstractACOption::getLongOpt, Function.identity()));
+		final Map<String, AbstractACOption> longOpt2acOption = 
+				getACOption().stream()
+					.collect(Collectors.toMap(
+							AbstractACOption::getLongOpt, Function.identity()));
 		
 		for (final Option option : cmd.getOptions()) {
 			final String longOpt = option.getLongOpt();
 			if (longOpt2acOption.containsKey(longOpt)) {
 				final AbstractACOption acOption = longOpt2acOption.get(longOpt);
 				acOption.process(cmd);
+				parsed.add(option);
 			}
 		}
+		
 		return parsed;
 	}
-	
 	
 	default Options getOptions() {
 		final Options options = new Options();
 		for (final AbstractACOption acOption : getACOption()) {
 			options.addOption(acOption.getOption(false));
 		}
+		
 		return options;
 	}
-	
+
+	/**
+	 * Returns available list of action options.
+	 * 
+	 * @return List of AbstractACOptions.
+	 */
 	List<AbstractACOption> getACOption();
 
 	void addFilteredData(StringBuilder sb, DataContainer filteredData);
 
 	/**
-	 * TODO add comments.
+	 * Creates a Cache for this filter - may be null if filter does need a 
+	 * cache to store data.
 	 * 
-	 * @param conditionParameter
-	 * @param baseCallConfig
-	 * @param coordinateController
-	 * @return
+	 * @param conditionParameter to be used for the cache
+	 * @param baseCallConfig to be used for the cache
+	 * @param coordinateController to be used for the cache
+	 * @return Cache for this filter
 	 */
 	Cache createFilterCache(ConditionParameter conditionParameter, SharedStorage sharedStorage);
 
+	/**
+	 * Registers filter in a builder.
+	 * @param builder to register the filter at
+	 */
 	void initDataContainer(AbstractBuilder builder);
 
+	/**
+	 * Creates an instance of the filter.
+	 * 
+	 * @param coordinateController to be used within filter
+	 * @param conditionContainer to be used within filter
+	 * @return a filter instance 
+	 */
 	abstract Filter createFilter(
 			CoordinateController coordinateController, 
 			ConditionContainer conditionContainer);
 
 	
 	/**
-	 * TODO add comments.
+	 * Registers filter with given coordinateController and conditionContainer
 	 * 
-	 * @param coordinateController
-	 * @param conditionContainer
+	 * @param coordinateController to be used within filter
+	 * @param conditionContainer to be used within filter
 	 */
 	default void registerFilter(
 			final CoordinateController coordinateController, 

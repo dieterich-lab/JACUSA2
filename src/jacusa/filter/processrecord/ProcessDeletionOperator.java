@@ -2,8 +2,8 @@ package jacusa.filter.processrecord;
 
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.recordextended.SAMRecordExtended;
-import lib.util.position.CigarElementExtendedPositionProviderBuilder;
+import lib.record.Record;
+import lib.util.position.CigarDetailPosProviderBuilder;
 
 /**
  * This class will identify all deletions within a read and mark/count +/- distance up- and downstream 
@@ -12,7 +12,7 @@ import lib.util.position.CigarElementExtendedPositionProviderBuilder;
  * 
  * Tested in test.jacusa.filter.processrecord.ProcessDeletionOperator
  */
-public class ProcessDeletionOperator extends AbstractFilterRecordExtendedProcessor {
+public class ProcessDeletionOperator extends AbstractFilterRecordProcessor {
 
 	public ProcessDeletionOperator(
 			final SharedStorage sharedStorage,
@@ -23,17 +23,17 @@ public class ProcessDeletionOperator extends AbstractFilterRecordExtendedProcess
 	}
 	
 	@Override
-	public void process(SAMRecordExtended recordExtended) {
+	public void process(Record record) {
 		// iterate over cigarElement indices of deletions
-		for (final int cigarElementExtendedIndex : recordExtended.getDeletion()) {
-			processDeletionOperator(cigarElementExtendedIndex, recordExtended);
+		for (final int cigarDetailI : record.getDeletion()) {
+			processDeletionOperator(cigarDetailI, record);
 		}	
 	}
-
-	private void processDeletionOperator(final int cigarElementExtendedIndex, final SAMRecordExtended recordExtended) {
-		getPositionProcessor().process(
-				new CigarElementExtendedPositionProviderBuilder(
-						cigarElementExtendedIndex, getDistance(), recordExtended, getTranslator())
+	
+	private void processDeletionOperator(final int cigarDetailI, final Record record) {
+		getPosProcessor().process(
+				new CigarDetailPosProviderBuilder(
+						cigarDetailI, getDistance(), record, getTranslator())
 				.build());
 	}
 

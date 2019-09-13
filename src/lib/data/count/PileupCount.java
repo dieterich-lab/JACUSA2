@@ -3,7 +3,7 @@ package lib.data.count;
 import lib.data.Data;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.count.basecall.UnmodifiableBaseCallCount;
+import lib.data.count.basecall.UnmodifiableBCC;
 import lib.data.count.basecallquality.BaseCallQualityCount;
 import lib.util.Base;
 
@@ -29,7 +29,7 @@ public class PileupCount implements Data<PileupCount> {
 		return new PileupCount(this);
 	}
 	
-	public BaseCallCount getBaseCallCount() {
+	public BaseCallCount getBCC() {
 		final BaseCallCount bcc = BaseCallCount.create();
 		for (final Base base : baseCallQualCount.getAlleles()) {
 			int count = 0;
@@ -38,21 +38,15 @@ public class PileupCount implements Data<PileupCount> {
 			}
 			bcc.set(base, count);
 		}
-		return new UnmodifiableBaseCallCount(bcc);
+		return new UnmodifiableBCC(bcc);
 	}
 	
 	public BaseCallQualityCount getBaseCallQualityCount() {
 		return baseCallQualCount;
 	}
-
-	/*
-	public void add(final Base base, final byte baseQual) {
-		baseCallQualCount.increment(base, baseQual);
-	}
-	*/
-		
+	
 	public void merge(final PileupCount pileupCount) {
-		for (final Base base : pileupCount.getBaseCallCount().getAlleles()) {
+		for (final Base base : pileupCount.getBCC().getAlleles()) {
 			add(base, pileupCount);
 		}
 	}
@@ -74,14 +68,14 @@ public class PileupCount implements Data<PileupCount> {
 	}
 
 	public void substract(final PileupCount pileupCount) {
-		for (final Base base : pileupCount.getBaseCallCount().getAlleles()) {
+		for (final Base base : pileupCount.getBCC().getAlleles()) {
 			substract(base, pileupCount);
 		}
 	}
 
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(getBaseCallCount().toString());
+		sb.append(getBCC().toString());
 		sb.append('\n');
 		sb.append(baseCallQualCount.toString());
 		sb.append('\n');
@@ -90,7 +84,7 @@ public class PileupCount implements Data<PileupCount> {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || ! (obj instanceof PileupCount)) {
+		if (! (obj instanceof PileupCount)) {
 			return false;
 		}
 		if (obj == this) {
@@ -98,7 +92,7 @@ public class PileupCount implements Data<PileupCount> {
 		}
 
 		final PileupCount pileupCount = (PileupCount)obj;
-		return baseCallQualCount.equals(pileupCount.baseCallQualCount);
+		return baseCallQualCount.specificEquals(pileupCount.baseCallQualCount);
 	}
 
 	@Override
@@ -108,36 +102,5 @@ public class PileupCount implements Data<PileupCount> {
 		return hash;
 	}
 	
-	/*
-	public static class Parser implements lib.util.Parser<PileupCount> {
-
-		private final BaseCallQualityCount.AbstractParser bcqcParser;
-		
-		public Parser(final BaseCallQualityCount.AbstractParser bcqcParser) {
-			this.bcqcParser	= bcqcParser;
-		}
-
-		public String wrap(final PileupCount pileupCount) {
-			final StringBuilder sb = new StringBuilder();
-			if (pileupCount.getBaseCallCount().getCoverage() == 0) {
-				sb.append(bcqcParser.getEmpty());	
-			} else {
-				sb.append(bcqcParser.wrap(pileupCount.getBaseCallQualityCount()));
-			}
-			return sb.toString();
-		}
-
-		@Override
-		public PileupCount parse(String s) {
-			if (s.equals(Character.toString(bcqcParser.getEmpty()))) {
-				return new PileupCount();	
-			}
-			
-			final BaseCallQualityCount bcqc = bcqcParser.parse(s);
-			return new PileupCount(bcqc);
-		}
-
-	}
-	*/
 	
 }

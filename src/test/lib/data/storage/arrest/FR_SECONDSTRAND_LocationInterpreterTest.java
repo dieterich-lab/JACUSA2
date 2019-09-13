@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.data.storage.arrest.FR_SECONDSTRAND_LocationInterpreter;
+import lib.data.storage.arrest.ForRevSecondStrandlocInterpreter;
 import lib.data.storage.arrest.LocationInterpreter;
 import lib.util.LibraryType;
 
@@ -132,7 +132,7 @@ class FR_SECONDSTRAND_LocationInterpreterTest implements LocationInterpreterTest
 	
 	@Override
 	public LocationInterpreter createTestInstance() {
-		return new FR_SECONDSTRAND_LocationInterpreter();
+		return new ForRevSecondStrandlocInterpreter();
 	}
 
 }

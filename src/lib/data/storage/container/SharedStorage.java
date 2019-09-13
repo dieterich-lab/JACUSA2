@@ -1,14 +1,17 @@
 package lib.data.storage.container;
 
+import lib.record.Record;
 import lib.util.coordinate.CoordinateController;
-import lib.recordextended.SAMRecordExtended;
 
+/**
+ * TODO
+ */
 public interface SharedStorage {
 
 	int getNext(int winPos);
 	ReferenceProvider getReferenceProvider();
 	
-	void addRecordExtended(SAMRecordExtended recordExtended);
+	void addrecord(Record record);
 	void clear();
 
 	CoordinateController getCoordinateController();

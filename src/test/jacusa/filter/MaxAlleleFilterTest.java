@@ -10,7 +10,7 @@ import jacusa.filter.MaxAlleleFilter;
 import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.data.count.basecall.DefaultBCC;
 import lib.data.fetcher.DataTypeFetcher;
 import lib.data.result.Result;
 import lib.util.LibraryType;
@@ -28,7 +28,7 @@ class MaxAlleleFilterTest extends AbstractFilterTest {
 	private int testNumber;
 	
 	public MaxAlleleFilterTest() {
-		bccParser 	= new DefaultBaseCallCount.Parser(',', '*');
+		bccParser 	= new DefaultBCC.Parser(',', '*');
 		bccFetcher 	= new DataTypeFetcher<>(DataType.retrieve("Observed", BaseCallCount.class));
 		
 		testNumber 	= 0;

@@ -10,11 +10,13 @@ import java.util.TreeSet;
 import lib.data.ParallelData;
 import lib.util.Info;
 
-public class MultiStatResult 
-implements Result {
-
+/**
+ * TODO
+ */
+public class MultiStatResult implements Result {
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	private final SortedMap<Integer, Double> value2stat;
 	private final ParallelData parallelData;
 	
@@ -25,8 +27,8 @@ implements Result {
 	public MultiStatResult(final ParallelData parallelData) {
 		value2stat 			= new TreeMap<>();
 		markedFiltered 		= false;
-		filterInfo			= new HashMap<Integer, Info>();
-		resultInfo			= new HashMap<Integer, Info>();
+		filterInfo			= new HashMap<>();
+		resultInfo			= new HashMap<>();
 		this.parallelData	= parallelData;
 	}
 	
@@ -73,27 +75,27 @@ implements Result {
 	public double getStat(final int valueIndex) {
 		return value2stat.get(valueIndex);
 	}
-
+	
 	@Override
 	public ParallelData getParellelData() {
 		return parallelData;
 	}
-
+	
 	@Override
 	public Info getResultInfo(final int valueIndex) {
 		return resultInfo.get(valueIndex);
 	}
-
+	
 	@Override
 	public Info getFilterInfo(final int valueIndex) {
 		return filterInfo.get(valueIndex);
 	}
-
+	
 	@Override
 	public void setFiltered(boolean marked) {
 		markedFiltered = marked;
 	}
-
+	
 	@Override
 	public SortedSet<Integer> getValuesIndex() {
 		return new TreeSet<>(value2stat.keySet());
@@ -103,7 +105,7 @@ implements Result {
 	public boolean isFiltered() {
 		return markedFiltered;
 	}
-
+	
 	@Override
 	public int getValueSize() {
 		return value2stat.size();

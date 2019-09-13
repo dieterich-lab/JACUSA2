@@ -4,21 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.util.coordinate.Coordinate;
-import lib.recordextended.SAMRecordExtended;
 import lib.data.DataContainer;
 import lib.data.storage.Storage;
-import lib.data.storage.processor.RecordExtendedPrePostProcessor;
+import lib.data.storage.processor.GeneralRecordProcessor;
+import lib.record.Record;
 
-public abstract class AbstractStrandedCacheContainer 
+/**
+ * TODO
+ */
+abstract class AbstractStrandedCacheContainer 
 implements CacheContainer {
 
 	private final CacheContainer forwardContainer; 
 	private final CacheContainer reverseContainer;
 
-	private final List<RecordExtendedPrePostProcessor> recordProcessors;
+	private final List<GeneralRecordProcessor> recordProcessors;
 	private final List<Storage> storages;
 	
-	public AbstractStrandedCacheContainer(
+	AbstractStrandedCacheContainer(
 			final CacheContainer forwardContainer, 
 			final CacheContainer reverseContainer) {
 
@@ -55,7 +58,7 @@ implements CacheContainer {
 	}
 	
 	@Override
-	public List<RecordExtendedPrePostProcessor> getRecordProcessors() {
+	public List<GeneralRecordProcessor> getRecordProcessors() {
 		return recordProcessors;
 	}
 
@@ -76,8 +79,8 @@ implements CacheContainer {
 	}
 	
 	@Override
-	public void process(final SAMRecordExtended recordExtended) {
-		getCacheContainer(recordExtended).process(recordExtended);
+	public void process(final Record record) {
+		getCacheContainer(record).process(record);
 	}
 	
 	@Override
@@ -102,7 +105,7 @@ implements CacheContainer {
 		}
 	}
 	
-	protected abstract CacheContainer getCacheContainer(final SAMRecordExtended recordExtended);
+	protected abstract CacheContainer getCacheContainer(final Record record);
 	
 	public CacheContainer getForwardContainer() {
 		return forwardContainer;

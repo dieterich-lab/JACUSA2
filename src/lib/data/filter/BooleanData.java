@@ -18,14 +18,7 @@ public class BooleanData implements Data<BooleanData> {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
-
-		if (!(obj instanceof BooleanData)) {
+		if (! (obj instanceof BooleanData)) {
 			return false;
 		}
 		BooleanData bw = (BooleanData)obj;

@@ -20,7 +20,7 @@ public class HomopolymerLengthOption extends AbstractACOption {
 	 */
 	@Override
 	public void process(CommandLine line) throws Exception {
-		final int length = Integer.valueOf(line.getOptionValue(getLongOpt()));
+		final int length = Integer.parseInt(line.getOptionValue(getLongOpt()));
 		if (length <= 0) {
 			throw new IllegalArgumentException("Invalid argument for " + getLongOpt() + ": " + length);
 		}

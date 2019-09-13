@@ -1,6 +1,5 @@
 package lib.cli.options;
 
-import java.io.File;
 import java.nio.file.FileAlreadyExistsException;
 
 import lib.cli.parameter.GeneralParameter;
@@ -13,7 +12,7 @@ import org.apache.commons.cli.Option;
  */
 public class ResultFileOption extends AbstractACOption {
 
-	final private GeneralParameter parameter;
+	private final GeneralParameter parameter;
 	
 	public ResultFileOption(GeneralParameter parameter) {
 		super("r", "result-file");
@@ -35,12 +34,8 @@ public class ResultFileOption extends AbstractACOption {
 	 */
 	@Override
 	public void process(final CommandLine line) throws FileAlreadyExistsException {
-    	final String resultFilename = line.getOptionValue(getOpt());
-//    	final File file = new File(resultFilename);
-//	 	if (file.exists()) {
-//	 		throw new FileAlreadyExistsException(resultFilename);
-//	 	}
-    	parameter.setResultFilename(resultFilename);
+		final String resultFilename = line.getOptionValue(getOpt());
+		parameter.setResultFilename(resultFilename);
 	}
 
 }

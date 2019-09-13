@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import jacusa.filter.factory.basecall.AbstractBaseCallCountFilterFactory;
+import jacusa.filter.factory.basecall.AbstractBCCfilterFactory;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.filter.FilterMinRatioOption;
 import lib.cli.options.filter.has.HasFilterMinRatio;
@@ -24,7 +24,7 @@ implements ACOptionTest<Double> {
 	@BeforeEach
 	void beforeEach() {
 		hasFilterMinRatio = 
-				new TestHasFilterMinRatio(AbstractBaseCallCountFilterFactory.DEFAULT_FILTER_MINRATIO);
+				new TestHasFilterMinRatio(AbstractBCCfilterFactory.DEFAULT_FILTER_MINRATIO);
 	}
 	
 	@Test

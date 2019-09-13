@@ -93,7 +93,7 @@ public class FileBasedContainedCoordinate implements ContainedCoordinate {
 			final FeatureCodec<? extends Feature, LineIterator> codec) {
 
 		// container for results
-		final Map<String, List<Coordinate>> contig2coordinate = new HashMap<String, List<Coordinate>>();
+		final Map<String, List<Coordinate>> tmpContig2coordinate = new HashMap<>();
 
 		// see documentation of codec in htsjdk
 		LineIterator lit = null;
@@ -103,10 +103,11 @@ public class FileBasedContainedCoordinate implements ContainedCoordinate {
 			lit 					= new LineIteratorImpl(lr);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			System.exit(-1);
 		}
 		
 		Coordinate currentCoordinate = null;
-		List<Coordinate> coordinates = new ArrayList<Coordinate>();
+		List<Coordinate> coordinates = new ArrayList<>();
 		while (lit.hasNext()) {
 			try {
 				final Feature f 		= codec.decode(lit);
@@ -119,11 +120,11 @@ public class FileBasedContainedCoordinate implements ContainedCoordinate {
 				if (currentCoordinate == null) { // init
 					currentCoordinate = newCoordinate;
 				} else if (! currentCoordinate.getContig().equals(newContig)) { // new contig
-					if (coordinates.size() > 0) { // store list for old/current contig 
-						contig2coordinate.put(currentCoordinate.getContig(), coordinates);
+					if (! coordinates.isEmpty()) { // store list for old/current contig 
+						tmpContig2coordinate.put(currentCoordinate.getContig(), coordinates);
 					}
 					// reset
-					coordinates = new ArrayList<Coordinate>();
+					coordinates = new ArrayList<>();
 					currentCoordinate = newCoordinate;
 				} else if (currentCoordinate.getEnd() == newCoordinate.getStart()){ // extend existing
 					// extend current coordinates
@@ -134,6 +135,7 @@ public class FileBasedContainedCoordinate implements ContainedCoordinate {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+				System.exit(-1);
 			}
 		}
 
@@ -143,11 +145,11 @@ public class FileBasedContainedCoordinate implements ContainedCoordinate {
 		}
 
 		if (! coordinates.isEmpty()) {
-			contig2coordinate.put(currentCoordinate.getContig(), coordinates);
+			tmpContig2coordinate.put(currentCoordinate.getContig(), coordinates);
 		}
 
 		codec.close(lit);
-		return contig2coordinate;
+		return tmpContig2coordinate;
 	}
 	
 }

@@ -7,10 +7,10 @@ import org.apache.commons.cli.Option;
 
 public class ThreadWindowSizeOption extends AbstractACOption {
 
-	public final static int NO_WINDOWS = -1;
-	public final static int MIN_WINDOWS = 100;
+	public static final int NO_WINDOWS = -1;
+	public static final int MIN_WINDOWS = 100;
 	
-	final private GeneralParameter parameter; 
+	private final GeneralParameter parameter; 
 	
 	public ThreadWindowSizeOption(GeneralParameter parameter) {
 		super("W", "thread-window-size");

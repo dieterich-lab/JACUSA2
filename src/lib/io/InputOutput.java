@@ -32,9 +32,16 @@ public final class InputOutput {
 		new AssertionError();
 	}
 
+	/**
+	 * TODO
+	 * @param sb
+	 * @param str
+	 * @param prefix
+	 * @param width
+	 */
 	public static void formatStr(final StringBuilder sb, final String str, final String prefix, final int width) {
 		// container for output lines - should be < width
-		final List<String> outputLines = new ArrayList<String>();
+		final List<String> outputLines = new ArrayList<>();
 		for (final String line : str.split("\n")) {
 			// builder for one output line - should be < width 
 			final StringBuilder lb = new StringBuilder();

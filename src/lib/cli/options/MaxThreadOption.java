@@ -7,7 +7,7 @@ import org.apache.commons.cli.Option;
 
 public class MaxThreadOption extends AbstractACOption {
 
-	final private GeneralParameter parameter;
+	private final GeneralParameter parameter;
 	
 	public MaxThreadOption(GeneralParameter parameters) {
 		super("p", "threads");

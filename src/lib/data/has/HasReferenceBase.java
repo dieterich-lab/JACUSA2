@@ -3,12 +3,11 @@ package lib.data.has;
 import lib.util.Base;
 
 /**
- * 
- * 
- *
+ * TODO
  */
 public interface HasReferenceBase {
 
-	Base getReferenceBase();
+	Base getUnstrandedRefBase();
+	Base getAutoRefBase();
 
 }

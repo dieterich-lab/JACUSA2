@@ -10,7 +10,7 @@ import lib.io.format.bed.DataAdder;
 
 /**
  * This class allows to add additional filter related data to the output. 
- * All chosen filters will be represented by their unique char.
+ * All chosen filters will be represented by their unique id.
  */
 public class FilterDebugAdder implements DataAdder {
 
@@ -27,22 +27,22 @@ public class FilterDebugAdder implements DataAdder {
 	}
 
 	@Override
-	public void addHeader(StringBuilder sb, int conditionIndex, int replicateIndex) {
-		dataAdder.addHeader(sb, conditionIndex, replicateIndex);
+	public void addHeader(StringBuilder sb, int condI, int replicateI) {
+		dataAdder.addHeader(sb, condI, replicateI);
 
 		for (final FilterFactory filterFactory : filterFactories) {
 			sb.append(InputOutput.FIELD_SEP);
-			sb.append(filterFactory.getC());
-			sb.append(conditionIndex + 1);
-			sb.append(replicateIndex + 1);
+			sb.append(filterFactory.getID());
+			sb.append(condI + 1);
+			sb.append(replicateI + 1);
 		}
 	}
 
 	@Override
-	public void addData(StringBuilder sb, int valueIndex, int conditionIndex, int replicateIndex, Result result) {
-		dataAdder.addData(sb, valueIndex, conditionIndex, replicateIndex, result);
+	public void addData(StringBuilder sb, int valueIndex, int condI, int replicateI, Result result) {
+		dataAdder.addData(sb, valueIndex, condI, replicateI, result);
 		
-		final DataContainer container = result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
+		final DataContainer container = result.getParellelData().getDataContainer(condI, replicateI);
 		for (final FilterFactory filterFactory : filterFactories) {
 			sb.append(InputOutput.FIELD_SEP);
 			filterFactory.addFilteredData(sb, container);

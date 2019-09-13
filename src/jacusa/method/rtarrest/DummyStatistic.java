@@ -6,16 +6,13 @@ import lib.data.result.Result;
 import lib.stat.AbstractStat;
 
 /**
- * This is a dummy statistic... TODO add comments
- *  
- * @param 
+ * This is a dummy statistic... to display a dummy value 
  */
-public class DummyStatistic 
-extends AbstractStat {
+class DummyStatistic extends AbstractStat {
 
 	private final double defaultValue;
 
-	public DummyStatistic(final DummyStatisticFactory factory) {
+	public DummyStatistic() {
 		defaultValue = Double.NaN;
 	}
 
@@ -30,7 +27,8 @@ extends AbstractStat {
 	}
 
 	@Override
-	protected void addStatResultInfo(final Result statResult) {}
-
+	protected void addStatResultInfo(final Result statResult) {
+		// not needed
+	}
 	
 }

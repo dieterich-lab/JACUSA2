@@ -37,16 +37,16 @@ class ParallelDataTest {
 		"1:1-2:+,UNSTRANDED,A,CGT",
 		"1:1-2:+,RF_FIRSTSTRAND,A,CGT",
 		"1:1-2:+,FR_SECONDSTRAND,A,CGT",
-		"1:1-2:-,UNSTRANDED,A,ACG",
-		"1:1-2:-,RF_FIRSTSTRAND,A,ACG",
-		"1:1-2:-,FR_SECONDSTRAND,A,ACG",
+		"1:1-2:-,UNSTRANDED,A,CGT",
+		"1:1-2:-,RF_FIRSTSTRAND,A,CGT",
+		"1:1-2:-,FR_SECONDSTRAND,A,CGT",
 	})
 	void testGetNonReferenceBases(
 			@ConvertWith(OneCoordinateArgumentConverter.class) Coordinate coordinate, 
 			LibraryType libraryType, 
 			Base referenceBase, 
 			@ConvertWith(BaseSetArgumentConverter.class) Set<Base> expected) {
-		final Set<Base> actual = ParallelData.getNonReferenceBases(coordinate, libraryType, referenceBase);
+		final Set<Base> actual = ParallelData.getNonReferenceBases(referenceBase);
 		assertEquals(expected, actual);
 	}
 	
@@ -62,13 +62,13 @@ class ParallelDataTest {
 					"1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,1	ACGT	ACGT"
 					})
 	void testGetVariantBases(
-			@ConvertWith(BaseCallCountListArgumentConverter.class) List<BaseCallCount> baseCallCounts,
+			@ConvertWith(BaseCallCountListArgumentConverter.class) List<BaseCallCount> bccs,
 			@ConvertWith(BaseSetArgumentConverter.class) Set<Base> observedAlleles,
 			@ConvertWith(BaseSetArgumentConverter.class) Set<Base> expected) {
 		
 		final Set<Base> actual = ParallelData.getVariantBases(
 				observedAlleles,
-				baseCallCounts);
+				bccs);
 		assertEquals(expected, actual);
 	}
 

@@ -58,7 +58,7 @@ public abstract class AbstractResultWriterTest {
 	}
 	
 	@AfterEach
-	void AfterEach() {
+	void afterEach() {
 		closeTestInstance();
 		closeActualFile();
 	}
@@ -77,9 +77,9 @@ public abstract class AbstractResultWriterTest {
 		// create parameter dependent on conditionSize
 		final GeneralParameter parameter = createParameter(conditionSize);
 		// populate filename(s) to simulate replicates
-		for (int conditionIndex = 0; conditionIndex < conditionSize; ++conditionIndex) {
-			final int replicateSizes = condition2replicateSize.get(conditionIndex);
-			parameter.getConditionParameter(conditionIndex).setRecordFilenames(new String[replicateSizes]);
+		for (int condI = 0; condI < conditionSize; ++condI) {
+			final int replicateSizes = condition2replicateSize.get(condI);
+			parameter.getConditionParameter(condI).setRecordFilenames(new String[replicateSizes]);
 		}
 		// create test instance
 		testInstance = createTestInstance(actualFileName, parameter);
@@ -113,9 +113,9 @@ public abstract class AbstractResultWriterTest {
 		// create parameter dependent on conditionSize
 		final GeneralParameter parameter = createParameter(conditionSize);
 		// populate filename(s) to simulate replicates
-		for (int conditionIndex = 0; conditionIndex < conditionSize; ++conditionIndex) {
-			final int replicateSizes = tmpParallelelData.getReplicates(conditionIndex);
-			parameter.getConditionParameter(conditionIndex).setRecordFilenames(new String[replicateSizes]);
+		for (int condI = 0; condI < conditionSize; ++condI) {
+			final int replicateSizes = tmpParallelelData.getReplicates(condI);
+			parameter.getConditionParameter(condI).setRecordFilenames(new String[replicateSizes]);
 		}
 		// create test instance
 		testInstance = createTestInstance(actualFileName, parameter);

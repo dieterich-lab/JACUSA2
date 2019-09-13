@@ -3,8 +3,7 @@ package lib.stat.initalpha;
 import lib.stat.nominal.NominalData;
 
 /**
- * 
- * 
+ * TODO
  */
 public abstract class AbstractAlphaInit {
 

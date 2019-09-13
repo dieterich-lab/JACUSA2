@@ -13,7 +13,10 @@ import lib.util.coordinate.Coordinate;
 import lib.util.position.Position;
 
 /**
- * Class the enables storing reference based homopolymer information from multiple instance.
+ * Class the enables storing reference based homopolymer information from 
+ * multiple instances each condition and replicate have its own instance. 
+ * The reference sequence is for all identical. Compute homopolymer once for one 
+ * instance and reuse for others. 
  * Needs optimization.
  * 
  * Tested in @see jacusa.filter.homopolymer.HomopolymerReferenceFilterCacheTest
@@ -29,7 +32,7 @@ public class HomopolymerReferenceStorage extends AbstractStorage {
 		COORD2COUNT					= new HashMap<>(30); 
 	}
 	
-	private final char c;
+	private final char id;
 	private final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredDataFetcher; 
 
 	// min length of identical base call to define homopolymer
@@ -40,13 +43,13 @@ public class HomopolymerReferenceStorage extends AbstractStorage {
 	
 	public HomopolymerReferenceStorage(
 			final SharedStorage sharedStorage,
-			final char c,
+			final char id,
 			final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredDataFetcher, 
 			final int minLength,
 			final int bamFiles) {
 
 		super(sharedStorage);
-		this.c 						= c;
+		this.id 					= id;
 		this.filteredDataFetcher 	= filteredDataFetcher;
 		this.minLength 				= minLength;
 		this.bamFileCount			= bamFiles;
@@ -105,7 +108,7 @@ public class HomopolymerReferenceStorage extends AbstractStorage {
 	
 	HomopolymerStorage add(final Coordinate coordinate) {
 		final HomopolymerStorage storage = new HomopolymerStorage(
-				getSharedStorage(), c, filteredDataFetcher, minLength);
+				getSharedStorage(), id, filteredDataFetcher, minLength);
 		COORD2HOMOPOLYMER_STORAGE.put(coordinate, storage);
 		return storage;
 	}

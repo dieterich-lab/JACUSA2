@@ -13,9 +13,10 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 /**
- * Specific command line option to chose library type for one condition.
- * Currently, there are the following Library Type that are supported for SE and PE:
- * UNSTRANDED, RF_FIRSTSTRAND, and FR_SECONDSTRAND
+ * Command line option to choose library type for one condition.
+ * Currently, there are the following Library Type that are supported for 
+ * SE and PE:
+ * UNSTRANDED, RF_FIRSTSTRAND, and FR_SECONDSTRAND - 
  */
 public class nConditionLibraryTypeOption extends AbstractConditionACOption {
 
@@ -48,41 +49,42 @@ public class nConditionLibraryTypeOption extends AbstractConditionACOption {
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
 		String desc = "Choose the library type";
-		if (generalParameter.getConditionsSize() >= 1 && getConditionIndex() == -1) {
+		if (generalParameter.getConditionsSize() >= 1 && getcondI() == -1) {
 			desc += " for all conditions";
 		} else {
-			desc += " for condition " + getConditionIndex();
+			desc += " for condition " + getcondI();
 		}
 		desc += ":\n" + getAvailableValues(availableLibTypes) + 
-        		"\n default: " + LibraryType.UNSTRANDED;
+				"\n default: " + LibraryType.UNSTRANDED;
 		return Option.builder(getOpt())
 				.argName(LONG_OPT.toUpperCase())
 				.hasArg(true)
 				.desc(desc) 
-	        	.build();
+				.build();
 	}
 
 	@Override
 	public void process(CommandLine line) throws Exception {
 		// get option as string
-    	final String optionValue = line.getOptionValue(getOpt());
-    	// try to get library for
-    	final LibraryType libraryType = parse(optionValue);
-    	// error if no library type
-    	if (libraryType == null || libraryType == LibraryType.MIXED) {
-    		throw new IllegalArgumentException("Unknown Library Type for -" + getOpt() + " " + optionValue);
-    	}
-
-    	// set chosen library type
-    	for (final ConditionParameter conditionParameter : getConditionParameters()) {
-    		conditionParameter.setLibraryType(libraryType);
-    	}
+		final String libraryTypeStr = line.getOptionValue(getOpt());
+		// try parse libraryTypeStr
+		final LibraryType libraryType = parse(libraryTypeStr);
+		// error if library type null
+		if (libraryType == null || libraryType == LibraryType.MIXED) {
+			throw new IllegalArgumentException("Unknown Library Type for -" + 
+					getOpt() + " " + libraryTypeStr);
+		}
+		
+		// update library type
+		for (final ConditionParameter cp : getConditionParameters()) {
+			cp.setLibraryType(libraryType);
+		}
 	}
 	
 	/**
 	 * Parse a String and return the corresponding library type. 
 	 * @param s String to be parsed
-	 * @return the library type that corresponds to String s or null 
+	 * @return the library type that corresponds to String s or null if unknown
 	 */
 	public LibraryType parse(String s) {
 		if (s == null) {
@@ -90,12 +92,13 @@ public class nConditionLibraryTypeOption extends AbstractConditionACOption {
 		}
 		// auto upper case
 		s = s.toUpperCase();
-		// be kind to typos 
+		// be kind to typos
+		// RF_FIRSTSTRAND and RF-FIRSTSTRAND are accepted 
 		s = s.replace("-", "_");
 		
 		return LibraryType.valueOf(s);
 	}
-
+	
 	/**
 	 * Nicely formatted String of available library types for command line help.
 	 * @return nicely formatted String 
@@ -103,12 +106,11 @@ public class nConditionLibraryTypeOption extends AbstractConditionACOption {
 	public String getAvailableValues(final Set<LibraryType> available) {
 		final StringBuilder sb = new StringBuilder();
 
-		// each line consists of: option\t\tdesc 
+		// each line consists of: option[tabs]desc 
 		for (final LibraryType l : new TreeSet<>(available)) {
 			String option = l.toString();
 			option = option.replace("_", "-");
 			String desc = "";
-
 			
 			switch (l) {
 			case RF_FIRSTSTRAND:

@@ -14,10 +14,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import htsjdk.samtools.SAMTag;
 import lib.data.validator.Validator;
-import lib.recordextended.SAMRecordExtended;
+import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.coordinate.DefaultCoordinateTranslator;
-import lib.util.position.MismatchPositionProvider;
+import lib.util.position.MismatchPosProvider;
 import lib.util.position.Position;
 import test.utlis.SAMRecordBuilder;
 
@@ -29,13 +29,13 @@ class MismatchPositionProviderTest implements PositionProviderTest {
 	@ParameterizedTest(name = "{3}")
 	@MethodSource("testIterator")
 	void testIterator(
-			SAMRecordExtended recordExtended,
+			Record record,
 			CoordinateTranslator translator,
 			List<Position> expected,
 			String info) {
 		
-		final MismatchPositionProvider testInstance = createTestInstance(
-				recordExtended, translator);
+		final MismatchPosProvider testInstance = createTestInstance(
+				record, translator);
 		final List<Position> actual = testInstance.flat();
 		assertEquals(expected, actual);
 	}
@@ -81,11 +81,11 @@ class MismatchPositionProviderTest implements PositionProviderTest {
 				);
 	}
 	
-	MismatchPositionProvider createTestInstance(
-			final SAMRecordExtended recordExtended, 
+	MismatchPosProvider createTestInstance(
+			final Record record, 
 			final CoordinateTranslator translator) {
 		
-		return new MismatchPositionProvider(recordExtended, translator, new ArrayList<Validator>());
+		return new MismatchPosProvider(record, translator, new ArrayList<Validator>());
 	}
 
 	Arguments createArguments(
@@ -93,28 +93,28 @@ class MismatchPositionProviderTest implements PositionProviderTest {
 			final int refPosWinStart, final int winLength,
 			String[] expectedStrs) {
 		
-		final SAMRecordExtended recordExtended = new SAMRecordExtended(
+		final Record record = new Record(
 				SAMRecordBuilder.createSERead(CONTIG, refStart, cigarStr, readSeq));
 		
 		final CoordinateTranslator translator = 
 				new DefaultCoordinateTranslator(refPosWinStart, winLength); 
-		final List<Position> expectedPositions = parseExpected(expectedStrs, recordExtended);
+		final List<Position> expectedPositions = parseExpected(expectedStrs, record);
 		
-		final int nm 	= recordExtended.getSAMRecord().getIntegerAttribute(SAMTag.NM.name());
-		final String md = recordExtended.getSAMRecord().getStringAttribute(SAMTag.MD.name());
+		final int nm 	= record.getSAMRecord().getIntegerAttribute(SAMTag.NM.name());
+		final String md = record.getSAMRecord().getStringAttribute(SAMTag.MD.name());
 				
 		final String info = String.format(
 				"read %d-%d, cigar: %s, readSeq: %s, NM: %d, MD: %s, win: %d-%d",
-				recordExtended.getSAMRecord().getAlignmentStart(),
-				recordExtended.getSAMRecord().getAlignmentEnd(),
-				recordExtended.getSAMRecord().getCigar(),
+				record.getSAMRecord().getAlignmentStart(),
+				record.getSAMRecord().getAlignmentEnd(),
+				record.getSAMRecord().getCigar(),
 				readSeq.isEmpty() ? "*" : readSeq,
 				nm,
 				md,
 				translator.getRefPosStart(), translator.getRefPosEnd());
 		
 		return Arguments.of(
-				recordExtended,
+				record,
 				translator,
 				expectedPositions,
 				info);

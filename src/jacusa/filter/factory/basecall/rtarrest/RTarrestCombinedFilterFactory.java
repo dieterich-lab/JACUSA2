@@ -9,7 +9,7 @@ import org.apache.commons.cli.Option.Builder;
 
 import htsjdk.samtools.util.StringUtil;
 import jacusa.filter.factory.basecall.CombinedFilterFactory;
-import jacusa.filter.factory.basecall.INDEL_FilterFactory;
+import jacusa.filter.factory.basecall.INDELfilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
 import lib.data.count.basecall.BaseCallCount;
@@ -18,7 +18,7 @@ import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.data.storage.processor.RecordExtendedProcessor;
+import lib.data.storage.processor.RecordProcessor;
 
 /**
  * This FilterFactory configures and helps to create the combined filter which aggregates the counts 
@@ -40,20 +40,20 @@ extends AbstractRTarrestBaseCallcountFilterFactory {
 	}
 
 	@Override
-	protected List<RecordExtendedProcessor> createRecordProcessors(
+	protected List<RecordProcessor> createRecordProcessors(
 			SharedStorage sharedStorage, PositionProcessor positionProcessor) {
 		
 		return createRecordProcessors(sharedStorage, getFilterDistance(), positionProcessor);
 	}
 	
-	public static List<RecordExtendedProcessor> createRecordProcessors(
+	public static List<RecordProcessor> createRecordProcessors(
 			final SharedStorage sharedStorage,
 			final int filterDistance, 
 			PositionProcessor positionProcessor) {
 		
-		final List<RecordExtendedProcessor> processRecords = new ArrayList<>();
+		final List<RecordProcessor> processRecords = new ArrayList<>();
 		// INDELs
-		processRecords.addAll(INDEL_FilterFactory.createRecordProcessor(
+		processRecords.addAll(INDELfilterFactory.createRecordProcessor(
 				sharedStorage, filterDistance, positionProcessor));
 		// introns
 		processRecords.addAll(SpliceSiteFilterFactory.createRecordProcessors(
@@ -63,7 +63,7 @@ extends AbstractRTarrestBaseCallcountFilterFactory {
 
 	public static Builder getOptionBuilder() {
 		return Option.builder(Character.toString(CombinedFilterFactory.FILTER))
-				.desc("Combines Filters: " + StringUtil.join(" + ", Arrays.asList(INDEL_FilterFactory.FILTER, SpliceSiteFilterFactory.FILTER)));
+				.desc("Combines Filters: " + StringUtil.join(" + ", Arrays.asList(INDELfilterFactory.FILTER, SpliceSiteFilterFactory.FILTER)));
 	}
 	
 }

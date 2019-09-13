@@ -7,16 +7,16 @@ import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.stat.dirmult.EstimateDirMult;
-import lib.stat.sample.EstimationSample;
-import lib.stat.sample.provider.arrest.RTarrestCountSampleProvider;
+import lib.stat.estimation.EstimationContainer;
+import lib.stat.estimation.provider.arrest.RTarrestEstimationCountProvider;
 import lib.util.Util;
 
 public class RTarrestStat extends AbstractStat {
 
 	public static final String ARREST_SCORE = "arrest_score";
 	
-	private final RTarrestCountSampleProvider estimationSampleProvider;
-	private final RTarrestBetaBinParameter dirMultParameter;
+	private final RTarrestEstimationCountProvider estContainerProv;
+	private final RTarrestBetaBinParameter dirMultPrm;
 
 	private final double threshold;
 	private final EstimateDirMult dirMult;
@@ -24,20 +24,20 @@ public class RTarrestStat extends AbstractStat {
 	
 	public RTarrestStat(
 			final double threshold,
-			final RTarrestCountSampleProvider estimationSampleProvider,
-			final RTarrestBetaBinParameter dirMultParameter) {
+			final RTarrestEstimationCountProvider estContainerProv,
+			final RTarrestBetaBinParameter dirMultPrm) {
 
-		this.threshold					= threshold;
-		this.estimationSampleProvider 	= estimationSampleProvider;
-		this.dirMultParameter 			= dirMultParameter;
+		this.threshold			= threshold;
+		this.estContainerProv 	= estContainerProv;
+		this.dirMultPrm 		= dirMultPrm;
 		
-		dirMult							= new EstimateDirMult(dirMultParameter.getMinkaEstimateParameter());
-		dist 							= new ChiSquaredDistribution(1);
+		dirMult	= new EstimateDirMult(dirMultPrm.getMinkaEstimateParameter());
+		dist 	= new ChiSquaredDistribution(1);
 	}
 
 	@Override
 	public void addStatResultInfo(final Result statResult) {
-		if (dirMultParameter.isShowAlpha()) {
+		if (dirMultPrm.isShowAlpha()) {
 			dirMult.addShowAlpha();
 		}
 		dirMult.addStatResultInfo(statResult.getResultInfo());
@@ -49,8 +49,8 @@ public class RTarrestStat extends AbstractStat {
 	
 	@Override
 	public Result calculate(ParallelData parallelData) {
-		final EstimationSample[] estimationSamples = estimationSampleProvider.convert(parallelData);
-		final double lrt 	= dirMult.getLRT(estimationSamples);
+		final EstimationContainer[] estContainers = estContainerProv.convert(parallelData);
+		final double lrt 	= dirMult.getLRT(estContainers);
 		final double pvalue = getPValue(lrt);
 		final Result result = new OneStatResult(pvalue, parallelData);
 		result.getResultInfo().add(ARREST_SCORE, Util.format(lrt));

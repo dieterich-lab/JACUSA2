@@ -16,7 +16,7 @@ import lib.data.storage.container.FileReferenceProvider;
 import lib.data.storage.container.ReferenceProvider;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.container.SimpleMDReferenceProvider;
-import lib.data.validator.paralleldata.CompositeParallelDataValidator;
+import lib.data.validator.paralleldata.CombinedParallelDataValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.io.copytmp.CopyTmpResult;
 import lib.util.coordinate.CoordinateController;
@@ -25,19 +25,22 @@ import lib.util.AbstractTool;
 import lib.util.ConditionContainer;
 import lib.util.coordinate.Coordinate;
 
+/**
+ * TODO
+ */
 public abstract class AbstractWorker
 extends Thread
 implements Iterator<ParallelData> {
 
-	public static enum STATUS {INIT, READY, FINISHED, BUSY, WAITING};
+	public enum STATUS {INIT, READY, FINISHED, BUSY, WAITING}
 
 	private final AbstractMethod method;
 	
 	private final ThreadIdContainer threadIdContainer;
 	private final CopyTmpResult copyTmpResult;
 	
-	private final ConditionContainer conditionContainer;
-	private CoordinateController coordinateController;
+	private final ConditionContainer condContainer;
+	private CoordinateController coordControl;
 
 	private final ParallelDataValidator parallelDataValidator;
 	
@@ -53,14 +56,14 @@ implements Iterator<ParallelData> {
 
 		copyTmpResult = getParameter().getResultFormat().createCopyTmp(threadId, method.getWorkerDispatcherInstance());
 		
-		conditionContainer 		= new ConditionContainer(getParameter());
-		coordinateController 	= new CoordinateController(getParameter().getActiveWindowSize(), conditionContainer);
+		condContainer 		= new ConditionContainer(getParameter());
+		coordControl 	= new CoordinateController(getParameter().getActiveWindowSize(), condContainer);
 
-		final ReferenceProvider referenceProvider 	= createReferenceProvider(coordinateController);
+		final ReferenceProvider referenceProvider 	= createReferenceProvider(coordControl);
 		final SharedStorage sharedStorage 			= new ComplexSharedStorage(referenceProvider);
-		conditionContainer.initReplicateContainer(sharedStorage, getParameter(), method);
+		condContainer.initReplicateContainer(sharedStorage, getParameter(), method);
 
-		parallelDataValidator = new CompositeParallelDataValidator(method.createParallelDataValidators());
+		parallelDataValidator = new CombinedParallelDataValidator(method.createParallelDataValidators());
 
 		comparisons = 0;
 		status 		= STATUS.INIT;
@@ -86,7 +89,7 @@ implements Iterator<ParallelData> {
 	protected boolean filter(final Result result) {
 		boolean isFiltered = false;
 		// apply each filter
-		for (final Filter filter : conditionContainer.getFilterContainer().getFilters()) {
+		for (final Filter filter : condContainer.getFilterContainer().getFilters()) {
 			if (filter.applyFilter(result)) {
 				isFiltered = true;
 			}
@@ -99,24 +102,23 @@ implements Iterator<ParallelData> {
 	@Override
 	public boolean hasNext() {
 		while (true) {
-			while (coordinateController.checkCoordinateAdvancerWithinActiveWindow()) {
-				final Coordinate coordinate = coordinateController.getCoordinateAdvancer()
+			while (coordControl.checkCoordAdvancerWithinActiveWindow()) {
+				final Coordinate coord = coordControl.getCoordAdvancer()
 						.getCurrentCoordinate().copy();
 				
 				final ParallelData.Builder parallelDataBuilder = new ParallelData.Builder(
-								conditionContainer.getConditionSize(), conditionContainer.getReplicateSizes());
-				parallelData = createParallelData(parallelDataBuilder, coordinate);
+								condContainer.getConditionSize(), condContainer.getReplicateSizes());
+				parallelData = createParallelData(parallelDataBuilder, coord);
 				if (parallelData != null && parallelDataValidator.isValid(parallelData)) {
 					comparisons++;
 					return true;
 				}
-				
-				coordinateController.advance();
+				coordControl.advance();
 			}
 			
-			if (coordinateController.hasNext()) {
-				final Coordinate activeWindowCoordinate = coordinateController.next();
-				conditionContainer.updateActiveWindowCoordinates(activeWindowCoordinate);
+			if (coordControl.hasNext()) {
+				final Coordinate activeWinCoord = coordControl.next();
+				condContainer.updateActiveWinCoord(activeWinCoord);
 			} else {
 				return false;
 			}
@@ -125,11 +127,11 @@ implements Iterator<ParallelData> {
 	
 	protected abstract ParallelData createParallelData(
 			final ParallelData.Builder parallelDataBuilder,
-			final Coordinate coordinate) ;
+			final Coordinate coord) ;
 	
 	@Override
 	public ParallelData next() {
-		coordinateController.advance();
+		coordControl.advance();
 		return parallelData;
 	}
 
@@ -147,6 +149,7 @@ implements Iterator<ParallelData> {
 			copyTmpResult.addResult(result);
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 	
@@ -163,8 +166,8 @@ implements Iterator<ParallelData> {
 				reservedWindowCoordinate.getStart() + "-" + 
 				reservedWindowCoordinate.getEnd());
 		
-		coordinateController.updateReserved(reservedWindowCoordinate);
-		conditionContainer.updateWindowCoordinates(coordinateController.next());
+		coordControl.updateReserved(reservedWindowCoordinate);
+		condContainer.updateWindowCoordinates(coordControl.next());
 	}
 
 	protected void processInit() {
@@ -251,7 +254,7 @@ implements Iterator<ParallelData> {
 	}
 
 	protected ConditionContainer getConditionContainer() {
-		return conditionContainer;
+		return condContainer;
 	}
 	
 	public ThreadIdContainer getThreadIdContainer() {

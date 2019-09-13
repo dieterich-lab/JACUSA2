@@ -11,12 +11,10 @@ import lib.io.copytmp.CopyTmpExecuter;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 import lib.util.coordinate.Coordinate;
+import lib.worker.AbstractWorker.STATUS;
 
 /**
- * 
- * 
- *
- * @param <T>
+ * TODO
  */
 public class WorkerDispatcher {
 
@@ -29,27 +27,21 @@ public class WorkerDispatcher {
 
 	private Integer comparisons;
 	private List<Integer> threadIds;
-	
-	// private final ProgressIndicator progressIndicator;
-	// private int currentCoordinateIndex;
-	
+
 	private ResultWriter resultWriter;
 	private ResultWriter filteredResultWriter;
-	
+
 	public WorkerDispatcher(final AbstractMethod methodFactory) {
 		this.methodFactory = methodFactory;
 		
 		final GeneralParameter parameter = methodFactory.getParameter();
 		final int maxThreads = parameter.getMaxThreads();
-		workerContainer = new ArrayList<AbstractWorker>(maxThreads);
-		runningWorkers = new ArrayList<AbstractWorker>(maxThreads);
+		workerContainer = new ArrayList<>(maxThreads);
+		runningWorkers = new ArrayList<>(maxThreads);
 
 		comparisons = 0;
-		threadIds = new ArrayList<Integer>(10000);
+		threadIds = new ArrayList<>(10000);
 
-		// progressIndicator = new ProgressIndicator(System.out);
-		// currentCoordinateIndex = 0;
-		
 		resultWriter = parameter.getResultFormat().createWriter(parameter.getResultFilename());
 		if (parameter.splitFiltered()) {
 			filteredResultWriter = parameter.getResultFormat().createWriter(parameter.getResultFilename() + FILE_SUFFIX);
@@ -63,10 +55,7 @@ public class WorkerDispatcher {
 	}
 	
 	public synchronized Coordinate next() {
-		// currentCoordinateIndex++;
-		
-		Coordinate c = methodFactory.getCoordinateProvider().next();
-		return c;
+		return methodFactory.getCoordinateProvider().next();
 	}
 
 	public synchronized boolean hasNext() {
@@ -74,27 +63,16 @@ public class WorkerDispatcher {
 	}
 
 	public int run() throws IOException {
-	    // final long startTime = System.currentTimeMillis();
-	    // progressIndicator.print("Working:");
-
 		while (hasNext() || ! runningWorkers.isEmpty()) {
 			for (int i = 0; i < runningWorkers.size(); ++i) {
 				final AbstractWorker runningWorker = runningWorkers.get(i);
-				
-				switch (runningWorker.getStatus()) {
-				case FINISHED:
-					synchronized (comparisons) {
-						comparisons += runningWorker.getComparisons();
-					}
+				if (runningWorker.getStatus() == STATUS.FINISHED) {
+					comparisons += runningWorker.getComparisons();
 					synchronized (runningWorkers) {
 						runningWorkers.remove(runningWorker);
 					}
-					break;
-
-				default:
-					break;
 				}
-			} 
+			}
 
 			synchronized (this) {
 				// fill thread container
@@ -106,21 +84,15 @@ public class WorkerDispatcher {
 					worker.start();
 				}
 
-				/*
-				if (! getMethodFactory().getParameter().isDebug()) {
-					// progressIndicator.update("Progress: ", startTime, currentCoordinateIndex, coordinateProvider.getTotal());
-				}
-				*/
-				
 				// computation finished
 				if (! hasNext() && runningWorkers.isEmpty()) {
-					// progressIndicator.print("\nDone!\n");
 					break;
 				}
 				try {
-					this.wait(60 * 1000);
+					this.wait(60 * (long)1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -157,11 +129,9 @@ public class WorkerDispatcher {
 			filteredResultWriter.writeHeader(getConditionParameters());
 		}
 
-		// progressIndicator.print("Merging tmp files:");
 		AbstractTool.getLogger().addInfo("Started merging tmp files...");
 		final CopyTmpExecuter copyTmpExecuter = new CopyTmpExecuter(threadIds, workerContainer);
 		copyTmpExecuter.copy();
-		// progressIndicator.print("\nDone!");
 		AbstractTool.getLogger().addInfo("Finished merging tmp files!");
 
 		// close output
@@ -170,6 +140,7 @@ public class WorkerDispatcher {
 				resultWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+				System.exit(1);
 			}
 			resultWriter = null;
 		}
@@ -179,6 +150,7 @@ public class WorkerDispatcher {
 				filteredResultWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+				System.exit(1);
 			}
 			filteredResultWriter = null;
 		}

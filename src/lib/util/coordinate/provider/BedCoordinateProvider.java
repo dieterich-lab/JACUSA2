@@ -17,8 +17,7 @@ import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.coordinate.OneCoordinate;
 
 /**
- * @author mpiechotta
- *
+ * TODO
  */
 public class BedCoordinateProvider implements CoordinateProvider {
 
@@ -35,7 +34,7 @@ public class BedCoordinateProvider implements CoordinateProvider {
 	}
 
 	private List<Coordinate> read(final String fileName, final boolean isStranded) {
-		final List<Coordinate> coordinates = new ArrayList<Coordinate>();
+		final List<Coordinate> cords = new ArrayList<>();
 		
 		final File file = new File(fileName);
 		
@@ -62,15 +61,13 @@ public class BedCoordinateProvider implements CoordinateProvider {
 					coordinate.setStrand(STRAND.FORWARD);
 				}
 
-				coordinates.add(coordinate);
+				cords.add(coordinate);
 			}
-			if (br != null) {
-				br.close();
-			}
+			br.close();
 		} catch (NumberFormatException | IOException e) {
 			e.printStackTrace();
 		}
-		return coordinates;
+		return cords;
 	}
 	
 	@Override

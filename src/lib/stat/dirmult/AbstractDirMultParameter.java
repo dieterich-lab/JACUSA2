@@ -2,6 +2,9 @@ package lib.stat.dirmult;
 
 import lib.estimate.MinkaParameter;
 
+/**
+ * TODO
+ */
 public abstract class AbstractDirMultParameter implements DirMultParameter {
 	
 	private boolean showAlpha;
@@ -11,8 +14,8 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	public AbstractDirMultParameter(
 			final boolean showAlpha,
 			final boolean calcPValue,
-			final MinkaParameter minkaParameter,
-			final double threshold) {
+			final MinkaParameter minkaParameter) {
+
 		this.showAlpha 		= showAlpha;
 		this.calcPValue		= calcPValue;
 		this.minkaParameter	= minkaParameter;

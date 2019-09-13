@@ -7,6 +7,9 @@ import jacusa.VersionInfo;
 import lib.cli.CLI;
 import lib.worker.WorkerDispatcher;
 
+/**
+ * TODO
+ */
 public abstract class AbstractTool {
 
 	public static final String CALL_PREFIX = "JACUSA2 Version: ";
@@ -38,14 +41,6 @@ public abstract class AbstractTool {
 		
 		final PrintStream ps = System.err;
 		logger = new Logger(ps, this);
-		/*
-		try {
-			//PrintStream ps = new PrintStream(new File("JACAUSA2.log"));
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		*/
 	}
 
 	public void run() throws Exception {

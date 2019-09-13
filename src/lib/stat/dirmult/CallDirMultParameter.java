@@ -2,23 +2,23 @@ package lib.stat.dirmult;
 
 import lib.estimate.MinkaParameter;
 
-public class CallDirMultParameter extends AbstractDirMultParameter {
-
-	public final static double ESTIMATED_ERROR = 0.01;
+class CallDirMultParameter extends AbstractDirMultParameter {
 	
-	private double estimatedError;
+	public static final double ESTIMATED_ERROR = 0.01;
+	
+	private double estError;
 	
 	public CallDirMultParameter() {
-		super(false, false, new MinkaParameter(), Double.NaN);
-		estimatedError = ESTIMATED_ERROR;
+		super(false, false, new MinkaParameter());
+		estError = ESTIMATED_ERROR;
 	}
 
 	public double getEstimatedError() {
-		return estimatedError;
+		return estError;
 	}
 
-	public void setEstimatedError(final double estimatedError) {
-		this.estimatedError = estimatedError;
+	public void setEstimatedError(final double estError) {
+		this.estError = estError;
 	}
 	
 }

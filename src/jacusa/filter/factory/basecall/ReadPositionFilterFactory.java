@@ -12,21 +12,21 @@ import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.data.storage.processor.RecordExtendedProcessor;
+import lib.data.storage.processor.RecordProcessor;
 
 /**
- * This FilterFactory configures and helps to create the filter that will filter false positive variants
- * at the read start and end.
+ * This FilterFactory configures and helps to create the filter that will filter 
+ * false positive variants at the read start and end.
  */
 public class ReadPositionFilterFactory 
-extends AbstractBaseCallCountFilterFactory {
-
+extends AbstractBCCfilterFactory {
+	
 	public static final char FILTER = 'B';
 	
 	public ReadPositionFilterFactory(
 			final Fetcher<BaseCallCount> observedBccFetcher,
 			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
-
+		
 		super(
 				Option.builder(Character.toString(FILTER))
 					.desc("Filter potential false positive variants adjacent to read start/end.")
@@ -35,11 +35,13 @@ extends AbstractBaseCallCountFilterFactory {
 	}
 
 	@Override
-	protected List<RecordExtendedProcessor> createRecordProcessors(SharedStorage sharedStorage, final PositionProcessor positionProcessor) {
+	protected List<RecordProcessor> createRecordProcessors(
+			SharedStorage sharedStorage, final PositionProcessor positionProcessor) {
+		
 		return createRecordProcessor(sharedStorage, getFilterDistance(), positionProcessor);
 	}
 	
-	public static List<RecordExtendedProcessor> createRecordProcessor(
+	public static List<RecordProcessor> createRecordProcessor(
 			SharedStorage sharedStorage,
 			final int filterDistance, final PositionProcessor positionProcessor) {
 		

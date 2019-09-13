@@ -13,14 +13,14 @@ import lib.data.fetcher.FilteredDataFetcher;
 import lib.data.filter.BaseCallCountFilteredData;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.data.storage.processor.RecordExtendedProcessor;
+import lib.data.storage.processor.RecordProcessor;
 
 /**
- * This FilterFactory configures and helps to create the filter that filters sites adjacent to 
- * splices sites.
+ * This FilterFactory configures and helps to create the filter that filters 
+ * sites adjacent to splices sites.
  */
 public class SpliceSiteFilterFactory
-extends AbstractBaseCallCountFilterFactory {
+extends AbstractBCCfilterFactory {
 
 	public static final char FILTER = 'S';
 	
@@ -34,11 +34,13 @@ extends AbstractBaseCallCountFilterFactory {
 	}
 	
 	@Override
-	protected List<RecordExtendedProcessor> createRecordProcessors(SharedStorage sharedStorage, final PositionProcessor positionProcessor) {
+	protected List<RecordProcessor> createRecordProcessors(
+			SharedStorage sharedStorage, final PositionProcessor positionProcessor) {
+		
 		return createRecordProcessors(sharedStorage, getFilterDistance(), positionProcessor);
 	}
 	
-	public static List<RecordExtendedProcessor> createRecordProcessors(
+	public static List<RecordProcessor> createRecordProcessors(
 			final SharedStorage sharedStorage,
 			final int filterDistance, 
 			final PositionProcessor positionProcessor) {

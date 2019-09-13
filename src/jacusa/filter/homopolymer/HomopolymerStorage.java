@@ -20,8 +20,8 @@ import lib.util.position.Position;
  */
 public class HomopolymerStorage extends AbstractStorage {
 	
-	private final char c;
-	// defines where to llok for boolean information in dataContainer
+	private final char id;
+	// defines where to look for boolean information in dataContainer
 	private final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredDataFetcher; 
 
 	// min length of identical base call to define homopolymer
@@ -32,13 +32,13 @@ public class HomopolymerStorage extends AbstractStorage {
 	
 	public HomopolymerStorage(
 			final SharedStorage sharedStorage,
-			final char c,
+			final char id,
 			final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredDataFetcher,
 			final int minLength) {
 
 		super(sharedStorage);
 
-		this.c						= c;
+		this.id						= id;
 		this.filteredDataFetcher 	= filteredDataFetcher;
 		this.minLength 				= minLength;
 		
@@ -54,7 +54,7 @@ public class HomopolymerStorage extends AbstractStorage {
 	public void increment(final int refPos, final int length) {
 		for (int i = 0; i < length; ++i) {
 			final int winPos = getCoordinateController()
-				.getCoordinateTranslator().reference2windowPosition(refPos + i);
+				.getCoordinateTranslator().ref2winPos(refPos + i);
 			if (winPos >= 0) {
 				isHomopolymer[winPos] = true;
 			}
@@ -74,22 +74,22 @@ public class HomopolymerStorage extends AbstractStorage {
 	public void populate(DataContainer container, int winPos, Coordinate coordinate) {
 		if (isHomopolymer[winPos]) {
 			filteredDataFetcher.fetch(container).add(
-					c, new BooleanData(isHomopolymer[winPos]));
+					id, new BooleanData(isHomopolymer[winPos]));
 		}
 	}
 	
 	/**
 	 * Search and cache homopolymers within windows
-	 * @param windowPositionStart
-	 * @param windowPositionEnd
+	 * @param winPosStart
+	 * @param winPosEnd
 	 * @param minLength
 	 */
 	void cacheWindowPosition(
-			final int windowPositionStart, final int windowPositionEnd, final int minLength) {
+			final int winPosStart, final int winPosEnd, final int minLength) {
 
-		final HomopolymerBuilder builder = new HomopolymerBuilder(windowPositionStart, minLength);
+		final HomopolymerBuilder builder = new HomopolymerBuilder(winPosStart, minLength);
 		// collect bases within window...
-		for (int winPos = windowPositionStart; winPos < windowPositionEnd; winPos++) {
+		for (int winPos = winPosStart; winPos < winPosEnd; winPos++) {
 			final Base base = getReferenceProvider().getReferenceBase(winPos);
 			builder.add(base);
 		}

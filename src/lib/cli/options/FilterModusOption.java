@@ -8,7 +8,7 @@ import org.apache.commons.cli.Option;
 
 public class FilterModusOption extends AbstractACOption {
 
-	final private GeneralParameter parameter;
+	private final GeneralParameter parameter;
 	
 	public FilterModusOption(final GeneralParameter parameter) {
 		super("s", "split");

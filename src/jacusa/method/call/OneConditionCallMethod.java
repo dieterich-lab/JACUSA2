@@ -6,7 +6,7 @@ import jacusa.filter.factory.FilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.basecall.CombinedFilterFactory;
-import jacusa.filter.factory.basecall.INDEL_FilterFactory;
+import jacusa.filter.factory.basecall.INDELfilterFactory;
 import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 
@@ -54,7 +54,7 @@ extends CallMethod {
 				new CombinedFilterFactory(
 						getBaseCallCountFetcher(),
 						filteredBccData),
-				new INDEL_FilterFactory(
+				new INDELfilterFactory(
 						getBaseCallCountFetcher(), 
 						filteredBccData),
 				new ReadPositionFilterFactory(
@@ -66,7 +66,7 @@ extends CallMethod {
 				new MaxAlleleCountFilterFactory(getBaseCallCountFetcher()),
 				new HomopolymerFilterFactory(getParameter(), filteredBooleanData))
 				.stream()
-				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()) );
+				.collect(Collectors.toMap(FilterFactory::getID, Function.identity()) );
 	}
 
 	@Override

@@ -13,7 +13,9 @@ public class StatParameter {
 	private AbstractStatFactory factory;
 	private double threshold;
 	
-	public StatParameter(final AbstractStatFactory factory, final double threshold) {
+	public StatParameter(
+			final AbstractStatFactory factory, final double threshold) {
+		
 		this.factory 	= factory;
 		this.threshold 	= threshold;
 	}
@@ -45,8 +47,10 @@ public class StatParameter {
 	}
 
 	/**
-	 * Create a new instance of AbstractStatisticCalculator.
+	 * Create a new instance of AbstractStatisticCalculator for specific number 
+	 * of conditions.
 	 * 
+	 * @param conditions the number of conditions to be used
 	 * @return an instance of AbstractStatisticCalculator 
 	 */
 	public AbstractStat newInstance(final int conditions) {
@@ -54,14 +58,14 @@ public class StatParameter {
 	}
 
 	/**
-	 * Updates the factory - set any CLI opitions.
+	 * Updates the factory - set any CLI options.
 	 * 
 	 * @param new factory to be set 
 	 */
 	public void setFactory(
 			final String CLIoption, 
 			final AbstractStatFactory factory) {
-
+		
 		factory.processCLI(CLIoption);
 		this.factory = factory;
 	}

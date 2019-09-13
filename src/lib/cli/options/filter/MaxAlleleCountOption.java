@@ -21,7 +21,7 @@ public class MaxAlleleCountOption extends AbstractACOption {
 	 */
 	@Override
 	public void process(CommandLine line) throws Exception {
-		final int tmpCount = Integer.valueOf(line.getOptionValue(getLongOpt()));
+		final int tmpCount = Integer.parseInt(line.getOptionValue(getLongOpt()));
 		if (tmpCount < 1 || tmpCount > Base.validValues().length) {
 			throw new IllegalArgumentException("Invalid allele count: " + getLongOpt());
 		}

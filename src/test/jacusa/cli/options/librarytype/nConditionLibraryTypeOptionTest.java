@@ -102,24 +102,24 @@ class nConditionLibraryTypeOptionTest {
 						LibraryType.RF_FIRSTSTRAND,
 						LibraryType.FR_SECONDSTRAND));
 		
-		for (int conditionIndex = 1; conditionIndex <= conditions; ++conditionIndex) {
-			final ConditionParameter conditionParameter = new ConditionParameter(conditionIndex);
+		for (int condI = 1; condI <= conditions; ++condI) {
+			final ConditionParameter conditionParameter = new ConditionParameter(condI);
 			conditionParameters.add(conditionParameter);
 			testInstances.add(new nConditionLibraryTypeOption(
 					getAvailableLibType(), conditionParameter, generalParameter));
 			testInstances.add(new nConditionLibraryTypeOption(availableLibType, conditionParameters, generalParameter));
-			if (libraryTypes.get(conditionIndex - 1) == null) {
+			if (libraryTypes.get(condI - 1) == null) {
 				expected.add(conditionParameter.getLibraryType());
 			} else {
-				expected.add(libraryTypes.get(conditionIndex - 1));
+				expected.add(libraryTypes.get(condI - 1));
 				if (sb.length() > 0) {
 					sb.append(' ');
 				}
 				sb.append('-');
 				sb.append(nConditionLibraryTypeOption.OPT);
-				sb.append((conditionIndex));
+				sb.append((condI));
 				sb.append(' ');
-				sb.append(libraryTypes.get(conditionIndex - 1));
+				sb.append(libraryTypes.get(condI - 1));
 			}
 		}
 		

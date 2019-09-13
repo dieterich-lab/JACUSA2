@@ -11,6 +11,9 @@ import org.apache.commons.cli.ParseException;
 
 import lib.io.InputOutput;
 
+/**
+ * TODO
+ */
 public final class CLIUtil {
 
 	private CLIUtil() {
@@ -21,8 +24,7 @@ public final class CLIUtil {
 		final String[] args = line.split("\\s+");
 		final CommandLineParser parser = new DefaultParser();
 		
-		CommandLine cmd = parser.parse(options, args);
-		return cmd;
+		return parser.parse(options, args);
 	}
 
 	public static void adjustOption(final org.apache.commons.cli.Option option, final Options options, final int padding) {
@@ -47,7 +49,7 @@ public final class CLIUtil {
 			sb.append(o.getLongOpt());
 	
 			space = new char[max - o.getLongOpt().length() + 1];
-			Arrays.fill(space, ' ');		
+			Arrays.fill(space, ' ');
 			sb.append(space);
 			
 			space = new char[max + 4];

@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import lib.cli.options.BedCoordinatesOption;
-import lib.cli.options.CollectReadSubstituionOption;
+import lib.cli.options.StratifyByReadSubstituionOption;
 import lib.cli.options.DebugModusOption;
 import lib.cli.options.FilterConfigOption;
 import lib.cli.options.FilterModusOption;
@@ -80,8 +80,7 @@ extends AbstractMethod {
 	
 	public RTarrestMethod(final String name, 
 			final RTarrestParameter parameter, 
-			final RTarrestDataAssemblerFactory dataAssemblerFactory,
-			final RTarrestBuilderFactory builderFactory) {
+			final RTarrestDataAssemblerFactory dataAssemblerFactory) {
 		
 		super(name, parameter, dataAssemblerFactory);
 		arrestBccFetcher 	= DataType.ARREST_BCC.getFetcher();
@@ -101,7 +100,6 @@ extends AbstractMethod {
 		}
 		
 		addACOption(new FilterModusOption(getParameter()));
-		// addACOption(new BaseConfigOption(getParameter()));
 		addACOption(new FilterConfigOption(getParameter(), getFilterFactories()));
 		
 		addACOption(new StatFilterOption(getParameter().getStatParameter()));
@@ -113,7 +111,7 @@ extends AbstractMethod {
 		addACOption(new WindowSizeOption(getParameter()));
 		addACOption(new ThreadWindowSizeOption(getParameter()));
 
-		addACOption(new CollectReadSubstituionOption(getParameter()));
+		addACOption(new StratifyByReadSubstituionOption(getParameter()));
 		addACOption(new ShowDeletionCountOption(getParameter()));
 		addACOption(new ShowInsertionCountOption(getParameter()));
 		
@@ -128,13 +126,12 @@ extends AbstractMethod {
 		addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters()));
 		addACOption(new MinBASQConditionOption(getParameter().getConditionParameters()));
 		addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters()));
-		// not needed addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters()));
 		addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters()));
 		
 		addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
 		addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
 		
-		final Set<LibraryType> availableLibType = new HashSet<LibraryType>(
+		final Set<LibraryType> availableLibType = new HashSet<>(
 				Arrays.asList(
 						LibraryType.RF_FIRSTSTRAND,
 						LibraryType.FR_SECONDSTRAND));
@@ -143,29 +140,27 @@ extends AbstractMethod {
 				availableLibType, getParameter().getConditionParameters(), getParameter()));
 		
 		// condition specific
-		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-			addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			// not needed addACOption(new MaxDepthConditionOption(conditionIndex, getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+		for (int condI = 0; condI < getParameter().getConditionsSize(); ++condI) {
+			addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters().get(condI)));
+			addACOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(condI)));
+			addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(condI)));
+			addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(condI)));
 			
-			addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(condI)));
+			addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(condI)));
 			
 			addACOption(new nConditionLibraryTypeOption(
 					availableLibType, 
-					getParameter().getConditionParameters().get(conditionIndex),
+					getParameter().getConditionParameters().get(condI),
 					getParameter()));
 		}
 	}
 	
 	public Map<String, AbstractStatFactory> getStats() {
 		final Map<String, AbstractStatFactory> factories = 
-				new TreeMap<String, AbstractStatFactory>();
+				new TreeMap<>();
 
-		final List<AbstractStatFactory> tmpFactory = new ArrayList<AbstractStatFactory>(5);
-		// tmpFactory.add(new DummyStatisticFactory());
+		final List<AbstractStatFactory> tmpFactory = new ArrayList<>(5);
 		tmpFactory.add(new RTarrestStatFactory());
 		for (final AbstractStatFactory factory : tmpFactory) {
 			factories.put(factory.getName(), factory);
@@ -217,18 +212,18 @@ extends AbstractMethod {
 								throughBccFetcher)),
 				new HomopolymerFilterFactory(getParameter(), filteredBooleanFetcher))
 				.stream()
-				.collect(Collectors.toMap(FilterFactory::getC, Function.identity()) );
+				.collect(Collectors.toMap(FilterFactory::getID, Function.identity()) );
 	}
 
 	public Map<Character, ResultFormat> getResultFormats() {
 		Map<Character, ResultFormat> resultFormats = 
-				new HashMap<Character, ResultFormat>();
+				new HashMap<>();
 
 		ResultFormat resultFormat = null;
 		resultFormat = new BED6rtArrestResultFormat(
 				getName(), 
 				getParameter() );
-		resultFormats.put(resultFormat.getC(), resultFormat);
+		resultFormats.put(resultFormat.getID(), resultFormat);
 		
 		return resultFormats;
 	}
@@ -289,21 +284,27 @@ extends AbstractMethod {
 		protected void addRequired(final AbstractBuilder builder) {
 			add(builder, DataType.ARREST_BCC);
 			add(builder, DataType.THROUGH_BCC);
-			if (parameter.getReadSubstitutions().size() > 0) {
-				addBaseSubstitution(builder, DataType.ARREST_BASE_SUBST);
-				addBaseSubstitution(builder, DataType.THROUGH_BASE_SUBST);
+			
+			if (! parameter.getReadSubs().isEmpty()) {
+				addBaseSub2bcc(builder, DataType.ARREST_BASE_SUBST);
+				addBaseSub2bcc(builder, DataType.THROUGH_BASE_SUBST);
+				
+				if (parameter.showDeletionCount()) {
+					addBaseSub2int(builder, DataType.BASE_SUBST2DELETION_COUNT);
+					addBaseSub2int(builder, DataType.BASE_SUBST2COVERAGE);
+				}
+				if (parameter.showInsertionCount()) {
+					addBaseSub2int(builder, DataType.BASE_SUBST2INSERTION_COUNT);
+					addBaseSub2int(builder, DataType.BASE_SUBST2COVERAGE);
+				}
 			}
 			if (parameter.showDeletionCount()) {
 				add(builder, DataType.DELETION_COUNT);
-				add(builder, DataType.COVERAGE);
+				guardedAdd(builder, DataType.COVERAGE);
 			}
 			if (parameter.showInsertionCount()) {
 				add(builder, DataType.INSERTION_COUNT);
-//				add(builder, DataType.COVERAGE);
-			}
-			if (parameter.getReadSubstitutions().size() > 0 && parameter.showDeletionCount()) {
-				addDeletionCount(builder, DataType.BASE_SUBST2DELETION_COUNT);
-				addCoverage(builder, DataType.BASE_SUBST2COVERAGE);
+				guardedAdd(builder, DataType.COVERAGE);
 			}
 		}
 		
@@ -316,8 +317,8 @@ extends AbstractMethod {
 	
 	public static class Factory extends AbstractMethod.AbstractFactory {
 
-		public final static String NAME = "rt-arrest";
-		public final static String DESC = "Reverse Transcription Arrest - 2 conditions";
+		public static final String NAME = "rt-arrest";
+		public static final String DESC = "Reverse Transcription Arrest - 2 conditions";
 
 		public Factory() {
 			super(NAME, DESC, 2);
@@ -334,15 +335,13 @@ extends AbstractMethod {
 			return new RTarrestMethod(
 					getName(),
 					parameter,
-					dataAssemblerFactory,
-					builderFactory); 
+					dataAssemblerFactory); 
 		}
 		
 		@Override
 		public Factory createFactory(int conditions) {
 			if (conditions != 2) {
 				return null;
-				// throw new IllegalArgumentException("Number of conditions not supported: " + conditions);
 			}
 			 
 			return new Factory();

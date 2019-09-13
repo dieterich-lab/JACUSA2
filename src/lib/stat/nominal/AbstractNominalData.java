@@ -1,5 +1,8 @@
 package lib.stat.nominal;
 
+/**
+ * TODO
+ */
 class AbstractNominalData implements NominalData {
 
 	private final int categories;
@@ -29,10 +32,10 @@ class AbstractNominalData implements NominalData {
 	public double[] getRowWiseSums() {
 		final int replicates = data.length;
 		final double[] sums = new double[replicates];
-		for (int replicateIndex = 0; replicateIndex < replicates; ++replicateIndex) {
-			sums[replicateIndex] = 0;
+		for (int replicateI = 0; replicateI < replicates; ++replicateI) {
+			sums[replicateI] = 0;
 			for (int i = 0; i < categories; ++i) {
-				sums[replicateIndex] += data[replicateIndex][i];
+				sums[replicateI] += data[replicateI][i];
 			}
 		}
 		return sums;
@@ -53,12 +56,12 @@ class AbstractNominalData implements NominalData {
 		
 		sb.append("Data: ");
 		sb.append('\n');
-		for (int replicateIndex = 0; replicateIndex < getReplicates(); ++replicateIndex) {
+		for (int replicateI = 0; replicateI < getReplicates(); ++replicateI) {
 			for (int i = 0; i < categories; ++i) {
 				if (i > 0) {
 					sb.append(' ');					
 				}
-				sb.append(getReplicate(replicateIndex, i));
+				sb.append(getReplicate(replicateI, i));
 			}
 			sb.append('\n');
 		}
@@ -68,12 +71,12 @@ class AbstractNominalData implements NominalData {
 
 	public static class Parser implements lib.util.Parser<AbstractNominalData> {
 		
-		public static final char SEP = ',';
+		public static final char DEFAULT_SEP = ',';
 		
 		private final char sep;
 		
 		public Parser() {
-			this(SEP);
+			this(DEFAULT_SEP);
 		}
 		
 		public Parser(final char sep) {

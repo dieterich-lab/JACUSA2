@@ -23,8 +23,7 @@ import htsjdk.samtools.SAMSequenceRecord;
 import htsjdk.samtools.SamReader;
 
 /**
- * @author mpiechotta
- *
+ * TODO
  */
 public class SAMCoordinateAdvancedProvider implements CoordinateProvider {
 
@@ -43,9 +42,6 @@ public class SAMCoordinateAdvancedProvider implements CoordinateProvider {
 	private SAMSequenceRecord sequenceRecord;
 	private Coordinate currentCoordinate;
 	
-	/**
-	 * 
-	 */
 	public SAMCoordinateAdvancedProvider(
 			final boolean isStranded, 
 			final List<SAMSequenceRecord> sequenceRecords, 
@@ -67,9 +63,9 @@ public class SAMCoordinateAdvancedProvider implements CoordinateProvider {
 		
 				
 		// create readers for conditions and replicate
-		readers = new ArrayList<List<SamReader>>(parameter.getConditionsSize());
+		readers = new ArrayList<>(parameter.getConditionsSize());
 		for (final ConditionParameter condition : parameter.getConditionParameters()) {
-			final List<SamReader> tmpReaders = new ArrayList<SamReader>(condition.getReplicateSize());
+			final List<SamReader> tmpReaders = new ArrayList<>(condition.getReplicateSize());
 			for (String fileName : condition.getRecordFilenames()) {
 				tmpReaders.add(ConditionParameter.createSamReader(fileName));
 			}

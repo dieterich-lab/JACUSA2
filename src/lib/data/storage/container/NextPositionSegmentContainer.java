@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * TODO
+ */
 public class NextPositionSegmentContainer {
 
 	enum TYPE {UNKNOWN, COVERED, NOT_COVERED}

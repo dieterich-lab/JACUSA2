@@ -1,37 +1,40 @@
 package lib.util.position;
 
 import htsjdk.samtools.SAMRecord;
+import lib.record.Record;
 import lib.util.Base;
 import lib.util.Copyable;
-import lib.recordextended.SAMRecordExtended;
 
+/**
+ * TODO
+ */
 public interface Position extends Copyable<Position> {
 
 	// 1-based
 	int getReferencePosition();
 	
-	boolean isValidReferencePosition();
+	boolean isValidRefPos();
 	
 	// 0-based
 	int getReadPosition();
 	
 	default Base getReadBaseCall() {
-		return Base.valueOf(getRecord().getReadBases()[getReadPosition()]);
+		return Base.valueOf(getSAMRecord().getReadBases()[getReadPosition()]);
 	}
 	
 	default byte getReadBase() {
-		return getRecord().getReadBases()[getReadPosition()];
+		return getSAMRecord().getReadBases()[getReadPosition()];
 	}
 	
 	default byte getReadBaseCallQuality() {
-		return getRecord().getBaseQualities()[getReadPosition()];
+		return getSAMRecord().getBaseQualities()[getReadPosition()];
 	}
 	
-	SAMRecordExtended getRecordExtended();
+	Record getRecord();
 
 	// convenience
-	default SAMRecord getRecord() {
-		return getRecordExtended().getSAMRecord();
+	default SAMRecord getSAMRecord() {
+		return getRecord().getSAMRecord();
 	}
 	
 	// can be invalid -> -1

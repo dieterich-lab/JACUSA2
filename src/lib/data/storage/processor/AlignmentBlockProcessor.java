@@ -1,13 +1,15 @@
 package lib.data.storage.processor;
 
-import lib.recordextended.SAMRecordExtended;
-
 import lib.data.storage.PositionProcessor;
+import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.AllAlignmentBlocksPositionProvider;
+import lib.util.position.AllAlignmentBlocksPosProvider;
 import lib.util.position.PositionProvider;
 
-public class AlignmentBlockProcessor implements RecordExtendedPrePostProcessor {
+/**
+ * TODO
+ */
+public class AlignmentBlockProcessor implements GeneralRecordProcessor {
 
 	private final CoordinateTranslator translator;
 	private final PositionProcessor positionProcessor;
@@ -25,9 +27,9 @@ public class AlignmentBlockProcessor implements RecordExtendedPrePostProcessor {
 	}
 	
 	@Override
-	public void process(final SAMRecordExtended recordExtended) {
-		final PositionProvider positionProvider = new AllAlignmentBlocksPositionProvider(
-						recordExtended, translator);
+	public void process(final Record record) {
+		final PositionProvider positionProvider = new AllAlignmentBlocksPosProvider(
+						record, translator);
 		positionProcessor.process(positionProvider);
 	}
 	

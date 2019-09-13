@@ -20,9 +20,9 @@ public class MeanAlphaInit extends AbstractAlphaInit {
 		final double[] mean 	= new double[categories];
 
 		double total 			= 0.0;
-		for (int replicateIndex = 0; replicateIndex < nominalData.getReplicates(); ++replicateIndex) {
+		for (int replicateI = 0; replicateI < nominalData.getReplicates(); ++replicateI) {
 			for (int i = 0; i < categories; i++) { 
-				final double tmp = nominalData.getReplicate(replicateIndex)[i];
+				final double tmp = nominalData.getReplicate(replicateI)[i];
 				mean[i] += tmp;
 				total 	+= tmp;
 			}

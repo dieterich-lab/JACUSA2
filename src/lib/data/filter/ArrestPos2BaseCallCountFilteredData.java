@@ -2,26 +2,26 @@ package lib.data.filter;
 
 import java.util.Map;
 
-import lib.data.storage.lrtarrest.ArrestPosition2baseCallCount;
+import lib.data.storage.lrtarrest.ArrestPos2BCC;
 
 public class ArrestPos2BaseCallCountFilteredData 
-extends AbstractFilteredData<ArrestPos2BaseCallCountFilteredData, ArrestPosition2baseCallCount> {
+extends AbstractFilteredData<ArrestPos2BaseCallCountFilteredData, ArrestPos2BCC> {
 
 	private static final long serialVersionUID = 1L;
 
 	public ArrestPos2BaseCallCountFilteredData() {
 		super();
 	}
-	
-	protected ArrestPos2BaseCallCountFilteredData(Map<Character, ArrestPosition2baseCallCount> map) {
+
+	protected ArrestPos2BaseCallCountFilteredData(Map<Character, ArrestPos2BCC> map) {
 		super(map);
 	}
-	
+
 	@Override
-	protected ArrestPos2BaseCallCountFilteredData newInstance(Map<Character, ArrestPosition2baseCallCount> map) {
+	protected ArrestPos2BaseCallCountFilteredData newInstance(Map<Character, ArrestPos2BCC> map) {
 		return new ArrestPos2BaseCallCountFilteredData(map);
 	}
-	
+
 	@Override
 	public final boolean equals(Object obj) {
 		if (obj == null || ! getClass().isInstance(obj)) {
@@ -31,7 +31,7 @@ extends AbstractFilteredData<ArrestPos2BaseCallCountFilteredData, ArrestPosition
 			return true;
 		}
 
-		return equals(getClass().cast(obj));
+		return specificEquals(getClass().cast(obj));
 	}
 	
 }

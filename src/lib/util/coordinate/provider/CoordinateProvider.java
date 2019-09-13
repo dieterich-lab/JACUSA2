@@ -7,12 +7,10 @@ import java.util.Iterator;
 import lib.util.coordinate.Coordinate;
 
 /**
- * 
- * 
+ * TODO
  */
 public interface CoordinateProvider extends Iterator<Coordinate>, Closeable { 
 
-	// nothing needed
 	public int getTotal();
 
 }

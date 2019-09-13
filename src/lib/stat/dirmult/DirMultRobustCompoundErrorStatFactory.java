@@ -6,9 +6,9 @@ import org.apache.commons.cli.Options;
 
 import lib.io.ResultFormat;
 import lib.stat.AbstractStatFactory;
-import lib.stat.sample.provider.EstimationSampleProvider;
-import lib.stat.sample.provider.pileup.InSilicoEstimationSamplePileupProvider;
-import lib.stat.sample.provider.pileup.RobustEstimationSamplePileupProvider;
+import lib.stat.estimation.provider.EstimationContainerProvider;
+import lib.stat.estimation.provider.pileup.InSilicoEstimationPileupProvider;
+import lib.stat.estimation.provider.pileup.RobustEstimationPileupProvider;
 
 public class DirMultRobustCompoundErrorStatFactory
 extends AbstractStatFactory {
@@ -28,17 +28,17 @@ extends AbstractStatFactory {
 
 	@Override
 	public CallStat newInstance(double threshold, final int conditions) {
-		EstimationSampleProvider dirMultPileupCountProvider;
+		EstimationContainerProvider dirMultPileupCountProvider;
 		switch (conditions) {
 		case 1:
-			dirMultPileupCountProvider = new InSilicoEstimationSamplePileupProvider(
+			dirMultPileupCountProvider = new InSilicoEstimationPileupProvider(
 					dirMultParameter.isCalcPValue(),
 					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
 					dirMultParameter.getEstimatedError());
 			break;
 			
 		case 2:
-			dirMultPileupCountProvider = new RobustEstimationSamplePileupProvider(
+			dirMultPileupCountProvider = new RobustEstimationPileupProvider(
 					dirMultParameter.isCalcPValue(),
 					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
 					dirMultParameter.getEstimatedError()); 

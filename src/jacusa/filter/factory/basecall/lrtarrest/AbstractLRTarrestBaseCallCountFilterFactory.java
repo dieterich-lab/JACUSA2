@@ -2,7 +2,7 @@ package jacusa.filter.factory.basecall.lrtarrest;
 
 import org.apache.commons.cli.Option;
 
-import jacusa.filter.factory.basecall.AbstractBaseCallCountFilterFactory;
+import jacusa.filter.factory.basecall.AbstractBCCfilterFactory;
 import jacusa.filter.factory.basecall.rtarrest.AbstractRTarrestBaseCallcountFilterFactory;
 import lib.cli.options.filter.has.HasApply2reads;
 import lib.cli.options.filter.has.HasFilterDistance;
@@ -29,8 +29,8 @@ implements HasFilterDistance, HasFilterMinRatio, HasApply2reads {
 		super(
 				option, 
 				bccSwitch, filteredDataFetcher, 
-				AbstractBaseCallCountFilterFactory.DEFAULT_FILTER_DISTANCE,
-				AbstractBaseCallCountFilterFactory.DEFAULT_FILTER_MINRATIO);
+				AbstractBCCfilterFactory.DEFAULT_FILTER_DISTANCE,
+				AbstractBCCfilterFactory.DEFAULT_FILTER_MINRATIO);
 	}
 	
 	

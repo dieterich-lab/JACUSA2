@@ -1,30 +1,30 @@
 package lib.data.storage.readsubstitution;
 
+import lib.record.Record;
 import lib.util.Base;
 import lib.util.position.Position;
-import lib.recordextended.SAMRecordExtended;
 import htsjdk.samtools.SAMRecord;
 
 public class StrandedBaseCallInterpreter
 implements BaseCallInterpreter {
 
 	@Override
-	public Base getReadBase(SAMRecordExtended recordExtended, int readPos) {
-		final SAMRecord record = recordExtended.getSAMRecord();
-		final Base base = Base.valueOf(record.getReadBases()[readPos]);
-		if (record.getReadNegativeStrandFlag()) {
+	public Base getReadBase(Record record, int readPos) {
+		final SAMRecord samRecord = record.getSAMRecord();
+		final Base base = Base.valueOf(samRecord.getReadBases()[readPos]);
+		if (samRecord.getReadNegativeStrandFlag()) {
 			return base.getComplement();
 		}
 		return base;
 	}
 	
 	@Override
-	public Base getRefBase(SAMRecordExtended recordExtended, Position pos) {
-		final SAMRecord record = recordExtended.getSAMRecord();
-		final Base base = recordExtended
+	public Base getRefBase(Record record, Position pos) {
+		final SAMRecord samRecord = record.getSAMRecord();
+		final Base base = record
 				.getRecordReferenceProvider()
-				.getReferenceBase(pos.getReferencePosition(), pos.getReadPosition());
-		if (record.getReadNegativeStrandFlag()) {
+				.getRefBase(pos.getReferencePosition(), pos.getReadPosition());
+		if (samRecord.getReadNegativeStrandFlag()) {
 			return base.getComplement();
 		}
 		return base;

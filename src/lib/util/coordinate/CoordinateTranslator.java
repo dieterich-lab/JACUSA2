@@ -8,14 +8,14 @@ public interface CoordinateTranslator {
 
 	int getLength();
 
-	int reference2windowPosition(int refPos);
+	int ref2winPos(int refPos);
 	
-	default int coordinate2windowPosition(Coordinate coordinate) {
-		return reference2windowPosition(coordinate.get1Position());
+	default int coord2winPos(Coordinate coordinate) {
+		return ref2winPos(coordinate.get1Position());
 	}
 	
 	// make sure winPos is within window!
-	default int window2referencePosition(int winPos) {
+	default int win2refPos(int winPos) {
 		return getRefPosStart() + winPos;
 	}
 	

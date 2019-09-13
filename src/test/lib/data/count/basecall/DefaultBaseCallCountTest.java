@@ -6,26 +6,26 @@ import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.count.basecall.DefaultBaseCallCount;
+import lib.data.count.basecall.DefaultBCC;
 
 class DefaultBaseCallCountTest extends AbstractBaseCallCountTest {
 
 	public DefaultBaseCallCountTest() {
-		super(new DefaultBaseCallCount.Parser());
+		super(new DefaultBCC.Parser());
 	}
 	
 	@Override
 	BaseCallCount create() {
-		return new DefaultBaseCallCount();
+		return new DefaultBCC();
 	}
 	
 	static public class ToDefaultBaseCallCountArgumentConverter extends SimpleArgumentConverter {
 
 		@Override
 		protected Object convert(Object src, Class<?> target) throws ArgumentConversionException {
-			assertEquals(DefaultBaseCallCount.class, target, "Can only convert to DefaultBaseCallCount");
+			assertEquals(DefaultBCC.class, target, "Can only convert to DefaultBaseCallCount");
 			final String s = String.valueOf(src);
-			return new DefaultBaseCallCount.Parser().parse(s);
+			return new DefaultBCC.Parser().parse(s);
 		}
 
 	}

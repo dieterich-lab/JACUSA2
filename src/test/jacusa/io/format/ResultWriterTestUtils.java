@@ -9,6 +9,9 @@ import java.io.IOException;
 
 public abstract class ResultWriterTestUtils {
 
+	private ResultWriterTestUtils() {
+	}
+
 	public static void assertEqualFiles(final File expectedFile, final File actualFile) throws IOException {
 		assertEqualFiles(expectedFile, actualFile, 0);
 	}
@@ -32,9 +35,7 @@ public abstract class ResultWriterTestUtils {
 			// end of file
 			if (expectedLine == null && expectedLine == actualLine) {
 				expectedBr.close();
-				expectedBr = null;
 				actualBr.close();
-				actualBr = null;
 				return;
 			}
 			// files different -> close

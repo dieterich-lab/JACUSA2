@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.util.Iterator;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,6 +24,7 @@ import test.utlis.AbstractArgumentIterator;
 /**
  * Tests @see lib.phred2prob.Phred2Prob
  */
+@Disabled
 @TestInstance(Lifecycle.PER_CLASS)
 public class Phred2ProbTest {
 

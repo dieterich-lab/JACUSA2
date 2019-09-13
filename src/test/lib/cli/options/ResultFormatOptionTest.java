@@ -71,7 +71,7 @@ implements ACOptionTest<Character> {
 				new BED6callResultFormat("test", parameter),
 				new VCFcallFormat(parameter))
 				.stream()
-				.collect(Collectors.toMap(ResultFormat::getC, Function.identity()) );
+				.collect(Collectors.toMap(ResultFormat::getID, Function.identity()) );
 	}
 
 	@Override
@@ -82,7 +82,7 @@ implements ACOptionTest<Character> {
 
 	@Override
 	public Character getActualValue() {
-		return getGeneralParamter().getResultFormat().getC();
+		return getGeneralParamter().getResultFormat().getID();
 	}
 
 }

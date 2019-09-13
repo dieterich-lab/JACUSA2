@@ -23,15 +23,18 @@ import htsjdk.samtools.SAMException;
 import htsjdk.samtools.SAMSequenceDictionary;
 import htsjdk.samtools.SAMSequenceRecord;
 
+/**
+ * TODO
+ */
 public abstract class AbstractMethod {
-
+	
 	private final String name;
 	
 	private final GeneralParameter parameter;
 	private final AbstractDataAssemblerFactory dataAssemblerFactory;
 	
 	private final List<AbstractACOption> acOptions;
-
+	
 	private CoordinateProvider coordinateProvider;
 	private WorkerDispatcher workerDispatcher;
 	
@@ -44,17 +47,17 @@ public abstract class AbstractMethod {
 		this.parameter = parameter;
 		this.dataAssemblerFactory = dataAssemblerFactory;
 		
-		acOptions = new ArrayList<AbstractACOption>(10);
+		acOptions = new ArrayList<>(10);
 	}
-
+	
 	public String getName() {
 		return name;
 	}
-
+	
 	public GeneralParameter getParameter() {
 		return parameter;
 	}
-
+	
 	public final WorkerDispatcher getWorkerDispatcherInstance() {
 		if (workerDispatcher == null) {
 			workerDispatcher = new WorkerDispatcher(this);
@@ -62,7 +65,7 @@ public abstract class AbstractMethod {
 		
 		return workerDispatcher;
 	}
-
+	
 	public abstract AbstractWorker createWorker(final int threadId);
 	
 	public AbstractDataAssemblerFactory getDataAssemblerFactory() {
@@ -80,7 +83,7 @@ public abstract class AbstractMethod {
 	protected abstract void initGlobalACOptions();
 	
 	// check state after parameters have been set
-	final public boolean checkState() {
+	public final boolean checkState() {
 		if (getParameter().getActiveWindowSize() >= getParameter().getReservedWindowSize()) {
 			AbstractTool.getLogger().addError("THREAD-WINDOW-SIZE must be << WINDOW-SIZE");
 			return false;
@@ -90,22 +93,21 @@ public abstract class AbstractMethod {
 	}
 	
 	protected void addACOption(AbstractACOption newACOption) {
-		if (checkDuplicate(newACOption)) {
-			acOptions.add(newACOption);
-		}
+		checkDuplicate(newACOption);
+		acOptions.add(newACOption);
 	}
 	
-	private boolean checkDuplicate(final AbstractACOption newACOption) {
+	private void checkDuplicate(final AbstractACOption newACOption) {
 		for (final AbstractACOption ACOption : acOptions) {
 			try {
 				if (ACOption.getOpt() != null && 
 						ACOption.getOpt().equals(newACOption.getOpt())) {
-					throw new Exception("Duplicate opt '" + newACOption.getOpt() + 
+					throw new IllegalArgumentException("Duplicate opt '" + newACOption.getOpt() + 
 							"' for object: " + newACOption.toString() + " and " + ACOption.toString());
 				}
 				if (ACOption.getOpt() != null && 
 						ACOption.getLongOpt().equals(newACOption.getLongOpt())) {
-					throw new Exception("Duplicate longOpt '" + newACOption.getLongOpt() + 
+					throw new IllegalArgumentException("Duplicate longOpt '" + newACOption.getLongOpt() + 
 							"' for object" + newACOption.toString() + " and " + ACOption.toString());
 				}
 			} catch (Exception e) {
@@ -113,12 +115,10 @@ public abstract class AbstractMethod {
 				System.exit(1);
 			}
 		}
-
-		return true;
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @return
 	 */
 	public List<AbstractACOption> getACOptions() {
@@ -126,12 +126,12 @@ public abstract class AbstractMethod {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param options
 	 */
 	public void printUsage(final boolean printExtendedHelp) {
 		final HelpFormatter formatter = new HelpFormatter();
-		formatter.setWidth(160);
+		formatter.setWidth(200);
 
 		formatter.printHelp(
 				AbstractTool.getLogger().getTool().getName() + 
@@ -156,9 +156,9 @@ public abstract class AbstractMethod {
 	}
 	
 	protected Options getOptions(final boolean printExtendedHelp) {
-		final List<AbstractACOption> acOptions = getACOptions();
+		final List<AbstractACOption> tmpAcOptions = getACOptions();
 		final Options options = new Options();
-		for (final AbstractACOption acOption : acOptions) {
+		for (final AbstractACOption acOption : tmpAcOptions) {
 			if (! acOption.isHidden()) {
 				options.addOption(acOption.getOption(printExtendedHelp));
 			}
@@ -167,15 +167,15 @@ public abstract class AbstractMethod {
 	}
 	
 	/**
-	 * 
+	 * TODO
 	 * @throws Exception
 	 */
 	public void initCoordinateProvider() throws Exception {
 		final int conditionSize = parameter.getConditionsSize();
 		final String[][] recordFilenames = new String[conditionSize][];
 
-		for (int conditionIndex = 0; conditionIndex < conditionSize; conditionIndex++) {
-			recordFilenames[conditionIndex] = parameter.getConditionParameter(conditionIndex).getRecordFilenames();
+		for (int condI = 0; condI < conditionSize; condI++) {
+			recordFilenames[condI] = parameter.getConditionParameter(condI).getRecordFilenames();
 		}
 		
 		boolean isStranded = false;
@@ -189,7 +189,6 @@ public abstract class AbstractMethod {
 		final List<SAMSequenceRecord> sequenceRecords = getSAMSequenceRecords(recordFilenames);
 		if (parameter.getInputBedFilename().isEmpty()) {
 			coordinateProvider = new SAMCoordinateAdvancedProvider(isStranded, sequenceRecords, parameter);
-			// coordinateProvider = new SAMCoordinateProvider(isStranded, sequenceRecords);
 		} else {
 			coordinateProvider = new BedCoordinateProvider(parameter.getInputBedFilename(), isStranded);
 			// wrap chosen provider
@@ -201,22 +200,22 @@ public abstract class AbstractMethod {
 	}
 	
 	/**
-	 * 
+	 * TODO
 	 * @param args
 	 * @return
 	 * @throws Exception
 	 */
 	public boolean parseArgs(final String[] args) throws Exception {
-		for (int conditionIndex = 0; conditionIndex < args.length; conditionIndex++) {
-			SAMPathnameArg pa = new SAMPathnameArg(conditionIndex + 1, parameter.getConditionParameter(conditionIndex));
-			pa.processArg(args[conditionIndex]);
+		for (int condI = 0; condI < args.length; condI++) {
+			SAMPathnameArg pa = new SAMPathnameArg(condI + 1, parameter.getConditionParameter(condI));
+			pa.processArg(args[condI]);
 		}
 		
 		return true;
 	}
 	
 	/**
-	 * 
+	 * TODO
 	 * @return
 	 */
 	public CoordinateProvider getCoordinateProvider() {
@@ -226,7 +225,7 @@ public abstract class AbstractMethod {
 	public abstract List<ParallelDataValidator> createParallelDataValidators();
 	
 	/**
-	 * 
+	 * TODO
 	 * @param recordFilenames
 	 * @return
 	 * @throws Exception
@@ -243,11 +242,9 @@ public abstract class AbstractMethod {
 				if (lastSequenceDictionary == null) {
 					lastSequenceDictionary = sequenceDictionary;
 					lastRecordFilename = recordFilename;
-				} else if (! lastSequenceDictionary.isSameDictionary(sequenceDictionary)) {
+				}
+				if (! lastSequenceDictionary.isSameDictionary(sequenceDictionary)) {
 					throw new SAMException(error + " " + lastRecordFilename + " and " + recordFilename);
-				} else {
-					lastSequenceDictionary = sequenceDictionary;
-					lastRecordFilename = recordFilename;
 				}
 			}
 		}
@@ -255,18 +252,18 @@ public abstract class AbstractMethod {
 		return lastSequenceDictionary.getSequences();
 	}
 
-	public void debug() {};
+	public void debug() {}
 
 	/*
 	 * Builder
 	 */
 
-	public static abstract class AbstractFactory {
-		
+	public abstract static class AbstractFactory {
+
 		private final String name;
 		private final String desc;
 		private final int conditions;
-	
+
 		public AbstractFactory(final String name, final String desc, final int conditions) {
 			this.name = name;
 			this.desc = desc;
@@ -284,10 +281,10 @@ public abstract class AbstractMethod {
 		public int getConditions() {
 			return conditions;
 		}
-		
+
 		public abstract AbstractMethod createMethod();
 		public abstract AbstractFactory createFactory(final int conditions);
 
 	}
-	
+
 }
