@@ -8,6 +8,7 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.StringUtil;
+import lib.data.global.Ks;
 
 public class Record {
 
@@ -74,6 +75,8 @@ public class Record {
 		final AlignedPosition position = new AlignedPosition(samRecord.getAlignmentStart());
 
 		int index = 0;
+		boolean reverse = (samRecord.getFlags() & 0x10) == 0x10;
+		String read = samRecord.getReadString();
 		
 		// process CIGAR -> SNP, INDELs
 		for (final CigarElement cigarElement : samRecord.getCigar().getCigarElements()) {
@@ -86,6 +89,8 @@ public class Record {
 			case I:
 				insertions.add(index);
 				INDELs.add(index);
+				System.out.print(samRecord.getReadName()+"\t");
+				Ks.getInstance().addIns(read, position.getReadPos(), cigarElement.getLength(), reverse);
 				break;
 			
 			/*
