@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Ks {
 	private static Ks ks = null;
-	private static int k = 6;
+	private static int k = 8;
 	private List<Kmer> kmers;
 	
 	private Ks() {
@@ -28,15 +28,14 @@ public class Ks {
 	}
 	
 	public String getIns(String read, int readPos, int cigarLen, boolean reverse) {
-		if (reverse)
-			return read.substring(start(readPos-k), end(readPos+cigarLen+k-1, read.length()));
-		else 
-			return read.substring(start(readPos-k), end(readPos+cigarLen+k-1, read.length()));
+		return read.substring(start(readPos-k), end(readPos+cigarLen+k-1, read.length()));
 	}
 
 	public void addIns(String read, int readPos, int cigarLen, boolean reverse) {
-		System.out.print(reverse+"\t");
-		System.out.println(getIns(read, readPos, cigarLen, reverse));
+		for(int i=0; i<k; i++) {
+			for(String s : Kmer.composition(k, getIns(read, readPos, cigarLen, reverse)))
+				kmers.get(k).add(s);
+		}
 	}
 	
 	
