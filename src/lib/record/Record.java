@@ -8,7 +8,7 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.StringUtil;
-import lib.data.global.Ks;
+import lib.data.global.Indel;
 
 public class Record {
 
@@ -89,8 +89,7 @@ public class Record {
 			case I:
 				insertions.add(index);
 				INDELs.add(index);
-				System.out.print(samRecord.getReadName()+"\t");
-				Ks.getInstance().addIns(read, position.getReadPos(), cigarElement.getLength(), reverse);
+				Indel.getInstance().addIns(read, position.getReadPos(), cigarElement.getLength(), reverse);
 				break;
 			
 			/*
@@ -99,6 +98,7 @@ public class Record {
 			case D:
 				deletions.add(index);
 				INDELs.add(index);
+				Indel.getInstance().addDel(getRecordReferenceProvider(), position.getRefPos(), position.getReadPos(), cigarElement.getLength(), reverse);
 				break;
 			
 			/*

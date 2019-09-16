@@ -20,9 +20,9 @@ public class WorkerDispatcher {
 
 	public static final String FILE_SUFFIX = ".filtered";
 	
-	private final AbstractMethod methodFactory;
+	protected final AbstractMethod methodFactory;
 
-	private final List<AbstractWorker> workerContainer;
+	protected final List<AbstractWorker> workerContainer;
 	private final List<AbstractWorker> runningWorkers;
 
 	private Integer comparisons;
@@ -50,7 +50,7 @@ public class WorkerDispatcher {
 		}
 	}
 
-	private synchronized AbstractWorker createWorker() {
+	protected synchronized AbstractWorker createWorker() {
 		return methodFactory.createWorker(workerContainer.size());
 	}
 	
@@ -122,7 +122,7 @@ public class WorkerDispatcher {
 		return methodFactory.getParameter().splitFiltered();
 	}
 	
-	private void writeOutput() throws IOException {
+	protected void writeOutput() throws IOException {
 		resultWriter.writeHeader(getConditionParameters());
 		// add header to filtered file
 		if (splitFiltered()) {
