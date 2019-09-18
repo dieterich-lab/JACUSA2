@@ -35,7 +35,10 @@ public enum Base {
 		
 		final Map<Byte, Base> tmpBYTE2BASE = new HashMap<>();
 		for (Base b : Base.values()) {
+			// upper case
 			tmpBYTE2BASE.put(b.bite, b);
+			// lower case
+			tmpBYTE2BASE.put((byte)Character.toLowerCase(b.getChar()), b);
 		}
 		BYTE2BASE = Collections.unmodifiableMap(tmpBYTE2BASE);
 	}
