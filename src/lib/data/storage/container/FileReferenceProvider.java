@@ -33,7 +33,7 @@ public class FileReferenceProvider implements ReferenceProvider {
 		this.indexedFastaSequenceFile 	= indexedFastaSequenceFile;
 		this.coordinateController 		= coordinateController;
 
-		referenceBaseBuffer = new HashMap<Integer, Byte>(Util.noRehashCapacity(READ_AHEAD));
+		referenceBaseBuffer = new HashMap<>(Util.noRehashCapacity(READ_AHEAD));
 	}
 	
 	@Override
