@@ -13,7 +13,7 @@ public class ThreadWindowSizeOption extends AbstractACOption {
 	private final GeneralParameter parameter; 
 	
 	public ThreadWindowSizeOption(GeneralParameter parameter) {
-		super("W", "thread-window-size");
+		super("W", "thread-window");
 		this.parameter = parameter;
 	}
 
@@ -35,7 +35,7 @@ public class ThreadWindowSizeOption extends AbstractACOption {
     	final String value = line.getOptionValue(getOpt());
     	final int windowSize = Integer.parseInt(value);
     	if (windowSize != NO_WINDOWS && windowSize < MIN_WINDOWS) {
-    		throw new IllegalArgumentException("THREAD-WINDOW-SIZE must be >= " + MIN_WINDOWS);
+    		throw new IllegalArgumentException("THREAD-WINDOW must be >= " + MIN_WINDOWS);
     	}
 
     	parameter.setReservedWindowSize(windowSize);

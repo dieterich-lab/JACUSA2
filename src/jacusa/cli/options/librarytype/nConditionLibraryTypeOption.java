@@ -21,7 +21,7 @@ import org.apache.commons.cli.Option;
 public class nConditionLibraryTypeOption extends AbstractConditionACOption {
 
 	public static final String OPT 		= "P";
-	public static final String LONG_OPT = "library-type";
+	public static final String LONG_OPT = "lib-type";
 
 	private Set<LibraryType> availableLibTypes;
 	private final GeneralParameter generalParameter;
@@ -55,7 +55,7 @@ public class nConditionLibraryTypeOption extends AbstractConditionACOption {
 			desc += " for condition " + getcondI();
 		}
 		desc += ":\n" + getAvailableValues(availableLibTypes) + 
-				"\n default: " + LibraryType.UNSTRANDED;
+				"default: " + LibraryType.UNSTRANDED;
 		return Option.builder(getOpt())
 				.argName(LONG_OPT.toUpperCase())
 				.hasArg(true)

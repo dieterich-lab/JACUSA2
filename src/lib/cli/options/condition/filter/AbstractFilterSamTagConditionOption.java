@@ -35,7 +35,7 @@ abstract class AbstractFilterSamTagConditionOption extends AbstractConditionACOp
 		}
 		
 		return Option.builder(getOpt())
-				.argName(tag + "-VALUE")
+				.argName(tag)
 				.hasArg(true)
 		        .desc(s)
 		        .build();

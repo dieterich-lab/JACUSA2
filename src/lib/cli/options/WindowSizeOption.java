@@ -10,7 +10,7 @@ public class WindowSizeOption extends AbstractACOption {
 	private final GeneralParameter parameters; 
 	
 	public WindowSizeOption(GeneralParameter parameter) {
-		super("w", "window-size");
+		super("w", "window");
 		this.parameters = parameter;
 	}
 

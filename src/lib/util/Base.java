@@ -10,10 +10,10 @@ import java.util.Set;
 
 public enum Base {
 	
-	A(0, 3, (byte)'A'), 
-	C(1, 2, (byte)'C'), 
-	G(2, 1, (byte)'G'), 
-	T(3, 0, (byte)'T'), 
+	A(0, 3, (byte)'A'),
+	C(1, 2, (byte)'C'),
+	G(2, 1, (byte)'G'),
+	T(3, 0, (byte)'T'),
 	N(4, 4, (byte)'N');
 	
 	private static final Base[] VALID = new Base[] {A, C, G, T};

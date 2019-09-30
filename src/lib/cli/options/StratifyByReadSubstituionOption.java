@@ -18,7 +18,7 @@ public class StratifyByReadSubstituionOption extends AbstractACOption {
 	private final HasReadSub hasReadReadSub;
 	
 	public StratifyByReadSubstituionOption(final HasReadSub hasReadReadSubstitution) {
-		super("B", "read-substitution");
+		super("B", "read-sub");
 		this.hasReadReadSub = hasReadReadSubstitution;
 	}
 	

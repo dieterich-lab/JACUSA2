@@ -22,6 +22,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
 
 public class CLI {
@@ -145,27 +146,84 @@ public class CLI {
 			
 				final Map<String, List<AbstractACOption>> method2acOption = 
 						opt2method2acOption.get(opt);
+				// print header
+				// TODO
+				/* sb
+					.append("\\textbf{Option}")
+					.append(" & ")
+					.append("\\textbf{Description}")
+					.append(" & ")
+					.append("\\textbf{Method} \\\\\n");
+				*/
+				final List<String> optionStrs = new ArrayList<>();
+				final List<String> descStrs = new ArrayList<>();
+				final List<String> methodStrs = new ArrayList<>();
 				for (final String methodName : methodNames) {
 					if (! method2acOption.containsKey(methodName)) {
 						continue;
 					}
 					for (final AbstractACOption acOption : method2acOption.get(methodName)) {
-						sb
-						.append('-').append(escape(acOption.getOpt()))
-						.append(" & ")
-						.append(escape(acOption.getOption(false).getDescription()))
-						.append(" & ")
-						.append(escape(methodName))
-						.append(" \\\\\n");
+						final Option option = acOption.getOption(false);
+						if (option.getArgName() != null) {
+							optionStrs.add('-'+ escape(option.getOpt() + ' ' + option.getArgName()));
+						} else {
+							optionStrs.add('-'+ escape(option.getOpt()));
+						}
+						descStrs.add(escape(acOption.getOption(false).getDescription()));
+						methodStrs.add(escape(methodName));
 					}
 				}
-				bw.write("\\begin{tabular}{p{.175\\textwidth}p{.7\\textwidth}c}\n");
+				deduplicate(optionStrs);
+				deduplicate(descStrs);
+				for (int i = 0; i < methodStrs.size(); ++i) {
+					sb
+					.append(optionStrs.get(i))
+					.append(" & ")
+					.append(descStrs.get(i))
+					.append(" & ")
+					.append(methodStrs.get(i))
+					.append(" \\\\\n");
+				}
+				bw.write("{\\small\n");
+				bw.write("\\begin{tabular}{@{}p{.25\\textwidth}p{.5\\textwidth}l@{}}\n");
 				bw.write(sb.toString());
-				bw.write("\\end{tabular}\n");
+				bw.write("\\end{tabular}\\\\\n");
+				bw.write("}\n");
 				bw.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.exit(1);
+			}
+		}
+	}
+	
+	private void deduplicate(final List<String> list) {
+		int firstI = -1;
+		int length = 0;
+		String tmp = "";
+		for (int i = 0; i < list.size(); ++i) {
+			if (firstI == -1) {
+				firstI = i;
+				length = 1;
+				tmp = list.get(i);
+			} else if (tmp.equals(list.get(i))){
+				++length;
+			} else {
+				if (length > 1) {
+					list.set(firstI, "\\multirow{" + length + "}{=}{" + tmp + "}");
+					for (int j = firstI + 1; j < length - 1; ++j) {
+						list.set(j, "");
+					}
+				}
+				firstI = i;
+				length = 1;
+				tmp = list.get(i);
+			}
+		}
+		if (length > 1) {
+			list.set(firstI, "\\multirow{" + length + "}{=}{" + tmp + "}");
+			for (int j = firstI + 1; j < length; ++j) {
+				list.set(j, "");
 			}
 		}
 	}
