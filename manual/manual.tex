@@ -2,19 +2,41 @@
 
 % include stuff
 \usepackage[utf8]{inputenc}
-\usepackage{todonotes}
+\usepackage[obeyDraft]{todonotes}
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage{longtable}
-%\usepackage{multirow}
+\usepackage{multirow}
 \usepackage[T1]{fontenc}
-\usepackage{todonotes} %[disable]
+\usepackage{xkeyval}
+% TODO
+%\define\choicekey*{fam}{method}[]{call-1,call-2,pileup,rt-arrest,lrt-arrest}{%
+%    
+%}
+
+\newcommand{\callone}{call-1}
+\newcommand{\calltwo}{call-2}
+\newcommand{\pileup}{pileup}
+\newcommand{\rtarrest}{rt-arrest}
+\newcommand{\lrtarrest}{lrt-arrest}
+
+\newcommand{\clioption}[3]{%
+    \begin{tabular}{p{.3\textwidth}p{.7\textwidth}}
+        #1 & #2 \\
+           & \hfill #3 \\
+    \end{tabular}
+}
 
 % document relatedf
 \title{JACUSA2 manual}
 \author{Michael Piechotta \\ michael.piechotta@gmail.com}
-\date{10th, March, 2019} 
+\date{29th, September, 2019} 
 
+% TODO
+% * structure CLI options
+% * add command for formatting CLI options
+% * add command to depict what method supports CLI opiton 
+% * add command to depict what method supports what is required and what is optional
 % --------------------------------------------------------------------------------------------------
 \begin{document}
 % --------------------------------------------------------------------------------------------------
@@ -110,13 +132,14 @@ consists of:
   \item[variants.txt] Coordinates of imputed variants and their target and sample
   frequencies
 \end{description}
-Available sample data organized by data type and species:
+Available sample data:
 \todo[author=michael]{we have to move the data to dieterichlab}
 \begin{itemize}
   \item
-  \url{http://www.age.mpg.com/software/jacusa/sample_data/hg19_chr1_gDNA_VS_cDNA.tar.gz}{hg19\_chr1\_gDNA\_VS\_cDNA.tar.gz}
-  \item
-  \url{http://www.age.mpg.com/software/jacusa/sample_data/hg19_chr1_cDNA_VS_cDNA.tar.gz}{hg19\_chr1\_cDNA\_VS\_cDNA.tar.gz}
+  %\url{http://www.age.mpg.com/software/jacusa/sample_data/hg19_chr1_gDNA_VS_cDNA.tar.gz}{hg19\_chr1\_gDNA\_VS\_cDNA.tar.gz}
+  \item \url{https://data.dieterichlab.org/s/hg19_chr1_gDNA_VS_cDNA}{hg19\_chr1\_gDNA\_VS\_cDNA}
+  %\item
+  %\url{http://www.age.mpg.com/software/jacusa/sample_data/hg19_chr1_cDNA_VS_cDNA.tar.gz}{hg19\_chr1\_cDNA\_VS\_cDNA.tar.gz}
 \end{itemize}
 % --------------------------------------------------------------------------------------------------
 \subsection{Reverse transcriptase arrest event}
@@ -228,8 +251,8 @@ output formats, controlled by ``-f'':
 \end{itemize}
 The default output format is based on
 BED6\footnote{\url{http://genome.ucsc.edu/FAQ/FAQformat.html\#format1}{BED file format}} with
-additional JACUSA2 methods specific columns. The actual number of columns depends on the JACUSA2 method and 
-the number of provided BAM files.
+additional JACUSA2 methods specific columns. The actual number of columns depends on the JACUSA2 
+method and the number of provided BAM files.
 \begin{table}[ht]
 \caption{JACUSA2 default output format --- core elements}
 {\small
@@ -237,7 +260,7 @@ the number of provided BAM files.
 Column: & 1 & 2 & 3 & 4 & 5 & 6 & \ldots & N-1 & N \\
 \hline
 & 1 & 100 & 101 & variant & $8.07\ldots$ & - & JACUSA2 method specific & * & * \\	
-& \multicolumn{6}{c|}{\ldots} & \multicolumn{4}{c}{\ldots}
+\multicolumn{6}{c|}{\ldots} & \multicolumn{4}{c}{\ldots}
 \end{tabular}}
 \end{table}
 \begin{description}
@@ -347,6 +370,70 @@ This method supports partial artefact filtering. Currently, filters only apply t
 sites with ``*'' in in ``arrest\_pos''. Furthermore, coverage filter and minBASQ of Base Call apply 
 that will affect the output.
 %---------------------------------------------------------------------------------------------------
+% TODO options
+\section{Description of command line options}
+\subsection{Input / Output}
+\subsubsection{Input BAM files}
+% TODO BAM files
+\subsubsection{Output file}
+\input{CLI/r}
+%
+\subsection{Filtering artefacts}
+\subsubsection{Configure feature filter}
+\input{CLI/a}
+\subsubsection{Output artefacts to separate file}
+\input{CLI/s}
+%
+\subsection{Input BED file}
+\input{CLI/b}
+\subsection{Reference fasta file}
+\input{CLI/R}
+%
+\subsection{Library type}
+\input{CLI/P}
+%
+\subsection{Read base changes}
+\input{CLI/B}
+\subsection{Show deletion score}
+\input{CLI/D}
+\subsection{General filtering}
+\subsubsection{Filter by mapping quality}
+\input{CLI/m1}
+\subsubsection{Filter by base call quality}
+\input{CLI/q1}
+\subsubsection{Filter by minimal coverage}
+\input{CLI/c1}
+\subsubsection{Limit maximal depth}
+\input{CLI/d1}
+\subsection{Specific filtering}
+\subsubsection{Filter by flag(s)}
+% TODO escape latex letters \input{CLI/f}
+\subsubsection{Retain by flag(s)}
+\input{CLI/F}
+\subsubsection{Filter by number of hits}
+\input{CLI/filterNH_1}
+\subsubsection{Filter by number of mismatches}
+\input{CLI/filterNM_1}
+% 
+\subsection{Thread related}
+\subsubsection{Number of parallel threads}
+\input{CLI/p}
+\subsubsection{Actual thread window size}
+\input{CLI/w}
+\subsubsection{Reserved thread window size}
+\input{CLI/W}
+%
+\subsection{Test-statistic options}
+\input{CLI/T}
+\input{CLI/u}
+\subsection{Filtering by Test-statistic threshold}
+% TODO remove
+%\clioption{-T <THRESHOLD>}{Filter positions based on test-statistic THRESHOLD\newline default: DO 
+%NOT FILTER}{\callone \calltwo \rtarrest \lrtarrest}
+\subsection{Misc}
+\input{CLI/h}
+\input{CLI/x}
+%---------------------------------------------------------------------------------------------------
 \section{Used libraries}
 \begin{tabular}{lrl}
 \bf{Libray} & \bf{Version} & \bf{Source} \\
@@ -355,6 +442,9 @@ htsjdk & 2.12.0 & \url{https://github.com/samtools/htsjdk} \\
 Apache commons-cli & 1.4 & \url{https://commons.apache.org/proper/commons-cli} \\
 Apache commons-math3 & 3.6.1 & \url{http://commons.apache.org/proper/commons-math}
 \end{tabular}
+%---------------------------------------------------------------------------------------------------
+\bibliographystyle{apalike}
+\bibliography{manual}
 %---------------------------------------------------------------------------------------------------
 \end{document}
 %---------------------------------------------------------------------------------------------------
