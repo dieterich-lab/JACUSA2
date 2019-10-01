@@ -89,7 +89,7 @@ public class WorkerDispatcher {
 					break;
 				}
 				try {
-					this.wait(60 * (long)1000);
+					this.wait(/*60 */ (long)1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					System.exit(1);

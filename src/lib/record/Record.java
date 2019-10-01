@@ -8,6 +8,7 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.StringUtil;
+import lib.data.global.Cigartag;
 import lib.data.global.Indel;
 
 public class Record {
@@ -75,12 +76,14 @@ public class Record {
 		final AlignedPosition position = new AlignedPosition(samRecord.getAlignmentStart());
 
 		int index = 0;
-		boolean reverse = (samRecord.getFlags() & 0x10) == 0x10;
-		String read = samRecord.getReadString();
+		Cigartag ctag = Cigartag.getInstance();
+		Indel indel = Indel.getInstance();
+		ctag.process(samRecord);
 		
 		// process CIGAR -> SNP, INDELs
 		for (final CigarElement cigarElement : samRecord.getCigar().getCigarElements()) {
-			
+
+			ctag.process(cigarElement.getLength());
 			switch (cigarElement.getOperator()) {
 
 			/*
@@ -89,7 +92,8 @@ public class Record {
 			case I:
 				insertions.add(index);
 				INDELs.add(index);
-				Indel.getInstance().addIns(read, position.getReadPos(), cigarElement.getLength(), reverse);
+				indel.addIns(samRecord, position.getReadPos(), cigarElement.getLength());
+				ctag.process(cigarElement.getLength());
 				break;
 			
 			/*
@@ -98,7 +102,8 @@ public class Record {
 			case D:
 				deletions.add(index);
 				INDELs.add(index);
-				Indel.getInstance().addDel(getRecordReferenceProvider(), position.getRefPos(), position.getReadPos(), cigarElement.getLength(), reverse);
+				indel.addDel(this, position.getRefPos(), position.getReadPos(), cigarElement.getLength());
+				ctag.process(cigarElement.getLength());
 				break;
 			
 			/*

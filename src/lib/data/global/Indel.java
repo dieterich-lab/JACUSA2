@@ -3,6 +3,9 @@ package lib.data.global;
 import java.util.HashMap;
 import java.util.Map;
 
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SAMTag;
+import lib.record.Record;
 import lib.record.RecordRefProvider;
 
 public class Indel {
@@ -79,7 +82,9 @@ public class Indel {
 		return reverse ? reverseComplement(s) : s;
 	}
 
-	public void addIns(String read, int readPos, int cigarLen, boolean reverse) {
+	public void addIns(SAMRecord samRecord, int readPos, int cigarLen) {
+		boolean reverse = isReverse(samRecord);
+		String read = samRecord.getReadString();
 		String s = getIns(read, readPos, cigarLen, reverse);
 		addCounts(ins, s);
 	}
@@ -92,12 +97,20 @@ public class Indel {
 		return new String(reverse ? reverseComplement(c) : c);
 	}
 	
-	public void addDel(RecordRefProvider ref, int refPos, int readPos, int cigarLen, boolean reverse) {
-		String s = getDel(ref, refPos, readPos, cigarLen, reverse);
+	public void addDel(Record record, int refPos, int readPos, int cigarLen) {
+		SAMRecord samRecord = record.getSAMRecord();
+		boolean reverse = isReverse(samRecord);
+		String read = samRecord.getReadString();
+		if (samRecord.getStringAttribute(SAMTag.MD.name()) == null) return;
+		String s = getDel(record.getRecordReferenceProvider(), refPos, readPos, cigarLen, reverse);
 		addCounts(del, s);
 	}
 	
-	private static void addCounts(Map<String, Integer> map, String s) {
+	private static boolean isReverse(SAMRecord samRecord) {
+		return (samRecord.getFlags() & 0x10) == 0x10;
+	}
+	
+	private synchronized static void addCounts(Map<String, Integer> map, String s) {
 		map.put(s, map.containsKey(s) ? map.get(s)+1 : 1);
 	}
 }
