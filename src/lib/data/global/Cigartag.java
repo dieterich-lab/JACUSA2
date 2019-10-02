@@ -1,16 +1,18 @@
 package lib.data.global;
 
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import htsjdk.samtools.SAMException;
+import htsjdk.samtools.Cigar;
+import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.SAMRecord;
 
 public class Cigartag {
 	private int cigarwin;
 	private static Cigartag singleton = null;
 	private Map<String, Long> cbs;
-	private long[] counts;
+	private long[] ins, del;
 
 	public static Cigartag getInstance() {
 		return getInstance(16);
@@ -23,7 +25,6 @@ public class Cigartag {
 	
 	private Cigartag(int len) {
 		cigarwin = len;
-		counts = new long[len+1];
 		cbs = new HashMap<>();
 	}
 	
@@ -43,19 +44,93 @@ public class Cigartag {
 
 	public void process(final SAMRecord record) {
 		final String cb = record.getStringAttribute("CB");
-        if (cb == null) {
-            throw new SAMException("Cannot extract barcodes from SAMRecord with no CB tag, read: " + record.getReadName());
-        }
-        addCB(cb);
+        if (cb == null)	addCB(cb);
+        process(record.getCigar());
+	}
+
+	public void process(final Cigar cc) {
+        int len = getRealLength(cc);
+		ins = getIndelArr(cc, true, cigarwin);
+		del = getIndelArr(cc, false, cigarwin);
+	}
+	
+	public long[] getIns() {
+		return ins;
+	}
+
+	public long[] getDel() {
+		return del;
 	}
 
 	public Map<String, Long> getCB() {
 		return cbs;
 	}
 
-	public void process(int len) {
-		// TODO Auto-generated method stub
-		
+	public static int getRealLength(Cigar cc) {
+		int len = 0;
+		for (final CigarElement c : cc.getCigarElements()) {
+			switch (c.getOperator()) {
+			case M:
+			case I:
+			case D:
+			case N:
+			case S:
+			case EQ:
+			case X:
+				len += c.getLength();
+				break;
+				
+			case H:
+			case P:
+				break;
+
+			default:
+				break;
+			
+			}
+		}
+		return len;
+	}
+
+	private static int inc(BitSet bs, Integer i, int n, boolean b) {
+		bs.set(i, i+n, b);
+		return i+n;
 	}
 	
+	public static long[] getIndelArr(Cigar cc, boolean ins, int len) {
+		BitSet bs = new BitSet();
+		int i = 0;
+		long[] counts = new long[len+1];
+		for (final CigarElement c : cc.getCigarElements()) {
+			switch (c.getOperator()) {
+			case M:
+			case N:
+			case S:
+			case EQ:
+			case X:
+				i = inc(bs, i, c.getLength(), false);
+				break;
+
+			case I:
+				i = inc(bs, i, c.getLength(), ins);
+				break;
+
+			case D:
+				i = inc(bs, i, c.getLength(), !ins);
+				break;
+
+			case H:
+			case P:
+				break;
+
+			default:
+				break;
+			
+			}
+		}
+		for(int j=0; j<i-i%len; j+=len) {
+			counts[bs.get(j,j+len).cardinality()] ++;
+		}
+		return counts;
+	}
 }

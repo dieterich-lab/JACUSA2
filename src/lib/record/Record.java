@@ -83,7 +83,6 @@ public class Record {
 		// process CIGAR -> SNP, INDELs
 		for (final CigarElement cigarElement : samRecord.getCigar().getCigarElements()) {
 
-			ctag.process(cigarElement.getLength());
 			switch (cigarElement.getOperator()) {
 
 			/*
@@ -93,7 +92,6 @@ public class Record {
 				insertions.add(index);
 				INDELs.add(index);
 				indel.addIns(samRecord, position.getReadPos(), cigarElement.getLength());
-				ctag.process(cigarElement.getLength());
 				break;
 			
 			/*
@@ -103,7 +101,6 @@ public class Record {
 				deletions.add(index);
 				INDELs.add(index);
 				indel.addDel(this, position.getRefPos(), position.getReadPos(), cigarElement.getLength());
-				ctag.process(cigarElement.getLength());
 				break;
 			
 			/*
