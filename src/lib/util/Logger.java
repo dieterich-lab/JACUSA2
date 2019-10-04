@@ -8,6 +8,7 @@ public class Logger {
 	private final AbstractTool tool;
 	
 	private SimpleTimer simpleTimer;
+	private boolean logInfo = false;
 	
 	public Logger(final PrintStream ps, final AbstractTool tool) {
 		this.ps = ps;
@@ -29,6 +30,7 @@ public class Logger {
 	}
 	
 	public void addInfo(final String s) {
+		if(logInfo)
 		addLine("INFO   ", s);
 	}
 

@@ -26,6 +26,8 @@ public class Cigartag {
 	private Cigartag(int len) {
 		cigarwin = len;
 		cbs = new HashMap<>();
+		ins = new long[len+1];
+		del = new long[len+1];
 	}
 	
 	private String cleanse(String s) {
@@ -44,14 +46,14 @@ public class Cigartag {
 
 	public void process(final SAMRecord record) {
 		final String cb = record.getStringAttribute("CB");
-        if (cb == null)	addCB(cb);
+        if (cb != null)	addCB(cb);
         process(record.getCigar());
 	}
 
 	public void process(final Cigar cc) {
         int len = getRealLength(cc);
-		ins = getIndelArr(cc, true, cigarwin);
-		del = getIndelArr(cc, false, cigarwin);
+        add(ins, getIndelArr(cc, true, cigarwin));
+        add(del, getIndelArr(cc, false, cigarwin));
 	}
 	
 	public long[] getIns() {
@@ -95,6 +97,11 @@ public class Cigartag {
 	private static int inc(BitSet bs, Integer i, int n, boolean b) {
 		bs.set(i, i+n, b);
 		return i+n;
+	}
+	
+	public static void add(long[] a, long[] b) {
+		for(int i=0; i<a.length; i++)
+			a[i] += b[i];
 	}
 	
 	public static long[] getIndelArr(Cigar cc, boolean ins, int len) {

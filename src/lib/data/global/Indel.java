@@ -7,6 +7,7 @@ import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMTag;
 import lib.record.Record;
 import lib.record.RecordRefProvider;
+import lib.util.AbstractTool;
 
 public class Indel {
 	private Map<String, Integer> ins, del;
@@ -101,7 +102,10 @@ public class Indel {
 		SAMRecord samRecord = record.getSAMRecord();
 		boolean reverse = isReverse(samRecord);
 		String read = samRecord.getReadString();
-		if (samRecord.getStringAttribute(SAMTag.MD.name()) == null) return;
+		if (samRecord.getStringAttribute(SAMTag.MD.name()) == null && samRecord.getStringAttribute("CB") == null) {
+			AbstractTool.getLogger().addError("Deletions cannot be extracted from "+samRecord.getReadName()+" due to the absence of MD tag");
+			return;
+		}
 		String s = getDel(record.getRecordReferenceProvider(), refPos, readPos, cigarLen, reverse);
 		addCounts(del, s);
 	}
