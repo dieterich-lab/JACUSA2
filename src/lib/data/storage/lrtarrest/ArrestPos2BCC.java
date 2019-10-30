@@ -291,7 +291,7 @@ implements Serializable, Data<ArrestPos2BCC> {
 			if (arrestPositions != o.getPositions().size()) {
 	        	throw new IllegalArgumentException("Size of parsed sites does not match: " + s);
 			}
-			if (o.getPositions().size() == 0) {
+			if (o.getPositions().isEmpty()) {
 				throw new IllegalArgumentException("Cannot parse arrest positions from: " + s);
 			}
 			return o;
@@ -299,7 +299,7 @@ implements Serializable, Data<ArrestPos2BCC> {
 		
 		@Override
 		public String wrap(final ArrestPos2BCC o) {
-			if (o.getPositions().size() == 0) {
+			if (o.getPositions().isEmpty()) {
 				return Character.toString(empty);
 			}
 

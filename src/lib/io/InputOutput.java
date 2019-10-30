@@ -8,8 +8,8 @@ public final class InputOutput {
 	public static final String BASE_FIELD 		= "bases";
 	public static final String DELETION_FIELD 	= "deletions";
 	public static final String INSERTION_FIELD 	= "insertions";
-	public static final String ARREST_BASES 	= "arrest_bases";
-	public static final String THROUGH_BASES 	= "through_bases";
+	public static final String ARREST_BASES 	= "arrest";
+	public static final String THROUGH_BASES 	= "through";
 	
 	// TODO add comments.
 	public static final char COMMENT			= '#';
