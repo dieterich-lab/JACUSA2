@@ -20,11 +20,11 @@ public class DefaultInfoAdder implements InfoAdder {
 
 		// add filtering info
 		sb.append(InputOutput.FIELD_SEP);
-		sb.append("filter_info");
+		sb.append("filter");
 
 		// always show reference base
 		sb.append(InputOutput.FIELD_SEP);
-		sb.append("ref_base");
+		sb.append("ref");
 	}
 
 	@Override
