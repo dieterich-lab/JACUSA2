@@ -6,30 +6,30 @@ import java.util.List;
 public final class InputOutput {
 
 	public static final String BASE_FIELD 		= "bases";
-	public static final String DELETION_FIELD 	= "deletions";
-	public static final String INSERTION_FIELD 	= "insertions";
+	public static final String DELETION_FIELD 	= "del";
+	public static final String INSERTION_FIELD 	= "ins";
 	public static final String ARREST_BASES 	= "arrest";
 	public static final String THROUGH_BASES 	= "through";
-	
-	// TODO add comments.
+
+
 	public static final char COMMENT			= '#';
 	public static final String HEADER			= "##";
-	// TODO add comments.
+
 	public static final char EMPTY_FIELD 		= '*';
-	// TODO add comments.
+
 	public static final char FIELD_SEP 			= '\t';
-	// TODO add comments.
+
 	public static final char VALUE_SEP 			= ',';
-	// TODO add comments.
+
 	public static final char WITHIN_FIELD_SEP 	= ':';
-	// TODO add comments.
+
 	public static final char SEP4 				= ';';
-	// TODO add comments.
+
 	public static final char KEY_VALUE_SEP 		= '=';
 	public static final char AND 				= '&';
 
 	private InputOutput() {
-		new AssertionError();
+		throw new AssertionError();
 	}
 
 	/**
