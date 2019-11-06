@@ -51,7 +51,7 @@ implements ResultFormat {
 	public CopyTmpResult createCopyTmp(final int threadId, final WorkerDispatcher workerDispatcher) {
 		final AbstractResultFileWriter resultWriter = 
 				(AbstractResultFileWriter)workerDispatcher.getResultWriter();
-		if (parameter.splitFiltered()) {
+		if (parameter.getFilteredFilename() != null) {
 			final AbstractResultFileWriter filteredResultWriter = 
 					(AbstractResultFileWriter)workerDispatcher.getFilteredResultWriter();
 

@@ -21,6 +21,8 @@ import lib.util.AbstractTool;
 
 public class GeneralParameter
 implements HasConditionParameter, HasReadSub {
+
+	public static final String FILE_SUFFIX = ".filtered";
 	
 	// cache related
 	private int activeWinSize;
@@ -41,7 +43,7 @@ implements HasConditionParameter, HasReadSub {
 	
 	private FilterConfig filterConf;
 
-	private boolean splitFiltered;
+	private String filteredFilename;
 	
 	private final SortedSet<BaseSub> baseSubs;
 	private boolean showDeletionCount;
@@ -61,7 +63,7 @@ implements HasConditionParameter, HasReadSub {
 
 		filterConf		= new FilterConfig();
 		
-		splitFiltered		= false;
+		filteredFilename	= null;
 		
 		baseSubs	= new TreeSet<>();
 		showDeletionCount	= false;
@@ -239,10 +241,19 @@ implements HasConditionParameter, HasReadSub {
 	}
 	
 	/**
-	 * @return the debug
+	 * @return the filteredFilename
 	 */
-	public boolean splitFiltered() {
-		return splitFiltered;
+	public String getFilteredFilename() {
+		if (filteredFilename == null) {
+			return null;
+		}
+		
+		// fake argument
+		if (filteredFilename.length() == 0) {
+			return getResultFilename() + FILE_SUFFIX;
+		}
+		
+		return filteredFilename;
 	}
 	
 	public String getReferenceFilename() {
@@ -285,11 +296,11 @@ implements HasConditionParameter, HasReadSub {
 	}
 	
 	/**
-	 * Change if filtered sites will be split to other output file
-	 * @param split boolean indicates if output should be split.
+	 * Set to output filtered sites to filteredFilename.
+	 * @param filteredFilename String name of file to write filtered sites to.
 	 */
-	public void splitFiltered(boolean split) {
-		this.splitFiltered = split;
+	public void setFilteredFilename(final String filteredFilename) {
+		this.filteredFilename = filteredFilename;
 	}
 	
 }

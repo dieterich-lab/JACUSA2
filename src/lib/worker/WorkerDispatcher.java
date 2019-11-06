@@ -17,8 +17,6 @@ import lib.worker.AbstractWorker.STATUS;
  * TODO
  */
 public class WorkerDispatcher {
-
-	public static final String FILE_SUFFIX = ".filtered";
 	
 	private final AbstractMethod methodFactory;
 
@@ -43,8 +41,8 @@ public class WorkerDispatcher {
 		threadIds = new ArrayList<>(10000);
 
 		resultWriter = parameter.getResultFormat().createWriter(parameter.getResultFilename());
-		if (parameter.splitFiltered()) {
-			filteredResultWriter = parameter.getResultFormat().createWriter(parameter.getResultFilename() + FILE_SUFFIX);
+		if (parameter.getFilteredFilename() != null) {
+			filteredResultWriter = parameter.getResultFormat().createWriter(parameter.getFilteredFilename());
 		} else {
 			filteredResultWriter = resultWriter; 
 		}
@@ -119,7 +117,7 @@ public class WorkerDispatcher {
 	}
 	
 	private boolean splitFiltered() {
-		return methodFactory.getParameter().splitFiltered();
+		return methodFactory.getParameter().getFilteredFilename() != null;
 	}
 	
 	private void writeOutput() throws IOException {

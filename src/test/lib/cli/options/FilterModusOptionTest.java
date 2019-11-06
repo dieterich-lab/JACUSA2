@@ -12,13 +12,13 @@ import lib.cli.options.FilterModusOption;
  */
 class FilterModusOptionTest
 extends AbstractGeneralParameterProvider
-implements ACOptionTest<Boolean> {
+implements ACOptionTest<String> {
 
 	@Override
 	public Stream<Arguments> testProcess() {
 		return Stream.of(
-				Arguments.of(createOptLine(), true),
-				Arguments.of("", false) );
+				Arguments.of(createOptLine(), "filtered_output"),
+				Arguments.of("", null) );
 	}
 	
 	@Override
@@ -27,8 +27,8 @@ implements ACOptionTest<Boolean> {
 	}
 	
 	@Override
-	public Boolean getActualValue() {
-		return getGeneralParamter().splitFiltered();
+	public String getActualValue() {
+		return getGeneralParamter().getFilteredFilename();
 	}
 	
 }

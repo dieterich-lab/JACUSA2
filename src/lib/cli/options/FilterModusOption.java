@@ -1,7 +1,6 @@
 package lib.cli.options;
 
 import lib.cli.parameter.GeneralParameter;
-import lib.worker.WorkerDispatcher;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -18,9 +17,10 @@ public class FilterModusOption extends AbstractACOption {
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
-				.hasArg(false)
+				.optionalArg(true)
+				.argName("FILTERED-FILE")
 		        .desc("Store feature-filtered results in another file (= RESULT-FILE" + 
-		        		WorkerDispatcher.FILE_SUFFIX + ")")
+		        		GeneralParameter.FILE_SUFFIX + " if no argument) or (= FILTERED-FILE)")
 		        .build();
 	}
 	
@@ -30,7 +30,13 @@ public class FilterModusOption extends AbstractACOption {
 	
 	@Override
 	public void process(final CommandLine line) throws Exception {
-		parameter.splitFiltered(true);
+		// null if no arguments provided
+		String filteredFilename = line.getOptionValue(getOpt());
+		// fake empty argument
+		if (filteredFilename == null) {
+			filteredFilename = "";
+		}
+		parameter.setFilteredFilename(filteredFilename);
 	}
 
 }
