@@ -103,7 +103,7 @@ class ArrestPos2BCCtest {
 			int pos,
 			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC o,
 			@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBCC expected) {
-		final BaseCallCount actual = o.getThroughBaseCallCount(pos); 
+		final BaseCallCount actual = o.getThroughBCC(pos); 
 		assertEquals(expected, actual);
 	}
 

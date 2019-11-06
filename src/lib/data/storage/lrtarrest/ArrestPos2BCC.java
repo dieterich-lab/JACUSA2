@@ -117,7 +117,7 @@ implements Serializable, Data<ArrestPos2BCC> {
 	 * @param arrestPos arrest position to be excluded
 	 * @return base call count excluding arrest position pos
 	 */
-	public BaseCallCount getThroughBaseCallCount(final int arrestPos) {
+	public BaseCallCount getThroughBCC(final int arrestPos) {
 		final BaseCallCount tmpTotalBcc = BaseCallCount.create();
 		tmpTotalBcc.add(getTotalBaseCallCountHelper());
 		if (contains(arrestPos)) {

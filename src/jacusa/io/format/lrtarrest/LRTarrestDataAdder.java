@@ -30,8 +30,8 @@ public class LRTarrestDataAdder implements DataAdder {
 	
 	@Override
 	public void addData(StringBuilder sb, int valueIndex, int condI, int replicateI, Result result) {
-		final DataContainer container 				= result.getParellelData().getDataContainer(condI, replicateI);
-		final ArrestPos2BCC ap2bcc 	= container.getArrestPos2BCC();
+		final DataContainer container 	= result.getParellelData().getDataContainer(condI, replicateI);
+		final ArrestPos2BCC ap2bcc 		= container.getArrestPos2BCC();
 		
 		int onePosition = -1;
 		if (valueIndex == Result.TOTAL) {
@@ -45,7 +45,7 @@ public class LRTarrestDataAdder implements DataAdder {
 		sb.append(bccParser.wrap(arrestBcc));
 		
 		sb.append(InputOutput.FIELD_SEP);
-		final BaseCallCount throughBcc = ap2bcc.getThroughBaseCallCount(onePosition);
+		final BaseCallCount throughBcc = ap2bcc.getThroughBCC(onePosition);
 		sb.append(bccParser.wrap(throughBcc));
 	}
 	

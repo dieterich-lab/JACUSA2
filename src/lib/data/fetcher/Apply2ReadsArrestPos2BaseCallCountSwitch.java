@@ -32,7 +32,7 @@ public class Apply2ReadsArrestPos2BaseCallCountSwitch implements Fetcher<BaseCal
 		if (apply2reads.contains(RT_READS.ARREST)) {
 			return ap2bcc.getArrestBCC(onePosition);
 		} else if (apply2reads.contains(RT_READS.THROUGH)) {
-			return ap2bcc.getThroughBaseCallCount(onePosition);	
+			return ap2bcc.getThroughBCC(onePosition);	
 		} else {
 			throw new IllegalStateException("apply2reads cannot be empty!");
 		}
