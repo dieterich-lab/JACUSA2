@@ -16,6 +16,7 @@ public final class InputOutput {
 	public static final String HEADER			= "##";
 
 	public static final char EMPTY_FIELD 		= '*';
+	public static final char UNKOWN_FIELD 		= '?';
 
 	public static final char FIELD_SEP 			= '\t';
 
