@@ -1,19 +1,22 @@
-\documentclass[10pt,a4paper]{article} \usepackage[utf8]{inputenc}
+\documentclass[10pt,a4paper,final]{article} 
+\usepackage[utf8]{inputenc}
 \usepackage[obeyDraft]{todonotes}
-\usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage{multirow}
 \usepackage{footnote}
 \usepackage{parskip}
+\usepackage[left=2cm,right=2cm,top=2.5cm,bottom=2cm,includeheadfoot]{geometry}
 \usepackage{xspace}
+\usepackage{array}
 \usepackage[T1]{fontenc}
+\usepackage{microtype}
 \makesavenoteenv{tabular}
 \makesavenoteenv{table}
-
+\usepackage{hyperref}
 %---------------------------------------------------------------------------------------------------
 \title{JACUSA2 manual}
 \author{Michael Piechotta \\ michael.piechotta@gmail.com}
-\date{9th, October, 2019} 
+\date{10th, November, 2019} 
 %---------------------------------------------------------------------------------------------------
 \begin{document}
 \newcommand{\call}[1]{\textit{call-#1}\xspace}
@@ -32,47 +35,63 @@ JAVA framework for accurate Variant assessment (JACUSA2) is a one-stop solution 
 nucleotide variants (SNVs) and reverse transcriptase induced arrest events in Next-generation
 sequencing (NGS) data.
 
-\url{https://github.com/dieterich-lab/JACUSA2/}{JACUSA2} is a direct successor of
-\url{https://github.com/dieterich-lab/JACUSA/}{JACUSA1} --- JACUSA1 is hereby deprecated and won't
-be continued. All methods from JACUSA1 (\call{1}, \call{2}, and \pileup) are available in JACUSA2.
+\href{https://github.com/dieterich-lab/JACUSA2/}{JACUSA2} is a direct successor of 
+\href{https://github.com/dieterich-lab/JACUSA/}{JACUSA1} --- JACUSA1 is hereby deprecated and won't be 
+continued. All methods from JACUSA1 (\call{1}, \call{2}, and \pileup) are available in JACUSA2.
 
-The new release offers great performance enhancements (~3 faster) for existing methods
+The new release of JACUSA2 offers great performance enhancements ($\approx3\times$ faster) for existing methods
 and adds new methods (\rtarrest and \lrtarrest) to identify read arrest events by means of comparing 
 read through and read arrest counts. \lrtarrest is a combination of \call{2} and \rtarrest that 
-allows to identify such linked variant and arrest events.
+allows to identify linked variants and arrest events.
+
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{figures/jacusa_methods_cropped}
-  \caption{Schematic summary of JACUSA2 methods and underlying characteristics of data.}
+  \caption{Schematic summary of JACUSA2 methods and underlying data.}
   \label{fig:methods}
 \end{figure}
+
 Robust identification of variants has proven to be a daunting task due to artefacts specific for
 NGS-data and employed mapping strategies. We implement various artefact/feature filters that reduce
 the number of false positives (see section \ref{sec:artefact_filter}). A new feature filter has been
-added to JACUSA2 to filter candidate variants or arrest events by providing a file with sites to be
-excluded.
-Some artefact filters have been moved from JACUSA1 to the R helper package called JACUSA\textbf{2}helper\footnote{Check
-\url{https://github.com/dieterich-lab/JACUSA2helper}}.
+added to JACUSA2 to filter candidate variants or arrest events based an external file.
+Some artefact filters have been removed from JACUSA1 in favour of the rewritten R helper package called 
+JACUSA\textbf{2}helper\footnote{Check: \url{https://github.com/dieterich-lab/JACUSA2helper}}.
 
 Another new feature, are optional data that can be added to the output of some methods.
-Such optional data are INDEL counts and associated differential statistics and read substitution
-information. A user defined base substitution can be used to partition reads into two sets
-\todo[author=cd]{what is a typical experiment for this?}.
+Such optional data are INDEL counts and associated differential statistics and read/base stratification. 
+A user can provide base substitution(s) to partition reads into two sets (TODO4CD: what is a typical experiment for this?) 
+(see Section \ref{sec:read_base_stratification}). 
+
+In JACUSA, a site consists of contig, position (start and stop), and strand information.
+The 1:1 relation of a site to a line in the output of JACUSA1 had to extended to make more complex data 
+structures possible while maintaing a clear file format. JACUSA2 allows data associated to 
+a site to be stratified by additional variables and spread along multiple lines.  For instance, 
+read/base stratification can be used to stratify reads based on a base substitution $X \rightarrow Y$. 
+In the output, there will be two lines for each site. The first line will contain base count information 
+for all reads while the second line will contain only base counts from reads with the choosen base substitution. 
+
+The combined variant calling and arrest event discovery \lrtarrest offers information regarding the 
+arrest position of reads that overlap with a site. The number of lines per sites depends on overlapping 
+reads and their arrest positions. The arrest position of a reads depends on the employed library type and 
+can unambiguously determind only for stranded library types. Each unique arrest position will result in a
+new line in the output. 
 
 JACUSA2 employs a window-based approach to traverse BAM \cite{HengLi2009} files, featuring highly
-parallel processing and utilizing the htsjdk\footnote{Check \url{https://github.com/samtools/htsjdk}} 
+parallel processing and utilizing the htsjdk\footnote{Check: \url{https://github.com/samtools/htsjdk}} 
 framework.
 %---------------------------------------------------------------------------------------------------
 \subsection{Variant calling}
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=.6\textwidth]{figures/dres_cropped}
-  \caption{Identification of RNA-editing sites in JACUSA2}
+  \includegraphics[width=.75\textwidth]{figures/dres_cropped}
+  \caption{Two procedures to identify RNA-editing sites in JACUSA2. Comparing DNA vs. RNA to elucidate 
+  RNA-DNA-differences (RDDs) and comparison of RNA sequencing samples to find RNA-RNA-differences (RRD).}
   \label{fig:dres}
 \end{figure}
 JACUSA2 has been extensively evaluated and optimized to identify RNA editing sites in RNA-DNA and
 RNA-RNA sequencing samples (see Figure \ref{fig:dres}). Checkout the original publication and the
-supplementary material of JACUSA1 \cite{Piechotta2017} if you are interested in details regarding
+supplementary material of JACUSA\textbf{1} \cite{Piechotta2017} if you are interested in details regarding
 the test-statistic.
 %---------------------------------------------------------------------------------------------------
 \subsection{Reverse transcriptase arrest events}
@@ -80,7 +99,7 @@ the test-statistic.
   \centering
   \includegraphics[width=.6\textwidth]{figures/arrest_events_cropped}
   \caption{Schematic depiction of arrest events that have been induced by modifications that
-  influence reverse transcription during library preparation}
+  influence reverse transcription during library preparation.}
   \label{fig:arrest_event}
 \end{figure}
 Reverse transcriptase arrest events can be induced during library preparation (see Figure
@@ -88,42 +107,41 @@ Reverse transcriptase arrest events can be induced during library preparation (s
 They are identified by reads that exhibit shorter than expected read length due to premature
 termination during first strand synthesis. For each site, a vector of read through and read arrest
 counts is constructed and modelled with a Beta-Binomial distribution. We estimate the parameters of
-the distribution with the method presented by Minka\footnote{Check 
+the distribution with the method presented by Minka\footnote{Check:
 \url{https://tminka.github.io/papers/dirichlet/minka-dirichlet.pdf}}.
 % --------------------------------------------------------------------------------------------------
 \section{Download}
-The latest version of JACUSA2 can be obtained from
-\url{https://github.com/dieterich-lab/JACUSA2}.
-
-Go to \url{https://github.com/dieterich-lab/JACUSA2/releases} and pick the lastest
-release.
+The latest version of JACUSA2 can be obtained from \url{https://github.com/dieterich-lab/JACUSA2/releases}. \\
+Also check \url{https://github.com/dieterich-lab/JACUSA2helper} for updates.
 % --------------------------------------------------------------------------------------------------
 \subsection{Installation and requirements}
-JACUSA2 does not need any configuration but needs a correctly configured Java environment.
-We developed and tested JACUSA2 with Java v1.8. If you encounter any Java related problems please
-consider to change to Java v1.8.
+JACUSA2 does not need any configuration but requires a correctly configured Java environment.
+We developed and tested JACUSA2 with Java v1.8.
 % --------------------------------------------------------------------------------------------------
 \subsection{Migrating from JACUSA1 to JACUSA2}\label{sec:migration}
 There are several important changes to the command line interface:
 \begin{itemize}
-  \item ONLY single dash ``-'' options, e.g.: ``-c 10'' are supported. ALL two dash options
-  ``--option [\ldots]'' from JACUSA1 have been removed.
+  \item ALL two dash options ``--option [\ldots]'' from JACUSA1 have been removed. ONLY single dash 
+  ``-'' options, e.g.: ``-c 10'' are supported and NOT ``--coverage 10''.
   \item Use ``\textbf{-}filterNH'' and ``\textbf{-}filterNM'' instead of ``--filterNH'' and
   ``--filterNM''.
   \item CLI option to provide library type has changed: JACUSA1: ``-P Lib1,Lib2'' $\rightarrow$
-  JACUSA2: ``-P1 Lib1 -P2 Lib2''.
-  \item Artefact/feature filter has now named options, e.g.: JACUSA1: ``-a H:1'' $\rightarrow$
-  JACUSA2: ``-a H:\textbf{condition=1}''. Check Section \ref{sec:cli_artefact_filter} for details.
+  JACUSA2: ``-P1 Lib1 -P2 Lib2''. See Section \ref{sec:library_type}.
+  \item Artefact/feature filters have now named options, e.g.: JACUSA1: ``-a H:1'' $\rightarrow$
+  JACUSA2: ``-a H:\textbf{condition=1}''. See Section \ref{sec:cli_artefact_filter} for details.
   \item Test-Statistic options ``-u <STAT>`` have named options.
+  \item The output of \call{1} does not include the simulated condition.
+  \item In JACUSA2 the base of the distance measure for artefact filters has changed, e.g.: ``-B:distance=$d$''.
+   A distance $d=1$ in JACUSA1 meant that the features were immediately adjacent. In JACUSA2, 
+   $d=0$ corresponds to adjacent features. Adjust your JACUSA2 calls according to the following 
+   relation: $d_{JACUSA1} = d_{JACUSA2} +1 $.
 \end{itemize}
-A \#\#'' prefixed header line has been added to the default output format of JACUSA2. The header
+A ``\#\#'' prefixed header line has been added to the default output format of JACUSA2. The header
 line contains version and command line info.
-There is also a new version of JACUSA\textbf{2}helper\footnote{Check 
+There is also a new version of JACUSA\textbf{2}helper\footnote{Check: 
 \url{https://github.com/dieterich-lab/JACUSA2helper/}} to support downstream
-analysis of JACUSA2 output. JACUSAhelper has been declared deprecated and won't be maintained
+analysis of JACUSA2 output. The odl version of JACUSAhelper has been declared deprecated and won't be maintained
 anymore.
-%TODO 4==5 counts for filters 0-index vs. index
-%different homopolymer filter, filtering adjacent
 % --------------------------------------------------------------------------------------------------
 \subsection{\textit{In silico} and example data}
 \subsubsection{Variant calling}
@@ -139,16 +157,15 @@ frequencies have been imputed into both cDNA BAM files. Additionally, to make th
 variants more challenging, SNPs with pairwise similar base frequencies have been included to both
 BAM files. SNPs should not be identified as true positive sites.
 
-gDNA data has been simulated with art\footnote{Check
+gDNA data has been simulated with art\footnote{Check: 
 \url{http://www.niehs.nih.gov/research/resources/software/biostatistics/art}} and cDNA reads
-have been simulated with flux simulator\footnote{Check \url{http://sammeth.net/confluence/display/SIM/Home}}.
+have been simulated with flux simulator\footnote{Check: \url{http://sammeth.net/confluence/display/SIM/Home}}.
 Read simulations have been restricted to the corresponding first chromosome of human. Simulated BAM
 files have been processed and only reads with mapping quality $\ge 20$ have been retained. Check
-Table \ref{tbl:call_data} for details about contents of available data.
+Table \ref{tbl:call_data} for details about contents of available data check links in the footnote.
 
-\todo[author=mp]{Add readme to archives, check link}:
-\newcommand{\callRDD}{gDNA vs. cDNA: \url{https://data.dieterichlab.org/s/gDNA_VS_cDNA}}
-\newcommand{\callRRD}{cDNA vs. cDNA: \url{https://data.dieterichlab.org/s/cDNA_VS_cDNA}}
+\newcommand{\callRDD}{Check: gDNA vs. cDNA: \url{https://data.dieterichlab.org/s/gDNA_VS_cDNA}}
+\newcommand{\callRRD}{Check: cDNA vs. cDNA: \url{https://data.dieterichlab.org/s/cDNA_VS_cDNA}}
 \begin{table}
   \centering
   \caption{Detailed description of available \textit{in silico} data for variant calling. Data has been simulated on human chromosome 1 using hg19.}
@@ -159,116 +176,118 @@ Table \ref{tbl:call_data} for details about contents of available data.
     \hline
     \hline
     \multirow{3}{*}{gDNA vs. cDNA \footnote{\callRDD}} & gDNA.bam     & Simulated genomic DNA \\
-                                                      & cDNA.bam     & Simulated RNA-Seq data \\
-                                                      & variants.txt & Coordinates of imputed variants and their target 
-                                                                          and sampled frequencies. \\
+                                                       & cDNA.bam     & Simulated RNA-Seq data \\
+                                                       & variants.txt & Coordinates of imputed variants and their target 
+                                                                        and sampled frequencies. \\
     \hline
     \multirow{4}{*}{gDNA vs. cDNA \footnote{\callRRD}} & cDNA\_1.bam  & Simulated RNA-Seq data for 1st condition. \\
-                                                        & cDNA\_2.bam  & Simulated RNA-Seq data for 2nd condition. \\
-                                                        & variants.txt & Coordinates of imputed variants and their target 
-                                                                            and sampled frequencies. \\
-                                                        & snps.txt     & Coordinates of imputed SNPs. In both BAM files 
-                                                                            matching SNPs have the same target frequency but 
-                                                                            different effective or sampled frequencies. The 
-                                                                            shape parameter determines how much the sampled 
-                                                                            frequency will deviate from the target frequency. 
-                                                                            The suffixes: 1 and 2 correspond 
-                                                                                to the respective BAM file.
+                                                       & cDNA\_2.bam  & Simulated RNA-Seq data for 2nd condition. \\
+                                                       & variants.txt & Coordinates of imputed variants and their target 
+                                                                        and sampled frequencies. \\
+                                                       & snps.txt     & Coordinates of imputed SNPs. In both BAM files 
+                                                                        matching SNPs have the same target frequency but 
+                                                                        different effective or sampled frequencies. The 
+                                                                        shape parameter determines how much the sampled 
+                                                                        frequency will deviate from the target frequency. 
+                                                                        The suffixes: 1 and 2 correspond 
+                                                                        to the respective BAM file.
   \end{tabular}}
-  
 \end{table}
 % --------------------------------------------------------------------------------------------------
-\subsubsection{Reverse transcriptase arrest events}
-We have downloaded primary sequencing data from \cite{Zhou2018} and mapped them according to
-\todo[author=christoph]{How did we do this?}.
-From the resulting read sets, we retained only read uniquely mapping to 18S and 28S rRNAs with
+\subsubsection{Reverse transcriptase arrest events}\label{sec:zhou2018_data}
+We have downloaded primary sequencing data from \cite{Zhou2018} and mapped raw reads according to
+(TODO4CD: How was this done?).
+From the resulting read sets, we retained only uniquely mapping reads to 18S and 28S rRNAs with 
 mapping quality $\ge 20$.
 \cite{Zhou2018} map RNA modification of pseudouridine ($\Psi$) by chemically modifying
 pseudouridines with carbodiimide (+CMC) and detecting arrest events that are induced by reverse
-transcription stops in high-throughput sequencing under 3 different conditions (HIVRT, SIIIMn, and
-SIIIMg).
+transcription stops in high-throughput sequencing under 3 different conditions: HIVRT, SIIIRTMn, and
+SIIIRTMg.
 
 The archive \url{https://data.dieterichlab.org/s/arrest_events} consists of:
 \begin{description}
   \item[*.bam, *.bam.bai] BAM files and BAM indicices for different 3 conditions HIVRT, SIIIRTMg,
-  and SIIIRTMn each treated with CMC(+CMC) or mock-treated(-CMC) (6 BAM + 6 BAI files).
+  and SIIIRTMn. Each condition is a pairwise comparison of CMC(+CMC) and mock-treated(-CMC) samples 
+  (6 BAM + 6 index files).
   \item[fournier\_db.txt] Parsed and coordinate adjusted list of known modifications for human 18S
-  and 28S according to Fournier lab's 3D rRNA modification maps database \cite{PieknaPrzybylska2007}.
+  and 28S rRNAs according to Fournier lab's 3D rRNA modification database \cite{PieknaPrzybylska2007}.
   \item[README.txt] Summary of referenced data and original data sources. Read for details.
 \end{description}
 %---------------------------------------------------------------------------------------------------
 \section{Input/Output}
-All JACUSA2 methods require sorted and indexed BAM\footnote{Check 
+All JACUSA2 methods require sorted and indexed BAM\footnote{Check: 
 \url{https://samtools.github.io/hts-specs/SAMv1.pdf}} files.
-BAM is a standardized file format for efficient storage of alignments.
+SAM/BAM is a standardized file format for efficient storage of alignments.
 Furthermore, JACUSA2 requires that the reference sequence is available either through the ``MD''-tag
-\footnote{Check \url{https://samtools.github.io/hts-specs/SAMtags.pdf}} in BAM files or by providing 
+\footnote{Check: \url{https://samtools.github.io/hts-specs/SAMtags.pdf}} in BAM files or by providing 
 the reference sequence in indexed FASTA format with the command line option ``-R <reference.fasta>''.
-The ``MD'' field contains mismatch information that allows to perform variant calling without
+Make sure that ``<reference.fasta>'' is the reference sequence that has been used for mapping. 
+The ``MD'' field contains mismatch information that allows to perform variant calling without 
 providing the reference sequence.
 
-Check the manuals of: SAMtools/BCFtools\footnote{Check \url{http://samtools.sourceforge.net/}} and/or
-picard tools\footnote{\url{http://broadinstitute.github.io/picard/}} for how to use the respective tool to
-convert your alignment files to valid JACUSA2 input BAM.
+Check the manual of SAMtools/BCFtools\footnote{Check: \url{http://samtools.sourceforge.net/}} or
+picard tools\footnote{Check: \url{http://broadinstitute.github.io/picard/}} for how to use the respective 
+tool to convert your alignment files to valid JACUSA2 input BAM.
 %---------------------------------------------------------------------------------------------------
 \subsection{Processing BAM files}
-In the following, commands for SAMtools\footnote{Check \url{http://www.htslib.org}} are presented.
+In the following, commands for SAMtools\footnote{Check: \url{http://www.htslib.org}} are presented.
 
 To sort and index your raw BAM files, perform the following sequence of commands:
 \begin{description}
-  \item[SAM $\rightarrow BAM$] \begin{verbatim} samtools view -Sb mapping.sam > mapping.bam
-  \end{verbatim} \item[sort BAM] \begin{verbatim} samtools sort mapping.bam mapping.sorted
-  \end{verbatim} \item[index BAM] \begin{verbatim} samtools index mapping.sorted.bam \end{verbatim}
+  \item[SAM $\rightarrow$ BAM] \begin{verbatim} samtools view -Sb mapping.sam > mapping.bam \end{verbatim} 
+  \item[sort BAM] \begin{verbatim} samtools sort mapping.bam mapping.sorted \end{verbatim} 
+  \item[index BAM] \begin{verbatim} samtools index mapping.sorted.bam \end{verbatim}
 \end{description}
 
-Check your BAM file for the ``MD''-tag if you want to provide reference sequence information via this 
-tag. When your BAM files do not have the ``MD'' tag properly set, use SAMtools:
+Check if your BAM file contains ``MD''-tag, if you want to provide reference sequence information 
+via this tag. When your BAM files do not have the ``MD'' tag properly set, use SAMtools:
 \begin{verbatim}
-samtools calmd mapping.sorted.bam reference.fasta > mapping.sorted.MD.bam
+samtools calmd mapping.sorted.bam reference.fasta > \
+  mapping.sorted.MD.bam
 \end{verbatim}
+``<reference.fasta>'' is required to be identical to the reference that was used for mapping. 
 %---------------------------------------------------------------------------------------------------
 \subsubsection{Remove duplicates for variant calling}
 It is a recommended pre-processing step to remove duplicated reads when identifying variants -
 \textbf{omit this step for \rtarrest and \lrtarrest}. Reads that are terminated prematurely during
 library preparation will falsely be identified as PCR duplicates and removed from the final output.
-This will dramatically degrade sensitivity for arrest event idetification.
+This will dramatically reduce sensitivity for arrest event idetification.
 
 Duplicated reads occur mostly due to PCR-artefacts. They are likely to harbour false variants and
-most statistical test require independently sampled reads.
-In the following, commands for picard tools are
-presented:
+most statistical tests require independently sampled reads. In the following, commands for picard 
+tools are presented:
 \begin{verbatim} java -jar MarkDuplicates.jar \
   I=mapping.sorted.bam O=dedup_mapping.sorted.bam \
   M=duplication.info
 \end{verbatim}
-Most tools either remove duplicated reads from the final output or assign 1024 to the flag\footnote{
-Check \url{https://broadinstitute.github.io/picard/explain-flags.html}} field of those reads. In the
+Most tools either remove duplicated reads from the final output or assign the value 1024 to the flag\footnote{
+Check: \url{https://broadinstitute.github.io/picard/explain-flags.html}} field of those reads. In the
 later case, invoke JACUSA2 with the additional command line option ``-F 1024'' to filter reads that
-have been marked as duplicated (See Section \ref{sec:filter_flag}).
+have been marked as duplicates (see Section \ref{sec:filter_flag}).
 %---------------------------------------------------------------------------------------------------
-\subsubsection{Library type and strand information}
+\subsubsection{Library type and strand information}\label{sec:library_type}
 JACUSA2 supports stranded paired end (PE) and single ends (SE) reads. \textbf{Warning:} the CLI option
 has changed (see Section \ref{sec:migration})!
 
-With the command line parameter ``-P <LIBRARY-TYPE> '' or '' -P1 <LIBRARY-TYPE> -P2 <LIBRARY-TYPE>''
+With the command line parameter ``-P <LIBRARY-TYPE>'' or ``-P1 <LIBRARY-TYPE> -P2 <LIBRARY-TYPE>''
 the user can choose from the following supported library types:
 \begin{description} 
 \item[RF-FIRSTSTRAND] STRANDED library - first strand sequenced,
 \item[FR-SECONDSTRAND] STRANDED library - second strand sequenced, and
 \item[UNSTRANDED] UNSTRANDED library.
 \end{description}
-The ``UNSTRANDED'' is not available for \rtarrest and \lrtarrest method because an arrest site can
-not be unambiguously defined for this library type. Read base substitution option ``-B <BASE-SUB>''
-requires a stranded library type in order to corretly identify base substitutions based on strand 
-information.
+The ``UNSTRANDED'' library type is not available for \rtarrest and \lrtarrest method because an arrest 
+site can not be unambiguously defined for this library type. Read/base stratification option 
+``-B <BASE-SUB>'' requires a stranded library type in order to corretly identify base substitutions 
+based on strand information.
 %---------------------------------------------------------------------------------------------------
 \subsection{BED-like search region}
 Identification of interesting sites can be restricted to specific regions of the genome or transcriptome.
-Provide a minimalistic BED-like file to limit the search to some region(s) or site(s). 
-Complementary region(s) of the BAM files will not be considered.
+Provide a minimalistic BED-like file to limit the search space to some region(s) or site(s). 
+Complementary region(s) of the BAM files will not be considered, resulting in faster running time.
 
-In the following file, the search is confined to a 100nt region on contig 1
-starting at position 1,000 and a single site on contig 2 at position 10,000:
+In the following file, the search is confined to a 100nt region on contig 1 starting at position 
+1,000 and a single site on contig 2 at position 10,000:
 \begin{table}
 \centering
   \caption{Definiton of an exemplary BED-like search region}
@@ -278,23 +297,23 @@ starting at position 1,000 and a single site on contig 2 at position 10,000:
     \hline
     1 & 1000 & 1100 \\
     2 & 10000 & 10000 \\
-    \multicolumn{3}{c}{}
   \end{tabular}
 \end{table}
 Many individual sites may impair running performance of JACUSA2.
 Try to merge nearby sites to create contiguous regions and extract specific sites from 
 JACUSA2 output with bedtools\footnote{\url{http://bedtools.readthedocs.org/en/latest/}} ``intersect'':
 \begin{description}
-\item[merge sites] \begin{verbatim} 
+\item[Merge sites:] \begin{verbatim} 
 bedtools merge -d 500 singular_sites.bed > \
   contigous_regions.bed
 \end{verbatim}
-\item[run JACUSA2] \begin{verbatim} 
-java -jar JACUSA2.jar call-2 -b contigous_regions.bed \ 
-  -r JACUSA2.out mapping_1.sorted.bam mapping_2.sorted.bam
+\item[Run JACUSA2:] \begin{verbatim} 
+java -jar JACUSA2.jar call-2 \
+  -b contigous_regions.bed -r JACUSA2.out <BAM files>
 \end{verbatim}
-\item[extract sites] \begin{verbatim}
-bedtools intersect -wa -a JACUSA2.out -b singular_sites.bed
+\item[Extract sites:] \begin{verbatim}
+bedtools intersect -wa -a JACUSA2.out \
+  -b singular_sites.bed
 \end{verbatim}
 \end{description}
 %---------------------------------------------------------------------------------------------------
@@ -305,13 +324,14 @@ JAVA Virtual Machine. Check the manual of your JAVA Virtual machine on how to ch
 
 Chosen command line parameters and current genomic position are printed to the command prompt and
 serve as a status guard. Furthermore, depending on the provided command line parameters, JACUSA2
-will generate a file with sites that have been identified as potential artefacts when ``-s'' is
+will generate a file with sites that have been identified as potential artefacts when ``-s [FILTERED-OUTPUT]'' is 
 provided.
 
 Output format of JACUSA2 is controlled by the ``-f <FORMAT>'' command line option. Support for output 
 formats depends on the used method. Check Table \ref{tbl:method2format} for a summary of currently 
 supported output formats.
-\newcommand{\vcfspec}{Check \url{http://samtools.github.io/hts-specs/VCFv4.1.pdf}}
+
+\newcommand{\vcfspec}{Check: \url{http://samtools.github.io/hts-specs/VCFv4.1.pdf}}
 \begin{table}[ht]
   \centering
   \caption{Summary of available output formats for each method.}
@@ -324,173 +344,134 @@ supported output formats.
     Variant Call Format (VCF\footnote{\vcfspec}) & x        & x       &           & \\
   \end{tabular}
 \end{table}
-The default output format is combination of
-BED6\footnote{Check \url{http://genome.ucsc.edu/FAQ/FAQformat.html\#format1}} with
-JACUSA2 methods specific columns and common info column: ``info'', ``filter\_info'', and
- ``ref\_base''.
 
-A ``\#\#'' prefixed header that contain JACUSA2 runtime specific info such as version info and
-command line options is added to the default output format. The actual number of columns depends on
-the JACUSA2 method and the number of provided BAM files.
+The default output format is a combination of
+BED6\footnote{Check: \url{http://genome.ucsc.edu/FAQ/FAQformat.html\#format1}} with
+JACUSA2 methods specific columns and common info columns: ``info'', ``filter'', and ``ref''. 
+The actual number of columns depends on the JACUSA2 method and the number of provided BAM files.
 
-Check table \ref{tbl:general_output} for a general description of JACUSA2 output format and check
-method or option specific adjustments in the following sections:
-\begin{itemize}
-  \item \rtarrest method \ref{sec:rt_arrest},
-  \item \lrtarrest method \ref{sec:lrt_arrest},
-  \item optional INDEL data fields \ref{sec:indel}, or
-  \item base substitution based read stratification \ref{sec:read_base_stratification}.
-\end{itemize}
+Check Table \ref{tbl:general_output} and the following description general description of the JACUSA2.
 \begin{table}[ht]
   \centering 
   \caption{General description of JACUSA2 default output format with exemplary \call{2}
-  output --- ``N'' corresponds to the total number of columns. Check detailed explanation of columns
+  output - ``N'' corresponds to the total number of columns. Check detailed explanation of columns
   under the table.}
   \label{tbl:general_output}
 {\small
-\begin{tabular}{l|cccccc|ccc|cc}
-         & \multicolumn{6}{c|}{\textbf{BED6 columns}} & \multicolumn{3}{c}{\textbf{Method specific}} & \multicolumn{2}{c}{\textbf{Additional}} \\
-Column:  & 1 & 2 & 3 & 4 & 5 & 6 & 7 & \ldots & N-2 & N-1 & N \\
-\hline
-Example: & 1 & 100 & 101 & call & $8.07$ & - & 0,0,0,10 & \ldots & 0,2,0,10 & * & * \\
-         & \multicolumn{6}{c|}{\ldots} & \multicolumn{3}{c}{\ldots} & \multicolumn{2}{c}{\ldots} \\
+\begin{tabular}{cccccc|ccc|ccc}
+  \multicolumn{6}{c|}{\textbf{BED6 columns}} & \multicolumn{3}{c}{\textbf{Method specific}} & \multicolumn{2}{c}{\textbf{Additional}} \\
+  1 & 2 & 3 & 4 & 5 & 6 & 7 & \ldots & N-3 & N-2 & N-1 & N \\
+  \hline
+  1 & 100 & 101 & call & $8.07$ & - & 0,0,0,10 & \ldots & 0,2,0,10 & * & * T \\
+  \multicolumn{6}{c|}{\ldots} & \multicolumn{3}{c}{\ldots} & \multicolumn{3}{c}{\ldots} \\
 \end{tabular}}
 \end{table}
 \begin{description}
-  \item[(1, 2, 3) contig + start + end] 0-indexed coordinates $[start, end)$.
-  \item[(4) name] String that depends on method. Currently has no use except to ensure BED6 compatibility.
-  \item[(5) score] Score for this site. ``*'' if not available. Depends on actual method.
+  \item[(1, 2, 3) contig + start + end] Name of the contig and 0-indexed coordinates $[start, end)$.
+  \item[(4) name] String that depends on the method. Currently has no use except to ensure BED6 compatibility.
+  \item[(5) score] Score for this site. ``*'' if not available. Depends on actual method. Here, 
+  likelihood ratio that indicates how divergent base vectors between conditions are (higher value more divergent).
   \item[(6) strand] Possible values are: ``.'', ``+'', and ``-'' which correspond to ``unstranded'',
-  ``positive strand'', and ``negative strand'', respectively. If strand is ``= ``.'', then columns
-  with base call information will be showing base counts \textbf{according} to the strand --- inverted
+  ``positive strand'', and ``negative strand'', respectively. If strand is not ``.'', then columns
+  with base call information will be showing base counts \textbf{according} to the strand - inverted 
   base count if on the ``negative strand''.
   \item[(7 --- N-3) method specific] The number of base columns depends on the JACUSA2 method and
-  the number of BAM files --- check method specific explanation.
-  \item[(N-2) info] Additional info for this site. Actual content depdents on method and command
-  line parameters. Details about the parameter estimation of the underlying distribution can be shown,
-  insertion/deletion counts, and additional method specific data. If nothing  provided, set to ``*''. 
-  The ``info'' field is used to add optional site specific data without changing 
-  the total number of columns.
-  \item[(N-1) filter\_info] Relevant, if artefact/feature filter(s) $X$ have been provided with 
-  ``-a X'' on the command line. The column will contain a comma-separated list of artefact/feature 
-  filters that recognised this site. Will be ``*'' if empty.\\
-  \item[(N) ref\_base] The reference base according to coordinats and (6) strand information --- 
-  Inverted if on the ``negative strand''.
+  the number of BAM files (check method specific explanation).
+  \item[(N-2) info] The ``info'' field is used to add optional site specific data without changing 
+  the total number of columns. Actual content depends on method and command line parameters. 
+  The following optional data can be shown: Details about estimating the parameters 
+  of the underlying distribution. Insertion/deletion counts, and additional method 
+  specific data. If nothing provided, set to ``*''. 
+  \item[(N-1) filter] Relevant, if artefact/feature filter $X$ has been provided with 
+  ``-a X'' on the command line. The column will contain a ``;''-separated list of artefact/feature 
+  filters that recognised this site. Here, the column could be ``X''. Will be ``*'', if empty.
+  \item[(N) ref] The reference base according to coordinates (columns 1-3) and strand 
+  information (6) - Inverted, if on negative strand.
 \end{description}
+Check sections for method or option specific adjustments:
+\begin{itemize}
+  \item \rtarrest method Section \ref{sec:rt_arrest},
+  \item \lrtarrest method Section \ref{sec:lrt_arrest},
+  \item optional INDEL data fields Section \ref{sec:indel}, or
+  \item base substitution based read stratification Section \ref{sec:read_base_stratification}.
+\end{itemize}
+
+A ``\#\#'' prefixed header that contains JACUSA2 runtime specific data such as version info and
+command line options is added to the default output format.
 %---------------------------------------------------------------------------------------------------
-\section{Artefact/feature filter}
+\section{Artefact/feature filter}\label{sec:artefact_filter}
 False positive variant calls can be related to mapping artefacts and sequencing technology.
-Short read mappers tend to produce incorrect alignments around INDEL positions that may be falsely identified as variant sites.
+Short read mappers tend to produce incorrect alignments around INDEL positions that may be falsely 
+identified as variant sites.
 Other false variant calls originate from uneven base call error distributions along short reads.
-We have implemented a panel of simple threshold based artefact filters. Beyond artefacts, we have added filters
-that identify some features of a pileup or a read and can be used to mark those sites.
+We have implemented a panel of simple threshold based artefact filters. Beyond artefacts, we have 
+added filters that identify some features of a pileup or a read and can be used to mark or exclude 
+those sites.
 
-When a site is identified by an artefact or feature filter $X$, $X$ is added to the ``filter\_info'' column 
-and optionally this site can be moved to an other output file when command line ``-s [FILTERED-OUTPUT]'' has been used.
-This strategy presevers all sites and allows the user investigate the fraction of filtered vs. total calls. 
-In the following, we will use artefact and feature filtered interchangeably and a site we will call a site removed 
-by a feature filter albeit the site is marked by the ID of feature filter.
+When a site is identified by an artefact/feature filter, its corresponding ID $X$ is added to the
+``filter'' column and optionally this site can be moved to an other output file when command
+line ``-s [FILTERED-OUTPUT]'' has been used. This strategy preserves all sites and allows the user
+to investigate the fraction of filtered vs. total calls. In the following, we will use artefact and
+feature filtered interchangeably and we will call a site removed by a feature filter altough the site
+has been marked by the ID of feature filter and can be easily identified in the ``FILTERED-OUTPUT'' file.
 
-When identifying RDDs by comparing gDNA vs. cDNA, it is common practice to remove or mask sites that 
-are homozygous in gDNA (feature filter H) and have more than three distinct base types (artefact filter M).
+For example, when identifying RDDs by comparing gDNA vs. cDNA, it is common practice to remove or
+mask sites that are homozygous in gDNA (feature filter H) and have more than three distinct base
+types (artefact filter M).
 
-We have added the exclude site filter in JACUSA2 that allows to mark sites in the final output as 
-overlapping with sites/regions that are contained in a file. The supported file type are: VCF, BED, or JACUSA2 output. 
-Given a set of known SNPs, polymorphic sites can be directly marked and removed from the list of 
-candidate RNA-editing sites are identified by JACUSA2 in gDNA vs. cDNA or cDNA vs. cDNA comparisons:
+We have added a new exclude site filter (E) to JACUSA2 to mark sites in the final output that overlap 
+with sites/regions that are stored in a file. The supported file type are: VCF, BED, 
+or JACUSA2 output. Given a set of known SNPs, polymorphic sites can be directly marked and removed 
+from the list of candidate RNA-editing sites:
 \begin{verbatim}
-java -jar JACUSA2.jar -a E:file=snps.vcf:type:VCF -r JACUSA2.out cDNA-1.bam cDNA-2.bam
+java -jar JACUSA2.jar -a E:file=snps.vcf:type:VCF \
+  -r JACUSA2.out cDNA-1.bam cDNA-2.bam
 \end{verbatim}
 For performance reasons, the input file is required to be sorted by coordinate --- \textbf{WARNING:} 
-Sort order is not tested within JACUSA2.
+Sort order is not tested within JACUSA2. The sort order of the ``contig'' columnn is not important.
 
-Our filters (D,B,I,Y) monitor the distance d of a given candidate site to relevant read features such as start/end, 
-INDEL positions, homopolymeric regions, and splice sites and remove the candidate site from further 
-consideration if a proportion r of all reads falls below the given distance cutoff $\le d$.
-\begin{figure}[h]
+Our filters (D,B,I,Y) monitor the distance $d$ of a given candidate site to relevant read features such 
+as start/end, INDEL positions, homopolymeric regions, and splice sites and remove the candidate site 
+from further consideration if a proportion $r$ of all reads falls below the given distance cutoff $\le d$.
+\begin{figure}[ht]
   \centering
-  \caption{Summary of available artefact/feature filters for each method and examples.}
+  \caption{Summary of available artefact/feature filters for each method.}
   \label{fig:method2artefact_filter}
   \includegraphics[width=\textwidth]{figures/jacusa_filter_cropped}
   \\[.5cm]
   {\footnotesize
-  \begin{tabular}{cp{.35\textwidth}|ccccc}
-    \multicolumn{2}{c|}{\textbf{Artefact/feature Filter}} & \multicolumn{5}{c}{\textbf{JACUSA2 method}} \\
-    \textbf{Value} & \textbf{Description}                             & \call{1}   & \call{2}   & \pileup    & \rtarrest  & \lrtarrest \\
+  \begin{tabular}{cp{.4\textwidth}|ccc}
+    \multicolumn{2}{c|}{\textbf{Artefact /}}                  & \multicolumn{3}{c}{\textbf{JACUSA2 method}} \\
+    \multicolumn{2}{c|}{\textbf{feature Filter}}              & \multirow{2}{*}{\call{1}} & \call{2}, & \rtarrest, \\
+    \textbf{ID} & \textbf{Description}                        &                           & \pileup   & \lrtarrest \\
     \hline
     \hline
-      & Filter potential false positive variants adjacent to: &            &            &            &            & \\
-    B & \quad - read start/end                                & \checkmark & \checkmark & \checkmark &            & \\
-    I & \quad - INDEL position(s)                             & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark\\
-    S & \quad - splice site(s)                                & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
-    D & Combines Filters:                                     &            &            &            &            & \\
-      & \quad - I + B + S                                     & \checkmark & \checkmark & \checkmark &            & \\
-      & \quad - I + S                                         &            &            &            & \checkmark & \checkmark \\
+      & Filter potential false positive variants adjacent to: &            &            & \\
+    B & \quad - read start/end                                & \checkmark & \checkmark & \\
+    I & \quad - INDEL position(s)                             & \checkmark & \checkmark & \checkmark \\
+    S & \quad - splice site(s)                                & \checkmark & \checkmark & \checkmark \\
+    D & Combines Filters:                                     &            &            & \\
+      & \quad - I + B + S                                     & \checkmark & \checkmark & \\
+      & \quad - I + S                                         &            &            & \checkmark \\
     \hline
-    Y & Filter wrong variant calls within homopolymers        & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
-    M & Max allowed alleles per site                          & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
-    H & Filter non-homozygous sites in condition 1 or 2       &            & \checkmark & \checkmark & \checkmark & \checkmark \\
-    E & Exclude sites contained in a file                     & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    Y & Filter wrong variant calls within homopolymers        & \checkmark & \checkmark & \checkmark \\
+    M & Max allowed alleles per site                          & \checkmark & \checkmark & \checkmark \\
+    H & Filter non-homozygous sites in condition 1 or 2       &            & \checkmark & \checkmark \\
+    E & Exclude sites contained in a file                     & \checkmark & \checkmark & \checkmark \\
   \end{tabular}}
 \end{figure}
-In JACUSA2 we have included structured sites meaning that linked data can be stored in the output
-across multiple lines.
-Filters are assigned to the top level site --- on derieved lines the filter\_info column will be
-equal to the top level site.
-\section{Variant detection}
-\subsection{Identification of RNA editing sites}
-In order to identify RNA editing sites by comparing gDNA and \emph{stranded} RNA-Seq (single or
-paired end) use:
-\begin{description} 
-  \item[first strand sequenced] ``-P1 UNSTRANDED -P2 RF-FIRSTSTRAND''
-  \item[second strand sequenced] ``-P2 UNSTRANDED -P2 FR-SECONDSTRAND''
-\end{description}.
-When your RNA-Seq is unstranded use: ``-P1 UNSTRANDED -P2 UNSTRANDED'' and infer the correct
-orientation from annnotation.
 
-Use the following command line to identify RNA-DNA differences in BAM files that might give rise to
-RNA editing sites:
-\begin{verbatim}
-java -jar JACUSA2.jar call-2 -r JACUSA2.out -s -a H:condition=1 gDNA.bam cDNA.bam
-\end{verbatim}
-Option ``-a H:condition=x'' ensures that potential polymorphisms in gDNA will be eliminated as
-artefacts. The number $x \in \{1, 2\}$ determines which sample is required to be homomorph --- in
-this case:
-gDNA.bam.
-
-Use the following command line to identify RNA-DNA differences:
-\begin{verbatim}
-java -jar call-2 -r JACUSA2.out -s cDNA_1.bam cDNA_2.bam
-\end{verbatim}
-WARNING: If you want to identify RNA-RNA differences make sure NOT to use the filter ``-a H[\ldots]''! 
-Otherwise, potential valid variants will be filtered out. If you happen to have a list of known 
-polymorphic sites in a file ``snps.\{vcf|bed|JACUSA2 output\}'' add the exclude site filter to the previous 
-statemet:
-\begin{verbatim}
-java -jar call-2 -a E:file=snps.vcf:type=VCF -r JACUSA2.out -s cDNA_1.bam cDNA_2.bam
-\end{verbatim}
-Polymorphic site defined in ``snps.vcf'' will be marked in the output file `JACUSA2.out`.
-
-\subsection{\call{*} output format}\label{sec:call_format}
-Test-statistic $z \in \mathbb{R}$ that indicates the likelihood that this is a
-  true variant. Higher number indicates a higher likelihood for a variant.
-\subsection{\pileup output format}\label{sec:pileup_format}
-The output format of \pileup is derieved from the output format of \call{*}. The only modification
-is that the ``score'' column corresponds to the total coverage of a site (see Section
-\ref{sec:call_format} for further details).
-%---------------------------------------------------------------------------------------------------
-\section{Reverse transcriptase arrest events}
-%---------------------------------------------------------------------------------------------------
-\subsection{\rtarrest output format}
-In order to represent arrest events in JACUAS2 output, the base vector colum ``basesij''  is split
-into two columns ``arrest\_basesij'' and ``through\_basesij'' (i encodes the condition and j the
-replicate.
-The former column represents base calls from reads that exhibit premature termination and the later
-corresponds to base calls from reads that show NO premature termination.
-\subsection{\lrtarrest output format}
+In JACUSA2, multi-line sites have been added to allow more complex data structures in the output. 
+Currently, the ``filter'' column is only completely available for the summary of a site. For read/base 
+stratified data, this will be the first line of a site. For \lrtarrest data this will be the line of a 
+site where the arrest position column is ``-''.
+The ``filter'' column of non-summary lines will be populated with the ``?'' value indicating unknown 
+filter status. It is planed to change this behaviour in a future release to provide stratified filter 
+information.
 %---------------------------------------------------------------------------------------------------
 \section{Usage}
 Calling JACUSA2 without any arguments will print the available tools which currently are:
+{\small
 \begin{verbatim}
 java -jar JACUSA2.jar
   METHOD        DESCRIPTION
@@ -499,104 +480,311 @@ java -jar JACUSA2.jar
   pileup        SAMtools like mpileup (2 conditions)
   rt-arrest     Reverse Transcription Arrest - 2 conditions
   lrt-arrest    Linkage arrest to base substitution - 2 conditions
-Version: 		[...]
-Libraries: 	[...]
-\end{verbatim}
+[...]
+\end{verbatim}}
 %---------------------------------------------------------------------------------------------------
-\subsection{call-1}
+\subsection{Variant detection}\label{sec:call}
+In order to identify RNA editing sites by comparing gDNA and \emph{stranded} RNA-Seq use:
+\begin{description} 
+  \item[first strand sequenced] ``-P1 UNSTRANDED -P2 RF-FIRSTSTRAND''
+  \item[second strand sequenced] ``-P2 UNSTRANDED -P2 FR-SECONDSTRAND''.
+\end{description}
+When your RNA-Seq is unstranded use: ``-P UNSTRANDED'' and infer the correct orientation from annnotation.
+This sets the library type ``UNSTRANDED'' to all conditions.
+
+Use the following command line to identify RNA-DNA differences in BAM files that might give rise to
+RNA editing sites:
+\begin{verbatim}
+java -jar JACUSA2.jar call-2 -r JACUSA2.out -s -a H:condition=1 \
+  gDNA.bam cDNA.bam
+\end{verbatim}
+Option ``-a H:condition=c'' ensures that polymorphic sites in gDNA will be marked as 
+artefacts. The number $c \in \{1, 2\}$ defines which sample is required to be homozygous - in this 
+case: ``-a H:condition=1'' will require gDNA.bam to be homozygous.
+
+Use the following command line to identify RNA-RNA differences:
+\begin{verbatim}
+java -jar call-2 -r JACUSA2.out -s cDNA_1.bam cDNA_2.bam
+\end{verbatim}
+\textbf{WARNING:} If you want to identify RNA-RNA differences make sure NOT to use the filter ``-a
+H[\ldots]''! Otherwise, potential valid variants will be filtered out. If you happen to have a list
+of known polymorphic sites in a file ``snps.\{vcf|bed|JACUSA2 output\}'', add the exclude site filter (E)
+to the previous statemet:
+\begin{verbatim}
+java -jar call-2 -a E:file=snps.vcf:type=VCF -r JACUSA2.out -s \
+  cDNA_1.bam cDNA_2.bam
+\end{verbatim}
+Polymorphic site defined in ``snps.vcf'' will be marked (see Section \ref{sec:separate_output} for details.)
+%---------------------------------------------------------------------------------------------------
+\subsubsection{call-1}\label{sec:call_1}
 Single sample (call-1) allows to call variants against a reference. 
 Internally, an \textit{in silico} sample is created from information that is provided by the ``MD'' field 
-in BAM files.
+in BAM files or by providing a <reference.fasta> via command line: ``-f reference.fasta''.
 
 The number of base columns depends on the number of BAM files. In basesIJ: $I$
 corresponds to sample and $J$ to the respective replicate. Numbers indicate the base count of the
 following base vector: $(A, C, G, T)$
 
 Sites that have a $>$ alleles are considered candidate variant sites and for this sites a test-score will be computed.
-\subsection{call-2}
+%---------------------------------------------------------------------------------------------------
+\subsubsection{call-2}\label{sec:call_2}
 %\todo[author=michael]{nicely combine call-1, call2}
 %---------------------------------------------------------------------------------------------------
-\subsection{pileup}
+\subsubsection{\call{*} output format}\label{sec:call_format}
+Column (5) is the test-statistic of the likelihood ratio test for comparing two conditions $I$ and $II$. 
+Base call count vectors $D^I$ and $D^{II}$ are modelled with the Dirichlet-Multinomial distribution 
+(see \cite{Piechotta2017} for details):
+$$z = \log \frac{DirMult(\alpha^I; D^I) \cdot DirMult(\alpha^{II}; D^II)}{DirMult(\alpha^{I,II}; D^I) \cdot DirMult(\alpha^{I,II}; D^{II})}$$
+Parameters $\alpha^I$, $\alpha^{II}$, and $\alpha^{I,II}$ are estimated from base call vectors 
+$D^I$, $D^{II}$, and $D^{I,II}$ (merged conditions) respectively, with a variant of the Newton 
+iteration method presented by Minka\footnote{Check: \url{https://tminka.github.io/papers/dirichlet/minka-dirichlet.pdf}}.
+Higher values of the test-statistic indicate a higher divergence of base call vectors between conditions.
+
+When only one condition $I$ is provided, \call{1} will create an \textit{in silico} condition $I^*$ by 
+using available reference information to replace non-reference base calls in $D^I$ and creating 
+synthetic base call vectors $D^{I^*}$ and applying the likelihood ratio test defined above. The output 
+will contain only data for condition $I$. 
+\newcommand{\firstColumns}{First five columns: ``contig'', ``start'', ``end'', and ``name''}
+\newcommand{\lastColumns}{Last 3 columns: ``info'', ``filter'', and ``ref''}
+\newcommand{\cc}[1]{\multicolumn{1}{c}{#1}}
+\begin{table}[ht]
+  \centering
+  \caption{Exemplary \call{2} output on HEK-293 identifying RNA editing site by comparing DNA and RNA from 
+  \cite{Piechotta2017}. 
+  The first\protect\footnote{\firstColumns} and last\protect\footnote{\lastColumns} columns have been 
+  removed for clarity. The first column is used to identify a line in the presented output.}
+  \label{tbl:call_output_format}
+  \small{
+  \begin{tabular}{clclllc}
+    1--4                & 5              & 6               & 7                & 8                & 9                & 10--13 \\
+    \textbf{\#[\ldots]} & \textbf{score} & \textbf{strand} & \textbf{bases11} & \textbf{bases12} & \textbf{bases21} & \textbf{[\ldots]} \\
+    \hline
+    \ldots &                &                 &                  &                  &                  & \ldots \\
+    \ldots &                &                 &                  &                  &                  & \ldots \\
+    \ldots &                &                 &                  &                  &                  & \ldots \\
+    \vdots & \cc{\vdots}    & \vdots          & \cc{\vdots}      & \cc{\vdots}      & \cc{\vdots}      & \vdots \\
+  \end{tabular}}
+\end{table}
+%---------------------------------------------------------------------------------------------------
+\subsection{\pileup}\label{sec:pileup}
 See ``Call variant - two samples'' for details.
-\subsection{rt-arrest - 2 conditions}
-In this method base call counts of arrest and read through reads are modelled by a Beta-Binomial distribution and 
-differences between conditions are to be identified by means of a likelihood-ratio test. Subsequent approximiation 
+%---------------------------------------------------------------------------------------------------
+\subsubsection{\pileup output format}\label{sec:pileup_format}
+The output format of \pileup is derieved from the output format of \call{*}. The only modification
+is that the ``score'' column (5) corresponds to the total read coverage of a site (see Section
+\ref{sec:call_format} for further details).
+%---------------------------------------------------------------------------------------------------
+\subsection{\textit{*-arrest} - Reverse transcriptase arrest events}
+JACUSA2 supports two methods to identify arrest events by means of comparing counts of arrest and through 
+reads: \rtarrest and \lrtarrest. Beyond read counts, JACUSA2 shows base counts from arrest and through reads.
+This allows to inspect arrest events and variant calling simultaneously.
+%---------------------------------------------------------------------------------------------------
+\subsubsection{rt-arrest - 2 conditions}
+In this method, base call counts of arrest and read through reads are modelled by a Beta-Binomial distribution and 
+differences between conditions are to be identified by means of a likelihood ratio test. Subsequent approximiation 
 with $\chi^2$ distribution to compute a pvalue.
 
 Sites are considered candidate arrest sites, if in all BAM files there is at least one read through AND one  
-read arrest event. Furthermore, coverage filter and minBASQ of Base Call apply that will affect the output. 
-\subsection{lrt-arrest - 2 conditions}
-%\todo[author=michael]{make fluent text}
-lrt-arrest allows to link pileups to their arrest position. Output consists of read arrest and read through counts and 
+read arrest event. Otherwise, there would be no difference between the conditions. 
+Furthermore, coverage filter and minBASQ of base call apply that will affect the output. 
+%---------------------------------------------------------------------------------------------------
+\paragraph{\rtarrest output format}\label{sec:rt_arrest}
+In order to represent arrest events in JACUAS2 output, the base vector colum ``bases$ij$''  is split
+into two columns ``arrest$ij$'' and ``through$ij$'' ($i$ specifies the condition and $j$ the replicate.
+The former column represents base calls from reads that exhibit premature termination and the later
+correspond to base calls from reads without premature termination.
+\renewcommand{\lastColumns}{Last 2 columns: ``filter'', and ``ref''}
+\begin{table}[ht]
+  \centering
+  \caption{Exemplary \rtarrest output of HIVRT +GMC vs. -GMC comparison from \cite{Zhou2018}. 
+  The first\protect\footnote{\firstColumns} and last\protect\footnote{\lastColumns} columns have been 
+  removed to improve clarity clarity.}
+  \label{tbl:rt_arrest_output_format}
+  \tiny{
+  \begin{tabular}{clcccccc}
+    1--4  & 5                & 6               & 7                 & 8                  & 9--10 & 11                   & 12--13 \\
+    \ldots & \textbf{pvalue} & \textbf{\ldots} & \textbf{arrest11} & \textbf{through11} & \ldots & \textbf{info}       & \ldots \\
+    \hline
+    \ldots & 0.0002          &                 & 2875,154,15,956   & 26283,335,26,2276  & \ldots & arrest\_score=14.15;& \ldots \\
+    \ldots & 0.5347          &                 & 0,0,0,0           & 1,0,209,0          & \ldots & arrest\_score=0.39; & \ldots \\
+    \ldots & 0.0281          &                 & 601,715,150,1291  & 397,32422,144,314  & \ldots & arrest\_score=4.82; & \ldots \\
+    \vdots & \vdots          & \vdots          & \vdots            & \vdots             & \vdots & \vdots              & \vdots \\
+  \end{tabular}}
+\end{table}
+%---------------------------------------------------------------------------------------------------
+\subsubsection{lrt-arrest - 2 conditions}
+\lrtarrest allows to link pileups to their arrest position. Output consists of read arrest and read through counts and 
 a references to the associated arrest positions. There are cases, where currently an arrest position cannot be defined, 
 e.g.: non properly paired reads.
-Output consits of at least one line. Each separate arrest position adds an additional row is 
-The first row contains the unstratified data or total, the ``arrest\_pos'' column is set to ``*''.
-Any following sites with identical coordinates (contig, start, end, strand) will have a different 
+%---------------------------------------------------------------------------------------------------
+\paragraph{\lrtarrest output format}\label{sec:lrt_arrest}
+The functonality and output format of \lrtarrest is currently under development. Be aware of future changes. 
+Output consits of at least one line. Each separate arrest position adds an additional line. 
+%The first line contains the unstratified data or total, the ``arrest\_pos'' column is set to ``*''.
+Any following site with identical coordinates (contig, start, end, strand) will have a different 
 arrest position reference in the ``arrest\_pos'' column. 
 
-This method supports partial artefact filtering. Currently, filters only apply to the unstratified data --- 
-sites with ``*'' in in ``arrest\_pos''. Furthermore, coverage filter and minBASQ of Base Call apply 
-that will affect the output.
+This method supports partial artefact filtering. Currently, filters only apply to the unstratified data. 
+%sites with ``arrest\_pos'' in in ``arrest\_pos''. 
+Furthermore, coverage filter and minBASQ of Base Call apply that will affect the output.
+%\begin{table}[ht]
+%  \centering
+%  \caption{Exemplary \lrtarrest output of HIVRT +GMC vs. -GMC comparison from \cite{Zhou2018} to identify 
+%  arrest events. The first\protect\footnote{\firstColumns} and last\protect\footnote{\lastColumns} 
+%  columns have been removed for clarity. The first column is used to identify a line in the presented 
+%  output.}
+%  \label{tbl:lrt_arrest_output_format}
+%  \tiny{
+%  \begin{tabular}{clcccccc}
+%    1--4   & 5               & 6               & 7                    & 8                 & 9                  & 10--12 & 13--15 \\
+%    \ldots & \textbf{pvalue} & \textbf{\ldots} & \textbf{arrest\_pos} & \textbf{arrest11} & \textbf{through11} & \ldots & \ldots \\
+%    \hline
+%    \ldots & TODO            & T               & TODO                 & A,C,G,T           & A,C,G,T            & \ldots & \ldots \\
+%    \ldots & TODO            & T               & TODO                 & A,C,G,T           & A,C,G,T            & \ldots & \ldots \\
+%    \ldots & TODO            & T               & TODO                 & A,C,G,T           & A,C,G,T            & \ldots & \ldots \\
+%    \vdots & \vdots          & \vdots          & \vdots               & \vdots            & \vdots             & \ldots & \vdots \\
+%  \end{tabular}}
+%\end{table}
+%---------------------------------------------------------------------------------------------------
+\section{Optional data}
+JACUSA2 data supports optional data that can be added by providing the approporiate command line option.
+See Table \ref{tbl:method2optional_data} for a summary of methods and supported optional data.
+\begin{table}[ht]
+  \centering
+  \caption{Summary of available optional data for each method in JACUSA2. Command line options are 
+  provided within (``\ldots'')}
+  \label{tbl:method2optional_data}
+  \begin{tabular}{p{.35\textwidth}cccc}
+                                                  & \multicolumn{3}{c}{\textbf{Method}} \\
+                                                  & \call{*},  &            & \\
+  \textbf{Optional data}                          & \pileup    & \rtarrest  & \lrtarrest \\
+  \hline
+  \hline
+  INDELs:                                         &            &            & \\
+  \quad Insertions (``-I'')                       & \checkmark & \checkmark & \\ 
+  \quad Deletions (``-D'')                        & \checkmark & \checkmark & \\
+  Read/base stratification \\ (``-B <BASE-SUB>'') & \checkmark & \checkmark & \\
+  \end{tabular}
+\end{table}
+%---------------------------------------------------------------------------------------------------
+\subsection{Adding INDEL statistics}\label{sec:indel}
+Use ``-I'' or ``-D'' to add differential insertion of deletion data to the output. The ``info'' (N-2) 
+column will have additional fields prefixed by ``ins'' or ``del''.
+In the following, the description of deletions is presented. The underlying statistical test and output 
+format for insertion and deletion data are identical.
+%---------------------------------------------------------------------------------------------------
+\subsection{Deletion output format}
+Add ``-D'' to your JACUSA2 run statement to add differetial deletion scores for the HIVRT data from 
+\cite{Zhou2018} (see Section \ref{sec:zhou2018_data}):
+\begin{verbatim}
+java -jar JACUSA2jar rt-arrest -p 2 -P FR_SECONDSTRAND \
+  -D -r HIVRT.out HIVRT_+CMC.bam HIVRT_-CMC.bam
+\end{verbatim}
+Example output for the ``info'' (N-2) column for contig NR\_003286\_RNA18SN5 and start 4 in the 
+generated ``HIVRT.out'':
+\begin{verbatim}
+[...]deletion_pvalue=0.098;deletion_score=2.734;deletions11=0,42109;deletions21=8,89123[...]
+\end{verbatim}
+\begin{description}
+  \item[del\_pvalue] P-value from likelihood ratio test.
+  \item[del\_score] Raw test-statistics of likelihoodratio test.
+  \item[del\_bases\textit{ij}] Condition(\textit{i}) and replicate(\textit{j}) specific counts 
+  of reads that contain a deletion ($D$) and total ($T$) reads at current location. E.g.: deletions21=31,236510;
+  In condition 2 and replicate 1 there are 31 reads with a deletion of a total of 236.510 reads 
+  that span the current location. The total number of reads $T$ includes reads that are overlapping 
+  from start to end with the reference including introns.
+\end{description}
+%---------------------------------------------------------------------------------------------------
+\subsection{Adding read/base stratification}\label{sec:read_base_stratification}
+Read stratification or partitioning based on base substitution(s) can be enabled by adding ``-B <BASE-SUB>'' 
+to your JACUSA2 run statement. <BASE-SUB> defines the base substitution $X2Y : X,Y \in\{A, C, G, T\}, X \ne Y$ 
+of interest where $X$ is the reference base and $Y$ is a base call from some read. It is required to provide 
+a stranded library type for each condition because otherwise $X2Y$ cannot unambigously be determined from the 
+sequencing data. It is possible to provide multiple base substitutions by separating each with a ``,''.
+
+For each site the output will consist of at least on line the represents the total not stratified reads.
+The ``info'' column will contain a field the following field ``read\_sub=*'' indicating that the total 
+reads are shown. If read with the wanted base substitution $A2G$ for example is encountered, all sites 
+that are covered by this read will have an additional line of output and the ``info'' column will have 
+a value of ``read\_sub=A2G''. 
 %---------------------------------------------------------------------------------------------------
 % TODO options
 \section{Description of command line options}
+%---------------------------------------------------------------------------------------------------
 \subsection{Input / Output}
+%---------------------------------------------------------------------------------------------------
 \subsubsection{Input BAM files}
+%---------------------------------------------------------------------------------------------------
 % TODO BAM files
 \subsubsection{Output file}
 \input{CLI/r}
-%
-\subsubsection{Output artefacts to separate file}
+%---------------------------------------------------------------------------------------------------
+\subsubsection{Output artefacts to separate file}\label{sec:separate_output}
 \input{CLI/s}
-%
+%---------------------------------------------------------------------------------------------------
 \subsection{Input BED file}
 \input{CLI/b}
 \subsection{Reference fasta file}
 \input{CLI/R}
-%
+%---------------------------------------------------------------------------------------------------
 \subsection{Library type}
 \input{CLI/P}
-%
-\subsection{Read base changes}
+%---------------------------------------------------------------------------------------------------
+\subsection{Read/base stratification}
 \input{CLI/B}
-\subsection{Show deletion score}
+%---------------------------------------------------------------------------------------------------
+\subsection{Show INDEL statistics}
+%---------------------------------------------------------------------------------------------------
+\subsubsection{Show insertion statistics}
+\input{CLI/I}
+%---------------------------------------------------------------------------------------------------
+\subsubsection{Show deletion statistics}
 \input{CLI/D}
+%---------------------------------------------------------------------------------------------------
 \subsection{General filtering}
+%---------------------------------------------------------------------------------------------------
 \subsubsection{Filter by mapping quality}
 \input{CLI/m1}
+%---------------------------------------------------------------------------------------------------
 \subsubsection{Filter by base call quality}
 \input{CLI/q1}
+%---------------------------------------------------------------------------------------------------
 \subsubsection{Filter by minimal coverage}
 \input{CLI/c1}
+%---------------------------------------------------------------------------------------------------
 \subsubsection{Limit maximal depth}
 \input{CLI/d1}
+%---------------------------------------------------------------------------------------------------
 \subsubsection{Filter by flag(s)}\label{sec:filter_flag}
 \input{CLI/f}
+%---------------------------------------------------------------------------------------------------
 \subsubsection{Retain by flag(s)}
 \input{CLI/F}
+%---------------------------------------------------------------------------------------------------
 \subsubsection{Filter by number of hits}
 \input{CLI/filterNH_1}
+%---------------------------------------------------------------------------------------------------
 \subsubsection{Filter by number of mismatches}
 \input{CLI/filterNM_1}
+%---------------------------------------------------------------------------------------------------
 \subsection{Artefact/feature filter}\label{sec:cli_artefact_filter}
 \input{CLI/a}
-% 
+%---------------------------------------------------------------------------------------------------
 \subsection{Thread related}
+%---------------------------------------------------------------------------------------------------
 \subsubsection{Number of parallel threads}
 \input{CLI/p}
+%---------------------------------------------------------------------------------------------------
 \subsubsection{Actual thread window size}
 \input{CLI/w}
+%---------------------------------------------------------------------------------------------------
 \subsubsection{Reserved thread window size}
 \input{CLI/W}
-%
+%---------------------------------------------------------------------------------------------------
 \subsection{Test-statistic options}
 \input{CLI/T}
 \input{CLI/u}
-\subsection{Filtering by Test-statistic threshold}
-% TODO remove
-%\clioption{-T <THRESHOLD>}{Filter positions based on test-statistic THRESHOLD\newline default: DO 
-%NOT FILTER}{\callone \calltwo \rtarrest \lrtarrest}
+%---------------------------------------------------------------------------------------------------
 \subsection{Misc}
 \input{CLI/h}
 \input{CLI/x}
@@ -615,5 +803,4 @@ that will affect the output.
 %---------------------------------------------------------------------------------------------------
 \bibliographystyle{apalike}
 \bibliography{manual}
-%---------------------------------------------------------------------------------------------------
 \end{document}
