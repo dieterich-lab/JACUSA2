@@ -1,0 +1,14 @@
+#TeXlipse project settings
+#Wed Oct 16 11:45:51 CEST 2019
+markTmpDer=true
+builderNum=2
+outputDir=manual/
+makeIndSty=
+bibrefDir=
+outputFormat=pdf
+tempDir=manual
+mainTexFile=manual.tex
+outputFile=manual.pdf
+langSpell=en
+markDer=true
+srcDir=manual/
