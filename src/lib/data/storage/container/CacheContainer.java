@@ -58,32 +58,16 @@ public interface CacheContainer {
 			
 			this.sharedStorage = sharedStorage;
 			
-			recordProcessors1 	= new ArrayList<GeneralRecordProcessor>();
-			recordProcessors2 	= new ArrayList<GeneralRecordProcessor>();
+			recordProcessors1 	= new ArrayList<>();
+			recordProcessors2 	= new ArrayList<>();
 			
 			storages1 			= new ArrayList<>();
 			storages2 			= new ArrayList<>();
-		}
-
-		public StrandedBuilder withRecordProcessors(
-				final List<GeneralRecordProcessor> recordProcessors1,
-				final List<GeneralRecordProcessor> recordProcessors2) {
-			
-			recordProcessors1.addAll(recordProcessors1);
-			recordProcessors2.addAll(recordProcessors2);
-			return this;
 		}
 		
 		public StrandedBuilder withStorage(final Storage storage1, final Storage storage2) {
 			storages1.add(storage1);
 			storages2.add(storage2);
-			return this;
-		}
-		
-		public StrandedBuilder withStorages(
-				final List<Storage> storages1, final List<Storage> storages2) {
-			storages1.addAll(storages1);
-			storages2.addAll(storages2);
 			return this;
 		}
 		
@@ -113,48 +97,5 @@ public interface CacheContainer {
 		}
 		
 	}
-	
-	public static class UnstrandedBuilder implements lib.util.Builder<CacheContainer> {
-		
-		private final SharedStorage sharedStorage;
 
-		private List<GeneralRecordProcessor> recordProcessors;
-		private List<Storage> storages;
-		
-		public UnstrandedBuilder(final SharedStorage sharedStorage) {
-			this.sharedStorage = sharedStorage;
-			
-			recordProcessors 	= new ArrayList<GeneralRecordProcessor>();
-			storages 				= new ArrayList<>();
-		}
-		
-		public UnstrandedBuilder withProcessor(final GeneralRecordProcessor processor) {
-			recordProcessors.add(processor);
-			return this;
-		}
-		
-		public UnstrandedBuilder withRecordProcessors(final List<GeneralRecordProcessor> recordProcessors) {
-			recordProcessors.addAll(recordProcessors);
-			return this;
-		}
-		
-		public UnstrandedBuilder withCache(final Storage cache) {
-			storages.add(cache);
-			return this;
-		}
-		
-		public UnstrandedBuilder withCaches(final List<Storage> caches) {
-			caches.addAll(caches);
-			return this;
-		}
-		
-		@Override
-		public CacheContainer build() {
-			final Cache cache = new Cache();
-			cache.addStorages(storages);
-			return new UnstrandedCacheContainter(sharedStorage, cache);
-		}
-		
-	}
-	
 }

@@ -55,6 +55,7 @@ public abstract class AbstractDataAssemblerFactory {
 									parameter, filterContainer, sharedStorage, conditionParameter) );
 
 			cacheContainer = new RFPairedEnd1CacheContainer(forwardCacheContainer, reverseCacheContainer);
+			break;
 		}
 
 		case FR_SECONDSTRAND: {
