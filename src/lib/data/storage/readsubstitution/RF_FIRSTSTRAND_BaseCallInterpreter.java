@@ -5,29 +5,37 @@ import lib.util.Base;
 import lib.util.position.Position;
 import htsjdk.samtools.SAMRecord;
 
-public class StrandedBaseCallInterpreter
+public class RF_FIRSTSTRAND_BaseCallInterpreter
 implements BaseCallInterpreter {
 
 	@Override
 	public Base getReadBase(Record record, int readPos) {
 		final SAMRecord samRecord = record.getSAMRecord();
 		final Base base = Base.valueOf(samRecord.getReadBases()[readPos]);
-		if (samRecord.getReadNegativeStrandFlag()) {
-			return base.getComplement();
-		}
-		return base;
+		return getBase(samRecord, base);
 	}
-	
+
 	@Override
 	public Base getRefBase(Record record, Position pos) {
 		final SAMRecord samRecord = record.getSAMRecord();
 		final Base base = record
 				.getRecordReferenceProvider()
 				.getRefBase(pos.getReferencePosition(), pos.getReadPosition());
-		if (samRecord.getReadNegativeStrandFlag()) {
+		return getBase(samRecord, base);
+	}
+
+	private Base getBase(final SAMRecord samRecord, final Base base) {
+		if (samRecord.getReadPairedFlag()) { 
+			if (samRecord.getFirstOfPairFlag() && samRecord.getReadNegativeStrandFlag() || 
+					samRecord.getSecondOfPairFlag() && ! samRecord.getReadNegativeStrandFlag()) {
+				return base;
+			}
 			return base.getComplement();
 		}
-		return base;
+
+		if (samRecord.getReadNegativeStrandFlag()) {
+			return base;
+		}
+		return base.getComplement();
 	}
-		
 }

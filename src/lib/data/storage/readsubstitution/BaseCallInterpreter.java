@@ -20,9 +20,10 @@ public interface BaseCallInterpreter {
 			return new UnstrandedBaseCallInterpreter();
 
 		case RF_FIRSTSTRAND:
+			return new RF_FIRSTSTRAND_BaseCallInterpreter();
 		case FR_SECONDSTRAND:
-			return new StrandedBaseCallInterpreter();
-			
+			return new FR_SECONDSTRAND_BaseCallInterpreter();
+
 		default:
 			throw new IllegalArgumentException("Cannot determine read arrest and read through from library type: " + libraryType.toString());
 
