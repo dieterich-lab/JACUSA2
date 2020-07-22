@@ -6,7 +6,8 @@ import org.apache.commons.cli.Options;
 
 import lib.stat.AbstractStatFactory;
 import lib.stat.dirmult.DirMultCLIprocessing;
-import lib.stat.estimation.provider.arrest.RTarrestEstimationCountProvider;
+import lib.stat.estimation.provider.arrest.AbstractRTarrestEstimationCountProvider;
+import lib.stat.estimation.provider.arrest.RobustRTarrestEstimationCountProvider;
 
 public class RTarrestStatFactory extends AbstractStatFactory {
 
@@ -27,15 +28,15 @@ public class RTarrestStatFactory extends AbstractStatFactory {
 
 	@Override
 	public RTarrestStat newInstance(double threshold, final int conditions) {
-		RTarrestEstimationCountProvider arrestCountProvider;
+		AbstractRTarrestEstimationCountProvider arrestCountProvider;
 		
 		if (conditions == 2) {
 			arrestCountProvider = 
-					new RTarrestEstimationCountProvider(dirMultParameter.getMinkaEstimateParameter().getMaxIterations());
+					new RobustRTarrestEstimationCountProvider(dirMultParameter.getMinkaEstimateParameter().getMaxIterations());
 		} else {
 			throw new IllegalStateException("Number of conditions not supported: " + conditions);
 		}
-		
+
 		return new RTarrestStat(threshold, arrestCountProvider, dirMultParameter);
 	}
 

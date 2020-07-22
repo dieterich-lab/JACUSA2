@@ -1,12 +1,9 @@
 package lib.stat.estimation.provider.arrest;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.count.basecall.BaseCallCount;
 
 public class RobustRTarrestEstimationCountProvider extends AbstractRTarrestEstimationCountProvider {
 
@@ -22,12 +19,6 @@ public class RobustRTarrestEstimationCountProvider extends AbstractRTarrestEstim
  
 		final boolean both1 = count1.both();
 		final boolean both2 = count2.both();
-
-		// get bases that are different between the samples
-		final List<BaseCallCount> originalBccs = new ArrayList<>(parallelData.getCombinedData().size());
-		for (final DataContainer container : parallelData.getCombinedData()) {
-			originalBccs.add(container.getPileupCount().getBCC());
-		}
 
 		final List<List<Count>> orginalCounts = getCounts(parallelData);
 		if (both1 && both2) {

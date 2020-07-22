@@ -8,14 +8,14 @@ import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.stat.dirmult.EstimateDirMult;
 import lib.stat.estimation.EstimationContainer;
-import lib.stat.estimation.provider.arrest.RTarrestEstimationCountProvider;
+import lib.stat.estimation.provider.arrest.AbstractRTarrestEstimationCountProvider;
 import lib.util.Util;
 
 public class RTarrestStat extends AbstractStat {
 
 	public static final String ARREST_SCORE = "arrest_score";
 	
-	private final RTarrestEstimationCountProvider estContainerProv;
+	private final AbstractRTarrestEstimationCountProvider estContainerProv;
 	private final RTarrestBetaBinParameter dirMultPrm;
 
 	private final double threshold;
@@ -24,7 +24,7 @@ public class RTarrestStat extends AbstractStat {
 	
 	public RTarrestStat(
 			final double threshold,
-			final RTarrestEstimationCountProvider estContainerProv,
+			final AbstractRTarrestEstimationCountProvider estContainerProv,
 			final RTarrestBetaBinParameter dirMultPrm) {
 
 		this.threshold			= threshold;
