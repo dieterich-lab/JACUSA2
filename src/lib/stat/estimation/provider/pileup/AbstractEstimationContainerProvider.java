@@ -89,9 +89,8 @@ implements EstimationContainerProvider {
 		}
 		return originalPileupCounts;
 	}
-	
-	
-	
+
+
 	protected List<PileupCount> flat(
 			final List<PileupCount> pileupCounts, 
 			final Set<Base> variantBases, final Base commonBase) {

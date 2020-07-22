@@ -18,5 +18,5 @@ extends AbstractEstimationContainerProvider {
 	public List<List<PileupCount>> process(final ParallelData parallelData) {
 		return getPileupCounts(parallelData);
 	}
-	
+
 }
