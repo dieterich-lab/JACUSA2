@@ -14,18 +14,20 @@ public final class Phred2Prob {
 	private final double[] phred2baseP;
 	private final double[] phred2baseErrorP;
 
-	// phred capped at 61
-	public static final byte MAX_Q = 61 + 1; // some machines give phred score of 60 -> Prob of error: 10^-6 ?!
+	// phred capped at 40
+	public static final byte MAX_Q = 40; // some machines give phred score of 60 -> Prob of error: 10^-6 ?!
+
 	private static Phred2Prob[] singles = new Phred2Prob[SequenceUtil.VALID_BASES_UPPER.length + 1];
 
-	private Phred2Prob(int n) {
+	private Phred2Prob(final int n) {
 		// pre-calculate probabilities
 		final int min = 0;
-		phred2errerP = new double[MAX_Q];
-		phred2baseP = new double[MAX_Q];
-		phred2baseErrorP = new double[MAX_Q];
+		final int max_q = MAX_Q + 1;
+		phred2errerP = new double[max_q];
+		phred2baseP = new double[max_q];
+		phred2baseErrorP = new double[max_q];
 
-		for(int i = min; i < MAX_Q; i++) {
+		for(int i = min; i < max_q; i++) {
 			phred2errerP[i] 	= Math.pow(10.0, -(double)i / 10.0);
 			phred2baseP[i] 		= 1.0 - phred2errerP[i];
 			phred2baseErrorP[i] = phred2errerP[i] / (n - 1); // ignore the called base
@@ -33,12 +35,12 @@ public final class Phred2Prob {
 	}
 
 	public double convert2errorP(byte qual) {
-		qual =  qual > MAX_Q ? MAX_Q : qual; 
+		qual =  qual >= MAX_Q ? MAX_Q : qual; 
 		return phred2errerP[qual];
 	}
 
 	public double convert2P(byte qual) {
-		qual =  qual > MAX_Q ? MAX_Q : qual;
+		qual =  qual >= MAX_Q ? MAX_Q : qual;
 		return phred2baseP[qual];
 	}
 
