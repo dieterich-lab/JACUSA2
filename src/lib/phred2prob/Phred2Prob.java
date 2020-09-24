@@ -14,8 +14,8 @@ public final class Phred2Prob {
 	private final double[] phred2baseP;
 	private final double[] phred2baseErrorP;
 
-	// phred capped at 41
-	public static final byte MAX_Q = 41 + 1; // some machines give phred score of 60 -> Prob of error: 10^-6 ?!
+	// phred capped at 61
+	public static final byte MAX_Q = 61 + 1; // some machines give phred score of 60 -> Prob of error: 10^-6 ?!
 	private static Phred2Prob[] singles = new Phred2Prob[SequenceUtil.VALID_BASES_UPPER.length + 1];
 
 	private Phred2Prob(int n) {
