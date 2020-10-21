@@ -10,14 +10,14 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import htsjdk.samtools.util.StringUtil;
 import lib.cli.options.AbstractACOption;
-import lib.cli.options.StratifyByReadSubstituionOption;
+import lib.cli.options.StratifyByReadTagOption;
 import lib.cli.options.filter.has.BaseSub;
 import lib.util.Base;
 
 /**
- * Tests @see lib.cli.options.CollectReadSubstitutionOption#process(org.apache.commons.cli.CommandLine)
+ * Tests @see lib.cli.options.CollectReadTagOption#process(org.apache.commons.cli.CommandLine)
  */
-class CollectReadSubstitutionOptionTest 
+class CollectReadTagOptionTest 
 extends AbstractGeneralParameterProvider
 implements ACOptionTest<SortedSet<BaseSub>> {
 
@@ -34,7 +34,7 @@ implements ACOptionTest<SortedSet<BaseSub>> {
 	Arguments createArguments(final BaseSub... baseSubs) {
 		final SortedSet<BaseSub> expected = new TreeSet<>(Arrays.asList(baseSubs));
 		final String value = StringUtil.join(
-				Character.toString(StratifyByReadSubstituionOption.SEP), 
+				Character.toString(StratifyByReadTagOption.SEP), 
 				Arrays.asList(baseSubs) );
 		return Arguments.of(
 				createOptLine(value),
@@ -55,12 +55,12 @@ implements ACOptionTest<SortedSet<BaseSub>> {
 	
 	@Override
 	public AbstractACOption createTestInstance() {
-		return new StratifyByReadSubstituionOption(getGeneralParamter());
+		return new StratifyByReadTagOption(getGeneralParamter());
 	}
 
 	@Override
 	public SortedSet<BaseSub> getActualValue() {
-		return getGeneralParamter().getReadSubs();
+		return getGeneralParamter().getReadTags();
 	}
 	
 }

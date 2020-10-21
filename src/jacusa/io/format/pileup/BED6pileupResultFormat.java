@@ -44,8 +44,8 @@ public class BED6pileupResultFormat extends AbstractResultFileFormat {
 		DataAdder dataAdder = new CallDataAdder(bccParser);
 		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
 		
-		if (! getParameter().getReadSubs().isEmpty()) {
-			final List<BaseSub> baseSubs = new ArrayList<>(getParameter().getReadSubs());
+		if (! getParameter().getReadTags().isEmpty()) {
+			final List<BaseSub> baseSubs = new ArrayList<>(getParameter().getReadTags());
 			dataAdder = new StratifiedDataAdder(
 					dataAdder, 
 					new BaseSub2BCCadder(bccParser, baseSubs, dataAdder));

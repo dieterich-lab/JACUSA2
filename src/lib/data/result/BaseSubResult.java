@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import lib.cli.options.filter.has.BaseSub;
-import lib.cli.options.filter.has.HasReadSub;
+import lib.cli.options.filter.has.HasReadTag;
 import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.count.BaseSub2BCC;
@@ -48,7 +48,7 @@ public class BaseSubResult implements Result {
 		}
 		
 		// add field for stratification
-		final String key = HasReadSub.READ_SUB;
+		final String key = HasReadTag.READ_TAG;
 		for (final int valueIndex : multiResult.getValuesIndex()) {
 			final String value = valueIndex == Result.TOTAL ? 
 					Character.toString(InputOutput.EMPTY_FIELD) : value2bs.get(valueIndex).toString();

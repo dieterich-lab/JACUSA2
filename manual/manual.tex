@@ -59,15 +59,15 @@ Some artefact filters have been removed from JACUSA1 in favour of the rewritten 
 JACUSA\textbf{2}helper\footnote{Check: \url{https://github.com/dieterich-lab/JACUSA2helper}}.
 
 Another new feature, are optional data that can be added to the output of some methods.
-Such optional data are INDEL counts and associated differential statistics and read/base stratification. 
+Such optional data are INDEL counts and associated differential statistics and tagging reads with base substitutions. 
 A user can provide base substitution(s) to partition reads into two sets (TODO4CD: what is a typical experiment for this?) 
-(see Section \ref{sec:read_base_stratification}). 
+(see Section \ref{sec:read_tagging}). 
 
 In JACUSA, a site consists of contig, position (start and stop), and strand information.
 The 1:1 relation of a site to a line in the output of JACUSA1 had to extended to make more complex data 
 structures possible while maintaing a clear file format. JACUSA2 allows data associated to 
 a site to be stratified by additional variables and spread along multiple lines.  For instance, 
-read/base stratification can be used to stratify reads based on a base substitution $X \rightarrow Y$. 
+read tagging can be used to stratify reads based on a base substitution. 
 In the output, there will be two lines for each site. The first line will contain base count information 
 for all reads while the second line will contain only base counts from reads with the choosen base substitution. 
 
@@ -277,7 +277,7 @@ the user can choose from the following supported library types:
 \item[UNSTRANDED] UNSTRANDED library.
 \end{description}
 The ``UNSTRANDED'' library type is not available for \rtarrest and \lrtarrest method because an arrest 
-site can not be unambiguously defined for this library type. Read/base stratification option 
+site can not be unambiguously defined for this library type. Read tagging option 
 ``-B <BASE-SUB>'' requires a stranded library type in order to corretly identify base substitutions 
 based on strand information.
 %---------------------------------------------------------------------------------------------------
@@ -393,7 +393,7 @@ Check sections for method or option specific adjustments:
   \item \rtarrest method Section \ref{sec:rt_arrest},
   \item \lrtarrest method Section \ref{sec:lrt_arrest},
   \item optional INDEL data fields Section \ref{sec:indel}, or
-  \item base substitution based read stratification Section \ref{sec:read_base_stratification}.
+  \item base substitution based read stratification Section \ref{sec:read_tagging}.
 \end{itemize}
 
 A ``\#\#'' prefixed header that contains JACUSA2 runtime specific data such as version info and
@@ -695,7 +695,7 @@ generated ``HIVRT.out'':
   from start to end with the reference including introns.
 \end{description}
 %---------------------------------------------------------------------------------------------------
-\subsection{Adding read/base stratification}\label{sec:read_base_stratification}
+\subsection{Adding read/base stratification}\label{sec:read_tagging}
 Read stratification or partitioning based on base substitution(s) can be enabled by adding ``-B <BASE-SUB>'' 
 to your JACUSA2 run statement. <BASE-SUB> defines the base substitution $X2Y : X,Y \in\{A, C, G, T\}, X \ne Y$ 
 of interest where $X$ is the reference base and $Y$ is a base call from some read. It is required to provide 
@@ -703,10 +703,10 @@ a stranded library type for each condition because otherwise $X2Y$ cannot unambi
 sequencing data. It is possible to provide multiple base substitutions by separating each with a ``,''.
 
 For each site the output will consist of at least on line the represents the total not stratified reads.
-The ``info'' column will contain a field the following field ``read\_sub=*'' indicating that the total 
+The ``info'' column will contain a field the following field ``tag=*'' indicating that the total 
 reads are shown. If read with the wanted base substitution $A2G$ for example is encountered, all sites 
 that are covered by this read will have an additional line of output and the ``info'' column will have 
-a value of ``read\_sub=A2G''. 
+a value of ``tag=A2G''. 
 %---------------------------------------------------------------------------------------------------
 % TODO options
 \section{Description of command line options}

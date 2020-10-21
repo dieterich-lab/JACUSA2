@@ -53,7 +53,7 @@ extends AbstractSiteDataAssemblerFactory {
 		final LibraryType libraryType = conditionParameter.getLibraryType();
 
 		final LocationInterpreter locInterpreter = LocationInterpreter.create(libraryType);
-		final SortedSet<BaseSub> baseSubs = parameter.getReadSubs();
+		final SortedSet<BaseSub> baseSubs = parameter.getReadTags();
 		
 		final List<Validator> validators = new ArrayList<>();
 		validators.add(new DefaultBaseCallValidator());

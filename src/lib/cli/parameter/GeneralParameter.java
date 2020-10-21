@@ -15,12 +15,12 @@ import java.util.stream.IntStream;
 import jacusa.cli.parameters.HasConditionParameter;
 import jacusa.filter.FilterConfig;
 import lib.cli.options.filter.has.BaseSub;
-import lib.cli.options.filter.has.HasReadSub;
+import lib.cli.options.filter.has.HasReadTag;
 import lib.io.ResultFormat;
 import lib.util.AbstractTool;
 
 public class GeneralParameter
-implements HasConditionParameter, HasReadSub {
+implements HasConditionParameter, HasReadTag {
 
 	public static final String FILE_SUFFIX = ".filtered";
 	
@@ -148,12 +148,12 @@ implements HasConditionParameter, HasReadSub {
 	
 
 	@Override
-	public SortedSet<BaseSub> getReadSubs() {
+	public SortedSet<BaseSub> getReadTags() {
 		return Collections.unmodifiableSortedSet(baseSubs);
 	}
 	
 	@Override
-	public void addReadSub(BaseSub baseSub) {
+	public void addReadTag(BaseSub baseSub) {
 		baseSubs.add(baseSub);
 	}
 	

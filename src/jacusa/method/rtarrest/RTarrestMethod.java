@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import lib.cli.options.BedCoordinatesOption;
-import lib.cli.options.StratifyByReadSubstituionOption;
+import lib.cli.options.StratifyByReadTagOption;
 import lib.cli.options.DebugModusOption;
 import lib.cli.options.FilterConfigOption;
 import lib.cli.options.FilterModusOption;
@@ -111,7 +111,7 @@ extends AbstractMethod {
 		addACOption(new WindowSizeOption(getParameter()));
 		addACOption(new ThreadWindowSizeOption(getParameter()));
 
-		addACOption(new StratifyByReadSubstituionOption(getParameter()));
+		addACOption(new StratifyByReadTagOption(getParameter()));
 		addACOption(new ShowDeletionCountOption(getParameter()));
 		addACOption(new ShowInsertionCountOption(getParameter()));
 		
@@ -285,7 +285,7 @@ extends AbstractMethod {
 			add(builder, DataType.ARREST_BCC);
 			add(builder, DataType.THROUGH_BCC);
 			
-			if (! parameter.getReadSubs().isEmpty()) {
+			if (! parameter.getReadTags().isEmpty()) {
 				addBaseSub2bcc(builder, DataType.ARREST_BASE_SUBST);
 				addBaseSub2bcc(builder, DataType.THROUGH_BASE_SUBST);
 				

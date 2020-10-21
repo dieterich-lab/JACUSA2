@@ -10,7 +10,7 @@ import lib.io.InputOutput;
 import lib.io.format.bed.DataAdder;
 
 /**
- * This class corresponds to the column of a BEDlike output file that contains read base substitution 
+ * This class corresponds to the column of a BEDlike output file that contains read tags 
  * information, namely the base call counts that correspond to a specific base substitution.
  */
 public class BaseSub2BCCadder implements DataAdder {

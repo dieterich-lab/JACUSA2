@@ -51,8 +51,8 @@ public class BED6rtArrestResultFormat extends AbstractResultFileFormat {
 		DataAdder dataAdder = new RTarrestDataAdder(bccParser);
 		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
 		
-		if (! getParameter().getReadSubs().isEmpty()) {
-			final List<BaseSub> baseSubs = new ArrayList<>(getParameter().getReadSubs());
+		if (! getParameter().getReadTags().isEmpty()) {
+			final List<BaseSub> baseSubs = new ArrayList<>(getParameter().getReadTags());
 			dataAdder = new StratifiedDataAdder(
 					dataAdder, 
 					new RTarrestBaseSubDataAdder(bccParser, baseSubs, dataAdder));

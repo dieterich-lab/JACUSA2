@@ -118,7 +118,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		protected void addBaseSub2bcc(final AbstractBuilder builder, final DataType<BaseSub2BCC> dataType) {
 			add(builder, dataType);
 			final BaseSub2BCC bsc = builder.get(dataType);
-			for (final BaseSub baseSub : parameter.getReadSubs()) {
+			for (final BaseSub baseSub : parameter.getReadTags()) {
 				bsc.set(baseSub, BaseCallCount.create());
 			}
 		}
@@ -129,7 +129,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			}
 			add(builder, dataType);
 			final BaseSub2IntData bsc = builder.get(dataType);
-			for (final BaseSub baseSub : parameter.getReadSubs()) {
+			for (final BaseSub baseSub : parameter.getReadTags()) {
 				bsc.set(baseSub, new IntegerData());
 			}
 		}

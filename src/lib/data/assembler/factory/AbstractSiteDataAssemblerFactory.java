@@ -135,7 +135,7 @@ extends AbstractDataAssemblerFactory {
 			final ConditionParameter condPrm,
 			final Cache cache) {
 
-		final SortedSet<BaseSub> baseSubs = prm.getReadSubs();
+		final SortedSet<BaseSub> baseSubs = prm.getReadTags();
 		if (baseSubs.isEmpty()) {
 			return;
 		}
