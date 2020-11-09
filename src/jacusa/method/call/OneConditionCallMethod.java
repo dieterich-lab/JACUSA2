@@ -10,6 +10,7 @@ import jacusa.filter.factory.basecall.INDELfilterFactory;
 import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -71,10 +72,14 @@ extends CallMethod {
 
 	@Override
 	public List<ParallelDataValidator> createParallelDataValidators() {
-		return Arrays.asList(
-				new KnownReferenceBase(),
-				new MinCoverageValidator(getBaseCallCountFetcher(), getParameter().getConditionParameters()),
-				new ExtendedVariantSiteValidator(getBaseCallCountFetcher()));
+		final List<ParallelDataValidator> validators = new ArrayList<ParallelDataValidator>();
+		validators.add(new KnownReferenceBase());
+		validators.add(new MinCoverageValidator(getBaseCallCountFetcher(), getParameter().getConditionParameters()));
+
+		if (! this.getParameter().showAllSites()) {
+			validators.add(new ExtendedVariantSiteValidator(getBaseCallCountFetcher()));
+		}
+		return validators;
 	}
 	
 	@Override

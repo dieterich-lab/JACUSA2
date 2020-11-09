@@ -17,6 +17,7 @@ import jacusa.io.format.call.BED6callResultFormat;
 import jacusa.io.format.call.VCFcallFormat;
 import jacusa.worker.CallWorker;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ import lib.cli.options.FilterConfigOption;
 import lib.cli.options.FilterModusOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
 import lib.cli.options.ResultFormatOption;
+import lib.cli.options.ShowAllSitesOption;
 import lib.cli.options.ShowDeletionCountOption;
 import lib.cli.options.ShowInsertionCountOption;
 import lib.cli.options.HelpOption;
@@ -103,6 +105,7 @@ public class CallMethod extends AbstractMethod {
 							getResultFormats()));
 		}
 		
+		addACOption(new ShowAllSitesOption(getParameter()));
 		addACOption(new FilterModusOption(getParameter()));
 		addACOption(new FilterConfigOption(getParameter(), getFilterFactories()));
 		
@@ -237,9 +240,12 @@ public class CallMethod extends AbstractMethod {
 	
 	@Override
 	public List<ParallelDataValidator> createParallelDataValidators() {
-		return Arrays.asList(
-				new MinCoverageValidator(bccFetcher, getParameter().getConditionParameters()),
-				new NonHomozygousSite(bccFetcher) );
+		final List<ParallelDataValidator> validators = new ArrayList<ParallelDataValidator>();
+		validators.add(new MinCoverageValidator(bccFetcher, getParameter().getConditionParameters()));
+		if (! this.getParameter().showAllSites()) {
+			validators.add(new NonHomozygousSite(bccFetcher));
+		}
+		return validators;
 	}
 
 	@Override

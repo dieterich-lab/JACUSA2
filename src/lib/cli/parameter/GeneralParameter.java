@@ -48,6 +48,7 @@ implements HasConditionParameter, HasReadTag {
 	private final SortedSet<BaseSub> baseSubs;
 	private boolean showDeletionCount;
 	private boolean showInsertionCount;
+	private boolean showAllSites;
 	
 	// debug flag
 	private boolean debug;
@@ -67,6 +68,7 @@ implements HasConditionParameter, HasReadTag {
 		
 		baseSubs	= new TreeSet<>();
 		showDeletionCount	= false;
+		showAllSites = false;
 		
 		debug				= false;
 	}
@@ -239,7 +241,21 @@ implements HasConditionParameter, HasReadTag {
 	public void showInsertionCount(boolean showInsertionCount) {
 		this.showInsertionCount = showInsertionCount;
 	}
-	
+
+	/**
+	 * @return the showDeletionCount
+	 */
+	public boolean showAllSites() {
+		return showAllSites;
+	}
+
+	/**
+	 * @param showInsertionCount the showInsertionCount to set
+	 */
+	public void showAllSites(boolean showAllSites) {
+		this.showAllSites = showAllSites;
+	}
+
 	/**
 	 * @return the filteredFilename
 	 */
