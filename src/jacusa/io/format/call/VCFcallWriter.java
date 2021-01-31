@@ -156,7 +156,7 @@ implements ResultWriter  {
 		for (int condI = 0; condI < conditions; condI++) {
 			final int replicates = parallelData.getReplicates(condI);
 			for (int replicateI = 0; replicateI < replicates; replicateI++) {	
-				final String sampleName = "TODO " +  condI + replicateI;
+				final String sampleName = "sample " +  condI + replicateI;
 				final BaseCallCount tmpBCC = 
 						parallelData.getDataContainer(condI, replicateI)
 							.getPileupCount().getBCC();

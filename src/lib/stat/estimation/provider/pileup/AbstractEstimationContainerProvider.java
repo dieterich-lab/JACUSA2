@@ -35,10 +35,10 @@ implements EstimationContainerProvider {
 	protected abstract List<List<PileupCount>> process(ParallelData parallelData);
 	
 	private Base[] getBases(final ParallelData parallelData) {
-		if (calcPValue) {
-			return parallelData.getCombPooledData().getPileupCount().getBCC()
-					.getAlleles().toArray(new Base[0]);
-		}
+		//if (calcPValue) {
+		//	return parallelData.getCombPooledData().getPileupCount().getBCC()
+		//			.getAlleles().toArray(new Base[0]);
+		//}
 		
 		return Base.validValues();
 	}

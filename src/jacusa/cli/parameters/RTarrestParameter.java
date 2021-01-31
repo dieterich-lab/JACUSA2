@@ -35,7 +35,7 @@ implements HasStatParameter {
 		// Pos.:		1234
 		// Read Seq.:	ACGT
 		// Read Basq:	HHHL H=High Quality BC, L=Quality BC
-		// Where does the Read end position 3 or 4?
+		// Where does the Read end? Position 3 or 4?
 		// p.setMinBASQ((byte)0); 
 		return p;
 	}

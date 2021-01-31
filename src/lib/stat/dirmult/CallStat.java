@@ -44,7 +44,7 @@ class CallStat extends AbstractStat {
 		if (dirMultPrm.isCalcPValue()) {
 			stat = dirMult.getLRT(estContainers);
 			// TODO degrees of freedom
-			final ChiSquaredDistribution dist = new ChiSquaredDistribution(1); 
+			final ChiSquaredDistribution dist = new ChiSquaredDistribution(3); 
 			stat = 1 - dist.cumulativeProbability(stat);
 		} else {
 			stat = dirMult.getScore(estContainers);

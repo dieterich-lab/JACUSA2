@@ -104,7 +104,6 @@ public class CLI {
 		}
 		return null;
 	}
-	// TODO
 	private void generateLatex() {
 		final Map<String, Map<String, List<AbstractACOption>>> opt2method2acOption = 
 				new HashMap<>();
