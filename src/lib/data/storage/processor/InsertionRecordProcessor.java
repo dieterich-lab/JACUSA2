@@ -4,7 +4,6 @@ import lib.data.storage.Storage;
 import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AllInsertionsPosProvider;
-import lib.util.position.ConsumingRefPosProviderBuilder;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 
@@ -15,16 +14,13 @@ public class InsertionRecordProcessor implements GeneralRecordProcessor {
 
 	private final CoordinateTranslator translator;
 	
-	private final Storage covStorage;
 	private final Storage insStorage;
 	
 	public InsertionRecordProcessor(
 			final CoordinateTranslator translator,
-			final Storage covStorage,
 			final Storage insStorage) {
 		
 		this.translator	= translator;
-		this.covStorage	= covStorage;
 		this.insStorage	= insStorage;
 	}
 
@@ -35,15 +31,7 @@ public class InsertionRecordProcessor implements GeneralRecordProcessor {
 	
 	@Override
 	public void process(final Record record) {
-		// store total coverage
-		final PositionProvider covPosProvider = 
-				new ConsumingRefPosProviderBuilder(record, translator).build();
-		while (covPosProvider.hasNext()) {
-			final Position pos = covPosProvider.next();
-			covStorage.increment(pos);
-		}
-		
-		// store insetions
+		// store insertions
 		final PositionProvider insPosProvider = 
 				new AllInsertionsPosProvider(record, translator);
 		while (insPosProvider.hasNext()) {

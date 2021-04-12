@@ -54,6 +54,10 @@ extends AbstractSiteDataAssemblerFactory {
 				positionProcessor));
 		cache.addStorage(bcqcStorage);
 		
+		if (parameter.showInsertionCount() || parameter.showDeletionCount()) {
+			cache.addCache(createCoverageCache(sharedStorage, DataType.COVERAGE.getFetcher()));
+		}
+		addInsertionCache(parameter, sharedStorage, cache);
 		addDeletionCache(parameter, sharedStorage, cache);
 		stratifyByBaseSub(parameter, sharedStorage,  conditionParameter, cache);
 		
