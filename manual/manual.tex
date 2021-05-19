@@ -16,7 +16,7 @@
 %---------------------------------------------------------------------------------------------------
 \title{JACUSA2 manual}
 \author{Michael Piechotta \\ michael.piechotta@gmail.com}
-\date{10th, November, 2019} 
+\date{18th, May, 2021} 
 %---------------------------------------------------------------------------------------------------
 \begin{document}
 \newcommand{\call}[1]{\textit{call-#1}\xspace}
@@ -140,7 +140,7 @@ A ``\#\#'' prefixed header line has been added to the default output format of J
 line contains version and command line info.
 There is also a new version of JACUSA\textbf{2}helper\footnote{Check: 
 \url{https://github.com/dieterich-lab/JACUSA2helper/}} to support downstream
-analysis of JACUSA2 output. The odl version of JACUSAhelper has been declared deprecated and won't be maintained
+analysis of JACUSA2 output. The old version of JACUSAhelper has been declared deprecated and won't be maintained
 anymore.
 % --------------------------------------------------------------------------------------------------
 \subsection{\textit{In silico} and example data}
@@ -721,6 +721,8 @@ a value of ``tag=A2G''.
 %---------------------------------------------------------------------------------------------------
 \subsubsection{Output artefacts to separate file}\label{sec:separate_output}
 \input{CLI/s}
+\subsubsection{Show all sites}
+\input{CLI/A}
 %---------------------------------------------------------------------------------------------------
 \subsection{Input BED file}
 \input{CLI/b}
@@ -728,7 +730,7 @@ a value of ``tag=A2G''.
 \input{CLI/R}
 %---------------------------------------------------------------------------------------------------
 \subsection{Library type}
-\input{CLI/P}
+\input{CLI/P1}
 %---------------------------------------------------------------------------------------------------
 \subsection{Read/base stratification}
 \input{CLI/B}
@@ -744,7 +746,9 @@ a value of ``tag=A2G''.
 \subsection{General filtering}
 %---------------------------------------------------------------------------------------------------
 \subsubsection{Filter by mapping quality}
+\input{CLI/m}
 \input{CLI/m1}
+\input{CLI/m2}
 %---------------------------------------------------------------------------------------------------
 \subsubsection{Filter by base call quality}
 \input{CLI/q1}
