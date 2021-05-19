@@ -5,9 +5,9 @@ sequencing (NGS) data.
 
 [JACUSA2](https://github.com/dieterich-lab/JACUSA2) is a direct successor of 
 [JACUSA1](https://github.com/dieterich-lab/JACUSA) --- JACUSA1 is hereby deprecated and won't be 
-continued. All methods (call-1, call-2, and pileup) from JACUSA1 are available in JACUSA2.
+continued. All methods (*call-1*, *call-2*, and *pileup*) from JACUSA1 are available in JACUSA2.
 The new release of JACUSA2 features great performance enhancements (~3 faster) for existing methods 
-and adds new methods rt-arrest and lrt-arrest(EXPERIMENTAL) that enable identification of  read arrest events.
+and adds new methods *rt-arrest* and *lrt-arrest* (EXPERIMENTAL) that enable identification of  read arrest events.
 
 Check the [manual](https://github.com/dieterich-lab/JACUSA2/blob/master/manual/manual.pdf) for further details.
 
@@ -105,8 +105,8 @@ We implement various artefact/feature filters (check [manual](https://github.com
 that reduce the number of false positives.
 
 JACUSA2 supports two modes of sample setups of variant calling: 
-* single (call-1) or 
-* paired samples (call-2).
+* single (*call-1*) or 
+* paired samples (*call-2*).
 
 ### call-1
 The method *call-1* identifies variants against the reference sequence.
@@ -126,7 +126,7 @@ $ java -jar jacusa2.jar call-2 results_call2.out condition1.bam condition2.bam
 
 ## Identifying arrest events
 JACUSA2 supports two methods to identify arrest events by means of comparing counts of arrest and through 
-reads: "rt-arrest" and "lrt-arrest". Beyond read counts, JACUSA2 shows base counts from arrest and through reads.
+reads: *rt-arrest* and *lrt-arrest*. Beyond read counts, JACUSA2 shows base counts from arrest and through reads.
 This allows to inspect arrest events and variant calling simultaneously.
 
 ### rt-arrest
@@ -140,7 +140,7 @@ Furthermore, coverage filter and minBASQ of base call apply that will affect the
 
 
 ### lrt-arrest (EXPERIMENTAL)
-lrt-arrest allows to link pileups to their arrest position. Output consists of read arrest and read through counts and 
+*lrt-arrest* allows to link pileups to their arrest position. Output consists of read arrest and read through counts and 
 a references to the associated arrest positions. There are cases, where currently an arrest position cannot be defined, 
 e.g.: non properly paired reads.
 
@@ -161,8 +161,8 @@ anymore.
         * Use "-filterNH" and "-filterNM" instead of "--filterNH" and "--filterNM"
         * Library type option has changed: JACUSA1: "-P Lib1,Lib2", JACUSA2: "-P1 Lib1 -P2 Lib2"
     * New methods and options
-        * Added "rt-arrest" method - Reverse Transcription Arrest - 2 conditions
-        * Added "lrt-arrest" method - Linkage arrest to base substitution - 2 conditions
+        * Added *rt-arrest* method - Reverse Transcription Arrest - 2 conditions
+        * Added *lrt-arrest* method - Linkage arrest to base substitution - 2 conditions
         * Added "-B <BASE-SUB>" option that to partition reads based on base substitution
         * Added "-I" or "-D" options to add insertion or deletion counts
     * Artefact filter
