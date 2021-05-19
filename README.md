@@ -94,7 +94,7 @@ The default output format is a combination of
 JACUSA2 methods specific columns and common info columns: "info", "filter", and "ref". 
 The actual number of columns depends on the JACUSA2 method and the number of provided BAM files.
 
-Columns     | 1-6  |  7 - (7+k)      | (7+k+1) - (7+k+4)
+Columns     | 1-6  |  7 - (N-3)      | (N-2) - N
 ----------- | ---- | --------------- | ------------------------------------------------ 
 Description | BED6 | Method specific | (General) info, filter, and ref(erence) specific
 
@@ -127,7 +127,10 @@ $ java -jar jacusa2.jar call-2 results_call2.out condition1.bam condition2.bam
 ## Identifying arrest events
 JACUSA2 supports two methods to identify arrest events by means of comparing counts of arrest and through 
 reads: *rt-arrest* and *lrt-arrest*. Beyond read counts, JACUSA2 shows base counts from arrest and through reads.
-This allows to inspect arrest events and variant calling simultaneously.
+This allows to inspect arrest events and variant calling simultaneously. 
+It is mandatory to provide the library type by "-P" or "-P1" and "-P2"!
+
+Check the section on arrest events in the [manual](https://github.com/dieterich-lab/JACUSA2/blob/master/manual/manual.pdf).
 
 ### rt-arrest
 In this method, base call counts of arrest and read through reads are modelled by a Beta-Binomial distribution and 
@@ -137,6 +140,10 @@ with $\chi^2$ distribution to compute a pvalue.
 Sites are considered candidate arrest sites, if in all BAM files there is at least one read through AND one  
 read arrest event. Otherwise, there would be no difference between the conditions. 
 Furthermore, coverage filter and minBASQ of base call apply that will affect the output. 
+
+```
+$ java -jar jacusa2.jar rt-arrest -P FR-SECONDSTRAND -o results_rt_arrest.out condition1_1.bam,...,condition1_N.bam condition2_1.bam,...,condition2_M.bam
+```
 
 
 ### lrt-arrest (EXPERIMENTAL)
@@ -148,8 +155,7 @@ e.g.: non properly paired reads.
 There is also a new version of [JACUSA2helper](https://github.com/dieterich-lab/JACUSA2helper) 
 to support downstream analysis of JACUSA2 output. 
 Additonally, some artefact filters have been removed from JACUSA1 in favour of the rewritten R helper package.
-The old version of JACUSAhelper has been declared deprecated and won't be maintained
-anymore.
+The old version of JACUSAhelper has been declared deprecated and won't be maintained anymore.
 
 ## Changelog
 * JACUCA1 to JACUSA2
