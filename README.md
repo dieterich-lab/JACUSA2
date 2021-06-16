@@ -19,7 +19,7 @@ consider to change to Java v1.8.
 ## Installation
 The latest version of JACUSA2 can be obtained from [all releases](https://github.com/dieterich-lab/JACUSA2/releases).
 
-##Usage
+## Usage
 Available methods in JACUSA2:
 
 ```
@@ -50,6 +50,12 @@ usage: JACUSA call-1 [OPTIONS] BAM1_1[,BAM1_2,...]
  -c <MIN-COVERAGE>     filter positions with coverage < MIN-COVERAGE
                        default: 5
   [...]
+```
+
+Replicates or multiple bam files are separated by ",": 
+
+```
+java -jar jacusa.jar call-2 -r JACUSA.out -a H:1 gDNA.bam  cDNA_replicate_1.bam,cDNA_replicate_2,bam,cDNA_replicate_3.bam
 ```
 
 Check [manual](https://github.com/dieterich-lab/JACUSA2/blob/master/manual/manual.pdf) for detailed method specific options.
