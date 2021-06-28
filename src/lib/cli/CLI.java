@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -108,29 +110,35 @@ public class CLI {
 		final Map<String, Map<String, List<AbstractACOption>>> opt2method2acOption = 
 				new HashMap<>();
 		
-		final List<String> methodNames = new ArrayList<>();
+		final Set<String> methodNames = new HashSet<>();
 		
 		// collect into Map...
 		for (final AbstractMethod.AbstractFactory methodFactory : methodFactories) {
-			final String name = methodFactory.getName();
-			methodNames.add(name);
-			// TODO change number of conditions?
-			final AbstractMethod tmpMethod = methodFactory.createMethod();
-			tmpMethod.initACOptions();
-			
-			final List<AbstractACOption> acOptions = tmpMethod.getACOptions();
-			for (final AbstractACOption acOption : acOptions) {
-				final String opt = acOption.getOpt();
+			for (final int conditions : new int[] {1, 2}) {
+				final AbstractMethod.AbstractFactory tmpMethodFactory = methodFactory.createFactory(conditions);
+				if (tmpMethodFactory == null) {
+					continue;
+				}
+
 				
-				if (! opt2method2acOption.containsKey(opt)) {
-					opt2method2acOption.put(opt, new HashMap<String, List<AbstractACOption>>());
+				final AbstractMethod tmpMethod = tmpMethodFactory.createMethod();
+				final String methodName = tmpMethod.getName();
+				methodNames.add(methodName);
+				tmpMethod.initACOptions();
+
+				final List<AbstractACOption> acOptions = tmpMethod.getACOptions();
+				for (final AbstractACOption acOption : acOptions) {
+					final String opt = acOption.getOpt();
+					if (! opt2method2acOption.containsKey(opt)) {
+						opt2method2acOption.put(opt, new HashMap<String, List<AbstractACOption>>());
+					}
+					final Map<String, List<AbstractACOption>> method2acOption = opt2method2acOption.get(opt);
+					if (! method2acOption.containsKey(methodName)) {
+						method2acOption.put(methodName, new ArrayList<AbstractACOption>());
+					}
+					final List<AbstractACOption> tmpAcOptions = method2acOption.get(methodName);
+					tmpAcOptions.add(acOption);
 				}
-				final Map<String, List<AbstractACOption>> method2acOption = opt2method2acOption.get(opt);
-				if (! method2acOption.containsKey(name)) {
-					method2acOption.put(name, new ArrayList<AbstractACOption>());
-				}
-				final List<AbstractACOption> tmpAcOptions = method2acOption.get(name);
-				tmpAcOptions.add(acOption);
 			}
 		}
 		
@@ -143,17 +151,7 @@ public class CLI {
 				final BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 				final StringBuilder sb = new StringBuilder();
 			
-				final Map<String, List<AbstractACOption>> method2acOption = 
-						opt2method2acOption.get(opt);
-				// print header
-				// TODO
-				/* sb
-					.append("\\textbf{Option}")
-					.append(" & ")
-					.append("\\textbf{Description}")
-					.append(" & ")
-					.append("\\textbf{Method} \\\\\n");
-				*/
+				final Map<String, List<AbstractACOption>> method2acOption = opt2method2acOption.get(opt);
 				final List<String> optionStrs = new ArrayList<>();
 				final List<String> descStrs = new ArrayList<>();
 				final List<String> methodStrs = new ArrayList<>();
@@ -184,7 +182,7 @@ public class CLI {
 					.append(" \\\\\n");
 				}
 				bw.write("{\\small\n");
-				bw.write("\\begin{tabular}{@{}p{.25\\textwidth}p{.5\\textwidth}l@{}}\n");
+				bw.write("\\begin{tabular}{@{}p{.25\\textwidth}p{.7\\textwidth}l@{}}\n");
 				bw.write(sb.toString());
 				bw.write("\\end{tabular}\\\\\n");
 				bw.write("}\n");

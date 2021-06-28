@@ -313,7 +313,11 @@ public class CallMethod extends AbstractMethod {
 		private static String getNamePrefix(final int conditions) {
 			final StringBuilder sb = new StringBuilder();
 			sb.append(NAME_PREFIX);
-			sb.append(conditions);
+			if (conditions <= 2) {
+				sb.append(conditions);
+			} else {
+				sb.append("n");
+			}
 			return sb.toString();
 		}
 		
