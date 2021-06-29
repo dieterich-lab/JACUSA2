@@ -52,7 +52,7 @@ class BaseSubRecordProcessorTest {
 			List<Record> records, 			// currently this is only Single End
 			Map<BaseSub, Storage> actual,	// reference to internal map of testInstance
 			Map<BaseSub, Storage> expected,	// this is what we expect
-			String info 								// JUNIT related; gives more informative test message
+			String info 					// JUNIT related; gives more informative test message
 			) {
 		
 		testInstance.preProcess();
