@@ -31,5 +31,5 @@ cat call2_SitesExt2.bed |perl HEK293_data_prep.pl > call2_SitesExt2_indel_slim2.
 ## Run R script
 HEK293_data_prep.R
 
-## Run Neural network in R
+## Run prediction in R
 HEK293_data_prep_V2.R
