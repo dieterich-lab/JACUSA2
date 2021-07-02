@@ -41,22 +41,19 @@ Insertion=tapply(Exp2$insertion.score,list(Exp2$ID,Exp2$Anchor),sum)
 Insertion[is.na(Insertion)]<-0
 colnames(Insertion)<-paste0("Exp2InsertionScore_",colnames(Insertion))
 
-                                        #That is why, we get different results .. force coverage on both exp.
 
 BigTable=merge(BigTable,data.frame(ID=rownames(Call2),Call2),by.x=1,by.y=1)
 BigTable=merge(BigTable,data.frame(ID=rownames(Deletion),Deletion),by.x=1,by.y=1)
 BigTable=merge(BigTable,data.frame(ID=rownames(Insertion),Insertion),by.x=1,by.y=1)
 
+#Add sequence motif
 motif=read.table("checkMotif_reformat.txt",as.is=T,header=F)
 motif[,1]=gsub("-",":-",motif[,1])
 motif[,1]=gsub("\\+",":\\+",motif[,1])
 
 BigTable=merge(BigTable,motif,by.x=1,by.y=1);
 
-#BigTable=merge(BigTable,data.frame(ID=names(OverLapWithStudies),miCLIP=OverLapWithStudies),by.x=1,by.y=1,all.x=T)
-#
-                                        #miCLIP is not positioned on the centre of 5mer / recompute overlap !!
-#exit(0);
+
 colnames(BigTable)[ncol(BigTable)]="Motif"
 rownames(BigTable)=BigTable[,1]
 BigTable=BigTable[,-1]
@@ -64,6 +61,6 @@ BigTable=BigTable[,-1]
 BigTable$DRACH<-rep(0,nrow(BigTable))
 BigTable$DRACH[grep("[AGT][AG]AC[ACT]",BigTable$Motif)]<-1
 
-
+#Save table for processing
 saveRDS(BigTable,file="BigTable.rds")
 
