@@ -46,6 +46,9 @@ extends AbstractWorker {
 	@Override
 	protected Result process(final ParallelData parallelData) {
 		Result result = stat.filter(parallelData); 
+		if (result == null) {
+			return null;
+		}
 		
 		final SortedSet<BaseSub> baseSubs = getParameter().getReadTags();
 		if (! baseSubs.isEmpty()) {
