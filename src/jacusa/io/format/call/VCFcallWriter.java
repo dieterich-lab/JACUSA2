@@ -14,6 +14,7 @@ import htsjdk.variant.variantcontext.Genotype;
 import htsjdk.variant.variantcontext.GenotypeBuilder;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.variantcontext.VariantContextBuilder;
+import htsjdk.variant.variantcontext.writer.Options;
 import htsjdk.variant.variantcontext.writer.VariantContextWriter;
 import htsjdk.variant.variantcontext.writer.VariantContextWriterBuilder;
 import htsjdk.variant.variantcontext.writer.VariantContextWriterBuilder.OutputType;
@@ -56,8 +57,11 @@ implements ResultWriter  {
 		this.dictionary 	= dictionary;
 				
 		final VariantContextWriterBuilder vcwb = new VariantContextWriterBuilder();
-		vcwb.setOutputFileType(OutputType.VCF);
+		vcwb.modifyOption(Options.DO_NOT_WRITE_GENOTYPES, false);
+		vcwb.modifyOption(Options.WRITE_FULL_FORMAT_FIELD, true);
 		vcwb.setOutputFile(new File(outputFileName));
+		vcwb.setOutputFileType(OutputType.VCF);
+		vcwb.setReferenceDictionary(dictionary);
 		vcw = vcwb.build();
 		
 		source = AbstractTool.getLogger().getTool().getCall();
@@ -87,30 +91,30 @@ implements ResultWriter  {
 	public void writeHeader(List<ConditionParameter> conditionParameters) {
 		final VCFHeader header = new VCFHeader();
 		header.setSequenceDictionary(dictionary);
-		header.addMetaDataLine(new VCFHeaderLine("source", AbstractTool.getLogger().getTool().getName() + "-" + AbstractTool.getLogger().getTool().getVersion()));
+		header.addMetaDataLine(new VCFHeaderLine("source", 
+				AbstractTool.getLogger().getTool().getCall()
+			)
+		);
 		header.addMetaDataLine(new VCFHeaderLine("fileDate", getFileDate()));
-		
-		// add default info fields to header
-		for (final String ID : new String[] {VCFConstants.DEPTH_KEY}) {
-			VCFStandardHeaderLines.getInfoLine(ID);
-		}
-		// add default format fields to header
-		for (final String ID : new String[] {VCFConstants.DEPTH_KEY}) {
-			VCFStandardHeaderLines.getFormatLine(ID);
-		}
 
+		// add default info fields to header
+		for (final String ID : new String[] {VCFConstants.DEPTH_KEY, VCFConstants.GENOTYPE_KEY}) {
+			header.addMetaDataLine(VCFStandardHeaderLines.getFormatLine(ID));
+		}
+		
 		// add additional format fields to header
 		header.addMetaDataLine(new VCFFormatHeaderLine("BC", 4, VCFHeaderLineType.Integer, "Base call counts A,C,G,T"));
-
+		
 		// add filter descriptions to header
 		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {
 			header.addMetaDataLine(new VCFFilterHeaderLine(Character.toString(filterFactory.getID()), filterFactory.getDesc()));
 		}
 
-		// filename of condition and replicate BAMs
-		for (final ConditionParameter conditionParameter : conditionParameters) {
-			for (String recordFilename : conditionParameter.getRecordFilenames())  {
-				header.getGenotypeSamples().add(recordFilename);
+		for (int condI = 1; condI <= conditionParameters.size(); condI++) {
+			final int replicates = conditionParameters.get(condI - 1).getReplicateSize();
+			for (int replicateI = 1; replicateI <= replicates; replicateI++) {	
+				final String sampleName = condI + "" + replicateI;
+				header.getGenotypeSamples().add(sampleName);
 			}
 		}
 		
@@ -129,20 +133,21 @@ implements ResultWriter  {
 		final Collection<Allele> alleles = new ArrayList<>(observedBases.size());
 		final Base refBase = parallelData.getCombPooledData().getUnstrandedRefBase();
 		alleles.add(Allele.create(refBase.getByte(), true));
-		
-		for (final Base base : Base.getNonRefBases(refBase)) {
-			alleles.add(Allele.create(base.getByte()));
+		for (final Base base : parallelData.getCombPooledData().getPileupCount().getBCC().getAlleles()) {
+			if (base != refBase) {
+				alleles.add(Allele.create(base.getByte()));
+			}
 		}
-		
+
 		final VariantContextBuilder vcb = new VariantContextBuilder(
 						source, 
 						coordinate.getContig(), coordinate.get1Start(), coordinate.get1End(),
 						alleles);
-		
+
 		if (! result.isFiltered()) {
 			vcb.passFilters();
 		}
-		
+
 		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {
 			final String c = Character.toString(filterFactory.getID());
 			if (result.getFilterInfo(0).contains(c)) {
@@ -156,25 +161,28 @@ implements ResultWriter  {
 		for (int condI = 0; condI < conditions; condI++) {
 			final int replicates = parallelData.getReplicates(condI);
 			for (int replicateI = 0; replicateI < replicates; replicateI++) {	
-				final String sampleName = "sample " +  condI + replicateI;
+				final String sampleName = (condI + 1) + "" + (replicateI + 1);
+				
 				final BaseCallCount tmpBCC = 
 						parallelData.getDataContainer(condI, replicateI)
 							.getPileupCount().getBCC();
 				final List<Allele> tmpAlleles = new ArrayList<>(tmpBCC.getAlleles().size());
 
 				for (final Base base : tmpBCC.getAlleles()) {
-					tmpAlleles.add(Allele.create(base.getByte()));
+					tmpAlleles.add(Allele.create(base.getByte(), base == refBase));
 				}	
 
-				final GenotypeBuilder genoTypeBuilder = new GenotypeBuilder(sampleName, tmpAlleles);
-				genoTypeBuilder.DP(tmpBCC.getCoverage());
-			
-				final Genotype genotype = genoTypeBuilder.make();
+				final Genotype genotype = new GenotypeBuilder(sampleName, tmpAlleles)
+						.noAD()
+						.noGQ()
+						.noPL()
+						.DP(tmpBCC.getCoverage())
+						.attribute("BC", tmpBCC.toString().replace(";", ",").replace("*", "0,0,0,0")) // ugly
+						.make();
 				genotypes.add(genotype);
 			}
 		}
 		vcb.genotypes(genotypes);
-
 		final VariantContext vc = vcb.make();
 		vcw.add(vc);
 	}

@@ -8,7 +8,7 @@ import htsjdk.samtools.util.StringUtil;
 public final class VersionInfo {
 
 	public static final String BRANCH 	= "master";
-	public static final String TAG 	= "2.0.1";
+	public static final String TAG 	= "2.0.2-RC";
 
 	// change this manually
 	public static final String[] LIBS	= new String[] {
