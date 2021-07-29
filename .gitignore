@@ -12,3 +12,5 @@ git_helper.sh
 .Rhistory
 *.csv
 /manual/
+/.gradle/
+/target/
