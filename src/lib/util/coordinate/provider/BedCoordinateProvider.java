@@ -56,7 +56,7 @@ public class BedCoordinateProvider implements CoordinateProvider {
 
 				// try to get strand
 				if (cols.length >= 6) {
-					coordinate.setStrand(STRAND.valueOf(cols[6]));
+					coordinate.setStrand(STRAND.valueOf(cols[5]));
 				} else if (isStranded) {
 					coordinate.setStrand(STRAND.FORWARD);
 				}
