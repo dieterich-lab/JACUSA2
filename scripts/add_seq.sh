@@ -7,8 +7,8 @@ then
 fi
 
 usage() {
-	echo "Add +2bp downstream sequence of a SNV to the info field of a JACUSA2 result file (header required)."
-	echo -e "\nusage: $0 -j <JACUSA2> -f <FASTA> > STDOUT"
+	echo "Add reference bases left and right of a SNV to the info field (seq=...) of a JACUSA2 result file (header required)."
+	echo -e "\nusage: $0 -j <JACUSA2> -f <FASTA> -l <LEFT=0> -r <RIGHT=2> STDOUT"
 	exit
 }
 
@@ -17,14 +17,20 @@ then
 	usage
 fi
 
-while getopts j:f: flag
+left=0
+right=2
+
+while getopts j:f:l:r: flag
 do
 	case "${flag}" in
 		j) jacusa=${OPTARG};;
 		f) fasta=${OPTARG};;
+		l) left=${OPTARG};;
+		r) right=${OPTARG};;
 		*) exit 1;;
 	esac
 done
+
 
 if [[ ! -r $jacusa ]]
 then
@@ -46,7 +52,7 @@ then
 fi
 
 bedtools intersect -header -s -loj -a $jacusa -b <(
-	bedtools slop -s -i <(cut -f1-6 $jacusa | awk -v OFS="\t" ' { print $0,$1,$2,$3,"original",".",$6 } ') -g <(cut -f1-2 "$fasta.fai") -l 0 -r 2 | \
+	bedtools slop -s -i <(cut -f1-6 $jacusa | awk -v OFS="\t" ' { print $0,$1,$2,$3,"original",".",$6 } ') -g <(cut -f1-2 "$fasta.fai") -l $left -r $right | \
 	bedtools getfasta -s -fi $fasta -bed - -bedOut | \
 	awk -v OFS="\t" ' { print $7,$8,$9,$13,$11,$12 } '
 ) | \
@@ -55,7 +61,7 @@ bedtools intersect -header -s -loj -a $jacusa -b <(
 	BEGIN 	{
 			INFO = -1
 			LAST = -1
-			MOTIF = -1
+			SEQ = -1
 	}
 
 	$0 ~ /^#contig/ {
