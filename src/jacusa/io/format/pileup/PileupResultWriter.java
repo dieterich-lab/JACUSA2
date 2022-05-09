@@ -6,6 +6,7 @@ import java.util.TreeSet;
 
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 import lib.data.result.Result;
@@ -20,8 +21,12 @@ public class PileupResultWriter extends AbstractResultFileWriter {
 	public static final char SEP 	= '\t';
 	// split within columns by
 	
-	public PileupResultWriter(final String outputFileName) {
+	private final DataType<PileupCount> dataType;
+	
+	public PileupResultWriter(final DataType<PileupCount> dataType, final String outputFileName) {
 		super(outputFileName);
+		
+		this.dataType = dataType;
 	}
 
 	/**
@@ -57,7 +62,7 @@ public class PileupResultWriter extends AbstractResultFileWriter {
 	
 	protected void addPileupData(final StringBuilder sb, final List<DataContainer> containers) {
 		for (final DataContainer container : containers) {
-			final PileupCount pileupCount = container.getPileupCount();
+			final PileupCount pileupCount = container.get(dataType);
 			sb.append(SEP);
 			sb.append(pileupCount.getBCC().getCoverage());
 			sb.append(SEP);

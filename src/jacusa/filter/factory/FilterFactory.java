@@ -15,7 +15,7 @@ import jacusa.filter.Filter;
 import lib.cli.options.AbstractACOption;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataContainer;
-import lib.data.DataContainer.AbstractBuilder;
+import lib.data.DataContainer.AbstractDataContainerBuilder;
 import lib.data.storage.Cache;
 import lib.data.storage.container.SharedStorage;
 import lib.util.CLIUtil;
@@ -104,7 +104,7 @@ public interface FilterFactory {
 	 * Registers filter in a builder.
 	 * @param builder to register the filter at
 	 */
-	void initDataContainer(AbstractBuilder builder);
+	void initDataContainer(AbstractDataContainerBuilder builder);
 
 	/**
 	 * Creates an instance of the filter.

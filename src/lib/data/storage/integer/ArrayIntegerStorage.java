@@ -2,8 +2,8 @@ package lib.data.storage.integer;
 
 import java.util.Arrays;
 
+import lib.data.DataType;
 import lib.data.IntegerData;
-import lib.data.fetcher.Fetcher;
 import lib.data.storage.container.SharedStorage;
 import lib.util.position.Position;
 
@@ -11,8 +11,8 @@ public class ArrayIntegerStorage extends AbstractIntegerStorage {
 
 	final int[] win2count;
 
-	public ArrayIntegerStorage(final SharedStorage sharedStorage, final Fetcher<IntegerData> fetcher) {
-		super(sharedStorage, fetcher);
+	public ArrayIntegerStorage(final SharedStorage sharedStorage, final DataType<IntegerData> dataType) {
+		super(sharedStorage, dataType);
 		win2count = new int [sharedStorage.getCoordinateController().getActiveWindowSize()];
 	}
 	

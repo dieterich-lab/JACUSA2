@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.util.position.UnmodifiablePosition;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.position.Position;
 
 public interface PositionProviderTest {
 
-	default List<Position> parseExpected(final String[] str, final Record record) {
+	default List<Position> parseExpected(final String[] str, final ProcessedRecord record) {
 		List<Position> positions = new ArrayList<Position>(str.length);
 		for (final String tmpStr : str) {
 			final String[] cols = tmpStr.split(",");

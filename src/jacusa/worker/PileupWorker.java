@@ -2,10 +2,10 @@ package jacusa.worker;
 
 import java.util.SortedSet;
 
+import jacusa.method.pileup.PileupDataContainerBuilderFactory;
 import jacusa.method.pileup.PileupMethod;
 import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
-import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.ParallelData.Builder;
 import lib.data.result.BaseSubResult;
@@ -21,7 +21,7 @@ import lib.util.coordinate.Coordinate;
 import lib.worker.AbstractWorker;
 
 public class PileupWorker
-extends AbstractWorker {
+extends AbstractWorker<PileupDataContainerBuilderFactory> {
 	
 	private final AbstractStat stat;
 	
@@ -52,7 +52,7 @@ extends AbstractWorker {
 		
 		final SortedSet<BaseSub> baseSubs = getParameter().getReadTags();
 		if (! baseSubs.isEmpty()) {
-			result = new BaseSubResult(baseSubs, DataType.BASE_SUBST2BCC.getFetcher(), result);
+			result = new BaseSubResult(baseSubs, getMethod().getDataAssemblerFactory().getDataContainerBuilderFactory().bs2bccDt, result);
 		}
 		
 		if (getParameter().showDeletionCount()) {

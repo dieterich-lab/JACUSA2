@@ -1,6 +1,6 @@
 package lib.util.position;
 
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateTranslator;
 import htsjdk.samtools.SAMRecord;
 
@@ -13,7 +13,7 @@ public class ConsumingRefPosProviderBuilder implements lib.util.Builder<Interval
 	private int length;
 
 	public ConsumingRefPosProviderBuilder(
-			final Record record, 
+			final ProcessedRecord record, 
 			final CoordinateTranslator translator) {
 		
 		pos 	= new MatchPosition.Builder(0, record, translator)

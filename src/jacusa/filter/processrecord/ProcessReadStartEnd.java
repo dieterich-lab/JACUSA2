@@ -7,7 +7,7 @@ import java.util.List;
 
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.position.AlgnBlockPosProviderBuilder;
 
 /**
@@ -27,7 +27,7 @@ public class ProcessReadStartEnd extends AbstractFilterRecordProcessor {
 		super(sharedStorage, distance, positionProcessor);
 	}
 
-	public void process(final Record record) {
+	public void process(final ProcessedRecord record) {
 		final SAMRecord samRecord = record.getSAMRecord();
 		// note: alignmentBlock.getReadStart() is 1-indexed
 		final List<AlignmentBlock> algnBlocks = samRecord.getAlignmentBlocks();

@@ -1,25 +1,26 @@
 package lib.data.validator.paralleldata;
 
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.Fetcher;
 
 public class RTarrestParallelPileup
 implements ParallelDataValidator {
 	
 	private final ExtendedVariantSiteValidator variantSite;
-	private final Fetcher<BaseCallCount> arrestBccFetcher;
-	private final Fetcher<BaseCallCount> throughBccFetcher;
+	private final DataType<BaseCallCount> arrestDataType;
+	private final DataType<BaseCallCount> throughDataType;
 
 	public RTarrestParallelPileup(
-			final Fetcher<BaseCallCount> totalBccFetcher,
-			final Fetcher<BaseCallCount> arrestBccFetcher,
-			final Fetcher<BaseCallCount> throughBccFetche) {
+			final DataType<BaseCallCount> totalBccFetcher, // FIXME
+			final DataType<BaseCallCount> arrestDataType,
+			final DataType<BaseCallCount> throughDataType) {
 
+		// TODO add new derived datatype sum of arrestDataType, throughDataType
 		this.variantSite = new ExtendedVariantSiteValidator(totalBccFetcher);
-		this.arrestBccFetcher 	= arrestBccFetcher;
-		this.throughBccFetcher 	= throughBccFetche;
+		this.arrestDataType 	= arrestDataType;
+		this.throughDataType 	= throughDataType;
 		
 	}
 
@@ -27,8 +28,8 @@ implements ParallelDataValidator {
 	public boolean isValid(final ParallelData parallelData) {
 		final DataContainer combinedPooledContainer = parallelData.getCombPooledData();
 		return variantSite.isValid(parallelData) || 
-				arrestBccFetcher.fetch(combinedPooledContainer).getCoverage() > 0 &&
-				throughBccFetcher.fetch(combinedPooledContainer).getCoverage() > 0;
+				combinedPooledContainer.get(arrestDataType).getCoverage() > 0 &&
+				combinedPooledContainer.get(throughDataType).getCoverage() > 0;
 	}
 
 }

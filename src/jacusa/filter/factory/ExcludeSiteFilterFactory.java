@@ -15,7 +15,7 @@ import lib.cli.options.filter.has.HasFileName;
 import lib.cli.options.filter.has.HasFileType;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataContainer;
-import lib.data.DataContainer.AbstractBuilder;
+import lib.data.DataContainer.AbstractDataContainerBuilder;
 import lib.data.storage.Cache;
 import lib.data.storage.container.SharedStorage;
 import lib.io.InputOutput;
@@ -70,7 +70,7 @@ implements HasFileName, HasFileType {
 	*/
 	
 	@Override
-	public void initDataContainer(AbstractBuilder builder) {
+	public void initDataContainer(AbstractDataContainerBuilder builder) {
 		// not needed
 	}
 	

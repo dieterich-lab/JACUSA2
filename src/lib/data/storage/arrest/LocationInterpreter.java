@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import htsjdk.samtools.AlignmentBlock;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.LibraryType;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AlgnBlockPosProviderBuilder;
@@ -18,15 +18,15 @@ import lib.util.position.PositionProvider;
  */
 public interface LocationInterpreter {
 
-	Position getArrestPosition(Record record, CoordinateTranslator translator);
+	Position getArrestPosition(ProcessedRecord record, CoordinateTranslator translator);
 	
 	PositionProvider getThroughPositionProvider(
-			Record record, CoordinateTranslator translator);
+			ProcessedRecord record, CoordinateTranslator translator);
 	
-	boolean hasArrestPosition(Record record);
+	boolean hasArrestPosition(ProcessedRecord record);
 	
 	default boolean isArrestPosition(final Position position, final CoordinateTranslator translator) {
-		final Position arrestPos = getArrestPosition(position.getRecord(), translator);
+		final Position arrestPos = getArrestPosition(position.getProcessedRecord(), translator);
 		if (arrestPos == null) {
 			return false;
 		}
@@ -48,7 +48,7 @@ public interface LocationInterpreter {
 	}
 	
 	default Position getFirstAlignmentPosition(
-			final Record record, 
+			final ProcessedRecord record, 
 			final CoordinateTranslator translator) {
 		
 		Position pos = new MatchPosition.Builder(0, record, translator).build();
@@ -56,7 +56,7 @@ public interface LocationInterpreter {
 	}
 	
 	default Position getLastAlignmentPosition(
-			final Record record, 
+			final ProcessedRecord record, 
 			final CoordinateTranslator translator) {
 		
 		final int size 				= record.getSAMRecord().getAlignmentBlocks().size() - 1;
@@ -71,7 +71,7 @@ public interface LocationInterpreter {
 	default List<PositionProvider> getThroughPositionProvider(
 			final int startIndex, 
 			final int size, 
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator) {
 		
 		final int endIndex = startIndex + size;

@@ -7,14 +7,13 @@ import jacusa.cli.parameters.LRTarrestParameter;
 import jacusa.filter.factory.ExcludeSiteFilterFactory;
 import jacusa.filter.factory.FilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
+import jacusa.filter.factory.HomozygousFilterFactory;
+import jacusa.filter.factory.MaxAlleleCountFilterFactory;
+import jacusa.filter.factory.basecall.INDELfilterFactory;
+import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import jacusa.filter.factory.basecall.lrtarrest.LRTarrestCombinedFilterFactory;
-import jacusa.filter.factory.basecall.lrtarrest.LRTarrestINDELfilterFactory;
-import jacusa.filter.factory.basecall.lrtarrest.LRTarrestSpliceSiteFilterFactory;
-import jacusa.filter.factory.rtarrest.RTarrestHomozygousFilterFactory;
-import jacusa.filter.factory.rtarrest.RTarrestMaxAlleleCountFilterFactory;
 import jacusa.io.format.lrtarrest.BED6lrtArrestResultFormat;
 import jacusa.method.rtarrest.DummyStatisticFactory;
-import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
 import jacusa.worker.LRTarrestWorker;
 
 import java.util.ArrayList;
@@ -47,21 +46,11 @@ import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagConditionOption;
 import lib.cli.options.condition.filter.FilterNMsamTagConditionOption;
 import lib.data.DataType;
-import lib.data.DataContainer.AbstractBuilder;
-import lib.data.DataContainer.AbstractBuilderFactory;
 import lib.data.assembler.factory.LRTarrestDataAssemblerFactory;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.DefaultFilteredDataFetcher;
-import lib.data.fetcher.Fetcher;
-import lib.data.fetcher.FilteredDataFetcher;
-import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
-import lib.data.fetcher.basecall.ArrestBaseCallCountExtractor;
-import lib.data.fetcher.basecall.PileupCountBaseCallCountExtractor;
-import lib.data.fetcher.basecall.ThroughBaseCallCountExtractor;
-import lib.data.filter.BaseCallCountFilteredData;
-import lib.data.filter.BooleanData;
-import lib.data.filter.BooleanFilteredData;
-import lib.data.storage.lrtarrest.ArrestPos2BCC;
+import lib.data.filter.FilteredBaseCallCount;
+import lib.data.filter.FilteredBoolean;
+import lib.data.storage.lrtarrest.ArrestPosition2BaseCallCount;
 import lib.data.validator.paralleldata.ExtendedVariantSiteValidator;
 import lib.data.validator.paralleldata.LRTarrestVariantParallelPileup;
 import lib.data.validator.paralleldata.MinCoverageValidator;
@@ -75,44 +64,33 @@ import lib.util.LibraryType;
 
 import org.apache.commons.cli.ParseException;
 
-public class LRTarrestMethod 
-extends AbstractMethod {
+public class LRTarrestMethod extends AbstractMethod<LRTarrestDataContainerBuilderFactory> {
 
-	private final Fetcher<ArrestPos2BCC> ap2bccFetcher;
-	private final Fetcher<BaseCallCount> totalBccFetcher;
-	private final Fetcher<BaseCallCount> arrestBccExtractor;
-	private final Fetcher<BaseCallCount> throughBccExtractor;
-	
-	private LRTarrestMethod(
-			final String name,
-			final LRTarrestParameter parameter,
+	/*
+	 * TODO remove private final Fetcher<ArrestPos2BCC> ap2bccFetcher; private final
+	 * Fetcher<BaseCallCount> totalBccFetcher; private final Fetcher<BaseCallCount>
+	 * arrestBccExtractor; private final Fetcher<BaseCallCount> throughBccExtractor;
+	 */
+
+	private LRTarrestMethod(final String name, final LRTarrestParameter parameter,
 			final LRTarrestDataAssemblerFactory dataAssemblerFactory) {
-		
+
 		super(name, parameter, dataAssemblerFactory);
-		ap2bccFetcher 		= DataType.AP2BCC.getFetcher();
-		totalBccFetcher 	= new PileupCountBaseCallCountExtractor(DataType.PILEUP_COUNT.getFetcher());
-		arrestBccExtractor 	= new ArrestBaseCallCountExtractor(ap2bccFetcher);
-		throughBccExtractor = new ThroughBaseCallCountExtractor(ap2bccFetcher);
 	}
 
-	public Fetcher<BaseCallCount> getTotalBaseCallCountFetcher() {
-		return totalBccFetcher;
-	}
-	
 	protected void initGlobalACOptions() {
 		addACOption(new StatFactoryOption(getParameter().getStatParameter(), getStatistics()));
-		
+
 		addACOption(new StatFilterOption(getParameter().getStatParameter()));
-		
-		// result format option only if there is a choice		
-		if (getResultFormats().size() > 1 ) {
-			addACOption(new ResultFormatOption(
-					getParameter(), getResultFormats()));
+
+		// result format option only if there is a choice
+		if (getResultFormats().size() > 1) {
+			addACOption(new ResultFormatOption(getParameter(), getResultFormats()));
 		}
-		
+
 		addACOption(new FilterModusOption(getParameter()));
 		addACOption(new FilterConfigOption(getParameter(), getFilterFactories()));
-		
+
 		addACOption(new ReferenceFastaFilenameOption(getParameter()));
 
 		addACOption(new MaxThreadOption(getParameter()));
@@ -121,7 +99,7 @@ extends AbstractMethod {
 
 		addACOption(new BedCoordinatesOption(getParameter()));
 		addACOption(new ResultFileOption(getParameter()));
-		
+
 		addACOption(new DebugModusOption(getParameter(), this));
 		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 	}
@@ -133,20 +111,16 @@ extends AbstractMethod {
 		addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters()));
 		addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters()));
 		addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters()));
-		
+
 		addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
 		addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
-		
+
 		final Set<LibraryType> availableLibType = new HashSet<>(
-				Arrays.asList(
-						LibraryType.RF_FIRSTSTRAND,
-						LibraryType.FR_SECONDSTRAND));
-		
-		addACOption(new nConditionLibraryTypeOption(
-				availableLibType, 
-				getParameter().getConditionParameters(), 
+				Arrays.asList(LibraryType.RF_FIRSTSTRAND, LibraryType.FR_SECONDSTRAND));
+
+		addACOption(new nConditionLibraryTypeOption(availableLibType, getParameter().getConditionParameters(),
 				getParameter()));
-		
+
 		// condition specific
 		for (int condI = 0; condI < getParameter().getConditionsSize(); ++condI) {
 			addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters().get(condI)));
@@ -154,20 +128,17 @@ extends AbstractMethod {
 			addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(condI)));
 			addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters().get(condI)));
 			addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(condI)));
-			
+
 			addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(condI)));
 			addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(condI)));
-			
-			addACOption(new nConditionLibraryTypeOption(
-					availableLibType, 
-					getParameter().getConditionParameters().get(condI),
-					getParameter()));
+
+			addACOption(new nConditionLibraryTypeOption(availableLibType,
+					getParameter().getConditionParameters().get(condI), getParameter()));
 		}
 	}
-	
+
 	public Map<String, AbstractStatFactory> getStatistics() {
-		final Map<String, AbstractStatFactory> factories = 
-				new TreeMap<>();
+		final Map<String, AbstractStatFactory> factories = new TreeMap<>();
 
 		final List<AbstractStatFactory> tmpFactory = new ArrayList<>(5);
 		tmpFactory.add(new DummyStatisticFactory());
@@ -176,69 +147,34 @@ extends AbstractMethod {
 		for (final AbstractStatFactory factory : tmpFactory) {
 			factories.put(factory.getName(), factory);
 		}
-		
+
 		return factories;
 	}
 
 	public Map<Character, FilterFactory> getFilterFactories() {
-		final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredBccFetcher = 
-				new DefaultFilteredDataFetcher<>(DataType.F_BCC);
-		
-		final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredBooleanFetcher =
-				new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN);
+		final DataType<BaseCallCount> bccDt = getDataAssemblerFactory().getDataContainerBuilderFactory().bccDt;
+		final DataType<FilteredBaseCallCount> filteredBccDt = getDataAssemblerFactory()
+				.getDataContainerBuilderFactory().filteredBccDt;
+		final DataType<FilteredBoolean> filteredBooleanDt = getDataAssemblerFactory()
+				.getDataContainerBuilderFactory().filteredBooleanDt;
 
-		return Arrays.asList(
-				new HomopolymerFilterFactory(getParameter(), filteredBooleanFetcher),
-				new ExcludeSiteFilterFactory(),
-				new RTarrestMaxAlleleCountFilterFactory(
-						new Apply2readsBaseCallCountSwitch(
-								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 
-								totalBccFetcher, 
-								arrestBccExtractor, 
-								throughBccExtractor)),
-				new RTarrestHomozygousFilterFactory(
-						getParameter().getConditionsSize(),
-						new Apply2readsBaseCallCountSwitch(
-								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 
-								totalBccFetcher, 
-								arrestBccExtractor, 
-								throughBccExtractor)),
-				new LRTarrestCombinedFilterFactory(
-						new Apply2readsBaseCallCountSwitch(
-								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 
-								totalBccFetcher, 
-								arrestBccExtractor, 
-								throughBccExtractor),
-						filteredBccFetcher),
-				new LRTarrestINDELfilterFactory(
-						new Apply2readsBaseCallCountSwitch(
-								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 
-								totalBccFetcher, 
-								arrestBccExtractor, 
-								throughBccExtractor),
-						filteredBccFetcher),
-				new LRTarrestSpliceSiteFilterFactory(
-						new Apply2readsBaseCallCountSwitch(
-								new HashSet<>(Arrays.asList(RT_READS.ARREST)), 
-								totalBccFetcher, 
-								arrestBccExtractor, 
-								throughBccExtractor),
-						filteredBccFetcher))
-				.stream()
-				.collect(Collectors.toMap(FilterFactory::getID, Function.identity()) );
+		return Arrays
+				.asList(new HomopolymerFilterFactory(getParameter(), filteredBooleanDt), new ExcludeSiteFilterFactory(),
+						new MaxAlleleCountFilterFactory(bccDt),
+						new HomozygousFilterFactory(getParameter().getConditionsSize(), bccDt),
+						new LRTarrestCombinedFilterFactory(bccDt, filteredBccDt),
+						new INDELfilterFactory(bccDt, filteredBccDt), new SpliceSiteFilterFactory(bccDt, filteredBccDt))
+				.stream().collect(Collectors.toMap(FilterFactory::getID, Function.identity()));
 	}
 
 	public Map<Character, ResultFormat> getResultFormats() {
-		Map<Character, ResultFormat> name2resultFormat = 
-				new HashMap<>();
+		Map<Character, ResultFormat> name2resultFormat = new HashMap<>();
 
 		ResultFormat resultFormat = null;
-		
-		resultFormat = new BED6lrtArrestResultFormat(
-				getName(), 
-				getParameter() );
+
+		resultFormat = new BED6lrtArrestResultFormat(getName(), getParameter());
 		name2resultFormat.put(resultFormat.getID(), resultFormat);
-		
+
 		return name2resultFormat;
 	}
 
@@ -258,79 +194,51 @@ extends AbstractMethod {
 
 	@Override
 	public List<ParallelDataValidator> createParallelDataValidators() {
-		return Arrays.asList(
-				new MinCoverageValidator(totalBccFetcher,
-						getParameter().getConditionParameters()),
-				new LRTarrestVariantParallelPileup(ap2bccFetcher),
-				new ExtendedVariantSiteValidator(totalBccFetcher));
+		final DataType<BaseCallCount> bccDt = getDataAssemblerFactory().getDataContainerBuilderFactory().bccDt;
+		final DataType<ArrestPosition2BaseCallCount> ap2bccDt = getDataAssemblerFactory().getDataContainerBuilderFactory().ap2bccDt;
+
+		return Arrays.asList(new MinCoverageValidator(bccDt, getParameter().getConditionParameters()),
+				new LRTarrestVariantParallelPileup(ap2bccDt), new ExtendedVariantSiteValidator(bccDt));
 	}
-	
+
 	@Override
 	public LRTarrestWorker createWorker(final int threadId) {
 		return new LRTarrestWorker(this, threadId);
 	}
-	
+
 	@Override
 	public void debug() {
 		AbstractTool.getLogger().addDebug("Add additional column(s) in output start,inner,end!");
 	}
 
-	/*
-	 * Factory
-	 */
-	
-	public static class LRTarrestBuilderFactory extends AbstractBuilderFactory {
-		
-		private LRTarrestBuilderFactory(final LRTarrestParameter parameter) {
-			super(parameter);
-		}
-		
-		@Override
-		protected void addRequired(final AbstractBuilder builder) {
-			add(builder, DataType.PILEUP_COUNT);
-			add(builder, DataType.AP2BCC);
-		}
-		
-		@Override
-		protected void addFilters(final AbstractBuilder builder) {
-			add(builder, DataType.F_BCC);
-			add(builder, DataType.F_BOOLEAN);
-		}
-		
-	}
-	
-	public static class Factory extends AbstractFactory {
-		
+	public static class Factory extends AbstractMethodFactory<LRTarrestDataContainerBuilderFactory> {
+
 		public static final String NAME = "lrt-arrest";
 		public static final String DESC = "Linkage arrest to base substitution - 2 conditions";
-		
+
 		public Factory() {
 			super(NAME, DESC, 2);
 		}
 
 		@Override
-		public AbstractMethod createMethod() {
+		public LRTarrestMethod createMethod() {
 			final LRTarrestParameter parameter = new LRTarrestParameter(getConditions());
-			final LRTarrestBuilderFactory builderFactory = new LRTarrestBuilderFactory(parameter);
-			
-			final LRTarrestDataAssemblerFactory dataAssemblerFactory = 
-					new LRTarrestDataAssemblerFactory(builderFactory);
-			
-			return new LRTarrestMethod(
-					getName(),
-					parameter,
-					dataAssemblerFactory);
+			final LRTarrestDataContainerBuilderFactory builderFactory = new LRTarrestDataContainerBuilderFactory(parameter);
+
+			final LRTarrestDataAssemblerFactory dataAssemblerFactory = new LRTarrestDataAssemblerFactory(
+					builderFactory);
+
+			return new LRTarrestMethod(getName(), parameter, dataAssemblerFactory);
 		}
 
-		
 		@Override
-		public AbstractFactory createFactory(int conditions) {
+		public Factory createFactory(int conditions) {
 			if (conditions != 2) {
 				return null;
 			}
 			return new Factory();
 		}
-				
+
 	}
-	
+
 }

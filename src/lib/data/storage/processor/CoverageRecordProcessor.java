@@ -1,7 +1,7 @@
 package lib.data.storage.processor;
 
 import lib.data.storage.Storage;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.ConsumingRefPosProviderBuilder;
 import lib.util.position.Position;
@@ -30,7 +30,7 @@ public class CoverageRecordProcessor implements GeneralRecordProcessor {
 	}
 
 	@Override
-	public void process(final Record record) {
+	public void process(final ProcessedRecord record) {
 		// store total coverage
 		final PositionProvider covPosProvider = 
 				new ConsumingRefPosProviderBuilder(record, translator).build();

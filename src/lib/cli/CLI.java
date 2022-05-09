@@ -29,16 +29,16 @@ import org.apache.commons.cli.ParseException;
 
 public class CLI {
 
-	private final List<AbstractMethod.AbstractFactory> methodFactories;
-	private AbstractMethod method;
+	private final List<AbstractMethod.AbstractMethodFactory<?>> methodFactories;
+	private AbstractMethod<?> method;
 	private boolean printExtendedHelp;
 	
-	public CLI(final List<AbstractMethod.AbstractFactory> methodFactories) {
+	public CLI(final List<AbstractMethod.AbstractMethodFactory<?>> methodFactories) {
 		this.methodFactories = methodFactories;
 		printExtendedHelp = false;
 	}
 	
-	public List<AbstractMethod.AbstractFactory> getMethodFactories() {
+	public List<AbstractMethod.AbstractMethodFactory<?>> getMethodFactories() {
 		return Collections.unmodifiableList(methodFactories);
 	}
 	
@@ -90,7 +90,7 @@ public class CLI {
 	}
 	
 	private boolean contains(final String name) {
-		for (final AbstractMethod.AbstractFactory methodFactory : methodFactories) {
+		for (final AbstractMethod.AbstractMethodFactory<?> methodFactory : methodFactories) {
 			if (methodFactory.getName().equals(name)) {
 				return true;
 			}
@@ -98,8 +98,8 @@ public class CLI {
 		return false;
 	}
 	
-	private AbstractMethod.AbstractFactory getMethodFactory(final String name) {
-		for (final AbstractMethod.AbstractFactory methodFactory : methodFactories) {
+	private AbstractMethod.AbstractMethodFactory<?> getMethodFactory(final String name) {
+		for (final AbstractMethod.AbstractMethodFactory<?> methodFactory : methodFactories) {
 			if (methodFactory.getName().equals(name)) {
 				return methodFactory;
 			}
@@ -113,15 +113,15 @@ public class CLI {
 		final Set<String> methodNames = new HashSet<>();
 		
 		// collect into Map...
-		for (final AbstractMethod.AbstractFactory methodFactory : methodFactories) {
+		for (final AbstractMethod.AbstractMethodFactory<?> methodFactory : methodFactories) {
 			for (final int conditions : new int[] {1, 2}) {
-				final AbstractMethod.AbstractFactory tmpMethodFactory = methodFactory.createFactory(conditions);
+				final AbstractMethod.AbstractMethodFactory<?> tmpMethodFactory = methodFactory.createFactory(conditions);
 				if (tmpMethodFactory == null) {
 					continue;
 				}
 
 				
-				final AbstractMethod tmpMethod = tmpMethodFactory.createMethod();
+				final AbstractMethod<?> tmpMethod = tmpMethodFactory.createMethod();
 				final String methodName = tmpMethod.getName();
 				methodNames.add(methodName);
 				tmpMethod.initACOptions();
@@ -248,7 +248,7 @@ public class CLI {
 			AbstractTool.getLogger().addError("Unknown method: " + args[0]);
 			System.exit(1);
 		}
-		final AbstractMethod.AbstractFactory methodFactory = getMethodFactory(args[0].toLowerCase());
+		final AbstractMethod.AbstractMethodFactory<?> methodFactory = getMethodFactory(args[0].toLowerCase());
 		method = methodFactory.createMethod();
 		if (args.length == 1) {
 			method.initACOptions();
@@ -271,7 +271,7 @@ public class CLI {
 		CommandLine line = null;
 
 		final int conditions = methodFactory.getConditions();
-		final AbstractMethod.AbstractFactory tmpMethodFactory = 
+		final AbstractMethod.AbstractMethodFactory<?> tmpMethodFactory = 
 				methodFactory.createFactory(conditions);
 		if (tmpMethodFactory == null) {
 			throw new IllegalArgumentException("Illegal number of conditions");
@@ -331,7 +331,7 @@ public class CLI {
 		sb.append("DESCRIPTION");
 		sb.append('\n');
 		
-		for (final AbstractMethod.AbstractFactory methodFactory : methodFactories) {
+		for (final AbstractMethod.AbstractMethodFactory<?> methodFactory : methodFactories) {
 			sb.append("  ");
 			sb.append(methodFactory.getName());
 			sb.append('\t');
@@ -369,14 +369,14 @@ public class CLI {
 		return printExtendedHelp;
 	}
 	
-	public AbstractMethod getMethodFactory() {
+	public AbstractMethod<?> getMethodFactory() {
 		return method;
 	}
 
-	public final Map<String, AbstractMethod.AbstractFactory> getName2methodFactory() {
+	public final Map<String, AbstractMethod.AbstractMethodFactory<?>> getName2methodFactory() {
 		return getMethodFactories().stream()
 				.collect(Collectors.toMap(
-								AbstractMethod.AbstractFactory::getName,
+								AbstractMethod.AbstractMethodFactory::getName,
 								Function.identity()) );
 	}
 	

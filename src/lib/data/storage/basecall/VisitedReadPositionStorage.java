@@ -3,7 +3,7 @@ package lib.data.storage.basecall;
 import lib.data.DataContainer;
 import lib.data.storage.Storage;
 import lib.data.storage.container.SharedStorage;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.Coordinate;
 import lib.util.position.Position;
 
@@ -41,7 +41,7 @@ public class VisitedReadPositionStorage implements Storage {
 		return visited[readPos];
 	}
 	
-	public void reset(final Record record) {
+	public void reset(final ProcessedRecord record) {
 		visited = new boolean[record.getSAMRecord().getReadLength()];
 	}
 	

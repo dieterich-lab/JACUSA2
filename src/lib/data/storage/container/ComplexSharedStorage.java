@@ -1,7 +1,7 @@
 package lib.data.storage.container;
 
 import htsjdk.samtools.AlignmentBlock;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 
@@ -46,7 +46,7 @@ public class ComplexSharedStorage implements SharedStorage {
 	}
 
 	@Override
-	public void addrecord(final Record record) {
+	public void addRecord(final ProcessedRecord record) {
 		referenceProvider.addrecord(record);
 
 		AlignmentBlock previousBlock = null;

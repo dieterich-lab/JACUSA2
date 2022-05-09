@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.data.DataContainer.AbstractBuilderFactory;
+import lib.data.DataContainer.AbstractDataContainerBuilderFactory;
 import lib.data.DataContainer.DefaultBuilderFactory;
 import lib.data.DataType;
 import lib.data.ParallelData;
@@ -18,7 +18,7 @@ import lib.util.coordinate.OneCoordinate;
 
 class ExtendedVariantSiteValidatorTest extends AbstractParallelDataValidatorTest {
 
-	private final AbstractBuilderFactory builderFactory;
+	private final AbstractDataContainerBuilderFactory builderFactory;
 	private final DataTypeFetcher<BaseCallCount> bccFetcher;
 	
 	public ExtendedVariantSiteValidatorTest() {

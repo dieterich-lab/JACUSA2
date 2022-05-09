@@ -27,11 +27,11 @@ implements Result {
 		this.stat 			= stat;
 		this.parallelData 	= parallelData;
 		
-		markedFiltered 	= false;
-		filterInfo 		= new Info();
-		resultInfo 		= new Info();
+		markedFiltered 		= false;
+		filterInfo 			= new Info();
+		resultInfo 			= new Info();
 		
-		valueIndex = new TreeSet<>();
+		valueIndex 			= new TreeSet<>();
 		valueIndex.add(Result.TOTAL);
 	}
 	

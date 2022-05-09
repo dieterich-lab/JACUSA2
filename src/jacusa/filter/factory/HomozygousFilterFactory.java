@@ -9,9 +9,9 @@ import lib.cli.options.filter.ConditionOption;
 import lib.cli.options.filter.has.HasCondition;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataContainer;
-import lib.data.DataContainer.AbstractBuilder;
+import lib.data.DataContainer.AbstractDataContainerBuilder;
+import lib.data.DataType;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.Fetcher;
 import lib.data.storage.Cache;
 import lib.data.storage.container.SharedStorage;
 import lib.io.InputOutput;
@@ -29,20 +29,20 @@ implements HasCondition {
 	
 	// which condition is required to be homozygous
 	private int condI;
-	private final Fetcher<BaseCallCount> bccFetcher;
+	private final DataType<BaseCallCount> dataType;
 	
 	public HomozygousFilterFactory(
-			final int conditionSize, final Fetcher<BaseCallCount> bccFetcher) {
+			final int conditionSize, final DataType<BaseCallCount> dataType) {
 		
 		super(getOptionBuilder().build());
 				
 		condI 				= -1;
 		getACOption().add(new ConditionOption(this, conditionSize));
-		this.bccFetcher 			= bccFetcher;
+		this.dataType 		= dataType;
 	}
 
 	@Override
-	public void initDataContainer(AbstractBuilder builder) {
+	public void initDataContainer(AbstractDataContainerBuilder builder) {
 		// not needed
 	}
 	
@@ -51,7 +51,7 @@ implements HasCondition {
 			CoordinateController coordinateController, 
 			ConditionContainer conditionContainer) {
 
-		return new HomozygousFilter(getID(), condI, bccFetcher);
+		return new HomozygousFilter(getID(), condI, dataType);
 	}
 
 	@Override

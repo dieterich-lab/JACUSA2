@@ -28,7 +28,7 @@ public class ReplicateContainer {
 			final FilterContainer filterContainer,
 			final SharedStorage sharedStorage,
 			final ConditionParameter conditionParameter,
-			final AbstractMethod method) {
+			final AbstractMethod<?> method) {
 
 		this.condPrm = conditionParameter;
 
@@ -77,7 +77,7 @@ public class ReplicateContainer {
 			final FilterContainer filterContainer,
 			final SharedStorage sharedStorage,
 			final ConditionParameter conditionParameter,
-			final AbstractMethod method) {
+			final AbstractMethod<?> method) {
 
 		final List<DataAssembler> dataAssemblers = new ArrayList<DataAssembler>(conditionParameter.getReplicateSize());
 		for (int replicateI = 0; replicateI < conditionParameter.getReplicateSize(); ++replicateI) {

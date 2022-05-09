@@ -1,8 +1,8 @@
 package lib.util.position;
 
 import lib.record.AlignedPosition;
-import lib.record.Record;
-import lib.record.Record.CigarDetail;
+import lib.record.ProcessedRecord;
+import lib.record.ProcessedRecord.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
@@ -18,7 +18,7 @@ class DeletionPosProviderBuilder implements lib.util.Builder<IntervalPosProvider
 	private CoordinateTranslator translator;
 	
 	DeletionPosProviderBuilder(
-			final int delI, final Record record, 
+			final int delI, final ProcessedRecord record, 
 			final CoordinateTranslator translator) {
 		
 		// extract corresponding cigar element 

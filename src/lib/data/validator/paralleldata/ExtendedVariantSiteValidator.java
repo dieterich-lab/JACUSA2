@@ -4,9 +4,9 @@ import java.util.Set;
 
 import htsjdk.samtools.util.SequenceUtil;
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.Fetcher;
 import lib.util.Base;
 
 /**
@@ -15,16 +15,16 @@ import lib.util.Base;
 public class ExtendedVariantSiteValidator 
 implements ParallelDataValidator {
 	
-	private final Fetcher<BaseCallCount> bccFetcher;
+	private final DataType<BaseCallCount> dataType;
 	
-	public ExtendedVariantSiteValidator(final Fetcher<BaseCallCount> bccFetcher) {
-		this.bccFetcher = bccFetcher;
+	public ExtendedVariantSiteValidator(final DataType<BaseCallCount> dataType) {
+		this.dataType = dataType;
 	}
 	
 	@Override
 	public boolean isValid(final ParallelData parallelData) {
 		final DataContainer container = parallelData.getCombPooledData();
-		final BaseCallCount bcc = bccFetcher.fetch(container);
+		final BaseCallCount bcc = container.get(dataType);
 		final Set<Base> alleles = bcc.getAlleles();
 		// more than one non-reference allele
 		if (alleles.size() > 1) {

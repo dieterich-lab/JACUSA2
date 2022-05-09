@@ -19,7 +19,7 @@ import lib.data.ParallelData;
 import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.io.InputOutput;
-import lib.util.AbstractMethod;
+import lib.util.AbstractMethod.AbstractMethodFactory;
 import lib.util.AbstractTool;
 import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
@@ -41,9 +41,9 @@ public class JACUSA2codec extends AsciiFeatureCodec<ResultFeature> {
 	public static final Pattern CALL_METHOD_PATTERN = 
 			Pattern.compile("^" + AbstractTool.CALL_PREFIX + "([^ ]+) ([^ ]+).*");
 	
-	private final Map<String, AbstractMethod.AbstractFactory> name2methodFactory; 
+	private final Map<String, AbstractMethodFactory<?>> name2methodFactory; 
 	
-	public JACUSA2codec(final Map<String, AbstractMethod.AbstractFactory> name2methodFactory) {
+	public JACUSA2codec(final Map<String, AbstractMethodFactory<?>> name2methodFactory) {
 		super(ResultFeature.class);
 		this.name2methodFactory = name2methodFactory;
 	}

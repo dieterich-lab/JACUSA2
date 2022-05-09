@@ -46,7 +46,7 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 		private final List<LibraryType> libraryTypes;
 		private final Base referenceBase;
 		
-		private final List<List<DataContainer.AbstractBuilder>> builders;
+		private final List<List<DataContainer.AbstractDataContainerBuilder>> builders;
 
 		public ResultBuilder(final Coordinate coordinate, final List<LibraryType> libraryTypes) {
 			this(coordinate, libraryTypes, Base.N);
@@ -64,7 +64,7 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 			final int conditions = libraryTypes.size();
 			builders = new ArrayList<>(conditions);
 			for (int condI = 0; condI < conditions; ++condI) {
-				final List<DataContainer.AbstractBuilder> replicates = 
+				final List<DataContainer.AbstractDataContainerBuilder> replicates = 
 						new ArrayList<>();
 				builders.add(replicates);
 			}
@@ -75,7 +75,7 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 				final String s, final Parser<T> parser, 
 				final DataType<T> dataType) {
 
-			final List<DataContainer.AbstractBuilder> replicateBuilders = 
+			final List<DataContainer.AbstractDataContainerBuilder> replicateBuilders = 
 					builders.get(condition);
 			
 			if (replicateBuilders.size() <= replicate) {
@@ -85,7 +85,7 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 								libraryTypes.get(condition))
 						.withReferenceBase(referenceBase) );
 			}
-			final DataContainer.AbstractBuilder dataTypeBuilder = 
+			final DataContainer.AbstractDataContainerBuilder dataTypeBuilder = 
 					replicateBuilders.get(replicate);
 			
 			final T data = parser.parse(s);

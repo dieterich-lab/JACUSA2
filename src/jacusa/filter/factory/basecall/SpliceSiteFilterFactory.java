@@ -7,10 +7,9 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Option.Builder;
 
 import jacusa.filter.processrecord.ProcessSkippedOperator;
+import lib.data.DataType;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.Fetcher;
-import lib.data.fetcher.FilteredDataFetcher;
-import lib.data.filter.BaseCallCountFilteredData;
+import lib.data.filter.FilteredBaseCallCount;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.RecordProcessor;
@@ -20,17 +19,17 @@ import lib.data.storage.processor.RecordProcessor;
  * sites adjacent to splices sites.
  */
 public class SpliceSiteFilterFactory
-extends AbstractBCCfilterFactory {
+extends AbstractBaseCallCountFilterFactory {
 
 	public static final char FILTER = 'S';
 	
 	public SpliceSiteFilterFactory(
-			final Fetcher<BaseCallCount> observedBccFetcher,
-			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
+			final DataType<BaseCallCount> observedDataType,
+			final DataType<FilteredBaseCallCount> filteredDataType) {
 		
 		super(
 				getOptionBuilder().build(),
-				observedBccFetcher, filteredDataFetcher);
+				observedDataType, filteredDataType);
 	}
 	
 	@Override

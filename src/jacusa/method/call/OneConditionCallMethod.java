@@ -20,11 +20,8 @@ import java.util.stream.Collectors;
 import lib.data.DataType;
 import lib.data.assembler.factory.CallDataAssemblerFactory;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.DefaultFilteredDataFetcher;
-import lib.data.fetcher.FilteredDataFetcher;
-import lib.data.filter.BaseCallCountFilteredData;
-import lib.data.filter.BooleanData;
-import lib.data.filter.BooleanFilteredData;
+import lib.data.filter.FilteredBaseCallCount;
+import lib.data.filter.FilteredBoolean;
 import lib.data.validator.paralleldata.ExtendedVariantSiteValidator;
 import lib.data.validator.paralleldata.KnownReferenceBase;
 import lib.data.validator.paralleldata.MinCoverageValidator;
@@ -32,56 +29,43 @@ import lib.data.validator.paralleldata.ParallelDataValidator;
 
 import org.apache.commons.cli.ParseException;
 
-public class OneConditionCallMethod 
-extends CallMethod {
+public class OneConditionCallMethod extends CallMethod {
 
-	protected OneConditionCallMethod(
-			final String name, 
-			final CallParameter parameter, 
+	protected OneConditionCallMethod(final String name, final CallParameter parameter,
 			final CallDataAssemblerFactory dataAssemblerFactory) {
-		
+
 		super(name, parameter, dataAssemblerFactory);
 	}
 
 	@Override
 	public Map<Character, FilterFactory> getFilterFactories() {
-		final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredBccData = 
-				new DefaultFilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount>(DataType.F_BCC);
-		final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredBooleanData = 
-				new DefaultFilteredDataFetcher<BooleanFilteredData, BooleanData>(DataType.F_BOOLEAN);
-		
-		return Arrays.asList(
-				new ExcludeSiteFilterFactory(),
-				new CombinedFilterFactory(
-						getBaseCallCountFetcher(),
-						filteredBccData),
-				new INDELfilterFactory(
-						getBaseCallCountFetcher(), 
-						filteredBccData),
-				new ReadPositionFilterFactory(
-						getBaseCallCountFetcher(), 
-						filteredBccData),
-				new SpliceSiteFilterFactory(
-						getBaseCallCountFetcher(), 
-						filteredBccData),
-				new MaxAlleleCountFilterFactory(getBaseCallCountFetcher()),
-				new HomopolymerFilterFactory(getParameter(), filteredBooleanData))
-				.stream()
-				.collect(Collectors.toMap(FilterFactory::getID, Function.identity()) );
+		final DataType<BaseCallCount> bccDt = getDataAssemblerFactory().getDataContainerBuilderFactory().bccDt;
+		final DataType<FilteredBaseCallCount> filteredBccDt = getDataAssemblerFactory()
+				.getDataContainerBuilderFactory().filteredBccDt;
+		final DataType<FilteredBoolean> filteredBooleanDt = getDataAssemblerFactory()
+				.getDataContainerBuilderFactory().filteredBooleanDt;
+
+		return Arrays.asList(new ExcludeSiteFilterFactory(), new CombinedFilterFactory(bccDt, filteredBccDt),
+				new INDELfilterFactory(bccDt, filteredBccDt), new ReadPositionFilterFactory(bccDt, filteredBccDt),
+				new SpliceSiteFilterFactory(bccDt, filteredBccDt), new MaxAlleleCountFilterFactory(bccDt),
+				new HomopolymerFilterFactory(getParameter(), filteredBooleanDt)).stream()
+				.collect(Collectors.toMap(FilterFactory::getID, Function.identity()));
 	}
 
 	@Override
 	public List<ParallelDataValidator> createParallelDataValidators() {
+		final DataType<BaseCallCount> bccDt = getDataAssemblerFactory().getDataContainerBuilderFactory().bccDt;
+
 		final List<ParallelDataValidator> validators = new ArrayList<ParallelDataValidator>();
 		validators.add(new KnownReferenceBase());
-		validators.add(new MinCoverageValidator(getBaseCallCountFetcher(), getParameter().getConditionParameters()));
+		validators.add(new MinCoverageValidator(bccDt, getParameter().getConditionParameters()));
 
-		if (! this.getParameter().showAllSites()) {
-			validators.add(new ExtendedVariantSiteValidator(getBaseCallCountFetcher()));
+		if (!this.getParameter().showAllSites()) {
+			validators.add(new ExtendedVariantSiteValidator(bccDt));
 		}
 		return validators;
 	}
-	
+
 	@Override
 	public boolean parseArgs(String[] args) throws Exception {
 		if (args == null || args.length != 1) {
@@ -89,5 +73,5 @@ extends CallMethod {
 		}
 		return super.parseArgs(args);
 	}
-	
+
 }

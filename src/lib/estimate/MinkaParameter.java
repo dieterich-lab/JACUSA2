@@ -13,12 +13,15 @@ public class MinkaParameter {
 	private AbstractAlphaInit fallbackAlphaInit;
 	private int maxIterations;
 	private double epsilon;
+	private ExtraLetters extraLetters;
+	
 	
 	public MinkaParameter() {
 		alphaInit 			= new MeanAlphaInit();
 		fallbackAlphaInit	= new MinAlphaInit();
 		maxIterations 		= 100;
 		epsilon 			= 0.001;
+		extraLetters		= null;
 	}
 
 	public AbstractAlphaInit getAlphaInit() {
@@ -53,4 +56,18 @@ public class MinkaParameter {
 		this.epsilon = epsilon;
 	}
 	
+
+	public ExtraLetters getExtraLetters() {
+		return this.extraLetters;
+	}
+
+	public void setExtraLetters(final ExtraLetters extraLetters) {
+		this.extraLetters = extraLetters;
+	}
+
+	public enum ExtraLetters {
+		Insertion, Deletion, INDEL
+	}
+
 }
+

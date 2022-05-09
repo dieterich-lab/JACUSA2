@@ -5,7 +5,7 @@ import java.util.List;
 import lib.data.storage.basecall.VisitedReadPositionStorage;
 import lib.data.storage.processor.GeneralRecordProcessor;
 import lib.data.storage.processor.RecordProcessor;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 
 /**
  * This class maintains a storage that enables unique processing of each position by positionProcessors.
@@ -29,7 +29,7 @@ public class UniquePositionRecordProcessors implements GeneralRecordProcessor {
 	}
 	
 	@Override
-	public void process(final Record record) {
+	public void process(final ProcessedRecord record) {
 		visitedStorage.reset(record);
 		for (final RecordProcessor positionProcessor : recordProcessors) {
 			positionProcessor.process(record);

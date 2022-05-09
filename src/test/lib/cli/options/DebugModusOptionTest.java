@@ -21,7 +21,7 @@ implements ACOptionTest<Boolean> {
 
 	@SuppressWarnings("unused")
 	private AbstractTool tool;
-	private AbstractMethod method;
+	private AbstractMethod<?> method;
 	
 	@BeforeEach
 	public void beforeEach() {

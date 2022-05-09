@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import jacusa.io.format.call.BED6callResultFormat;
+import jacusa.io.format.call.BED6BaseCallCountResultFormat;
 import jacusa.io.format.call.VCFcallFormat;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.ResultFormatOption;
@@ -68,7 +68,7 @@ implements ACOptionTest<Character> {
 	
 	static Map<Character, ResultFormat> getResultFormats(GeneralParameter parameter) {
 		return Arrays.asList(
-				new BED6callResultFormat("test", parameter),
+				new BED6BaseCallCountResultFormat("test", parameter),
 				new VCFcallFormat(parameter))
 				.stream()
 				.collect(Collectors.toMap(ResultFormat::getID, Function.identity()) );

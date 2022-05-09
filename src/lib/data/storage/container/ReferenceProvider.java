@@ -1,6 +1,6 @@
 package lib.data.storage.container;
 
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
@@ -10,7 +10,7 @@ import lib.util.coordinate.CoordinateController;
  */
 public interface ReferenceProvider {
 
-	void addrecord(final Record record);
+	void addrecord(final ProcessedRecord record);
 	Base getReferenceBase(Coordinate coordinate);
 	Base getReferenceBase(int winPos);
 	void update();

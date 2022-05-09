@@ -3,9 +3,9 @@ package lib.data.assembler;
 import java.util.Iterator;
 
 import lib.cli.parameter.ConditionParameter;
-import lib.data.DataContainer.AbstractBuilderFactory;
+import lib.data.DataContainer.AbstractDataContainerBuilderFactory;
 import lib.data.storage.container.CacheContainer;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.AbstractTool;
 import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
@@ -14,7 +14,7 @@ public class SiteDataAssembler implements DataAssembler {
 
 	private final int replicateI;
 	
-	private final AbstractBuilderFactory builderFactory;
+	private final AbstractDataContainerBuilderFactory builderFactory;
 	private final ConditionParameter conditionParameter;
 
 	private final CacheContainer cacheContainer; 
@@ -22,7 +22,7 @@ public class SiteDataAssembler implements DataAssembler {
 
 	public SiteDataAssembler(
 			final int replicateI,
-			final AbstractBuilderFactory builderFactory, 
+			final AbstractDataContainerBuilderFactory builderFactory, 
 			final ConditionParameter conditionParameter,
 			final CacheContainer cacheContainer) {
 		
@@ -38,7 +38,7 @@ public class SiteDataAssembler implements DataAssembler {
 
 	@Override
 	public void buildCache(final Coordinate activeWindowCoordinate,
-			final Iterator<Record> iterator) {
+			final Iterator<ProcessedRecord> iterator) {
 		
 		int records = 0;
 		
@@ -47,7 +47,7 @@ public class SiteDataAssembler implements DataAssembler {
 		}
 		getCacheContainer().clearSharedStorage();
 		
-		Record record = null;
+		ProcessedRecord record = null;
 		try {
 			if (iterator.hasNext()) {
 				cacheContainer.preProcess();
@@ -78,7 +78,7 @@ public class SiteDataAssembler implements DataAssembler {
 	}
 
 	@Override
-	public AbstractBuilderFactory getBuilderFactory() {
+	public AbstractDataContainerBuilderFactory getBuilderFactory() {
 		return builderFactory;
 	}
 	

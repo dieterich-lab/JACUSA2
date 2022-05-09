@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import htsjdk.samtools.util.SequenceUtil;
 import lib.util.Base;
+import lib.data.DataType;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.Fetcher;
 import lib.data.storage.Storage;
 import lib.data.storage.container.SharedStorage;
 
@@ -17,9 +17,9 @@ implements Storage {
 	
 	public ArrayBaseCallStorage(
 			final SharedStorage sharedStorage,
-			final Fetcher<BaseCallCount> bccFetcher) {
+			final DataType<BaseCallCount> dataType) {
 
-		super(sharedStorage, bccFetcher);
+		super(sharedStorage, dataType);
 		baseCalls = new int[getCoordinateController().getActiveWindowSize()][SequenceUtil.VALID_BASES_UPPER.length];
 	}
 

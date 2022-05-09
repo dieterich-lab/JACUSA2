@@ -18,10 +18,10 @@ import lib.worker.AbstractWorker.STATUS;
  */
 public class WorkerDispatcher {
 	
-	private final AbstractMethod methodFactory;
+	private final AbstractMethod<?> methodFactory;
 
-	private final List<AbstractWorker> workerContainer;
-	private final List<AbstractWorker> runningWorkers;
+	private final List<AbstractWorker<?>> workerContainer;
+	private final List<AbstractWorker<?>> runningWorkers;
 
 	private Integer comparisons;
 	private List<Integer> threadIds;
@@ -29,7 +29,7 @@ public class WorkerDispatcher {
 	private ResultWriter resultWriter;
 	private ResultWriter filteredResultWriter;
 
-	public WorkerDispatcher(final AbstractMethod methodFactory) {
+	public WorkerDispatcher(final AbstractMethod<?> methodFactory) {
 		this.methodFactory = methodFactory;
 		
 		final GeneralParameter parameter = methodFactory.getParameter();
@@ -48,7 +48,7 @@ public class WorkerDispatcher {
 		}
 	}
 
-	private synchronized AbstractWorker createWorker() {
+	private synchronized AbstractWorker<?> createWorker() {
 		return methodFactory.createWorker(workerContainer.size());
 	}
 	
@@ -63,7 +63,7 @@ public class WorkerDispatcher {
 	public int run() throws IOException {
 		while (hasNext() || ! runningWorkers.isEmpty()) {
 			for (int i = 0; i < runningWorkers.size(); ++i) {
-				final AbstractWorker runningWorker = runningWorkers.get(i);
+				final AbstractWorker<?> runningWorker = runningWorkers.get(i);
 				if (runningWorker.getStatus() == STATUS.FINISHED) {
 					comparisons += runningWorker.getComparisons();
 					synchronized (runningWorkers) {
@@ -75,7 +75,7 @@ public class WorkerDispatcher {
 			synchronized (this) {
 				// fill thread container
 				while (runningWorkers.size() < methodFactory.getParameter().getMaxThreads() && hasNext()) {
-					final AbstractWorker worker = createWorker();
+					final AbstractWorker<?> worker = createWorker();
 
 					workerContainer.add(worker);
 					runningWorkers.add(worker);

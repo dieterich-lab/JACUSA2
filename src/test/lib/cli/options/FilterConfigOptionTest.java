@@ -25,7 +25,6 @@ import lib.cli.options.AbstractACOption;
 import lib.cli.options.FilterConfigOption;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
-import lib.data.fetcher.DefaultFilteredDataFetcher;
 import test.utlis.TestUtils;
 
 /**

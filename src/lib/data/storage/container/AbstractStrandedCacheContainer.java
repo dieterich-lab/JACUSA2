@@ -7,7 +7,7 @@ import lib.util.coordinate.Coordinate;
 import lib.data.DataContainer;
 import lib.data.storage.Storage;
 import lib.data.storage.processor.GeneralRecordProcessor;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 
 /**
  * TODO
@@ -79,7 +79,7 @@ implements CacheContainer {
 	}
 	
 	@Override
-	public void process(final Record record) {
+	public void process(final ProcessedRecord record) {
 		getCacheContainer(record).process(record);
 	}
 	
@@ -105,7 +105,7 @@ implements CacheContainer {
 		}
 	}
 	
-	protected abstract CacheContainer getCacheContainer(final Record record);
+	protected abstract CacheContainer getCacheContainer(final ProcessedRecord record);
 	
 	public CacheContainer getForwardContainer() {
 		return forwardContainer;

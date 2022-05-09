@@ -6,7 +6,7 @@ import java.util.List;
 import htsjdk.samtools.AlignmentBlock;
 import jacusa.filter.homopolymer.Homopolymer.HomopolymerBuilder;
 import lib.data.storage.processor.GeneralRecordProcessor;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.Base;
 
 /**
@@ -42,7 +42,7 @@ public class HomopolymerRecordProcessor implements GeneralRecordProcessor {
 	}
 	
 	@Override
-	public void process(final Record record) {
+	public void process(final ProcessedRecord record) {
 		final byte[] readBases = record.getSAMRecord().getReadBases(); 
 		final List<AlignmentBlock> blocks = record.getSAMRecord()
 				.getAlignmentBlocks();

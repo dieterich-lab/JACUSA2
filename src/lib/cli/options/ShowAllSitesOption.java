@@ -18,8 +18,8 @@ public class ShowAllSitesOption extends AbstractACOption {
 	public Option getOption(final boolean printExtendedHelp) {
 		return Option.builder(getOpt())
 				.hasArg(false)
-		        .desc("Show all sites - including sites without variants")
-		        .build();
+				.desc("Show all sites - including sites without variants")
+				.build();
 	}
 	
 

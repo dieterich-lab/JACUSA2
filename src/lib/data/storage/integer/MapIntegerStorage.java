@@ -3,8 +3,8 @@ package lib.data.storage.integer;
 import java.util.HashMap;
 import java.util.Map;
 
+import lib.data.DataType;
 import lib.data.IntegerData;
-import lib.data.fetcher.Fetcher;
 import lib.data.storage.container.SharedStorage;
 import lib.util.position.Position;
 
@@ -12,8 +12,8 @@ public class MapIntegerStorage extends AbstractIntegerStorage {
 
 	final Map<Integer, Integer> win2count;
 
-	public MapIntegerStorage(final SharedStorage sharedStorage, final Fetcher<IntegerData> fetcher) {
-		super(sharedStorage, fetcher);
+	public MapIntegerStorage(final SharedStorage sharedStorage, final DataType<IntegerData> dataType) {
+		super(sharedStorage, dataType);
 		win2count = new HashMap<>();
 	}
 		

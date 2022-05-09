@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lib.data.DataContainer;
-import lib.data.fetcher.Fetcher;
+import lib.data.DataType;
 import lib.data.storage.AbstractStorage;
 import lib.data.storage.WindowCoverage;
 import lib.data.storage.arrest.LocationInterpreter;
@@ -22,24 +22,24 @@ implements WindowCoverage {
 
 	private final LocationInterpreter li;
 	
-	private final Fetcher<ArrestPos2BCC> ap2bccExtractor;
+	private final DataType<ArrestPosition2BaseCallCount> dataType;
 	
-	private final ArrestPos2BCC[] winPos2ap2bcc;
-	private final Map<Integer, ArrestPos2BCC> refPos2ap2bcc;
+	private final ArrestPosition2BaseCallCount[] winPos2ap2bcc;
+	private final Map<Integer, ArrestPosition2BaseCallCount> refPos2ap2bcc;
 	
 	private final int winSize;
 	
 	public LRTarrestBaseCallStorage(
 			final SharedStorage sharedStorage,
 			final LocationInterpreter li, 
-			final Fetcher<ArrestPos2BCC> arrestPos2BaseCallCountExtractor) {
+			final DataType<ArrestPosition2BaseCallCount> dataType) {
 		
 		super(sharedStorage);
-		this.li 				= li;
-		this.ap2bccExtractor 	= arrestPos2BaseCallCountExtractor;
+		this.li 		= li;
+		this.dataType 	= dataType;
 		
 		winSize 		= sharedStorage.getCoordinateController().getActiveWindowSize();
-		winPos2ap2bcc 	= new ArrestPos2BCC[winSize];
+		winPos2ap2bcc 	= new ArrestPosition2BaseCallCount[winSize];
 		refPos2ap2bcc 	= new HashMap<>(Util.noRehashCapacity(200));
 	}
 	
@@ -47,7 +47,7 @@ implements WindowCoverage {
 	public void populate(DataContainer container, int winPos, Coordinate coordinate) {
 		final int refPos = coordinate.get1Position();
 		
-		final ArrestPos2BCC ap2bcc = ap2bccExtractor.fetch(container);
+		final ArrestPosition2BaseCallCount ap2bcc = container.get(dataType);
 		if (winPos2ap2bcc[winPos] != null) {
 			ap2bcc.merge(winPos2ap2bcc[winPos]);
 		}
@@ -59,10 +59,10 @@ implements WindowCoverage {
 	@Override
 	public void increment(Position pos) {
 		final Position arrestPos = li.getArrestPosition(
-				pos.getRecord(), 
+				pos.getProcessedRecord(), 
 				getCoordinateController().getCoordinateTranslator());
 
-		final ArrestPos2BCC ap2bcc = get(
+		final ArrestPosition2BaseCallCount ap2bcc = get(
 				pos.getReferencePosition(), pos.getWindowPosition());
 		if (arrestPos == null) {
 			ap2bcc.addBaseCall(pos.getReadBaseCall());
@@ -71,16 +71,16 @@ implements WindowCoverage {
 		}
 	}
 
-	private ArrestPos2BCC get(final int refPos, final int winPos) {
-		ArrestPos2BCC ap2bcc = null;
+	private ArrestPosition2BaseCallCount get(final int refPos, final int winPos) {
+		ArrestPosition2BaseCallCount ap2bcc = null;
 		if (winPos >= 0) {
 			if (winPos2ap2bcc[winPos] == null) {
-				winPos2ap2bcc[winPos] = new ArrestPos2BCC(refPos);
+				winPos2ap2bcc[winPos] = new ArrestPosition2BaseCallCount(refPos);
 			}
 			ap2bcc = winPos2ap2bcc[winPos];
 		} else {
 			if (! refPos2ap2bcc.containsKey(refPos)) {
-				refPos2ap2bcc.put(refPos, new ArrestPos2BCC(refPos));
+				refPos2ap2bcc.put(refPos, new ArrestPosition2BaseCallCount(refPos));
 			}
 			ap2bcc = refPos2ap2bcc.get(refPos);
 		}
@@ -94,7 +94,7 @@ implements WindowCoverage {
 	
 	@Override
 	public void clear() {
-		for (final ArrestPos2BCC ap2bcc : winPos2ap2bcc) {
+		for (final ArrestPosition2BaseCallCount ap2bcc : winPos2ap2bcc) {
 			if (ap2bcc != null) { 
 				ap2bcc.clear();
 			}

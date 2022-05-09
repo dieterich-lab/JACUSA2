@@ -20,7 +20,7 @@ public class FilterContainer {
 	// reference to the filterConfig that created this FilterContainer
 	private final FilterConfig filterConfig;
 
-	// map of filters - contains both: AbstractFilter and AbstractDataFilter 
+	// map of filters - contains both: AbstractFilter and AbstractDataFilter
 	private final Map<Character, Filter> id2filter;
 
 	// max overhang over all filters
@@ -29,14 +29,13 @@ public class FilterContainer {
 	private int overhang;
 
 	public FilterContainer(final FilterConfig filterConfig) {
-		this.filterConfig 	= filterConfig;
-		overhang 			= 0;
-		id2filter			= new HashMap<>(
-				Util.noRehashCapacity(filterConfig.getFilterFactories().size()));
+		this.filterConfig = filterConfig;
+		overhang = 0;
+		id2filter = new HashMap<>(Util.noRehashCapacity(filterConfig.getFilterFactories().size()));
 	}
 
 	/**
-	 * Returns the maximum of all used filters. 
+	 * Returns the maximum of all used filters.
 	 * 
 	 * @return maximum overhang over all filters
 	 */
@@ -54,7 +53,8 @@ public class FilterContainer {
 	}
 
 	/**
-	 * Adds a filter. AbstractDataFilter should be added by <code>addDataFilter()</code>. 
+	 * Adds a filter. AbstractDataFilter should be added by
+	 * <code>addDataFilter()</code>.
 	 * 
 	 * @param filter the filter to be added
 	 */
@@ -70,17 +70,17 @@ public class FilterContainer {
 	public List<Filter> getFilters() {
 		return Collections.unmodifiableList(new ArrayList<>(id2filter.values()));
 	}
-	
+
 	/**
 	 * Creates Cache for all selected filters.
-	 * @param conditionParameter	conditionParameter for one condition
-	 * @param sharedStorage			cache that is shared between conditions for ONE thread
+	 * 
+	 * @param conditionParameter conditionParameter for one condition
+	 * @param sharedStorage      cache that is shared between conditions for ONE
+	 *                           thread
 	 * @return
 	 */
-	public Cache createFilterCache(
-			final ConditionParameter conditionParameter, 
-			final SharedStorage sharedStorage) {
-		
+	public Cache createFilterCache(final ConditionParameter conditionParameter, final SharedStorage sharedStorage) {
+
 		final Cache filterCache = new Cache();
 		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {
 			final Cache tmpCache = filterFactory.createFilterCache(conditionParameter, sharedStorage);
@@ -92,5 +92,5 @@ public class FilterContainer {
 		}
 		return filterCache;
 	}
-	
+
 }

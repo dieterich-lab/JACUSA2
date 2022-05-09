@@ -7,9 +7,9 @@ import java.util.SortedSet;
 import lib.cli.options.filter.has.BaseSub;
 import lib.cli.options.filter.has.HasReadTag;
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.ParallelData;
-import lib.data.count.BaseSub2BCC;
-import lib.data.fetcher.Fetcher;
+import lib.data.count.BaseSub2BaseCallCount;
 import lib.io.InputOutput;
 import lib.util.Info;
 
@@ -25,7 +25,7 @@ public class BaseSubResult implements Result {
 
 	public BaseSubResult(
 			final SortedSet<BaseSub> baseSubs,
-			final Fetcher<BaseSub2BCC> fetcher,
+			final DataType<BaseSub2BaseCallCount> dataType,
 			final Result result) {
 		
 		if (result.getValuesIndex().size() > 1 || result.getValuesIndex().isEmpty()) {
@@ -33,15 +33,16 @@ public class BaseSubResult implements Result {
 		}
 		
 		// get all observed base substitutions
-		final DataContainer container 				= result.getParellelData().getCombPooledData();
-		final BaseSub2BCC bsc 	= fetcher.fetch(container);
+		final DataContainer container = result.getParellelData().getCombPooledData();
+		final BaseSub2BaseCallCount bsc = container.get(dataType);
 
 		// store valueIndex 2 base substitution
 		final Map<Integer, BaseSub> value2bs 	= new HashMap<>();
 
 		multiResult = new MultiStatResult(result);
 		for (final BaseSub baseSub : baseSubs) {
-			if (bsc.get(baseSub).getCoverage() > 0) {
+			// TODO
+			if (bsc.getMap().get(baseSub).getCoverage() > 0) {
 				final int newValueIndex = multiResult.addStat(Double.NaN);
 				value2bs.put(newValueIndex, baseSub);
 			}

@@ -11,7 +11,7 @@ import lib.cli.parameter.ConditionParameter;
 /**
  * TODO
  */
-public class RecordIterator implements Iterator<Record> {
+public class RecordIterator implements Iterator<ProcessedRecord> {
 
 	private final ConditionParameter conditionParameter;
 
@@ -22,7 +22,7 @@ public class RecordIterator implements Iterator<Record> {
 	
 	private int bufferSize;
 	private int bufferPosition;
-	private final Record[] buffer;
+	private final ProcessedRecord[] buffer;
 	
 	private SAMRecordIterator iterator; 
 	
@@ -39,7 +39,7 @@ public class RecordIterator implements Iterator<Record> {
 		
 		bufferSize		= 0;
 		bufferPosition	= 0;
-		buffer			= new Record[40000];
+		buffer			= new ProcessedRecord[40000];
 		
 		this.iterator   = iterator;
 	}
@@ -74,7 +74,7 @@ public class RecordIterator implements Iterator<Record> {
 	}
 	
 	@Override
-	public Record next() {
+	public ProcessedRecord next() {
 		if (hasNext()) {
 			return buffer[bufferPosition++];
 		}
@@ -82,7 +82,7 @@ public class RecordIterator implements Iterator<Record> {
 		return null;
 	}
 	
-	public Record getNext() {
+	public ProcessedRecord getNext() {
 		if (hasNext()) {
 			return buffer[bufferPosition];
 		}
@@ -110,7 +110,7 @@ public class RecordIterator implements Iterator<Record> {
 			}
 			
 			if (isValid) {
-				final Record record = new Record(samRecord, mateReader);
+				final ProcessedRecord record = new ProcessedRecord(samRecord, mateReader);
 				buffer[bufferSize++] = record;
 			}
 		}

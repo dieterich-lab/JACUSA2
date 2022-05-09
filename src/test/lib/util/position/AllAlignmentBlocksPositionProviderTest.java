@@ -11,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.coordinate.DefaultCoordinateTranslator;
 import lib.util.position.AllAlignmentBlocksPosProvider;
@@ -26,7 +26,7 @@ class AllAlignmentBlocksPositionProviderTest implements PositionProviderTest {
 	@ParameterizedTest(name = "{3}")
 	@MethodSource("testIterator")
 	void testIterator(
-			Record record,
+			ProcessedRecord record,
 			CoordinateTranslator translator,
 			List<Position> expected,
 			String info) {
@@ -77,7 +77,7 @@ class AllAlignmentBlocksPositionProviderTest implements PositionProviderTest {
 	}
 	
 	AllAlignmentBlocksPosProvider createTestInstance(
-			final Record record, 
+			final ProcessedRecord record, 
 			final CoordinateTranslator translator) {
 		
 		return new AllAlignmentBlocksPosProvider(record, translator);
@@ -88,7 +88,7 @@ class AllAlignmentBlocksPositionProviderTest implements PositionProviderTest {
 			final int refPosWinStart, final int winLength,
 			String[] expectedStrs) {
 		
-		final Record record = new Record(
+		final ProcessedRecord record = new ProcessedRecord(
 				SAMRecordBuilder.createSERead(CONTIG, refStart, cigarStr, readSeq));
 		
 		final CoordinateTranslator translator = 

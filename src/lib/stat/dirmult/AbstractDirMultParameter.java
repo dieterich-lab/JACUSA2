@@ -6,19 +6,22 @@ import lib.estimate.MinkaParameter;
  * TODO
  */
 public abstract class AbstractDirMultParameter implements DirMultParameter {
-	
+
 	private boolean showAlpha;
 	private boolean calcPValue;
 	private MinkaParameter minkaParameter;
-	
+	private double estimatedError;
+
 	public AbstractDirMultParameter(
 			final boolean showAlpha,
 			final boolean calcPValue,
-			final MinkaParameter minkaParameter) {
+			final MinkaParameter minkaParameter,
+			final double estimatedError) {
 
 		this.showAlpha 		= showAlpha;
 		this.calcPValue		= calcPValue;
 		this.minkaParameter	= minkaParameter;
+		this.estimatedError = estimatedError;
 	}
 
 	@Override
@@ -50,5 +53,12 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	public void setMinkaParameter(final MinkaParameter minkaParameter) {
 		this.minkaParameter = minkaParameter;
 	}
-	
+
+	public double getEstimatedError() {
+		return estimatedError;
+	}
+
+	public void setEstimatedError(final double estimatedError) {
+		this.estimatedError = estimatedError;
+	}
 }

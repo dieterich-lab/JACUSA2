@@ -4,7 +4,9 @@ import java.util.SortedSet;
 
 import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.IntegerData;
+import lib.data.count.BaseSub2Integer;
 import lib.estimate.MinkaParameter;
 import lib.io.InputOutput;
 import lib.stat.estimation.provider.InsertionEstCountProvider;
@@ -14,42 +16,40 @@ import lib.stat.estimation.provider.InsertionEstCountProvider;
  */
 public class InsertionCountResult extends INDELCountResult {
 
-	public static final String SCORE 	= "insertion_score";
+	public static final String SCORE = "insertion_score";
 	public static final String PVALUE = "insertion_pvalue";
-	
+
 	private static final long serialVersionUID = 1L;
-	
-	public InsertionCountResult(
-			final SortedSet<BaseSub> baseSubs, final Result result,
-			final MinkaParameter minkaParameter,
-			final InsertionEstCountProvider countSampleProvider) {
-		
-		super(baseSubs, result, minkaParameter,countSampleProvider);
+
+	public InsertionCountResult(final SortedSet<BaseSub> baseSubs, final Result result,
+			final MinkaParameter minkaParameter, final InsertionEstCountProvider countSampleProvider) {
+
+		super(baseSubs, result, minkaParameter, countSampleProvider);
 	}
-	
+
 	@Override
 	void addPValue(Result result, int valueIndex, String value) {
 		result.getResultInfo(valueIndex).add(PVALUE, value);
 	}
-	
+
 	@Override
 	void addScore(Result result, int valueIndex, String value) {
 		result.getResultInfo(valueIndex).add(SCORE, value);
 	}
-	
+
 	@Override
 	IntegerData getCount(DataContainer container) {
-		return container.getInsertionCount();
+		return container.get(DataType.get("insertions", IntegerData.class));
 	}
-	
+
 	@Override
 	String getField() {
 		return InputOutput.INSERTION_FIELD;
 	}
-	
+
 	@Override
 	IntegerData getStratifiedCount(DataContainer container, BaseSub baseSub) {
-		return container.getBaseSub2InsertionCount().get(baseSub);
+		return container.get(DataType.get("insertions", BaseSub2Integer.class)).getMap().get(baseSub);
 	}
-	
+
 }

@@ -17,5 +17,7 @@ public interface DirMultParameter {
 
 	MinkaParameter getMinkaEstimateParameter();
 	void setMinkaParameter(MinkaParameter estimateAlpha);
-	
+
+	double getEstimatedError();
+	void setEstimatedError(double estimatedError);
 }

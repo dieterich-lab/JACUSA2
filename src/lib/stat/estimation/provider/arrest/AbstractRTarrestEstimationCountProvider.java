@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.ParallelData;
+import lib.data.count.basecall.BaseCallCount;
 import lib.stat.estimation.DefaultEstimationContainer;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.EstimationContainerProvider;
@@ -34,9 +36,16 @@ public abstract class AbstractRTarrestEstimationCountProvider implements Estimat
 	private final int maxIterations;
 	private final double pseudoCount;
 
-	public AbstractRTarrestEstimationCountProvider(final int maxIterations, final double pseudoCount) {
+	private final DataType<BaseCallCount> arrestDataType;
+	private final DataType<BaseCallCount> throughDataType;
+	
+	public AbstractRTarrestEstimationCountProvider(final int maxIterations, final double pseudoCount,
+			final DataType<BaseCallCount> arrestDataType, final DataType<BaseCallCount> throughDataType) {
 		this.maxIterations 	= maxIterations;
 		this.pseudoCount 	= 1d;
+		
+		this.arrestDataType 	= arrestDataType;
+		this.throughDataType 	= throughDataType;
 	}
 
 	protected abstract List<List<Count>> process(ParallelData parallelData);
@@ -89,8 +98,8 @@ public abstract class AbstractRTarrestEstimationCountProvider implements Estimat
 			final List<Count> tmpDataContainers = new ArrayList<>(parallelData.getData(condI).size());
 			for (final DataContainer container : parallelData.getData(condI)) {
 				Count count = new Count(
-						container.getArrestBaseCallCount().getCoverage(),
-						container.getThroughBaseCallCount().getCoverage());
+						container.get(arrestDataType).getCoverage(),
+						container.get(throughDataType).getCoverage());
 				tmpDataContainers.add(count);
 			}
 			originalCounts.add(tmpDataContainers);
@@ -121,8 +130,8 @@ public abstract class AbstractRTarrestEstimationCountProvider implements Estimat
 		}
 
 		public Count(DataContainer container) {
-			this.arrest = container.getArrestBaseCallCount().getCoverage();
-			this.through = container.getThroughBaseCallCount().getCoverage();
+			this.arrest = container.get(arrestDataType).getCoverage();
+			this.through = container.get(throughDataType).getCoverage();
 		}
 
 		public Count copy() {

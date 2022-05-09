@@ -6,7 +6,7 @@ import lib.stat.dirmult.AbstractDirMultParameter;
 public class LRTarrestBetaBinParameter extends AbstractDirMultParameter {
 
 	public LRTarrestBetaBinParameter() {
-		super(false, true, new MinkaParameter());
+		super(false, true, new MinkaParameter(), AbstractDirMultParameter.ESTIMATED_ERROR);
 	}
 	
 }

@@ -51,7 +51,7 @@ public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Seriali
 	String toString();
 
 	static String toString(BaseCallCount bcc) {
-		return new ArrayBCC.Parser(InputOutput.SEP4, InputOutput.EMPTY_FIELD)
+		return new ArrayBaseCallCount.Parser(InputOutput.SEP4, InputOutput.EMPTY_FIELD)
 				.wrap(bcc);
 	}
 	

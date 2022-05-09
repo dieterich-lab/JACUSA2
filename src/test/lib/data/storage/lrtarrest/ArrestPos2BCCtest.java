@@ -16,19 +16,19 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import htsjdk.samtools.util.StringUtil;
-import lib.data.count.basecall.ArrayBCC;
+import lib.data.count.basecall.ArrayBaseCallCount;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.storage.lrtarrest.ArrestPos2BCC;
+import lib.data.storage.lrtarrest.ArrestPosition2BaseCallCount;
 import lib.util.Base;
 import test.lib.data.count.basecall.ArrayBaseCallCountTest.ToArrayBaseCallCountArgumentConverter;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class ArrestPos2BCCtest {
 
-	private final ArrestPos2BCC.Parser parser;
+	private final ArrestPosition2BaseCallCount.Parser parser;
 	
 	public ArrestPos2BCCtest() {
-		parser = new ArrestPos2BCC.Parser();
+		parser = new ArrestPosition2BaseCallCount.Parser();
 	}
 
 	/*
@@ -37,15 +37,15 @@ class ArrestPos2BCCtest {
 	
 	@ParameterizedTest(name = "Wrap Object and expect String {1}")
 	@MethodSource("testParserWrap")
-	void testParserWrap(ArrestPos2BCC o, String expected) {
+	void testParserWrap(ArrestPosition2BaseCallCount o, String expected) {
 		final String actual = parser.wrap(o);
 		assertEquals(expected, actual);
 	}
 
 	@ParameterizedTest(name = "Parse String {0} and create Object")
 	@MethodSource("testParserParse")
-	void testParserParse(String s, ArrestPos2BCC expected) {
-		final ArrestPos2BCC actual = parser.parse(s);
+	void testParserParse(String s, ArrestPosition2BaseCallCount expected) {
+		final ArrestPosition2BaseCallCount actual = parser.parse(s);
 		assertEquals(expected, actual);
 	}
 
@@ -57,8 +57,8 @@ class ArrestPos2BCCtest {
 	void testAddBase(
 			int arrestPos, 
 			Base base,
-			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC o,
-			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC expected) {
+			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPosition2BaseCallCount o,
+			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPosition2BaseCallCount expected) {
 		
 		o.addBaseCall(arrestPos, base);
 		assertEquals(expected, o);
@@ -73,7 +73,7 @@ class ArrestPos2BCCtest {
 			} )
 	void testContains(
 			int arrestPos, 
-			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC o, 
+			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPosition2BaseCallCount o, 
 			boolean expected) {
 
 		final boolean actual = o.contains(arrestPos);
@@ -86,8 +86,8 @@ class ArrestPos2BCCtest {
 			"2	1:1;0;0;0,2:0;2;0;0,3:0;0;3;0,4:0;0;0;4	0;2;0;0" } )	
 	void testGetArrestBaseCallCount(
 		int arrestPos,
-		@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC o,
-		@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBCC expected) {
+		@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPosition2BaseCallCount o,
+		@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBaseCallCount expected) {
 
 	final BaseCallCount actual = o.getArrestBCC(arrestPos); 
 	assertEquals(expected, actual);
@@ -101,8 +101,8 @@ class ArrestPos2BCCtest {
 			"4	1:1;0;0;0,2:0;2;0;0,3:0;0;3;0,4:0;0;0;4	1;2;3;0" } )	
 	void testGetThroughBaseCallCount(
 			int pos,
-			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC o,
-			@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBCC expected) {
+			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPosition2BaseCallCount o,
+			@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBaseCallCount expected) {
 		final BaseCallCount actual = o.getThroughBCC(pos); 
 		assertEquals(expected, actual);
 	}
@@ -112,8 +112,8 @@ class ArrestPos2BCCtest {
 			"*	*",
 			"1:1;0;0;0,2:0;2;0;0,3:0;0;3;0,4:0;0;0;4	1;2;3;4" } )
 	void testGetTotalBaseCallCount(
-			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC o,
-			@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBCC expected) {
+			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPosition2BaseCallCount o,
+			@ConvertWith(ToArrayBaseCallCountArgumentConverter.class) ArrayBaseCallCount expected) {
 
 		final BaseCallCount actual = o.getTotalBCC(); 
 		assertEquals(expected, actual);
@@ -125,9 +125,9 @@ class ArrestPos2BCCtest {
 			"1:0;0;0;1	1:0;0;0;1	1:0;0;0;2",
 			"1:0;0;0;1	1:1;0;0;0	1:1;0;0;1" } )
 	void testMerge(
-			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC o1,
-			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC o2,
-			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC expected) {
+			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPosition2BaseCallCount o1,
+			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPosition2BaseCallCount o2,
+			@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPosition2BaseCallCount expected) {
 
 		o1.merge(o2);
 		assertEquals(expected, o1);
@@ -137,7 +137,7 @@ class ArrestPos2BCCtest {
 	@CsvSource( delimiter = '\t', value = { 
 		"1:0;0;0;1",
 		"1:0;0;0;1,2:1;0;0;1" } )
-	void testReset(@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPos2BCC o) {
+	void testReset(@ConvertWith(ToPosition2BaseCallCountArgumentConverter.class) ArrestPosition2BaseCallCount o) {
 		o.clear();
 		assertEquals(0, o.getPositions().size());
 	}
@@ -151,14 +151,14 @@ class ArrestPos2BCCtest {
 		return Stream.of(
 				Arguments.of(
 						"*",
-						new ArrestPos2BCC(-1)),
+						new ArrestPosition2BaseCallCount(-1)),
 				Arguments.of(
 						StringUtil.join(Character.toString(','),
 								"9:1;0;0;0",
 								"10:0;1;0;0",
 								"50:0;0;1;0",
 								"101:0;0;0;1"),
-						new ArrestPos2BCC(-1)
+						new ArrestPosition2BaseCallCount(-1)
 							.addBaseCall(9, Base.A)
 							.addBaseCall(10, Base.C)
 							.addBaseCall(50, Base.G)
@@ -169,10 +169,10 @@ class ArrestPos2BCCtest {
 		//ArrestPos2BaseCallCount o, String expected
 		return Stream.of(
 				Arguments.of(
-						new ArrestPos2BCC(-1)
+						new ArrestPosition2BaseCallCount(-1)
 						, "*"),
 				Arguments.of(						
-						new ArrestPos2BCC(-1)
+						new ArrestPosition2BaseCallCount(-1)
 							.addBaseCall(9, Base.A)
 							.addBaseCall(10, Base.C)
 							.addBaseCall(50, Base.G)
@@ -192,9 +192,9 @@ class ArrestPos2BCCtest {
 
 		@Override
 		protected Object convert(Object src, Class<?> target) throws ArgumentConversionException {
-			assertEquals(ArrestPos2BCC.class, target, "Can only convert to ArrayPos2BaseCallCount");
+			assertEquals(ArrestPosition2BaseCallCount.class, target, "Can only convert to ArrayPos2BaseCallCount");
 			final String s = String.valueOf(src);
-			return new ArrestPos2BCC.Parser().parse(s);
+			return new ArrestPosition2BaseCallCount.Parser().parse(s);
 		}
 
 	}

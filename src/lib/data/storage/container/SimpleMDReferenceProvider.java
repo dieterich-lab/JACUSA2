@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lib.cli.parameter.ConditionParameter;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AllAlignmentBlocksPosProvider;
@@ -58,7 +58,7 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 	}
 
 	@Override
-	public void addrecord(final Record record) {
+	public void addrecord(final ProcessedRecord record) {
 		final AllAlignmentBlocksPosProvider positionProvider = 
 				new AllAlignmentBlocksPosProvider(record, getTranslator());
 		
@@ -120,7 +120,7 @@ public class SimpleMDReferenceProvider implements ReferenceProvider {
 		final SAMRecordIterator it = samReader.query(contig, start, end, false);
 		while (it.hasNext()) {
 			final SAMRecord samRecord = it.next();
-			final Record record = new Record(samRecord);
+			final ProcessedRecord record = new ProcessedRecord(samRecord);
 			final AllAlignmentBlocksPosProvider positionProvider = 
 					new AllAlignmentBlocksPosProvider(record, getTranslator());
 			

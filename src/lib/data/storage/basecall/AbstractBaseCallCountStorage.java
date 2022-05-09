@@ -3,8 +3,8 @@ package lib.data.storage.basecall;
 import java.util.Arrays;
 
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.Fetcher;
 import lib.data.storage.AbstractStorage;
 import lib.data.storage.WindowCoverage;
 import lib.data.storage.container.SharedStorage;
@@ -16,37 +16,33 @@ import lib.util.position.Position;
 /**
  * TODO
  */
-public abstract class AbstractBaseCallCountStorage
-extends AbstractStorage 
-implements WindowCoverage {
+public abstract class AbstractBaseCallCountStorage extends AbstractStorage implements WindowCoverage {
 
 	private final int[] coverage;
-	
-	private final Fetcher<BaseCallCount> bccFetcher;
-	
-	public AbstractBaseCallCountStorage(
-			final SharedStorage sharedStorage,
-			final Fetcher<BaseCallCount> bccFetcher) {
-		
+
+	private final DataType<BaseCallCount> dataType;
+
+	public AbstractBaseCallCountStorage(final SharedStorage sharedStorage, final DataType<BaseCallCount> dataType) {
 		super(sharedStorage);
-		this.bccFetcher = bccFetcher;
-		coverage 		= new int[sharedStorage.getCoordinateController().getActiveWindowSize()]; 
+		
+		this.dataType = dataType;
+		coverage = new int[sharedStorage.getCoordinateController().getActiveWindowSize()];
 	}
 
 	@Override
 	public void populate(DataContainer container, int winPos, Coordinate coordinate) {
-		if (bccFetcher == null) {
+		if (dataType == null) {
 			return;
 		}
 		
-		final BaseCallCount dest = bccFetcher.fetch(container);
+		final BaseCallCount dest = container.get(dataType);
 		add(winPos, dest);
 		if (coordinate.getStrand() == STRAND.REVERSE && dest.getCoverage() > 0) {
 			dest.invert();
 		}
 	}
-	
-	void add(final int winPos, final BaseCallCount dest) {
+
+	private void add(final int winPos, final BaseCallCount dest) {
 		for (final Base base : Base.validValues()) {
 			final int count = getCount(winPos, base);
 			if (count > 0) {
@@ -57,15 +53,15 @@ implements WindowCoverage {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (! (obj instanceof AbstractBaseCallCountStorage)) {
+		if (!(obj instanceof AbstractBaseCallCountStorage)) {
 			return false;
 		}
 		if (obj == this) {
 			return true;
 		}
 		
-		AbstractBaseCallCountStorage bccStore = (AbstractBaseCallCountStorage)obj;
-		if (! getCoordinateController().getActive().equals(bccStore.getCoordinateController().getActive())) {
+		AbstractBaseCallCountStorage bccStore = (AbstractBaseCallCountStorage) obj;
+		if (!getCoordinateController().getActive().equals(bccStore.getCoordinateController().getActive())) {
 			return false;
 		}
 		for (int winPos = 0; winPos < getCoordinateController().getActiveWindowSize(); ++winPos) {
@@ -77,7 +73,7 @@ implements WindowCoverage {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return getCoordinateController().getActive().hashCode();
@@ -89,27 +85,26 @@ implements WindowCoverage {
 		++coverage[winPos];
 		increment(winPos, position.getReadBaseCall());
 	}
-	
+
 	abstract void increment(int winPos, Base base);
-	
+
 	public abstract int getCount(final int winPos, final Base base);
 
 	@Override
 	public int getCoverage(int winPos) {
 		return coverage[winPos];
 	}
-	
+
 	@Override
 	public final void clear() {
 		clearSpecific();
 		Arrays.fill(coverage, 0);
 	}
-	
+
 	protected abstract void clearSpecific();
-	
+
 	protected void clearCoverage(int winPos) {
 		coverage[winPos] = 0;
 	}
-		
-	
+
 }

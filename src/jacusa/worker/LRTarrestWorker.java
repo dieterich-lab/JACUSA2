@@ -1,5 +1,6 @@
 package jacusa.worker;
 
+import jacusa.method.lrtarrest.LRTarrestDataContainerBuilderFactory;
 import jacusa.method.lrtarrest.LRTarrestMethod;
 import lib.data.DataContainer;
 import lib.data.ParallelData;
@@ -20,48 +21,47 @@ import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 import lib.worker.AbstractWorker;
 
-public class LRTarrestWorker
-extends AbstractWorker {
+public class LRTarrestWorker extends AbstractWorker<LRTarrestDataContainerBuilderFactory> {
 
 	public static final String INFO_VARIANT_SCORE = "call_score";
-	
+
 	private ParallelDataValidator validator;
-	
+
 	private final AbstractStat stat;
 	private final EstimationContainerProvider estContainerProv;
 	private final EstimateDirMult dirMult;
-	
+
 	public LRTarrestWorker(final LRTarrestMethod method, final int threadId) {
 		super(method, threadId);
-		stat = method.getParameter().getStatParameter()
-				.newInstance(method.getParameter().getConditionsSize());
-		
-		validator = new ExtendedVariantSiteValidator(method.getTotalBaseCallCountFetcher());
+		stat = method.getParameter().getStatParameter().newInstance(method.getParameter().getConditionsSize());
+
+		validator = new ExtendedVariantSiteValidator(
+				method.getDataAssemblerFactory().getDataContainerBuilderFactory().bccDt);
 		final MinkaParameter minkaParameter = new MinkaParameter();
-		estContainerProv = new RobustEstimationPileupProvider(
-				false, minkaParameter.getMaxIterations(), DirMultParameter.ESTIMATED_ERROR);
-		dirMult	= new EstimateDirMult(minkaParameter);
+		estContainerProv = new RobustEstimationPileupProvider(false, minkaParameter.getMaxIterations(),
+				DirMultParameter.ESTIMATED_ERROR);
+		dirMult = new EstimateDirMult(minkaParameter);
 	}
 
 	@Override
 	protected ParallelData createParallelData(Builder parallelDataBuilder, Coordinate coord) {
-		for (int condI = 0; condI < getConditionContainer().getConditionSize() ; ++condI) {
+		for (int condI = 0; condI < getConditionContainer().getConditionSize(); ++condI) {
 			final ReplicateContainer replicateContainer = getConditionContainer().getReplicatContainer(condI);
-			for (int replicateI = 0; replicateI < replicateContainer.getReplicateSize() ; ++replicateI) {
+			for (int replicateI = 0; replicateI < replicateContainer.getReplicateSize(); ++replicateI) {
 				final DataContainer replicate = getConditionContainer().getNullDataContainer(condI, replicateI, coord);
 				if (replicate == null) {
 					return null;
 				}
 				parallelDataBuilder.withReplicate(condI, replicateI, replicate);
-			}	
+			}
 		}
 		return parallelDataBuilder.build();
 	}
-	
+
 	@Override
 	protected Result process(final ParallelData parallelData) {
 		final Result result = stat.filter(parallelData);
-		
+
 		if (validator.isValid(parallelData)) {
 			// store variant call result in info field
 			final Info resultInfo = result.getResultInfo();
@@ -69,8 +69,7 @@ extends AbstractWorker {
 			final double score = dirMult.getScore(estContainers);
 			resultInfo.add(INFO_VARIANT_SCORE, Util.format(score));
 		}
-		
 		return result;
 	}
-	
+
 }

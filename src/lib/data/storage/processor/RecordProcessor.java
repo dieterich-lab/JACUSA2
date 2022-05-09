@@ -1,12 +1,12 @@
 package lib.data.storage.processor;
 
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 
 /**
  * TODO
  */
 public interface RecordProcessor {
-
-	void process(Record record);
+	
+	void process(ProcessedRecord record);
 	
 }

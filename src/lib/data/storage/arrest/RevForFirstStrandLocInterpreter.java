@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import htsjdk.samtools.SAMRecord;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AlgnBlockPosProviderBuilder;
 import lib.util.position.AllAlignmentBlocksPosProvider;
@@ -16,7 +16,7 @@ import lib.util.position.UnmodifiablePosition;
 public class RevForFirstStrandLocInterpreter implements LocationInterpreter {
 
 	@Override
-	public boolean hasArrestPosition(Record record) {
+	public boolean hasArrestPosition(ProcessedRecord record) {
 		final SAMRecord samRecord = record.getSAMRecord();
 		if (samRecord.getReadPairedFlag()) {
 			if (! samRecord.getProperPairFlag()) {
@@ -28,21 +28,21 @@ public class RevForFirstStrandLocInterpreter implements LocationInterpreter {
 	}
 	
 	@Override
-	public Position getArrestPosition(Record record, CoordinateTranslator translator) {
+	public Position getArrestPosition(ProcessedRecord record, CoordinateTranslator translator) {
 		if (! record.getSAMRecord().getReadPairedFlag()) {
 			return getArrestPositionSE(record, translator);
 		}
 		return getArrestPositionPE(record, translator);
 	}
 	
-	private Position getArrestPositionSE(Record record, CoordinateTranslator translator) {
+	private Position getArrestPositionSE(ProcessedRecord record, CoordinateTranslator translator) {
 		if (record.getSAMRecord().getReadNegativeStrandFlag()) {
 			return getFirstAlignmentPosition(record, translator);
 		}
 		return getLastAlignmentPosition(record, translator);
 	}
 	
-	private Position getArrestPositionPEhelper(Record record, CoordinateTranslator translator) {
+	private Position getArrestPositionPEhelper(ProcessedRecord record, CoordinateTranslator translator) {
 		final SAMRecord samRecord = record.getSAMRecord();
 		int refPos = -1;
 		if (samRecord.getReadNegativeStrandFlag()) {
@@ -54,7 +54,7 @@ public class RevForFirstStrandLocInterpreter implements LocationInterpreter {
 		return new UnmodifiablePosition(refPos, -1, winPos, null);
 	}
 	
-	private Position getArrestPositionPE(Record record, CoordinateTranslator translator) {
+	private Position getArrestPositionPE(ProcessedRecord record, CoordinateTranslator translator) {
 		final SAMRecord samRecord = record.getSAMRecord();
 
 		if (! samRecord.getProperPairFlag()) {
@@ -73,7 +73,7 @@ public class RevForFirstStrandLocInterpreter implements LocationInterpreter {
 
 	@Override
 	public PositionProvider getThroughPositionProvider(
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator) {
 
 		final SAMRecord samRecord = record.getSAMRecord();
@@ -86,7 +86,7 @@ public class RevForFirstStrandLocInterpreter implements LocationInterpreter {
 	}
 		
 	public PositionProvider getThroughPositionProviderSE(
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator) {
 		
 		final int size = record.getSAMRecord().getAlignmentBlocks().size();
@@ -108,7 +108,7 @@ public class RevForFirstStrandLocInterpreter implements LocationInterpreter {
 	}
 		
 	public PositionProvider getThroughPositionProviderPE(
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator) {
 		
 		// per default not properly paired reads have no arrest site

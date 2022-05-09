@@ -1,6 +1,6 @@
 package lib.util.position;
 
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 
 /**
  * Wrapper for an instance of Position that modification of positional data.
@@ -9,7 +9,7 @@ public class UnmodifiablePosition extends AbstractPosition {
 	
 	public UnmodifiablePosition(
 			final int refPos, final int readPos, final int winPos,
-			final Record record) {
+			final ProcessedRecord record) {
 		super(refPos, readPos, winPos, record);
 	}
 	
@@ -18,7 +18,7 @@ public class UnmodifiablePosition extends AbstractPosition {
 				pos.getReferencePosition(),
 				pos.getReadPosition(),
 				pos.getWindowPosition(),
-				pos.getRecord());
+				pos.getProcessedRecord());
 	}
 	
 	@Override

@@ -8,62 +8,52 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Option.Builder;
 
 import htsjdk.samtools.util.StringUtil;
+import jacusa.filter.factory.basecall.AbstractBaseCallCountFilterFactory;
 import jacusa.filter.factory.basecall.CombinedFilterFactory;
 import jacusa.filter.factory.basecall.INDELfilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
-import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
+import lib.data.DataType;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.FilteredDataFetcher;
-import lib.data.fetcher.basecall.Apply2readsBaseCallCountSwitch;
-import lib.data.filter.BaseCallCountFilteredData;
+import lib.data.filter.FilteredBaseCallCount;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.processor.RecordProcessor;
 
 /**
- * This FilterFactory configures and helps to create the combined filter which aggregates the counts 
- * of other more basic filters for rt-arrest method.
+ * This FilterFactory configures and helps to create the combined filter which
+ * aggregates the counts of other more basic filters for rt-arrest method.
  */
-public class RTarrestCombinedFilterFactory 
-extends AbstractRTarrestBaseCallcountFilterFactory {
+public class RTarrestCombinedFilterFactory extends AbstractBaseCallCountFilterFactory {
 
-	public RTarrestCombinedFilterFactory(
-			final Apply2readsBaseCallCountSwitch bccSwitch, 
-			final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredDataFetcher) {
+	public RTarrestCombinedFilterFactory(final DataType<BaseCallCount> observedDataType,
+			final DataType<FilteredBaseCallCount> filteredDataType) {
 
-		super(
-				getOptionBuilder().build(),
-				bccSwitch, filteredDataFetcher);
-
-		getApply2Reads().add(RT_READS.ARREST);
-		getApply2Reads().add(RT_READS.THROUGH);
+		super(getOptionBuilder().build(), observedDataType, filteredDataType);
 	}
 
 	@Override
-	protected List<RecordProcessor> createRecordProcessors(
-			SharedStorage sharedStorage, PositionProcessor positionProcessor) {
-		
+	protected List<RecordProcessor> createRecordProcessors(SharedStorage sharedStorage,
+			PositionProcessor positionProcessor) {
+
 		return createRecordProcessors(sharedStorage, getFilterDistance(), positionProcessor);
 	}
-	
-	public static List<RecordProcessor> createRecordProcessors(
-			final SharedStorage sharedStorage,
-			final int filterDistance, 
-			PositionProcessor positionProcessor) {
-		
+
+	public static List<RecordProcessor> createRecordProcessors(final SharedStorage sharedStorage,
+			final int filterDistance, PositionProcessor positionProcessor) {
+
 		final List<RecordProcessor> processRecords = new ArrayList<>();
 		// INDELs
-		processRecords.addAll(INDELfilterFactory.createRecordProcessor(
-				sharedStorage, filterDistance, positionProcessor));
+		processRecords
+				.addAll(INDELfilterFactory.createRecordProcessor(sharedStorage, filterDistance, positionProcessor));
 		// introns
-		processRecords.addAll(SpliceSiteFilterFactory.createRecordProcessors(
-				sharedStorage, filterDistance, positionProcessor));
+		processRecords.addAll(
+				SpliceSiteFilterFactory.createRecordProcessors(sharedStorage, filterDistance, positionProcessor));
 		return processRecords;
 	}
 
 	public static Builder getOptionBuilder() {
-		return Option.builder(Character.toString(CombinedFilterFactory.FILTER))
-				.desc("Combines Filters: " + StringUtil.join(" + ", Arrays.asList(INDELfilterFactory.FILTER, SpliceSiteFilterFactory.FILTER)));
+		return Option.builder(Character.toString(CombinedFilterFactory.FILTER)).desc("Combines Filters: "
+				+ StringUtil.join(" + ", Arrays.asList(INDELfilterFactory.FILTER, SpliceSiteFilterFactory.FILTER)));
 	}
-	
+
 }

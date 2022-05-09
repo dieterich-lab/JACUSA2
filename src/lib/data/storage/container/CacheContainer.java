@@ -7,7 +7,7 @@ import lib.data.DataContainer;
 import lib.data.storage.Cache;
 import lib.data.storage.Storage;
 import lib.data.storage.processor.GeneralRecordProcessor;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
 
@@ -17,7 +17,7 @@ import lib.util.coordinate.Coordinate;
 public interface CacheContainer {
 
 	void preProcess();
-	void process(Record record);
+	void process(ProcessedRecord record);
 	void postProcess();
 	
 	int getNextWindowPosition(int winPos);

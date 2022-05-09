@@ -10,13 +10,11 @@ public class StratifiedDataAdder implements DataAdder {
 
 	private final DataAdder dataAdderTotal;
 	private final DataAdder dataAdderStratified;
-	
-	public StratifiedDataAdder(
-			final DataAdder dataAdderTotal,
-			final DataAdder dataAdderStratified) {		
-		
-		this.dataAdderTotal 		= dataAdderTotal;
-		this.dataAdderStratified 	= dataAdderStratified;
+
+	public StratifiedDataAdder(final DataAdder dataAdderTotal, final DataAdder dataAdderStratified) {
+
+		this.dataAdderTotal = dataAdderTotal;
+		this.dataAdderStratified = dataAdderStratified;
 	}
 
 	@Override
@@ -27,10 +25,10 @@ public class StratifiedDataAdder implements DataAdder {
 	@Override
 	public void addData(StringBuilder sb, int valueIndex, int condI, int replicateI, Result result) {
 		if (valueIndex == Result.TOTAL) {
-			dataAdderTotal.addData(sb, valueIndex, condI, replicateI, result);	
+			dataAdderTotal.addData(sb, valueIndex, condI, replicateI, result);
 		} else {
 			dataAdderStratified.addData(sb, valueIndex, condI, replicateI, result);
 		}
 	}
-	
+
 }

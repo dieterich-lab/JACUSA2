@@ -5,6 +5,8 @@ import java.io.IOException;
 import htsjdk.samtools.SAMSequenceDictionary;
 import jacusa.io.copytmp.SerializeCopyTmpResult;
 import lib.cli.parameter.GeneralParameter;
+import lib.data.DataType;
+import lib.data.count.basecall.BaseCallCount;
 import lib.io.AbstractResultFormat;
 import lib.io.ResultWriter;
 import lib.io.copytmp.CopyTmpResult;
@@ -39,6 +41,7 @@ extends AbstractResultFormat {
 			}
 		}
 		return new VCFcallWriter(
+				DataType.get("default", BaseCallCount.class),
 				outputFileName, 
 				getParameter().getFilterConfig(),
 				dictionary); 

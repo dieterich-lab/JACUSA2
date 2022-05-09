@@ -2,7 +2,7 @@ package jacusa.filter.processrecord;
 
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.position.CigarDetailPosProviderBuilder;
 
 /**
@@ -23,7 +23,7 @@ public class ProcessSkippedOperator extends AbstractFilterRecordProcessor {
 	}
 
 	@Override
-	public void process(Record record) {
+	public void process(ProcessedRecord record) {
 		// iterate over cigarElement indices of splice sites
 		for (final int cigarDetailI : record.getSkipped()) {
 			processSkippedOperator(cigarDetailI, record);
@@ -37,7 +37,7 @@ public class ProcessSkippedOperator extends AbstractFilterRecordProcessor {
 	 * @param record
 	 */
 	private void processSkippedOperator(
-			final int cigarDetailI, final Record record) {
+			final int cigarDetailI, final ProcessedRecord record) {
 		
 		getPosProcessor().process(
 				new CigarDetailPosProviderBuilder(

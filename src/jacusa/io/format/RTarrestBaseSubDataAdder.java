@@ -4,11 +4,13 @@ import java.util.List;
 
 import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
-import lib.data.count.BaseSub2BCC;
+import lib.data.count.BaseSub2BaseCallCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.result.Result;
 import lib.io.InputOutput;
 import lib.io.format.bed.DataAdder;
+
+// TODO remove
 
 /**
  * This class corresponds to the two columns of a BEDlike output file that contains base call count  
@@ -39,16 +41,18 @@ public class RTarrestBaseSubDataAdder implements DataAdder {
 	public void addData(StringBuilder sb, int valueIndex, int condI, int replicateI, Result result) {
 		final BaseSub baseSub 	= baseSubs.get(valueIndex);
 		final DataContainer container 	= result.getParellelData().getDataContainer(condI, replicateI);
-		addBaseCallCount(sb, baseSub, container.getArrestBaseSub2BCC());
+		/* TODO
+		addBaseCallCount(sb, baseSub, container.get()getArrestBaseSub2BCC());
 		addBaseCallCount(sb, baseSub, container.getThroughBaseSub2BCC());
+		*/
 	}
 	
 	private void addBaseCallCount(
 			final StringBuilder sb, 
 			final BaseSub baseSub, 
-			final BaseSub2BCC baseSubCount) {
+			final BaseSub2BaseCallCount bs2bcc) {
 
-		BaseCallCount bcc = baseSubCount.get(baseSub);
+		BaseCallCount bcc = bs2bcc.getMap().get(baseSub);
 		if (bcc == null) {
 			bcc = BaseCallCount.EMPTY;
 		}

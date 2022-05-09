@@ -5,7 +5,7 @@ import java.util.Map;
 import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.coordinate.OneCoordinate;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
@@ -26,7 +26,7 @@ public class SimpleReferenceProvider implements ReferenceProvider {
 		this.contig2refSeq 			= chr2refSeq;
 	}
 
-	public void addrecord(final Record record) {}
+	public void addrecord(final ProcessedRecord record) {}
 
 	@Override
 	public void update() {

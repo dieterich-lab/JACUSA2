@@ -1,31 +1,31 @@
 package lib.data.storage.integer;
 
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.IntegerData;
-import lib.data.fetcher.Fetcher;
 import lib.data.storage.AbstractStorage;
 import lib.data.storage.container.SharedStorage;
 import lib.util.coordinate.Coordinate;
 
 abstract class AbstractIntegerStorage extends AbstractStorage {
 
-	private final Fetcher<IntegerData> bccFetcher;
+	private final DataType<IntegerData> integerData;
 	
 	AbstractIntegerStorage(
-			final SharedStorage sharedStorage, final Fetcher<IntegerData> fetcher) {
+			final SharedStorage sharedStorage, final DataType<IntegerData> integerData) {
 		
 		super(sharedStorage);
-		this.bccFetcher = fetcher;
+		this.integerData = integerData;
 	}
 
 	@Override
 	public void populate(DataContainer container, int winPos, Coordinate coordinate) {
-		if (bccFetcher == null) {
+		if (integerData == null) {
 			return;
 		}
 		
 		final int count = getCount(winPos);
-		bccFetcher.fetch(container).add(count);
+		container.get(integerData).add(count);
 	}
 
 	@Override

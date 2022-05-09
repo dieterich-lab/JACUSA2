@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import htsjdk.samtools.SAMRecord;
 import lib.data.storage.arrest.LocationInterpreter;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.LibraryType;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.coordinate.DefaultCoordinateTranslator;
@@ -31,7 +31,7 @@ interface LocationInterpreterTest {
 	@MethodSource("testGetThroughPositionProvider")
 	default void testGetThroughPositionProvider(
 			CoordinateTranslator translator,
-			Record record,
+			ProcessedRecord record,
 			List<Position> expected,
 			String info) {
 
@@ -48,7 +48,7 @@ interface LocationInterpreterTest {
 	@MethodSource("testGetArrestPosition")
 	default void testGetArrestPosition(
 			CoordinateTranslator translator,
-			Record record,
+			ProcessedRecord record,
 			Position expected,
 			String info) {
 		
@@ -66,7 +66,7 @@ interface LocationInterpreterTest {
 	LibraryType getLibraryType();
 	
 	// ',' separated array of strings of the following form: "ref,winPos,read,{A|C|G|T}" 
-	default List<Position> parseExpected(final Record record, final String[] str) {
+	default List<Position> parseExpected(final ProcessedRecord record, final String[] str) {
 		final List<Position> expected = new ArrayList<Position>(str.length);
 		for (final String tmpStr : str) {
 			final String[] cols = tmpStr.split(",");
@@ -83,7 +83,7 @@ interface LocationInterpreterTest {
 		return new DefaultCoordinateTranslator(refPosWinStart, length);
 	}
 
-	default void addReadInfo(final Record record, final StringBuilder infoBuilder) {
+	default void addReadInfo(final ProcessedRecord record, final StringBuilder infoBuilder) {
 		final SAMRecord samRecord = record.getSAMRecord();
 		infoBuilder.append("Read: ");
 		if (samRecord.getReadPairedFlag()) {
@@ -101,12 +101,12 @@ interface LocationInterpreterTest {
 		}
 	}
 	
-	default void addReadDetailsInfo(final int readNumber, final Record record, final StringBuilder infoBuilder) {
+	default void addReadDetailsInfo(final int readNumber, final ProcessedRecord record, final StringBuilder infoBuilder) {
 		infoBuilder.append("Mate: ").append(readNumber).append(" ");
 		addReadDetailsInfo(record, infoBuilder);
 	}
 	
-	default void addReadDetailsInfo(final Record record, final StringBuilder infoBuilder) {
+	default void addReadDetailsInfo(final ProcessedRecord record, final StringBuilder infoBuilder) {
 		final SAMRecord samRecord = record.getSAMRecord();
 		infoBuilder
 		.append(samRecord.getAlignmentStart())
@@ -123,7 +123,7 @@ interface LocationInterpreterTest {
 
 		
 		final SAMRecord samRecord = new SAMRecordBuilder().createSERecord(getContig(), refStart, negativeStrand, cigarStr, "");
-		final Record record = new Record(samRecord);
+		final ProcessedRecord record = new ProcessedRecord(samRecord);
 		
 		final StringBuilder infoBuilder = new StringBuilder()
 				.append("Lib.: ").append(getLibraryType()).append("; ");
@@ -149,7 +149,7 @@ interface LocationInterpreterTest {
 				refStart1, negativeStrand1, cigarStr1, "", 
 				refStart2, negativeStrand2, cigarStr2, "").getRecords().iterator();
 		final SAMRecord samRecord = it.next();
-		final Record record = new Record(samRecord, samRecord.getFileSource().getReader());
+		final ProcessedRecord record = new ProcessedRecord(samRecord, samRecord.getFileSource().getReader());
 		
 		return cArrestArgs(
 				cT(refWinStart, refWinEnd),
@@ -160,7 +160,7 @@ interface LocationInterpreterTest {
 	
 	default Arguments cArrestArgs(
 			final CoordinateTranslator translator, 
-			final Record record,
+			final ProcessedRecord record,
 			final Position expected, 
 			final StringBuilder infoBuilder) {
 		
@@ -181,7 +181,7 @@ interface LocationInterpreterTest {
 		
 		final SAMRecord samRecord = new SAMRecordBuilder().createSERecord(
 				getContig(), refStart, negativeStrand, cigarStr, "");
-		final Record record = new Record(samRecord); 
+		final ProcessedRecord record = new ProcessedRecord(samRecord); 
 		
 		return cThroughArgs(
 				cT(refWinStart, refWinEnd),
@@ -204,7 +204,7 @@ interface LocationInterpreterTest {
 						refStart1, negativeStrand1, cigarStr1, "", 
 						refStart2, negativeStrand2, cigarStr2, "").getRecords().iterator();
 		final SAMRecord samRecord = it.next();
-		final Record record = new Record(samRecord, samRecord.getFileSource().getReader());
+		final ProcessedRecord record = new ProcessedRecord(samRecord, samRecord.getFileSource().getReader());
 		
 		return cThroughArgs(
 				cT(refWinStart, refWinEnd),
@@ -215,7 +215,7 @@ interface LocationInterpreterTest {
 	
 	default Arguments cThroughArgs(
 			final CoordinateTranslator translator, 
-			final Record record,
+			final ProcessedRecord record,
 			final List<Position> expected, 
 			final StringBuilder infoBuilder) {
 

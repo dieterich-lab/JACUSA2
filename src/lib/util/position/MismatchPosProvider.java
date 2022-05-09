@@ -6,13 +6,13 @@ import java.util.List;
 import lib.data.validator.CombinedValidator;
 import lib.data.validator.Validator;
 import lib.record.AlignedPosition;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.Base;
 import lib.util.coordinate.CoordinateTranslator;
 
 public class MismatchPosProvider implements PositionProvider {
 
-	private final Record record;
+	private final ProcessedRecord record;
 	private final CoordinateTranslator translator;
 	private final Validator validator;
 	
@@ -21,7 +21,7 @@ public class MismatchPosProvider implements PositionProvider {
 	private Position nextPos;
 
 	public MismatchPosProvider(
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator,
 			final List<Validator> validators) {
 		
@@ -29,7 +29,7 @@ public class MismatchPosProvider implements PositionProvider {
 	}
 	
 	public MismatchPosProvider(
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator,
 			final Validator validator) {
 		

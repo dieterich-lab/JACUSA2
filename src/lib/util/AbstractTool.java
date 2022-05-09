@@ -13,48 +13,46 @@ import lib.worker.WorkerDispatcher;
 public abstract class AbstractTool {
 
 	public static final String CALL_PREFIX = "JACUSA2 Version: ";
-	
+
 	private final String name;
 	private final VersionInfo versionInfo;
-	
+
 	private final String[] args;
 
 	// command line interface
 	private final CLI cli;
 	private WorkerDispatcher workerDispatcher;
-	
+
 	private int comparisons;
-	
+
 	private static Logger logger;
 
-	protected AbstractTool(
-			final String name, final VersionInfo versionInfo, 
-			final String[] args,
-			final List<AbstractMethod.AbstractFactory> factories) {
-		this.name 			= name;
-		this.versionInfo 	= versionInfo;
-		this.args 			= args;
+	protected AbstractTool(final String name, final VersionInfo versionInfo, final String[] args,
+			final List<AbstractMethod.AbstractMethodFactory<?>> factories) {
+		this.name = name;
+		this.versionInfo = versionInfo;
+		this.args = args;
 
 		cli = new CLI(factories);
-		
+
 		comparisons = 0;
-		
+
 		final PrintStream ps = System.err;
 		logger = new Logger(ps, this);
 	}
 
 	public void run() throws Exception {
 		// parse CLI
-		if (! cli.processArgs(args)) {
+		if (!cli.processArgs(args)) {
 			System.exit(1);
 		}
 
 		// prolog printed in logger
 		getLogger().addProlog(getProlog());
-		
+
 		// instantiate chosen method
-		final AbstractMethod methodFactory = cli.getMethodFactory();
-				
+		final AbstractMethod<?> methodFactory = cli.getMethodFactory();
+
 		// run the method...
 		workerDispatcher = methodFactory.getWorkerDispatcherInstance();
 		comparisons = workerDispatcher.run();
@@ -67,7 +65,7 @@ public abstract class AbstractTool {
 	protected String getProlog() {
 		final StringBuilder sb = new StringBuilder();
 		final String lineSep = "--------------------------------------------------------------------------------";
-		
+
 		sb.append(lineSep);
 		sb.append('\n');
 		sb.append(getCall());
@@ -75,29 +73,29 @@ public abstract class AbstractTool {
 		sb.append(lineSep);
 		return sb.toString();
 	}
-	
+
 	public String getCall() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(CALL_PREFIX);
 		sb.append(versionInfo.formatVersion());
-		for(final String arg : args) {
+		for (final String arg : args) {
 			sb.append(" " + arg);
 		}
 		return sb.toString();
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public String getVersion() {
 		return versionInfo.formatVersion();
 	}
-	
+
 	public String getLibraries() {
 		return versionInfo.formatLibs();
 	}
-	
+
 	public static Logger getLogger() {
 		return logger;
 	}

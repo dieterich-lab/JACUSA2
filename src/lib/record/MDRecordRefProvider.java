@@ -13,7 +13,7 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMException;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMTag;
-import lib.record.Record.CigarDetail;
+import lib.record.ProcessedRecord.CigarDetail;
 import lib.util.Base;
 import lib.util.Util;
 
@@ -25,7 +25,7 @@ public class MDRecordRefProvider implements RecordRefProvider {
 	// from htsjdk SequenceUtils
 	static final Pattern MD_PATTERN = Pattern.compile("\\G(?:([0-9]+)|([ACTGNactgn])|(\\^[ACTGNactgn]+))");
 	
-	private final Record record;
+	private final ProcessedRecord record;
 	
 	private final List<AlignedPosition> mismatchPoss;
 	private final Map<Integer, Byte> refPos2base;
@@ -34,7 +34,7 @@ public class MDRecordRefProvider implements RecordRefProvider {
 	private CigarDetail curCigarElement;
 	private int curMatchedBases;
 	
-	public MDRecordRefProvider(final Record record) {
+	public MDRecordRefProvider(final ProcessedRecord record) {
 		this.record = record;
 		
 		final int n 		= 5;
@@ -55,7 +55,7 @@ public class MDRecordRefProvider implements RecordRefProvider {
 		return Base.valueOf(record.getSAMRecord().getReadBases()[readPos]);
 	}
 
-	private void process(final Record record) {
+	private void process(final ProcessedRecord record) {
 		final SAMRecord samRecord = record.getSAMRecord();
 		final String md = samRecord.getStringAttribute(SAMTag.MD.name());
         if (md == null) {

@@ -1,7 +1,7 @@
 package test.lib.data.storage.readsubstitution;
 
 import lib.data.storage.readsubstitution.BaseCallInterpreter;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.Base;
 import lib.util.position.Position;
 import lib.util.position.UnmodifiablePosition;
@@ -38,7 +38,7 @@ abstract class AbstractBaseCallInterpreterTest {
 	@ParameterizedTest(name = "{3}")
 	@MethodSource("testGetReadBase")
 	void testGetReadBase(SAMRecord samRecord, int readPos, Base expected, String info) {
-		final Record record = new Record(samRecord);
+		final ProcessedRecord record = new ProcessedRecord(samRecord);
 		final Base actual = testInstance.getReadBase(record, readPos);
 		assertEquals(expected, actual);
 	}
@@ -46,7 +46,7 @@ abstract class AbstractBaseCallInterpreterTest {
 	@ParameterizedTest(name = "{3}")
 	@MethodSource("testGetRefBase")
 	void testGetRefBase(SAMRecord samRecord, Position pos, Base expected, String info) {
-		final Record record = new Record(samRecord);
+		final ProcessedRecord record = new ProcessedRecord(samRecord);
 		final Base actual = testInstance.getRefBase(record, pos);
 		assertEquals(expected, actual);
 	}
@@ -82,7 +82,7 @@ abstract class AbstractBaseCallInterpreterTest {
 		
 		return Arguments.of(
 				record,
-				new UnmodifiablePosition(refPos, readPos, -1, new Record(record)),
+				new UnmodifiablePosition(refPos, readPos, -1, new ProcessedRecord(record)),
 				expected,
 				String.format("Read: %s %s %s; readPos: %d %s; refPos: %d %c", 
 						coord, simReadSeq, cigarStr, readPos, readBase, refPos, refBase) );

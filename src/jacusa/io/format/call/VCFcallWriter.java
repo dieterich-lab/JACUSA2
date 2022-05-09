@@ -28,6 +28,7 @@ import htsjdk.variant.vcf.VCFStandardHeaderLines;
 import jacusa.filter.FilterConfig;
 import jacusa.filter.factory.FilterFactory;
 import lib.cli.parameter.ConditionParameter;
+import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.result.Result;
@@ -36,26 +37,26 @@ import lib.util.AbstractTool;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
-public class VCFcallWriter 
-implements ResultWriter  {
+public class VCFcallWriter implements ResultWriter {
 
 	private final String outputFileName;
 	private final FilterConfig filterConfig;
 	private final SAMSequenceDictionary dictionary;
-	
+
 	private final VariantContextWriter vcw;
 
 	private final String source;
 
-	public VCFcallWriter(
-			final String outputFileName, 
-			final FilterConfig filterConfig,
-			final SAMSequenceDictionary dictionary) {
+	private final DataType<BaseCallCount> dataType;
 
+	public VCFcallWriter(final DataType<BaseCallCount> dataType, final String outputFileName,
+			final FilterConfig filterConfig, final SAMSequenceDictionary dictionary) {
+
+		this.dataType = dataType;
 		this.outputFileName = outputFileName;
-		this.filterConfig 	= filterConfig;
-		this.dictionary 	= dictionary;
-				
+		this.filterConfig = filterConfig;
+		this.dictionary = dictionary;
+
 		final VariantContextWriterBuilder vcwb = new VariantContextWriterBuilder();
 		vcwb.modifyOption(Options.DO_NOT_WRITE_GENOTYPES, false);
 		vcwb.modifyOption(Options.WRITE_FULL_FORMAT_FIELD, true);
@@ -63,15 +64,15 @@ implements ResultWriter  {
 		vcwb.setOutputFileType(OutputType.VCF);
 		vcwb.setReferenceDictionary(dictionary);
 		vcw = vcwb.build();
-		
+
 		source = AbstractTool.getLogger().getTool().getCall();
 	}
-	
+
 	public String getInfo() {
 		return outputFileName;
 	}
-	
-	// date 
+
+	// date
 	private String getFileDate() {
 		final StringBuilder sb = new StringBuilder();
 		final int year = Calendar.getInstance().get(Calendar.YEAR);
@@ -79,45 +80,43 @@ implements ResultWriter  {
 		final int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 		sb.append(year);
 		if (month < 10)
-			sb.append(0);	
+			sb.append(0);
 		sb.append(month);
 		if (day < 10)
 			sb.append(0);
 		sb.append(day);
 		return sb.toString();
 	}
-	
+
 	@Override
 	public void writeHeader(List<ConditionParameter> conditionParameters) {
 		final VCFHeader header = new VCFHeader();
 		header.setSequenceDictionary(dictionary);
-		header.addMetaDataLine(new VCFHeaderLine("source", 
-				AbstractTool.getLogger().getTool().getCall()
-			)
-		);
+		header.addMetaDataLine(new VCFHeaderLine("source", AbstractTool.getLogger().getTool().getCall()));
 		header.addMetaDataLine(new VCFHeaderLine("fileDate", getFileDate()));
 
 		// add default info fields to header
-		for (final String ID : new String[] {VCFConstants.DEPTH_KEY, VCFConstants.GENOTYPE_KEY}) {
+		for (final String ID : new String[] { VCFConstants.DEPTH_KEY, VCFConstants.GENOTYPE_KEY }) {
 			header.addMetaDataLine(VCFStandardHeaderLines.getFormatLine(ID));
 		}
-		
+
 		// add additional format fields to header
 		header.addMetaDataLine(new VCFFormatHeaderLine("BC", 4, VCFHeaderLineType.Integer, "Base call counts A,C,G,T"));
-		
+
 		// add filter descriptions to header
 		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {
-			header.addMetaDataLine(new VCFFilterHeaderLine(Character.toString(filterFactory.getID()), filterFactory.getDesc()));
+			header.addMetaDataLine(
+					new VCFFilterHeaderLine(Character.toString(filterFactory.getID()), filterFactory.getDesc()));
 		}
 
 		for (int condI = 1; condI <= conditionParameters.size(); condI++) {
 			final int replicates = conditionParameters.get(condI - 1).getReplicateSize();
-			for (int replicateI = 1; replicateI <= replicates; replicateI++) {	
+			for (int replicateI = 1; replicateI <= replicates; replicateI++) {
 				final String sampleName = condI + "" + replicateI;
 				header.getGenotypeSamples().add(sampleName);
 			}
 		}
-		
+
 		vcw.setHeader(header);
 		vcw.writeHeader(header);
 	}
@@ -127,13 +126,13 @@ implements ResultWriter  {
 		final ParallelData parallelData = result.getParellelData();
 		final Coordinate coordinate = parallelData.getCoordinate();
 		
-		final BaseCallCount bcc = parallelData.getCombPooledData().getPileupCount().getBCC();
+		final BaseCallCount bcc = parallelData.getCombPooledData().get(dataType);
 		final Set<Base> observedBases = bcc.getAlleles();
 		
 		final Collection<Allele> alleles = new ArrayList<>(observedBases.size());
 		final Base refBase = parallelData.getCombPooledData().getUnstrandedRefBase();
 		alleles.add(Allele.create(refBase.getByte(), true));
-		for (final Base base : parallelData.getCombPooledData().getPileupCount().getBCC().getAlleles()) {
+		for (final Base base : parallelData.getCombPooledData().get(dataType).getAlleles()) {
 			if (base != refBase) {
 				alleles.add(Allele.create(base.getByte()));
 			}
@@ -164,8 +163,7 @@ implements ResultWriter  {
 				final String sampleName = (condI + 1) + "" + (replicateI + 1);
 				
 				final BaseCallCount tmpBCC = 
-						parallelData.getDataContainer(condI, replicateI)
-							.getPileupCount().getBCC();
+						parallelData.getDataContainer(condI, replicateI).get(dataType);
 				final List<Allele> tmpAlleles = new ArrayList<>(tmpBCC.getAlleles().size());
 
 				for (final Base base : tmpBCC.getAlleles()) {
@@ -191,5 +189,5 @@ implements ResultWriter  {
 	public void close() throws IOException {
 		vcw.close();
 	}
-	
+
 }

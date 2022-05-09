@@ -9,6 +9,7 @@ import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import jacusa.filter.Filter;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
+import lib.data.DataContainer.AbstractDataContainerBuilderFactory;
 import lib.data.ParallelData;
 import lib.data.result.Result;
 import lib.data.storage.container.ComplexSharedStorage;
@@ -28,13 +29,13 @@ import lib.util.coordinate.Coordinate;
 /**
  * TODO
  */
-public abstract class AbstractWorker
+public abstract class AbstractWorker<T extends AbstractDataContainerBuilderFactory>
 extends Thread
 implements Iterator<ParallelData> {
 
 	public enum STATUS {INIT, READY, FINISHED, BUSY, WAITING}
 
-	private final AbstractMethod method;
+	private final AbstractMethod<T> method;
 	
 	private final ThreadIdContainer threadIdContainer;
 	private final CopyTmpResult copyTmpResult;
@@ -49,7 +50,7 @@ implements Iterator<ParallelData> {
 	
 	private ParallelData parallelData;
 	
-	public AbstractWorker(final AbstractMethod method, final int threadId) {
+	public AbstractWorker(final AbstractMethod<T> method, final int threadId) {
 		this.method = method;
 		
 		threadIdContainer = new ThreadIdContainer(threadId);
@@ -84,6 +85,10 @@ implements Iterator<ParallelData> {
 		}
 		
 		return new FileReferenceProvider(referencefile, coordinateController);
+	}
+	
+	public AbstractMethod<T> getMethod() {
+		return method;
 	}
 	
 	protected boolean filter(final Result result) {

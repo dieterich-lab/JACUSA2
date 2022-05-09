@@ -5,7 +5,7 @@ import java.util.Set;
 
 import lib.util.Base;
 
-public class DefaultBCC extends AbstractBCC {
+public class DefaultBCC extends AbstractBaseCallCount {
 
 	private static final long serialVersionUID = 1L;
 
@@ -13,21 +13,21 @@ public class DefaultBCC extends AbstractBCC {
 	private int c;
 	private int g;
 	private int t;
-	
+
 	public DefaultBCC(final int a, final int c, final int g, final int t) {
 		this.a = a;
 		this.c = c;
 		this.g = g;
 		this.t = t;
 	}
-	
+
 	public DefaultBCC() {
 		a = 0;
 		c = 0;
 		g = 0;
 		t = 0;
 	}
-	
+
 	@Override
 	public int getCoverage() {
 		return a + c + g + t;
@@ -37,7 +37,7 @@ public class DefaultBCC extends AbstractBCC {
 	public BaseCallCount copy() {
 		return new DefaultBCC(a, c, g, t);
 	}
-	
+
 	@Override
 	public int getBaseCall(Base base) {
 		switch (base) {
@@ -52,7 +52,7 @@ public class DefaultBCC extends AbstractBCC {
 
 		case T:
 			return t;
-			
+
 		default:
 			throw new IllegalArgumentException();
 		}
@@ -87,7 +87,7 @@ public class DefaultBCC extends AbstractBCC {
 		case T:
 			t++;
 			break;
-			
+
 		default:
 			throw new IllegalArgumentException();
 		}
@@ -121,7 +121,7 @@ public class DefaultBCC extends AbstractBCC {
 		case T:
 			t = count;
 			break;
-			
+
 		default:
 			throw new IllegalArgumentException();
 		}
@@ -146,7 +146,7 @@ public class DefaultBCC extends AbstractBCC {
 		case T:
 			t += bcc.getBaseCall(base);
 			break;
-			
+
 		default:
 			throw new IllegalArgumentException();
 		}
@@ -179,7 +179,7 @@ public class DefaultBCC extends AbstractBCC {
 		case T:
 			t += bcc.getBaseCall(src);
 			break;
-			
+
 		default:
 			throw new IllegalArgumentException();
 		}
@@ -204,7 +204,7 @@ public class DefaultBCC extends AbstractBCC {
 		case T:
 			t -= bcc.getBaseCall(base);
 			break;
-			
+
 		default:
 			throw new IllegalArgumentException();
 		}
@@ -237,7 +237,7 @@ public class DefaultBCC extends AbstractBCC {
 		case T:
 			t -= bcc.getBaseCall(src);
 			break;
-			
+
 		default:
 			throw new IllegalArgumentException();
 		}
@@ -261,20 +261,21 @@ public class DefaultBCC extends AbstractBCC {
 	public String toString() {
 		return new Parser().wrap(this);
 	}
-	
+
 	/*
 	 * Parser
 	 */
-	
+
 	public static class Parser extends AbstractParser {
 
 		public Parser() {
 			super();
 		}
-		
+
 		public Parser(final char baseCallSep, final char empty) {
 			super(baseCallSep, empty);
 		}
+
 		@Override
 		public DefaultBCC parse(String s) {
 			final String[] cols = split(s);
@@ -286,9 +287,9 @@ public class DefaultBCC extends AbstractBCC {
 			for (int baseIndex = 0; baseIndex < cols.length; ++baseIndex) {
 				final int count = Integer.parseInt(cols[baseIndex]);
 				if (count < 0) {
-					throw new IllegalArgumentException(); 
+					throw new IllegalArgumentException();
 				}
-				
+
 				switch (baseIndex) {
 				case 0:
 					a = count;
@@ -297,15 +298,15 @@ public class DefaultBCC extends AbstractBCC {
 				case 1:
 					c = count;
 					break;
-					
+
 				case 2:
 					g = count;
 					break;
-					
+
 				case 3:
 					t = count;
 					break;
-					
+
 				default:
 					break;
 				}
@@ -313,7 +314,7 @@ public class DefaultBCC extends AbstractBCC {
 			}
 			return new DefaultBCC(a, c, g, t);
 		}
-		
+
 	}
-	
+
 }

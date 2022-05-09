@@ -1,9 +1,9 @@
 package jacusa.filter;
 
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.Fetcher;
 
 /**
  * This class implements a filter that restricts the number of observed alleles 
@@ -13,16 +13,16 @@ public class MaxAlleleFilter extends AbstractFilter {
 
 	private final int maxAlleles;
 	// defines what base call count to use
-	private final Fetcher<BaseCallCount> bccFetcher;
+	private final DataType<BaseCallCount> dataType;
 	
 	public MaxAlleleFilter(
 			final char id, 
 			final int maxAlleles, 
-			final Fetcher<BaseCallCount> bccFetcher) {
+			final DataType<BaseCallCount> dataType) {
 		
 		super(id);
 		this.maxAlleles = maxAlleles;
-		this.bccFetcher = bccFetcher;
+		this.dataType = dataType;
 	}
 	
 	/**
@@ -31,8 +31,7 @@ public class MaxAlleleFilter extends AbstractFilter {
 	@Override
 	public boolean filter(final ParallelData parallelData) {
 		final DataContainer container 	= parallelData.getCombPooledData();
-		final int alleles 				= 
-				bccFetcher.fetch(container).getAlleles().size();
+		final int alleles 				= container.get(dataType).getAlleles().size();
 
 		return alleles > maxAlleles;
 	}

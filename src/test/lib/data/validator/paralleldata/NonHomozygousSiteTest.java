@@ -7,10 +7,8 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import lib.data.DataType;
 import lib.data.ParallelData;
-import lib.data.DataContainer.AbstractBuilderFactory;
-import lib.data.DataContainer.DefaultBuilderFactory;
+import lib.data.DataContainer.AbstractDataContainerBuilderFactory;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.DataTypeFetcher;
 import lib.data.validator.paralleldata.ExtendedVariantSiteValidator;
 import lib.util.Base;
 import lib.util.LibraryType;
@@ -18,12 +16,12 @@ import lib.util.coordinate.OneCoordinate;
 
 class NonHomozygousSiteTest extends AbstractParallelDataValidatorTest {
 
-	private final AbstractBuilderFactory builderFactory;
-	private final DataTypeFetcher<BaseCallCount> bccFetcher;
+	private final AbstractDataContainerBuilderFactory builderFactory;
+	private final DataType<BaseCallCount> dataType;
 	
 	public NonHomozygousSiteTest() {
 		builderFactory = new DefaultBuilderFactory();
-		bccFetcher = new DataTypeFetcher<>(DataType.retrieve("Test", BaseCallCount.class));
+		dataType = new DataTypeFetcher<>(DataType.retrieve("Test", BaseCallCount.class));
 		setTestInstance(
 				new ExtendedVariantSiteValidator(bccFetcher));
 	}

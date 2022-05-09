@@ -2,7 +2,7 @@ package lib.util.position;
 
 import htsjdk.samtools.AlignmentBlock;
 import lib.record.AlignedPosition;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateTranslator;
 
 public class MatchPosition extends AbstractPosition {
@@ -13,7 +13,7 @@ public class MatchPosition extends AbstractPosition {
 	
 	public MatchPosition(
 			final AlignedPosition alignPos, 
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator) {
 		super(
 				alignPos.getRefPos(), 
@@ -24,7 +24,7 @@ public class MatchPosition extends AbstractPosition {
 	
 	MatchPosition(
 			final int refPos, final int readPos, final int winPos, 
-			final Record record) {
+			final ProcessedRecord record) {
 
 		super(refPos, readPos, winPos, record);
 	}
@@ -60,7 +60,7 @@ public class MatchPosition extends AbstractPosition {
 	public static class Builder extends AbstractBuilder<MatchPosition> {
 		
 		public Builder(
-				final int algnBlockI, final Record record, 
+				final int algnBlockI, final ProcessedRecord record, 
 				final CoordinateTranslator translator) {
 			
 			this(
@@ -70,7 +70,7 @@ public class MatchPosition extends AbstractPosition {
 		}
 		
 		private Builder(
-				final AlignmentBlock algnBlock, final Record record, 
+				final AlignmentBlock algnBlock, final ProcessedRecord record, 
 				final CoordinateTranslator translator) {
 			
 			super(

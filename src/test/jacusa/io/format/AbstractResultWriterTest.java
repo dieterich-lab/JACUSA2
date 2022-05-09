@@ -21,7 +21,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import jacusa.JACUSA;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.ParallelData;
-import lib.data.DataContainer.AbstractBuilderFactory;
+import lib.data.DataContainer.AbstractDataContainerBuilderFactory;
 import lib.data.DataContainer.DefaultBuilderFactory;
 import lib.data.result.Result;
 import lib.io.BEDlikeResultFileWriter;
@@ -33,7 +33,7 @@ public abstract class AbstractResultWriterTest {
 
 	public static final String PATH = "src/test/jacusa/io/format/";
 	
-	private AbstractBuilderFactory builderFactory;
+	private AbstractDataContainerBuilderFactory builderFactory;
 	
 	// needed to fake header output - how JACUSA was called
 	@SuppressWarnings("unused")
@@ -150,7 +150,7 @@ public abstract class AbstractResultWriterTest {
 	 * Helper
 	 */
 
-	protected AbstractBuilderFactory getBuilderFactory() {
+	protected AbstractDataContainerBuilderFactory getBuilderFactory() {
 		return builderFactory;
 	}
 	

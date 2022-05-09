@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import htsjdk.samtools.SAMRecord;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AlgnBlockPosProviderBuilder;
 import lib.util.position.AllAlignmentBlocksPosProvider;
@@ -17,7 +17,7 @@ public class ForRevSecondStrandlocInterpreter
 implements LocationInterpreter {
 
 	@Override
-	public boolean hasArrestPosition(Record record) {
+	public boolean hasArrestPosition(ProcessedRecord record) {
 		final SAMRecord samRecord = record.getSAMRecord();
 		if (samRecord.getReadPairedFlag()) {
 			if (! samRecord.getProperPairFlag()) {
@@ -29,21 +29,21 @@ implements LocationInterpreter {
 	}
 	
 	@Override
-	public Position getArrestPosition(Record record, CoordinateTranslator translator) {
+	public Position getArrestPosition(ProcessedRecord record, CoordinateTranslator translator) {
 		if (! record.getSAMRecord().getReadPairedFlag()) {
 			return getArrestPositionSE(record, translator);
 		}
 		return getArrestPositionPE(record, translator);
 	}
 	
-	private Position getArrestPositionSE(Record record, CoordinateTranslator translator) {
+	private Position getArrestPositionSE(ProcessedRecord record, CoordinateTranslator translator) {
 		if (record.getSAMRecord().getReadNegativeStrandFlag()) {
 			return getLastAlignmentPosition(record, translator);
 		}
 		return getFirstAlignmentPosition(record, translator);
 	}
 		
-	private Position getArrestPositionPEhelper(Record record, CoordinateTranslator translator) {
+	private Position getArrestPositionPEhelper(ProcessedRecord record, CoordinateTranslator translator) {
 		final SAMRecord samRecord = record.getSAMRecord();
 		int refPos = -1;
 		if (samRecord.getReadNegativeStrandFlag()) {
@@ -55,7 +55,7 @@ implements LocationInterpreter {
 		return new UnmodifiablePosition(refPos, -1, winPos, null);
 	}
 	
-	private Position getArrestPositionPE(Record record, CoordinateTranslator translator) {
+	private Position getArrestPositionPE(ProcessedRecord record, CoordinateTranslator translator) {
 		final SAMRecord samRecord = record.getSAMRecord();
 
 		if (! samRecord.getProperPairFlag()) {
@@ -71,7 +71,7 @@ implements LocationInterpreter {
 	
 	@Override
 	public PositionProvider getThroughPositionProvider(
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator) {
 		
 		final SAMRecord samRecord = record.getSAMRecord();
@@ -84,7 +84,7 @@ implements LocationInterpreter {
 	}
 		
 	public PositionProvider getThroughPositionProviderSE(
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator) {
 	
 		final int size = record.getSAMRecord().getAlignmentBlocks().size();
@@ -106,7 +106,7 @@ implements LocationInterpreter {
 	}
 	
 	public PositionProvider getThroughPositionProviderPE(
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator) {
 		
 		// per default not properly paired reads have no arrest site

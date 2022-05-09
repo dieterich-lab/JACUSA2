@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import htsjdk.samtools.AlignmentBlock;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
@@ -15,7 +15,7 @@ public class AllAlignmentBlocksPosProvider implements PositionProvider {
 	private final CombinedPositionProvider positionProvider;
 		
 	public AllAlignmentBlocksPosProvider(
-			final Record record, final CoordinateTranslator translator) {
+			final ProcessedRecord record, final CoordinateTranslator translator) {
 
 		final List<AlignmentBlock> blocks = record.getSAMRecord().getAlignmentBlocks();
 		final int blocksSize = blocks.size();

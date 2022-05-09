@@ -1,7 +1,7 @@
 package lib.data.storage.processor;
 
 import lib.data.storage.Storage;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AllDeletionsPositionProvider;
 import lib.util.position.Position;
@@ -30,7 +30,7 @@ public class DeletionRecordProcessor implements GeneralRecordProcessor {
 	}
 	
 	@Override
-	public void process(final Record record) {
+	public void process(final ProcessedRecord record) {
 		// store deletions
 		final PositionProvider delPosProvider = 
 				new AllDeletionsPositionProvider(record, translator);

@@ -1,8 +1,8 @@
 package lib.util.position;
 
 import lib.record.AlignedPosition;
-import lib.record.Record;
-import lib.record.Record.CigarDetail;
+import lib.record.ProcessedRecord;
+import lib.record.ProcessedRecord.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
@@ -16,7 +16,7 @@ class DeletedPosition extends AbstractPosition {
 	
 	DeletedPosition(
 			final AlignedPosition alignPos, 
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator) {
 
 		super(
@@ -28,7 +28,7 @@ class DeletedPosition extends AbstractPosition {
 	
 	DeletedPosition(
 			final int refPos, final int readPos, final int winPos, 
-			final Record record) {
+			final ProcessedRecord record) {
 
 		super(refPos, readPos, winPos, record);
 	}
@@ -62,7 +62,7 @@ class DeletedPosition extends AbstractPosition {
 	public static class Builder extends AbstractBuilder<DeletedPosition> {
 		
 		public Builder(
-				final int deletionIndex, final Record record, 
+				final int deletionIndex, final ProcessedRecord record, 
 				final CoordinateTranslator translator) {
 			
 			this(
@@ -72,7 +72,7 @@ class DeletedPosition extends AbstractPosition {
 		}
 		
 		private Builder(
-				final CigarDetail cigarElement, final Record record, 
+				final CigarDetail cigarElement, final ProcessedRecord record, 
 				final CoordinateTranslator translator) {
 			
 			super(

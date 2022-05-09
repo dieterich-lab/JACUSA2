@@ -1,6 +1,6 @@
 package jacusa.cli.parameters;
 
-import jacusa.io.format.pileup.BED6pileupResultFormat;
+import jacusa.io.format.call.BED6BaseCallCountResultFormat;
 import jacusa.method.pileup.PileupMethod;
 import jacusa.method.rtarrest.CoverageStatisticFactory;
 import lib.cli.parameter.GeneralParameter;
@@ -19,7 +19,7 @@ implements HasStatParameter {
 		setStatParameter(
 				new StatParameter(new CoverageStatisticFactory(), Double.NaN));
 		setResultFormat(
-				new BED6pileupResultFormat(PileupMethod.Factory.NAME, this));
+				new BED6BaseCallCountResultFormat(PileupMethod.Factory.NAME, this, "Default", "stat"));
 	}
 
 	@Override

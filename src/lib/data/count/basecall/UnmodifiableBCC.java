@@ -5,12 +5,12 @@ import java.util.Set;
 
 import lib.util.Base;
 
-public class UnmodifiableBCC extends AbstractBCC {
+public class UnmodifiableBCC extends AbstractBaseCallCount {
 
 	private static final long serialVersionUID = 1L;
 
 	private final BaseCallCount bcc;
-	
+
 	public UnmodifiableBCC(final BaseCallCount bcc) {
 		this.bcc = bcc;
 	}
@@ -24,7 +24,7 @@ public class UnmodifiableBCC extends AbstractBCC {
 	public BaseCallCount copy() {
 		return new UnmodifiableBCC(bcc.copy());
 	}
-	
+
 	@Override
 	public int getBaseCall(Base base) {
 		return bcc.getBaseCall(base);
@@ -34,11 +34,10 @@ public class UnmodifiableBCC extends AbstractBCC {
 	public String toString() {
 		return bcc.toString();
 	}
-	
-	
+
 	@Override
 	public Set<Base> getAlleles() {
-		return Collections.unmodifiableSet(bcc.getAlleles()); 
+		return Collections.unmodifiableSet(bcc.getAlleles());
 	}
 
 	@Override
@@ -90,5 +89,5 @@ public class UnmodifiableBCC extends AbstractBCC {
 	public UnmodifiableBCC invert() {
 		throw new UnsupportedOperationException();
 	}
-	
+
 }

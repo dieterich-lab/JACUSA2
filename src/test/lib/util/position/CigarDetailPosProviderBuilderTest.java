@@ -11,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.coordinate.DefaultCoordinateTranslator;
 import lib.util.position.CigarDetailPosProviderBuilder;
@@ -29,7 +29,7 @@ class CigarDetailPosProviderBuilderTest implements PositionProviderTest {
 	void testBuilder(
 			int index,
 			int upDownStream,
-			Record record,
+			ProcessedRecord record,
 			CoordinateTranslator translator,
 			List<Position> expected,
 			String info) {
@@ -116,7 +116,7 @@ class CigarDetailPosProviderBuilderTest implements PositionProviderTest {
 			final int refPosWinStart, final int winLength,
 			String[] expectedStrs) {
 		
-		final Record record = new Record(
+		final ProcessedRecord record = new ProcessedRecord(
 				SAMRecordBuilder.createSERead(CONTIG, refStart, cigarStr, readSeq));
 		
 		final CoordinateTranslator translator = 
@@ -142,7 +142,7 @@ class CigarDetailPosProviderBuilderTest implements PositionProviderTest {
 	CigarDetailPosProviderBuilder createTestInstance(
 			final int cigarDetailI,
 			final int upDownStream,
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator) {
 		
 		return new CigarDetailPosProviderBuilder(

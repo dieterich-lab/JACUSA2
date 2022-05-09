@@ -34,13 +34,12 @@ class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 						"new likelihood respectively.\nDefault: " + minkaParameter.getEpsilon())
 				.build());
 
-		final int maxIterations = minkaParameter.getMaxIterations();
 		options.addOption(Option.builder()
 				.longOpt("maxIterations")
 				.hasArg(true)
-				.desc("Maximum number of iterations for Newton's method.\nDefault: " + maxIterations)
+				.desc("Maximum number of iterations for Newton's method.\nDefault: " + minkaParameter.getMaxIterations())
 				.build());
-		
+
 		options.addOption(Option.builder()
 				.longOpt("calcPvalue")
 				.hasArg(false)
@@ -51,6 +50,18 @@ class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 				.longOpt("showAlpha")
 				.hasArg(false)
 				.desc("Show detailed info of Newton's method in output (not in VCF output).")
+				.build());
+
+		options.addOption(Option.builder()
+				.longOpt("extendAlphabet")
+				.hasArg(true)
+				.desc("Extend existing alphabet A,C,G,T by: INSERTION, DELETION, or INDEL.\nDefault: " + minkaParameter.getExtraLetters())
+				.build());
+
+		options.addOption(Option.builder()
+				.longOpt("estimatedError")
+				.hasArg(true)
+				.desc("Prior error probability.\nDefault: " + dirMultParameter.getEstimatedError())
 				.build());
 		
 		return options;
@@ -81,6 +92,10 @@ class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 					throw new IllegalStateException("VCF output format does not support showAlpha");
 				}
 				dirMultParameter.setShowAlpha(true);
+				break;
+			
+			case "estimatedError":
+				dirMultParameter.setEstimatedError(Double.parseDouble(cmd.getOptionValue(longOpt)));
 				break;
 
 			default:

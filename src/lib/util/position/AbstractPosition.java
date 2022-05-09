@@ -1,6 +1,6 @@
 package lib.util.position;
 
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 
 /**
  * TODO
@@ -11,7 +11,7 @@ abstract class AbstractPosition implements Position {
 	protected int readPos;
 	protected int winPos;
 	
-	private final Record record;
+	private final ProcessedRecord record;
 	
 	protected AbstractPosition(AbstractBuilder<? extends AbstractPosition> builder) {
 		this.refPos		= builder.refPos;
@@ -31,7 +31,7 @@ abstract class AbstractPosition implements Position {
 	
 	protected AbstractPosition(
 			final int refPos, final int readPos, final int winPos, 
-			final Record record) {
+			final ProcessedRecord record) {
 		this.refPos			= refPos;
 		this.readPos		= readPos;
 		this.winPos			= winPos;
@@ -49,8 +49,8 @@ abstract class AbstractPosition implements Position {
 		}
 		final Position pos = (Position)obj;
 		
-		if (record != null && pos.getRecord() != null && 
-				! record.getSAMRecord().equals(pos.getRecord().getSAMRecord())) {
+		if (record != null && pos.getProcessedRecord() != null && 
+				! record.getSAMRecord().equals(pos.getProcessedRecord().getSAMRecord())) {
 			
 			return false;
 		}
@@ -67,7 +67,7 @@ abstract class AbstractPosition implements Position {
 		hash = 31 * hash + refPos;
 		hash = 31 * hash + readPos;
 		hash = 31 * hash + winPos;
-		if (getRecord() != null) {
+		if (getProcessedRecord() != null) {
 			hash = 31 * hash + getSAMRecord().hashCode();
 		}
 		return hash;
@@ -89,7 +89,7 @@ abstract class AbstractPosition implements Position {
 	}
 	
 	@Override
-	public Record getRecord() {
+	public ProcessedRecord getProcessedRecord() {
 		return record;
 	}
 
@@ -122,11 +122,11 @@ abstract class AbstractPosition implements Position {
 		private int readPos;
 		private int winPos;
 		
-		private final Record record;
+		private final ProcessedRecord record;
 		
 		protected AbstractBuilder(
 				final int refPos, final int readPos, final int winPos,
-				final Record record) {
+				final ProcessedRecord record) {
 			
 			this.refPos			= refPos;
 			this.readPos 		= readPos;

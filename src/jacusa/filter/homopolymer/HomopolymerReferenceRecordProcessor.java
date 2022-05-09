@@ -5,7 +5,7 @@ import java.util.Collection;
 import jacusa.filter.homopolymer.Homopolymer.HomopolymerBuilder;
 import lib.data.storage.container.ReferenceProvider;
 import lib.data.storage.processor.GeneralRecordProcessor;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
@@ -32,7 +32,7 @@ public class HomopolymerReferenceRecordProcessor implements GeneralRecordProcess
 	}
 	
 	@Override
-	public void process(final Record record) {
+	public void process(final ProcessedRecord record) {
 		// nothing to be done
 		// the main work is done in preProcess
 	}

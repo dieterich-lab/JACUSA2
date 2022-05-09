@@ -3,8 +3,8 @@ package lib.data.storage.basecall;
 import java.util.Arrays;
 
 import lib.util.Base;
+import lib.data.DataType;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.Fetcher;
 import lib.data.storage.container.SharedStorage;
 
 public class DefaultBCCStorage
@@ -16,9 +16,10 @@ extends AbstractBaseCallCountStorage {
 	private final int[] bcT;
 	
 	public DefaultBCCStorage(
-			final SharedStorage sharedStorage, final Fetcher<BaseCallCount> bccFetcher) {
+			final SharedStorage sharedStorage, final DataType<BaseCallCount> dataType) {
 
-		super(sharedStorage, bccFetcher);
+		super(sharedStorage, dataType);
+
 		bcA = new int[getCoordinateController().getActiveWindowSize()];
 		bcC = new int[getCoordinateController().getActiveWindowSize()];
 		bcG = new int[getCoordinateController().getActiveWindowSize()];

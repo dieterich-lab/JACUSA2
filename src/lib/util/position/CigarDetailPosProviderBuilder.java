@@ -1,8 +1,8 @@
 package lib.util.position;
 
 import lib.record.AlignedPosition;
-import lib.record.Record;
-import lib.record.Record.CigarDetail;
+import lib.record.ProcessedRecord;
+import lib.record.ProcessedRecord.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
 import java.util.Arrays;
@@ -14,7 +14,7 @@ public class CigarDetailPosProviderBuilder implements lib.util.Builder<PositionP
 	
 	private final int cigarElementIndex;
 	private final int offset;
-	private final Record record;
+	private final ProcessedRecord record;
 	private CoordinateTranslator translator;
 	
 	/**
@@ -27,7 +27,7 @@ public class CigarDetailPosProviderBuilder implements lib.util.Builder<PositionP
 	public CigarDetailPosProviderBuilder(
 			final int cigarElementIndex, 
 			final int upDownStream,
-			final Record record, 
+			final ProcessedRecord record, 
 			final CoordinateTranslator translator) {
 		
 		this.cigarElementIndex 	= cigarElementIndex;

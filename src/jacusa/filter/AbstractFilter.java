@@ -16,22 +16,22 @@ abstract class AbstractFilter implements Filter {
 	protected AbstractFilter(final char id) {
 		this(id, 0);
 	}
-	
+
 	protected AbstractFilter(final char c, final int overhang) {
-		this.id 			= c;
-		this.overhang 	= overhang;
+		this.id = c;
+		this.overhang = overhang;
 	}
-	
+
 	@Override
 	public final char getID() {
 		return id;
 	}
-	
+
 	@Override
 	public int getOverhang() {
 		return overhang;
 	}
-	
+
 	@Override
 	public void markResult(final int valueIndex, final Result result) {
 		result.getFilterInfo(valueIndex).add(Character.toString(getID()));

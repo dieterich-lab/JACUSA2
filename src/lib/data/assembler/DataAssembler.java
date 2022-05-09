@@ -4,10 +4,10 @@ import java.util.Iterator;
 
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataContainer;
-import lib.data.DataContainer.AbstractBuilderFactory;
+import lib.data.DataContainer.AbstractDataContainerBuilderFactory;
 import lib.data.has.HasLibraryType;
 import lib.data.storage.container.CacheContainer;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
@@ -22,7 +22,7 @@ public interface DataAssembler extends HasLibraryType {
 	 * @param activeWindowCoordinate to be used
 	 * @param iterator to be used
 	 */
-	void buildCache(Coordinate activeWindowCoordinate, Iterator<Record> iterator);
+	void buildCache(Coordinate activeWindowCoordinate, Iterator<ProcessedRecord> iterator);
 	
 	// 
 	/**
@@ -53,7 +53,7 @@ public interface DataAssembler extends HasLibraryType {
 				.build();
 	}
 	
-	AbstractBuilderFactory getBuilderFactory();
+	AbstractDataContainerBuilderFactory getBuilderFactory();
 	
 	CacheContainer getCacheContainer();
 	

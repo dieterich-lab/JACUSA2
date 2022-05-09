@@ -1,7 +1,7 @@
 package lib.data.storage.container;
 
 import htsjdk.samtools.SAMRecord;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 
 public class RFPairedEnd1CacheContainer 
 extends AbstractStrandedCacheContainer {
@@ -13,7 +13,7 @@ extends AbstractStrandedCacheContainer {
 	}
 	
 	@Override
-	protected CacheContainer getCacheContainer(final Record record) {
+	protected CacheContainer getCacheContainer(final ProcessedRecord record) {
 		final SAMRecord samRecord = record.getSAMRecord();
 	
 		// paired end

@@ -1,17 +1,13 @@
 package jacusa.worker;
 
-import java.util.Arrays;
 import java.util.SortedSet;
 
+import jacusa.method.rtarrest.RTarrestDataContainerBuilderFactory;
 import jacusa.method.rtarrest.RTarrestMethod;
 import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
-import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.ParallelData.Builder;
-import lib.data.count.BaseSub2BCC;
-import lib.data.fetcher.BaseSub2BCCaggregator;
-import lib.data.fetcher.Fetcher;
 import lib.data.result.BaseSubResult;
 import lib.data.result.DeletionCountResult;
 import lib.data.result.InsertionCountResult;
@@ -24,66 +20,57 @@ import lib.util.ReplicateContainer;
 import lib.util.coordinate.Coordinate;
 import lib.worker.AbstractWorker;
 
-public class RTArrestWorker
-extends AbstractWorker {
+public class RTArrestWorker extends AbstractWorker<RTarrestDataContainerBuilderFactory> {
 
 	private final AbstractStat stat;
-	
-	private final Fetcher<BaseSub2BCC> bs2bccFetcher;
-	
+
 	public RTArrestWorker(final RTarrestMethod method, final int threadId) {
 		super(method, threadId);
-		stat = method.getParameter().getStatParameter()
-				.newInstance(method.getParameter().getConditionsSize());
-		
-		bs2bccFetcher = new BaseSub2BCCaggregator(
-				Arrays.asList(
-						DataType.ARREST_BASE_SUBST.getFetcher(), 
-						DataType.THROUGH_BASE_SUBST.getFetcher()));
+		stat = method.getParameter().getStatParameter().newInstance(method.getParameter().getConditionsSize());
 	}
 
 	@Override
 	protected ParallelData createParallelData(Builder parallelDataBuilder, Coordinate coordinate) {
-		for (int condI = 0; condI < getConditionContainer().getConditionSize() ; ++condI) {
+		for (int condI = 0; condI < getConditionContainer().getConditionSize(); ++condI) {
 			final ReplicateContainer replicateContainer = getConditionContainer().getReplicatContainer(condI);
-			for (int replicateI = 0; replicateI < replicateContainer.getReplicateSize() ; ++replicateI) {
-				final DataContainer replicate = getConditionContainer().getNullDataContainer(condI, replicateI, coordinate);
+			for (int replicateI = 0; replicateI < replicateContainer.getReplicateSize(); ++replicateI) {
+				final DataContainer replicate = getConditionContainer().getNullDataContainer(condI, replicateI,
+						coordinate);
 				if (replicate == null) {
 					return null;
 				}
 				parallelDataBuilder.withReplicate(condI, replicateI, replicate);
-			}	
+			}
 		}
 		return parallelDataBuilder.build();
 	}
-	
+
 	@Override
 	protected Result process(final ParallelData parallelData) {
-		Result result = stat.filter(parallelData); 
+		Result result = stat.filter(parallelData);
 		if (result == null) {
 			return null;
 		}
-		
+
 		final SortedSet<BaseSub> baseSubs = getParameter().getReadTags();
-		if (! baseSubs.isEmpty()) {
-			result = new BaseSubResult(baseSubs, bs2bccFetcher, result);
+		if (!baseSubs.isEmpty()) {
+			result = new BaseSubResult(baseSubs,
+					getMethod().getDataAssemblerFactory().getDataContainerBuilderFactory().bs2bccDt, result);
 		}
-		
+
 		if (getParameter().showDeletionCount()) {
 			final MinkaParameter minkaPrm = new MinkaParameter();
-			final DeletionEstCountProvider delCountProv = 
-					new DeletionEstCountProvider(minkaPrm.getMaxIterations());
+			final DeletionEstCountProvider delCountProv = new DeletionEstCountProvider(minkaPrm.getMaxIterations());
 			result = new DeletionCountResult(baseSubs, result, minkaPrm, delCountProv);
 		}
-		
+
 		if (getParameter().showInsertionCount()) {
 			final MinkaParameter minkaPrm = new MinkaParameter();
-			final InsertionEstCountProvider insCountProv = 
-					new InsertionEstCountProvider(minkaPrm.getMaxIterations());
+			final InsertionEstCountProvider insCountProv = new InsertionEstCountProvider(minkaPrm.getMaxIterations());
 			result = new InsertionCountResult(baseSubs, result, minkaPrm, insCountProv);
 		}
-		
+
 		return result;
 	}
-	
+
 }

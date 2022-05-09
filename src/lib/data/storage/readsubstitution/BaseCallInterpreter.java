@@ -1,6 +1,6 @@
 package lib.data.storage.readsubstitution;
 
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.Base;
 import lib.util.LibraryType;
 import lib.util.position.Position;
@@ -10,8 +10,8 @@ import lib.util.position.Position;
  */
 public interface BaseCallInterpreter {
 
-	Base getReadBase(Record record, int readPos);
-	Base getRefBase(Record record, Position pos);
+	Base getReadBase(ProcessedRecord record, int readPos);
+	Base getRefBase(ProcessedRecord record, Position pos);
 
 	public static BaseCallInterpreter build(final LibraryType libraryType) { 
 		switch (libraryType) {

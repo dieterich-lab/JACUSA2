@@ -9,9 +9,9 @@ import lib.cli.options.filter.MaxAlleleCountOption;
 import lib.cli.options.filter.has.HasMaxAlleleCount;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataContainer;
-import lib.data.DataContainer.AbstractBuilder;
+import lib.data.DataContainer.AbstractDataContainerBuilder;
+import lib.data.DataType;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.Fetcher;
 import lib.data.storage.Cache;
 import lib.data.storage.container.SharedStorage;
 import lib.io.InputOutput;
@@ -33,13 +33,13 @@ implements HasMaxAlleleCount {
 	// chosen value
 	private int maxAlleles;
 	// define where to look for base call count
-	private final Fetcher<BaseCallCount> bccFetcher;
+	private final DataType<BaseCallCount> dataType;
 	
-	public MaxAlleleCountFilterFactory(final Fetcher<BaseCallCount> bccFetcher) {
+	public MaxAlleleCountFilterFactory(final DataType<BaseCallCount> dataType) {
 		super(getOptionBuilder().build());
 		maxAlleles = MAX_ALLELES;
 		getACOption().add(new MaxAlleleCountOption(this));
-		this.bccFetcher = bccFetcher;
+		this.dataType = dataType;
 	}
 
 	@Override
@@ -47,7 +47,7 @@ implements HasMaxAlleleCount {
 			CoordinateController coordinateController,
 			ConditionContainer conditionContainer) {
 		
-		return new MaxAlleleFilter(getID(), maxAlleles, bccFetcher);
+		return new MaxAlleleFilter(getID(), maxAlleles, dataType);
 	}
 	
 	@Override
@@ -59,7 +59,7 @@ implements HasMaxAlleleCount {
 	}
 	
 	@Override
-	public void initDataContainer(AbstractBuilder builder) {
+	public void initDataContainer(AbstractDataContainerBuilder builder) {
 		// not needed
 	}
 	

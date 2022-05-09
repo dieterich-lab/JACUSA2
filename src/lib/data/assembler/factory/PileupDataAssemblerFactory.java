@@ -3,12 +3,9 @@ package lib.data.assembler.factory;
 import java.util.ArrayList;
 import java.util.List;
 
+import jacusa.method.pileup.PileupDataContainerBuilderFactory;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
-import lib.data.DataType;
-import lib.data.DataContainer.AbstractBuilderFactory;
-import lib.data.count.PileupCount;
-import lib.data.fetcher.Fetcher;
 import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.basecall.MapBCQStorage;
@@ -20,13 +17,10 @@ import lib.data.validator.MinBASQValidator;
 import lib.data.validator.Validator;
 
 public class PileupDataAssemblerFactory 
-extends AbstractSiteDataAssemblerFactory {
-
-	private final Fetcher<PileupCount> pcFetcher;
+extends AbstractDataAssemblerFactory<PileupDataContainerBuilderFactory> {
 	
-	public PileupDataAssemblerFactory(final AbstractBuilderFactory builderFactory) {
-		super(builderFactory);
-		pcFetcher = DataType.PILEUP_COUNT.getFetcher();
+	public PileupDataAssemblerFactory(final PileupDataContainerBuilderFactory dataContainerBuilderFactory) {
+		super(dataContainerBuilderFactory);
 	}
 	
 	@Override
@@ -35,7 +29,7 @@ extends AbstractSiteDataAssemblerFactory {
 			final SharedStorage sharedStorage, 
 			final ConditionParameter conditionParameter) {
 
-		final MapBCQStorage bcqcStorage = new MapBCQStorage(sharedStorage, pcFetcher);
+		final MapBCQStorage bcqcStorage = new MapBCQStorage(sharedStorage, getDataContainerBuilderFactory().pileupDt);
 
 		final List<Validator> validators = new ArrayList<>();
 		validators.add(new DefaultBaseCallValidator());
@@ -45,7 +39,7 @@ extends AbstractSiteDataAssemblerFactory {
 		if (conditionParameter.getMaxDepth() > 0) {
 			validators.add(new MaxDepthValidator(conditionParameter.getMaxDepth(), bcqcStorage));
 		}
-
+		
 		final PositionProcessor positionProcessor = new PositionProcessor(validators, bcqcStorage);
 		
 		final Cache cache = new Cache();
@@ -55,10 +49,15 @@ extends AbstractSiteDataAssemblerFactory {
 		cache.addStorage(bcqcStorage);
 		
 		if (parameter.showInsertionCount() || parameter.showDeletionCount()) {
-			cache.addCache(createCoverageCache(sharedStorage, DataType.COVERAGE.getFetcher()));
+			cache.addCache(Cache.createReadCoverageCache(sharedStorage, getDataContainerBuilderFactory().readsDt));
 		}
-		addInsertionCache(parameter, sharedStorage, cache);
-		addDeletionCache(parameter, sharedStorage, cache);
+		if (parameter.showInsertionCount()) {
+			cache.addCache(Cache.createInsertionCache(sharedStorage, getDataContainerBuilderFactory().insertionsDt));
+		}
+		if (parameter.showDeletionCount()) {
+			cache.addCache(Cache.createDeletionCache(sharedStorage, getDataContainerBuilderFactory().deletionsDt));
+		};
+		
 		stratifyByBaseSub(parameter, sharedStorage,  conditionParameter, cache);
 		
 		return cache;

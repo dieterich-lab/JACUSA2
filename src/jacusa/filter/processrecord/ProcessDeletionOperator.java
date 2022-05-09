@@ -2,7 +2,7 @@ package jacusa.filter.processrecord;
 
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.position.CigarDetailPosProviderBuilder;
 
 /**
@@ -23,14 +23,14 @@ public class ProcessDeletionOperator extends AbstractFilterRecordProcessor {
 	}
 	
 	@Override
-	public void process(Record record) {
+	public void process(ProcessedRecord record) {
 		// iterate over cigarElement indices of deletions
 		for (final int cigarDetailI : record.getDeletion()) {
 			processDeletionOperator(cigarDetailI, record);
 		}	
 	}
 	
-	private void processDeletionOperator(final int cigarDetailI, final Record record) {
+	private void processDeletionOperator(final int cigarDetailI, final ProcessedRecord record) {
 		getPosProcessor().process(
 				new CigarDetailPosProviderBuilder(
 						cigarDetailI, getDistance(), record, getTranslator())

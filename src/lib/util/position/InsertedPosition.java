@@ -1,8 +1,8 @@
 package lib.util.position;
 
 import lib.record.AlignedPosition;
-import lib.record.Record;
-import lib.record.Record.CigarDetail;
+import lib.record.ProcessedRecord;
+import lib.record.ProcessedRecord.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
 // TODO
@@ -14,7 +14,7 @@ class InsertedPosition extends AbstractPosition {
 	
 	InsertedPosition(
 			final AlignedPosition alignPos, 
-			final Record record,
+			final ProcessedRecord record,
 			final CoordinateTranslator translator) {
 
 		super(
@@ -26,7 +26,7 @@ class InsertedPosition extends AbstractPosition {
 	
 	InsertedPosition(
 			final int refPos, final int readPos, final int winPos, 
-			final Record record) {
+			final ProcessedRecord record) {
 
 		super(refPos, readPos, winPos, record);
 	}
@@ -43,7 +43,7 @@ class InsertedPosition extends AbstractPosition {
 	
 	@Override
 	void offset(int offset) {
-		refPos 	+= offset;
+		refPos	+= offset;
 		winPos	+= offset;
 	}
 	
@@ -60,7 +60,7 @@ class InsertedPosition extends AbstractPosition {
 	public static class Builder extends AbstractBuilder<InsertedPosition> {
 		
 		public Builder(
-				final int insertionIndex, final Record record, 
+				final int insertionIndex, final ProcessedRecord record, 
 				final CoordinateTranslator translator) {
 			
 			this(
@@ -70,7 +70,7 @@ class InsertedPosition extends AbstractPosition {
 		}
 		
 		private Builder(
-				final CigarDetail cigarDetail, final Record record, 
+				final CigarDetail cigarDetail, final ProcessedRecord record, 
 				final CoordinateTranslator translator) {
 			
 			super(

@@ -1,7 +1,7 @@
 package lib.data.storage.processor;
 
 import lib.data.storage.Storage;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.AllInsertionsPosProvider;
 import lib.util.position.Position;
@@ -30,10 +30,9 @@ public class InsertionRecordProcessor implements GeneralRecordProcessor {
 	}
 	
 	@Override
-	public void process(final Record record) {
+	public void process(final ProcessedRecord record) {
 		// store insertions
-		final PositionProvider insPosProvider = 
-				new AllInsertionsPosProvider(record, translator);
+		final PositionProvider insPosProvider = new AllInsertionsPosProvider(record, translator);
 		while (insPosProvider.hasNext()) {
 			final Position pos = insPosProvider.next();
 			insStorage.increment(pos);

@@ -7,7 +7,7 @@ import java.util.Map;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
 import lib.util.coordinate.CoordinateController;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.Base;
 import lib.util.Util;
 import lib.util.coordinate.Coordinate;
@@ -37,7 +37,7 @@ public class FileReferenceProvider implements ReferenceProvider {
 	}
 	
 	@Override
-	public void addrecord(Record record) {
+	public void addrecord(ProcessedRecord record) {
 		// nothing to be done here
 	}
 	

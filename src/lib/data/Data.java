@@ -12,4 +12,7 @@ import lib.util.Mergeable;
 public interface Data<T extends Copyable<T> & Mergeable<T>> 
 extends Copyable<T>, Mergeable<T>, Serializable {
 	
+	// TODO do we need this?
+	// void init(GeneralParameter parameter) throws InstantiationException, IllegalAccessException;
+	
 }

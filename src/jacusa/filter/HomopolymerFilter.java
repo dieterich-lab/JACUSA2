@@ -1,8 +1,8 @@
 package jacusa.filter;
 
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.ParallelData;
-import lib.data.fetcher.Fetcher;
 import lib.data.filter.BooleanData;
 
 /**
@@ -13,15 +13,15 @@ import lib.data.filter.BooleanData;
 public class HomopolymerFilter extends AbstractFilter {
 
 	// where to store if a site is a homopolymer
-	private final Fetcher<BooleanData> fetcher;
+	private final DataType<BooleanData> dataType;
 	
 	public HomopolymerFilter(
 			final char id, 
 			final int overhang, 
-			final Fetcher<BooleanData> fetcher) {
+			final DataType<BooleanData> dataType) {
 		
 		super(id, overhang);
-		this.fetcher = fetcher;
+		this.dataType = dataType;
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class HomopolymerFilter extends AbstractFilter {
 	public boolean filter(final ParallelData parallelData) {
 		// combine conditions - one condition with a homopolymer suffices for filtering
 		final DataContainer dataContainer 	= parallelData.getCombPooledData();
-		final BooleanData booleanData 		= fetcher.fetch(dataContainer);
+		final BooleanData booleanData = dataContainer.get(dataType);
 		
 		return booleanData != null && booleanData.getValue();
 	}

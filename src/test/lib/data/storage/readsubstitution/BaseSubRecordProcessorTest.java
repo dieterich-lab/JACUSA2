@@ -30,7 +30,7 @@ import lib.data.storage.readsubstitution.BaseCallInterpreter;
 import lib.data.storage.readsubstitution.BaseSubRecordProcessor;
 import lib.data.validator.CombinedValidator;
 import lib.data.validator.Validator;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.Base;
 import lib.util.LibraryType;
 import lib.util.coordinate.OneCoordinate;
@@ -49,7 +49,7 @@ class BaseSubRecordProcessorTest {
 	@MethodSource("testProcess")
 	void testProcess(
 			BaseSubRecordProcessor testInstance,
-			List<Record> records, 			// currently this is only Single End
+			List<ProcessedRecord> records, 			// currently this is only Single End
 			Map<BaseSub, Storage> actual,	// reference to internal map of testInstance
 			Map<BaseSub, Storage> expected,	// this is what we expect
 			String info 					// JUNIT related; gives more informative test message
@@ -57,7 +57,7 @@ class BaseSubRecordProcessorTest {
 		
 		testInstance.preProcess();
 		// let testInstance process reads
-		for (final Record record : records) {
+		for (final ProcessedRecord record : records) {
 			testInstance.process(record);
 		}
 		testInstance.postProcess();
@@ -211,7 +211,7 @@ class BaseSubRecordProcessorTest {
 			final String[] expectedStr) {
 		
 		// simulate Single End Read
-		final List<Record> records = simulateSEreads(refStart, negativeStrand, cigarStr, readSeq);
+		final List<ProcessedRecord> records = simulateSEreads(refStart, negativeStrand, cigarStr, readSeq);
 		
 		// make nice informative message to output along the test 
 		final String info = info(libraryType, records);
@@ -240,16 +240,16 @@ class BaseSubRecordProcessorTest {
 				.build();
 	}
 	
-	List<Record> simulateSEreads(
+	List<ProcessedRecord> simulateSEreads(
 			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq) {
 		// simulate Single End Read
 		final SAMRecord record = SAMRecordBuilder.createSERead(
 						CONTIG, refStart, negativeStrand, cigarStr, readSeq);
-		return Arrays.asList(new Record(record));
+		return Arrays.asList(new ProcessedRecord(record));
 	}
 	
 	// simulate Paired End Reads
-	List<Record> simulatePEreads(
+	List<ProcessedRecord> simulatePEreads(
 			final int refStart, final boolean negativeStrand, final String cigarStr, final String readSeq, 
 			final int refStart2, final boolean negativeStrand2, final String cigarStr2, final String readSeq2) {
 		
@@ -258,7 +258,7 @@ class BaseSubRecordProcessorTest {
 						refStart2, negativeStrand2, cigarStr2, readSeq2)
 			
 				.getRecords().stream()
-				.map(r -> new Record(r, r.getFileSource().getReader()))
+				.map(r -> new ProcessedRecord(r, r.getFileSource().getReader()))
 				.collect(Collectors.toList());
 	}
 	
@@ -272,7 +272,7 @@ class BaseSubRecordProcessorTest {
 		
 		final Validator validator = new CombinedValidator(new ArrayList<Validator>());
 		
-		final List<Record> records = simulatePEreads(
+		final List<ProcessedRecord> records = simulatePEreads(
 				refStart, negativeStrand, cigarStr, readSeq, 
 				refStart2, negativeStrand2, cigarStr2, readSeq2);
 		
@@ -294,7 +294,7 @@ class BaseSubRecordProcessorTest {
 				info);
 	}
 		
-	String info(final LibraryType libraryType, List<Record> records) {
+	String info(final LibraryType libraryType, List<ProcessedRecord> records) {
 		if (records.size() == 1) {
 			final SAMRecord record = records.get(0).getSAMRecord();
 			return String.format("Lib.: %s, %d-%d %s", libraryType, record.getAlignmentStart(), record.getAlignmentEnd(), record.getCigar());
@@ -385,7 +385,7 @@ class BaseSubRecordProcessorTest {
 		}
 		
 		@Override
-		public Record getRecord() {
+		public ProcessedRecord getProcessedRecord() {
 			return null;
 		}
 		

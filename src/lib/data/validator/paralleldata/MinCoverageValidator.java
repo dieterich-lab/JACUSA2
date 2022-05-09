@@ -4,21 +4,22 @@ import java.util.List;
 
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.Fetcher;
 
 public class MinCoverageValidator 
 implements ParallelDataValidator {
 
-	private final Fetcher<BaseCallCount> bccFetcher;
+	// TODO rename this to dataType coverage
+	private final DataType<BaseCallCount> dataType;
 	private final List<ConditionParameter> conditionParameters;
 	
 	public MinCoverageValidator(
-			final Fetcher<BaseCallCount> bccFetcher,
+			final DataType<BaseCallCount> dataType,
 			final List<ConditionParameter> conditionParameters) {
 
-		this.bccFetcher = bccFetcher;
+		this.dataType = dataType;
 		this.conditionParameters = conditionParameters;
 	}
 	
@@ -26,7 +27,7 @@ implements ParallelDataValidator {
 	public boolean isValid(final ParallelData parallelData) {
 		for (int condI = 0; condI < conditionParameters.size(); condI++) {
 			for (final DataContainer container : parallelData.getData(condI)) {
-				final BaseCallCount bcc = bccFetcher.fetch(container);
+				final BaseCallCount bcc = container.get(dataType);
 				if (bcc.getCoverage() < conditionParameters.get(condI).getMinCoverage()) {
 					return false;
 				}

@@ -1,7 +1,7 @@
 package lib.util.position;
 
 import htsjdk.samtools.SAMRecord;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.Base;
 import lib.util.Copyable;
 
@@ -30,11 +30,11 @@ public interface Position extends Copyable<Position> {
 		return getSAMRecord().getBaseQualities()[getReadPosition()];
 	}
 	
-	Record getRecord();
-
+	ProcessedRecord getProcessedRecord();
+	
 	// convenience
 	default SAMRecord getSAMRecord() {
-		return getRecord().getSAMRecord();
+		return getProcessedRecord().getSAMRecord();
 	}
 	
 	// can be invalid -> -1

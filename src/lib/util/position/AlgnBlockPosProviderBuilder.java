@@ -1,6 +1,6 @@
 package lib.util.position;
 
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
@@ -14,7 +14,7 @@ public class AlgnBlockPosProviderBuilder implements lib.util.Builder<IntervalPos
 	private CoordinateTranslator translator;
 
 	public AlgnBlockPosProviderBuilder(
-			final int algnBlockIndex, final Record record, 
+			final int algnBlockIndex, final ProcessedRecord record, 
 			final CoordinateTranslator translator) {
 		
 		pos 	= new MatchPosition.Builder(algnBlockIndex, record, translator)

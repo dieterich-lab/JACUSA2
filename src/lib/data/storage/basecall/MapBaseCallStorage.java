@@ -5,8 +5,8 @@ import java.util.Map;
 
 import lib.util.Base;
 import lib.util.Util;
+import lib.data.DataType;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.fetcher.Fetcher;
 import lib.data.storage.Storage;
 import lib.data.storage.container.SharedStorage;
 
@@ -16,10 +16,9 @@ implements Storage {
 
 	private final Map<Integer, BaseCallCount> winPos2bcc;
 
-	public MapBaseCallStorage(
-			final SharedStorage sharedStorage,final Fetcher<BaseCallCount> bccFetcher) {
+	public MapBaseCallStorage(final SharedStorage sharedStorage,final DataType<BaseCallCount> dataType) {
+		super(sharedStorage, dataType);
 
-		super(sharedStorage, bccFetcher);
 		final int n = Util.noRehashCapacity(getCoordinateController().getActiveWindowSize() / 2);
 		winPos2bcc 	= new HashMap<>(n);
 	}

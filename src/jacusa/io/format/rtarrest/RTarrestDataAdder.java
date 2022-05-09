@@ -30,10 +30,12 @@ public class RTarrestDataAdder implements DataAdder {
 	@Override
 	public void addData(StringBuilder sb, int valueIndex, int condI, int replicateI, Result result) {
 		final DataContainer container = result.getParellelData().getDataContainer(condI, replicateI);
+		/* TODO replace before
 		sb.append(InputOutput.FIELD_SEP);
 		sb.append(bccParser.wrap(container.getArrestBaseCallCount()));
 		sb.append(InputOutput.FIELD_SEP);
 		sb.append(bccParser.wrap(container.getThroughBaseCallCount()));
+		*/
 	}
 
 }

@@ -16,13 +16,11 @@ import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
 import lib.data.DataContainer;
-import lib.data.DataContainer.AbstractBuilder;
-import lib.data.fetcher.FilteredDataFetcher;
-import lib.data.fetcher.SpecificFilteredDataFetcher;
-import lib.data.filter.BooleanFilteredData;
+import lib.data.DataContainer.AbstractDataContainerBuilder;
+import lib.data.filter.BooleanData;
+import lib.data.filter.FilteredBoolean;
 import lib.data.storage.Cache;
 import lib.data.storage.container.SharedStorage;
-import lib.data.filter.BooleanData;
 import lib.util.ConditionContainer;
 import lib.util.coordinate.CoordinateController;
 
@@ -34,7 +32,7 @@ import lib.util.coordinate.CoordinateController;
  * reference or read based.
  * While both methods are implemented, currently only the read based homopolymer 
  * definition is available.
- * Reference based homopolyer calling needs more testing and optimization.
+ * Reference based homopolymer calling needs more testing and optimization.
  */
 public class HomopolymerFilterFactory
 extends AbstractFilterFactory 
@@ -52,13 +50,11 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 	private HomopolymerMethod method;
 	
 	private final GeneralParameter parameter;
-	// define the location where homopolymer indicator will be stored within a dataContainer
-	private final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredBooleanFetcher;
-	private final DataType<BooleanFilteredData> dataType;
+	private final DataType<FilteredBoolean> dataType;
 
 	public HomopolymerFilterFactory(
 			final GeneralParameter parameter,
-			final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredDataFetcher) {
+			DataType<FilteredBoolean> dataType) {
 
 		super(getOptionBuilder().build());
 		length = MIN_HOMOPOLYMER_LENGTH;
@@ -68,9 +64,8 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 		// current turned off - needs more optimization 
 		// getACOption().add(new HomopolymerMethodOption(this));
 
-		this.parameter 				= parameter;
-		this.filteredBooleanFetcher = filteredDataFetcher;
-		dataType 					= filteredDataFetcher.getDataType();
+		this.parameter 	= parameter;
+		this.dataType 	= dataType;
 	}
 
 	public static Builder getOptionBuilder() {
@@ -85,6 +80,8 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 		
 		final Cache cache = new Cache();
 		
+		final DataType<BooleanData> specificDataType = DataType.get("filter_" + getID(), BooleanData.class);
+		
 		switch (method) {
 		case REFERENCE:
 			// since the reference will be identical for all BAMs and conditions within a 
@@ -94,7 +91,7 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 			final HomopolymerReferenceStorage refStorage = 
 					new HomopolymerReferenceStorage(
 							sharedStorage,
-							getID(), filteredBooleanFetcher, 
+							specificDataType,
 							length,
 							bamFileCount);
 			cache.addStorage(refStorage);
@@ -106,7 +103,7 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 
 		case READ:
 			final HomopolymerStorage readStorage = new HomopolymerStorage(
-					sharedStorage, getID(), filteredBooleanFetcher, length);
+					sharedStorage, specificDataType, length);
 			cache.addStorage(readStorage);
 			
 			final HomopolymerRecordProcessor readRecordProcessor = 
@@ -122,8 +119,10 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 	}
 	
 	@Override
-	public void initDataContainer(AbstractBuilder builder) {
-		builder.guardedWith(dataType);
+	public void initDataContainer(AbstractDataContainerBuilder builder) {
+		if (builder.contains(dataType)) {
+			builder.with(dataType);
+		}
 	}
 	
 	@Override
@@ -131,15 +130,12 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 			final CoordinateController coordinateController,
 			final ConditionContainer conditionContainer) {
 		
-		return new HomopolymerFilter(
-				getID(), 
-				length, 
-				new SpecificFilteredDataFetcher<>(getID(), filteredBooleanFetcher));
+		return new HomopolymerFilter(getID(), length, DataType.get("filter_" + getID(), BooleanData.class));
 	}
 	
 	@Override
 	public void addFilteredData(StringBuilder sb, DataContainer container) {
-		if (filteredBooleanFetcher.fetch(container).contains(getID())) {
+		if (container.get(dataType).contains(getID())) {
 			sb.append('1');
 		} else {
 			sb.append('0');

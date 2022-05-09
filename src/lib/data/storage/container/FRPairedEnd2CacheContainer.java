@@ -1,7 +1,7 @@
 package lib.data.storage.container;
 
 import htsjdk.samtools.SAMRecord;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 
 /**
  * TODO
@@ -16,7 +16,7 @@ extends AbstractStrandedCacheContainer {
 	}
 	
 	@Override
-	protected CacheContainer getCacheContainer(Record record) {
+	protected CacheContainer getCacheContainer(ProcessedRecord record) {
 		final SAMRecord samRecord = record.getSAMRecord();
 		
 		// paired end

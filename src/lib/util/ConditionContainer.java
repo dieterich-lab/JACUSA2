@@ -57,7 +57,7 @@ public class ConditionContainer {
 	public void initReplicateContainer(
 			final SharedStorage sharedStorage,
 			final GeneralParameter parameter,
-			final AbstractMethod method) {
+			final AbstractMethod<?> method) {
 
 		filterContainer = parameter.getFilterConfig().createFilterContainer();
 		parameter.getFilterConfig().registerFilters(sharedStorage.getCoordinateController(), this);

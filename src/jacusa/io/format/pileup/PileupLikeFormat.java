@@ -1,6 +1,8 @@
 package jacusa.io.format.pileup;
 
 import lib.cli.parameter.GeneralParameter;
+import lib.data.DataType;
+import lib.data.count.PileupCount;
 import lib.io.AbstractResultFileFormat;
 import lib.io.ResultWriter;
 
@@ -25,7 +27,8 @@ extends AbstractResultFileFormat {
 
 	@Override
 	public ResultWriter createWriter(String outputFileName) {
-		return new PileupResultWriter(outputFileName);
+		final DataType<PileupCount> pileupCountDt = DataType.get("default", PileupCount.class);
+		return new PileupResultWriter(pileupCountDt, outputFileName);
 	}
 
 }

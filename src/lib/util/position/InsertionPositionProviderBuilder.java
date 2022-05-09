@@ -1,8 +1,8 @@
 package lib.util.position;
 
 import lib.record.AlignedPosition;
-import lib.record.Record;
-import lib.record.Record.CigarDetail;
+import lib.record.ProcessedRecord;
+import lib.record.ProcessedRecord.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
 // TODO
@@ -16,7 +16,7 @@ class InsertionPositionProviderBuilder implements lib.util.Builder<IntervalPosPr
 	private CoordinateTranslator translator;
 
 	InsertionPositionProviderBuilder(
-			final int insI, final Record record, 
+			final int insI, final ProcessedRecord record, 
 			final CoordinateTranslator translator) {
 		
 		// extract corresponding cigar element 

@@ -6,7 +6,7 @@ import lib.data.DataContainer;
 import lib.data.storage.Cache;
 import lib.data.storage.Storage;
 import lib.data.storage.processor.GeneralRecordProcessor;
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.Coordinate;
 
 public class UnstrandedCacheContainter 
@@ -43,8 +43,8 @@ implements CacheContainer {
 	}
 	
 	@Override
-	public void process(final Record record) {
-		sharedStorage.addrecord(record);
+	public void process(final ProcessedRecord record) {
+		sharedStorage.addRecord(record);
 
 		for (final GeneralRecordProcessor recordProcessor : recordProcessors) {
 			recordProcessor.process(record);

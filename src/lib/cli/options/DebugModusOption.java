@@ -9,10 +9,10 @@ import org.apache.commons.cli.Option;
 public class DebugModusOption extends AbstractACOption {
 
 	private final GeneralParameter parameter;
-	private final AbstractMethod method;
+	private final AbstractMethod<?> method;
 	
 	public DebugModusOption(final GeneralParameter parameter,
-			final AbstractMethod method) {
+			final AbstractMethod<?> method) {
 		super("x", "debug");
 		hide();
 		this.parameter = parameter;

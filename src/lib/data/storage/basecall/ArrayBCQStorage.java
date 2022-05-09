@@ -8,9 +8,9 @@ import lib.util.position.Position;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.data.DataContainer;
+import lib.data.DataType;
 import lib.data.count.PileupCount;
 import lib.data.count.basecallquality.BaseCallQualityCount;
-import lib.data.fetcher.Fetcher;
 import lib.data.storage.AbstractStorage;
 import lib.data.storage.WindowCoverage;
 import lib.data.storage.container.SharedStorage;
@@ -19,15 +19,15 @@ public class ArrayBCQStorage
 extends AbstractStorage 
 implements WindowCoverage {
 
-	private final Fetcher<PileupCount> pcFetcher;
+	private final DataType<PileupCount> dataType;
 	private BaseCallQualityCount[] winPos2bcqc;
 	
 	public ArrayBCQStorage(
 			final SharedStorage sharedStorage,
-			final Fetcher<PileupCount> bcqcFetcher) {
+			final DataType<PileupCount> dataType) {
 		super(sharedStorage);
 		
-		this.pcFetcher 	= bcqcFetcher;
+		this.dataType 	= dataType;
 		
 		final int n  	= getCoordinateController().getActiveWindowSize();
 		winPos2bcqc 	= new BaseCallQualityCount[n];
@@ -40,7 +40,7 @@ implements WindowCoverage {
 		}
 
 		final Set<Base> alleles 		= winPos2bcqc[winPos].getAlleles();
-		final PileupCount pileupCount 	= pcFetcher.fetch(dataContainer);
+		final PileupCount pileupCount 	= dataContainer.get(dataType);
 		pileupCount.getBaseCallQualityCount().add(alleles, winPos2bcqc[winPos]); 
 		if (coordinate.getStrand() == STRAND.REVERSE) {
 			pileupCount.getBaseCallQualityCount().invert();

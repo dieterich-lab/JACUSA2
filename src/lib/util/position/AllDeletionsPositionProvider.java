@@ -3,7 +3,7 @@ package lib.util.position;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.record.Record;
+import lib.record.ProcessedRecord;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
@@ -14,7 +14,7 @@ public class AllDeletionsPositionProvider implements PositionProvider {
 	private final CombinedPositionProvider positionProvider;
 		
 	public AllDeletionsPositionProvider(
-			final Record record, final CoordinateTranslator translator) {
+			final ProcessedRecord record, final CoordinateTranslator translator) {
 
 		final List<Integer> cigarDetailIs = record.getDeletion();
 		final int deletions = cigarDetailIs.size();
