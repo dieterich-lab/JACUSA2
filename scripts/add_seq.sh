@@ -52,10 +52,10 @@ then
 fi
 
 bedtools intersect -header -s -loj -a $jacusa -b <(
-	bedtools slop -s -i <(cut -f1-6 $jacusa | awk -v OFS="\t" ' { print $0,$1,$2,$3,"original",".",$6 } ') -g <(cut -f1-2 "$fasta.fai") -l $left -r $right | \
-	bedtools getfasta -s -fi $fasta -bed - -bedOut | \
-	awk -v OFS="\t" ' { print $7,$8,$9,$13,$11,$12 } '
-) | \
+        bedtools slop -s -i <(cut -f1-6 $jacusa | awk -v OFS="\t" ' { print $1,$2,$3,"original",".",$6 } ') -g <(cut -f1-2 "$fasta.fai") -l $left -r $right | \
+        bedtools getfasta -s -fi $fasta -bed - -bedOut | \
+        awk -v OFS="\t" ' { print $1,$2,$3,$7,$5,$6 } '
+) | uniq | \
 	awk -v FS="\t" -v OFS="\t" -f <(cat - <<-"EOF"
 
 	BEGIN 	{
