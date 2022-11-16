@@ -43,8 +43,8 @@ public class MinCoverageConditionOption extends AbstractConditionACOption {
 	@Override
 	public void process(CommandLine line) throws Exception {
     	int minCoverage = Integer.parseInt(line.getOptionValue(getOpt()));
-    	if(minCoverage < 1) {
-    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " must be > 0!");
+    	if(minCoverage < 0) {
+    		throw new IllegalArgumentException(getLongOpt().toUpperCase() + " must be >= 0!");
     	}
     	
     	for (final ConditionParameter condition : getConditionParameters()) {
