@@ -54,7 +54,7 @@ extends AbstractSiteDataAssemblerFactory {
 				positionProcessor));
 		cache.addStorage(bcqcStorage);
 		
-		if (parameter.showInsertionCount() || parameter.showDeletionCount()) {
+		if (parameter.showInsertionCount() || parameter.showInsertionStartCount() || parameter.showDeletionCount()) {
 			cache.addCache(createCoverageCache(sharedStorage, DataType.COVERAGE.getFetcher()));
 		}
 		addInsertionCache(parameter, sharedStorage, cache);

@@ -79,10 +79,12 @@ extends AbstractDataAssemblerFactory {
 			final SharedStorage sharedStorage,
 			final Cache cache) {
 		
-		if (parameter.showInsertionCount()) {
-				cache.addCache(createInsertionCache(
-								sharedStorage, 
-								DataType.INSERTION_COUNT.getFetcher()));
+		if (parameter.showInsertionCount() || parameter.showInsertionStartCount()) {
+			final boolean onlyStart = parameter.showInsertionStartCount();
+			cache.addCache(createInsertionCache(
+							sharedStorage, 
+							DataType.INSERTION_COUNT.getFetcher(),
+							onlyStart));
 		}
 	}
 
@@ -115,7 +117,7 @@ extends AbstractDataAssemblerFactory {
 	}
 
 	Cache createInsertionCache(
-			final SharedStorage sharedStorage, final Fetcher<IntegerData> insFetcher) {
+			final SharedStorage sharedStorage, final Fetcher<IntegerData> insFetcher, final boolean onlyStart) {
 		
 		final Cache cache = new Cache();
 		
@@ -125,7 +127,7 @@ extends AbstractDataAssemblerFactory {
 		final CoordinateTranslator translator = sharedStorage.getCoordinateController()
 				.getCoordinateTranslator();
 
-		cache.addRecordProcessor(new InsertionRecordProcessor(translator, insStorage));
+		cache.addRecordProcessor(new InsertionRecordProcessor(translator, insStorage, onlyStart));
 		
 		return cache;
 	}
@@ -174,7 +176,7 @@ extends AbstractDataAssemblerFactory {
 			algnPosProc.addStorage(bccStorage);
 			baseSub2algnPosProc.put(baseSub, algnPosProc);
 			
-			if (prm.showInsertionCount() || prm.showDeletionCount()) {
+			if (prm.showInsertionCount() || prm.showInsertionStartCount() || prm.showDeletionCount()) {
 				final PositionProcessor covPosProc = new PositionProcessor();
 				final Fetcher<IntegerData> covFetcher = new IntegerDataExtractor(
 						baseSub, 
@@ -186,7 +188,7 @@ extends AbstractDataAssemblerFactory {
 				covPosProc.addStorage(covStorage);
 				baseSub2covPosProc.put(baseSub, covPosProc);
 			}
-			if (prm.showInsertionCount()) {
+			if (prm.showInsertionCount() || prm.showInsertionStartCount()) {
 				final PositionProcessor insPosProc = new PositionProcessor();
 				final Fetcher<IntegerData> insFetcher = new IntegerDataExtractor(
 						baseSub, 
@@ -221,7 +223,8 @@ extends AbstractDataAssemblerFactory {
 				baseSub2algnPosProc,
 				baseSub2covPosProc,
 				baseSub2insPosProc,
-				baseSub2delPosProc));
+				baseSub2delPosProc,
+				prm.showInsertionStartCount()));
 	}
 	
 }

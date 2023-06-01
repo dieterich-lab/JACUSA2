@@ -14,7 +14,7 @@ public class AllInsertionsPosProvider implements PositionProvider {
 	private final CombinedPositionProvider posProvider;
 		
 	public AllInsertionsPosProvider(
-			final Record record, final CoordinateTranslator translator) {
+			final Record record, final CoordinateTranslator translator, final boolean onlyStart) {
 
 		final List<Integer> cigarDetailIs = record.getInsertion();
 		final int insertions = cigarDetailIs.size();
@@ -22,7 +22,7 @@ public class AllInsertionsPosProvider implements PositionProvider {
 		
 		for (int index = 0; index < insertions; ++index) {
 			posProviders.add(
-					new InsertionPositionProviderBuilder(index, record, translator)
+					new InsertionPositionProviderBuilder(index, record, translator, onlyStart)
 					.adjustWindowPos()
 					.build());
 		}

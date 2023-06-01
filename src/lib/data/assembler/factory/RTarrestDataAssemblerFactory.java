@@ -66,7 +66,7 @@ extends AbstractSiteDataAssemblerFactory {
 				locInterpreter, 
 				validators));
 
-		if (parameter.showInsertionCount() || parameter.showDeletionCount()) {
+		if (parameter.showInsertionCount() || parameter.showInsertionStartCount() || parameter.showDeletionCount()) {
 			cache.addCache(createCoverageCache(sharedStorage, DataType.COVERAGE.getFetcher()));
 		}
 		addInsertionCache(parameter, sharedStorage, cache);
@@ -161,7 +161,7 @@ extends AbstractSiteDataAssemblerFactory {
 			alignedPosProcessor.addStorage(rtArrestCountStorage);
 			baseSub2alignedPosProcessor.put(baseSub, alignedPosProcessor);
 			
-			if (parameter.showInsertionCount() || parameter.showDeletionCount()) {
+			if (parameter.showInsertionCount() || parameter.showInsertionStartCount() || parameter.showDeletionCount()) {
 				final PositionProcessor covPosProcessor = new PositionProcessor();
 				final Fetcher<IntegerData> covFetcher = new IntegerDataExtractor(
 						baseSub, 
@@ -173,7 +173,7 @@ extends AbstractSiteDataAssemblerFactory {
 				covPosProcessor.addStorage(covStorage);
 				baseSub2covPosProcessor.put(baseSub, covPosProcessor);
 			}
-			if (parameter.showInsertionCount()) {
+			if (parameter.showInsertionCount() || parameter.showInsertionStartCount()) {
 				final PositionProcessor insPosProcessor = new PositionProcessor();
 				final Fetcher<IntegerData> insFetcher = new IntegerDataExtractor(
 						baseSub, 
@@ -211,7 +211,8 @@ extends AbstractSiteDataAssemblerFactory {
 				baseSub2alignedPosProcessor,
 				baseSub2covPosProcessor,
 				baseSub2insPosProcessor,
-				baseSub2delPosProcessor) );
+				baseSub2delPosProcessor,
+				parameter.showInsertionStartCount()));
 		return cache;
 	}
 	

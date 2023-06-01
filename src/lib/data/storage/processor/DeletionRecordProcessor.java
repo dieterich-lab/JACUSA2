@@ -29,7 +29,7 @@ public class DeletionRecordProcessor implements GeneralRecordProcessor {
 		// nothing to be done
 	}
 	
-	@Override
+	@Override // TODO adjust deletion at every position
 	public void process(final Record record) {
 		// store deletions
 		final PositionProvider delPosProvider = 

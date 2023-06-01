@@ -342,7 +342,8 @@ class BaseSubRecordProcessorTest {
 				baseSub2posProcs,
 				new HashMap<>(),
 				new HashMap<>(),
-				new HashMap<>());
+				new HashMap<>(),
+				false);
 	}
 	
 	// ',' separated array of strings of the following form: "x2y,winPos,{A|C|G|T}" 

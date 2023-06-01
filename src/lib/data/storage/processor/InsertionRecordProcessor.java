@@ -15,13 +15,16 @@ public class InsertionRecordProcessor implements GeneralRecordProcessor {
 	private final CoordinateTranslator translator;
 	
 	private final Storage insStorage;
+	private final boolean onlyStart;
 	
 	public InsertionRecordProcessor(
 			final CoordinateTranslator translator,
-			final Storage insStorage) {
+			final Storage insStorage,
+			final boolean onlyStart) {
 		
 		this.translator	= translator;
 		this.insStorage	= insStorage;
+		this.onlyStart	= onlyStart;
 	}
 
 	@Override
@@ -33,7 +36,7 @@ public class InsertionRecordProcessor implements GeneralRecordProcessor {
 	public void process(final Record record) {
 		// store insertions
 		final PositionProvider insPosProvider = 
-				new AllInsertionsPosProvider(record, translator);
+				new AllInsertionsPosProvider(record, translator, onlyStart);
 		while (insPosProvider.hasNext()) {
 			final Position pos = insPosProvider.next();
 			insStorage.increment(pos);

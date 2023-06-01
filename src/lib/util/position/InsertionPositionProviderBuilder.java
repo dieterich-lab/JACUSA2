@@ -5,7 +5,7 @@ import lib.record.Record;
 import lib.record.Record.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
-// TODO
+// FIXME count only the start position
 class InsertionPositionProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
 	
 	// position of the insertion
@@ -18,6 +18,13 @@ class InsertionPositionProviderBuilder implements lib.util.Builder<IntervalPosPr
 	InsertionPositionProviderBuilder(
 			final int insI, final Record record, 
 			final CoordinateTranslator translator) {
+		this(insI, record, translator, false);
+	}
+	
+	InsertionPositionProviderBuilder(
+			final int insI, final Record record, 
+			final CoordinateTranslator translator,
+			final boolean onlyStart) {
 		
 		// extract corresponding cigar element 
 		final int cigarElementI 	= record.getInsertion().get(insI);
@@ -31,7 +38,11 @@ class InsertionPositionProviderBuilder implements lib.util.Builder<IntervalPosPr
 		final int winPos					= translator.ref2winPos(refPos);
 		
 		pos 	= new InsertedPosition(refPos, readPos, winPos, record);
+		
 		length 	= cigarElement.getCigarElement().getLength();
+		if (onlyStart) {
+			length = 1;
+		}
 		
 		this.translator = translator;
 	}

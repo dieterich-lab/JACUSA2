@@ -67,7 +67,7 @@ public class CallWorker extends AbstractWorker {
 			result = new DeletionCountResult(baseSubs, result, minkaPrm, delCountProv);
 		}
 		
-		if (getParameter().showInsertionCount()) {
+		if (getParameter().showInsertionCount() || getParameter().showInsertionStartCount()) {
 			final MinkaParameter minkaPrm = new MinkaParameter();
 			final InsertionEstCountProvider insCountProv = 
 					new InsertionEstCountProvider(minkaPrm.getMaxIterations());

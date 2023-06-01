@@ -13,10 +13,10 @@ import org.apache.commons.math3.special.Gamma;
  * TODO add comments
  */
 public class MinkaEstimateDirMultAlpha {
-
+	
 	private final MinkaParameter minkaEstPrm;
-
-	private double[] tmpRowWiseSums;
+	
+	// private double[] tmpRowWiseSums;
 	
 	public MinkaEstimateDirMultAlpha(final MinkaParameter minkaEstimateParameter) {
 		this.minkaEstPrm = minkaEstimateParameter;
@@ -116,12 +116,12 @@ public class MinkaEstimateDirMultAlpha {
 					estimateInfo.add("backtrack" + estContainer.getId(), Integer.toString(estContainer.getIteration()));
 					alphaNew = backtracking(estContainer.getAlpha(), gradient, b_DenominatorSum, Q);
 					if (alphaNew == null) {
-						this.tmpRowWiseSums = null;
+						// this.tmpRowWiseSums = null;
 						return false;
 					}
 				} else {
 					estimateInfo.add("reset" + estContainer.getId(), Integer.toString(estContainer.getIteration()));
-					this.tmpRowWiseSums = null;
+					// this.tmpRowWiseSums = null;
 					return false;
 				}
 				// update value
@@ -139,15 +139,19 @@ public class MinkaEstimateDirMultAlpha {
 		}
 
 		// reset
-		this.tmpRowWiseSums = null;
+		// this.tmpRowWiseSums = null;
 		return true;
 	}
 	
 	private double[] getRowWiseSums(final NominalData dirMultData) {
+		/* FIXME
 		if (tmpRowWiseSums == null) {
 			tmpRowWiseSums = dirMultData.getRowWiseSums();
 		}
 		return tmpRowWiseSums;
+		*/
+		
+		return dirMultData.getRowWiseSums();
 	}
 	
 	// calculate likelihood

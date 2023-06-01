@@ -45,13 +45,15 @@ implements GeneralRecordProcessor {
 	private final Map<BaseSub, PositionProcessor> covPosProcs;
 	private final Map<BaseSub, PositionProcessor> insPosProcs;
 	private final Map<BaseSub, PositionProcessor> delPosProcs;
-
+	private final boolean onlyStart;
+	
 	public BaseSubRecordProcessor(
 			final SharedStorage sharedStorage,
 			final BaseCallInterpreter bci,
 			final Validator validator,
 			final Set<BaseSub> queryBaseSubs,
-			final Map<BaseSub, PositionProcessor> alignedPosProcessors) {
+			final Map<BaseSub, PositionProcessor> alignedPosProcessors,
+			final boolean onlyStart) {
 		this(
 				sharedStorage,
 				bci,
@@ -60,7 +62,8 @@ implements GeneralRecordProcessor {
 				alignedPosProcessors,
 				new EnumMap<>(BaseSub.class),
 				new EnumMap<>(BaseSub.class),
-				new EnumMap<>(BaseSub.class));
+				new EnumMap<>(BaseSub.class),
+				onlyStart);
 	}
 	
 	public BaseSubRecordProcessor(
@@ -71,7 +74,8 @@ implements GeneralRecordProcessor {
 			final Map<BaseSub, PositionProcessor> alignedPosProcs,
 			final Map<BaseSub, PositionProcessor> covPosProcs,
 			final Map<BaseSub, PositionProcessor> insPosProcs,
-			final Map<BaseSub, PositionProcessor> delPosProcs) {
+			final Map<BaseSub, PositionProcessor> delPosProcs,
+			final boolean onlyStart) {
 
 		this.sharedStorage 		= sharedStorage;
 		
@@ -88,6 +92,8 @@ implements GeneralRecordProcessor {
 		this.covPosProcs		= covPosProcs;
 		this.insPosProcs		= insPosProcs;
 		this.delPosProcs		= delPosProcs;
+		
+		this.onlyStart 			= onlyStart;
 	}
 	
 	protected void processSE(
@@ -142,7 +148,7 @@ implements GeneralRecordProcessor {
 		
 		if (! insPosProcs.isEmpty()) {
 			// process insertions and store dependent on base substitutions
-			final PositionProvider insPosProvider = new AllInsertionsPosProvider(record, getTranslator());
+			final PositionProvider insPosProvider = new AllInsertionsPosProvider(record, getTranslator(), onlyStart);
 			while (insPosProvider.hasNext()) {
 				final Position insPos = insPosProvider.next();
 				for (final BaseSub baseSub : observedBaseSubs) {

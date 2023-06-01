@@ -48,6 +48,7 @@ implements HasConditionParameter, HasReadTag {
 	private final SortedSet<BaseSub> baseSubs;
 	private boolean showDeletionCount;
 	private boolean showInsertionCount;
+	private boolean showInsertionStartCount;
 	private boolean showAllSites;
 	
 	// debug flag
@@ -227,6 +228,10 @@ implements HasConditionParameter, HasReadTag {
 	public boolean showInsertionCount() {
 		return showInsertionCount;
 	}
+	
+	public boolean showInsertionStartCount() {
+		return showInsertionStartCount;
+	}
 
 	/**
 	 * @param showDeletionCount the showDeletionCount to set
@@ -234,14 +239,24 @@ implements HasConditionParameter, HasReadTag {
 	public void showDeletionCount(boolean showDeletionCount) {
 		this.showDeletionCount = showDeletionCount;
 	}
-
+	
 	/**
 	 * @param showInsertionCount the showInsertionCount to set
 	 */
-	public void showInsertionCount(boolean showInsertionCount) {
+	public void showInsertionCount(boolean showInsertionCount) throws Exception {
+		if (showInsertionStartCount && showInsertionCount) {
+			throw new Exception("Cannot set both to true");
+		}
 		this.showInsertionCount = showInsertionCount;
 	}
-
+	
+	public void showInsertionStartsCount(boolean showInsertionStartCount) throws Exception {
+		if (this.showInsertionCount && showInsertionStartCount) {
+			throw new Exception("Cannot set both to true");
+		}
+		this.showInsertionStartCount = showInsertionStartCount;
+	}
+	
 	/**
 	 * @return the showDeletionCount
 	 */

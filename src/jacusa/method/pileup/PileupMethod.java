@@ -36,6 +36,7 @@ import lib.cli.options.ResultFileOption;
 import lib.cli.options.ResultFormatOption;
 import lib.cli.options.ShowDeletionCountOption;
 import lib.cli.options.ShowInsertionCountOption;
+import lib.cli.options.ShowInsertionStartCountOption;
 import lib.cli.options.ThreadWindowSizeOption;
 import lib.cli.options.WindowSizeOption;
 import lib.cli.options.condition.MaxDepthConditionOption;
@@ -99,6 +100,7 @@ extends AbstractMethod {
 		addACOption(new StratifyByReadTagOption(getParameter()));
 		addACOption(new ShowDeletionCountOption(getParameter()));
 		addACOption(new ShowInsertionCountOption(getParameter()));
+		addACOption(new ShowInsertionStartCountOption(getParameter()));
 		
 		addACOption(new BedCoordinatesOption(getParameter()));
 		addACOption(new ResultFileOption(getParameter()));
@@ -239,7 +241,7 @@ extends AbstractMethod {
 					addBaseSub2int(builder, DataType.BASE_SUBST2DELETION_COUNT);
 					addBaseSub2int(builder, DataType.BASE_SUBST2COVERAGE);
 				}
-				if (parameter.showInsertionCount()) {
+				if (parameter.showInsertionCount() || parameter.showInsertionStartCount()) {
 					addBaseSub2int(builder, DataType.BASE_SUBST2INSERTION_COUNT);
 					addBaseSub2int(builder, DataType.BASE_SUBST2COVERAGE);
 				}
@@ -248,7 +250,7 @@ extends AbstractMethod {
 				add(builder, DataType.DELETION_COUNT);
 				guardedAdd(builder, DataType.COVERAGE);
 			}
-			if (parameter.showInsertionCount()) {
+			if (parameter.showInsertionCount() || parameter.showInsertionStartCount()) {
 				add(builder, DataType.INSERTION_COUNT);
 				guardedAdd(builder, DataType.COVERAGE);
 			}
