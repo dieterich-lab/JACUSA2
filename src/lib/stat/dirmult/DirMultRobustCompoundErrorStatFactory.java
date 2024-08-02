@@ -5,6 +5,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import lib.io.ResultFormat;
+import lib.stat.AbstractStat;
 import lib.stat.AbstractStatFactory;
 import lib.stat.estimation.provider.EstimationContainerProvider;
 import lib.stat.estimation.provider.pileup.InSilicoEstimationPileupProvider;
@@ -27,7 +28,7 @@ extends AbstractStatFactory {
 	}
 
 	@Override
-	public CallStat newInstance(double threshold, final int conditions) {
+	public AbstractStat newInstance(double threshold, final int conditions) {
 		EstimationContainerProvider dirMultPileupCountProvider;
 		switch (conditions) {
 		case 1:
@@ -47,7 +48,13 @@ extends AbstractStatFactory {
 		default:
 			throw new IllegalStateException("Number of conditions not supported: " + conditions);
 		}
-		return new CallStat(threshold, dirMultPileupCountProvider, dirMultParameter);
+		
+		final CallStat callStat = new CallStat(threshold, dirMultPileupCountProvider, dirMultParameter);
+		if (dirMultParameter.getRuns() > 0) {
+			return new AdvancedCallStat(callStat, dirMultParameter.getRuns(), dirMultParameter.getLimit());
+		}
+		
+		return callStat;
 	}
 
 	@Override

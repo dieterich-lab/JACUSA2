@@ -55,4 +55,16 @@ public final class Util {
 		return sb.toString();
 	}
 
+	public static String join(final double[] a, final char sep) {
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < a.length; ++i) {
+			if (i > 0) {
+				sb.append(sep);
+			}
+			sb.append(a[i]);
+		}
+		return sb.toString();
+	}
+	
 }

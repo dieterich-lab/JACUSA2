@@ -65,7 +65,7 @@ public abstract class AbstractStatFactory {
 
 		final String[] args = line.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
 		final CommandLineParser parser = new DefaultParser();
-		
+
 		CommandLine cmd = null;
 		try {
 			cmd = parser.parse(options, args);

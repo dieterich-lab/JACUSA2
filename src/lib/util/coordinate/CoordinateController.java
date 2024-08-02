@@ -3,7 +3,6 @@ package lib.util.coordinate;
 import lib.cli.parameter.ConditionParameter;
 import lib.util.ConditionContainer;
 import lib.util.LibraryType;
-import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.coordinate.advancer.CoordinateAdvancer;
 import lib.util.coordinate.advancer.StrandedJumpingCoordinateAdvancer;

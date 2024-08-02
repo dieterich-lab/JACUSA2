@@ -114,7 +114,8 @@ public class StatFactoryOption extends AbstractACOption {
 		// if there are options, make regular options for DefaultParser by adding "--"
 		if (beginIndex > -1) {
 			statFactoryCLI = statOptions.substring(beginIndex).replaceAll(
-					Character.toString(InputOutput.WITHIN_FIELD_SEP), "--"); 
+					Character.toString(InputOutput.WITHIN_FIELD_SEP),
+					Character.toString(InputOutput.WITHIN_FIELD_SEP) + "--"); 
 		}
 		
 		// update statistic factory and set command line options

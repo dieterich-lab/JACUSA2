@@ -52,7 +52,21 @@ class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 				.hasArg(false)
 				.desc("Show detailed info of Newton's method in output (not in VCF output).")
 				.build());
-		
+
+		// TODO
+		options.addOption(Option.builder()
+				.longOpt("runs")
+				.hasArg(true)
+				.desc("Number of subsampling runs.")
+				.build());
+		// TODO
+		options.addOption(Option.builder()
+				.longOpt("limit")
+				.hasArg(true)
+				.desc("Number of minimal runs with (LR-obs - LR-sampled > 0).")
+				.build());
+
+
 		return options;
 	}
 	
@@ -75,12 +89,20 @@ class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 			case "calcPvalue":
 				dirMultParameter.setCalcPValue(true);
 				break;
-				
+
 			case "showAlpha":
 				if (resultFormat.getID() == VCFcallFormat.CHAR) {
 					throw new IllegalStateException("VCF output format does not support showAlpha");
 				}
 				dirMultParameter.setShowAlpha(true);
+				break;
+
+			case "runs":
+				dirMultParameter.setRuns(Integer.parseInt(cmd.getOptionValue(longOpt)));
+				break;
+
+			case "limit":
+				dirMultParameter.setLimit(Integer.parseInt(cmd.getOptionValue(longOpt)));
 				break;
 
 			default:

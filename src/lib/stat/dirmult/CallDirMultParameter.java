@@ -7,6 +7,7 @@ class CallDirMultParameter extends AbstractDirMultParameter {
 	public static final double ESTIMATED_ERROR = 0.01;
 	
 	private double estError;
+
 	
 	public CallDirMultParameter() {
 		super(false, false, new MinkaParameter());
@@ -20,5 +21,6 @@ class CallDirMultParameter extends AbstractDirMultParameter {
 	public void setEstimatedError(final double estError) {
 		this.estError = estError;
 	}
+
 	
 }

@@ -27,6 +27,9 @@ public interface Position extends Copyable<Position> {
 	}
 	
 	default byte getReadBaseCallQuality() {
+		if (getSAMRecord().getBaseQualities().length == 0) {
+			return (byte)40;
+		}
 		return getSAMRecord().getBaseQualities()[getReadPosition()];
 	}
 	

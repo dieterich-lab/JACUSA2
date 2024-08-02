@@ -185,7 +185,7 @@ public class ConditionParameter {
 		final List<SAMValidationError> errors = samRecord.isValid();
 
 		if (! samRecord.getReadUnmappedFlag()
-				&& ! samRecord.getNotPrimaryAlignmentFlag() // ignore non-primary alignments CHECK
+				&& ! samRecord.isSecondaryAlignment() // ignore non-primary alignments CHECK
 				&& (mapq < 0 || mapq >= getMinMAPQ()) // filter by mapping quality
 				&& (getFilterFlags() == 0 || (getFilterFlags() > 0 && ((samRecord.getFlags() & getFilterFlags()) == 0)))
 				&& (getRetainFlags() == 0 || (getRetainFlags() > 0 && ((samRecord.getFlags() & getRetainFlags()) > 0)))
@@ -230,7 +230,7 @@ public class ConditionParameter {
 		final File file = new File(inputFilename);
 		return SamReaderFactory
 				.make()
-				.setOption(Option.CACHE_FILE_BASED_INDEXES, true)
+				.setOption(Option.CACHE_FILE_BASED_INDEXES, false)
 				.setOption(Option.DONT_MEMORY_MAP_INDEX, false)
 				.validationStringency(ValidationStringency.LENIENT)
 				.open(file);

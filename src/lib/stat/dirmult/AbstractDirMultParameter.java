@@ -11,6 +11,9 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	private boolean calcPValue;
 	private MinkaParameter minkaParameter;
 	
+	private int runs = 0;
+	private int limit = 0;
+	
 	public AbstractDirMultParameter(
 			final boolean showAlpha,
 			final boolean calcPValue,
@@ -49,6 +52,27 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	@Override
 	public void setMinkaParameter(final MinkaParameter minkaParameter) {
 		this.minkaParameter = minkaParameter;
+	}
+	
+
+	@Override
+	public int getLimit() {
+		return limit;
+	}
+	
+	@Override
+	public int getRuns() {
+		return runs;
+	}
+	
+	@Override
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
+	
+	@Override
+	public void setRuns(int runs) {
+		this.runs = runs;
 	}
 	
 }

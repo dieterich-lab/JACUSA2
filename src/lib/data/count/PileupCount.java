@@ -101,6 +101,5 @@ public class PileupCount implements Data<PileupCount> {
 		hash = 31 * hash + baseCallQualCount.hashCode();
 		return hash;
 	}
-	
-	
+
 }
