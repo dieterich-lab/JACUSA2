@@ -100,7 +100,7 @@ public class AdvancedCallStat extends AbstractStat {
 			}
 		}
 		// write successful sampling
-		result.getResultInfo().add("subsampling_scores", Util.join(values, ';'));
+		result.getResultInfo().add("subsampling_scores", Util.join(values, ','));
 		if (check >= limit) {
 			result.getResultInfo().add("subsampling", "passed");
 		} else {
