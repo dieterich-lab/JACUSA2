@@ -7,7 +7,7 @@ import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class AllInsertionsPosProvider implements PositionProvider {
 

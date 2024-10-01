@@ -55,7 +55,7 @@ class MinBASQConditionOptionTest extends AbstractConditionACOptionTest<Byte> {
 	}
 
 	Byte c(int i) {
-		return new Byte((byte)i);
+		return Byte.parseByte(Integer.toString(i));
 	}
 	
 	List<Byte> c(List<Integer> l) {

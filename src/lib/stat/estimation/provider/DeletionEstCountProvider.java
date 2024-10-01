@@ -11,6 +11,6 @@ public class DeletionEstCountProvider extends INDELestimationCountProvider {
 	
 	@Override
 	IntegerData getCount(DataContainer container) {
-		return container.getDeletionCount();
+		return new IntegerData(container.getPileupCount().getINDELCount().getDeletionCount());
 	}
 }

@@ -1,7 +1,7 @@
 package lib.worker;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class ThreadIdContainer {
 

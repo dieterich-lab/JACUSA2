@@ -1,7 +1,7 @@
 package lib.stat.nominal;
 
 /**
- * TODO
+ * TODO add documentation
  */
 class AbstractNominalData implements NominalData {
 

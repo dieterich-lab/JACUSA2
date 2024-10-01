@@ -7,7 +7,7 @@ import java.util.Iterator;
 import lib.util.coordinate.Coordinate;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public interface CoordinateProvider extends Iterator<Coordinate>, Closeable { 
 

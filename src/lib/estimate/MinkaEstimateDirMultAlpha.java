@@ -144,13 +144,6 @@ public class MinkaEstimateDirMultAlpha {
 	}
 	
 	private double[] getRowWiseSums(final NominalData dirMultData) {
-		/* FIXME
-		if (tmpRowWiseSums == null) {
-			tmpRowWiseSums = dirMultData.getRowWiseSums();
-		}
-		return tmpRowWiseSums;
-		*/
-		
 		return dirMultData.getRowWiseSums();
 	}
 	

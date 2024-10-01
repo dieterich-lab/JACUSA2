@@ -9,7 +9,7 @@ import htsjdk.samtools.SamReader;
 import lib.cli.parameter.ConditionParameter;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class RecordIterator implements Iterator<Record> {
 

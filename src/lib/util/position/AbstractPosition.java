@@ -3,7 +3,7 @@ package lib.util.position;
 import lib.record.Record;
 
 /**
- * TODO
+ * TODO add documentation
  */
 abstract class AbstractPosition implements Position {
 	

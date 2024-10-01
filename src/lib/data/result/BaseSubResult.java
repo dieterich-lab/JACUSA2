@@ -14,8 +14,9 @@ import lib.io.InputOutput;
 import lib.util.Info;
 
 /**
- * TODO
+ * TODO add documentation
  */
+@Deprecated
 public class BaseSubResult implements Result {
 
 	private static final long serialVersionUID = 1L;

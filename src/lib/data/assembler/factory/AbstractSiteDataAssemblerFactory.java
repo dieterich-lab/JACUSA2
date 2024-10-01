@@ -1,13 +1,6 @@
 package lib.data.assembler.factory;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-
 import jacusa.filter.FilterContainer;
-import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
@@ -15,27 +8,18 @@ import lib.data.IntegerData;
 import lib.data.DataContainer.AbstractBuilderFactory;
 import lib.data.assembler.DataAssembler;
 import lib.data.assembler.SiteDataAssembler;
-import lib.data.count.basecall.BaseCallCount;
+import lib.data.count.PileupCount;
 import lib.data.fetcher.Fetcher;
-import lib.data.fetcher.basecall.BCCextractor;
-import lib.data.fetcher.basecall.IntegerDataExtractor;
 import lib.data.storage.Cache;
-import lib.data.storage.PositionProcessor;
 import lib.data.storage.Storage;
-import lib.data.storage.basecall.DefaultBCCStorage;
+import lib.data.storage.indel.InsertionStorage;
+import lib.data.storage.indel.DeletionStorage;
 import lib.data.storage.container.CacheContainer;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.integer.ArrayIntegerStorage;
-import lib.data.storage.integer.MapIntegerStorage;
 import lib.data.storage.processor.CoverageRecordProcessor;
 import lib.data.storage.processor.DeletionRecordProcessor;
 import lib.data.storage.processor.InsertionRecordProcessor;
-import lib.data.storage.readsubstitution.BaseCallInterpreter;
-import lib.data.storage.readsubstitution.BaseSubRecordProcessor;
-import lib.data.validator.CombinedValidator;
-import lib.data.validator.DefaultBaseCallValidator;
-import lib.data.validator.MinBASQValidator;
-import lib.data.validator.Validator;
 import lib.util.coordinate.CoordinateTranslator;
 
 abstract class AbstractSiteDataAssemblerFactory
@@ -70,7 +54,7 @@ extends AbstractDataAssemblerFactory {
 		if (parameter.showDeletionCount()) {
 				cache.addCache(createDeletionCache(
 								sharedStorage, 
-								DataType.DELETION_COUNT.getFetcher()));
+								DataType.PILEUP_COUNT.getFetcher()));
 		}
 	}
 	
@@ -83,7 +67,7 @@ extends AbstractDataAssemblerFactory {
 			final boolean onlyStart = parameter.showInsertionStartCount();
 			cache.addCache(createInsertionCache(
 							sharedStorage, 
-							DataType.INSERTION_COUNT.getFetcher(),
+							DataType.PILEUP_COUNT.getFetcher(),
 							onlyStart));
 		}
 	}
@@ -101,11 +85,11 @@ extends AbstractDataAssemblerFactory {
 	}
 
 	Cache createDeletionCache(
-			final SharedStorage sharedStorage, final Fetcher<IntegerData> delFetcher) {
+			final SharedStorage sharedStorage, final Fetcher<PileupCount> delFetcher) {
 
 		final Cache cache = new Cache();
 
-		final Storage delStorage = new MapIntegerStorage(sharedStorage, delFetcher);
+		final Storage delStorage = new DeletionStorage(sharedStorage, delFetcher);
 		cache.addStorage(delStorage);
 
 		final CoordinateTranslator translator = sharedStorage.getCoordinateController()
@@ -117,11 +101,11 @@ extends AbstractDataAssemblerFactory {
 	}
 
 	Cache createInsertionCache(
-			final SharedStorage sharedStorage, final Fetcher<IntegerData> insFetcher, final boolean onlyStart) {
+			final SharedStorage sharedStorage, final Fetcher<PileupCount> insFetcher, final boolean onlyStart) {
 		
 		final Cache cache = new Cache();
 		
-		final Storage insStorage = new MapIntegerStorage(sharedStorage, insFetcher);
+		final Storage insStorage = new InsertionStorage(sharedStorage, insFetcher);
 		cache.addStorage(insStorage);
 
 		final CoordinateTranslator translator = sharedStorage.getCoordinateController()
@@ -132,6 +116,7 @@ extends AbstractDataAssemblerFactory {
 		return cache;
 	}
 	
+	/* TODO never used
 	protected void stratifyByBaseSub(
 			final GeneralParameter prm,
 			final SharedStorage sharedStorage, 
@@ -226,5 +211,6 @@ extends AbstractDataAssemblerFactory {
 				baseSub2delPosProc,
 				prm.showInsertionStartCount()));
 	}
+	*/
 	
 }

@@ -19,7 +19,8 @@ class CallStat extends AbstractStat {
 
 	CallStat(final double threshold, final EstimationContainerProvider estContainerProv,
 			final DirMultParameter dirMultPrm) {
-
+		super(dirMultPrm.getSampleRuns());
+		
 		this.threshold = threshold;
 		this.estContainerProv = estContainerProv;
 		this.dirMultPrm = dirMultPrm;
@@ -28,7 +29,7 @@ class CallStat extends AbstractStat {
 	}
 
 	@Override
-	public void addStatResultInfo(final Result statResult) {
+	protected void processAfterCalculate(final Result statResult) {
 		if (dirMultPrm.isShowAlpha()) {
 			dirMult.addShowAlpha();
 		}
@@ -67,4 +68,9 @@ class CallStat extends AbstractStat {
 		return statValue < threshold;
 	}
 
+	@Override
+	public int getSampleRuns() {
+		return dirMultPrm.getSampleRuns();
+	} 
+	
 }

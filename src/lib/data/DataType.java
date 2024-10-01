@@ -57,14 +57,18 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	public static final DataType<BaseSub2BCC> THROUGH_BASE_SUBST = 
 			create("Through", BaseSub2BCC.class);
 
+	/*
 	public static final DataType<IntegerData> COVERAGE = 
 			create("Total coverage", IntegerData.class);
+	*/
 
+	/* TODO remove
 	public static final DataType<IntegerData> DELETION_COUNT = 
 			create("Deletion count", IntegerData.class);
 
 	public static final DataType<IntegerData> INSERTION_COUNT = 
 			create("Insertion count", IntegerData.class);
+	*/
 	
 	public static final DataType<BaseCallCountFilteredData> F_BCC = 
 			create(DEFAULT, BaseCallCountFilteredData.class);
@@ -124,7 +128,7 @@ public final class DataType<T extends Data<T>> implements Serializable {
 				final Method method = enclosingClass.getMethod("newInstance");
 				return enclosingClass.cast(method.invoke(null));
 			}
-			return enclosingClass.newInstance();
+			return enclosingClass.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);

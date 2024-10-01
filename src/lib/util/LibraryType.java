@@ -1,7 +1,7 @@
 package lib.util;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public enum LibraryType {
 	RF_FIRSTSTRAND, 

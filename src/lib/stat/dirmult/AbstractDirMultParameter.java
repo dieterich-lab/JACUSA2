@@ -3,7 +3,7 @@ package lib.stat.dirmult;
 import lib.estimate.MinkaParameter;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public abstract class AbstractDirMultParameter implements DirMultParameter {
 	
@@ -61,7 +61,7 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	}
 	
 	@Override
-	public int getRuns() {
+	public int getSampleRuns() {
 		return runs;
 	}
 	

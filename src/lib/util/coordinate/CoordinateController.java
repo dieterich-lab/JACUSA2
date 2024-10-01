@@ -10,7 +10,7 @@ import lib.util.coordinate.advancer.UnstrandedJumpingCoordinateAdvancer;
 import lib.util.coordinate.provider.WindowedCoordinateStaticProvider;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class CoordinateController {
 

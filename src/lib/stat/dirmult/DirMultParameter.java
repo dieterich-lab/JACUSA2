@@ -3,7 +3,7 @@ package lib.stat.dirmult;
 import lib.estimate.MinkaParameter;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public interface DirMultParameter {
 
@@ -18,7 +18,7 @@ public interface DirMultParameter {
 	MinkaParameter getMinkaEstimateParameter();
 	void setMinkaParameter(MinkaParameter estimateAlpha);
 	
-	int getRuns();
+	int getSampleRuns();
 	void setRuns(int runs);
 
 	int getLimit();

@@ -5,7 +5,7 @@ import lib.data.result.Result;
 import lib.util.coordinate.Coordinate;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class ResultFeature implements Feature {
 

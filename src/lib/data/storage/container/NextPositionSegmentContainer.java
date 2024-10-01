@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class NextPositionSegmentContainer {
 

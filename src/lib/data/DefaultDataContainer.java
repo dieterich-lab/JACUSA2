@@ -117,27 +117,12 @@ public class DefaultDataContainer implements DataContainer {
 	public BaseCallCount getThroughBaseCallCount() {
 		return get(DataType.THROUGH_BCC);
 	}
-	
-	@Override
-	public IntegerData getDeletionCount() {
-		return get(DataType.DELETION_COUNT);
-	}
 
 	@Override
 	public BaseSub2IntData getBaseSub2InsertionCount() {
 		return get(DataType.BASE_SUBST2INSERTION_COUNT);
 	}
 
-	@Override
-	public IntegerData getInsertionCount() {
-		return get(DataType.INSERTION_COUNT);
-	}
-	
-	@Override
-	public IntegerData getCoverage() {
-		return get(DataType.COVERAGE);
-	}
-	
 	@Override
 	public <T extends Data<T>> boolean contains(DataType<T> dataType) {
 		return map.containsKey(dataType);

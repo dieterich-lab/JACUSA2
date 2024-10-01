@@ -12,17 +12,20 @@ public class PileupCount implements Data<PileupCount> {
 	private static final long serialVersionUID = 1L;
 
 	private BaseCallQualityCount baseCallQualCount;
-
+	private INDELCount indelCount;
+	
 	public PileupCount() {
-		this(BaseCallQualityCount.create());
+		this(BaseCallQualityCount.create(), new INDELCount());
 	}
 	
-	public PileupCount(final BaseCallQualityCount baseCallQualCount) {
+	public PileupCount(final BaseCallQualityCount baseCallQualCount, final INDELCount indelCount) {
 		this.baseCallQualCount = baseCallQualCount;
+		this.indelCount = indelCount;
 	}
 	
 	public PileupCount(final PileupCount pileupCount) {
 		this.baseCallQualCount 	= pileupCount.baseCallQualCount.copy();
+		this.indelCount = pileupCount.indelCount.copy();
 	}
 	
 	public PileupCount copy() {
@@ -45,11 +48,22 @@ public class PileupCount implements Data<PileupCount> {
 		return baseCallQualCount;
 	}
 	
+	public INDELCount getINDELCount() {
+		return indelCount;
+	}
+	
 	public void merge(final PileupCount pileupCount) {
 		for (final Base base : pileupCount.getBCC().getAlleles()) {
 			add(base, pileupCount);
 		}
+		
+		indelCount.add(pileupCount.indelCount);
 	}
+
+	/*
+	 * TODO add and substract insertion or deletion
+	 * by string
+	 */
 	
 	public void add(final Base base, final PileupCount pileupCount) {
 		add(base, base, pileupCount);
@@ -79,7 +93,19 @@ public class PileupCount implements Data<PileupCount> {
 		sb.append('\n');
 		sb.append(baseCallQualCount.toString());
 		sb.append('\n');
+		sb.append(indelCount.toString());
+		sb.append('\n');
 		return sb.toString();
+	}
+
+	// number of base calls
+	public int getBaseCallCount() {
+		return this.baseCallQualCount.getCoverage();
+	}
+	
+	// number of covered reads
+	public int getReads() {
+		return getBaseCallCount() + this.indelCount.getReads();
 	}
 	
 	@Override
@@ -92,13 +118,14 @@ public class PileupCount implements Data<PileupCount> {
 		}
 
 		final PileupCount pileupCount = (PileupCount)obj;
-		return baseCallQualCount.specificEquals(pileupCount.baseCallQualCount);
+		return baseCallQualCount.specificEquals(pileupCount.baseCallQualCount) &&
+				indelCount.specificEquals(pileupCount.indelCount);
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 1;
-		hash = 31 * hash + baseCallQualCount.hashCode();
+		hash = 31 * hash + baseCallQualCount.hashCode() + indelCount.hashCode();
 		return hash;
 	}
 

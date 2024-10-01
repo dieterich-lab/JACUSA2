@@ -1,5 +1,6 @@
 package test.lib.cli.options;
 
+/* TODO remove
 import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -10,13 +11,15 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import htsjdk.samtools.util.StringUtil;
 import lib.cli.options.AbstractACOption;
-import lib.cli.options.StratifyByReadTagOption;
 import lib.cli.options.filter.has.BaseSub;
 import lib.util.Base;
+*/
 
 /**
  * Tests @see lib.cli.options.CollectReadTagOption#process(org.apache.commons.cli.CommandLine)
  */
+
+/*
 class CollectReadTagOptionTest 
 extends AbstractGeneralParameterProvider
 implements ACOptionTest<SortedSet<BaseSub>> {
@@ -64,3 +67,4 @@ implements ACOptionTest<SortedSet<BaseSub>> {
 	}
 	
 }
+*/

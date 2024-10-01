@@ -1,11 +1,5 @@
 package jacusa.io.format.rtarrest;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jacusa.io.format.RTarrestBaseSubDataAdder;
-import jacusa.io.format.StratifiedDataAdder;
-import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBCC;
@@ -51,12 +45,14 @@ public class BED6rtArrestResultFormat extends AbstractResultFileFormat {
 		DataAdder dataAdder = new RTarrestDataAdder(bccParser);
 		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
 		
+		/* TODO never used
 		if (! getParameter().getReadTags().isEmpty()) {
 			final List<BaseSub> baseSubs = new ArrayList<>(getParameter().getReadTags());
 			dataAdder = new StratifiedDataAdder(
 					dataAdder, 
 					new RTarrestBaseSubDataAdder(bccParser, baseSubs, dataAdder));
 		}
+		*/
 		
 		builder.addBED6Adder(bed6adder);
 		builder.addDataAdder(dataAdder);

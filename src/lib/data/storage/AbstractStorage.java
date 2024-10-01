@@ -3,7 +3,7 @@ package lib.data.storage;
 import lib.data.storage.container.SharedStorage;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public abstract class AbstractStorage implements Storage {
 	

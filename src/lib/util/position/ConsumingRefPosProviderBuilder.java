@@ -5,7 +5,7 @@ import lib.util.coordinate.CoordinateTranslator;
 import htsjdk.samtools.SAMRecord;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class ConsumingRefPosProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
 	

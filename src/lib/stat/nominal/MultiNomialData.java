@@ -1,7 +1,7 @@
 package lib.stat.nominal;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class MultiNomialData extends AbstractNominalData {
 

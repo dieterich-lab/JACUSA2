@@ -1,8 +1,8 @@
 package lib.data;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.Set;
 
 import htsjdk.samtools.util.SequenceUtil;
+import lib.data.count.INDELCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecallquality.BaseCallQualityCount;
@@ -175,31 +176,39 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		}
 
 		public Builder sample(final int condI, final DataContainer data, final int[] coverages) {
-			// FIXME c1 != c2
-			int c1 = data.getPileupCount().getBCC().getCoverage();
-			int c2 = data.getCoverage().getValue();
-
-			Base[] bases = new Base[c1];
-			byte[] quals = new byte[c1];
-			int start = 0;
+			int readCount = data.getPileupCount().getReads();
+			
+			char[] bases = new char[readCount];
+			byte[] quals = new byte[readCount];
+			int offset = 0;
+			int offset2 = 0; 
 			// prepare arrays to sample from
 			for (final Base base : data.getPileupCount().getBCC().getAlleles()) {
-				Arrays.fill(
-						bases,
-						start,
-						start + data.getPileupCount().getBCC().getBaseCall(base),
-						base);
-				int offset = 0;
-				for (byte qual : data.getPileupCount().getBaseCallQualityCount().getBaseCallQuality(base)) {
-					final int count = data.getPileupCount().getBaseCallQualityCount().getBaseCallQuality(base, qual);
-					Arrays.fill(
-							quals,
-							offset + start,
-							offset + start + count - 1,
-							qual);
-					offset += count;
+				for (int i = 0; i < data.getPileupCount().getBCC().getBaseCall(base); ++i) {
+					bases[offset] = base.getChar();
+					offset++;
 				}
-				start += data.getPileupCount().getBCC().getBaseCall(base);
+				for (byte qual : data.getPileupCount().getBaseCallQualityCount().getBaseCallQuality(base)) {
+					for (int j = 0; j < data.getPileupCount().getBaseCallQualityCount().getBaseCallQuality(base, qual); ++j) {
+						quals[offset2] = qual;
+						offset2++;
+					}
+				}
+			}
+			
+			if (data.getPileupCount().getINDELCount().getInsertionCount() > 0) {
+				for (int i = 0; i < data.getPileupCount().getINDELCount().getInsertionCount(); ++i) {
+					bases[offset] = 'I';
+					quals[offset] = 0;
+					offset++;
+				}
+			}
+			if (data.getPileupCount().getINDELCount().getDeletionCount() > 0) {
+				for (int i = 0; i < data.getPileupCount().getINDELCount().getDeletionCount(); ++i) {
+					bases[offset] = 'D';
+					quals[offset] = 0;
+					offset++;
+				}
 			}
 
 			// sample and create containers
@@ -208,22 +217,33 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 				final int coverage = coverages[replicateI];
 				final Map<Base, Map<Byte, Integer>> newBaseCallQuals = 
 						new HashMap<Base, Map<Byte,Integer>>(data.getPileupCount().getBCC().getAlleles().size());
+				int insertions = 0;
+				int deletions = 0;
 				for (int i = 0; i < coverage; ++i) {
-					final int randomI = random.nextInt(c1);
-					final Base newBase = bases[randomI];
-					final byte newQual = quals[randomI];
-
-					if (!newBaseCallQuals.containsKey(newBase)) {
-						newBaseCallQuals.put(newBase, new HashMap<Byte, Integer>(coverage));
+					final int randomI = random.nextInt(readCount);
+					
+					final char c = bases[randomI];
+					if (c == 'I') {
+						insertions++;
+					} else if (c == 'D') {
+						deletions++;
+					} else {
+						final Base newBase = Base.valueOf(c);
+						final byte newQual = quals[randomI];
+						
+						if (!newBaseCallQuals.containsKey(newBase)) {
+							newBaseCallQuals.put(newBase, new HashMap<Byte, Integer>(coverage));
+						}
+						int qualCount = 0;
+						if (newBaseCallQuals.get(newBase).containsKey(newQual)) {
+							qualCount = newBaseCallQuals.get(newBase).get(newQual);
+						}
+						newBaseCallQuals.get(newBase).put(newQual, qualCount + 1);
 					}
-					int qualCount = 0;
-					if (newBaseCallQuals.get(newBase).containsKey(newQual)) {
-						qualCount = newBaseCallQuals.get(newBase).get(newQual);
-					}
-					newBaseCallQuals.get(newBase).put(newQual, qualCount + 1);
 				}
 				final BaseCallQualityCount bcqc = new MapBaseCallQualityCount(newBaseCallQuals);
-				final PileupCount newPileupCount = new PileupCount(bcqc);
+				final INDELCount indelCount = new INDELCount(insertions, deletions);
+				final PileupCount newPileupCount = new PileupCount(bcqc, indelCount);
 
 				this.data.get(condI).get(replicateI).getPileupCount().merge(newPileupCount);
 			}

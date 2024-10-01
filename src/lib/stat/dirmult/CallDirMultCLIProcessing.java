@@ -9,7 +9,7 @@ import lib.estimate.MinkaParameter;
 import lib.io.ResultFormat;
 
 /**
- * TODO
+ * TODO add documentation
  */
 class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 	
@@ -53,13 +53,11 @@ class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 				.desc("Show detailed info of Newton's method in output (not in VCF output).")
 				.build());
 
-		// TODO
 		options.addOption(Option.builder()
 				.longOpt("runs")
 				.hasArg(true)
 				.desc("Number of subsampling runs.")
 				.build());
-		// TODO
 		options.addOption(Option.builder()
 				.longOpt("limit")
 				.hasArg(true)

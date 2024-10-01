@@ -19,9 +19,10 @@ import lib.util.Info;
 import lib.util.Util;
 
 /**
- * TODO
+ * TODO add documentation
  */
-abstract class INDELCountResult implements Result {
+@Deprecated
+abstract class AbstractINDELCountResult implements Result {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -32,7 +33,7 @@ abstract class INDELCountResult implements Result {
 	private final EstimateDirMult dirMult;
 	private final ChiSquaredDistribution dist;
 	
-	INDELCountResult(
+	AbstractINDELCountResult(
 			final SortedSet<BaseSub> baseSubs, final Result result,
 			final MinkaParameter minkaParameter,
 			final INDELestimationCountProvider countSampleProvider) {
@@ -166,8 +167,8 @@ abstract class INDELCountResult implements Result {
 		final DataContainer container = 
 				result.getParellelData().getDataContainer(condition, replicate);
 		final int count 	= getCount(container).getValue();
-		final int coverage	= container.getCoverage().getValue();
-		addCount(valueIndex, condition, replicate, count, coverage);
+		final int baseCalls	= container.getPileupCount().getBaseCallCount();
+		addCount(valueIndex, condition, replicate, count, baseCalls);
 		return count > 0;
 	}
 	

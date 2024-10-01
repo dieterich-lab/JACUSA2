@@ -11,6 +11,6 @@ public class InsertionEstCountProvider extends INDELestimationCountProvider {
 	
 	@Override
 	IntegerData getCount(DataContainer container) {
-		return container.getInsertionCount();
+		return new IntegerData(container.getPileupCount().getINDELCount().getInsertionCount());
 	}
 }

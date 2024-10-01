@@ -11,6 +11,7 @@ import lib.cli.options.filter.has.HasReadTag;
  * Observed data, e.g.: variants will be stratified by mismatches vs. the reference
  * in each read.
  */
+@Deprecated
 public class StratifyByReadTagOption extends AbstractACOption {
 
 	public static final char SEP = ',';

@@ -8,7 +8,7 @@ import lib.cli.CLI;
 import lib.worker.WorkerDispatcher;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public abstract class AbstractTool {
 

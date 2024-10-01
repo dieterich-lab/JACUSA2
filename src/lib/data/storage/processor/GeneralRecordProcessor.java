@@ -1,7 +1,7 @@
 package lib.data.storage.processor;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public interface GeneralRecordProcessor extends RecordProcessor {
 

@@ -1,34 +1,20 @@
 package lib.data.assembler.factory;
 
+
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
 
 import jacusa.method.rtarrest.RTarrestMethod.RTarrestBuilderFactory;
-import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
-import lib.data.IntegerData;
-import lib.data.fetcher.Fetcher;
-import lib.data.fetcher.basecall.BCCextractor;
-import lib.data.fetcher.basecall.IntegerDataExtractor;
 import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
-import lib.data.storage.Storage;
 import lib.data.storage.arrest.LocationInterpreter;
 import lib.data.storage.arrest.RTarrestRecordProcessor;
 import lib.data.storage.basecall.AbstractBaseCallCountStorage;
 import lib.data.storage.basecall.DefaultBCCStorage;
-import lib.data.storage.basecall.RTarrestCountStorage;
 import lib.data.storage.container.SharedStorage;
-import lib.data.storage.integer.ArrayIntegerStorage;
-import lib.data.storage.integer.MapIntegerStorage;
-import lib.data.storage.readsubstitution.BaseCallInterpreter;
-import lib.data.storage.readsubstitution.BaseSubRecordProcessor;
-import lib.data.validator.CombinedValidator;
 import lib.data.validator.DefaultBaseCallValidator;
 import lib.data.validator.MinBASQValidator;
 import lib.data.validator.Validator;
@@ -53,7 +39,7 @@ extends AbstractSiteDataAssemblerFactory {
 		final LibraryType libraryType = conditionParameter.getLibraryType();
 
 		final LocationInterpreter locInterpreter = LocationInterpreter.create(libraryType);
-		final SortedSet<BaseSub> baseSubs = parameter.getReadTags();
+		// TODO never used final SortedSet<BaseSub> baseSubs = parameter.getReadTags();
 		
 		final List<Validator> validators = new ArrayList<>();
 		validators.add(new DefaultBaseCallValidator());
@@ -66,12 +52,10 @@ extends AbstractSiteDataAssemblerFactory {
 				locInterpreter, 
 				validators));
 
-		if (parameter.showInsertionCount() || parameter.showInsertionStartCount() || parameter.showDeletionCount()) {
-			cache.addCache(createCoverageCache(sharedStorage, DataType.COVERAGE.getFetcher()));
-		}
 		addInsertionCache(parameter, sharedStorage, cache);
 		addDeletionCache(parameter, sharedStorage, cache);
 		
+		/* TODO never used
 		// stratify by base substitutions
 		if (! baseSubs.isEmpty()) {
 			cache.addCache(createStratifyByBaseSub(
@@ -82,6 +66,7 @@ extends AbstractSiteDataAssemblerFactory {
 					locInterpreter,
 					validators));
 		}
+		*/
 
 		return cache;
 	}
@@ -120,6 +105,7 @@ extends AbstractSiteDataAssemblerFactory {
 		return cache;
 	}
 	
+	/* TODO never used
 	private Cache createStratifyByBaseSub(
 			final GeneralParameter parameter, 
 			final ConditionParameter conditionParameter,
@@ -215,5 +201,6 @@ extends AbstractSiteDataAssemblerFactory {
 				parameter.showInsertionStartCount()));
 		return cache;
 	}
+	*/
 	
 }

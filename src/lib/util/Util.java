@@ -2,12 +2,17 @@ package lib.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import htsjdk.samtools.SAMSequenceDictionary;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.ValidationStringency;
 
+
+/*
+ * FIMXE generics pack,join
+ */
 public final class Util {
 	
 	private Util() {
@@ -43,6 +48,7 @@ public final class Util {
 		return sequenceDictionary;
 	}
 	
+	@Deprecated
 	public static String printAlpha(final double[] a) {
 		StringBuilder sb = new StringBuilder();
 
@@ -55,6 +61,78 @@ public final class Util {
 		return sb.toString();
 	}
 
+	public static String pack(final int[] values, final int[] replicates, final char sep1, final char sep2) {
+		final StringBuilder sb = new StringBuilder();
+		
+		int offset = 0;
+		for (int i = 0; i < replicates.length; ++i) {
+			if (i > 0) {
+				sb.append(sep2);
+			}
+			final int r = replicates[i];
+			sb.append(Util.join(Arrays.copyOfRange(values, offset, offset + r), sep1));
+			offset += r;
+		}
+		
+		return sb.toString();
+	}
+	
+	public static String pack(final double[] values, final int[] replicates, final char sep1, final char sep2) {
+		final StringBuilder sb = new StringBuilder();
+		
+		int offset = 0;
+		for (int i = 0; i < replicates.length; ++i) {
+			if (i > 0) {
+				sb.append(sep2);
+			}
+			final int r = replicates[i];
+			sb.append(Util.join(Arrays.copyOfRange(values, offset, offset + r), sep1));
+			offset += r;
+		}
+		
+		return sb.toString();
+	}
+	
+	public static String pack(final String[] values, final int[] replicates, final char sep1, final char sep2) {
+		final StringBuilder sb = new StringBuilder();
+		
+		int offset = 0;
+		for (int i = 0; i < replicates.length; ++i) {
+			if (i > 0) {
+				sb.append(sep2);
+			}
+			final int r = replicates[i];
+			sb.append(Util.join(Arrays.copyOfRange(values, offset, offset + r), sep1));
+			offset += r;
+		}
+		
+		return sb.toString();
+	}
+
+	public static String join(final String[] s, final char sep) {
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < s.length; ++i) {
+			if (i > 0) {
+				sb.append(sep);
+			}
+			sb.append(s[i]);
+		}
+		return sb.toString();
+	}
+
+	public static String join(final int[] a, final char sep) {
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < a.length; ++i) {
+			if (i > 0) {
+				sb.append(sep);
+			}
+			sb.append(a[i]);
+		}
+		return sb.toString();
+	}
+	
 	public static String join(final double[] a, final char sep) {
 		StringBuilder sb = new StringBuilder();
 
@@ -67,4 +145,20 @@ public final class Util {
 		return sb.toString();
 	}
 	
+	public static String makeString(final Base[] bases) {
+		final StringBuilder sb = new StringBuilder();
+		for (final Base base : bases) {
+			sb.append(base.getChar());
+		}
+		return sb.toString();
+	}
+	
+	public static String makeString(final byte[] quals) {
+		final StringBuilder sb = new StringBuilder();
+		for (final byte qual : quals) {
+			sb.append((char)qual);
+		}
+		return sb.toString();
+	}
+
 }

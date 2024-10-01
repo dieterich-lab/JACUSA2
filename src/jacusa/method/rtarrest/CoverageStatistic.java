@@ -10,7 +10,7 @@ import lib.stat.AbstractStat;
  * This is a dummy statistic... 
  */
 class CoverageStatistic extends AbstractStat {
-
+	
 	@Override
 	protected boolean filter(final Result statResult) {
 		return false;
@@ -24,6 +24,6 @@ class CoverageStatistic extends AbstractStat {
 	}
 
 	@Override
-	protected void addStatResultInfo(final Result statResult) {}
+	protected void processAfterCalculate(final Result statResult) {}
 	
 }

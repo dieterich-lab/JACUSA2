@@ -9,36 +9,40 @@ import lib.util.coordinate.Coordinate;
 
 abstract class AbstractIntegerStorage extends AbstractStorage {
 
-	private final Fetcher<IntegerData> bccFetcher;
-	
-	AbstractIntegerStorage(
-			final SharedStorage sharedStorage, final Fetcher<IntegerData> fetcher) {
-		
+	private final Fetcher<IntegerData> fetcher;
+
+	AbstractIntegerStorage(final SharedStorage sharedStorage, final Fetcher<IntegerData> fetcher) {
+
 		super(sharedStorage);
-		this.bccFetcher = fetcher;
+		this.fetcher = fetcher;
 	}
 
 	@Override
 	public void populate(DataContainer container, int winPos, Coordinate coordinate) {
-		if (bccFetcher == null) {
+		if (fetcher == null) {
 			return;
 		}
-		
+
 		final int count = getCount(winPos);
-		bccFetcher.fetch(container).add(count);
+
+		final IntegerData i = fetcher.fetch(container);
+		/*
+		 * TODO remove if (i == null) { int n = 0; n++; }
+		 */
+		i.add(count);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (! (obj instanceof AbstractIntegerStorage)) {
+		if (!(obj instanceof AbstractIntegerStorage)) {
 			return false;
 		}
 		if (obj == this) {
 			return true;
 		}
-		
-		AbstractIntegerStorage storage = (AbstractIntegerStorage)obj;
-		if (! getCoordinateController().getActive().equals(storage.getCoordinateController().getActive())) {
+
+		AbstractIntegerStorage storage = (AbstractIntegerStorage) obj;
+		if (!getCoordinateController().getActive().equals(storage.getCoordinateController().getActive())) {
 			return false;
 		}
 		for (int winPos = 0; winPos < getCoordinateController().getActiveWindowSize(); ++winPos) {
@@ -49,12 +53,12 @@ abstract class AbstractIntegerStorage extends AbstractStorage {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return getCoordinateController().getActive().hashCode();
 	}
 
 	public abstract int getCount(final int winPos);
-	
+
 }

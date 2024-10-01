@@ -3,7 +3,7 @@ package lib.data.validator;
 import lib.util.position.Position;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public interface Validator {
 	

@@ -10,16 +10,17 @@ import lib.io.InputOutput;
 import lib.stat.estimation.provider.DeletionEstCountProvider;
 
 /**
- * TODO
+ * TODO add documentation
  */
-public class DeletionCountResult extends INDELCountResult {
+@Deprecated
+public class DeletionCountResult extends AbstractINDELCountResult {
 	
 	public static final String SCORE 	= "deletion_score";
 	public static final String PVALUE = "deletion_pvalue";
 	
 	private static final long serialVersionUID = 1L;
 	
-	public DeletionCountResult(		final SortedSet<BaseSub> baseSubs, final Result result,
+	public DeletionCountResult(final SortedSet<BaseSub> baseSubs, final Result result,
 			final MinkaParameter minkaParameter,
 			final DeletionEstCountProvider countSampleProvider) {
 		
@@ -38,7 +39,7 @@ public class DeletionCountResult extends INDELCountResult {
 	
 	@Override
 	IntegerData getCount(DataContainer container) {
-		return container.getDeletionCount();
+		return new IntegerData(container.getPileupCount().getINDELCount().getDeletionCount());
 	}
 	
 	@Override

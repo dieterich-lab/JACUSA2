@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 
 import lib.cli.options.BedCoordinatesOption;
-import lib.cli.options.StratifyByReadTagOption;
 import lib.cli.options.DebugModusOption;
 import lib.cli.options.FilterConfigOption;
 import lib.cli.options.FilterModusOption;
@@ -119,7 +118,7 @@ public class CallMethod extends AbstractMethod {
 		addACOption(new WindowSizeOption(getParameter()));
 		addACOption(new ThreadWindowSizeOption(getParameter()));
 
-		addACOption(new StratifyByReadTagOption(getParameter()));
+		// TODO never used addACOption(new StratifyByReadTagOption(getParameter()));
 		addACOption(new ShowDeletionCountOption(getParameter()));
 		addACOption(new ShowInsertionCountOption(getParameter()));
 		addACOption(new ShowInsertionStartCountOption(getParameter()));
@@ -261,16 +260,14 @@ public class CallMethod extends AbstractMethod {
 
 	public static class CallBuilderFactory extends AbstractBuilderFactory {
 
-		private final CallParameter parameter;
-		
 		private CallBuilderFactory(final CallParameter parameter) {
 			super(parameter);
-			this.parameter = parameter;
 		}
 		
 		@Override
 		protected void addRequired(final AbstractBuilder builder) {
 			add(builder, DataType.PILEUP_COUNT);
+			/* TODO never used
 			if (! parameter.getReadTags().isEmpty()) {
 				addBaseSub2bcc(builder, DataType.BASE_SUBST2BCC);
 				
@@ -283,14 +280,7 @@ public class CallMethod extends AbstractMethod {
 					addBaseSub2int(builder, DataType.BASE_SUBST2COVERAGE);
 				}
 			}
-			if (parameter.showDeletionCount()) {
-				add(builder, DataType.DELETION_COUNT);
-				guardedAdd(builder, DataType.COVERAGE);
-			}
-			if (parameter.showInsertionCount() || parameter.showInsertionStartCount()) {
-				add(builder, DataType.INSERTION_COUNT);
-				guardedAdd(builder, DataType.COVERAGE);
-			}
+			*/
 		}
 		
 		@Override

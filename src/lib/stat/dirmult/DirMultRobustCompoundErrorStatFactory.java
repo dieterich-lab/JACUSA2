@@ -49,12 +49,7 @@ extends AbstractStatFactory {
 			throw new IllegalStateException("Number of conditions not supported: " + conditions);
 		}
 		
-		final CallStat callStat = new CallStat(threshold, dirMultPileupCountProvider, dirMultParameter);
-		if (dirMultParameter.getRuns() > 0) {
-			return new AdvancedCallStat(callStat, dirMultParameter.getRuns(), dirMultParameter.getLimit());
-		}
-		
-		return callStat;
+		return new CallStat(threshold, dirMultPileupCountProvider, dirMultParameter);
 	}
 
 	@Override

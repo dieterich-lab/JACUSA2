@@ -19,7 +19,7 @@ import lib.data.count.basecall.UnmodifiableBCC;
 import lib.util.Base;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class ArrestPos2BCC 
 implements Serializable, Data<ArrestPos2BCC> {
@@ -234,7 +234,6 @@ implements Serializable, Data<ArrestPos2BCC> {
 		return sb.toString();
 	}
 
-	// FIXME add new field cBcc
 	public static class Parser implements lib.util.Parser<ArrestPos2BCC> {
 		
 		public static final char POS_SEP = ',';

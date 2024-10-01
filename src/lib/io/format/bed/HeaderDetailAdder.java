@@ -5,7 +5,7 @@ import java.util.List;
 import lib.cli.parameter.ConditionParameter;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public interface HeaderDetailAdder {
 

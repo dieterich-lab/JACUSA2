@@ -24,7 +24,7 @@ import htsjdk.samtools.SAMSequenceDictionary;
 import htsjdk.samtools.SAMSequenceRecord;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public abstract class AbstractMethod {
 	
@@ -118,7 +118,6 @@ public abstract class AbstractMethod {
 	}
 
 	/**
-	 * TODO
 	 * @return
 	 */
 	public List<AbstractACOption> getACOptions() {
@@ -126,7 +125,6 @@ public abstract class AbstractMethod {
 	}
 
 	/**
-	 * TODO
 	 * @param options
 	 */
 	public void printUsage(final boolean printExtendedHelp) {
@@ -167,7 +165,6 @@ public abstract class AbstractMethod {
 	}
 	
 	/**
-	 * TODO
 	 * @throws Exception
 	 */
 	public void initCoordinateProvider() throws Exception {
@@ -200,7 +197,6 @@ public abstract class AbstractMethod {
 	}
 	
 	/**
-	 * TODO
 	 * @param args
 	 * @return
 	 * @throws Exception
@@ -215,7 +211,6 @@ public abstract class AbstractMethod {
 	}
 	
 	/**
-	 * TODO
 	 * @return
 	 */
 	public CoordinateProvider getCoordinateProvider() {
@@ -225,7 +220,6 @@ public abstract class AbstractMethod {
 	public abstract List<ParallelDataValidator> createParallelDataValidators();
 	
 	/**
-	 * TODO
 	 * @param recordFilenames
 	 * @return
 	 * @throws Exception

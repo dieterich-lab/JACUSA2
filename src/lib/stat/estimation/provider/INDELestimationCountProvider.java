@@ -51,7 +51,7 @@ public abstract class INDELestimationCountProvider implements EstimationContaine
 		for (int replicateI = 0; replicateI < dataContainers.size(); replicateI++) {
 			final DataContainer container 	= dataContainers.get(replicateI);
 			final int count 				= getCount(container).getValue();
-			final int coverageCount 	= container.getCoverage().getValue();
+			final int coverageCount 		= container.getPileupCount().getReads(); // TODOcontainer.getBaseCallCount().getValue();
 			dataMatrix[replicateI][PLUS_INDEX] 	= count + pseudoCount;
 			dataMatrix[replicateI][MINUS_INDEX]	= coverageCount - count + pseudoCount;
 		}

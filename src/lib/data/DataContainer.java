@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jacusa.filter.factory.FilterFactory;
-import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.BaseSub2BCC;
 import lib.data.count.BaseSub2IntData;
@@ -63,11 +62,12 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	BaseSub2IntData getBaseSub2Coverage();
 	BaseSub2IntData getBaseSub2DeletionCount();
 	BaseSub2IntData getBaseSub2InsertionCount();
-	
-	IntegerData getDeletionCount();
 
+	/* TODO remove
+	IntegerData getDeletionCount();
 	IntegerData getInsertionCount();
 	IntegerData getCoverage();
+	*/
 	
 	<T extends Data<T>> boolean contains(DataType<T> dataType);
 	Collection<DataType<?>> getDataTypes();
@@ -115,6 +115,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 					dataType.newInstance());
 		}
 		
+		/* TODO remove never used
 		protected void addBaseSub2bcc(final AbstractBuilder builder, final DataType<BaseSub2BCC> dataType) {
 			add(builder, dataType);
 			final BaseSub2BCC bsc = builder.get(dataType);
@@ -133,6 +134,7 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 				bsc.set(baseSub, new IntegerData());
 			}
 		}
+		*/
 		
 		protected abstract void addRequired(final AbstractBuilder builder);
 		protected abstract void addFilters(final AbstractBuilder builder);
@@ -145,7 +147,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 		
 	}
 	
-	// FIXME add all available automatically
 	public static class DefaultBuilderFactory extends AbstractBuilderFactory {
 		
 		public DefaultBuilderFactory() {
@@ -159,7 +160,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			add(builder, DataType.ARREST_BCC);
 			add(builder, DataType.THROUGH_BCC);
 			add(builder, DataType.AP2BCC);
-			add(builder, DataType.COVERAGE);
 			
 			add(builder, DataType.BASE_SUBST2BCC);
 			add(builder, DataType.BASE_SUBST2DELETION_COUNT);
@@ -168,8 +168,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			
 			add(builder, DataType.ARREST_BASE_SUBST);
 			add(builder, DataType.THROUGH_BASE_SUBST);
-			add(builder, DataType.DELETION_COUNT);
-			add(builder, DataType.INSERTION_COUNT);
 		}
 		
 		@Override

@@ -36,7 +36,7 @@ public class RTarrestStat extends AbstractStat {
 	}
 
 	@Override
-	public void addStatResultInfo(final Result statResult) {
+	protected void processAfterCalculate(final Result statResult) {
 		if (dirMultPrm.isShowAlpha()) {
 			dirMult.addShowAlpha();
 		}

@@ -14,7 +14,7 @@ import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.position.Position;
 
 /**
- * TODO
+ * TODO add documentations
  */
 public abstract class AbstractBaseCallCountStorage
 extends AbstractStorage 

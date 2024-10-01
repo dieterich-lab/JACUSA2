@@ -7,7 +7,7 @@ import lib.data.ParallelData;
 import lib.util.Info;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class OneStatResult 
 implements Result {

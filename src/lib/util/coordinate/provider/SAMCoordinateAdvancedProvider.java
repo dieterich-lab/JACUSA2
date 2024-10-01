@@ -23,7 +23,7 @@ import htsjdk.samtools.SAMSequenceRecord;
 import htsjdk.samtools.SamReader;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class SAMCoordinateAdvancedProvider implements CoordinateProvider {
 
