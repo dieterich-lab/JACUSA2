@@ -51,7 +51,7 @@ extends AbstractWorker {
 			return null;
 		}
 
-		/* TODO neved used
+		/* TODO never used
 		final SortedSet<BaseSub> baseSubs = getParameter().getReadTags();
 		if (! baseSubs.isEmpty()) {
 			result = new BaseSubResult(baseSubs, DataType.BASE_SUBST2BCC.getFetcher(), result);

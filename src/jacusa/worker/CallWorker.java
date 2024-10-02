@@ -71,18 +71,18 @@ public class CallWorker extends AbstractWorker {
 				nonRefRatio[i] = pileup.getBCC().getNonRefRatio(refBase);
 				baseRatio[i] = Util.join(pileup.getBCC().getRatio(Base.validValues()), ',');
 			}
-			result.getResultInfo().add("reads", Util.pack(reads, replicates, ',', ';'));
+			result.getResultInfo().add("reads", Util.pack(reads, replicates, ',', ','));
 			if (getParameter().showInsertionCount() || getParameter().showInsertionStartCount()) {
-				result.getResultInfo().add("ins", Util.pack(insCount, replicates, ',', ';'));
-				result.getResultInfo().add("ins_ratio", Util.pack(insRatio, replicates, ',', ';'));
+				result.getResultInfo().add("insertions", Util.pack(insCount, replicates, ',', ','));
+				result.getResultInfo().add("insertion_ratio", Util.pack(insRatio, replicates, ',', ','));
 			}
 			if (getParameter().showDeletionCount()) {
-				result.getResultInfo().add("del", Util.pack(delCount, replicates, ',', ';'));
-				result.getResultInfo().add("del_ratio", Util.pack(delRatio, replicates, ',', ';'));
+				result.getResultInfo().add("deletions", Util.pack(delCount, replicates, ',', ','));
+				result.getResultInfo().add("deletion_ratio", Util.pack(delRatio, replicates, ',', ','));
 			}
 			
-			result.getResultInfo().add("non_ref_ratio", Util.pack(nonRefRatio, replicates, ',', ';'));
-			result.getResultInfo().add("base_ratio", Util.pack(baseRatio, replicates, '|', ';'));
+			result.getResultInfo().add("non_ref_ratio", Util.pack(nonRefRatio, replicates, ',', ','));
+			result.getResultInfo().add("base_ratio", Util.pack(baseRatio, replicates, '|', ','));
 		}
 		
 		final double[] genericStatScores = processGenericStats(result);
@@ -131,7 +131,6 @@ public class CallWorker extends AbstractWorker {
 			} else {
 				result.getResultInfo().add("subsampling", "failed");
 			}*/
-			
 
 			// write successful sampling
 			for (int genericStatI = 0; genericStatI < genericStats.size(); ++genericStatI) {

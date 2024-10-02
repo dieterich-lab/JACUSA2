@@ -48,7 +48,6 @@ public final class Util {
 		return sequenceDictionary;
 	}
 	
-	@Deprecated
 	public static String printAlpha(final double[] a) {
 		StringBuilder sb = new StringBuilder();
 
