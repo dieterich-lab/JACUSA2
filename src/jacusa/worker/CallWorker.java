@@ -6,12 +6,14 @@ import jacusa.method.call.CallMethod;
 import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
+import lib.data.count.basecallquality.BaseCallQualityCount;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.stat.GenericStat;
 import lib.util.Base;
 import lib.util.Util;
 import lib.worker.AbstractWorker;
+
 
 /**
  * Method "call" specific worker.
@@ -45,44 +47,51 @@ public class CallWorker extends AbstractWorker {
 		*/
 
 		if (addExtra) {
-			final Base refBase = parallelData.getCombPooledData().getAutoRefBase();
 			final int[] replicates = parallelData.getReplicates().stream().mapToInt(Integer::intValue).toArray();
 			
 			int[] reads = new int[parallelData.getCombinedData().size()]; 
 			int[] insCount = new int[parallelData.getCombinedData().size()];
 			int[] delCount = new int[parallelData.getCombinedData().size()];
 			
-			double[] insRatio = new double[parallelData.getCombinedData().size()];
-			double[] delRatio = new double[parallelData.getCombinedData().size()];
+			final StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < reads.length; ++i) {
+				final PileupCount pileupCount = parallelData.getCombinedData().get(i).getPileupCount();
+				reads[i] = pileupCount.getReads();
 
-			double[] nonRefRatio = new double[parallelData.getCombinedData().size()];
-			String[] baseRatio = new String[parallelData.getCombinedData().size()];
-			
-			for (int i = 0; i < insRatio.length; ++i) {
-				final PileupCount pileup = parallelData.getCombinedData().get(i).getPileupCount();
-				reads[i] = pileup.getReads();
+				insCount[i] = pileupCount.getINDELCount().getInsertionCount();
+				delCount[i] = pileupCount.getINDELCount().getDeletionCount();
 
-				insCount = new int[parallelData.getCombinedData().size()];
-				insRatio[i] = pileup.getINDELCount().getInsertionRatio(reads[i]);
-
-				delCount = new int[parallelData.getCombinedData().size()];
-				delRatio[i] = pileup.getINDELCount().getDeletionRatio(reads[i]);
-			
-				nonRefRatio[i] = pileup.getBCC().getNonRefRatio(refBase);
-				baseRatio[i] = Util.join(pileup.getBCC().getRatio(Base.validValues()), ',');
+				if (i != 0) {
+					sb.append('|');
+				}
+				final BaseCallQualityCount bcqc = pileupCount.getBaseCallQualityCount();
+				boolean check1 = false;
+				boolean check2 = false;
+				for (final Base base: Base.validValues()) {
+					if (check1) {
+						sb.append(',');
+					}
+					for (final Byte qual : bcqc.getBaseCallQuality(base)) {
+						if (check2) {
+							sb.append('&');
+						}
+						sb.append(qual);
+						sb.append(':');
+						sb.append(bcqc.getBaseCallQuality(base, qual));
+						check2 = true;
+					}
+					check1 = true;
+				}
 			}
 			result.getResultInfo().add("reads", Util.pack(reads, replicates, ',', ','));
 			if (getParameter().showInsertionCount() || getParameter().showInsertionStartCount()) {
 				result.getResultInfo().add("insertions", Util.pack(insCount, replicates, ',', ','));
-				result.getResultInfo().add("insertion_ratio", Util.pack(insRatio, replicates, ',', ','));
 			}
 			if (getParameter().showDeletionCount()) {
 				result.getResultInfo().add("deletions", Util.pack(delCount, replicates, ',', ','));
-				result.getResultInfo().add("deletion_ratio", Util.pack(delRatio, replicates, ',', ','));
 			}
 			
-			result.getResultInfo().add("non_ref_ratio", Util.pack(nonRefRatio, replicates, ',', ','));
-			result.getResultInfo().add("base_ratio", Util.pack(baseRatio, replicates, '|', ','));
+			result.getResultInfo().add("bcqs", sb.toString());
 		}
 		
 		final double[] genericStatScores = processGenericStats(result);

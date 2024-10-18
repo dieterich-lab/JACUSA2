@@ -1,6 +1,5 @@
 package test.lib.cli.options;
 
-/* TODO remove
 import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -13,13 +12,11 @@ import htsjdk.samtools.util.StringUtil;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.filter.has.BaseSub;
 import lib.util.Base;
-*/
 
 /**
  * Tests @see lib.cli.options.CollectReadTagOption#process(org.apache.commons.cli.CommandLine)
  */
 
-/*
 class CollectReadTagOptionTest 
 extends AbstractGeneralParameterProvider
 implements ACOptionTest<SortedSet<BaseSub>> {
@@ -37,7 +34,7 @@ implements ACOptionTest<SortedSet<BaseSub>> {
 	Arguments createArguments(final BaseSub... baseSubs) {
 		final SortedSet<BaseSub> expected = new TreeSet<>(Arrays.asList(baseSubs));
 		final String value = StringUtil.join(
-				Character.toString(StratifyByReadTagOption.SEP), 
+				Character.toString(','), //FIXME use StratifyByReadTagOption.SEP), 
 				Arrays.asList(baseSubs) );
 		return Arguments.of(
 				createOptLine(value),
@@ -53,18 +50,16 @@ implements ACOptionTest<SortedSet<BaseSub>> {
 		}
 		// wrong
 		myAssertOptThrows(IllegalArgumentException.class, "wrong");
-		
 	}
 	
 	@Override
 	public AbstractACOption createTestInstance() {
-		return new StratifyByReadTagOption(getGeneralParamter());
+		return null; // FIXME return new StratifyByReadTagOption(getGeneralParamter());
 	}
 
 	@Override
 	public SortedSet<BaseSub> getActualValue() {
-		return getGeneralParamter().getReadTags();
+		return null; // FIXME return getGeneralParamter().getReadTags();
 	}
 	
 }
-*/

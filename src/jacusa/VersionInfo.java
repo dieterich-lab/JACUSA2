@@ -8,7 +8,7 @@ import htsjdk.samtools.util.StringUtil;
 public final class VersionInfo {
 
 	public static final String BRANCH 	= "filter-bg";
-	public static final String TAG 	= "2.1.1.4-filter-bg";
+	public static final String TAG 	= "2.1.1.5-filter-bg";
 
 	// change this manually
 	public static final String[] LIBS	= new String[] {
