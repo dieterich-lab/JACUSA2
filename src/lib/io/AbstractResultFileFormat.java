@@ -2,9 +2,13 @@ package lib.io;
 
 import jacusa.io.copytmp.FileCopyTmpResult;
 import jacusa.io.copytmp.FileCopyTmpSplitResult;
+import jacusa.io.format.ParallelToString;
 import lib.cli.parameter.GeneralParameter;
 import lib.io.copytmp.CopyTmpResult;
 import lib.worker.WorkerDispatcher;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO add comments.
@@ -62,6 +66,14 @@ implements ResultFormat {
 		} else {
 			return new FileCopyTmpResult(threadId, resultWriter, this);
 		}
+	}
+
+	public void processCLI(final String line){}
+	public List<ParallelToString> getAvailable(){
+		return new ArrayList<>();
+	}
+	public List<ParallelToString> getSelected(){
+		return new ArrayList<>();
 	}
 	
 }

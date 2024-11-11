@@ -1,6 +1,8 @@
 package jacusa.io.format.call;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import htsjdk.samtools.SAMSequenceDictionary;
 import jacusa.io.copytmp.SerializeCopyTmpResult;

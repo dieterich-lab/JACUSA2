@@ -2,6 +2,7 @@ package jacusa.worker;
 
 import java.util.SortedSet;
 
+import jacusa.io.format.ParallelToString;
 import jacusa.method.call.CallMethod;
 import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
@@ -53,6 +54,13 @@ public class CallWorker extends AbstractWorker {
 		Result result = stat.filter(parallelData); 
 		if (result == null) {
 			return null;
+		}
+
+		//process selected options for X output -> get output from ParallelToString implementation classes
+		if(getParameter().getResultFormat().getSelected() != null) {
+			for (ParallelToString selected : getParameter().getResultFormat().getSelected()) {
+				result.getResultInfo().add(selected.getStringFromParallel(parallelData));
+			}
 		}
 
 		final SortedSet<BaseSub> baseSubs = getParameter().getReadTags();

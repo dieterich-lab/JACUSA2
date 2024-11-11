@@ -1,6 +1,10 @@
 package lib.io;
 
+import jacusa.io.format.ParallelToString;
 import lib.cli.parameter.GeneralParameter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO add comments.
@@ -41,6 +45,15 @@ implements ResultFormat{
 	
 	public GeneralParameter getParameter() {
 		return parameter;
+	}
+
+	//fixme MP AbstractResultFormat = AbstractResultFIleFormat
+	public void processCLI(final String line){}
+	public List<ParallelToString> getAvailable(){
+		return new ArrayList<>();
+	}
+	public List<ParallelToString> getSelected(){
+		return new ArrayList<>();
 	}
 	
 }

@@ -17,23 +17,36 @@ import lib.io.format.bed.BED6adder;
 import lib.io.format.bed.DataAdder;
 import lib.io.format.bed.DefaultBED6adder;
 import lib.io.format.bed.DefaultInfoAdder;
+import org.apache.commons.cli.CommandLine;
 
 /**
  * This class implements an extended BED6 format to represent variants identified by "call" method. 
  */
-public class BED6callResultFormat 
+public class BED6callResultFormat
 extends AbstractResultFileFormat {
 
 	// unique char id for CLI 
 	public static final char CHAR = 'B';
 
 	private final String scoreLabel;
-	
+
+	//Constructor for instantiation by inheriting class
 	public BED6callResultFormat(
+			final Character cha,
+			final String desc,
 			final String methodName, 
 			final GeneralParameter parameter) {
 		
-		super(CHAR, "BED6-extended result format", methodName, parameter);
+		super(cha, desc, methodName, parameter);
+		scoreLabel = "score";
+	}
+
+	//Constructor for direct instantiation
+	public BED6callResultFormat(
+			final String methodName,
+			final GeneralParameter parameter) {
+
+		super(CHAR, "BED6-generic result format", methodName, parameter);
 		scoreLabel = "score";
 	}
 
@@ -58,5 +71,7 @@ extends AbstractResultFileFormat {
 		builder.addInfoAdder(new DefaultInfoAdder(getParameter()));
 		return builder.build();
 	}
+
+
 
 }

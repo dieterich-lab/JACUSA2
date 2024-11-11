@@ -1,8 +1,10 @@
 package lib.cli.options;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import lib.cli.parameter.GeneralParameter;
+import lib.io.InputOutput;
 import lib.io.ResultFormat;
 
 import org.apache.commons.cli.CommandLine;
@@ -51,15 +53,28 @@ extends AbstractACOption {
 	}
 
 	@Override
-	public void process(final CommandLine line) throws IllegalArgumentException {
-		final String s = line.getOptionValue(getOpt());
+	public void process(final CommandLine cmdLine) throws IllegalArgumentException {
+		final String s = cmdLine.getOptionValue(getOpt());
+		//go through command line input
 		for (int i = 0; i < s.length(); ++i) {
 			final char c = s.charAt(i);
 			if (! resultFormats.containsKey(c)) {
-				throw new IllegalArgumentException("Unknown output format: " + c);
+				//if character is no result format, check if it's a ':'
+				if (c == ':') {
+					//create string with just options after ':' and call processCLI() with it
+					final String[] t = s.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
+					String parsedLine = String.join("", Arrays.copyOfRange(t, 1, t.length));
+					resultFormats.get(t[0].charAt(0)).processCLI(parsedLine);
+					break;
+				} else {
+					//if character is unexpected
+					throw new IllegalArgumentException("Unknown output format: " + c);
+				}
 			}
+			//set result format put into command line (B,V,X)
 			parameter.setResultFormat(resultFormats.get(c));
 		}
+
 	}
 
 }
