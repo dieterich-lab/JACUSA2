@@ -2,7 +2,7 @@ package jacusa.worker;
 
 import java.util.SortedSet;
 
-import jacusa.io.format.ParallelToString;
+import jacusa.io.format.extendedFormat.ParallelToString;
 import jacusa.method.call.CallMethod;
 import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;

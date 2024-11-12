@@ -2,7 +2,7 @@ package lib.io;
 
 import jacusa.io.copytmp.FileCopyTmpResult;
 import jacusa.io.copytmp.FileCopyTmpSplitResult;
-import jacusa.io.format.ParallelToString;
+import jacusa.io.format.extendedFormat.ParallelToString;
 import lib.cli.parameter.GeneralParameter;
 import lib.io.copytmp.CopyTmpResult;
 import lib.worker.WorkerDispatcher;
