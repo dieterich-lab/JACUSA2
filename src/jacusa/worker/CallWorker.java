@@ -187,7 +187,7 @@ public class CallWorker extends AbstractWorker {
 		final DataContainer pooledData = parallelData.getPooledData(picked_cond).copy();
 		final int[] targetCoverages = new int[parallelData.getData(other_cond).size()];
 		for (int replicateI = 0; replicateI < parallelData.getData(other_cond).size(); replicateI++) {
-			targetCoverages[replicateI] = parallelData.getData(other_cond).get(replicateI).getPileupCount().getBaseCallCount();
+			targetCoverages[replicateI] = parallelData.getData(other_cond).get(replicateI).getPileupCount().getReads();
 		}
 
 		final ParallelData.Builder builder = new ParallelData.Builder(
