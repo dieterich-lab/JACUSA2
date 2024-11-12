@@ -56,10 +56,7 @@ extends AbstractSiteDataAssemblerFactory {
 		
 		final PositionProcessor positionProcessor = new PositionProcessor(validators, bcqcStorage);
 		cache.addRecordProcessor(new AlignmentBlockProcessor(translator, positionProcessor));
-
-		if (parameter.showInsertionCount() || parameter.showInsertionStartCount() || parameter.showDeletionCount()) {
-			cache.addCache(createCoverageCache(sharedStorage, DataType.COVERAGE.getFetcher()));
-		}
+		
 		addDeletionCache(parameter, sharedStorage, cache);
 		addInsertionCache(parameter, sharedStorage, cache);
 

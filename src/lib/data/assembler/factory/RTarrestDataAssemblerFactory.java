@@ -66,9 +66,6 @@ extends AbstractSiteDataAssemblerFactory {
 				locInterpreter, 
 				validators));
 
-		if (parameter.showInsertionCount() || parameter.showInsertionStartCount() || parameter.showDeletionCount()) {
-			cache.addCache(createCoverageCache(sharedStorage, DataType.COVERAGE.getFetcher()));
-		}
 		addInsertionCache(parameter, sharedStorage, cache);
 		addDeletionCache(parameter, sharedStorage, cache);
 		

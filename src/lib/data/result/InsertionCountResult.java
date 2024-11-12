@@ -10,9 +10,10 @@ import lib.io.InputOutput;
 import lib.stat.estimation.provider.InsertionEstCountProvider;
 
 /**
- * TODO
+ * TODO add documentation
  */
-public class InsertionCountResult extends INDELCountResult {
+@Deprecated
+public class InsertionCountResult extends AbstractINDELCountResult {
 
 	public static final String SCORE 	= "insertion_score";
 	public static final String PVALUE = "insertion_pvalue";
@@ -37,9 +38,10 @@ public class InsertionCountResult extends INDELCountResult {
 		result.getResultInfo(valueIndex).add(SCORE, value);
 	}
 	
+	// TODO why method in result and estCount
 	@Override
 	IntegerData getCount(DataContainer container) {
-		return container.getInsertionCount();
+		return new IntegerData(container.getPileupCount().getINDELCount().getInsertionCount());
 	}
 	
 	@Override

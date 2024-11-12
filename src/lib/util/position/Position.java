@@ -6,7 +6,7 @@ import lib.util.Base;
 import lib.util.Copyable;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public interface Position extends Copyable<Position> {
 
@@ -27,6 +27,9 @@ public interface Position extends Copyable<Position> {
 	}
 	
 	default byte getReadBaseCallQuality() {
+		if (getSAMRecord().getBaseQualities().length == 0) {
+			return (byte)40; // FIXME what is the default when no BASQ available
+		}
 		return getSAMRecord().getBaseQualities()[getReadPosition()];
 	}
 	

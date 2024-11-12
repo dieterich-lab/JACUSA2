@@ -15,6 +15,7 @@ import lib.data.IntegerData;
 import lib.data.DataContainer.AbstractBuilderFactory;
 import lib.data.assembler.DataAssembler;
 import lib.data.assembler.SiteDataAssembler;
+import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.Fetcher;
 import lib.data.fetcher.basecall.BCCextractor;
@@ -23,6 +24,8 @@ import lib.data.storage.Cache;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.Storage;
 import lib.data.storage.basecall.DefaultBCCStorage;
+import lib.data.storage.indel.InsertionStorage;
+import lib.data.storage.indel.DeletionStorage;
 import lib.data.storage.container.CacheContainer;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.integer.ArrayIntegerStorage;
@@ -70,7 +73,7 @@ extends AbstractDataAssemblerFactory {
 		if (parameter.showDeletionCount()) {
 				cache.addCache(createDeletionCache(
 								sharedStorage, 
-								DataType.DELETION_COUNT.getFetcher()));
+								DataType.PILEUP_COUNT.getFetcher()));
 		}
 	}
 	
@@ -83,7 +86,7 @@ extends AbstractDataAssemblerFactory {
 			final boolean onlyStart = parameter.showInsertionStartCount();
 			cache.addCache(createInsertionCache(
 							sharedStorage, 
-							DataType.INSERTION_COUNT.getFetcher(),
+							DataType.PILEUP_COUNT.getFetcher(),
 							onlyStart));
 		}
 	}
@@ -101,11 +104,11 @@ extends AbstractDataAssemblerFactory {
 	}
 
 	Cache createDeletionCache(
-			final SharedStorage sharedStorage, final Fetcher<IntegerData> delFetcher) {
+			final SharedStorage sharedStorage, final Fetcher<PileupCount> delFetcher) {
 
 		final Cache cache = new Cache();
 
-		final Storage delStorage = new MapIntegerStorage(sharedStorage, delFetcher);
+		final Storage delStorage = new DeletionStorage(sharedStorage, delFetcher);
 		cache.addStorage(delStorage);
 
 		final CoordinateTranslator translator = sharedStorage.getCoordinateController()
@@ -117,11 +120,11 @@ extends AbstractDataAssemblerFactory {
 	}
 
 	Cache createInsertionCache(
-			final SharedStorage sharedStorage, final Fetcher<IntegerData> insFetcher, final boolean onlyStart) {
+			final SharedStorage sharedStorage, final Fetcher<PileupCount> insFetcher, final boolean onlyStart) {
 		
 		final Cache cache = new Cache();
 		
-		final Storage insStorage = new MapIntegerStorage(sharedStorage, insFetcher);
+		final Storage insStorage = new InsertionStorage(sharedStorage, insFetcher);
 		cache.addStorage(insStorage);
 
 		final CoordinateTranslator translator = sharedStorage.getCoordinateController()
