@@ -59,7 +59,7 @@ public class CallWorker extends AbstractWorker {
 		//process selected options for X output -> get output from ParallelToString implementation classes
 		if(getParameter().getResultFormat().getSelected() != null) {
 			for (ParallelToString selected : getParameter().getResultFormat().getSelected()) {
-				result.getResultInfo().add(selected.getStringFromParallel(parallelData));
+				result.getResultInfo().add(selected.getId(), selected.getStringFromParallel(parallelData));
 			}
 		}
 

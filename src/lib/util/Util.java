@@ -2,6 +2,7 @@ package lib.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import htsjdk.samtools.SAMSequenceDictionary;
 import htsjdk.samtools.SamReader;
@@ -51,6 +52,18 @@ public final class Util {
 				sb.append('\t');
 			}
 			sb.append(a[i]);
+		}
+		return sb.toString();
+	}
+
+	public static String pack(final List<Double> a, char separator) {
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < a.size(); ++i) {
+			if (i > 0) {
+				sb.append(separator);
+			}
+			sb.append(a.get(i));
 		}
 		return sb.toString();
 	}

@@ -55,6 +55,11 @@ extends AbstractACOption {
 	@Override
 	public void process(final CommandLine cmdLine) throws IllegalArgumentException {
 		final String s = cmdLine.getOptionValue(getOpt());
+
+		if((s.contains("insertion_ratio") && !cmdLine.hasOption('i')) || (s.contains("deletion_ratio") && !cmdLine.hasOption('D'))){
+			throw new IllegalArgumentException("put options -i or -D to calculate insertion- or deletion-ratio");
+		}
+
 		//go through command line input
 		for (int i = 0; i < s.length(); ++i) {
 			final char c = s.charAt(i);

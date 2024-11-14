@@ -1,6 +1,12 @@
 package jacusa.io.format.extendedFormat;
 
+import lib.data.DataContainer;
 import lib.data.ParallelData;
+import lib.data.count.INDELCount;
+import lib.util.Util;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddInsertionRatioToOutput implements ParallelToString {
 
@@ -21,7 +27,14 @@ public class AddInsertionRatioToOutput implements ParallelToString {
     }
 
     public String getStringFromParallel(ParallelData parallelData){
-        return "Insertion_Ratio_TODO";
+
+        List<Double> insertionRatios = new ArrayList<>();
+        for (DataContainer combined : parallelData.getCombinedData()){
+            final int reads = combined.getPileupCount().getReads();
+            insertionRatios.add(combined.getPileupCount().getINDELCount().getInsertionRatio(reads));
+        }
+
+        return Util.pack(insertionRatios, ',');
     }
 
 }
