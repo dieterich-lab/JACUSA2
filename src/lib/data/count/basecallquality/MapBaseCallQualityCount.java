@@ -127,7 +127,7 @@ public class MapBaseCallQualityCount implements BaseCallQualityCount {
 		}
 		return this;
 	}
-
+	
 	@Override
 	public MapBaseCallQualityCount invert() {
 		for (final Base base : new Base[] {Base.A, Base.C}) {
@@ -151,11 +151,6 @@ public class MapBaseCallQualityCount implements BaseCallQualityCount {
 			}
 		}
 		return alleles;
-	}
-
-	@Override
-	public String toString() {
-		return toString(this);
 	}
 
 	@Override

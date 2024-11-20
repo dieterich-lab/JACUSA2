@@ -183,6 +183,8 @@ public class CallWorker extends AbstractWorker {
 		return new int [] {picked_cond, other_cond};
 	}
 	
+	// TODO make faster
+	// TODO reuse alpha calculation
 	public ParallelData sample(final ParallelData parallelData, final int picked_cond, final int other_cond) {
 		final DataContainer pooledData = parallelData.getPooledData(picked_cond).copy();
 		final int[] targetCoverages = new int[parallelData.getData(other_cond).size()];

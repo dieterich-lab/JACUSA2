@@ -1,6 +1,6 @@
-
 package lib.data.downsample;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -29,28 +29,40 @@ public class SamplePileupCount {
 		quals = new byte[pileupCount.getReads()];
 		// prepare arrays to sample from
 		for (final Base base : pileupCount.getBCC().getAlleles()) {
-			for (int i = 0; i < pileupCount.getBCC().getBaseCall(base); ++i) {
-				bases[offset] = base.getChar();
-				offset++;
-			}
+//			for (int i = 0; i < pileupCount.getBCC().getBaseCall(base); ++i) {
+//				bases[offset] = base.getChar();
+//				offset++;
+//			}
+			final int base_count = pileupCount.getBCC().getBaseCall(base);
+			Arrays.fill(bases, offset, base_count, base.getChar());
+			offset += base_count;
 			for (byte qual : pileupCount.getBaseCallQualityCount().getBaseCallQuality(base)) {
-				for (int j = 0; j < pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, qual); ++j) {
-					quals[offset2] = qual;
-					offset2++;
-				}
+//				for (int j = 0; j < pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, qual); ++j) {
+//					quals[offset2] = qual;
+//					offset2++;
+//				}
+				final int qual_count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, qual);
+				Arrays.fill(quals, offset2, qual_count, qual);
+				offset2 += qual_count;
 			}
 		}
 		if (pileupCount.getINDELCount().getInsertionCount() > 0) {
-			for (int i = 0; i < pileupCount.getINDELCount().getInsertionCount(); ++i) {
-				bases[offset] = 'I';
-				offset++;
-			}
+//			for (int i = 0; i < pileupCount.getINDELCount().getInsertionCount(); ++i) {
+//				bases[offset] = 'I';
+//				offset++;
+//			}
+			final int n = pileupCount.getINDELCount().getInsertionCount();
+			Arrays.fill(bases, offset, n, 'I');
+			offset += n;
 		}
 		if (pileupCount.getINDELCount().getDeletionCount() > 0) {
-			for (int i = 0; i < pileupCount.getINDELCount().getDeletionCount(); ++i) {
-				bases[offset] = 'D';
-				offset++;
-			}
+//			for (int i = 0; i < pileupCount.getINDELCount().getDeletionCount(); ++i) {
+//				bases[offset] = 'D';
+//				offset++;
+//			}
+			final int n = pileupCount.getINDELCount().getDeletionCount();
+			Arrays.fill(bases, offset, n, 'D');
+			offset += n;
 		}
 		
 		random = new Random();
@@ -61,8 +73,9 @@ public class SamplePileupCount {
 				new HashMap<Base, Map<Byte,Integer>>(pileupCount.getBCC().getAlleles().size());
 		int insertions = 0;
 		int deletions = 0;
+		final int reads = pileupCount.getReads();
 		for (int i = 0; i < targetReads; ++i) {
-			final int randomI = random.nextInt(pileupCount.getReads());
+			final int randomI = random.nextInt(reads);
 			
 			final char c = bases[randomI];
 			switch (c) {
@@ -102,12 +115,6 @@ public class SamplePileupCount {
 		}
 	}
 	minimalReads = (int)Math.ceil(minimalReads * ratio);
-	
-	// TODO
-	
-	// TODO Auto-generated method stub
-	return null;
 	*/
 	
 }
-
