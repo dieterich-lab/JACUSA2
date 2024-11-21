@@ -69,7 +69,7 @@ class CallStat extends AbstractStat {
 	}
 
 	@Override
-	public int getSampleRuns() {
+	public int getSubsampleRuns() {
 		return dirMultPrm.getSampleRuns();
 	} 
 	

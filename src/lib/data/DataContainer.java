@@ -62,12 +62,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	BaseSub2IntData getBaseSub2Coverage();
 	BaseSub2IntData getBaseSub2DeletionCount();
 	BaseSub2IntData getBaseSub2InsertionCount();
-
-	/* TODO remove
-	IntegerData getDeletionCount();
-	IntegerData getInsertionCount();
-	IntegerData getCoverage();
-	*/
 	
 	<T extends Data<T>> boolean contains(DataType<T> dataType);
 	Collection<DataType<?>> getDataTypes();

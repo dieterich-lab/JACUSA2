@@ -48,8 +48,16 @@ public class PileupCount implements Data<PileupCount> {
 		return baseCallQualCount;
 	}
 	
+	public void setBaseCallQualityCount(final BaseCallQualityCount baseCallQualCount) {
+		this.baseCallQualCount = baseCallQualCount;
+	}
+	
 	public INDELCount getINDELCount() {
 		return indelCount;
+	}
+	
+	public void setINDELCount(final INDELCount indelCount) {
+		this.indelCount = indelCount;
 	}
 	
 	public void merge(final PileupCount pileupCount) {
@@ -59,11 +67,11 @@ public class PileupCount implements Data<PileupCount> {
 		
 		indelCount.add(pileupCount.indelCount);
 	}
-
-	/*
-	 * TODO add and substract insertion or deletion
-	 * by string
-	 */
+	
+	public void clear() {
+		baseCallQualCount.clear();
+		indelCount.clear();
+	}
 	
 	public void add(final Base base, final PileupCount pileupCount) {
 		add(base, base, pileupCount);

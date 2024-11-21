@@ -34,7 +34,7 @@ public class SamplePileupCount {
 //				offset++;
 //			}
 			final int base_count = pileupCount.getBCC().getBaseCall(base);
-			Arrays.fill(bases, offset, base_count, base.getChar());
+			Arrays.fill(bases, offset, offset + base_count, base.getChar());
 			offset += base_count;
 			for (byte qual : pileupCount.getBaseCallQualityCount().getBaseCallQuality(base)) {
 //				for (int j = 0; j < pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, qual); ++j) {
@@ -42,7 +42,7 @@ public class SamplePileupCount {
 //					offset2++;
 //				}
 				final int qual_count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, qual);
-				Arrays.fill(quals, offset2, qual_count, qual);
+				Arrays.fill(quals, offset2, offset2 + qual_count, qual);
 				offset2 += qual_count;
 			}
 		}
@@ -52,7 +52,7 @@ public class SamplePileupCount {
 //				offset++;
 //			}
 			final int n = pileupCount.getINDELCount().getInsertionCount();
-			Arrays.fill(bases, offset, n, 'I');
+			Arrays.fill(bases, offset, offset + n, 'I');
 			offset += n;
 		}
 		if (pileupCount.getINDELCount().getDeletionCount() > 0) {
@@ -61,7 +61,7 @@ public class SamplePileupCount {
 //				offset++;
 //			}
 			final int n = pileupCount.getINDELCount().getDeletionCount();
-			Arrays.fill(bases, offset, n, 'D');
+			Arrays.fill(bases, offset, offset + n, 'D');
 			offset += n;
 		}
 		

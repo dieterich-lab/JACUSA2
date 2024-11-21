@@ -22,7 +22,7 @@ public abstract class AbstractStat {
 	public abstract Result calculate(ParallelData parallelData);
 	protected abstract void processAfterCalculate(Result statResult);
 	
-	public int getSampleRuns() {
+	public int getSubsampleRuns() {
 		return sampleRuns;
 	}
 	

@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import htsjdk.samtools.util.SequenceUtil;
-import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
-import lib.data.downsample.SamplePileupCount;
 import lib.data.has.HasCoordinate;
 import lib.data.has.HasLibraryType;
 import lib.util.Base;
@@ -41,6 +39,12 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		totalReplicates = parallelDataBuilder.totalReplicates;
 	}
 
+	public void clearCache() {
+		cachedCombinedData = null;
+		cachedPooledData = null;
+		cachedCombinedPooledData = null;
+	}
+	
 	public int getReplicates(int condI) {
 		return data.get(condI).size();
 	}
@@ -167,18 +171,6 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		public Builder withReplicate(final int condI, final int replicateI,
 				final DataContainer dataContainer) {
 			data.get(condI).set(replicateI, dataContainer);
-			return this;
-		}
-
-		public Builder sample(final int condI, final DataContainer data, final int[] coverages) {
-			final SamplePileupCount sample = new SamplePileupCount(data.getPileupCount());
-
-			for (int replicateI = 0; replicateI < coverages.length; replicateI++) {
-				final int coverage = coverages[replicateI];
-				final PileupCount newPileupCount = sample.sample(coverage);
-				this.data.get(condI).get(replicateI).getPileupCount().merge(newPileupCount);
-			}
-
 			return this;
 		}
 

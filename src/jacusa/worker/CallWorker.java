@@ -7,6 +7,7 @@ import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecallquality.BaseCallQualityCount;
+import lib.data.downsample.SamplePileupCount;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.stat.GenericStat;
@@ -93,77 +94,27 @@ public class CallWorker extends AbstractWorker {
 			
 			result.getResultInfo().add("bcqs", sb.toString());
 		}
-		
-		final double[] genericStatScores = processGenericStats(result);
-
-		final int[] conds = this.pickCondition(parallelData);
-		final int picked_cond = conds[0];
-		final int other_cond = conds[1];
 
 		// sample
-		final int sampleRuns = stat.getSampleRuns();
-		if (sampleRuns > 0 ) {
-			final double[] values = new double[sampleRuns];
-			// TODO uncomment int stat_check = 0;
-			final int[] genericStat2check = new int[genericStats.size()];
-			Arrays.fill(genericStat2check, 0);
-			final double[][] genericStatValues = new double [genericStats.size()][sampleRuns];
-			
-			for (int run = 0; run < sampleRuns; run++) {
-				final ParallelData sampledData = sample(parallelData, picked_cond, other_cond);
-				final Result sampledResult = stat.calculate(sampledData);
-				final double sampledStat = sampledResult.getStat();
-				values[run] = sampledStat;
-				
-				/* TODO uncomment
-				if ((result.getStat() - sampledStat) > 0) {
-					stat_check++;
-				}*/
-
-				for (int genericStatI = 0; genericStatI < genericStats.size(); ++genericStatI) {
-					final GenericStat genericStat = genericStats.get(genericStatI);
-					
-					final Result sampledGenericStatResult = genericStat.calculate(sampledData);
-					final double sampledGenericStat = sampledGenericStatResult.getStat();
-					
-					genericStatValues[genericStatI][run] = sampledGenericStat;				
-					if ((genericStatScores[genericStatI] - sampledGenericStat) > 0) {
-						genericStat2check[genericStatI]++;
-					}
-				}
-			}
-			// write successful sampling
-			result.getResultInfo().add("score_subsampled", Util.join(values, ','));
-			/* TODO uncomment
-			if (check >= limit) {
-				result.getResultInfo().add("subsampling", "passed");
-			} else {
-				result.getResultInfo().add("subsampling", "failed");
-			}*/
-
-			// write successful sampling
-			for (int genericStatI = 0; genericStatI < genericStats.size(); ++genericStatI) {
-				final GenericStat genericStat = genericStats.get(genericStatI);
-				final String scoreKey = genericStat.getScoreKey();
-
-				final double[] sampledGenericValues = genericStatValues[genericStatI];
-				result.getResultInfo().add(scoreKey + "_subsampled", Util.join(sampledGenericValues, ','));
-				// TODO add checks
-			}
+		final int subsampleRuns = stat.getSubsampleRuns();
+		if (subsampleRuns > 0 ) {
+			subsample(subsampleRuns, result);
+		}
+		final int downsampleRuns = stat.getDownsampleRuns();
+		if (downsampleRuns > 0 ) {
+			downsample(downsampleRuns, result);
 		}
 		
 		return result;
 	}
 	
-	// TODO reads or base call coverage
-	// pick condition with highest number of reads
 	public int[] pickCondition(final ParallelData parallelData) {
 		int picked_cond = -1;
 		int picked_cond_cov = -1;
 		final int conditions = parallelData.getConditions();
 	
 		for (int condI = 0; condI < conditions - 1; condI++) {
-			final int coverage = parallelData.getPooledData(condI).getPileupCount().getBaseCallCount();
+			final int coverage = parallelData.getPooledData(condI).getPileupCount().getReads();
 			if (picked_cond < 0) {
 				picked_cond = condI;
 				picked_cond_cov = coverage;
@@ -172,7 +123,6 @@ public class CallWorker extends AbstractWorker {
 				picked_cond_cov = coverage;
 			}
 		}
-		// TODO make nicer for conditions > 2
 		int other_cond = -1;
 		if (picked_cond == 1) {
 			other_cond = 0;
@@ -182,34 +132,166 @@ public class CallWorker extends AbstractWorker {
 		
 		return new int [] {picked_cond, other_cond};
 	}
-	
-	// TODO make faster
-	// TODO reuse alpha calculation
-	public ParallelData sample(final ParallelData parallelData, final int picked_cond, final int other_cond) {
-		final DataContainer pooledData = parallelData.getPooledData(picked_cond).copy();
+
+	private void subsample(final int subsampleRuns, final Result result ) {
+		final ParallelData parallelData = result.getParellelData();
+		final double[] genericStatScores = processGenericStats(result);
+
+		final int[] conds = this.pickCondition(parallelData);
+		final int picked_cond = conds[0];
+		final int other_cond = conds[1];
+		
+		final double[] values = new double[subsampleRuns];
+		// TODO uncomment int stat_check = 0;
+		final int[] genericStat2check = new int[genericStats.size()];
+		Arrays.fill(genericStat2check, 0);
+		final double[][] genericStatValues = new double [genericStats.size()][subsampleRuns];
+		
 		final int[] targetCoverages = new int[parallelData.getData(other_cond).size()];
 		for (int replicateI = 0; replicateI < parallelData.getData(other_cond).size(); replicateI++) {
 			targetCoverages[replicateI] = parallelData.getData(other_cond).get(replicateI).getPileupCount().getReads();
 		}
-
-		final ParallelData.Builder builder = new ParallelData.Builder(
-				parallelData.getConditions(),
-				parallelData.getReplicates());
-		for (int replicateI = 0; replicateI < parallelData.getData(picked_cond).size(); replicateI++) {
-			builder.withReplicate(picked_cond, replicateI, parallelData.getData(picked_cond).get(replicateI));
-		}
-		// TODO make this efficient
-		for (int replicateI = 0; replicateI < parallelData.getData(other_cond).size(); replicateI++) {
-			final DataContainer data = parallelData.getData(other_cond).get(replicateI).copy();
-			data.getPileupCount().substract(data.getPileupCount());
-			builder.withReplicate(other_cond, replicateI, data);
-		}
-
-		final ParallelData sampledData = builder
-				.sample(other_cond, pooledData, targetCoverages)
-				.build();
+		final PileupCount pileupCount = parallelData.getPooledData(picked_cond).getPileupCount();
+		final SamplePileupCount subSampler = new SamplePileupCount(pileupCount);
+		final ParallelData template = parallelData.copy();
 		
-		return sampledData;
+		for (int run = 0; run < subsampleRuns; run++) {
+			template.clearCache();
+			for (int replicateI = 0; replicateI < template.getData(other_cond).size(); replicateI++) {
+				final DataContainer data = template.getDataContainer(other_cond, replicateI);
+				data.getPileupCount().clear();
+				final PileupCount sampledPileup = subSampler.sample(targetCoverages[replicateI]);
+				data.getPileupCount().setBaseCallQualityCount(sampledPileup.getBaseCallQualityCount());
+				data.getPileupCount().setINDELCount(sampledPileup.getINDELCount());
+			}
+			
+			final Result sampledResult = stat.calculate(template);
+			final double sampledStat = sampledResult.getStat();
+			values[run] = sampledStat;
+			
+			/* TODO uncomment
+			if ((result.getStat() - sampledStat) > 0) {
+				stat_check++;
+			}*/
+
+			for (int genericStatI = 0; genericStatI < genericStats.size(); ++genericStatI) {
+				final GenericStat genericStat = genericStats.get(genericStatI);
+				
+				// TODO reuse alpha calculation
+				
+				final Result sampledGenericStatResult = genericStat.calculate(template);
+				final double sampledGenericStat = sampledGenericStatResult.getStat();
+				
+				genericStatValues[genericStatI][run] = sampledGenericStat;				
+				if ((genericStatScores[genericStatI] - sampledGenericStat) > 0) {
+					genericStat2check[genericStatI]++;
+				}
+			}
+		}
+		// write successful sampling
+		result.getResultInfo().add("score_subsampled", Util.join(values, ','));
+		/* TODO uncomment
+		if (check >= limit) {
+			result.getResultInfo().add("subsampling", "passed");
+		} else {
+			result.getResultInfo().add("subsampling", "failed");
+		}*/
+
+		// write successful sampling
+		for (int genericStatI = 0; genericStatI < genericStats.size(); ++genericStatI) {
+			final GenericStat genericStat = genericStats.get(genericStatI);
+			final String scoreKey = genericStat.getScoreKey();
+
+			final double[] sampledGenericValues = genericStatValues[genericStatI];
+			result.getResultInfo().add(scoreKey + "_subsampled", Util.join(sampledGenericValues, ','));
+			// TODO add checks
+		}
+	}
+	
+	public int pickReplicate(final ParallelData parallelData) {
+		int pickedReplicate = 0;
+		for (int replI = 1; replI < parallelData.getCombinedData().size(); replI++) {
+			final int pickedCoverage = parallelData.getCombinedData().get(pickedReplicate).getPileupCount().getReads();
+			final int currentCoverage = parallelData.getCombinedData().get(replI).getPileupCount().getReads();
+			if (currentCoverage < pickedCoverage) {
+				pickedReplicate = replI;
+			}
+		}
+		
+		return pickedReplicate;
+	}
+	
+	private void downsample(final int downsampleRuns, final Result result ) {
+		final ParallelData parallelData = result.getParellelData();
+		final double[] genericStatScores = processGenericStats(result);
+		
+		final int pickedReplicate = pickReplicate(parallelData);
+		
+		final double[] values = new double[downsampleRuns];
+		// TODO uncomment int stat_check = 0;
+		final int[] genericStat2check = new int[genericStats.size()];
+		Arrays.fill(genericStat2check, 0);
+		final double[][] genericStatValues = new double [genericStats.size()][downsampleRuns];
+
+		final int[] targetCoverages = new int[parallelData.getCombinedData().size()];
+		for (int replicateI = 0; replicateI < parallelData.getData(other_cond).size(); replicateI++) {
+			targetCoverages[replicateI] = parallelData.getData(other_cond).get(replicateI).getPileupCount().getReads();
+		}
+		final PileupCount pileupCount = parallelData.getPooledData(picked_cond).getPileupCount();
+		final SamplePileupCount subSampler = new SamplePileupCount(pileupCount);
+		final ParallelData template = parallelData.copy();
+		
+		for (int run = 0; run < downsampleRuns; run++) {
+			template.clearCache();
+			for (int replicateI = 0; replicateI < template.getData(other_cond).size(); replicateI++) {
+				final DataContainer data = template.getDataContainer(other_cond, replicateI);
+				data.getPileupCount().clear();
+				final PileupCount sampledPileup = subSampler.sample(targetCoverages[replicateI]);
+				data.getPileupCount().setBaseCallQualityCount(sampledPileup.getBaseCallQualityCount());
+				data.getPileupCount().setINDELCount(sampledPileup.getINDELCount());
+			}
+			
+			final Result sampledResult = stat.calculate(template);
+			final double sampledStat = sampledResult.getStat();
+			values[run] = sampledStat;
+			
+			/* TODO uncomment
+			if ((result.getStat() - sampledStat) > 0) {
+				stat_check++;
+			}*/
+
+			for (int genericStatI = 0; genericStatI < genericStats.size(); ++genericStatI) {
+				final GenericStat genericStat = genericStats.get(genericStatI);
+				
+				// TODO reuse alpha calculation
+				
+				final Result sampledGenericStatResult = genericStat.calculate(template);
+				final double sampledGenericStat = sampledGenericStatResult.getStat();
+				
+				genericStatValues[genericStatI][run] = sampledGenericStat;				
+				if ((genericStatScores[genericStatI] - sampledGenericStat) > 0) {
+					genericStat2check[genericStatI]++;
+				}
+			}
+		}
+		// write successful sampling
+		result.getResultInfo().add("score_subsampled", Util.join(values, ','));
+		/* TODO uncomment
+		if (check >= limit) {
+			result.getResultInfo().add("subsampling", "passed");
+		} else {
+			result.getResultInfo().add("subsampling", "failed");
+		}*/
+
+		// write successful sampling
+		for (int genericStatI = 0; genericStatI < genericStats.size(); ++genericStatI) {
+			final GenericStat genericStat = genericStats.get(genericStatI);
+			final String scoreKey = genericStat.getScoreKey();
+
+			final double[] sampledGenericValues = genericStatValues[genericStatI];
+			result.getResultInfo().add(scoreKey + "_subsampled", Util.join(sampledGenericValues, ','));
+			// TODO add checks
+		}
 	}
 	
 }

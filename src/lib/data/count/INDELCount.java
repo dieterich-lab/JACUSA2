@@ -6,8 +6,8 @@ public class INDELCount {
 	private int deletions;
 	
 	public INDELCount() {
-		this.insertions = 0;
-		this.deletions = 0;
+		insertions = 0;
+		deletions = 0;
 	}
 	
 	public INDELCount(final INDELCount indelCount) {
@@ -22,6 +22,11 @@ public class INDELCount {
 	
 	public INDELCount copy() {
 		return new INDELCount(this);
+	}
+	
+	public void clear() {
+		insertions = 0;
+		deletions = 0;
 	}
 	
 	public void add(INDELCount indelCount) {
