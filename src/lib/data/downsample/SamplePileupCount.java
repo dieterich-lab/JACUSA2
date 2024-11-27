@@ -22,50 +22,39 @@ public class SamplePileupCount {
 	
 	public SamplePileupCount(final PileupCount pileupCount) {
 		this.pileupCount = pileupCount;
-		
-		int offset = 0;
-		int offset2 = 0;
 		bases = new char[pileupCount.getReads()];
 		quals = new byte[pileupCount.getReads()];
+
+		random = new Random();
+
+		init();
+	}
+	
+	private void init() {
+		int baseOffset = 0;
+		int qualOffset = 0;
+		
 		// prepare arrays to sample from
 		for (final Base base : pileupCount.getBCC().getAlleles()) {
-//			for (int i = 0; i < pileupCount.getBCC().getBaseCall(base); ++i) {
-//				bases[offset] = base.getChar();
-//				offset++;
-//			}
 			final int base_count = pileupCount.getBCC().getBaseCall(base);
-			Arrays.fill(bases, offset, offset + base_count, base.getChar());
-			offset += base_count;
+			Arrays.fill(bases, baseOffset, baseOffset + base_count, base.getChar());
+			baseOffset += base_count;
 			for (byte qual : pileupCount.getBaseCallQualityCount().getBaseCallQuality(base)) {
-//				for (int j = 0; j < pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, qual); ++j) {
-//					quals[offset2] = qual;
-//					offset2++;
-//				}
 				final int qual_count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, qual);
-				Arrays.fill(quals, offset2, offset2 + qual_count, qual);
-				offset2 += qual_count;
+				Arrays.fill(quals, qualOffset, qualOffset + qual_count, qual);
+				qualOffset += qual_count;
 			}
 		}
 		if (pileupCount.getINDELCount().getInsertionCount() > 0) {
-//			for (int i = 0; i < pileupCount.getINDELCount().getInsertionCount(); ++i) {
-//				bases[offset] = 'I';
-//				offset++;
-//			}
 			final int n = pileupCount.getINDELCount().getInsertionCount();
-			Arrays.fill(bases, offset, offset + n, 'I');
-			offset += n;
+			Arrays.fill(bases, baseOffset, baseOffset + n, 'I');
+			baseOffset += n;
 		}
 		if (pileupCount.getINDELCount().getDeletionCount() > 0) {
-//			for (int i = 0; i < pileupCount.getINDELCount().getDeletionCount(); ++i) {
-//				bases[offset] = 'D';
-//				offset++;
-//			}
 			final int n = pileupCount.getINDELCount().getDeletionCount();
-			Arrays.fill(bases, offset, offset + n, 'D');
-			offset += n;
+			Arrays.fill(bases, baseOffset, baseOffset + n, 'D');
+			baseOffset += n;
 		}
-		
-		random = new Random();
 	}
 	
 	public PileupCount sample(final int targetReads) {
@@ -79,10 +68,10 @@ public class SamplePileupCount {
 			
 			final char c = bases[randomI];
 			switch (c) {
-			case 'I':
+			case 'I': // FIXME - modifications (Inosin) vs. insertion
 				insertions++;
-				break;
-			case 'D':
+				break; 
+			case 'D': // FIXME - modifications
 				deletions++;
 				break;
 				
@@ -105,16 +94,5 @@ public class SamplePileupCount {
 		final INDELCount indelCount = new INDELCount(insertions, deletions);
 		return new PileupCount(bcqc, indelCount);
 	}
-	
-	/*
-	int minimalReads = Integer.MAX_VALUE;
-	for (DataContainer data : parallelData.getCombinedData()) {
-		final int reads = data.getPileupCount().getReads();
-		if (reads > 0) {
-			minimalReads = Math.min(minimalReads, reads);
-		}
-	}
-	minimalReads = (int)Math.ceil(minimalReads * ratio);
-	*/
 	
 }

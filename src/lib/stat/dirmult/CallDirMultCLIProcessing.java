@@ -54,9 +54,19 @@ class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 				.build());
 
 		options.addOption(Option.builder()
-				.longOpt("runs")
+				.longOpt("subsampleRuns")
 				.hasArg(true)
 				.desc("Number of subsampling runs.")
+				.build());
+		options.addOption(Option.builder()
+				.longOpt("downsampleRuns")
+				.hasArg(true)
+				.desc("Number of downsample runs.")
+				.build());
+		options.addOption(Option.builder()
+				.longOpt("downsampleFraction")
+				.hasArg(true)
+				.desc("Fraction of lowest BAM file.")
 				.build());
 		options.addOption(Option.builder()
 				.longOpt("limit")
@@ -95,10 +105,18 @@ class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 				dirMultParameter.setShowAlpha(true);
 				break;
 
-			case "runs":
-				dirMultParameter.setRuns(Integer.parseInt(cmd.getOptionValue(longOpt)));
+			case "subsampleRuns":
+				dirMultParameter.setSubampleRuns(Integer.parseInt(cmd.getOptionValue(longOpt)));
 				break;
 
+			case "downsampleRuns":
+				dirMultParameter.setDownsampleRuns(Integer.parseInt(cmd.getOptionValue(longOpt)));
+				break;
+
+			case "downsampleFraction":
+				dirMultParameter.setDownsampleFraction(Double.parseDouble(cmd.getOptionValue(longOpt)));
+				break;
+				
 			case "limit":
 				dirMultParameter.setLimit(Integer.parseInt(cmd.getOptionValue(longOpt)));
 				break;

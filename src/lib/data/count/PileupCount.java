@@ -89,11 +89,13 @@ public class PileupCount implements Data<PileupCount> {
 		baseCallQualCount.subtract(dest, src, pileupCount.getBaseCallQualityCount());
 	}
 
+	/* TODO remove
 	public void substract(final PileupCount pileupCount) {
 		for (final Base base : pileupCount.getBCC().getAlleles()) {
 			substract(base, pileupCount);
 		}
 	}
+	*/
 
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();

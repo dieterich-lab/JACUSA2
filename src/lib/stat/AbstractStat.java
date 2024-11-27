@@ -8,14 +8,18 @@ import lib.data.result.Result;
  */
 public abstract class AbstractStat {
 
-	private int sampleRuns;
+	private int subsampleRuns;
+	private int downsampleRuns;
+	private double downsampleFraction;
 
 	public AbstractStat() {
-		this(0);
+		this(0, 0, 0.0);
 	}
 	
-	public AbstractStat(final int sampleRuns) {
-		this.sampleRuns = sampleRuns;
+	public AbstractStat(final int subsampleRuns, final int downsampleRuns, final double downsampleFraction) {
+		this.subsampleRuns = subsampleRuns;
+		this.downsampleRuns = downsampleRuns;
+		this.downsampleFraction = downsampleFraction;
 	}
 	
 	protected abstract boolean filter(Result statResult);
@@ -23,7 +27,15 @@ public abstract class AbstractStat {
 	protected abstract void processAfterCalculate(Result statResult);
 	
 	public int getSubsampleRuns() {
-		return sampleRuns;
+		return subsampleRuns;
+	}
+	
+	public int getDownsampleRuns() {
+		return downsampleRuns;
+	}
+	
+	public double getDownsampleFraction() {
+		return downsampleFraction;
 	}
 	
 	public Result filter(final ParallelData parallelData) {
