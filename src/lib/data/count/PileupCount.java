@@ -13,19 +13,28 @@ public class PileupCount implements Data<PileupCount> {
 
 	private BaseCallQualityCount baseCallQualCount;
 	private INDELCount indelCount;
+	private ModificationCount modCount;
 	
 	public PileupCount() {
-		this(BaseCallQualityCount.create(), new INDELCount());
+		this(BaseCallQualityCount.create(), new INDELCount(), new ModificationCount());
 	}
 	
+	public PileupCount(final BaseCallQualityCount baseCallQualCount, final INDELCount indelCount, final ModificationCount modCount) {
+		this.baseCallQualCount = baseCallQualCount;
+		this.indelCount = indelCount;
+		this.modCount = modCount;
+	}
+
 	public PileupCount(final BaseCallQualityCount baseCallQualCount, final INDELCount indelCount) {
 		this.baseCallQualCount = baseCallQualCount;
 		this.indelCount = indelCount;
+		this.modCount = new ModificationCount();
 	}
 	
 	public PileupCount(final PileupCount pileupCount) {
 		this.baseCallQualCount 	= pileupCount.baseCallQualCount.copy();
 		this.indelCount = pileupCount.indelCount.copy();
+		this.modCount = pileupCount.modCount.copy();
 	}
 	
 	public PileupCount copy() {
@@ -51,6 +60,8 @@ public class PileupCount implements Data<PileupCount> {
 	public INDELCount getINDELCount() {
 		return indelCount;
 	}
+
+	public ModificationCount getModCount() {return modCount;}
 	
 	public void merge(final PileupCount pileupCount) {
 		for (final Base base : pileupCount.getBCC().getAlleles()) {
@@ -94,6 +105,8 @@ public class PileupCount implements Data<PileupCount> {
 		sb.append(baseCallQualCount.toString());
 		sb.append('\n');
 		sb.append(indelCount.toString());
+		sb.append('\n');
+		sb.append(modCount.toString());
 		sb.append('\n');
 		return sb.toString();
 	}

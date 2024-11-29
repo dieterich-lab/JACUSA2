@@ -2,6 +2,7 @@ package jacusa.io.format.call;
 
 import jacusa.io.format.extendedFormat.AddDeletionRatioToOutput;
 import jacusa.io.format.extendedFormat.AddInsertionRatioToOutput;
+import jacusa.io.format.extendedFormat.AddModificationCountToOutput;
 import jacusa.io.format.extendedFormat.ParallelToString;
 import lib.cli.parameter.GeneralParameter;
 import lib.io.InputOutput;
@@ -26,6 +27,7 @@ public class BED6callExtendedResultFormat extends BED6callResultFormat{
         available = new ArrayList<>();
         available.add(new AddInsertionRatioToOutput());
         available.add(new AddDeletionRatioToOutput());
+        available.add(new AddModificationCountToOutput());
         selected = new ArrayList<>();
     }
 
