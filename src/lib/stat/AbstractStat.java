@@ -10,15 +10,17 @@ public abstract class AbstractStat {
 
 	private int subsampleRuns;
 	private int downsampleRuns;
+	private int randomSampleRuns;
 	private double downsampleFraction;
 
 	public AbstractStat() {
-		this(0, 0, 0.0);
+		this(0, 0, 0, 0.0);
 	}
 	
-	public AbstractStat(final int subsampleRuns, final int downsampleRuns, final double downsampleFraction) {
+	public AbstractStat(final int subsampleRuns, final int downsampleRuns, final int randomSampleRuns, final double downsampleFraction) {
 		this.subsampleRuns = subsampleRuns;
 		this.downsampleRuns = downsampleRuns;
+		this.randomSampleRuns = randomSampleRuns;
 		this.downsampleFraction = downsampleFraction;
 	}
 	
@@ -36,6 +38,10 @@ public abstract class AbstractStat {
 	
 	public double getDownsampleFraction() {
 		return downsampleFraction;
+	}
+	
+	public int getRandomSampleRuns() {
+		return randomSampleRuns;
 	}
 	
 	public Result filter(final ParallelData parallelData) {

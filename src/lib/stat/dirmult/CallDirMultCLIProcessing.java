@@ -69,6 +69,11 @@ class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 				.desc("Fraction of lowest BAM file.")
 				.build());
 		options.addOption(Option.builder()
+				.longOpt("randomSampleRuns")
+				.hasArg(true)
+				.desc("Number of random sample runs.")
+				.build());
+		options.addOption(Option.builder()
 				.longOpt("limit")
 				.hasArg(true)
 				.desc("Number of minimal runs with (LR-obs - LR-sampled > 0).")
@@ -113,6 +118,10 @@ class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 				dirMultParameter.setDownsampleRuns(Integer.parseInt(cmd.getOptionValue(longOpt)));
 				break;
 
+			case "randomSampleRuns":
+				dirMultParameter.setRandomSampleRuns(Integer.parseInt(cmd.getOptionValue(longOpt)));
+				break;
+				
 			case "downsampleFraction":
 				dirMultParameter.setDownsampleFraction(Double.parseDouble(cmd.getOptionValue(longOpt)));
 				break;

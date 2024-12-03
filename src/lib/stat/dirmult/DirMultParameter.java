@@ -27,6 +27,9 @@ public interface DirMultParameter {
 	double getDownsampleFraction();
 	void setDownsampleFraction(double downsampleFraction);
 	
+	int getRandomSampleRuns();
+	void setRandomSampleRuns(int downsampleRuns);
+	
 	int getLimit();
 	void setLimit(int limit);
 }

@@ -13,6 +13,7 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	
 	private int subsampleRuns = 0;
 	private int downsampleRuns = 0;
+	private int randomSampleRuns = 0;
 	private double downsampleFraction = 0.0;
 	
 	private int limit = 0;
@@ -79,6 +80,11 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	}
 	
 	@Override
+	public int getRandomSampleRuns() {
+		return randomSampleRuns;
+	}
+	
+	@Override
 	public void setLimit(int limit) {
 		this.limit = limit;
 	}
@@ -96,6 +102,11 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	@Override
 	public void setDownsampleFraction(final double downsampleFraction) {
 		this.downsampleFraction = downsampleFraction;
+	}
+	
+	@Override
+	public void setRandomSampleRuns(final int randomSampleRuns) {
+		this.randomSampleRuns = randomSampleRuns;
 	}
 	
 }

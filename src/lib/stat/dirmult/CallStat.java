@@ -19,7 +19,7 @@ class CallStat extends AbstractStat {
 
 	CallStat(final double threshold, final EstimationContainerProvider estContainerProv,
 			final DirMultParameter dirMultPrm) {
-		super(dirMultPrm.getSubsampleRuns(), dirMultPrm.getDownsampleRuns(), dirMultPrm.getDownsampleFraction());
+		super(dirMultPrm.getSubsampleRuns(), dirMultPrm.getDownsampleRuns(), dirMultPrm.getRandomSampleRuns(), dirMultPrm.getDownsampleFraction());
 		
 		this.threshold = threshold;
 		this.estContainerProv = estContainerProv;
