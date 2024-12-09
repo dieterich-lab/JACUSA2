@@ -23,6 +23,11 @@ public class Record {
 	private final List<Integer> insertions;
 	private final List<Integer> deletions;
 	private final List<Integer> INDELs;
+
+	//TODO: das hier sind ja jetzt nur die MM-Strings -> aber was mache ich mit denen?
+	// Will ich die so abrufen und woanders verarbeiten oder will ich hier schon die Map-Struktur mit Base-Mod-Count haben?
+	// Die anderen Listen enthalten ja die Positionen, aber jetzt grade soll ich doch noch gar keine Positionen mit reinbringen oder?
+	private String[] mmValues;
 	
 	private RecordRefProvider recordRefProvider;
 
@@ -44,8 +49,10 @@ public class Record {
 		insertions 	= new ArrayList<>(2);
 		deletions 	= new ArrayList<>(2);
 		INDELs 		= new ArrayList<>(4);
+		mmValues = new String[0];
 		
 		process();
+		processMM();
 	}
 	
 	public SAMRecord getSAMRecord() {
@@ -110,6 +117,25 @@ public class Record {
 			cigarDetail.add(new CigarDetail(position.copy(), cigarElement));
 			index = cigarDetail.size();
 			position.advance(cigarElement);
+		}
+
+	}
+
+	public void processMM(){
+		//handle MM tag (modifications)
+		String mmValue = (String) samRecord.getAttribute("MM");
+
+		if(!mmValue.isEmpty()){
+			this.mmValues = mmValue.split(";");
+
+			String[] values = null;
+
+			for(String value:this.mmValues){
+				//TODO: hier dann evtl den String noch weiter aufspalten, damit base, mod, pos rausgelesen werden können
+				// -> wie genau soll es werden? was soll oben in Variable gespeichert werden?
+				values = value.split(",");
+			}
+
 		}
 	}
 

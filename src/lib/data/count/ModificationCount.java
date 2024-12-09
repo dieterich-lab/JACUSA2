@@ -1,5 +1,8 @@
 package lib.data.count;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
+import lib.data.count.basecallquality.BaseCallQualityCount;
+import lib.data.count.basecallquality.MapBaseCallQualityCount;
 import lib.util.Base;
 
 import java.util.EnumMap;
@@ -94,6 +97,10 @@ public class ModificationCount {
 
     public ModificationCount copy() {
         return new ModificationCount(this);
+    }
+
+    public static ModificationCount create() {
+        return new ModificationCount();
     }
 
     public static String modCountToString(Map<Base, Map<Byte, Integer>> modCount) {

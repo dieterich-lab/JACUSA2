@@ -28,9 +28,7 @@ public class AddModificationCountToOutput implements ParallelToString {
     }
 
     public String getStringFromParallel(ParallelData parallelData){
-        //TODO: Ist es überhaupt in einem ParallelObj gespeichert? Wenn ja, dann hier Daten abrufen und String zurückgeben
-        //TODO: modCountToString super hässlich oben importiert -> wie anders? -> vllt in Util?
-        //TODO: braucht man die Liste überhaupt, also gibt es mehrere Einträge mit mehreren Modifikationen? Oder reicht der String aus ModCount?
+        //TODO: Ausgabe besteht letztendlich wahrscheinlich aus Berechnungen, nicht einfach aus den Daten
         List<String> modificationCounts = new ArrayList<>();
         for (DataContainer combined : parallelData.getCombinedData()){
             final int reads = combined.getPileupCount().getReads();

@@ -30,9 +30,11 @@ import lib.data.storage.container.CacheContainer;
 import lib.data.storage.container.SharedStorage;
 import lib.data.storage.integer.ArrayIntegerStorage;
 import lib.data.storage.integer.MapIntegerStorage;
+import lib.data.storage.modification.ModificationStorage;
 import lib.data.storage.processor.CoverageRecordProcessor;
 import lib.data.storage.processor.DeletionRecordProcessor;
 import lib.data.storage.processor.InsertionRecordProcessor;
+import lib.data.storage.processor.ModificationRecordProcessor;
 import lib.data.storage.readsubstitution.BaseCallInterpreter;
 import lib.data.storage.readsubstitution.BaseSubRecordProcessor;
 import lib.data.validator.CombinedValidator;
@@ -91,6 +93,18 @@ extends AbstractDataAssemblerFactory {
 		}
 	}
 
+	protected void addModificationCache(
+			final GeneralParameter parameter,
+			final SharedStorage sharedStorage,
+			final Cache cache) {
+
+		if (parameter.showModificationCount()) {
+			cache.addCache(createModificationCache(
+					sharedStorage,
+					DataType.PILEUP_COUNT.getFetcher()));
+		}
+	}
+
 	Cache createCoverageCache(final SharedStorage sharedStorage, final Fetcher<IntegerData> covFetcher) {
 		final Cache cache = new Cache();
 		final Storage covStorage = new ArrayIntegerStorage(sharedStorage, covFetcher);
@@ -132,6 +146,22 @@ extends AbstractDataAssemblerFactory {
 
 		cache.addRecordProcessor(new InsertionRecordProcessor(translator, insStorage, onlyStart));
 		
+		return cache;
+	}
+
+	Cache createModificationCache(
+			final SharedStorage sharedStorage, final Fetcher<PileupCount> delFetcher) {
+
+		final Cache cache = new Cache();
+
+		final Storage modStorage = new ModificationStorage(sharedStorage, delFetcher);
+		cache.addStorage(modStorage);
+
+		final CoordinateTranslator translator = sharedStorage.getCoordinateController()
+				.getCoordinateTranslator();
+
+		cache.addRecordProcessor(new ModificationRecordProcessor(translator, modStorage));
+
 		return cache;
 	}
 	
