@@ -239,7 +239,7 @@ public class CallWorker extends AbstractWorker {
 			}
 		}
 		// write successful sampling
-		result.getResultInfo().add("score_random_sample", Util.join(statValues, ','));
+		result.getResultInfo().add("score_random_sampled", Util.join(statValues, ','));
 
 		// write successful sampling
 		for (int genericStatI = 0; genericStatI < genericStats.size(); ++genericStatI) {
@@ -247,7 +247,7 @@ public class CallWorker extends AbstractWorker {
 			final String scoreKey = genericStat.getScoreKey();
 
 			final double[] sampledGenericValues = genericStatValues[genericStatI];
-			result.getResultInfo().add(scoreKey + "_random_sample", Util.join(sampledGenericValues, ','));
+			result.getResultInfo().add(scoreKey + "_random_sampled", Util.join(sampledGenericValues, ','));
 		}
 	}
 	
