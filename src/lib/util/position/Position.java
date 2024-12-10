@@ -1,9 +1,12 @@
 package lib.util.position;
 
 import htsjdk.samtools.SAMRecord;
+import lib.data.count.basecall.BaseCallCount;
 import lib.record.Record;
 import lib.util.Base;
 import lib.util.Copyable;
+
+import java.util.List;
 
 /**
  * TODO add documentation
@@ -31,6 +34,10 @@ public interface Position extends Copyable<Position> {
 			return (byte)40; // FIXME what is the default when no BASQ available
 		}
 		return getSAMRecord().getBaseQualities()[getReadPosition()];
+	}
+
+	default List<String> getModifiedBases(){
+		return getRecord().getMMValues().get(getReadPosition());
 	}
 	
 	Record getRecord();

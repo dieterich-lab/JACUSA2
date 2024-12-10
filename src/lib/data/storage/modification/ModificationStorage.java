@@ -12,15 +12,13 @@ import lib.util.coordinate.CoordinateUtil;
 import lib.util.position.Position;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class ModificationStorage extends AbstractStorage {
 
 
     private final Fetcher<PileupCount> pcFetcher;
-    //TODO: hier ne map? oder was genau soll dieser count egtl sein? ist der von vielen Reads an der position?
-    // Und was soll in dieser Klasse passieren, in comparison zu den anderen Klassen, insb Record wo ja egtl MM bearbeitet wird?
-    // Sollen dann hier die einzelnen Mod Strings aus MM verarbeitet werden oder was anderes?
     private ModificationCount[] winPos2modc;
 
     public ModificationStorage(
@@ -36,31 +34,30 @@ public class ModificationStorage extends AbstractStorage {
 
     @Override
     public void populate(DataContainer dataContainer, int winPos, Coordinate coordinate) {
-        //TODO: was soll hier überhaupt rein für MM?
         if (winPos2modc[winPos] == null) {
             return;
         }
 
-        //final Set<Base> alleles 		= winPos2bcqc[winPos].getAlleles();
         final PileupCount pileupCount 	= pcFetcher.fetch(dataContainer);
-        //pileupCount.getBaseCallQualityCount().add(alleles, winPos2bcqc[winPos]);
-        if (coordinate.getStrand() == CoordinateUtil.STRAND.REVERSE) {
-            //pileupCount.getBaseCallQualityCount().invert();
-        }
+        //add deep copy of ModificationCount objects to pileup
+        ModificationCount modCountCopy = winPos2modc[winPos].copy();
+        pileupCount.getModCount().setModCount(modCountCopy.getModCount());
     }
 
     @Override
     public void increment(Position pos) {
-        //TODO: was soll hier überhaupt rein für MM?
         final int winPos 	= pos.getWindowPosition();
         final Base base 	= pos.getReadBaseCall();
-       //final byte baseQual	= pos.getReadBaseCallQuality();
+        final List<String> modBases	= pos.getModifiedBases();
 
         if (winPos2modc[winPos] == null) {
             winPos2modc[winPos] = ModificationCount.create();
         }
-        //final BaseCallQualityCount base2qual2count = winPos2bcqc[winPos];
-        //base2qual2count.increment(base, baseQual);
+        final ModificationCount m = winPos2modc[winPos];
+
+        for(String modBase : modBases){
+            m.setModCount(base, modBase);
+        }
     }
 
     @Override

@@ -150,11 +150,11 @@ extends AbstractDataAssemblerFactory {
 	}
 
 	Cache createModificationCache(
-			final SharedStorage sharedStorage, final Fetcher<PileupCount> delFetcher) {
+			final SharedStorage sharedStorage, final Fetcher<PileupCount> modFetcher) {
 
 		final Cache cache = new Cache();
 
-		final Storage modStorage = new ModificationStorage(sharedStorage, delFetcher);
+		final Storage modStorage = new ModificationStorage(sharedStorage, modFetcher);
 		cache.addStorage(modStorage);
 
 		final CoordinateTranslator translator = sharedStorage.getCoordinateController()

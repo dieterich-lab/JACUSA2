@@ -50,6 +50,7 @@ implements HasConditionParameter, HasReadTag {
 	private boolean showInsertionCount;
 	private boolean showInsertionStartCount;
 	private boolean showAllSites;
+	private boolean showModificationCount;
 	
 	// debug flag
 	private boolean debug;
@@ -233,6 +234,10 @@ implements HasConditionParameter, HasReadTag {
 		return showInsertionStartCount;
 	}
 
+	public boolean showModificationCount() {
+		return showModificationCount;
+	}
+
 	/**
 	 * @param showDeletionCount the showDeletionCount to set
 	 */
@@ -255,6 +260,10 @@ implements HasConditionParameter, HasReadTag {
 			throw new Exception("Cannot set both to true");
 		}
 		this.showInsertionStartCount = showInsertionStartCount;
+	}
+
+	public void showModificationCount(boolean showModificationCount) {
+		this.showModificationCount = showModificationCount;
 	}
 	
 	/**

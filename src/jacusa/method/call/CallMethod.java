@@ -29,22 +29,7 @@ import java.util.stream.Collectors;
 import java.util.Map;
 import java.util.Set;
 
-import lib.cli.options.BedCoordinatesOption;
-import lib.cli.options.StratifyByReadTagOption;
-import lib.cli.options.DebugModusOption;
-import lib.cli.options.FilterConfigOption;
-import lib.cli.options.FilterModusOption;
-import lib.cli.options.ReferenceFastaFilenameOption;
-import lib.cli.options.ResultFormatOption;
-import lib.cli.options.ShowAllSitesOption;
-import lib.cli.options.ShowDeletionCountOption;
-import lib.cli.options.ShowInsertionCountOption;
-import lib.cli.options.ShowInsertionStartCountOption;
-import lib.cli.options.HelpOption;
-import lib.cli.options.MaxThreadOption;
-import lib.cli.options.ResultFileOption;
-import lib.cli.options.ThreadWindowSizeOption;
-import lib.cli.options.WindowSizeOption;
+import lib.cli.options.*;
 import lib.cli.options.condition.MaxDepthConditionOption;
 import lib.cli.options.condition.MinBASQConditionOption;
 import lib.cli.options.condition.MinCoverageConditionOption;
@@ -124,6 +109,7 @@ public class CallMethod extends AbstractMethod {
 		addACOption(new ShowDeletionCountOption(getParameter()));
 		addACOption(new ShowInsertionCountOption(getParameter()));
 		addACOption(new ShowInsertionStartCountOption(getParameter()));
+		addACOption(new ShowModificationCountOption(getParameter()));
 		
 		addACOption(new BedCoordinatesOption(getParameter()));
 		addACOption(new ResultFileOption(getParameter()));

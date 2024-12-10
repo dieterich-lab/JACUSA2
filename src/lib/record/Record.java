@@ -1,7 +1,9 @@
 package lib.record;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.CigarOperator;
@@ -24,10 +26,8 @@ public class Record {
 	private final List<Integer> deletions;
 	private final List<Integer> INDELs;
 
-	//TODO: das hier sind ja jetzt nur die MM-Strings -> aber was mache ich mit denen?
-	// Will ich die so abrufen und woanders verarbeiten oder will ich hier schon die Map-Struktur mit Base-Mod-Count haben?
-	// Die anderen Listen enthalten ja die Positionen, aber jetzt grade soll ich doch noch gar keine Positionen mit reinbringen oder?
-	private String[] mmValues;
+	//Map<ReadPos, List<mod>>
+	private Map<Integer, List<String>> mmValues;
 	
 	private RecordRefProvider recordRefProvider;
 
@@ -49,10 +49,13 @@ public class Record {
 		insertions 	= new ArrayList<>(2);
 		deletions 	= new ArrayList<>(2);
 		INDELs 		= new ArrayList<>(4);
-		mmValues = new String[0];
+		mmValues	= new HashMap<>(4);
 		
 		process();
-		processMM();
+
+		if(mate.getSAMRecord().hasAttribute("MM")){
+			processMM();
+		}
 	}
 	
 	public SAMRecord getSAMRecord() {
@@ -122,18 +125,54 @@ public class Record {
 	}
 
 	public void processMM(){
+
 		//handle MM tag (modifications)
 		String mmValue = (String) samRecord.getAttribute("MM");
 
 		if(!mmValue.isEmpty()){
-			this.mmValues = mmValue.split(";");
+			//split whole MM tag value of eg "C+mh,2,4;A+123,3,6;..." into array at ";"
+			String[] mmValueStrings = mmValue.split(";");
 
-			String[] values = null;
+			//iterate through array of single mm value strings & process each string
+			for(String mod:mmValueStrings){
+				if(mod.isEmpty()){
+					continue;
+				}
 
-			for(String value:this.mmValues){
-				//TODO: hier dann evtl den String noch weiter aufspalten, damit base, mod, pos rausgelesen werden können
-				// -> wie genau soll es werden? was soll oben in Variable gespeichert werden?
-				values = value.split(",");
+				//split string at + or -
+				int baseIndex = mod.indexOf('+');
+				if(baseIndex == -1){
+					baseIndex = mod.indexOf('-');
+				}
+				if(baseIndex == -1){
+					continue;
+				}
+
+				String base = mod.substring(0,baseIndex);
+				//currently ignoring the option of "[.?]"
+				String modification = mod.substring(baseIndex+1,mod.indexOf(',')).replaceAll("[.?]","");
+				String[] positions = mod.substring(mod.indexOf(',')+1).split(",");
+
+				//if chembl code -> save whole code on position, if character code -> save characters separately
+				List<String> splitMods = new ArrayList<>();
+				if(modification.matches("[a-z]+")){
+					for(char c : modification.toCharArray()){
+						splitMods.add(String.valueOf(c));
+					}
+				} else if(modification.matches("[0-9]+")){
+					splitMods.add(modification);
+				}
+
+				//save modification in Map
+				int currentPos = 0;
+				for(String relPos : positions){
+					//calculate absolute position of modifications
+					currentPos += Integer.parseInt(relPos);
+					//if nothing saved at position, create new List as value; otherwise add modification to existing list
+					mmValues.computeIfAbsent(currentPos, k -> new ArrayList<>())
+							.addAll(splitMods);
+				}
+
 			}
 
 		}
@@ -157,6 +196,10 @@ public class Record {
 
 	public List<Integer> getINDELs() {
 		return INDELs;
+	}
+
+	public Map<Integer, List<String>> getMMValues(){
+		return mmValues;
 	}
 
 	public String toString() {
