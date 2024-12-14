@@ -130,28 +130,32 @@ public class Record {
 		String mmValue = (String) samRecord.getAttribute("MM");
 
 		if(!mmValue.isEmpty()){
+			//Liste aus Map<Base,Map<relativePositions,List<Modifications>>>; one for reverse read, one for regular read
+			Map<Character,Map<Integer,List<String>>> positionsSortedByBase = new HashMap<>();
+			Map<Character,Map<Integer,List<String>>> positionsSortedByBaseReverse = new HashMap<>();
+
 			//split whole MM tag value of eg "C+mh,2,4;A+123,3,6;..." into array at ";"
 			String[] mmValueStrings = mmValue.split(";");
 
 			//iterate through array of single mm value strings & process each string
 			for(String mod:mmValueStrings){
-				if(mod.isEmpty()){
-					continue;
-				}
 
-				//split string at + or -
+				//split string at + or - -> when - it is reversed read string
+				boolean reverse = false;
 				int baseIndex = mod.indexOf('+');
 				if(baseIndex == -1){
 					baseIndex = mod.indexOf('-');
+					reverse = true;
 				}
 				if(baseIndex == -1){
 					continue;
 				}
 
-				String base = mod.substring(0,baseIndex);
+				char base = mod.substring(0,baseIndex).charAt(0);
 				//currently ignoring the option of "[.?]"
+				//TODO: .? verarbeiten -> wie genau? weil wenn . ist es ja eh klar, wen nix da ist auch und theoretisch kann man bei nem ? einfach die Modifikation ignorieren oder? Weil ja nicht klar ist, ob modified oder nicht
 				String modification = mod.substring(baseIndex+1,mod.indexOf(',')).replaceAll("[.?]","");
-				String[] positions = mod.substring(mod.indexOf(',')+1).split(",");
+				String[] relativePositions = mod.substring(mod.indexOf(',')+1).split(",");
 
 				//if chembl code -> save whole code on position, if character code -> save characters separately
 				List<String> splitMods = new ArrayList<>();
@@ -163,20 +167,82 @@ public class Record {
 					splitMods.add(modification);
 				}
 
-				//save modification in Map
-				int currentPos = 0;
-				for(String relPos : positions){
-					//calculate absolute position of modifications
-					currentPos += Integer.parseInt(relPos);
-					//if nothing saved at position, create new List as value; otherwise add modification to existing list
-					mmValues.computeIfAbsent(currentPos, k -> new ArrayList<>())
-							.addAll(splitMods);
+
+				//sort relative positions to base and add modifications at that position; use different map depending on mm - or +
+				//this is done to ensure the read string has to be read only 2x, 1x forwards, 1x backwards
+				//offset is calculated to ensure that in final sorted map the positions are set based on the first relative position of the given modification
+				//	-> eg "C+mh,7,3,2" is set as "C->7->mh;C->11->mh;C->14->mh"
+				//	-> this way for multiple modifications derived from different mm strings, the positions are still correct after summary
+				int offset = -1;
+				for(String relPos : relativePositions){
+					if(!reverse){
+						positionsSortedByBase.computeIfAbsent(base, k -> new HashMap<>())
+								.computeIfAbsent(Integer.parseInt(relPos)+offset+1, j -> new ArrayList<>(splitMods.size()))
+								.addAll(splitMods);
+					}else{
+						positionsSortedByBaseReverse.computeIfAbsent(base, k -> new HashMap<>())
+								.computeIfAbsent(Integer.parseInt(relPos)+offset+1, j -> new ArrayList<>(splitMods.size()))
+								.addAll(splitMods);
+					}
+					offset += Integer.parseInt(relPos);
 				}
+			}
+
+			//save absolute positions and modifications in Map
+			//get read sequence
+			String readSeq = getSAMRecord().getReadString();
+
+			//go over read for every base forwards
+			//iterate over bases
+			for(Map.Entry<Character, Map<Integer, List<String>>> basePosModEntry : positionsSortedByBase.entrySet()){
+
+				//counter for found bases of the specific kind
+				int baseCountToMod = 0;
+
+				//iterate over read
+				for(int absPos=0; absPos<readSeq.length();absPos++){
+					//is current character in read the searched base
+					if(readSeq.charAt(absPos) == basePosModEntry.getKey()){
+						//if there is a mod at that baseCountToMod position, save the absPos and the belonging mods in the final map
+						if(basePosModEntry.getValue().containsKey(baseCountToMod)){
+							//TODO: sind positionen index oder 1-based -> wenn 1-based, beim Eintragen in map absPos+1
+							mmValues.computeIfAbsent(absPos, k -> new ArrayList<>())
+									.addAll(basePosModEntry.getValue().get(baseCountToMod));
+						}
+						baseCountToMod++;
+					}
+				}
+
+			}
+
+
+			//go over read for every base backwards
+			//iterate over bases
+			for(Map.Entry<Character, Map<Integer, List<String>>> basePosModEntry : positionsSortedByBaseReverse.entrySet()){
+
+				//counter for found bases of the specific kind
+				int baseCountToMod = 0;
+
+				//iterate over read
+				for(int absPos=readSeq.length()-1; absPos>=0;absPos--){
+					//is current character in read the searched base
+					if(readSeq.charAt(absPos) == basePosModEntry.getKey()){
+						//if there is a mod at that baseCountToMod position, save the absPos and the belonging mods in the final map
+						if(basePosModEntry.getValue().containsKey(baseCountToMod)){
+							//TODO: sind positionen index oder 1-based -> wenn 1-based, beim Eintragen in map absPos+1
+							mmValues.computeIfAbsent(absPos, k -> new ArrayList<>())
+									.addAll(basePosModEntry.getValue().get(baseCountToMod));
+						}
+						baseCountToMod++;
+					}
+				}
+
 
 			}
 
 		}
 	}
+
 
 	public List<CigarDetail> getCigarDetail() {
 		return cigarDetail;
