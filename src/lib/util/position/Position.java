@@ -6,6 +6,7 @@ import lib.record.Record;
 import lib.util.Base;
 import lib.util.Copyable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,7 +37,18 @@ public interface Position extends Copyable<Position> {
 		return getSAMRecord().getBaseQualities()[getReadPosition()];
 	}
 
-	default List<String> getModifiedBases(){
+	/*default List<String> getModifiedBases(){
+		List<String> modBases = new ArrayList<>();
+		List<Record.Modification> mods = getRecord().getMMValues().get(getReadPosition());
+
+		for (Record.Modification mod : mods) {
+			modBases.add(mod.getMod());
+		}
+
+		return modBases;
+	}*/
+
+	default List<Record.ModificationDetail> getModifications(){
 		return getRecord().getMMValues().get(getReadPosition());
 	}
 	

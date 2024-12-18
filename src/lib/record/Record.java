@@ -10,6 +10,7 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.StringUtil;
+import lib.util.Base;
 
 public class Record {
 
@@ -27,7 +28,7 @@ public class Record {
 	private final List<Integer> INDELs;
 
 	//Map<ReadPos, List<mod>>
-	private Map<Integer, List<String>> mmValues;
+	private Map<Integer, List<ModificationDetail>> mmValues;
 	
 	private RecordRefProvider recordRefProvider;
 
@@ -131,8 +132,8 @@ public class Record {
 
 		if(!mmValue.isEmpty()){
 			//Liste aus Map<Base,Map<relativePositions,List<Modifications>>>; one for reverse read, one for regular read
-			Map<Character,Map<Integer,List<String>>> positionsSortedByBase = new HashMap<>();
-			Map<Character,Map<Integer,List<String>>> positionsSortedByBaseReverse = new HashMap<>();
+			Map<Character,Map<Integer,List<ModificationDetail>>> positionsSortedByBase = new HashMap<>();
+			Map<Character,Map<Integer,List<ModificationDetail>>> positionsSortedByBaseReverse = new HashMap<>();
 
 			//split whole MM tag value of eg "C+mh,2,4;A+123,3,6;..." into array at ";"
 			String[] mmValueStrings = mmValue.split(";");
@@ -153,18 +154,17 @@ public class Record {
 
 				char base = mod.substring(0,baseIndex).charAt(0);
 				//currently ignoring the option of "[.?]"
-				//TODO: .? verarbeiten -> wie genau? weil wenn . ist es ja eh klar, wen nix da ist auch und theoretisch kann man bei nem ? einfach die Modifikation ignorieren oder? Weil ja nicht klar ist, ob modified oder nicht
 				String modification = mod.substring(baseIndex+1,mod.indexOf(',')).replaceAll("[.?]","");
 				String[] relativePositions = mod.substring(mod.indexOf(',')+1).split(",");
 
 				//if chembl code -> save whole code on position, if character code -> save characters separately
-				List<String> splitMods = new ArrayList<>();
+				List<ModificationDetail> splitMods = new ArrayList<>();
 				if(modification.matches("[a-z]+")){
 					for(char c : modification.toCharArray()){
-						splitMods.add(String.valueOf(c));
+						splitMods.add(new ModificationDetail(base,String.valueOf(c)));
 					}
 				} else if(modification.matches("[0-9]+")){
-					splitMods.add(modification);
+					splitMods.add(new ModificationDetail(base,modification));
 				}
 
 
@@ -194,7 +194,7 @@ public class Record {
 
 			//go over read for every base forwards
 			//iterate over bases
-			for(Map.Entry<Character, Map<Integer, List<String>>> basePosModEntry : positionsSortedByBase.entrySet()){
+			for(Map.Entry<Character, Map<Integer, List<ModificationDetail>>> basePosModEntry : positionsSortedByBase.entrySet()){
 
 				//counter for found bases of the specific kind
 				int baseCountToMod = 0;
@@ -218,7 +218,7 @@ public class Record {
 
 			//go over read for every base backwards
 			//iterate over bases
-			for(Map.Entry<Character, Map<Integer, List<String>>> basePosModEntry : positionsSortedByBaseReverse.entrySet()){
+			for(Map.Entry<Character, Map<Integer, List<ModificationDetail>>> basePosModEntry : positionsSortedByBaseReverse.entrySet()){
 
 				//counter for found bases of the specific kind
 				int baseCountToMod = 0;
@@ -264,7 +264,7 @@ public class Record {
 		return INDELs;
 	}
 
-	public Map<Integer, List<String>> getMMValues(){
+	public Map<Integer, List<ModificationDetail>> getMMValues(){
 		return mmValues;
 	}
 
@@ -341,7 +341,25 @@ public class Record {
 					.append(position.getNonSkippedMatches()).append(' ')
 					.toString();
 		}
-		
+	}
+
+	public class ModificationDetail {
+
+		private Character originalBase;
+		private String mod;
+
+		public ModificationDetail(char base, String mod){
+			this.originalBase = base;
+			this.mod = mod;
+		}
+
+		public Character getOriginalBase(){
+			return originalBase;
+		}
+
+		public String getMod(){
+			return mod;
+		}
 	}
 
 	@Override

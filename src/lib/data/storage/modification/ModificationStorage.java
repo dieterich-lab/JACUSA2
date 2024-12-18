@@ -6,6 +6,7 @@ import lib.data.count.PileupCount;
 import lib.data.fetcher.Fetcher;
 import lib.data.storage.AbstractStorage;
 import lib.data.storage.container.SharedStorage;
+import lib.record.Record;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil;
@@ -47,16 +48,15 @@ public class ModificationStorage extends AbstractStorage {
     @Override
     public void increment(Position pos) {
         final int winPos 	= pos.getWindowPosition();
-        final Base base 	= pos.getReadBaseCall();
-        final List<String> modBases	= pos.getModifiedBases();
+        final List<Record.ModificationDetail> mods = pos.getModifications();
 
         if (winPos2modc[winPos] == null) {
             winPos2modc[winPos] = ModificationCount.create();
         }
         final ModificationCount m = winPos2modc[winPos];
 
-        for(String modBase : modBases){
-            m.setModCount(base, modBase);
+        for(Record.ModificationDetail mod : mods){
+            m.setModCount(Base.valueOf(mod.getOriginalBase()), mod.getMod());
         }
     }
 
