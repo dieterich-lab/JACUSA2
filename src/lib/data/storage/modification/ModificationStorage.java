@@ -48,6 +48,7 @@ public class ModificationStorage extends AbstractStorage {
     @Override
     public void increment(Position pos) {
         final int winPos 	= pos.getWindowPosition();
+        //gets modification at read position
         final List<Record.ModificationDetail> mods = pos.getModifications();
 
         if (winPos2modc[winPos] == null) {

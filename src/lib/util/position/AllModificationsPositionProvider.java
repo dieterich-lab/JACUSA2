@@ -14,14 +14,13 @@ public class AllModificationsPositionProvider implements PositionProvider{
 
     public AllModificationsPositionProvider(
             final Record record, final CoordinateTranslator translator) {
-        //TODO: für Modification umschreiben!!!
-        final Map<Integer,List<Record.ModificationDetail>> modValues = record.getMMValues();
-        final int modifications = modValues.size();
-        final List<PositionProvider> positionProviders = new ArrayList<>(modifications);
 
-        for (int index = 0; index < modifications; ++index) {
+        final Map<Integer,List<Record.ModificationDetail>> modValues = record.getMMValues();
+        final List<PositionProvider> positionProviders = new ArrayList<>(modValues.size());
+
+        for (Map.Entry<Integer,List<Record.ModificationDetail>> modEntry : modValues.entrySet()) {
             positionProviders.add(
-                    new ModificationPosProviderBuilder(index, record, translator)
+                    new ModificationPosProviderBuilder(modEntry.getKey(), record, translator)
                             .adjustWindowPos()
                             .build());
         }

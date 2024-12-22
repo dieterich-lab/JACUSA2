@@ -205,8 +205,8 @@ public class Record {
 					if(readSeq.charAt(absPos) == basePosModEntry.getKey()){
 						//if there is a mod at that baseCountToMod position, save the absPos and the belonging mods in the final map
 						if(basePosModEntry.getValue().containsKey(baseCountToMod)){
-							//TODO: sind positionen index oder 1-based -> wenn 1-based, beim Eintragen in map absPos+1
-							mmValues.computeIfAbsent(absPos, k -> new ArrayList<>())
+							//absolute position is 1-based to make it comparable with reference position
+							mmValues.computeIfAbsent(absPos+1, k -> new ArrayList<>())
 									.addAll(basePosModEntry.getValue().get(baseCountToMod));
 						}
 						baseCountToMod++;
@@ -229,8 +229,8 @@ public class Record {
 					if(readSeq.charAt(absPos) == basePosModEntry.getKey()){
 						//if there is a mod at that baseCountToMod position, save the absPos and the belonging mods in the final map
 						if(basePosModEntry.getValue().containsKey(baseCountToMod)){
-							//TODO: sind positionen index oder 1-based -> wenn 1-based, beim Eintragen in map absPos+1
-							mmValues.computeIfAbsent(absPos, k -> new ArrayList<>())
+							//absolute position is 1-based to make it comparable with reference position
+							mmValues.computeIfAbsent(absPos+1, k -> new ArrayList<>())
 									.addAll(basePosModEntry.getValue().get(baseCountToMod));
 						}
 						baseCountToMod++;

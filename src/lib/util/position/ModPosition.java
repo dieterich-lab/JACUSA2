@@ -5,25 +5,11 @@ import lib.record.Record;
 import lib.record.Record.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
-/**
- * TODO für Mod umschreiben
- */
+
 class ModPosition extends AbstractPosition {
 
-    ModPosition(final DeletedPosition deletedPosition) {
-        super(deletedPosition);
-    }
-
-    ModPosition(
-            final AlignedPosition alignPos,
-            final Record record,
-            final CoordinateTranslator translator) {
-
-        super(
-                alignPos.getRefPos(),
-                alignPos.getReadPos(),
-                translator.ref2winPos(alignPos.getRefPos()),
-                record);
+    ModPosition(final ModPosition modPosition) {
+        super(modPosition);
     }
 
     ModPosition(
@@ -50,8 +36,8 @@ class ModPosition extends AbstractPosition {
     }
 
     @Override
-    public DeletedPosition copy() {
-        return new DeletedPosition(this);
+    public ModPosition copy() {
+        return new ModPosition(this);
     }
 
     @Override
@@ -59,32 +45,23 @@ class ModPosition extends AbstractPosition {
         return true;
     }
 
-    public static class Builder extends AbstractBuilder<DeletedPosition> {
+    public static class Builder extends AbstractBuilder<ModPosition> {
 
         public Builder(
-                final int deletionIndex, final Record record,
-                final CoordinateTranslator translator) {
-
-            this(
-                    record.getCigarDetail().get(deletionIndex),
-                    record,
-                    translator);
-        }
-
-        private Builder(
-                final CigarDetail cigarElement, final Record record,
+                final int modIndex, final Record record,
                 final CoordinateTranslator translator) {
 
             super(
-                    cigarElement.getPosition().getRefPos(),
-                    cigarElement.getPosition().getReadPos(),
-                    translator.ref2winPos(cigarElement.getPosition().getRefPos()),
-                    record);
+                    record.getSAMRecord().getReferencePositionAtReadPosition(modIndex),
+                    modIndex,
+                    translator.ref2winPos(record.getSAMRecord().getReferencePositionAtReadPosition(modIndex)),
+                    record
+                    );
         }
 
         @Override
-        public DeletedPosition build() {
-            return new DeletedPosition(this);
+        public ModPosition build() {
+            return new ModPosition(this);
         }
 
     }
