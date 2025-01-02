@@ -54,7 +54,7 @@ public class Record {
 		
 		process();
 
-		if(mate.getSAMRecord().hasAttribute("MM")){
+		if(samRecord.hasAttribute("MM")){
 			processMM();
 		}
 	}

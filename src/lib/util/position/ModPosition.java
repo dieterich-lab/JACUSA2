@@ -1,8 +1,6 @@
 package lib.util.position;
 
-import lib.record.AlignedPosition;
 import lib.record.Record;
-import lib.record.Record.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
 
@@ -51,12 +49,12 @@ class ModPosition extends AbstractPosition {
                 final int modIndex, final Record record,
                 final CoordinateTranslator translator) {
 
-            super(
-                    record.getSAMRecord().getReferencePositionAtReadPosition(modIndex),
-                    modIndex,
-                    translator.ref2winPos(record.getSAMRecord().getReferencePositionAtReadPosition(modIndex)),
-                    record
-                    );
+                super(
+                        record.getSAMRecord().getReferencePositionAtReadPosition(modIndex),
+                        modIndex,
+                        translator.ref2winPos(record.getSAMRecord().getReferencePositionAtReadPosition(modIndex)),
+                        record
+                );
         }
 
         @Override

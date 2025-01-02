@@ -61,7 +61,9 @@ public class PileupCount implements Data<PileupCount> {
 		return indelCount;
 	}
 
-	public ModificationCount getModCount() {return modCount;}
+	public ModificationCount getModCount() {
+		return modCount;
+	}
 	
 	public void merge(final PileupCount pileupCount) {
 		for (final Base base : pileupCount.getBCC().getAlleles()) {

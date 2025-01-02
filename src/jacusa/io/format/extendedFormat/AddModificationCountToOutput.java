@@ -2,7 +2,6 @@ package jacusa.io.format.extendedFormat;
 
 import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +27,10 @@ public class AddModificationCountToOutput implements ParallelToString {
     }
 
     public String getStringFromParallel(ParallelData parallelData){
-        //TODO: Ausgabe besteht letztendlich wahrscheinlich aus Berechnungen, nicht einfach aus den Daten
+
         List<String> modificationCounts = new ArrayList<>();
         for (DataContainer combined : parallelData.getCombinedData()){
-            final int reads = combined.getPileupCount().getReads();
+            //final int reads = combined.getPileupCount().getReads();
             modificationCounts.add(modCountToString(combined.getPileupCount().getModCount().getModCount()));
         }
 

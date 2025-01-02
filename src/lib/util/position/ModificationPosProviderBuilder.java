@@ -1,8 +1,5 @@
 package lib.util.position;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 
@@ -10,7 +7,7 @@ public class ModificationPosProviderBuilder implements lib.util.Builder<Interval
 
     // position of the modification
     private final ModPosition pos;
-    // length of deletion
+    // length of modification
     private int length;
 
     private CoordinateTranslator translator;
@@ -23,6 +20,8 @@ public class ModificationPosProviderBuilder implements lib.util.Builder<Interval
         final int refPos 					= record.getSAMRecord().getReferencePositionAtReadPosition(readPos);
         final int winPos					= translator.ref2winPos(refPos);
 
+        //TODO: 0 abfangen -> wenn bei ref eine 0 rauskommt, ist es eine insertion und darf in modifications nicht weiter behandelt werden
+
         pos 	= new ModPosition(refPos, readPos, winPos, record);
 
         this.translator = translator;
@@ -30,9 +29,12 @@ public class ModificationPosProviderBuilder implements lib.util.Builder<Interval
 
     // make sure to run this last
     public ModificationPosProviderBuilder adjustWindowPos() {
-        //TODO: length 1, weil ja mod immer nur 1 lang?
         length = PositionProvider.adjustWindowPos(pos, 1, translator);
         return this;
+    }
+
+    public ModPosition getModPos(){
+        return pos;
     }
 
     @Override

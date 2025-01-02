@@ -102,15 +102,17 @@ public class ModificationCount {
     public static String modCountToString(Map<Base, Map<String, Integer>> modCount) {
         final StringBuilder sb = new StringBuilder();
 
-        //make map to string
         sb.append("Modifications: ");
+
+        //make map to string
         for(Map.Entry<Base, Map<String, Integer>> entry : modCount.entrySet()) {
+            sb.append(entry.getKey());
+            sb.append("-");
             for (Map.Entry<String, Integer> innerEntry : entry.getValue().entrySet()) {
-                sb.append(entry.getKey());
-                sb.append(",");
                 sb.append(innerEntry.getKey());
-                sb.append(",");
+                sb.append(":");
                 sb.append(innerEntry.getValue());
+                sb.append(",");
             }
         }
 
