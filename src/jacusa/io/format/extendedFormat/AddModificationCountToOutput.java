@@ -2,6 +2,7 @@ package jacusa.io.format.extendedFormat;
 
 import lib.data.DataContainer;
 import lib.data.ParallelData;
+import lib.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,10 @@ public class AddModificationCountToOutput implements ParallelToString {
             modificationCounts.add(modCountToString(combined.getPileupCount().getModCount().getModCount()));
         }
 
-        return modificationCounts.toString();
+        //Ausgabe jetzt als modification_count=[ref1-mod1:count,mod2:count;ref2-mod1:count|ref1-mod1:count;ref2-mod1:count]
+
+        //return modificationCounts.toString();
+        return Util.pack(modificationCounts,'|'); //evtl auch mit Leerzeichen rechts und links?
         //return "modCount_TODO";
     }
 

@@ -4,6 +4,7 @@ import lib.util.Base;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import lib.io.InputOutput;
 
 public class ModificationCount {
 
@@ -102,7 +103,7 @@ public class ModificationCount {
     public static String modCountToString(Map<Base, Map<String, Integer>> modCount) {
         final StringBuilder sb = new StringBuilder();
 
-        sb.append("Modifications: ");
+        //sb.append("Modifications: ");
 
         //make map to string
         for(Map.Entry<Base, Map<String, Integer>> entry : modCount.entrySet()) {
@@ -112,10 +113,13 @@ public class ModificationCount {
                 sb.append(innerEntry.getKey());
                 sb.append(":");
                 sb.append(innerEntry.getValue());
-                sb.append(",");
+                //TODO: if !letzer innerEntry -> sep setzen, sonst nicht
+                sb.append(InputOutput.VALUE_SEP); //sep = ,
             }
+            //TODO: if !letzer entry -> sep setzen, sonst nicht
+            sb.append(InputOutput.SEP4); //sep = ;
         }
-
+        
         return sb.toString();
     }
 
