@@ -17,7 +17,6 @@ import lib.io.format.bed.BED6adder;
 import lib.io.format.bed.DataAdder;
 import lib.io.format.bed.DefaultBED6adder;
 import lib.io.format.bed.DefaultInfoAdder;
-import org.apache.commons.cli.CommandLine;
 
 /**
  * This class implements an extended BED6 format to represent variants identified by "call" method. 

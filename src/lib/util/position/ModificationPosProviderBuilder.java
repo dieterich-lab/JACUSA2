@@ -20,8 +20,6 @@ public class ModificationPosProviderBuilder implements lib.util.Builder<Interval
         final int refPos 					= record.getSAMRecord().getReferencePositionAtReadPosition(readPos);
         final int winPos					= translator.ref2winPos(refPos);
 
-        //TODO: 0 abfangen -> wenn bei ref eine 0 rauskommt, ist es eine insertion und darf in modifications nicht weiter behandelt werden
-
         pos 	= new ModPosition(refPos, readPos, winPos, record);
 
         this.translator = translator;

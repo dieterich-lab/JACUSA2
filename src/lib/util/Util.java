@@ -56,33 +56,8 @@ public final class Util {
 		return sb.toString();
 	}
 
-/*	public static String pack(final List<Double> a, char separator) {
-		StringBuilder sb = new StringBuilder();
-
-		for (int i = 0; i < a.size(); ++i) {
-			if (i > 0) {
-				sb.append(separator);
-			}
-			sb.append(a.get(i));
-		}
-		return sb.toString();
-	}
-
-	public static String pack(final List<String> l, char separator) {
-		StringBuilder s = new StringBuilder();
-
-		for (int i = 0; i < l.size(); ++i) {
-			if (i > 0) {
-				s.append(separator);
-			}
-			s.append(l.get(i));
-		}
-		return s.toString();
-	}*/
-
 	public static <T> String pack(final List<T> list, char separator) {
 		StringBuilder sb = new StringBuilder();
-		sb.append('[');
 
 		for (int i = 0; i < list.size(); ++i) {
 			if (i > 0) {
@@ -95,8 +70,6 @@ public final class Util {
 				throw new IllegalArgumentException("Unsupported list element type");
 			}
 		}
-
-		sb.append(']');
 
 		return sb.toString();
 	}

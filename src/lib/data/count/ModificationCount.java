@@ -3,6 +3,7 @@ import lib.util.Base;
 
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import lib.io.InputOutput;
 
@@ -103,21 +104,31 @@ public class ModificationCount {
     public static String modCountToString(Map<Base, Map<String, Integer>> modCount) {
         final StringBuilder sb = new StringBuilder();
 
-        //sb.append("Modifications: ");
-
         //make map to string
-        for(Map.Entry<Base, Map<String, Integer>> entry : modCount.entrySet()) {
+
+        Iterator<Map.Entry<Base, Map<String, Integer>>> outerIterator = modCount.entrySet().iterator();
+        while (outerIterator.hasNext()) {
+            Map.Entry<Base, Map<String, Integer>> entry = outerIterator.next();
             sb.append(entry.getKey());
             sb.append("-");
-            for (Map.Entry<String, Integer> innerEntry : entry.getValue().entrySet()) {
+
+            Iterator<Map.Entry<String, Integer>> innerIterator = entry.getValue().entrySet().iterator();
+            while (innerIterator.hasNext()) {
+                Map.Entry<String, Integer> innerEntry = innerIterator.next();
                 sb.append(innerEntry.getKey());
                 sb.append(":");
                 sb.append(innerEntry.getValue());
-                //TODO: if !letzer innerEntry -> sep setzen, sonst nicht
-                sb.append(InputOutput.VALUE_SEP); //sep = ,
+
+                // only add separator if not last element
+                if (innerIterator.hasNext()) {
+                    sb.append(InputOutput.VALUE_SEP);
+                }
             }
-            //TODO: if !letzer entry -> sep setzen, sonst nicht
-            sb.append(InputOutput.SEP4); //sep = ;
+
+            // only add separator if not last element
+            if (outerIterator.hasNext()) {
+                sb.append(InputOutput.SEP4);
+            }
         }
         
         return sb.toString();

@@ -1,10 +1,8 @@
 package lib.data.storage.processor;
 
-import lib.data.count.ModificationCount;
 import lib.data.storage.Storage;
 import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.AllDeletionsPositionProvider;
 import lib.util.position.AllModificationsPositionProvider;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;

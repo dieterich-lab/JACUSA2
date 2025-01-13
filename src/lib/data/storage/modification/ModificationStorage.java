@@ -9,12 +9,10 @@ import lib.data.storage.container.SharedStorage;
 import lib.record.Record;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
-import lib.util.coordinate.CoordinateUtil;
 import lib.util.position.Position;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class ModificationStorage extends AbstractStorage {
 

@@ -31,15 +31,11 @@ public class AddModificationCountToOutput implements ParallelToString {
 
         List<String> modificationCounts = new ArrayList<>();
         for (DataContainer combined : parallelData.getCombinedData()){
-            //final int reads = combined.getPileupCount().getReads();
             modificationCounts.add(modCountToString(combined.getPileupCount().getModCount().getModCount()));
         }
 
-        //Ausgabe jetzt als modification_count=[ref1-mod1:count,mod2:count;ref2-mod1:count|ref1-mod1:count;ref2-mod1:count]
-
-        //return modificationCounts.toString();
-        return Util.pack(modificationCounts,'|'); //evtl auch mit Leerzeichen rechts und links?
-        //return "modCount_TODO";
+        //output: modification_count=[ref1-mod1:count,mod2:count;ref2-mod1:count|ref1-mod1:count;ref2-mod1:count]
+        return Util.pack(modificationCounts,'|');
     }
 
 }

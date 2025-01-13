@@ -2,7 +2,6 @@ package jacusa.io.format.extendedFormat;
 
 import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.count.INDELCount;
 import lib.util.Util;
 
 import java.util.ArrayList;

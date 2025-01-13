@@ -1,12 +1,10 @@
 package lib.util.position;
 
 import htsjdk.samtools.SAMRecord;
-import lib.data.count.basecall.BaseCallCount;
 import lib.record.Record;
 import lib.util.Base;
 import lib.util.Copyable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

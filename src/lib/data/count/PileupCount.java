@@ -1,7 +1,6 @@
 package lib.data.count;
 
 import lib.data.Data;
-import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.UnmodifiableBCC;
 import lib.data.count.basecallquality.BaseCallQualityCount;
