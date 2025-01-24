@@ -65,7 +65,7 @@ extends AbstractACOption {
 			throw new IllegalArgumentException("put options -i, -D, or -M to calculate insertion-, deletion-ratio, or modification-count");
 		}
 
-		if(s.contains("modification_ratio")){
+		if(s.contains("modification_count")){
 			modificationOutputRequest = true;
 		}
 
