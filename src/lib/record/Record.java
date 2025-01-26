@@ -11,6 +11,8 @@ import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.StringUtil;
 
+import lib.cli.options.ResultFormatOption;
+
 public class Record {
 
 	private final SAMRecord samRecord;
@@ -53,7 +55,7 @@ public class Record {
 		
 		process();
 
-		if(samRecord.hasAttribute("MM")){
+		if(samRecord.hasAttribute("MM") && ResultFormatOption.isModificationOutputRequest()){
 			processMM();
 		}
 	}

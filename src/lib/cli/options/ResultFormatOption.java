@@ -15,6 +15,7 @@ extends AbstractACOption {
 
 	private final GeneralParameter parameter;
 	private final Map<Character, ResultFormat> resultFormats;
+	static private boolean modificationOutputRequest = false;
 
 	public ResultFormatOption(final GeneralParameter parameter, 
 			final Map<Character, ResultFormat> resultFormats) {
@@ -52,12 +53,20 @@ extends AbstractACOption {
 				.build(); 
 	}
 
+	static public boolean isModificationOutputRequest() {
+		return modificationOutputRequest;
+	}
+
 	@Override
 	public void process(final CommandLine cmdLine) throws IllegalArgumentException {
 		final String s = cmdLine.getOptionValue(getOpt());
 
-		if((s.contains("insertion_ratio") && !cmdLine.hasOption('i')) || (s.contains("deletion_ratio") && !cmdLine.hasOption('D'))){
-			throw new IllegalArgumentException("put options -i or -D to calculate insertion- or deletion-ratio");
+		if((s.contains("insertion_ratio") && !cmdLine.hasOption('i')) || (s.contains("deletion_ratio") && !cmdLine.hasOption('D')) || (s.contains("modification_count") && !cmdLine.hasOption('M'))){
+			throw new IllegalArgumentException("put options -i, -D, or -M to calculate insertion-, deletion-ratio, or modification-count");
+		}
+
+		if(s.contains("modification_count")){
+			modificationOutputRequest = true;
 		}
 
 		//go through command line input

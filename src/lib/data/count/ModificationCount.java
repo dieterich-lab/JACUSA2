@@ -9,7 +9,7 @@ import lib.io.InputOutput;
 
 public class ModificationCount {
 
-    //Content <Referencebase,Modification,Count>
+    //Content <Referencebase,Map<Modification,Count>>
     private Map<Base, Map<String, Integer>> modCount;
 
     public ModificationCount(final ModificationCount modCount) {
