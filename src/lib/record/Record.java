@@ -153,6 +153,11 @@ public class Record {
 
 				char base = mod.substring(0,baseIndex).charAt(0);
 				//currently ignoring the option of "[.?]"
+				// MP - quick fix - empty coordinate list allowed :-/
+				final int i = mod.indexOf(',');
+				if (i < 0) {
+					continue;
+				}
 				String modification = mod.substring(baseIndex+1,mod.indexOf(',')).replaceAll("[.?]","");
 				String[] relativePositions = mod.substring(mod.indexOf(',')+1).split(",");
 
