@@ -52,7 +52,34 @@ class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 				.hasArg(false)
 				.desc("Show detailed info of Newton's method in output (not in VCF output).")
 				.build());
-		
+
+		options.addOption(Option.builder()
+				.longOpt("subsampleRuns")
+				.hasArg(true)
+				.desc("Number of subsampling runs.")
+				.build());
+		options.addOption(Option.builder()
+				.longOpt("downsampleRuns")
+				.hasArg(true)
+				.desc("Number of downsample runs.")
+				.build());
+		options.addOption(Option.builder()
+				.longOpt("downsampleFraction")
+				.hasArg(true)
+				.desc("Fraction of lowest BAM file.")
+				.build());
+		options.addOption(Option.builder()
+				.longOpt("randomSampleRuns")
+				.hasArg(true)
+				.desc("Number of random sample runs.")
+				.build());
+		options.addOption(Option.builder()
+				.longOpt("limit")
+				.hasArg(true)
+				.desc("Number of minimal runs with (LR-obs - LR-sampled > 0).")
+				.build());
+
+
 		return options;
 	}
 	

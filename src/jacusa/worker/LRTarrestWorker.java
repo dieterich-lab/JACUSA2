@@ -1,9 +1,7 @@
 package jacusa.worker;
 
 import jacusa.method.lrtarrest.LRTarrestMethod;
-import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.ParallelData.Builder;
 import lib.data.result.Result;
 import lib.data.validator.paralleldata.ExtendedVariantSiteValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
@@ -15,9 +13,7 @@ import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.EstimationContainerProvider;
 import lib.stat.estimation.provider.pileup.RobustEstimationPileupProvider;
 import lib.util.Info;
-import lib.util.ReplicateContainer;
 import lib.util.Util;
-import lib.util.coordinate.Coordinate;
 import lib.worker.AbstractWorker;
 
 public class LRTarrestWorker
@@ -43,21 +39,6 @@ extends AbstractWorker {
 		dirMult	= new EstimateDirMult(minkaParameter);
 	}
 
-	@Override
-	protected ParallelData createParallelData(Builder parallelDataBuilder, Coordinate coord) {
-		for (int condI = 0; condI < getConditionContainer().getConditionSize() ; ++condI) {
-			final ReplicateContainer replicateContainer = getConditionContainer().getReplicatContainer(condI);
-			for (int replicateI = 0; replicateI < replicateContainer.getReplicateSize() ; ++replicateI) {
-				final DataContainer replicate = getConditionContainer().getNullDataContainer(condI, replicateI, coord);
-				if (replicate == null) {
-					return null;
-				}
-				parallelDataBuilder.withReplicate(condI, replicateI, replicate);
-			}	
-		}
-		return parallelDataBuilder.build();
-	}
-	
 	@Override
 	protected Result process(final ParallelData parallelData) {
 		final Result result = stat.filter(parallelData);

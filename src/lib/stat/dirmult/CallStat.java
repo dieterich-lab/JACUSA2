@@ -16,27 +16,26 @@ class CallStat extends AbstractStat {
 	private final DirMultParameter dirMultPrm;
 
 	private final EstimateDirMult dirMult;
-	
-	CallStat(
-			final double threshold,
-			final EstimationContainerProvider estContainerProv,
+
+	CallStat(final double threshold, final EstimationContainerProvider estContainerProv,
 			final DirMultParameter dirMultPrm) {
+		super(dirMultPrm.getSubsampleRuns(), dirMultPrm.getDownsampleRuns(), dirMultPrm.getRandomSampleRuns(), dirMultPrm.getDownsampleFraction());
+		
+		this.threshold = threshold;
+		this.estContainerProv = estContainerProv;
+		this.dirMultPrm = dirMultPrm;
 
-		this.threshold 			= threshold;
-		this.estContainerProv 	= estContainerProv;
-		this.dirMultPrm 		= dirMultPrm;
-
-		dirMult	= new EstimateDirMult(dirMultPrm.getMinkaEstimateParameter()); 
+		dirMult = new EstimateDirMult(dirMultPrm.getMinkaEstimateParameter());
 	}
 
 	@Override
-	public void addStatResultInfo(final Result statResult) {
+	protected void processAfterCalculate(final Result statResult) {
 		if (dirMultPrm.isShowAlpha()) {
 			dirMult.addShowAlpha();
 		}
 		dirMult.addStatResultInfo(statResult.getResultInfo());
 	}
-	
+
 	@Override
 	public Result calculate(ParallelData parallelData) {
 		final EstimationContainer[] estContainers = estContainerProv.convert(parallelData);
@@ -44,14 +43,14 @@ class CallStat extends AbstractStat {
 		if (dirMultPrm.isCalcPValue()) {
 			stat = dirMult.getLRT(estContainers);
 			// TODO degrees of freedom
-			final ChiSquaredDistribution dist = new ChiSquaredDistribution(3); 
+			final ChiSquaredDistribution dist = new ChiSquaredDistribution(3);
 			stat = 1 - dist.cumulativeProbability(stat);
 		} else {
 			stat = dirMult.getScore(estContainers);
 		}
 		return new OneStatResult(stat, parallelData);
 	}
-	
+
 	@Override
 	public boolean filter(final Result statResult) {
 		final double statValue = statResult.getStat();
@@ -68,5 +67,10 @@ class CallStat extends AbstractStat {
 		// if log-likelihood ratio interpret threshold as lower bound
 		return statValue < threshold;
 	}
+
+	@Override
+	public int getSubsampleRuns() {
+		return dirMultPrm.getSubsampleRuns();
+	} 
 	
 }

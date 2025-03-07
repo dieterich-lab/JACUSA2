@@ -1,36 +1,46 @@
 package jacusa.worker;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jacusa.method.pileup.PileupMethod;
-import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.data.ParallelData.Builder;
 import lib.data.result.Result;
+import lib.estimate.MinkaParameter;
 import lib.stat.AbstractStat;
-import lib.util.ReplicateContainer;
-import lib.util.coordinate.Coordinate;
+import lib.stat.GenericStat;
+import lib.stat.estimation.provider.DeletionEstCountProvider;
+import lib.stat.estimation.provider.InsertionEstCountProvider;
 import lib.worker.AbstractWorker;
 
 public class PileupWorker
 extends AbstractWorker {
 	
 	private final AbstractStat stat;
+	private final List<GenericStat> genericStats;
 	
 	public PileupWorker(final PileupMethod method, final int threadId) {
 		super(method, threadId);
 		stat = method.getParameter().getStatParameter()
 				.newInstance(method.getParameter().getConditionsSize());
-	}
 
-	@Override
-	protected ParallelData createParallelData(Builder parallelDataBuilder, Coordinate coordinate) {
-		for (int condI = 0; condI < getConditionContainer().getConditionSize() ; ++condI) {
-			final ReplicateContainer replicateContainer = getConditionContainer().getReplicatContainer(condI);
-			for (int replicateI = 0; replicateI < replicateContainer.getReplicateSize() ; ++replicateI) {
-				final DataContainer replicate = getConditionContainer().getDefaultDataContainer(condI, replicateI, coordinate);
-				parallelDataBuilder.withReplicate(condI, replicateI, replicate);
-			}	
+		genericStats = new ArrayList<GenericStat>(2);
+		if (getParameter().showDeletionCount() ||
+				getParameter().showInsertionCount() ||
+				getParameter().showInsertionStartCount()) {
+			final MinkaParameter minkaPrm = new MinkaParameter();
+			if (getParameter().showDeletionCount()) {
+				final DeletionEstCountProvider delCountProv = 
+						new DeletionEstCountProvider(minkaPrm.getMaxIterations());
+				genericStats.add(new GenericStat(minkaPrm, delCountProv, "deletion_score", "deletion_pvalue"));
+			}
+			if (getParameter().showInsertionCount() ||
+					getParameter().showInsertionStartCount()) {
+				final InsertionEstCountProvider insCountProv = 
+						new InsertionEstCountProvider(minkaPrm.getMaxIterations());
+				genericStats.add(new GenericStat(minkaPrm, insCountProv, "insertion_score", "insertion_pvalue"));
+			}
 		}
-		return parallelDataBuilder.build();
 	}
 	
 	@Override
@@ -40,6 +50,7 @@ extends AbstractWorker {
 			return null;
 		}
 		
+		// FIXME
 		// TODO process INDELs
 		
 		return result;

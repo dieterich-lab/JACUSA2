@@ -8,16 +8,49 @@ import lib.data.result.Result;
  */
 public abstract class AbstractStat {
 
+	// FIXME make a map
+	private int subsampleRuns;
+	private int downsampleRuns;
+	private int randomSampleRuns;
+	private double downsampleFraction;
+
+	public AbstractStat() {
+		this(0, 0, 0, 0.0);
+	}
+	
+	public AbstractStat(final int subsampleRuns, final int downsampleRuns, final int randomSampleRuns, final double downsampleFraction) {
+		this.subsampleRuns = subsampleRuns;
+		this.downsampleRuns = downsampleRuns;
+		this.randomSampleRuns = randomSampleRuns;
+		this.downsampleFraction = downsampleFraction;
+	}
+	
 	protected abstract boolean filter(Result statResult);
 	public abstract Result calculate(ParallelData parallelData);
-	protected abstract void addStatResultInfo(Result statResult);
+	protected abstract void processAfterCalculate(Result statResult);
+	
+	public int getSubsampleRuns() {
+		return subsampleRuns;
+	}
+	
+	public int getDownsampleRuns() {
+		return downsampleRuns;
+	}
+	
+	public double getDownsampleFraction() {
+		return downsampleFraction;
+	}
+	
+	public int getRandomSampleRuns() {
+		return randomSampleRuns;
+	}
 	
 	public Result filter(final ParallelData parallelData) {
 		final Result statResult = calculate(parallelData);
 		if (filter(statResult)) {
 			return null;
 		}
-		addStatResultInfo(statResult);
+		processAfterCalculate(statResult);
 		return statResult;
 	}
 	

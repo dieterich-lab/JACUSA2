@@ -134,7 +134,7 @@ public class Phred2ProbTest {
 		protected Arguments createArguments(String[] cols) {
 			final Base[] bases 				= buildBases(cols[0]);
 			final BaseCallQualityCount bcqc = buildBaseCallQualityCount(cols[1]);
-			final PileupCount pileupCount	= new PileupCount(bcqc, INDELCount());
+			final PileupCount pileupCount	= new PileupCount(bcqc, new INDELCount());
 			final double[] expected 		= buildExpected(cols[2]);
 			
 			return Arguments.of(bases, pileupCount, expected);

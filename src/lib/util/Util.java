@@ -2,6 +2,7 @@ package lib.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import htsjdk.samtools.SAMSequenceDictionary;
 import htsjdk.samtools.SamReader;
@@ -58,4 +59,32 @@ public final class Util {
 		return sb.toString();
 	}
 
+	public static <T> String join(final T[] s, final char sep) {
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < s.length; ++i) {
+			if (i > 0) {
+				sb.append(sep);
+			}
+			sb.append(s[i]);
+		}
+		return sb.toString();
+	}
+	
+	public static <T> String pack(final T[] values, final int[] replicates, final char sep1, final char sep2) {
+		final StringBuilder sb = new StringBuilder();
+		
+		int offset = 0;
+		for (int i = 0; i < replicates.length; ++i) {
+			if (i > 0) {
+				sb.append(sep2);
+			}
+			final int r = replicates[i];
+			sb.append(Util.join(Arrays.copyOfRange(values, offset, offset + r), sep1));
+			offset += r;
+		}
+		
+		return sb.toString();
+	}
+	
 }

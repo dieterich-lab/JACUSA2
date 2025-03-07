@@ -27,7 +27,7 @@ class DummyStatistic extends AbstractStat {
 	}
 
 	@Override
-	protected void addStatResultInfo(final Result statResult) {
+	protected void processAfterCalculate(final Result statResult) {
 		// not needed
 	}
 	
