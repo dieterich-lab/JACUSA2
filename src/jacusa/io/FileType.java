@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import htsjdk.samtools.util.IOUtil;
+import htsjdk.samtools.util.FileExtensions;
 import htsjdk.tribble.Feature;
 import htsjdk.tribble.FeatureCodec;
 import htsjdk.tribble.bed.BEDCodec;
@@ -19,12 +19,12 @@ import lib.io.codec.JACUSA2codec;
 public enum FileType {
 	BED(
 			"BED", 
-			new HashSet<>(Arrays.asList(BEDCodec.BED_EXTENSION)), 
+			new HashSet<>(Arrays.asList(FileExtensions.BED)), 
 			new BEDCodec(StartOffset.ZERO)),
 	
 	VCF(
 			"VCF", 
-			new HashSet<>(Arrays.asList(IOUtil.VCF_FILE_EXTENSION,"vcf4")), 
+			new HashSet<>(Arrays.asList(FileExtensions.VCF)), 
 			new VCFCodec()), 
 	
 	JACUSA("JACUSA2", 

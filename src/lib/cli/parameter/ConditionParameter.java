@@ -185,7 +185,7 @@ public class ConditionParameter {
 		final List<SAMValidationError> errors = samRecord.isValid();
 
 		if (! samRecord.getReadUnmappedFlag()
-				&& ! samRecord.getNotPrimaryAlignmentFlag() // ignore non-primary alignments CHECK
+				&& ! samRecord.isSecondaryOrSupplementary() // ignore non-primary alignments CHECK
 				&& (mapq < 0 || mapq >= getMinMAPQ()) // filter by mapping quality
 				&& (getFilterFlags() == 0 || (getFilterFlags() > 0 && ((samRecord.getFlags() & getFilterFlags()) == 0)))
 				&& (getRetainFlags() == 0 || (getRetainFlags() > 0 && ((samRecord.getFlags() & getRetainFlags()) > 0)))
