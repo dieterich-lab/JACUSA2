@@ -33,6 +33,21 @@ public interface BaseCallCount extends Data<BaseCallCount>, HasCoverage, Seriali
 		add(o);
 	}
 
+	default double getNonRefRatio(Base refBase) {
+		final int refBaseCount = getBaseCall(refBase);
+		return (double) (getCoverage() - refBaseCount) / getCoverage();
+	}
+	
+	default double[] getRatio(final Base[] bases) {
+		double[] ratio = new double[bases.length];
+		double coverage = (double) getCoverage();
+		for (int i = 0; i < bases.length; ++i) {
+			ratio[i] = getBaseCall(bases[i]) / coverage;
+		}
+		
+		return ratio; 
+	}
+	
 	static BaseCallCount newInstance() {
 		return create();
 	}

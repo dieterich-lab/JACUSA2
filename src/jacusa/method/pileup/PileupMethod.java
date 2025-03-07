@@ -232,14 +232,6 @@ extends AbstractMethod {
 		
 		protected void addRequired(final AbstractBuilder builder) {
 			add(builder, DataType.PILEUP_COUNT);
-			if (parameter.showDeletionCount()) {
-				add(builder, DataType.DELETION_COUNT);
-				guardedAdd(builder, DataType.COVERAGE);
-			}
-			if (parameter.showInsertionCount() || parameter.showInsertionStartCount()) {
-				add(builder, DataType.INSERTION_COUNT);
-				guardedAdd(builder, DataType.COVERAGE);
-			}
 		}
 		
 		protected void addFilters(final AbstractBuilder builder) {

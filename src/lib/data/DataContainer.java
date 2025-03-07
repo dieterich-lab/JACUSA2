@@ -63,10 +63,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	BaseSub2IntData getBaseSub2DeletionCount();
 	BaseSub2IntData getBaseSub2InsertionCount();
 	
-	IntegerData getDeletionCount();
-
-	IntegerData getInsertionCount();
-	IntegerData getCoverage();
 	
 	<T extends Data<T>> boolean contains(DataType<T> dataType);
 	Collection<DataType<?>> getDataTypes();
@@ -139,7 +135,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			add(builder, DataType.ARREST_BCC);
 			add(builder, DataType.THROUGH_BCC);
 			add(builder, DataType.AP2BCC);
-			add(builder, DataType.COVERAGE);
 			
 			add(builder, DataType.BASE_SUBST2BCC);
 			add(builder, DataType.BASE_SUBST2DELETION_COUNT);
@@ -148,8 +143,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			
 			add(builder, DataType.ARREST_BASE_SUBST);
 			add(builder, DataType.THROUGH_BASE_SUBST);
-			add(builder, DataType.DELETION_COUNT);
-			add(builder, DataType.INSERTION_COUNT);
 		}
 		
 		@Override

@@ -1,19 +1,11 @@
 package jacusa.worker;
 
-import java.util.TreeSet;
-
 import jacusa.method.call.CallMethod;
-import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.ParallelData.Builder;
-import lib.data.result.DeletionCountResult;
-import lib.data.result.InsertionCountResult;
 import lib.data.result.Result;
-import lib.estimate.MinkaParameter;
 import lib.stat.AbstractStat;
-import lib.stat.estimation.provider.DeletionEstCountProvider;
-import lib.stat.estimation.provider.InsertionEstCountProvider;
 import lib.util.ReplicateContainer;
 import lib.util.coordinate.Coordinate;
 import lib.worker.AbstractWorker;
@@ -53,20 +45,8 @@ public class CallWorker extends AbstractWorker {
 			return null;
 		}
 		
-		if (getParameter().showDeletionCount()) {
-			final MinkaParameter minkaPrm = new MinkaParameter();
-			final DeletionEstCountProvider delCountProv = 
-					new DeletionEstCountProvider(minkaPrm.getMaxIterations());
-			result = new DeletionCountResult(new TreeSet<BaseSub>(), result, minkaPrm, delCountProv);
-		}
-		
-		if (getParameter().showInsertionCount() || getParameter().showInsertionStartCount()) {
-			final MinkaParameter minkaPrm = new MinkaParameter();
-			final InsertionEstCountProvider insCountProv = 
-					new InsertionEstCountProvider(minkaPrm.getMaxIterations());
-			result = new InsertionCountResult(new TreeSet<BaseSub>(), result, minkaPrm, insCountProv);
-		}
-		
+		// TODO process deletions
+
 		return result;
 	}
 	

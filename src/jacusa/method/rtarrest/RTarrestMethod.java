@@ -284,14 +284,6 @@ extends AbstractMethod {
 		protected void addRequired(final AbstractBuilder builder) {
 			add(builder, DataType.ARREST_BCC);
 			add(builder, DataType.THROUGH_BCC);
-			if (parameter.showDeletionCount()) {
-				add(builder, DataType.DELETION_COUNT);
-				guardedAdd(builder, DataType.COVERAGE);
-			}
-			if (parameter.showInsertionCount() || parameter.showInsertionStartCount()) {
-				add(builder, DataType.INSERTION_COUNT);
-				guardedAdd(builder, DataType.COVERAGE);
-			}
 		}
 		
 		protected void addFilters(final AbstractBuilder builder) {

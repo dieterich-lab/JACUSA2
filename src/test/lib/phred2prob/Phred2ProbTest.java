@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import lib.data.count.INDELCount;
 import lib.data.count.PileupCount;
 import lib.data.count.basecallquality.BaseCallQualityCount;
 import lib.data.count.basecallquality.MapBaseCallQualityCount;
@@ -133,7 +134,7 @@ public class Phred2ProbTest {
 		protected Arguments createArguments(String[] cols) {
 			final Base[] bases 				= buildBases(cols[0]);
 			final BaseCallQualityCount bcqc = buildBaseCallQualityCount(cols[1]);
-			final PileupCount pileupCount	= new PileupCount(bcqc);
+			final PileupCount pileupCount	= new PileupCount(bcqc, INDELCount());
 			final double[] expected 		= buildExpected(cols[2]);
 			
 			return Arguments.of(bases, pileupCount, expected);

@@ -56,15 +56,6 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	
 	public static final DataType<BaseSub2BCC> THROUGH_BASE_SUBST = 
 			create("Through", BaseSub2BCC.class);
-
-	public static final DataType<IntegerData> COVERAGE = 
-			create("Total coverage", IntegerData.class);
-
-	public static final DataType<IntegerData> DELETION_COUNT = 
-			create("Deletion count", IntegerData.class);
-
-	public static final DataType<IntegerData> INSERTION_COUNT = 
-			create("Insertion count", IntegerData.class);
 	
 	public static final DataType<BaseCallCountFilteredData> F_BCC = 
 			create(DEFAULT, BaseCallCountFilteredData.class);

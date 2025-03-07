@@ -1,6 +1,7 @@
 package lib.data;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -38,6 +39,12 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		totalReplicates = parallelDataBuilder.totalReplicates;
 	}
 
+	public void clearCache() {
+		cachedCombinedData = null;
+		cachedPooledData = null;
+		cachedCombinedPooledData = null;
+	}
+	
 	public int getReplicates(int condI) {
 		return data.get(condI).size();
 	}
