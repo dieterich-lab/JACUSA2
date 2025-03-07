@@ -27,7 +27,7 @@ import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.coordinate.ZeroCoordinate;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class JACUSA2codec extends AsciiFeatureCodec<ResultFeature> {
 

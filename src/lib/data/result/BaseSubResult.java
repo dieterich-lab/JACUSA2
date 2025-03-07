@@ -14,7 +14,7 @@ import lib.io.InputOutput;
 import lib.util.Info;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class BaseSubResult implements Result {
 

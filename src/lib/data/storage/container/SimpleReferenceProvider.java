@@ -10,7 +10,7 @@ import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class SimpleReferenceProvider implements ReferenceProvider {
 

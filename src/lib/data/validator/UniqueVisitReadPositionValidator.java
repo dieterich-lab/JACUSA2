@@ -4,7 +4,7 @@ import lib.data.storage.basecall.VisitedReadPositionStorage;
 import lib.util.position.Position;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class UniqueVisitReadPositionValidator 
 implements Validator {

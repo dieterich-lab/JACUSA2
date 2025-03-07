@@ -117,8 +117,6 @@ public class UnmodifiableCoordinate implements Coordinate {
 
 	@Override
 	public boolean isReverseStrand() {
-		// FIXME Qi 
-		// return false;
 		return coordinate.isReverseStrand();
 	}
 	

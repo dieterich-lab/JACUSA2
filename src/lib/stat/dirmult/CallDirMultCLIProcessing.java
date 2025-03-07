@@ -9,7 +9,7 @@ import lib.estimate.MinkaParameter;
 import lib.io.ResultFormat;
 
 /**
- * TODO
+ * TODO add documentation
  */
 class CallDirMultCLIProcessing implements DirMultCLIprocessing {
 	

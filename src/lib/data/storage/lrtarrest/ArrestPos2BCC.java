@@ -19,7 +19,7 @@ import lib.data.count.basecall.UnmodifiableBCC;
 import lib.util.Base;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class ArrestPos2BCC 
 implements Serializable, Data<ArrestPos2BCC> {

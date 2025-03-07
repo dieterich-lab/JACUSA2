@@ -12,7 +12,7 @@ import org.apache.commons.cli.ParseException;
 import lib.io.InputOutput;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public final class CLIUtil {
 

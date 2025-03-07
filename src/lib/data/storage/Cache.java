@@ -7,7 +7,7 @@ import java.util.List;
 import lib.data.storage.processor.GeneralRecordProcessor;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class Cache {
 

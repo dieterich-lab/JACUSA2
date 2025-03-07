@@ -1,5 +1,6 @@
 package lib.worker;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +27,7 @@ import lib.util.ConditionContainer;
 import lib.util.coordinate.Coordinate;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public abstract class AbstractWorker
 extends Thread

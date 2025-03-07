@@ -24,7 +24,7 @@ import htsjdk.samtools.SAMSequenceDictionary;
 import htsjdk.samtools.SAMSequenceRecord;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public abstract class AbstractMethod {
 	

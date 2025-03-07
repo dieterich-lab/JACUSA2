@@ -11,7 +11,7 @@ import lib.io.InputOutput;
 import lib.util.CLIUtil;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public abstract class AbstractStatFactory {
 

@@ -3,7 +3,7 @@ package lib.stat.estimation;
 import lib.stat.nominal.NominalData;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public interface EstimationContainer {
 	

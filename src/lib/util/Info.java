@@ -7,7 +7,7 @@ import java.util.TreeMap;
 import lib.io.InputOutput;
 
 /**
- * TODO
+ * add documentation
  */
 public class Info implements Serializable {
 

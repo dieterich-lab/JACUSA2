@@ -6,7 +6,7 @@ import lib.record.Record.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
- * TODO
+ * TODO add documentation
  */
 class DeletionPosProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
 	

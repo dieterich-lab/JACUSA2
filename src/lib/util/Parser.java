@@ -1,7 +1,7 @@
 package lib.util;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public interface Parser<T> {
 

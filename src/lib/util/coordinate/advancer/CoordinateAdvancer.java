@@ -5,8 +5,7 @@ import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.OneCoordinate;
 
 /**
- * TODO
- * // has JUNIT tests
+ * TODO add documentation
  */
 
 public interface CoordinateAdvancer {

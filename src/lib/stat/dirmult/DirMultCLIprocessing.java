@@ -4,7 +4,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public interface DirMultCLIprocessing {
 

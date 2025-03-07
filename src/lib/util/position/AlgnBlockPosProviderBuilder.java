@@ -4,7 +4,7 @@ import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class AlgnBlockPosProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
 	

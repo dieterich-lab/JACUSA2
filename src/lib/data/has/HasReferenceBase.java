@@ -3,7 +3,7 @@ package lib.data.has;
 import lib.util.Base;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public interface HasReferenceBase {
 

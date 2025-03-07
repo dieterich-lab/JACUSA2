@@ -7,7 +7,7 @@ import java.util.List;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public interface PositionProvider extends Iterator<Position> {
 

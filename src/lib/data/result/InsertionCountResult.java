@@ -10,7 +10,7 @@ import lib.io.InputOutput;
 import lib.stat.estimation.provider.InsertionEstCountProvider;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class InsertionCountResult extends INDELCountResult {
 

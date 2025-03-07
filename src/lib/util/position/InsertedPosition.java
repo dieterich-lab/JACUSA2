@@ -5,7 +5,6 @@ import lib.record.Record;
 import lib.record.Record.CigarDetail;
 import lib.util.coordinate.CoordinateTranslator;
 
-// TODO
 class InsertedPosition extends AbstractPosition {
 
 	InsertedPosition(final InsertedPosition insertedPosition) {

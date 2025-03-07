@@ -4,7 +4,7 @@ import htsjdk.samtools.SAMRecord;
 import lib.record.Record;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class FRPairedEnd2CacheContainer 
 extends AbstractStrandedCacheContainer {

@@ -10,7 +10,7 @@ import lib.data.fetcher.Fetcher;
 import lib.util.Base;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class ExtendedVariantSiteValidator 
 implements ParallelDataValidator {

@@ -3,7 +3,7 @@ package lib.data.storage.container;
 import lib.data.storage.container.NextPositionSegmentContainer.TYPE;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class NextPositionSegment {
 

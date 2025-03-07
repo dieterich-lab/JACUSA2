@@ -10,7 +10,7 @@ import lib.io.InputOutput;
 import lib.stat.estimation.provider.DeletionEstCountProvider;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class DeletionCountResult extends INDELCountResult {
 	

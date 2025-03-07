@@ -10,7 +10,7 @@ import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SAMRecordIterator;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class RecordIteratorProvider {
 

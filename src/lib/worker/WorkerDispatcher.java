@@ -14,7 +14,7 @@ import lib.util.coordinate.Coordinate;
 import lib.worker.AbstractWorker.STATUS;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public class WorkerDispatcher {
 	

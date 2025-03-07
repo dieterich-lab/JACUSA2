@@ -19,7 +19,7 @@ import lib.util.Parser;
 import lib.util.coordinate.Coordinate;
 
 /**
- * TODO
+ * TODO add documentation
  */
 public interface Result extends HasParallelData, Serializable {
 	
@@ -39,7 +39,7 @@ public interface Result extends HasParallelData, Serializable {
 	
 	double getStat();
 	double getStat(int valueIndex);
-
+	
 public static class ResultBuilder implements lib.util.Builder<Result> {
 		
 		private final Coordinate coordinate;
