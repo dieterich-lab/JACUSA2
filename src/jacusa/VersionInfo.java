@@ -7,12 +7,12 @@ import htsjdk.samtools.util.StringUtil;
  */
 public final class VersionInfo {
 
-	public static final String BRANCH 	= "master";
-	public static final String TAG 	= "2.0.4";
+	public static final String BRANCH 	= "qutrna";
+	public static final String TAG 	= "2.1.13";
 
 	// change this manually
 	public static final String[] LIBS	= new String[] {
-			"htsjdk 2.12.0",
+			"htsjdk 3.0.5",
 			"Apache commons-cli 1.4",
 			"Apache commpon-math3 3.6.1"
 	};
