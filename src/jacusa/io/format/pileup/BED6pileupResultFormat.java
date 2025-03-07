@@ -1,12 +1,6 @@
 package jacusa.io.format.pileup;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jacusa.io.format.BaseSub2BCCadder;
-import jacusa.io.format.StratifiedDataAdder;
 import jacusa.io.format.call.CallDataAdder;
-import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBCC;
@@ -43,14 +37,7 @@ public class BED6pileupResultFormat extends AbstractResultFileFormat {
 		BED6adder bed6adder = new DefaultBED6adder(getMethodName(), "stat");
 		DataAdder dataAdder = new CallDataAdder(bccParser);
 		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
-		
-		if (! getParameter().getReadTags().isEmpty()) {
-			final List<BaseSub> baseSubs = new ArrayList<>(getParameter().getReadTags());
-			dataAdder = new StratifiedDataAdder(
-					dataAdder, 
-					new BaseSub2BCCadder(bccParser, baseSubs, dataAdder));
-		}
-		
+	
 		builder.addBED6Adder(bed6adder);
 		builder.addDataAdder(dataAdder);
 		builder.addInfoAdder(new DefaultInfoAdder(getParameter()));

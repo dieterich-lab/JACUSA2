@@ -124,7 +124,7 @@ public final class DataType<T extends Data<T>> implements Serializable {
 				final Method method = enclosingClass.getMethod("newInstance");
 				return enclosingClass.cast(method.invoke(null));
 			}
-			return enclosingClass.newInstance();
+			return enclosingClass.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);

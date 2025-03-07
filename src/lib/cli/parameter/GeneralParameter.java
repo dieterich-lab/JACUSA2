@@ -6,21 +6,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.stream.IntStream;
 
 import jacusa.cli.parameters.HasConditionParameter;
 import jacusa.filter.FilterConfig;
-import lib.cli.options.filter.has.BaseSub;
-import lib.cli.options.filter.has.HasReadTag;
 import lib.io.ResultFormat;
 import lib.util.AbstractTool;
 
 public class GeneralParameter
-implements HasConditionParameter, HasReadTag {
+implements HasConditionParameter {
 
 	public static final String FILE_SUFFIX = ".filtered";
 	
@@ -45,7 +40,6 @@ implements HasConditionParameter, HasReadTag {
 
 	private String filteredFilename;
 	
-	private final SortedSet<BaseSub> baseSubs;
 	private boolean showDeletionCount;
 	private boolean showInsertionCount;
 	private boolean showInsertionStartCount;
@@ -67,7 +61,6 @@ implements HasConditionParameter, HasReadTag {
 		
 		filteredFilename	= null;
 		
-		baseSubs	= new TreeSet<>();
 		showDeletionCount	= false;
 		showAllSites = false;
 		
@@ -147,17 +140,6 @@ implements HasConditionParameter, HasReadTag {
 	 */
 	public int getReservedWindowSize() {
 		return reservedWinSize;
-	}
-	
-
-	@Override
-	public SortedSet<BaseSub> getReadTags() {
-		return Collections.unmodifiableSortedSet(baseSubs);
-	}
-	
-	@Override
-	public void addReadTag(BaseSub baseSub) {
-		baseSubs.add(baseSub);
 	}
 	
 	/**

@@ -8,6 +8,9 @@ import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.ValidationStringency;
 
+/*
+ * FIMXE generics pack,join
+ */
 public final class Util {
 	
 	private Util() {

@@ -148,7 +148,7 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 			final List<Integer> tmpReplicates = parallelData.getReplicates();
 
 			for (int condI = 0; condI < conditions; ++condI) {
-				for (int replicateI = 0; replicateI < tmpReplicates.get(replicateI); ++replicateI) {
+				for (int replicateI = 0; replicateI < tmpReplicates.get(condI); ++replicateI) {
 					DataContainer replicate = parallelData.getDataContainer(condI, replicateI).copy();
 					withReplicate(condI, replicateI, replicate);
 				}

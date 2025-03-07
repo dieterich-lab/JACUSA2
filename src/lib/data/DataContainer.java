@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jacusa.filter.factory.FilterFactory;
-import lib.cli.options.filter.has.BaseSub;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.BaseSub2BCC;
 import lib.data.count.BaseSub2IntData;
@@ -113,25 +112,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			builder.with(
 					dataType,
 					dataType.newInstance());
-		}
-		
-		protected void addBaseSub2bcc(final AbstractBuilder builder, final DataType<BaseSub2BCC> dataType) {
-			add(builder, dataType);
-			final BaseSub2BCC bsc = builder.get(dataType);
-			for (final BaseSub baseSub : parameter.getReadTags()) {
-				bsc.set(baseSub, BaseCallCount.create());
-			}
-		}
-		
-		protected void addBaseSub2int(final AbstractBuilder builder, final DataType<BaseSub2IntData> dataType) {
-			if (builder.contains(dataType)) {
-				return;
-			}
-			add(builder, dataType);
-			final BaseSub2IntData bsc = builder.get(dataType);
-			for (final BaseSub baseSub : parameter.getReadTags()) {
-				bsc.set(baseSub, new IntegerData());
-			}
 		}
 		
 		protected abstract void addRequired(final AbstractBuilder builder);

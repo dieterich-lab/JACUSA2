@@ -7,7 +7,6 @@ import lib.util.coordinate.OneCoordinate;
 /**
  * TODO add documentation
  */
-
 public interface CoordinateAdvancer {
 
 	Coordinate getCurrentCoordinate();

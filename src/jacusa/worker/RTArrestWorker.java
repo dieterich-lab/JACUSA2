@@ -1,18 +1,13 @@
 package jacusa.worker;
 
-import java.util.Arrays;
-import java.util.SortedSet;
+import java.util.TreeSet;
 
 import jacusa.method.rtarrest.RTarrestMethod;
 import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
-import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.ParallelData.Builder;
-import lib.data.count.BaseSub2BCC;
-import lib.data.fetcher.BaseSub2BCCaggregator;
-import lib.data.fetcher.Fetcher;
-import lib.data.result.BaseSubResult;
+
 import lib.data.result.DeletionCountResult;
 import lib.data.result.InsertionCountResult;
 import lib.data.result.Result;
@@ -29,17 +24,10 @@ extends AbstractWorker {
 
 	private final AbstractStat stat;
 	
-	private final Fetcher<BaseSub2BCC> bs2bccFetcher;
-	
 	public RTArrestWorker(final RTarrestMethod method, final int threadId) {
 		super(method, threadId);
 		stat = method.getParameter().getStatParameter()
 				.newInstance(method.getParameter().getConditionsSize());
-		
-		bs2bccFetcher = new BaseSub2BCCaggregator(
-				Arrays.asList(
-						DataType.ARREST_BASE_SUBST.getFetcher(), 
-						DataType.THROUGH_BASE_SUBST.getFetcher()));
 	}
 
 	@Override
@@ -64,23 +52,18 @@ extends AbstractWorker {
 			return null;
 		}
 		
-		final SortedSet<BaseSub> baseSubs = getParameter().getReadTags();
-		if (! baseSubs.isEmpty()) {
-			result = new BaseSubResult(baseSubs, bs2bccFetcher, result);
-		}
-		
 		if (getParameter().showDeletionCount()) {
 			final MinkaParameter minkaPrm = new MinkaParameter();
 			final DeletionEstCountProvider delCountProv = 
 					new DeletionEstCountProvider(minkaPrm.getMaxIterations());
-			result = new DeletionCountResult(baseSubs, result, minkaPrm, delCountProv);
+			result = new DeletionCountResult(new TreeSet<BaseSub>(), result, minkaPrm, delCountProv);
 		}
 		
 		if (getParameter().showInsertionCount() || getParameter().showInsertionStartCount()) {
 			final MinkaParameter minkaPrm = new MinkaParameter();
 			final InsertionEstCountProvider insCountProv = 
 					new InsertionEstCountProvider(minkaPrm.getMaxIterations());
-			result = new InsertionCountResult(baseSubs, result, minkaPrm, insCountProv);
+			result = new InsertionCountResult(new TreeSet<BaseSub>(), result, minkaPrm, insCountProv);
 		}
 		
 		return result;

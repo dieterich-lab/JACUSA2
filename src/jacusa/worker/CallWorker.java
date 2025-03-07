@@ -1,14 +1,12 @@
 package jacusa.worker;
 
-import java.util.SortedSet;
+import java.util.TreeSet;
 
 import jacusa.method.call.CallMethod;
 import lib.cli.options.filter.has.BaseSub;
 import lib.data.DataContainer;
-import lib.data.DataType;
 import lib.data.ParallelData;
 import lib.data.ParallelData.Builder;
-import lib.data.result.BaseSubResult;
 import lib.data.result.DeletionCountResult;
 import lib.data.result.InsertionCountResult;
 import lib.data.result.Result;
@@ -54,24 +52,19 @@ public class CallWorker extends AbstractWorker {
 		if (result == null) {
 			return null;
 		}
-
-		final SortedSet<BaseSub> baseSubs = getParameter().getReadTags();
-		if (! baseSubs.isEmpty()) {
-			result = new BaseSubResult(baseSubs, DataType.BASE_SUBST2BCC.getFetcher(), result);
-		}
 		
 		if (getParameter().showDeletionCount()) {
 			final MinkaParameter minkaPrm = new MinkaParameter();
 			final DeletionEstCountProvider delCountProv = 
 					new DeletionEstCountProvider(minkaPrm.getMaxIterations());
-			result = new DeletionCountResult(baseSubs, result, minkaPrm, delCountProv);
+			result = new DeletionCountResult(new TreeSet<BaseSub>(), result, minkaPrm, delCountProv);
 		}
 		
 		if (getParameter().showInsertionCount() || getParameter().showInsertionStartCount()) {
 			final MinkaParameter minkaPrm = new MinkaParameter();
 			final InsertionEstCountProvider insCountProv = 
 					new InsertionEstCountProvider(minkaPrm.getMaxIterations());
-			result = new InsertionCountResult(baseSubs, result, minkaPrm, insCountProv);
+			result = new InsertionCountResult(new TreeSet<BaseSub>(), result, minkaPrm, insCountProv);
 		}
 		
 		return result;
