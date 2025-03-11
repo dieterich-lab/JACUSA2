@@ -1,5 +1,6 @@
 package lib.io;
 
+import jacusa.io.format.extendedFormat.ParallelDataToString;
 import lib.io.copytmp.CopyTmpResult;
 import lib.worker.WorkerDispatcher;
 

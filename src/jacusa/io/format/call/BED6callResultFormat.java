@@ -22,12 +22,24 @@ extends AbstractResultFileFormat {
 	public static final char CHAR = 'B';
 
 	private final String scoreLabel;
-	
+
+	//Constructor for instantiation by inheriting class
 	public BED6callResultFormat(
+			final Character cha,
+			final String desc,
 			final String methodName, 
 			final GeneralParameter parameter) {
 		
-		super(CHAR, "BED6-extended result format", methodName, parameter);
+		super(cha, desc, methodName, parameter);
+		scoreLabel = "score";
+	}
+
+	//Constructor for direct instantiation
+	public BED6callResultFormat(
+			final String methodName,
+			final GeneralParameter parameter) {
+
+		super(CHAR, "BED6-generic result format", methodName, parameter);
 		scoreLabel = "score";
 	}
 
