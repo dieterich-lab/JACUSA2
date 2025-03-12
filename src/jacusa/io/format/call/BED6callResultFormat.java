@@ -21,8 +21,6 @@ extends AbstractResultFileFormat {
 	// unique char id for CLI 
 	public static final char CHAR = 'B';
 
-	private final String scoreLabel;
-
 	//Constructor for instantiation by inheriting class
 	public BED6callResultFormat(
 			final Character cha,
@@ -31,7 +29,6 @@ extends AbstractResultFileFormat {
 			final GeneralParameter parameter) {
 		
 		super(cha, desc, methodName, parameter);
-		scoreLabel = "score";
 	}
 
 	//Constructor for direct instantiation
@@ -40,7 +37,6 @@ extends AbstractResultFileFormat {
 			final GeneralParameter parameter) {
 
 		super(CHAR, "BED6-generic result format", methodName, parameter);
-		scoreLabel = "score";
 	}
 
 	@Override
@@ -48,7 +44,7 @@ extends AbstractResultFileFormat {
 		final BaseCallCount.AbstractParser bccParser = 
 				new DefaultBCC.Parser(InputOutput.VALUE_SEP, InputOutput.EMPTY_FIELD);
 		
-		BED6adder bed6adder = new DefaultBED6adder(getMethodName(), scoreLabel);
+		BED6adder bed6adder = new DefaultBED6adder(getMethodName(), "score");
 		DataAdder dataAdder = new CallDataAdder(bccParser);
 		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
 

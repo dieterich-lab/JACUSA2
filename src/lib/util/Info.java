@@ -1,7 +1,10 @@
 package lib.util;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import lib.io.InputOutput;
@@ -75,4 +78,20 @@ public class Info implements Serializable {
 		add(key, Integer.toString(value));
 	}
 	
+	public Set<String> getKeys() {
+		return map.keySet();
+	}
+	
+	public List<String> getValues() {
+		final List<String> values = new ArrayList<String>(map.size());
+		for (final String key : map.keySet()) {
+			if (map.get(key) != null) {
+				values.add(map.get(key).toString());
+			} else {
+				values.add(Character.toString(InputOutput.EMPTY_FIELD));
+			}
+		}
+		
+		return values;
+	}
 }

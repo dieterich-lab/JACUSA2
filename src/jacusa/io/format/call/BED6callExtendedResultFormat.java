@@ -1,11 +1,17 @@
 package jacusa.io.format.call;
 
-import jacusa.io.format.extendedFormat.AddDeletionRatioToOutput;
-import jacusa.io.format.extendedFormat.AddInsertionRatioToOutput;
-import jacusa.io.format.extendedFormat.AddModificationCountToOutput;
 import jacusa.io.format.extendedFormat.ParallelDataToString;
 import lib.cli.parameter.GeneralParameter;
+import lib.data.count.basecall.BaseCallCount;
+import lib.data.count.basecall.DefaultBCC;
+import lib.io.AbstractResultFormat;
+import lib.io.BEDlikeResultFileWriter;
 import lib.io.InputOutput;
+import lib.io.BEDlikeResultFileWriter.BEDlikeResultFileWriterBuilder;
+import lib.io.format.bed.BED6adder;
+import lib.io.format.bed.DataAdder;
+import lib.io.format.bed.DefaultBED6adder;
+import lib.io.format.bed.DefaultInfoAdder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +24,7 @@ import java.util.Objects;
         available.add(new AddModificationCountToOutput());
  */
 
-public class BED6callExtendedResultFormat extends BED6callResultFormat{
+public class BED6callExtendedResultFormat extends AbstractResultFormat {
 
     //available options for output-format X
     private List<ParallelDataToString> available;
@@ -37,7 +43,6 @@ public class BED6callExtendedResultFormat extends BED6callResultFormat{
     }
 
     //implemented functions of ResultFormat IntF
-    @Override
     public void processCLI(String line) {
 
         //splits at ','
@@ -54,13 +59,27 @@ public class BED6callExtendedResultFormat extends BED6callResultFormat{
 
     }
 
-    @Override
+	@Override
+	public BEDlikeResultFileWriter createWriter(final String outputFileName) {
+		final BaseCallCount.AbstractParser bccParser = 
+				new DefaultBCC.Parser(InputOutput.VALUE_SEP, InputOutput.EMPTY_FIELD);
+		
+		BED6adder bed6adder = new DefaultBED6adder(getMethodName(), "score");
+		DataAdder dataAdder = new CallDataAdder(bccParser);
+		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
+
+		builder.addBED6Adder(bed6adder);
+		builder.addDataAdder(dataAdder);
+		builder.addInfoAdder(new DefaultInfoAdder(getParameter()));
+		return builder.build();
+	}
+    
     public List<ParallelDataToString> getAvailable() {
         return available;
     }
 
-    @Override
     public List<ParallelDataToString> getSelected() {
         return selected;
     }
+
 }
