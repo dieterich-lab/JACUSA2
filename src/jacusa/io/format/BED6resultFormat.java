@@ -1,6 +1,5 @@
-package jacusa.io.format.call;
+package jacusa.io.format;
 
-import jacusa.io.format.DefaultDataAdder;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBCC;

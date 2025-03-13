@@ -274,11 +274,8 @@ extends AbstractMethod {
 	
 	public static class RTarrestBuilderFactory extends AbstractBuilderFactory {
 
-		private final RTarrestParameter parameter;
-		
 		private RTarrestBuilderFactory(final RTarrestParameter parameter) {
 			super(parameter);
-			this.parameter = parameter;
 		}
 		
 		protected void addRequired(final AbstractBuilder builder) {

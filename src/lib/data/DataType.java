@@ -5,8 +5,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import lib.data.count.BaseSub2IntData;
-import lib.data.count.BaseSub2BCC;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.fetcher.DataTypeFetcher;
@@ -38,24 +36,6 @@ public final class DataType<T extends Data<T>> implements Serializable {
 	
 	public static final DataType<ArrestPos2BCC> AP2BCC = 
 			create(DEFAULT, ArrestPos2BCC.class);
-	
-	public static final DataType<BaseSub2BCC> BASE_SUBST2BCC = 
-			create(DEFAULT, BaseSub2BCC.class);
-
-	public static final DataType<BaseSub2IntData> BASE_SUBST2COVERAGE = 
-			create("BaseSub to coverage", BaseSub2IntData.class);
-
-	public static final DataType<BaseSub2IntData> BASE_SUBST2DELETION_COUNT = 
-			create("BaseSub to deletion", BaseSub2IntData.class);
-
-	public static final DataType<BaseSub2IntData> BASE_SUBST2INSERTION_COUNT = 
-			create("BaseSub to insertion", BaseSub2IntData.class);
-		
-	public static final DataType<BaseSub2BCC> ARREST_BASE_SUBST = 
-			create("Arrest", BaseSub2BCC.class);
-	
-	public static final DataType<BaseSub2BCC> THROUGH_BASE_SUBST = 
-			create("Through", BaseSub2BCC.class);
 	
 	public static final DataType<BaseCallCountFilteredData> F_BCC = 
 			create(DEFAULT, BaseCallCountFilteredData.class);

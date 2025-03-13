@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import lib.data.count.BaseSub2BCC;
-import lib.data.count.BaseSub2IntData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.BaseCallCountFilteredData;
@@ -74,33 +72,8 @@ public class DefaultDataContainer implements DataContainer {
 	}
 	
 	@Override
-	public BaseSub2IntData getBaseSub2Coverage() {
-		return get(DataType.BASE_SUBST2COVERAGE);
-	}
-	
-	@Override
-	public BaseSub2IntData getBaseSub2DeletionCount() {
-		return get(DataType.BASE_SUBST2DELETION_COUNT);
-	}
-	
-	@Override
 	public BaseCallCountFilteredData getBCCFilteredData() {
 		return get(DataType.F_BCC);
-	}
-	
-	@Override
-	public BaseSub2BCC getBaseSub2BCC() {
-		return get(DataType.BASE_SUBST2BCC);
-	}
-	
-	@Override
-	public BaseSub2BCC getArrestBaseSub2BCC() {
-		return get(DataType.ARREST_BASE_SUBST);
-	}
-	
-	@Override
-	public BaseSub2BCC getThroughBaseSub2BCC() {
-		return get(DataType.THROUGH_BASE_SUBST);
 	}
 	
 	@Override
@@ -116,11 +89,6 @@ public class DefaultDataContainer implements DataContainer {
 	@Override
 	public BaseCallCount getThroughBaseCallCount() {
 		return get(DataType.THROUGH_BCC);
-	}
-
-	@Override
-	public BaseSub2IntData getBaseSub2InsertionCount() {
-		return get(DataType.BASE_SUBST2INSERTION_COUNT);
 	}
 	
 	@Override

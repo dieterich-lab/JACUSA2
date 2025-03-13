@@ -1,6 +1,6 @@
 package jacusa.cli.parameters;
 
-import jacusa.io.format.call.BED6resultFormat;
+import jacusa.io.format.BED6resultFormat;
 import jacusa.method.call.CallMethod;
 import lib.cli.parameter.GeneralParameter;
 import lib.stat.dirmult.DirMultRobustCompoundErrorStatFactory;

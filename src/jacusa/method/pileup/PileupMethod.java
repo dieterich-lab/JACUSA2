@@ -225,11 +225,8 @@ extends AbstractMethod {
 	
 	public static class PileupBuilderFactory extends AbstractBuilderFactory {
 
-		private final PileupParameter parameter;
-		
 		public PileupBuilderFactory(final PileupParameter parameter) {
 			super(parameter);
-			this.parameter = parameter;
 		}
 		
 		protected void addRequired(final AbstractBuilder builder) {
