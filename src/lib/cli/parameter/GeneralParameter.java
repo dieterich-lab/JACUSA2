@@ -31,7 +31,7 @@ implements HasConditionParameter {
 	// bed file to scan for variants
 	private String inputBedFilename;
 
-	protected List<ConditionParameter> condPrms;
+	protected List<ConditionParameter> conditionParameters;
 
 	private String resFilename;
 	private ResultFormat resFormat;
@@ -55,7 +55,7 @@ implements HasConditionParameter {
 		maxThreads			= 1;
 		
 		inputBedFilename	= "";
-		condPrms	= new ArrayList<>(2);
+		conditionParameters	= new ArrayList<>(2);
 
 		filterConf		= new FilterConfig();
 		
@@ -71,7 +71,7 @@ implements HasConditionParameter {
 		this();
 		
 		for (int condI = 1; condI <= conditionSize; condI++) {
-			condPrms.add(new ConditionParameter(condI));
+			conditionParameters.add(new ConditionParameter(condI));
 		}
 	}
 	
@@ -104,23 +104,23 @@ implements HasConditionParameter {
 
 	@Override
 	public List<ConditionParameter> getConditionParameters() {
-		return condPrms;
+		return conditionParameters;
 	}
 	
 	@Override
 	public void setConditionParameters(
 			final List<ConditionParameter> conditionParameters) {
-		this.condPrms = conditionParameters;
+		this.conditionParameters = conditionParameters;
 	}
 	
 	@Override
 	public ConditionParameter getConditionParameter(int condI) {
-		return condPrms.get(condI);
+		return conditionParameters.get(condI);
 	}
 	
 	@Override
 	public int getConditionsSize() {
-		return condPrms.size();
+		return conditionParameters.size();
 	}
 	
 	@Override

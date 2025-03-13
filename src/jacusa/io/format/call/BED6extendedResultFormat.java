@@ -7,10 +7,8 @@ import lib.io.AbstractResultFileFormat;
 import lib.io.BEDlikeResultFileWriter;
 import lib.io.InputOutput;
 import lib.io.BEDlikeResultFileWriter.BEDlikeResultFileWriterBuilder;
-import lib.io.format.bed.BED6adder;
-import lib.io.format.bed.DataAdder;
 import lib.io.format.bed.DefaultBED6adder;
-import lib.io.format.bed.DefaultInfoAdder;
+import lib.io.format.bed.ExpandedInfoAdder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,7 +23,7 @@ import jacusa.io.format.extensions.ParallelDataToString;
         available.add(new AddModificationCountToOutput());
  */
 
-public class BED6callExtendedResultFormat extends AbstractResultFileFormat {
+public class BED6extendedResultFormat extends AbstractResultFileFormat {
 
     //available options for output-format X
     private Set<ParallelDataToString> available;
@@ -33,7 +31,7 @@ public class BED6callExtendedResultFormat extends AbstractResultFileFormat {
     //options selected in command line for output-format X
     private Set<ParallelDataToString> selected;
 
-    public BED6callExtendedResultFormat(
+    public BED6extendedResultFormat(
             final String methodName,
             final GeneralParameter parameter,
             final Set<ParallelDataToString> available){
@@ -67,7 +65,7 @@ public class BED6callExtendedResultFormat extends AbstractResultFileFormat {
 		return new BEDlikeResultFileWriterBuilder(outputFileName, getParameter())
 				.addBED6Adder(new DefaultBED6adder(getMethodName(), "score"))
 				.addDataAdder(new DefaultDataAdder(bccParser))
-				.addInfoAdder(new ExtendedInfoAdder(getParameter()))
+				.addInfoAdder(new ExpandedInfoAdder(getParameter()))
 				.build();
 	}
     
@@ -78,4 +76,5 @@ public class BED6callExtendedResultFormat extends AbstractResultFileFormat {
     public Set<ParallelDataToString> getSelectedExtensions() {
         return selected;
     }
+
 }

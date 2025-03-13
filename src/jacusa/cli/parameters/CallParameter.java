@@ -1,6 +1,6 @@
 package jacusa.cli.parameters;
 
-import jacusa.io.format.call.BED6callResultFormat;
+import jacusa.io.format.call.BED6resultFormat;
 import jacusa.method.call.CallMethod;
 import lib.cli.parameter.GeneralParameter;
 import lib.stat.dirmult.DirMultRobustCompoundErrorStatFactory;
@@ -18,7 +18,7 @@ public class CallParameter extends GeneralParameter implements HasStatParameter 
 		
 		// result format
 		setResultFormat(
-				new BED6callResultFormat(
+				new BED6resultFormat(
 						CallMethod.Factory.NAME_PREFIX + conditionSize, 
 						this));
 		

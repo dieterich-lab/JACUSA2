@@ -33,14 +33,6 @@ public abstract class AbstractResultFileFormat extends AbstractResultFormat {
 		}
 	}
 
-	/* TODO remove
-	public void processCLI(final String line){}
-	public List<ParallelDataToString> getAvailable(){
-		return new ArrayList<>();
-	}
-	public List<ParallelDataToString> getSelected(){
-		return new ArrayList<>();
-	}
-	*/
-	
+	abstract public void processCLI(final String line);
+
 }

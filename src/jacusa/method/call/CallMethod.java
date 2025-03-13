@@ -1,5 +1,6 @@
 package jacusa.method.call;
 
+
 import jacusa.cli.options.StatFactoryOption;
 import jacusa.cli.options.StatFilterOption;
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
@@ -13,9 +14,10 @@ import jacusa.filter.factory.basecall.CombinedFilterFactory;
 import jacusa.filter.factory.basecall.INDELfilterFactory;
 import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
-import jacusa.io.format.call.BED6callExtendedResultFormat;
-import jacusa.io.format.call.BED6callResultFormat;
+import jacusa.io.format.call.BED6extendedResultFormat;
+import jacusa.io.format.call.BED6resultFormat;
 import jacusa.io.format.call.VCFcallFormat;
+import jacusa.io.format.extensions.ParallelDataToString;
 import jacusa.worker.CallWorker;
 
 import java.util.ArrayList;
@@ -216,12 +218,13 @@ public class CallMethod extends AbstractMethod {
 		ResultFormat resultFormat = null;
 
 		// BED like output
-		resultFormat = new BED6callResultFormat(getName(), getParameter());
+		resultFormat = new BED6resultFormat(getName(), getParameter());
 		resultFormats.put(resultFormat.getID(), resultFormat);
 
-		resultFormat = new BED6callExtendedResultFormat(
-				getName(), getParameter(),
-				new HashSet<>(Arrays.asList())); // TODO add supported extensions
+		resultFormat = new BED6extendedResultFormat(
+				getName(),
+				getParameter(),
+				new HashSet<ParallelDataToString>()); // TODO
 		resultFormats.put(resultFormat.getID(), resultFormat);
 
 		resultFormat = new VCFcallFormat(getParameter());
@@ -265,11 +268,8 @@ public class CallMethod extends AbstractMethod {
 
 	public static class CallBuilderFactory extends AbstractBuilderFactory {
 
-		private final CallParameter parameter;
-		
 		private CallBuilderFactory(final CallParameter parameter) {
 			super(parameter);
-			this.parameter = parameter;
 		}
 		
 		@Override

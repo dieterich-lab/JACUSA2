@@ -2,7 +2,6 @@ package jacusa.io.format.extensions;
 
 import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,8 @@ public class DeletionRatio extends AbstractParallelDataToString {
             deletionRatios.add(combined.getPileupCount().getINDELCount().getDeletionRatio(reads));
         }
 
-        return Util.pack(deletionRatios, ',');
+        return null;
+        // FIXME return Util.pack(deletionRatios, ',');
     }
 
 }

@@ -8,8 +8,6 @@ import lib.io.AbstractResultFileFormat;
 import lib.io.BEDlikeResultFileWriter;
 import lib.io.BEDlikeResultFileWriter.BEDlikeResultFileWriterBuilder;
 import lib.io.InputOutput;
-import lib.io.format.bed.BED6adder;
-import lib.io.format.bed.DataAdder;
 import lib.io.format.bed.DefaultBED6adder;
 import lib.io.format.bed.DefaultInfoAdder;
 
@@ -18,6 +16,7 @@ import lib.io.format.bed.DefaultInfoAdder;
  * It is very similar to BED6callResultFormat.
  */
 
+// merge with call
 public class BED6pileupResultFormat extends AbstractResultFileFormat {
 
 	public static final char CHAR = 'B';
@@ -41,6 +40,9 @@ public class BED6pileupResultFormat extends AbstractResultFileFormat {
 				.build();
 	}
 	
-	// FIXME
+	@Override
+	public void processCLI(String line) throws IllegalArgumentException {
+		// nothing to be done here
+	}
 
 }
