@@ -103,6 +103,7 @@ implements Iterator<ParallelData> {
 		for (int i = 0; i < genericStats.size(); ++i) {
 			final GenericStat genericStat = genericStats.get(i);
 			final Result genericStatResult = genericStat.filter(result.getParellelData());
+			// TODO multiple values - why is it copied between multiple values
 			result.getResultInfo().addAll(genericStatResult.getResultInfo());
 			stats[i] = genericStatResult.getStat();
 		}

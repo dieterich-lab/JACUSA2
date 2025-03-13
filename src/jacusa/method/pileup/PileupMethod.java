@@ -154,6 +154,8 @@ extends AbstractMethod {
 		ResultFormat outputFormat = new PileupLikeFormat(getName(), getParameter());
 		outputFormats.put(outputFormat.getID(), outputFormat);
 
+		// TODO copy from CallMethod extensions: ParallelDataToString
+		
 		outputFormat = new BED6pileupResultFormat(getName(), getParameter());
 		outputFormats.put(outputFormat.getID(), outputFormat);
 		

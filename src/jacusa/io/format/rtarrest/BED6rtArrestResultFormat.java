@@ -51,4 +51,11 @@ public class BED6rtArrestResultFormat extends AbstractResultFileFormat {
 		return builder.build();
 	}
 
+	@Override
+	public void processCLI(String line) throws IllegalArgumentException {
+		if (line != null && line.length() > 0) {
+			throw new IllegalArgumentException("Options are not supported: " + line);
+		}
+	}
+	
 }

@@ -1,6 +1,5 @@
 package lib.io;
 
-import jacusa.io.format.extendedFormat.ParallelDataToString;
 import lib.io.copytmp.CopyTmpResult;
 import lib.worker.WorkerDispatcher;
 
@@ -42,4 +41,6 @@ public interface ResultFormat {
 	 */
 	CopyTmpResult createCopyTmp(int threadId, WorkerDispatcher workerDispatcher);
 
+	void processCLI(String line) throws IllegalArgumentException;
+	
 }

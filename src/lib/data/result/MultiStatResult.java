@@ -63,6 +63,7 @@ public class MultiStatResult implements Result {
 		}
 	}
 	
+	// TODO multiple values - why is it copied between multiple values
 	private void copyInfoHelper(final int valueIndex, final Map<Integer, Info> infos, final Info info) {
 		if (infos.containsKey(valueIndex)) {
 			throw new IllegalStateException("Duplicate keys are not allowed!");

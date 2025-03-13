@@ -219,7 +219,9 @@ public class CallMethod extends AbstractMethod {
 		resultFormat = new BED6callResultFormat(getName(), getParameter());
 		resultFormats.put(resultFormat.getID(), resultFormat);
 
-		resultFormat = new BED6callExtendedResultFormat(getName(), getParameter());
+		resultFormat = new BED6callExtendedResultFormat(
+				getName(), getParameter(),
+				new HashSet<>(Arrays.asList())); // TODO add supported extensions
 		resultFormats.put(resultFormat.getID(), resultFormat);
 
 		resultFormat = new VCFcallFormat(getParameter());

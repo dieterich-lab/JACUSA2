@@ -1,4 +1,4 @@
-package jacusa.io.format.call;
+package jacusa.io.format;
 
 import lib.data.DataContainer;
 import lib.data.count.basecall.BaseCallCount;
@@ -6,11 +6,11 @@ import lib.data.result.Result;
 import lib.io.InputOutput;
 import lib.io.format.bed.DataAdder;
 
-public class CallDataAdder implements DataAdder {
+public class DefaultDataAdder implements DataAdder {
 
 	private final BaseCallCount.AbstractParser bccParser;
 	
-	public CallDataAdder(final BaseCallCount.AbstractParser bccParser) {
+	public DefaultDataAdder(final BaseCallCount.AbstractParser bccParser) {
 		this.bccParser = bccParser; 
 	}
 	

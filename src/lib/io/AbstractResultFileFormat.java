@@ -9,49 +9,18 @@ import lib.worker.WorkerDispatcher;
 /**
  * TODO add comments.
  */
-public abstract class AbstractResultFileFormat 
-implements ResultFormat {
+public abstract class AbstractResultFileFormat extends AbstractResultFormat {
 
-	// unique (per method) char that identifies a result format
-	private final char c;
-	// description that shown in help on command line 
-	private final String desc;
-
-	private final String methodName;
-	private final GeneralParameter parameter;
-	
 	public AbstractResultFileFormat(final char c, final String desc, 
 			final String methodName, final GeneralParameter parameter) {
-		this.c = c;
-		this.desc = desc;
-		
-		this.methodName = methodName;
-		this.parameter = parameter;
-	}
-
-	@Override
-	public final char getID() {
-		return c;
-	}
-
-	@Override
-	public final String getDesc() {
-		return desc;
-	}
-
-	public GeneralParameter getParameter() {
-		return parameter;
-	}
-
-	public String getMethodName() {
-		return methodName;
+		super(c, desc, methodName, parameter);
 	}
 	
 	@Override
 	public CopyTmpResult createCopyTmp(final int threadId, final WorkerDispatcher workerDispatcher) {
 		final AbstractResultFileWriter resultWriter = 
 				(AbstractResultFileWriter)workerDispatcher.getResultWriter();
-		if (parameter.getFilteredFilename() != null) {
+		if (getParameter().getFilteredFilename() != null) {
 			final AbstractResultFileWriter filteredResultWriter = 
 					(AbstractResultFileWriter)workerDispatcher.getFilteredResultWriter();
 
@@ -64,6 +33,7 @@ implements ResultFormat {
 		}
 	}
 
+	/* TODO remove
 	public void processCLI(final String line){}
 	public List<ParallelDataToString> getAvailable(){
 		return new ArrayList<>();
@@ -71,5 +41,6 @@ implements ResultFormat {
 	public List<ParallelDataToString> getSelected(){
 		return new ArrayList<>();
 	}
+	*/
 	
 }

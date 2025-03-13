@@ -10,8 +10,7 @@ import lib.io.ResultWriter;
  *
  * @param <T>
  */
-public class PileupLikeFormat 
-extends AbstractResultFileFormat {
+public class PileupLikeFormat extends AbstractResultFileFormat {
 
 	// unique char id for CLI
 	public static final char CHAR = 'M';
@@ -28,4 +27,11 @@ extends AbstractResultFileFormat {
 		return new PileupResultWriter(outputFileName);
 	}
 
+	@Override
+	public void processCLI(String line) throws IllegalArgumentException {
+		if (line != null && line.length() > 0) {
+			throw new IllegalArgumentException("Options are not supported: " + line);
+		}
+	}
+	
 }

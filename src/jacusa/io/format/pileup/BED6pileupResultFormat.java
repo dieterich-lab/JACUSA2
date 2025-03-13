@@ -1,6 +1,6 @@
 package jacusa.io.format.pileup;
 
-import jacusa.io.format.call.CallDataAdder;
+import jacusa.io.format.DefaultDataAdder;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBCC;
@@ -33,15 +33,14 @@ public class BED6pileupResultFormat extends AbstractResultFileFormat {
 	public BEDlikeResultFileWriter createWriter(final String outputFileName) {
 		final BaseCallCount.AbstractParser bccParser = 
 				new DefaultBCC.Parser(InputOutput.VALUE_SEP, InputOutput.EMPTY_FIELD);
-		
-		BED6adder bed6adder = new DefaultBED6adder(getMethodName(), "stat");
-		DataAdder dataAdder = new CallDataAdder(bccParser);
-		final BEDlikeResultFileWriterBuilder builder = new BEDlikeResultFileWriterBuilder(outputFileName, getParameter());
-	
-		builder.addBED6Adder(bed6adder);
-		builder.addDataAdder(dataAdder);
-		builder.addInfoAdder(new DefaultInfoAdder(getParameter()));
-		return builder.build();
+
+		return new BEDlikeResultFileWriterBuilder(outputFileName, getParameter())
+				.addBED6Adder(new DefaultBED6adder(getMethodName(), "stat"))
+				.addDataAdder(new DefaultDataAdder(bccParser))
+				.addInfoAdder(new DefaultInfoAdder(getParameter()))
+				.build();
 	}
+	
+	// FIXME
 
 }

@@ -1,13 +1,11 @@
 package lib.io;
 
-import jacusa.io.format.extendedFormat.ParallelDataToString;
 import lib.cli.parameter.GeneralParameter;
 
 /**
  * TODO add comments.
  */
-public abstract class AbstractResultFormat 
-implements ResultFormat{
+public abstract class AbstractResultFormat implements ResultFormat {
 
 	// unique (per method) char that identifies a result format
 	private final char c;

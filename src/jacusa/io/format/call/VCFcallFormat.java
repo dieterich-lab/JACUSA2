@@ -17,8 +17,7 @@ import lib.worker.WorkerDispatcher;
  * @param <T>
  * @param <R>
  */
-public class VCFcallFormat 
-extends AbstractResultFormat {
+public class VCFcallFormat extends AbstractResultFormat {
 
 	// unique char id for CLI
 	public static final char CHAR = 'V';
@@ -49,4 +48,10 @@ extends AbstractResultFormat {
 		return new SerializeCopyTmpResult(threadId, workerDispatcher.getResultWriter(), this);
 	}
 	
+	@Override
+	public void processCLI(String line) throws IllegalArgumentException {
+		if (line != null && line.length() > 0) {
+			throw new IllegalArgumentException("Options are not supported: " + line);
+		}
+	}
 }
