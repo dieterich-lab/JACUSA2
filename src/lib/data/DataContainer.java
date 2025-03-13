@@ -7,8 +7,6 @@ import java.util.Map;
 
 import jacusa.filter.factory.FilterFactory;
 import lib.cli.parameter.GeneralParameter;
-import lib.data.count.BaseSub2BCC;
-import lib.data.count.BaseSub2IntData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.filter.BaseCallCountFilteredData;
@@ -40,29 +38,18 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 	 * PileupCount get(DataType.PileupCount)
 	 */
 	
-	
 	PileupCount getPileupCount();
 	
 	BaseCallCount getBaseCallCount();
-	
-	BaseSub2BCC getBaseSub2BCC();
 	
 	BaseCallCountFilteredData getBCCFilteredData();
 	BooleanFilteredData getBooleanFilteredData();
 	
 	BaseCallCount getArrestBaseCallCount();
 	BaseCallCount getThroughBaseCallCount();
-	
-	BaseSub2BCC getArrestBaseSub2BCC();
-	BaseSub2BCC getThroughBaseSub2BCC();
-	
+
 	ArrestPos2BCC getArrestPos2BCC();
 	BaseCallCountFilteredData getArrestPos2BCCFilteredData();
-	
-	BaseSub2IntData getBaseSub2Coverage();
-	BaseSub2IntData getBaseSub2DeletionCount();
-	BaseSub2IntData getBaseSub2InsertionCount();
-	
 	
 	<T extends Data<T>> boolean contains(DataType<T> dataType);
 	Collection<DataType<?>> getDataTypes();
@@ -135,14 +122,6 @@ extends HasCoordinate, HasLibraryType, HasReferenceBase,
 			add(builder, DataType.ARREST_BCC);
 			add(builder, DataType.THROUGH_BCC);
 			add(builder, DataType.AP2BCC);
-			
-			add(builder, DataType.BASE_SUBST2BCC);
-			add(builder, DataType.BASE_SUBST2DELETION_COUNT);
-			add(builder, DataType.BASE_SUBST2INSERTION_COUNT);
-			add(builder, DataType.BASE_SUBST2COVERAGE);
-			
-			add(builder, DataType.ARREST_BASE_SUBST);
-			add(builder, DataType.THROUGH_BASE_SUBST);
 		}
 		
 		@Override

@@ -14,9 +14,11 @@ import jacusa.filter.factory.basecall.CombinedFilterFactory;
 import jacusa.filter.factory.basecall.INDELfilterFactory;
 import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
-import jacusa.io.format.call.BED6extendedResultFormat;
-import jacusa.io.format.call.BED6resultFormat;
+import jacusa.io.format.BED6extendedResultFormat;
+import jacusa.io.format.BED6resultFormat;
 import jacusa.io.format.call.VCFcallFormat;
+import jacusa.io.format.extensions.DeletionRatio;
+import jacusa.io.format.extensions.InsertionRatio;
 import jacusa.io.format.extensions.ParallelDataToString;
 import jacusa.worker.CallWorker;
 
@@ -221,10 +223,14 @@ public class CallMethod extends AbstractMethod {
 		resultFormat = new BED6resultFormat(getName(), getParameter());
 		resultFormats.put(resultFormat.getID(), resultFormat);
 
+		// extended and info expanded output
 		resultFormat = new BED6extendedResultFormat(
 				getName(),
 				getParameter(),
-				new HashSet<ParallelDataToString>()); // TODO
+				new HashSet<ParallelDataToString>(
+						Arrays.asList(
+								new InsertionRatio(),
+								new DeletionRatio())));
 		resultFormats.put(resultFormat.getID(), resultFormat);
 
 		resultFormat = new VCFcallFormat(getParameter());

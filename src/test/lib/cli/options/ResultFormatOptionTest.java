@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import jacusa.io.format.call.BED6resultFormat;
+import jacusa.io.format.BED6resultFormat;
 import jacusa.io.format.call.VCFcallFormat;
 import lib.cli.options.AbstractACOption;
 import lib.cli.options.ResultFormatOption;

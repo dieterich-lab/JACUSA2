@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.cli.parameters.CallParameter;
-import jacusa.io.format.call.BED6resultFormat;
+import jacusa.io.format.BED6resultFormat;
 import lib.cli.parameter.GeneralParameter;
 import lib.io.BEDlikeResultFileWriter;
 import test.jacusa.io.format.AbstractResultWriterTest;
