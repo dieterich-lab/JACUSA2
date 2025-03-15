@@ -59,7 +59,7 @@ public class DefaultBED6adder implements BED6adder {
 	}
 	
 	private String getStatistic(final int valueIndex, final Result result) {
-		final double stat = result.getStat(valueIndex);
+		final double stat = result.getScore(valueIndex);
 		if (Double.isNaN(stat)) {
 			return Character.toString(InputOutput.EMPTY_FIELD);
 		}

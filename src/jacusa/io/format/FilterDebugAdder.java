@@ -27,22 +27,22 @@ public class FilterDebugAdder implements DataAdder {
 	}
 
 	@Override
-	public void addHeader(StringBuilder sb, int condI, int replicateI) {
-		dataAdder.addHeader(sb, condI, replicateI);
+	public void addHeader(StringBuilder sb, int conditionIndex, int replicateIndex) {
+		dataAdder.addHeader(sb, conditionIndex, replicateIndex);
 
 		for (final FilterFactory filterFactory : filterFactories) {
 			sb.append(InputOutput.FIELD_SEP);
 			sb.append(filterFactory.getID());
-			sb.append(condI + 1);
-			sb.append(replicateI + 1);
+			sb.append(conditionIndex + 1);
+			sb.append(replicateIndex + 1);
 		}
 	}
 
 	@Override
-	public void addData(StringBuilder sb, int valueIndex, int condI, int replicateI, Result result) {
-		dataAdder.addData(sb, valueIndex, condI, replicateI, result);
+	public void addData(StringBuilder sb, int valueIndex, int conditionIndex, int replicateIndex, Result result) {
+		dataAdder.addData(sb, valueIndex, conditionIndex, replicateIndex, result);
 		
-		final DataContainer container = result.getParellelData().getDataContainer(condI, replicateI);
+		final DataContainer container = result.getParellelData().getDataContainer(conditionIndex, replicateIndex);
 		for (final FilterFactory filterFactory : filterFactories) {
 			sb.append(InputOutput.FIELD_SEP);
 			filterFactory.addFilteredData(sb, container);

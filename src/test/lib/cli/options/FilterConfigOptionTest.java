@@ -21,7 +21,7 @@ import jacusa.filter.factory.basecall.CombinedFilterFactory;
 import jacusa.filter.factory.basecall.INDELfilterFactory;
 import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.FilterConfigOption;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
@@ -33,7 +33,7 @@ import test.utlis.TestUtils;
  */
 class FilterConfigOptionTest 
 extends AbstractGeneralParameterProvider
-implements ACOptionTest<Set<Character>> {
+implements OptionTest<Set<Character>> {
 
 	@Disabled
 	@Test
@@ -99,7 +99,7 @@ implements ACOptionTest<Set<Character>> {
 	}
 	
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new FilterConfigOption(getGeneralParamter(), getFilterFactories());
 	}
 	

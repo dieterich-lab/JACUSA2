@@ -3,31 +3,31 @@ package lib.cli.options.condition;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.parameter.ConditionParameter;
 
 /**
  * Represents the CLI options that can be provided for each condition, e.g.: 
  * minimal BASQ, minimal coverage, etc. 
  */
-public abstract class AbstractConditionACOption extends AbstractACOption {
+public abstract class AbstractConditionOption extends AbstractOption {
 
-	private int condI;
+	private int conditionIndex;
 	private final List<ConditionParameter> conditionParameters;
 		
-	public AbstractConditionACOption(final String opt, final String longOpt, final List<ConditionParameter> conditionParameters) {
+	public AbstractConditionOption(final String opt, final String longOpt, final List<ConditionParameter> conditionParameters) {
 		super(opt, longOpt);
-		condI 				= -1;
+		conditionIndex 				= -1;
 		this.conditionParameters 	= conditionParameters;
 	}
 	
-	public AbstractConditionACOption(
+	public AbstractConditionOption(
 			final String opt, final String longOpt, 
 			final ConditionParameter conditionParameter) {
-		super(opt != null ? opt + (conditionParameter.getcondI()) : null,
-				longOpt != null ? longOpt + (conditionParameter.getcondI()) : null);
+		super(opt != null ? opt + (conditionParameter.getConditionIndex() + 1) : null,
+				longOpt != null ? longOpt + (conditionParameter.getConditionIndex() + 1) : null);
 
-		this.condI = conditionParameter.getcondI();
+		this.conditionIndex = conditionParameter.getConditionIndex();
 		conditionParameters = new ArrayList<>(1);
 		conditionParameters.add(conditionParameter);
 	}
@@ -40,8 +40,8 @@ public abstract class AbstractConditionACOption extends AbstractACOption {
 		return conditionParameters.get(0);
 	}
 
-	public int getcondI() {
-		return condI == -1 ? -1 : condI;
+	public int getConditionIndex() {
+		return conditionIndex == -1 ? -1 : conditionIndex;
 	}
 
 }

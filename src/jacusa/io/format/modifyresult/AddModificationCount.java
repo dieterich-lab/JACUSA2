@@ -1,18 +1,18 @@
-package jacusa.io.format.extensions;
+package jacusa.io.format.modifyresult;
 
-import lib.data.ParallelData;
+import lib.data.result.Result;
 
 
-public class ModificationCount extends AbstractParallelDataToString {
+public class AddModificationCount extends AbstractResultModifier {
 
-    public ModificationCount() {
+    public AddModificationCount() {
     	super("modification_count", "Add modification count to output");
     }
+    
+    public void modify(Result result){
 
-    @Override
-    public String toString(ParallelData parallelData){
-
-    	/* TODO
+    	/* TODO implement
+    	 * final ParallelData parallelData = result.getParellelData();
         List<String> modificationCounts = new ArrayList<>();
         for (DataContainer combined : parallelData.getCombinedData()){
             modificationCounts.add(modCountToString(combined.getPileupCount().getModCount().getModCount()));
@@ -21,7 +21,6 @@ public class ModificationCount extends AbstractParallelDataToString {
 
         //output: modification_count=[ref1-mod1:count,mod2:count;ref2-mod1:count|ref1-mod1:count;ref2-mod1:count]
         // FIXME return Util.pack(modificationCounts,'|');
-    	return null;
     }
 
 }

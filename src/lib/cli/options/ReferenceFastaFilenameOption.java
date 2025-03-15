@@ -8,7 +8,7 @@ import lib.cli.parameter.GeneralParameter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class ReferenceFastaFilenameOption extends AbstractACOption {
+public class ReferenceFastaFilenameOption extends AbstractOption {
 
 	private final GeneralParameter parameters;
 	

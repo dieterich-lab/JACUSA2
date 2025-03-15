@@ -25,32 +25,50 @@ public abstract class AbstractStat {
 		this.downsampleFraction = downsampleFraction;
 	}
 	
+	// TODO
 	protected abstract boolean filter(Result statResult);
 	public abstract Result calculate(ParallelData parallelData);
-	protected abstract void processAfterCalculate(Result statResult);
 	
+	
+	@Deprecated
+	protected abstract void postProcess(Result statResult);
+	
+	@Deprecated
 	public int getSubsampleRuns() {
 		return subsampleRuns;
 	}
 	
+	@Deprecated
 	public int getDownsampleRuns() {
 		return downsampleRuns;
 	}
 	
+	@Deprecated
 	public double getDownsampleFraction() {
 		return downsampleFraction;
 	}
 	
+	@Deprecated
 	public int getRandomSampleRuns() {
 		return randomSampleRuns;
 	}
 	
+	public Result process(final ParallelData parallelData) {
+		final Result result = calculate(parallelData);
+		if (filter(result)) {
+			return null;
+		}
+		postProcess(result);
+		return result;
+	}
+	
+	@Deprecated
 	public Result filter(final ParallelData parallelData) {
 		final Result statResult = calculate(parallelData);
 		if (filter(statResult)) {
 			return null;
 		}
-		processAfterCalculate(statResult);
+		postProcess(statResult);
 		return statResult;
 	}
 	

@@ -66,10 +66,10 @@ public class GenericBaseCallCountFilter extends AbstractFilter {
 			int count 			= 0;
 			int filteredCount 	= 0;
 
-			for (int condI = 0; condI < parallelData.getConditions(); ++condI) {
-				final int replicates = parallelData.getReplicates(condI);
-				for (int replicateI = 0; replicateI < replicates; replicateI++) {
-					final DataContainer container = parallelData.getDataContainer(condI, replicateI);
+			for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); ++conditionIndex) {
+				final int replicates = parallelData.getReplicates(conditionIndex);
+				for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {
+					final DataContainer container = parallelData.getDataContainer(conditionIndex, replicateIndex);
 					// observed count
 					final BaseCallCount observedbcc = observedBccFetcher.fetch(container);
 					final int observed 				= observedbcc.getBaseCall(variantBase);

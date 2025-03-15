@@ -4,11 +4,11 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 import htsjdk.samtools.util.StringUtil;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.filter.has.HasHomopolymerMethod;
 import lib.cli.options.filter.has.HasHomopolymerMethod.HomopolymerMethod;
 
-public class HomopolymerMethodOption extends AbstractACOption {
+public class HomopolymerMethodOption extends AbstractOption {
 
 	private final HasHomopolymerMethod hasHomopolymerMethod;
 	

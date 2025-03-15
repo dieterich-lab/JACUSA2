@@ -14,7 +14,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-public class FilterConfigOption extends AbstractACOption {
+public class FilterConfigOption extends AbstractOption {
 
 	private final GeneralParameter parameters;
 

@@ -8,7 +8,9 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import lib.data.ParallelData;
-import lib.util.Info;
+import lib.util.ExtendedInfo;
+
+// FIXME
 
 /**
  * TODO add documentation
@@ -21,8 +23,8 @@ public class MultiStatResult implements Result {
 	private final ParallelData parallelData;
 	
 	private boolean markedFiltered;
-	private final Map<Integer, Info> filterInfo;
-	private final Map<Integer, Info> resultInfo;
+	private final Map<Integer, ExtendedInfo> filterInfo;
+	private final Map<Integer, ExtendedInfo> resultInfo;
 	
 	public MultiStatResult(final ParallelData parallelData) {
 		value2stat 			= new TreeMap<>();
@@ -50,11 +52,11 @@ public class MultiStatResult implements Result {
 			if (dest.containsKey(valueIndex)) {
 				throw new IllegalStateException("Duplicate keys are not allowed!");
 			}
-			dest.put(valueIndex, src.getStat(valueIndex));
+			dest.put(valueIndex, src.getScore(valueIndex));
 		}
 	}
 	
-	private void copyInfo(final Map<Integer, Info> filterInfos, final Map<Integer, Info> resultInfos, 
+	private void copyInfo(final Map<Integer, ExtendedInfo> filterInfos, final Map<Integer, ExtendedInfo> resultInfos, 
 			final Result result) {
 		
 		for (final int valueIndex : result.getValuesIndex()) {
@@ -64,16 +66,18 @@ public class MultiStatResult implements Result {
 	}
 	
 	// TODO multiple values - why is it copied between multiple values
-	private void copyInfoHelper(final int valueIndex, final Map<Integer, Info> infos, final Info info) {
+	private void copyInfoHelper(final int valueIndex, final Map<Integer, ExtendedInfo> infos, final ExtendedInfo info) {
 		if (infos.containsKey(valueIndex)) {
 			throw new IllegalStateException("Duplicate keys are not allowed!");
 		}
-		infos.put(valueIndex, new Info());
+		/* FIXME
+		infos.put(valueIndex, new ExtendedInfo());
 		infos.get(valueIndex).addAll(info);
+		*/
 	}
 	
 	@Override
-	public double getStat(final int valueIndex) {
+	public double getScore(final int valueIndex) {
 		return value2stat.get(valueIndex);
 	}
 	
@@ -83,12 +87,12 @@ public class MultiStatResult implements Result {
 	}
 	
 	@Override
-	public Info getResultInfo(final int valueIndex) {
+	public ExtendedInfo getResultInfo(final int valueIndex) {
 		return resultInfo.get(valueIndex);
 	}
 	
 	@Override
-	public Info getFilterInfo(final int valueIndex) {
+	public ExtendedInfo getFilterInfo(final int valueIndex) {
 		return filterInfo.get(valueIndex);
 	}
 	
@@ -113,7 +117,7 @@ public class MultiStatResult implements Result {
 	}
 	
 	@Override
-	public Info getFilterInfo() {
+	public ExtendedInfo getFilterInfo() {
 		if (value2stat.size() == 0) {
 			return null;
 		}
@@ -122,7 +126,7 @@ public class MultiStatResult implements Result {
 	}
 	
 	@Override
-	public Info getResultInfo() {
+	public ExtendedInfo getResultInfo() {
 		if (value2stat.size() == 0) {
 			return null;
 		}
@@ -131,7 +135,7 @@ public class MultiStatResult implements Result {
 	}
 	
 	@Override
-	public double getStat() {
+	public double getScore() {
 		if (value2stat.size() == 0) {
 			return Double.NaN;
 		}
@@ -149,8 +153,10 @@ public class MultiStatResult implements Result {
 	public int addStat(final double stat) {
 		final int newValueIndex = getNewValueIndex();
 		value2stat.put(newValueIndex, stat);
-		filterInfo.put(newValueIndex, new Info());
-		resultInfo.put(newValueIndex, new Info());
+		/* FIXME
+		filterInfo.put(newValueIndex, new ExtendedInfo());
+		resultInfo.put(newValueIndex, new ExtendedInfo());
+		*/
 		return newValueIndex;
 	}
 	

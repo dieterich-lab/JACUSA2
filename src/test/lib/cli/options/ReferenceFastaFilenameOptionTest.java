@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
 
 // TODO add test file in fasta format
@@ -17,7 +17,7 @@ import lib.cli.options.ReferenceFastaFilenameOption;
  */
 class ReferenceFastaFilenameOptionTest 
 extends AbstractGeneralParameterProvider 
-implements ACOptionTest<String> {
+implements OptionTest<String> {
 
 	@Override
 	public Stream<Arguments> testProcess() {
@@ -40,7 +40,7 @@ implements ACOptionTest<String> {
 	}
 	
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new ReferenceFastaFilenameOption(getGeneralParamter());
 	}
 

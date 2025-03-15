@@ -8,52 +8,55 @@ import lib.data.result.Result;
 import lib.stat.AbstractStat;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.EstimationContainerProvider;
+import lib.util.ExtendedInfo;
 
 class CallStat extends AbstractStat {
 
 	private final double threshold;
-	private final EstimationContainerProvider estContainerProv;
+	private final EstimationContainerProvider estimationContainerProvider;
 	private final DirMultParameter dirMultPrm;
 
 	private final EstimateDirMult dirMult;
 
-	CallStat(final double threshold, final EstimationContainerProvider estContainerProv,
+	CallStat(final double threshold, final EstimationContainerProvider estimationContainerProvider,
 			final DirMultParameter dirMultPrm) {
 		super(dirMultPrm.getSubsampleRuns(), dirMultPrm.getDownsampleRuns(), dirMultPrm.getRandomSampleRuns(), dirMultPrm.getDownsampleFraction());
 		
-		this.threshold = threshold;
-		this.estContainerProv = estContainerProv;
-		this.dirMultPrm = dirMultPrm;
+		this.threshold 						= threshold;
+		this.estimationContainerProvider 	= estimationContainerProvider;
+		this.dirMultPrm 					= dirMultPrm;
 
-		dirMult = new EstimateDirMult(dirMultPrm.getMinkaEstimateParameter());
+		dirMult 							= new EstimateDirMult(dirMultPrm.getMinkaEstimateParameter());
 	}
 
+	// TODO which value ?
 	@Override
-	protected void processAfterCalculate(final Result statResult) {
+	protected void postProcess(final Result result) {
 		if (dirMultPrm.isShowAlpha()) {
-			dirMult.addShowAlpha();
+			dirMult.addShowAlpha(result.getResultInfo());
 		}
-		dirMult.addStatResultInfo(statResult.getResultInfo());
+		dirMult.addStatResultInfo(result.getResultInfo());
 	}
 
 	@Override
 	public Result calculate(ParallelData parallelData) {
-		final EstimationContainer[] estContainers = estContainerProv.convert(parallelData);
+		final EstimationContainer[] estimationContainers = estimationContainerProvider.convert(parallelData);
 		double stat;
+		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
 		if (dirMultPrm.isCalcPValue()) {
-			stat = dirMult.getLRT(estContainers);
+			stat = dirMult.getLRT(estimationContainers, resultInfo);
 			// TODO degrees of freedom
 			final ChiSquaredDistribution dist = new ChiSquaredDistribution(3);
 			stat = 1 - dist.cumulativeProbability(stat);
 		} else {
-			stat = dirMult.getScore(estContainers);
+			stat = dirMult.getScore(estimationContainers, resultInfo);
 		}
-		return new OneStatResult(stat, parallelData);
+		return new OneStatResult(stat, parallelData, resultInfo);
 	}
 
 	@Override
 	public boolean filter(final Result statResult) {
-		final double statValue = statResult.getStat();
+		final double statValue = statResult.getScore();
 
 		if (Double.isNaN(threshold)) {
 			return false;

@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.HelpOption;
 import lib.io.InputOutput;
 import lib.stat.AbstractStatFactory;
@@ -20,7 +20,7 @@ import org.apache.commons.cli.Options;
 /**
  * Enables the user to choose between different statistics.
  */
-public class StatFactoryOption extends AbstractACOption {
+public class StatFactoryOption extends AbstractOption {
 
 	public static final String OPT 		= "u";
 	public static final String LONG_OPT = "mode";

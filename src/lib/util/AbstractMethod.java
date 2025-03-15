@@ -3,7 +3,7 @@ package lib.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.SAMPathnameArg;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
@@ -33,7 +33,7 @@ public abstract class AbstractMethod {
 	private final GeneralParameter parameter;
 	private final AbstractDataAssemblerFactory dataAssemblerFactory;
 	
-	private final List<AbstractACOption> acOptions;
+	private final List<AbstractOption> acOptions;
 	
 	private CoordinateProvider coordinateProvider;
 	private WorkerDispatcher workerDispatcher;
@@ -92,13 +92,13 @@ public abstract class AbstractMethod {
 		return true;
 	}
 	
-	protected void addACOption(AbstractACOption newACOption) {
+	protected void addACOption(AbstractOption newACOption) {
 		checkDuplicate(newACOption);
 		acOptions.add(newACOption);
 	}
 	
-	private void checkDuplicate(final AbstractACOption newACOption) {
-		for (final AbstractACOption ACOption : acOptions) {
+	private void checkDuplicate(final AbstractOption newACOption) {
+		for (final AbstractOption ACOption : acOptions) {
 			try {
 				if (ACOption.getOpt() != null && 
 						ACOption.getOpt().equals(newACOption.getOpt())) {
@@ -121,7 +121,7 @@ public abstract class AbstractMethod {
 	 * TODO
 	 * @return
 	 */
-	public List<AbstractACOption> getACOptions() {
+	public List<AbstractOption> getACOptions() {
 		return acOptions;
 	}
 
@@ -156,9 +156,9 @@ public abstract class AbstractMethod {
 	}
 	
 	protected Options getOptions(final boolean printExtendedHelp) {
-		final List<AbstractACOption> tmpAcOptions = getACOptions();
+		final List<AbstractOption> tmpAcOptions = getACOptions();
 		final Options options = new Options();
-		for (final AbstractACOption acOption : tmpAcOptions) {
+		for (final AbstractOption acOption : tmpAcOptions) {
 			if (! acOption.isHidden()) {
 				options.addOption(acOption.getOption(printExtendedHelp));
 			}
@@ -174,8 +174,8 @@ public abstract class AbstractMethod {
 		final int conditionSize = parameter.getConditionsSize();
 		final String[][] recordFilenames = new String[conditionSize][];
 
-		for (int condI = 0; condI < conditionSize; condI++) {
-			recordFilenames[condI] = parameter.getConditionParameter(condI).getRecordFilenames();
+		for (int conditionIndex = 0; conditionIndex < conditionSize; conditionIndex++) {
+			recordFilenames[conditionIndex] = parameter.getConditionParameter(conditionIndex).getRecordFilenames();
 		}
 		
 		boolean isStranded = false;
@@ -200,22 +200,22 @@ public abstract class AbstractMethod {
 	}
 	
 	/**
-	 * TODO
+	 * TODO add comment
 	 * @param args
 	 * @return
 	 * @throws Exception
 	 */
 	public boolean parseArgs(final String[] args) throws Exception {
-		for (int condI = 0; condI < args.length; condI++) {
-			SAMPathnameArg pa = new SAMPathnameArg(condI + 1, parameter.getConditionParameter(condI));
-			pa.processArg(args[condI]);
+		for (int conditionIndex = 0; conditionIndex < args.length; conditionIndex++) {
+			SAMPathnameArg pa = new SAMPathnameArg(conditionIndex + 1, parameter.getConditionParameter(conditionIndex));
+			pa.processArg(args[conditionIndex]);
 		}
 		
 		return true;
 	}
 	
 	/**
-	 * TODO
+	 * TODO add comment
 	 * @return
 	 */
 	public CoordinateProvider getCoordinateProvider() {
@@ -225,7 +225,7 @@ public abstract class AbstractMethod {
 	public abstract List<ParallelDataValidator> createParallelDataValidators();
 	
 	/**
-	 * TODO
+	 * TODO add comment
 	 * @param recordFilenames
 	 * @return
 	 * @throws Exception

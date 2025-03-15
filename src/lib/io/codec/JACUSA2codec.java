@@ -21,6 +21,7 @@ import lib.data.result.Result;
 import lib.io.InputOutput;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
+import lib.util.ExtendedInfo;
 import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
@@ -107,17 +108,18 @@ public class JACUSA2codec extends AsciiFeatureCodec<ResultFeature> {
 	public Result createResult(final String[] token) {
 		final Coordinate coordinate = decodeCoordinate(token);
 		
-		final ParallelData.Builder pdBuilder = new ParallelData.Builder(1, Arrays.asList(1));
-		DefaultDataContainer.Builder dcBuilder = new DefaultDataContainer.Builder(coordinate, LibraryType.MIXED);
+		final ParallelData.Builder parallelDataBuilder = new ParallelData.Builder(1, Arrays.asList(1));
+		DefaultDataContainer.Builder dataContainerBuilder = new DefaultDataContainer.Builder(coordinate, LibraryType.MIXED);
 		
 		final ParallelData parallelData = 
-				pdBuilder.withReplicate(
+				parallelDataBuilder.withReplicate(
 						0, 0, 
-						dcBuilder.build())
+						dataContainerBuilder.build())
 				.build();
 		
-		final double stat = Double.parseDouble(token[SCORE_INDEX]); 
-		return new OneStatResult(stat, parallelData); 
+		final double stat = Double.parseDouble(token[SCORE_INDEX]);
+		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
+		return new OneStatResult(stat, parallelData, resultInfo); 
 	}
 	
 	public ResultFeature decode(final String[] token) {

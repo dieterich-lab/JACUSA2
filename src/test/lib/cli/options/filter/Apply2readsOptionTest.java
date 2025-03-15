@@ -11,17 +11,17 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import htsjdk.samtools.util.StringUtil;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.filter.Apply2readsOption;
 import lib.cli.options.filter.has.HasApply2reads;
 import lib.io.InputOutput;
-import test.lib.cli.options.ACOptionTest;
+import test.lib.cli.options.OptionTest;
 
 /**
  * Tests @see lib.cli.options.filter.Apply2readsOption#process(org.apache.commons.cli.CommandLine)
  */
 class Apply2readsOptionTest 
-implements ACOptionTest<Set<RT_READS>> {
+implements OptionTest<Set<RT_READS>> {
 	
 	private HasApply2reads hasApply2reads;
 	
@@ -37,7 +37,7 @@ implements ACOptionTest<Set<RT_READS>> {
 	}
 	
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new Apply2readsOption(hasApply2reads);
 	}
 	

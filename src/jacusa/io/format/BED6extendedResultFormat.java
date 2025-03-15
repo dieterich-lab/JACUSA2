@@ -13,7 +13,7 @@ import lib.io.format.bed.ExpandedInfoAdder;
 import java.util.HashSet;
 import java.util.Set;
 
-import jacusa.io.format.extensions.ParallelDataToString;
+import jacusa.io.format.modifyresult.ModifyResult;
 
 /*
  * TODO move to method:
@@ -25,18 +25,18 @@ import jacusa.io.format.extensions.ParallelDataToString;
 public class BED6extendedResultFormat extends AbstractResultFileFormat {
 
     //available options for output-format X
-    private Set<ParallelDataToString> available;
+    private Set<ModifyResult> available;
 
     //options selected in command line for output-format X
-    private Set<ParallelDataToString> selected;
+    private Set<ModifyResult> selected;
 
     public BED6extendedResultFormat(
             final String methodName,
             final GeneralParameter parameter,
-            final Set<ParallelDataToString> available){
+            final Set<ModifyResult> available){
         super('X', "BED6-extended result format", methodName, parameter);
 
-        this.available = new HashSet<ParallelDataToString>(available);
+        this.available = new HashSet<ModifyResult>(available);
         this.selected = new HashSet<>(selected.size());
     }
 
@@ -48,7 +48,7 @@ public class BED6extendedResultFormat extends AbstractResultFileFormat {
 
         //checks which options found in available are selected in command line and copies them to selected
         for(String arg : args){
-            for(ParallelDataToString extension : available){
+            for(ModifyResult extension : available){
                 if(arg == extension.getID()){
                     selected.add(extension);
                 }
@@ -68,11 +68,11 @@ public class BED6extendedResultFormat extends AbstractResultFileFormat {
 				.build();
 	}
     
-    public Set<ParallelDataToString> getAvailableExtenstions() {
+    public Set<ModifyResult> getAvailableExtenstions() {
         return available;
     }
 
-    public Set<ParallelDataToString> getSelectedExtensions() {
+    public Set<ModifyResult> getSelectedExtensions() {
         return selected;
     }
 

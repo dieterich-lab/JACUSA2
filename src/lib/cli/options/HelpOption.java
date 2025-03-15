@@ -5,7 +5,7 @@ import lib.cli.CLI;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class HelpOption extends AbstractACOption {
+public class HelpOption extends AbstractOption {
 
 	private static final String OPT = "h";
 	public static final String SHORT_MSG = "[...] Use -" + OPT + " to see extended help";

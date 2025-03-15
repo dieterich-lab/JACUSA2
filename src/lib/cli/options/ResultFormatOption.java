@@ -11,7 +11,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 public class ResultFormatOption 
-extends AbstractACOption {
+extends AbstractOption {
 
 	private final GeneralParameter parameter;
 	private final Map<Character, ResultFormat> resultFormats;

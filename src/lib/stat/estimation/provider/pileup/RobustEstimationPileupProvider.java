@@ -55,30 +55,29 @@ extends AbstractEstimationContainerProvider {
 			return orginalPileupCounts;
 		}
 		
-		int keepcondI 		= -1;
-		int changecondI 	= -1;
+		int keepConditionIndex 		= -1;
+		int changeConditionIndex 	= -1;
 		
 		// determine which condition has the variant base
 		if (allelesSize1 > 1 && allelesSize2 == 1 && allelesSizePooled == 2) { // condition1
-			keepcondI 		= 0;
-			changecondI 	= 1;
+			keepConditionIndex 		= 0;
+			changeConditionIndex 	= 1;
 		} else if (allelesSize2 > 1 && allelesSize1 == 1 && allelesSizePooled == 2) { // condition2
-			keepcondI 		= 1;
-			changecondI 	= 0;
+			keepConditionIndex 		= 1;
+			changeConditionIndex 	= 0;
 		}
 		
-		if (keepcondI >= 0 && 
-				changecondI >= 0) {
+		if (keepConditionIndex >= 0 && changeConditionIndex >= 0) {
 			// determine common base (shared by both conditions)
 			final Base commonBase = getCommonBase(allelesPooled, pileupCount1, pileupCount2);
 									
 			// container for adjusted parallelPileup
 			final List<List<PileupCount>> modifiedPileupCounts = Arrays.asList(null, null);
-			modifiedPileupCounts.set(keepcondI, orginalPileupCounts.get(keepcondI));
+			modifiedPileupCounts.set(keepConditionIndex, orginalPileupCounts.get(keepConditionIndex));
 			modifiedPileupCounts.set(
-					changecondI, 
+					changeConditionIndex,
 					flat(
-							orginalPileupCounts.get(keepcondI),
+							orginalPileupCounts.get(keepConditionIndex),
 							variantBases, commonBase) );
 			return modifiedPileupCounts;
 		}

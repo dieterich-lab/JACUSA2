@@ -9,7 +9,7 @@ import lib.estimate.MinkaParameter;
 import lib.stat.dirmult.EstimateDirMult;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.INDELestimationCountProvider;
-import lib.util.Info;
+import lib.util.ExtendedInfo;
 import lib.util.Util;
 
 public class GenericStat extends AbstractStat {
@@ -43,21 +43,22 @@ public class GenericStat extends AbstractStat {
 	
 	@Override
 	public Result calculate(ParallelData parallelData) {
-		final EstimationContainer[] estContainers = estContainerProv.convert(parallelData);
-		final double lrt 	= dirMult.getLRT(estContainers);
-		final Result result = new OneStatResult(lrt, parallelData);
+		final EstimationContainer[] estimationContainers = estContainerProv.convert(parallelData);
+		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
+		final double lrt 	= dirMult.getLRT(estimationContainers, resultInfo);
+		final Result result = new OneStatResult(lrt, parallelData, resultInfo);
 
 		return result;
 	}
 
 	@Override
-	protected void processAfterCalculate(final Result result) {
-		final double lrt = result.getStat();
-		final double pvalue = 1 - dist.cumulativeProbability(result.getStat());
+	protected void postProcess(final Result result) {
+		final double lrt = result.getScore();
+		final double pvalue = 1 - dist.cumulativeProbability(result.getScore());
 	
-		final Info resultInfo = result.getResultInfo();
-		resultInfo.add(scoreKey, Util.format(lrt));
-		resultInfo.add(pvalueKey, Util.format(pvalue));
+		final ExtendedInfo resultInfo = result.getResultInfo();
+		resultInfo.addSite(scoreKey, Util.format(lrt));
+		resultInfo.addSite(pvalueKey, Util.format(pvalue));
 	}
 		
 	public String getScoreKey() {

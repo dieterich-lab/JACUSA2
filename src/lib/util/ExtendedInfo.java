@@ -12,7 +12,7 @@ import lib.io.InputOutput;
 /**
  * add documentation
  */
-public class InfoExtended implements Serializable {
+public class ExtendedInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,7 +20,7 @@ public class InfoExtended implements Serializable {
 	private final List<Map<String, String>> conditionMap;
 	private final List<List<Map<String, String>>> replicateMap;
 	
-	public InfoExtended(final List<Integer> replicateSizes) {
+	public ExtendedInfo(final List<Integer> replicateSizes) {
 		siteMap = new TreeMap<>();
 		conditionMap = new ArrayList<Map<String,String>>(replicateSizes.size());
 		replicateMap = new ArrayList<List<Map<String,String>>>(replicateSizes.size());
@@ -51,6 +51,14 @@ public class InfoExtended implements Serializable {
 	
 	public void addCondition(final int conditionIndex, final String key, final String value) {
 		conditionMap.get(conditionIndex).put(key, value);
+	}
+	
+	public <T> void addReplicate(final int conditionIndex, final int replicateIndex, final String key, final T value) {
+		replicateMap.get(conditionIndex).get(replicateIndex).put(key, value.toString());
+	}
+
+	public boolean containsSite(final String key) {
+		return siteMap.containsKey(key);
 	}
 	
 	public String combine() {

@@ -4,13 +4,12 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import lib.data.ParallelData;
-import lib.util.Info;
+import lib.util.ExtendedInfo;
 
 /**
  * TODO add documentation
  */
-public class OneStatResult 
-implements Result {
+public class OneStatResult implements Result {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -18,25 +17,25 @@ implements Result {
 	private final ParallelData parallelData;
 	
 	private boolean markedFiltered;
-	private final Info filterInfo;
-	private final Info resultInfo;
+	private final ExtendedInfo filterInfo;
+	private final ExtendedInfo resultInfo;
 
 	private final SortedSet<Integer> valueIndex;
 	
-	public OneStatResult(final double stat, final ParallelData parallelData) {
+	public OneStatResult(final double stat, final ParallelData parallelData, final ExtendedInfo info) {
 		this.stat 			= stat;
 		this.parallelData 	= parallelData;
 		
 		markedFiltered 	= false;
-		filterInfo 		= new Info();
-		resultInfo 		= new Info();
+		filterInfo 		= new ExtendedInfo(parallelData.getReplicates());
+		resultInfo 		= info;
 		
 		valueIndex = new TreeSet<>();
 		valueIndex.add(Result.TOTAL);
 	}
 	
 	@Override
-	public double getStat(final int value) {
+	public double getScore(final int value) {
 		return stat;
 	}
 
@@ -46,12 +45,12 @@ implements Result {
 	}
 
 	@Override
-	public Info getResultInfo(final int valueIndex) {
+	public ExtendedInfo getResultInfo(final int valueIndex) {
 		return resultInfo;
 	}
 
 	@Override
-	public Info getFilterInfo(final int valueIndex) {
+	public ExtendedInfo getFilterInfo(final int valueIndex) {
 		return filterInfo;
 	}
 
@@ -76,17 +75,17 @@ implements Result {
 	}
 
 	@Override
-	public Info getResultInfo() {
+	public ExtendedInfo getResultInfo() {
 		return resultInfo;
 	}
 
 	@Override
-	public Info getFilterInfo() {
+	public ExtendedInfo getFilterInfo() {
 		return filterInfo;
 	}
 	
 	@Override
-	public double getStat() {
+	public double getScore() {
 		return stat;
 	}
 	

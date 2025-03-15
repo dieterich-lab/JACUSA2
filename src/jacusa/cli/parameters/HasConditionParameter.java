@@ -19,10 +19,10 @@ public interface HasConditionParameter {
 	/**
 	 * Returns a specific conditionParameter object.
 	 * 
-	 * @param condI index identifies a specific condition
+	 * @param conditionIndex index identifies a specific condition
 	 * @return a specific condition parameter object
 	 */
-	ConditionParameter getConditionParameter(int condI);
+	ConditionParameter getConditionParameter(int conditionIndex);
 	
 	/**
 	 * Updates the list of condition parameters.
@@ -41,9 +41,9 @@ public interface HasConditionParameter {
 	/**
 	 * Returns the number of replicate for a specific condition.
 	 * 
-	 * @param condI 
+	 * @param conditionIndex 
 	 * @return the number of replicates for condI
 	 */
-	int getReplicates(int condI);
+	int getReplicates(int conditionIndex);
 
 }

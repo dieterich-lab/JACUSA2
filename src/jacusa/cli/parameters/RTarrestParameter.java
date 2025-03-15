@@ -29,8 +29,8 @@ implements HasStatParameter {
 	}
 
 	@Override
-	public ConditionParameter createConditionParameter(final int condI) {
-		final ConditionParameter p = super.createConditionParameter(condI);
+	public ConditionParameter createConditionParameter(final int conditionIndex) {
+		final ConditionParameter p = super.createConditionParameter(conditionIndex);
 		// TODO how to set minBASQ - this can have downstream effects on how a read is defined
 		// Pos.:		1234
 		// Read Seq.:	ACGT

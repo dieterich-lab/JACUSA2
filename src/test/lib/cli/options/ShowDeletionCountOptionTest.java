@@ -4,12 +4,12 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.ShowDeletionCountOption;
 
 public class ShowDeletionCountOptionTest 
 extends AbstractGeneralParameterProvider
-implements ACOptionTest<Boolean> {
+implements OptionTest<Boolean> {
 
 	@Override
 	public Stream<Arguments> testProcess() {
@@ -19,7 +19,7 @@ implements ACOptionTest<Boolean> {
 	}
 	
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new ShowDeletionCountOption(getGeneralParamter());
 	}
 	

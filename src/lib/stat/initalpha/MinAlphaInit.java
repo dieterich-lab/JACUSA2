@@ -24,11 +24,11 @@ public class MinAlphaInit extends AbstractAlphaInit {
 		final double[] sums = nominalData.getRowWiseSums();
 
 		double[][] dataProportionMatrix = new double[nominalData.getReplicates()][alpha.length];
-		for (int replicateI = 0; replicateI < nominalData.getReplicates(); ++replicateI) {
+		for (int replicateIndex = 0; replicateIndex < nominalData.getReplicates(); ++replicateIndex) {
 			for (int i = 0; i < categories; ++i) {
-				dataProportionMatrix[replicateI][i] = 
-						nominalData.getReplicate(replicateI,i) / sums[replicateI];
-				alpha[i] = Math.min(alpha[i], dataProportionMatrix[replicateI][i]);
+				dataProportionMatrix[replicateIndex][i] = 
+						nominalData.getReplicate(replicateIndex,i) / sums[replicateIndex];
+				alpha[i] = Math.min(alpha[i], dataProportionMatrix[replicateIndex][i]);
 			}
 		}
 

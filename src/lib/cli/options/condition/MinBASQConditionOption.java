@@ -8,7 +8,7 @@ import lib.phred2prob.Phred2Prob;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class MinBASQConditionOption extends AbstractConditionACOption {
+public class MinBASQConditionOption extends AbstractConditionOption {
 
 	private static final String OPT = "q";
 	private static final String LONG_OPT = "min-basq";
@@ -26,8 +26,8 @@ public class MinBASQConditionOption extends AbstractConditionACOption {
 		String s = "";
 		
 		byte minBasq = getConditionParameter().getMinBASQ();
-		if (getcondI() >= 0) {
-			s = " for condition " + getcondI();
+		if (getConditionIndex() >= 0) {
+			s = " for condition " + getConditionIndex() + 1;
 		} else if (getConditionParameters().size() > 1) {
 			s = " for all conditions";
 		}

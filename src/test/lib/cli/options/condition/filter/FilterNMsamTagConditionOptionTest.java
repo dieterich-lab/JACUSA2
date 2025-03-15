@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.condition.AbstractConditionACOption;
+import lib.cli.options.condition.AbstractConditionOption;
 import lib.cli.options.condition.filter.FilterNMsamTagConditionOption;
 import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
 import lib.cli.parameter.ConditionParameter;
@@ -31,7 +31,7 @@ public class FilterNMsamTagConditionOptionTest extends AbstractConditionACOption
 	void testProcessGeneralFail() throws Exception {
 		final List<ConditionParameter> conditionParameters 	= 
 				createConditionParameters(2); 
-		final AbstractConditionACOption testInstance 		= 
+		final AbstractConditionOption testInstance 		= 
 				createGeneralTestInstance(conditionParameters);
 
 		// < 0
@@ -58,12 +58,12 @@ public class FilterNMsamTagConditionOptionTest extends AbstractConditionACOption
 	}
 	
 	@Override
-	protected AbstractConditionACOption createIndividualTestInstance(ConditionParameter conditionParameter) {
+	protected AbstractConditionOption createIndividualTestInstance(ConditionParameter conditionParameter) {
 		return new FilterNMsamTagConditionOption(conditionParameter);
 	}
 
 	@Override
-	protected AbstractConditionACOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
+	protected AbstractConditionOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
 		return new FilterNMsamTagConditionOption(conditionParameters);
 	}
 	

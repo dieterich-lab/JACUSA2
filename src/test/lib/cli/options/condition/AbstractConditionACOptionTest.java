@@ -21,7 +21,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import lib.cli.options.condition.AbstractConditionACOption;
+import lib.cli.options.condition.AbstractConditionOption;
 import lib.cli.parameter.ConditionParameter;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -30,7 +30,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 	@ParameterizedTest(name = "Parse line: {2}")
 	@MethodSource("testProcessGeneral")
 	void testProcessGeneral(
-			AbstractConditionACOption testInstance,
+			AbstractConditionOption testInstance,
 			List<ConditionParameter> conditionParameters, 
 			String line, 
 			T expected) throws Exception {
@@ -51,35 +51,35 @@ public abstract class AbstractConditionACOptionTest<T> {
 	@ParameterizedTest(name = "Parse line: {2}")
 	@MethodSource("testProcessIndividual")
 	void testProcessIndividual(
-			List<AbstractConditionACOption> testInstances,
+			List<AbstractConditionOption> testInstances,
 			List<ConditionParameter> conditionParameters,
 			String line, 
 			List<T> expected) throws Exception {
 		
 		final CommandLineParser parser = new DefaultParser();
 		final Options options = new Options();
-		for (final AbstractConditionACOption testInstance : testInstances) {
+		for (final AbstractConditionOption testInstance : testInstances) {
 			options.addOption(testInstance.getOption(false));
 		}
 		
 		final CommandLine cmd = parser.parse(options, line.split(" "));
-		for (final AbstractConditionACOption testInstance : testInstances) {
+		for (final AbstractConditionOption testInstance : testInstances) {
 			process(testInstance, cmd);
 		}
 		
 		for (final ConditionParameter conditionParameter : conditionParameters) {
 			final T actual = getActualValue(conditionParameter);
-			assertEquals(expected.get(conditionParameter.getcondI() - 1), actual);
+			assertEquals(expected.get(conditionParameter.getConditionIndex()), actual);
 		}
 	}
 
-	void process(final AbstractConditionACOption testInstance, final CommandLine cmd) throws Exception {
+	void process(final AbstractConditionOption testInstance, final CommandLine cmd) throws Exception {
 		if (! testInstance.getOpt().isEmpty() && cmd.hasOption(testInstance.getOpt())) {
 			testInstance.process(cmd);
 		}
 	}
 
-	List<AbstractConditionACOption> createTestInstances(final List<ConditionParameter> conditionParameters) {
+	List<AbstractConditionOption> createTestInstances(final List<ConditionParameter> conditionParameters) {
 		return IntStream.rangeClosed(1, conditionParameters.size())
 				.mapToObj(i -> createIndividualTestInstance(conditionParameters.get(i - 1)))
 				.collect(Collectors.toList());
@@ -106,7 +106,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 
 	protected <E extends Throwable> void myAssertOptThrows(
 			final Class<E> expectedType,
-			final AbstractConditionACOption testInstance,
+			final AbstractConditionOption testInstance,
 			final String value) {
 
 		final Options options				= new Options();
@@ -130,11 +130,11 @@ public abstract class AbstractConditionACOptionTest<T> {
 			.collect(Collectors.toList());
 	}
 	
-	String createOptLine(final AbstractConditionACOption testInstance, String value) {
+	String createOptLine(final AbstractConditionOption testInstance, String value) {
 		return createOptLine(testInstance.getOpt(), value);
 	}
 	
-	String createOptLine(final AbstractConditionACOption testInstance, T value) {
+	String createOptLine(final AbstractConditionOption testInstance, T value) {
 		return createOptLine(testInstance.getOpt(), convertString(value));
 	}
 	
@@ -152,8 +152,8 @@ public abstract class AbstractConditionACOptionTest<T> {
 	protected abstract Stream<Arguments> testProcessGeneral();
 	protected abstract Stream<Arguments> testProcessIndividual();
 	
-	protected abstract AbstractConditionACOption createGeneralTestInstance(List<ConditionParameter> conditionParameters);
-	protected abstract AbstractConditionACOption createIndividualTestInstance(ConditionParameter conditionParameter);
+	protected abstract AbstractConditionOption createGeneralTestInstance(List<ConditionParameter> conditionParameters);
+	protected abstract AbstractConditionOption createIndividualTestInstance(ConditionParameter conditionParameter);
 	protected abstract T getActualValue(ConditionParameter conditionParameter);
 
 	protected abstract String convertString(T value);
@@ -194,7 +194,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 				final List<ConditionParameter> conditionParameters, 
 				final T expected) {
 			
-			final AbstractConditionACOption testInstance = createGeneralTestInstance(conditionParameters);
+			final AbstractConditionOption testInstance = createGeneralTestInstance(conditionParameters);
 			final String line = createOptLine(testInstance, expected);
 			return Arguments.of(
 					testInstance,
@@ -208,7 +208,7 @@ public abstract class AbstractConditionACOptionTest<T> {
 				final List<Integer> conditions,
 				final List<T> expected) {
 			
-			final List<AbstractConditionACOption> testInstances = 
+			final List<AbstractConditionOption> testInstances = 
 					createTestInstances(conditionParameters);
 			
 			final StringBuilder sb = new StringBuilder();

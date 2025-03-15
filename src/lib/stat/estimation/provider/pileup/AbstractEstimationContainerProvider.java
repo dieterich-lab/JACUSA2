@@ -50,9 +50,9 @@ implements EstimationContainerProvider {
 		final Base[] bases 		= getBases(parallelData);
 		final int conditions 	= pileupCounts.size();
 		final EstimationContainer[] estContainers = new EstimationContainer[conditions + 1];
-		for (int condI = 0; condI < conditions; ++condI) {
-			final NominalData nominalData 	= createData(bases, pileupCounts.get(condI)); 
-			estContainers[condI] 	= createContainer(Integer.toString(condI + 1), nominalData, maxIters);
+		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
+			final NominalData nominalData 	= createData(bases, pileupCounts.get(conditionIndex)); 
+			estContainers[conditionIndex] 	= createContainer(Integer.toString(conditionIndex + 1), nominalData, maxIters);
 		}
 
 		// conditions pooled
@@ -71,8 +71,8 @@ implements EstimationContainerProvider {
 	
 	private NominalData createData(final Base[] bases, final List<PileupCount> pileupCounts) {
 		final double[][] dataMatrix  = new double[pileupCounts.size()][bases.length];
-		for (int replicateI = 0; replicateI < pileupCounts.size(); replicateI++) {
-			populate(pileupCounts.get(replicateI), bases, dataMatrix[replicateI]);
+		for (int replicateIndex = 0; replicateIndex < pileupCounts.size(); replicateIndex++) {
+			populate(pileupCounts.get(replicateIndex), bases, dataMatrix[replicateIndex]);
 		}
 		return NominalData.build(bases.length, dataMatrix);
 	}
@@ -80,9 +80,9 @@ implements EstimationContainerProvider {
 	protected List<List<PileupCount>> getPileupCounts(final ParallelData parallelData) {
 		final int conditions = parallelData.getConditions();
 		final List<List<PileupCount>> originalPileupCounts = new ArrayList<>(conditions);
-		for (int condI = 0; condI < conditions; ++condI) {
-			final List<PileupCount> tmpPileupCounts = new ArrayList<>(parallelData.getData(condI).size());
-			for (final DataContainer container : parallelData.getData(condI)) {
+		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
+			final List<PileupCount> tmpPileupCounts = new ArrayList<>(parallelData.getData(conditionIndex).size());
+			for (final DataContainer container : parallelData.getData(conditionIndex)) {
 				tmpPileupCounts.add(container.getPileupCount());
 			}
 			originalPileupCounts.add(tmpPileupCounts);

@@ -4,10 +4,10 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 import jacusa.io.FileType;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.filter.has.HasFileType;
 
-public class FileTypeOption extends AbstractACOption {
+public class FileTypeOption extends AbstractOption {
 
 	private final HasFileType hasFileType;
 	

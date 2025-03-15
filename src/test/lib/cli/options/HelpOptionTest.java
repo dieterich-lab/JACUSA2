@@ -7,14 +7,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.provider.Arguments;
 
 import lib.cli.CLI;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.HelpOption;
 
 /**
  * Tests @see lib.cli.options.HelpOption#process(org.apache.commons.cli.CommandLine)
  */
 class HelpOptionTest
-implements ACOptionTest<Boolean> {
+implements OptionTest<Boolean> {
 
 	private CLI cli;
 	
@@ -31,7 +31,7 @@ implements ACOptionTest<Boolean> {
 	}
 	
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new HelpOption(cli);
 	}
 

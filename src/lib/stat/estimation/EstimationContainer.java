@@ -7,7 +7,7 @@ import lib.stat.nominal.NominalData;
  */
 public interface EstimationContainer {
 	
-	String getId();
+	String getID();
 	
 	double[] getAlpha(int iteration);
 	double[] getAlpha();

@@ -41,10 +41,10 @@ extends AbstractEstimationContainerProvider {
 		return modifiedPileupCounts;
 	}
 	
-	private List<PileupCount> getPileupCounts(final int condI, final ParallelData parallelData) {
+	private List<PileupCount> getPileupCounts(final int conditionIndex, final ParallelData parallelData) {
 		final List<PileupCount> pileupCounts = 
-				new ArrayList<>(parallelData.getReplicates().get(condI));
-		for (final DataContainer container : parallelData.getData(condI)) {
+				new ArrayList<>(parallelData.getReplicates().get(conditionIndex));
+		for (final DataContainer container : parallelData.getData(conditionIndex)) {
 			pileupCounts.add(container.getPileupCount());
 		}
 		return pileupCounts;

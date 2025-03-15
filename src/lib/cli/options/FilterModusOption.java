@@ -5,7 +5,7 @@ import lib.cli.parameter.GeneralParameter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class FilterModusOption extends AbstractACOption {
+public class FilterModusOption extends AbstractOption {
 
 	private final GeneralParameter parameter;
 	

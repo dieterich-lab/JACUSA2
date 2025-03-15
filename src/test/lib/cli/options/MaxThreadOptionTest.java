@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.MaxThreadOption;
 
 /**
@@ -14,7 +14,7 @@ import lib.cli.options.MaxThreadOption;
  */
 class MaxThreadOptionTest 
 extends AbstractGeneralParameterProvider
-implements ACOptionTest<Integer> {
+implements OptionTest<Integer> {
 
 	@Override
 	public Stream<Arguments> testProcess() {
@@ -37,7 +37,7 @@ implements ACOptionTest<Integer> {
 	}
 	
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new MaxThreadOption(getGeneralParamter());
 	}
 	

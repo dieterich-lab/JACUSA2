@@ -45,8 +45,8 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		cachedCombinedPooledData = null;
 	}
 	
-	public int getReplicates(int condI) {
-		return data.get(condI).size();
+	public int getReplicates(int conditionIndex) {
+		return data.get(conditionIndex).size();
 	}
 
 	public List<Integer> getReplicates() {
@@ -59,27 +59,27 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 
 	public List<DataContainer> getPooledData() {
 		if (cachedPooledData == null) {
-			for (int condI = 0; condI < getConditions(); ++condI) {
-				getPooledData(condI);
+			for (int conditionIndex = 0; conditionIndex < getConditions(); ++conditionIndex) {
+				getPooledData(conditionIndex);
 			}
 		}
 		return Collections.unmodifiableList(cachedPooledData);
 	}
 
-	public DataContainer getPooledData(int condI) {
+	public DataContainer getPooledData(int conditionIndex) {
 		if (cachedPooledData == null) {
 			cachedPooledData = new ArrayList<>(getConditions());
 			cachedPooledData.addAll(Collections.nCopies(getConditions(), null));
 		}
 
-		if (cachedPooledData.get(condI) == null && getReplicates(condI) > 0) {
+		if (cachedPooledData.get(conditionIndex) == null && getReplicates(conditionIndex) > 0) {
 
 			// coordinates and library type
 			// should be all the same for all replicates from one condition
-			cachedPooledData.set(condI, merge(getData(condI)));
+			cachedPooledData.set(conditionIndex, merge(getData(conditionIndex)));
 		}
 
-		return cachedPooledData.get(condI);
+		return cachedPooledData.get(conditionIndex);
 	}
 
 	public DataContainer getCombPooledData() {
@@ -118,16 +118,16 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 		return cachedCommonLibraryType;
 	}
 
-	public DataContainer getDataContainer(int condI, int replicateI) {
-		return data.get(condI).get(replicateI);
+	public DataContainer getDataContainer(int conditionIndex, int replicateIndex) {
+		return data.get(conditionIndex).get(replicateIndex);
 	}
 
 	public int getConditions() {
 		return data.size();
 	}
 
-	public List<DataContainer> getData(int condI) {
-		return data.get(condI);
+	public List<DataContainer> getData(int conditionIndex) {
+		return data.get(conditionIndex);
 	}
 
 	@Override
@@ -154,10 +154,10 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 			final int conditions = parallelData.getConditions();
 			final List<Integer> tmpReplicates = parallelData.getReplicates();
 
-			for (int condI = 0; condI < conditions; ++condI) {
-				for (int replicateI = 0; replicateI < tmpReplicates.get(condI); ++replicateI) {
-					DataContainer replicate = parallelData.getDataContainer(condI, replicateI).copy();
-					withReplicate(condI, replicateI, replicate);
+			for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
+				for (int replicateIndex = 0; replicateIndex < tmpReplicates.get(conditionIndex); ++replicateIndex) {
+					DataContainer replicate = parallelData.getDataContainer(conditionIndex, replicateIndex).copy();
+					withReplicate(conditionIndex, replicateIndex, replicate);
 				}
 			}
 		}
@@ -168,9 +168,9 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 			totalReplicates = replicates.stream().mapToInt(i -> i).sum();
 		}
 
-		public Builder withReplicate(final int condI, final int replicateI,
+		public Builder withReplicate(final int conditionIndex, final int replicateIndex,
 				final DataContainer dataContainer) {
-			data.get(condI).set(replicateI, dataContainer);
+			data.get(conditionIndex).set(replicateIndex, dataContainer);
 			return this;
 		}
 
@@ -178,16 +178,16 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 			if (data == null) {
 				throw new IllegalStateException("data cannot be null");
 			}
-			for (int condI = 0; condI < data.size(); ++condI) {
-				final List<DataContainer> replicateData = data.get(condI);
+			for (int conditionIndex = 0; conditionIndex < data.size(); ++conditionIndex) {
+				final List<DataContainer> replicateData = data.get(conditionIndex);
 				if (replicateData == null) {
 					throw new IllegalStateException(
-							"replicateData for condI: " + condI + " cannot be null");
+							"replicateData for conditionIndex: " + conditionIndex + " cannot be null");
 				}
-				for (int replicateI = 0; replicateI < replicateData.size(); ++replicateI) {
-					if (replicateData.get(replicateI) == null) {
-						throw new IllegalStateException("replicate for condI: " + condI
-								+ " and replicateI: " + replicateI + " cannot be null");
+				for (int replicateIndex = 0; replicateIndex < replicateData.size(); ++replicateIndex) {
+					if (replicateData.get(replicateIndex) == null) {
+						throw new IllegalStateException("replicate for conditionIndex: " + conditionIndex
+								+ " and replicateIndex: " + replicateIndex + " cannot be null");
 					}
 				}
 			}
@@ -208,8 +208,8 @@ public class ParallelData implements HasCoordinate, HasLibraryType, Copyable<Par
 				throw new IllegalStateException("conditions != replicates.size()");
 			}
 			final List<List<DataContainer>> l = new ArrayList<>(conditions);
-			for (int condI = 0; condI < conditions; ++condI) {
-				l.add(createEmptyContainer(replicates.get(condI)));
+			for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
+				l.add(createEmptyContainer(replicates.get(conditionIndex)));
 			}
 			return l;
 		}

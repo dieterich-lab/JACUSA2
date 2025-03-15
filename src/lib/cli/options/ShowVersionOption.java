@@ -5,7 +5,7 @@ import lib.util.AbstractTool;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class ShowVersionOption extends AbstractACOption {
+public class ShowVersionOption extends AbstractOption {
 
 	public ShowVersionOption() {
 		super("v", "version");

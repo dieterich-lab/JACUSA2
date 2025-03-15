@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.ShowVersionOption;
 import lib.util.AbstractMethod;
@@ -107,7 +107,7 @@ public class CLI {
 		return null;
 	}
 	private void generateLatex() {
-		final Map<String, Map<String, List<AbstractACOption>>> opt2method2acOption = 
+		final Map<String, Map<String, List<AbstractOption>>> opt2method2acOption = 
 				new HashMap<>();
 		
 		final Set<String> methodNames = new HashSet<>();
@@ -126,17 +126,17 @@ public class CLI {
 				methodNames.add(methodName);
 				tmpMethod.initACOptions();
 
-				final List<AbstractACOption> acOptions = tmpMethod.getACOptions();
-				for (final AbstractACOption acOption : acOptions) {
+				final List<AbstractOption> acOptions = tmpMethod.getACOptions();
+				for (final AbstractOption acOption : acOptions) {
 					final String opt = acOption.getOpt();
 					if (! opt2method2acOption.containsKey(opt)) {
-						opt2method2acOption.put(opt, new HashMap<String, List<AbstractACOption>>());
+						opt2method2acOption.put(opt, new HashMap<String, List<AbstractOption>>());
 					}
-					final Map<String, List<AbstractACOption>> method2acOption = opt2method2acOption.get(opt);
+					final Map<String, List<AbstractOption>> method2acOption = opt2method2acOption.get(opt);
 					if (! method2acOption.containsKey(methodName)) {
-						method2acOption.put(methodName, new ArrayList<AbstractACOption>());
+						method2acOption.put(methodName, new ArrayList<AbstractOption>());
 					}
-					final List<AbstractACOption> tmpAcOptions = method2acOption.get(methodName);
+					final List<AbstractOption> tmpAcOptions = method2acOption.get(methodName);
 					tmpAcOptions.add(acOption);
 				}
 			}
@@ -151,7 +151,7 @@ public class CLI {
 				final BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 				final StringBuilder sb = new StringBuilder();
 			
-				final Map<String, List<AbstractACOption>> method2acOption = opt2method2acOption.get(opt);
+				final Map<String, List<AbstractOption>> method2acOption = opt2method2acOption.get(opt);
 				final List<String> optionStrs = new ArrayList<>();
 				final List<String> descStrs = new ArrayList<>();
 				final List<String> methodStrs = new ArrayList<>();
@@ -159,7 +159,7 @@ public class CLI {
 					if (! method2acOption.containsKey(methodName)) {
 						continue;
 					}
-					for (final AbstractACOption acOption : method2acOption.get(methodName)) {
+					for (final AbstractOption acOption : method2acOption.get(methodName)) {
 						final Option option = acOption.getOption(false);
 						if (option.getArgName() != null) {
 							optionStrs.add('-'+ escape(option.getOpt() + ' ' + option.getArgName()));
@@ -266,7 +266,7 @@ public class CLI {
 		final CommandLineParser parser = new DefaultParser();
 		
 		// container for options and parsed line
-		List<AbstractACOption> acOptions = new ArrayList<AbstractACOption>();
+		List<AbstractOption> acOptions = new ArrayList<AbstractOption>();
 		Options options = new Options(); 
 		CommandLine line = null;
 
@@ -289,7 +289,7 @@ public class CLI {
 		try {
 			// the remainder of line.getArgs should be files 
 			method.parseArgs(line.getArgs());
-			for (AbstractACOption acOption : acOptions) {
+			for (AbstractOption acOption : acOptions) {
 				if (acOption.getOpt() != null && line.hasOption(acOption.getOpt()) ||
 						acOption.getLongOpt() != null && line.hasOption(acOption.getLongOpt())) {
 					acOption.process(line);
@@ -349,12 +349,12 @@ public class CLI {
 	}
 
 	private void processMethodFactoryACOptions(final boolean printExtendedHelp, final boolean includeHidden,
-			final List<AbstractACOption> acOptions, final Options options) {
+			final List<AbstractOption> acOptions, final Options options) {
 		// init method factory (populate: parameters)
 		method.initACOptions();
 		
 		acOptions.addAll(method.getACOptions());
-		for (AbstractACOption acOption : acOptions) {
+		for (AbstractOption acOption : acOptions) {
 			if (includeHidden || ! acOption.isHidden()) {
 				options.addOption(acOption.getOption(printExtendedHelp));
 			}

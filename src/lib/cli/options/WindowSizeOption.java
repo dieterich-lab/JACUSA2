@@ -5,7 +5,7 @@ import lib.cli.parameter.GeneralParameter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class WindowSizeOption extends AbstractACOption {
+public class WindowSizeOption extends AbstractOption {
 
 	private final GeneralParameter parameters; 
 	

@@ -15,16 +15,16 @@ public class DefaultDataAdder implements DataAdder {
 	}
 	
 	@Override
-	public void addHeader(StringBuilder sb, int condI, int replicateI) {
+	public void addHeader(StringBuilder sb, int conditionIndex, int replicateIndex) {
 		sb.append(InputOutput.FIELD_SEP);
 		sb.append(InputOutput.BASE_FIELD);
-		sb.append(condI + 1);
-		sb.append(replicateI + 1);
+		sb.append(conditionIndex + 1);
+		sb.append(replicateIndex + 1);
 	}
 	
 	@Override
-	public void addData(StringBuilder sb, int valueIndex, int condI, int replicateI, Result result) {
-		final DataContainer container = result.getParellelData().getDataContainer(condI, replicateI);
+	public void addData(StringBuilder sb, int valueIndex, int condintionIndex, int replicateIndex, Result result) {
+		final DataContainer container = result.getParellelData().getDataContainer(condintionIndex, replicateIndex);
 		sb.append(InputOutput.FIELD_SEP);
 		final BaseCallCount bcc = container.getPileupCount().getBCC();
 		sb.append(bccParser.wrap(bcc));

@@ -62,8 +62,8 @@ implements CoordinateAdvancer {
 
 		int newWindowPosition = winPos;
 
-		for (int condI = 0; condI < conditionContainer.getConditionSize(); condI++) {
-			final int tmpNextPosition = getNextWindowPosition(winPos, conditionContainer.getReplicatContainer(condI));
+		for (int conditionIndex = 0; conditionIndex < conditionContainer.getConditionSize(); conditionIndex++) {
+			final int tmpNextPosition = getNextWindowPosition(winPos, conditionContainer.getReplicatContainer(conditionIndex));
 			if (tmpNextPosition == -1) {
 				// advance to the end
 				getCurrentCoordinate().setMaxPosition();

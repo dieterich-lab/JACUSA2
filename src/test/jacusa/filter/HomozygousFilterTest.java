@@ -138,20 +138,20 @@ class HomozygousFilterTest extends AbstractFilterTest {
 	}
 	
 	Arguments createArguments(
-			final int condI, final ParallelData parallelData, final boolean expected) {
+			final int conditionIndex, final ParallelData parallelData, final boolean expected) {
 		
 		return Arguments.of(
-				createTestInstance(condI),
+				createTestInstance(conditionIndex),
 				parallelData,
 				expected,
 				new StringBuilder()
-				.append("condI: ").append(condI).append(' ')
+				.append("conditionIndex: ").append(conditionIndex).append(' ')
 				.append("test: ").append(++testNumber)
 				.toString() );
 	}
 	
-	Filter createTestInstance(final int condI) {
-		return new HomozygousFilter(' ', condI, bccFetcher);
+	Filter createTestInstance(final int conditionIndex) {
+		return new HomozygousFilter(' ', conditionIndex, bccFetcher);
 	}
 
 }

@@ -12,7 +12,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import jacusa.filter.Filter;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataContainer;
 import lib.data.DataContainer.AbstractBuilder;
@@ -54,15 +54,15 @@ public interface FilterFactory {
 	default  Set<Option> processCLI(final CommandLine cmd) throws Exception {
 		final Set<Option> parsed = new HashSet<>();
 
-		final Map<String, AbstractACOption> longOpt2acOption = 
+		final Map<String, AbstractOption> longOpt2acOption = 
 				getACOption().stream()
 					.collect(Collectors.toMap(
-							AbstractACOption::getLongOpt, Function.identity()));
+							AbstractOption::getLongOpt, Function.identity()));
 		
 		for (final Option option : cmd.getOptions()) {
 			final String longOpt = option.getLongOpt();
 			if (longOpt2acOption.containsKey(longOpt)) {
-				final AbstractACOption acOption = longOpt2acOption.get(longOpt);
+				final AbstractOption acOption = longOpt2acOption.get(longOpt);
 				acOption.process(cmd);
 				parsed.add(option);
 			}
@@ -73,7 +73,7 @@ public interface FilterFactory {
 	
 	default Options getOptions() {
 		final Options options = new Options();
-		for (final AbstractACOption acOption : getACOption()) {
+		for (final AbstractOption acOption : getACOption()) {
 			options.addOption(acOption.getOption(false));
 		}
 		
@@ -85,7 +85,7 @@ public interface FilterFactory {
 	 * 
 	 * @return List of AbstractACOptions.
 	 */
-	List<AbstractACOption> getACOption();
+	List<AbstractOption> getACOption();
 
 	void addFilteredData(StringBuilder sb, DataContainer filteredData);
 

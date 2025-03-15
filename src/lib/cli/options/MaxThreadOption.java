@@ -5,7 +5,7 @@ import lib.cli.parameter.GeneralParameter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class MaxThreadOption extends AbstractACOption {
+public class MaxThreadOption extends AbstractOption {
 
 	private final GeneralParameter parameter;
 	

@@ -7,7 +7,7 @@ import lib.cli.parameter.ConditionParameter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class MaxDepthConditionOption extends AbstractConditionACOption {
+public class MaxDepthConditionOption extends AbstractConditionOption {
 
 	public static final int MIN_DEPTH = 1;
 	public static final int UNLIMITED_DEPTH = -1;
@@ -28,8 +28,8 @@ public class MaxDepthConditionOption extends AbstractConditionACOption {
 		String s = "";
 
 		int maxDepth = getConditionParameter().getMaxDepth();
-		if (getcondI() >= 0) {
-			s = " for condition " + getcondI();
+		if (getConditionIndex() >= 0) {
+			s = " for condition " + getConditionIndex() + 1;
 		} else if (getConditionParameters().size() > 1) {
 			s = " for all conditions";
 		}

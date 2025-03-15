@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.ResultFileOption;
 
 /**
@@ -16,7 +16,7 @@ import lib.cli.options.ResultFileOption;
  */
 class ResultFileOptionTest 
 extends AbstractGeneralParameterProvider
-implements ACOptionTest<String> {
+implements OptionTest<String> {
 
 	@Override
 	public Stream<Arguments> testProcess() {
@@ -39,7 +39,7 @@ implements ACOptionTest<String> {
 	}
 	
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new ResultFileOption(getGeneralParamter());
 	}
 	

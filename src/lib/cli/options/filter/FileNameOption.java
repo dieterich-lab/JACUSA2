@@ -4,10 +4,10 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 import htsjdk.samtools.util.IOUtil;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.filter.has.HasFileName;
 
-public class FileNameOption extends AbstractACOption {
+public class FileNameOption extends AbstractOption {
 
 	private final HasFileName hasFileName;
 	

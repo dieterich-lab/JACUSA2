@@ -1,11 +1,11 @@
-package jacusa.io.format.extensions;
+package jacusa.io.format.modifyresult;
 
-public abstract class AbstractParallelDataToString implements ParallelDataToString {
+public abstract class AbstractResultModifier implements ModifyResult {
 
     private final String id;
     private final String desc;
 
-    public AbstractParallelDataToString(final String id, final String desc){
+    public AbstractResultModifier(final String id, final String desc){
         this.id = id;
         this.desc = desc;
     };

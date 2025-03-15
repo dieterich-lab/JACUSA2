@@ -34,16 +34,16 @@ public class ConditionContainer {
 			.forEach(r -> r.updateIterators(activeWindowCoordinate));
 	}
 	
-	public ReplicateContainer getReplicatContainer(final int condI) {
-		return repContainers.get(condI);
+	public ReplicateContainer getReplicatContainer(final int conditionIndex) {
+		return repContainers.get(conditionIndex);
 	}
 
-	public DataContainer getNullDataContainer(final int condI, final int replicateI, final Coordinate coordinate) {
-		return repContainers.get(condI).getNullDataContainer(replicateI, coordinate);
+	public DataContainer getNullDataContainer(final int conditionIndex, final int replicateIndex, final Coordinate coordinate) {
+		return repContainers.get(conditionIndex).getNullDataContainer(replicateIndex, coordinate);
 	}
 	
-	public DataContainer getDefaultDataContainer(final int condI, final int replicateI, final Coordinate coordinate) {
-		return repContainers.get(condI).getDefaultDataContainer(replicateI, coordinate);
+	public DataContainer getDefaultDataContainer(final int conditionIndex, final int replicateIndex, final Coordinate coordinate) {
+		return repContainers.get(conditionIndex).getDefaultDataContainer(replicateIndex, coordinate);
 	}
 
 	public List<Integer> getReplicateSizes() {

@@ -41,7 +41,7 @@ import lib.cli.options.WindowSizeOption;
 import lib.cli.options.condition.MaxDepthConditionOption;
 import lib.cli.options.condition.MinBASQConditionOption;
 import lib.cli.options.condition.MinCoverageConditionOption;
-import lib.cli.options.condition.MinMAPQConditionOption;
+import lib.cli.options.condition.MinMAPQconditionOption;
 import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagConditionOption;
 import lib.cli.options.condition.filter.FilterNMsamTagConditionOption;
@@ -109,7 +109,7 @@ extends AbstractMethod {
 	@Override
 	protected void initConditionACOptions() {
 		// for all conditions
-		addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters()));
+		addACOption(new MinMAPQconditionOption(getParameter().getConditionParameters()));
 		addACOption(new MinBASQConditionOption(getParameter().getConditionParameters()));
 		addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters()));
 		addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters()));
@@ -130,19 +130,19 @@ extends AbstractMethod {
 				getParameter()));
 		
 		// condition specific
-		for (int condI = 0; condI < getParameter().getConditionsSize(); ++condI) {
-			addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters().get(condI)));
-			addACOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(condI)));
-			addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(condI)));
-			addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters().get(condI)));
-			addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(condI)));
+		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
+			addACOption(new MinMAPQconditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(condI)));
-			addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(condI)));
+			addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 			
 			addACOption(new nConditionLibraryTypeOption(
 					availableLibType, 
-					getParameter().getConditionParameters().get(condI),
+					getParameter().getConditionParameters().get(conditionIndex),
 					getParameter()));
 		}
 	}

@@ -1,7 +1,7 @@
 package jacusa.cli.options;
 
 import jacusa.cli.parameters.StatParameter;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -10,7 +10,7 @@ import org.apache.commons.cli.Option;
  * Enables the user to choose a threshold by command line
  * Currently, only the chosen threshold needs to be >= 0.
  */
-public class StatFilterOption  extends AbstractACOption {
+public class StatFilterOption  extends AbstractOption {
 	
 	public static final String OPT 		= "T";
 	public static final String LONG_OPT = "threshold";

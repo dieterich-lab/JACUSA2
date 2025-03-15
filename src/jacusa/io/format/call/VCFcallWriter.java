@@ -110,10 +110,10 @@ implements ResultWriter  {
 			header.addMetaDataLine(new VCFFilterHeaderLine(Character.toString(filterFactory.getID()), filterFactory.getDesc()));
 		}
 
-		for (int condI = 1; condI <= conditionParameters.size(); condI++) {
-			final int replicates = conditionParameters.get(condI - 1).getReplicateSize();
-			for (int replicateI = 1; replicateI <= replicates; replicateI++) {	
-				final String sampleName = condI + "" + replicateI;
+		for (int conditionIndex = 0; conditionIndex < conditionParameters.size(); conditionIndex++) {
+			final int replicates = conditionParameters.get(conditionIndex).getReplicateSize();
+			for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {	
+				final String sampleName = (conditionIndex + 1) + "" + (replicateIndex + 1);
 				header.getGenotypeSamples().add(sampleName);
 			}
 		}
@@ -150,7 +150,7 @@ implements ResultWriter  {
 
 		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {
 			final String c = Character.toString(filterFactory.getID());
-			if (result.getFilterInfo(0).contains(c)) {
+			if (result.getFilterInfo(0).containsSite(c)) {
 				vcb.filter(c);
 			}
 		}
@@ -158,13 +158,13 @@ implements ResultWriter  {
 		final int conditions = parallelData.getConditions();
 		final List<Genotype> genotypes = new ArrayList<>(conditions);
 
-		for (int condI = 0; condI < conditions; condI++) {
-			final int replicates = parallelData.getReplicates(condI);
-			for (int replicateI = 0; replicateI < replicates; replicateI++) {	
-				final String sampleName = (condI + 1) + "" + (replicateI + 1);
+		for (int conditionIndex = 0; conditionIndex < conditions; conditionIndex++) {
+			final int replicates = parallelData.getReplicates(conditionIndex);
+			for (int replicateIndex = 0; replicateIndex < replicates; replicateIndex++) {	
+				final String sampleName = (conditionIndex + 1) + "" + (replicateIndex + 1);
 				
 				final BaseCallCount tmpBCC = 
-						parallelData.getDataContainer(condI, replicateI)
+						parallelData.getDataContainer(conditionIndex, replicateIndex)
 							.getPileupCount().getBCC();
 				final List<Allele> tmpAlleles = new ArrayList<>(tmpBCC.getAlleles().size());
 

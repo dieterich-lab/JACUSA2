@@ -24,10 +24,10 @@ implements ParallelDataValidator {
 	
 	@Override
 	public boolean isValid(final ParallelData parallelData) {
-		for (int condI = 0; condI < conditionParameters.size(); condI++) {
-			for (final DataContainer container : parallelData.getData(condI)) {
+		for (int conditionIndex = 0; conditionIndex < conditionParameters.size(); conditionIndex++) {
+			for (final DataContainer container : parallelData.getData(conditionIndex)) {
 				final BaseCallCount bcc = bccFetcher.fetch(container);
-				if (bcc.getCoverage() < conditionParameters.get(condI).getMinCoverage()) {
+				if (bcc.getCoverage() < conditionParameters.get(conditionIndex).getMinCoverage()) {
 					return false;
 				}
 			}

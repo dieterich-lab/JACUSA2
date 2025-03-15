@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.condition.AbstractConditionACOption;
+import lib.cli.options.condition.AbstractConditionOption;
 import lib.cli.options.condition.MaxDepthConditionOption;
 import lib.cli.parameter.ConditionParameter;
 
@@ -20,7 +20,7 @@ class MaxDepthConditionOptionTest extends AbstractConditionACOptionTest<Integer>
 	void testProcessGeneralFail() throws Exception {
 		final List<ConditionParameter> conditionParameters 	=
 				createConditionParameters(2); 
-		final AbstractConditionACOption testInstance 		= 
+		final AbstractConditionOption testInstance 		= 
 				createGeneralTestInstance(conditionParameters);
 		
 		// < 1
@@ -63,13 +63,13 @@ class MaxDepthConditionOptionTest extends AbstractConditionACOptionTest<Integer>
 	
 	@Override
 	protected
-	AbstractConditionACOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
+	AbstractConditionOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
 		return new MaxDepthConditionOption(conditionParameters);
 	}
 	
 	@Override
 	protected
-	AbstractConditionACOption createIndividualTestInstance(ConditionParameter conditionParameter) {
+	AbstractConditionOption createIndividualTestInstance(ConditionParameter conditionParameter) {
 		return new MaxDepthConditionOption(conditionParameter);
 	}
 	

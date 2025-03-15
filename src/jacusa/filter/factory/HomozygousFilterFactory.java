@@ -6,7 +6,7 @@ import org.apache.commons.cli.Option.Builder;
 import jacusa.filter.Filter;
 import jacusa.filter.HomozygousFilter;
 import lib.cli.options.filter.ConditionOption;
-import lib.cli.options.filter.has.HasCondition;
+import lib.cli.options.filter.has.HasConditionIndex;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataContainer;
 import lib.data.DataContainer.AbstractBuilder;
@@ -23,12 +23,12 @@ import lib.util.coordinate.CoordinateController;
  */
 public class HomozygousFilterFactory 
 extends AbstractFilterFactory 
-implements HasCondition {
+implements HasConditionIndex {
 
 	public static final char FILTER = 'H';
 	
 	// which condition is required to be homozygous
-	private int condI;
+	private int conditionIndex;
 	private final Fetcher<BaseCallCount> bccFetcher;
 	
 	public HomozygousFilterFactory(
@@ -36,7 +36,7 @@ implements HasCondition {
 		
 		super(getOptionBuilder().build());
 				
-		condI 				= -1;
+		conditionIndex 				= -1;
 		getACOption().add(new ConditionOption(this, conditionSize));
 		this.bccFetcher 			= bccFetcher;
 	}
@@ -51,7 +51,7 @@ implements HasCondition {
 			CoordinateController coordinateController, 
 			ConditionContainer conditionContainer) {
 
-		return new HomozygousFilter(getID(), condI, bccFetcher);
+		return new HomozygousFilter(getID(), conditionIndex, bccFetcher);
 	}
 
 	@Override
@@ -75,13 +75,13 @@ implements HasCondition {
 	}
 
 	@Override
-	public int getCondition() {
-		return condI;
+	public int getConditionIndex() {
+		return conditionIndex;
 	}
 	
 	@Override
-	public void setCondition(int condition) {
-		this.condI = condition;
+	public void setConditionIndex(int conditionIndex) {
+		this.conditionIndex = conditionIndex;
 	}
 	
 }

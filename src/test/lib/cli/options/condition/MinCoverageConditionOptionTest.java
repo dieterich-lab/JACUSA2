@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.condition.AbstractConditionACOption;
+import lib.cli.options.condition.AbstractConditionOption;
 import lib.cli.options.condition.MinCoverageConditionOption;
 import lib.cli.parameter.ConditionParameter;
 
@@ -29,7 +29,7 @@ class MinCoverageConditionOptionTest extends AbstractConditionACOptionTest<Integ
 	public void testProcessGeneralFail() throws Exception {
 		final List<ConditionParameter> conditionParameters 	= 
 				createConditionParameters(2); 
-		final AbstractConditionACOption testInstance 		= 
+		final AbstractConditionOption testInstance 		= 
 				createGeneralTestInstance(conditionParameters);
 
 		// < 1
@@ -57,13 +57,13 @@ class MinCoverageConditionOptionTest extends AbstractConditionACOptionTest<Integ
 	
 	@Override
 	protected
-	AbstractConditionACOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
+	AbstractConditionOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
 		return new MinCoverageConditionOption(conditionParameters);
 	}
 	
 	@Override
 	protected
-	AbstractConditionACOption createIndividualTestInstance(ConditionParameter conditionParameter) {
+	AbstractConditionOption createIndividualTestInstance(ConditionParameter conditionParameter) {
 		return new MinCoverageConditionOption(conditionParameter);
 	}
 	

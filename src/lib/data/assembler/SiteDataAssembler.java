@@ -21,12 +21,12 @@ public class SiteDataAssembler implements DataAssembler {
 	private CACHE_STATUS cacheStatus;
 
 	public SiteDataAssembler(
-			final int replicateI,
+			final int replicateIndex,
 			final AbstractBuilderFactory builderFactory, 
 			final ConditionParameter conditionParameter,
 			final CacheContainer cacheContainer) {
 		
-		this.replicateI 	= replicateI;
+		this.replicateI 		= replicateIndex;
 		
 		this.builderFactory 	= builderFactory;
 		this.conditionParameter	= conditionParameter;

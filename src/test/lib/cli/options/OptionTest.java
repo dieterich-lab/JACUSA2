@@ -17,13 +17,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 
 /**
  * Tests @see lib.cli.options.AbstractACOption
  */
 @TestInstance(Lifecycle.PER_CLASS)
-public interface ACOptionTest<T> {
+public interface OptionTest<T> {
 
 	public static final String PATH = "src/test/lib/cli/options/";
 
@@ -33,7 +33,7 @@ public interface ACOptionTest<T> {
 		final CommandLineParser parser = new DefaultParser();
 		final Options options = new Options();
 		
-		final AbstractACOption testInstance = createTestInstance();
+		final AbstractOption testInstance = createTestInstance();
 		options.addOption(testInstance.getOption(false));
 		
 		final CommandLine cmd = parser.parse(options, line.split(" "));
@@ -93,7 +93,7 @@ public interface ACOptionTest<T> {
 			final Class<E> expectedType, 
 			final String line) throws Exception{
 		
-		final AbstractACOption testInstance	= createTestInstance();
+		final AbstractOption testInstance	= createTestInstance();
 		final Options options				= new Options();
 		options.addOption(testInstance.getOption(false));
 		final CommandLineParser parser		= new DefaultParser();
@@ -122,7 +122,7 @@ public interface ACOptionTest<T> {
 	
 	abstract Stream<Arguments> testProcess();
 	
-	abstract AbstractACOption createTestInstance();
+	abstract AbstractOption createTestInstance();
 	abstract T getActualValue();
 	
 }

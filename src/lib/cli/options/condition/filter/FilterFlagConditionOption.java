@@ -2,13 +2,13 @@ package lib.cli.options.condition.filter;
 
 import java.util.List;
 
-import lib.cli.options.condition.AbstractConditionACOption;
+import lib.cli.options.condition.AbstractConditionOption;
 import lib.cli.parameter.ConditionParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class FilterFlagConditionOption extends AbstractConditionACOption {
+public class FilterFlagConditionOption extends AbstractConditionOption {
 
 	private static final String OPT = "F";
 	private static final String LONG_OPT = "FLAG";
@@ -26,8 +26,8 @@ public class FilterFlagConditionOption extends AbstractConditionACOption {
 		String s = "";
 		
 		int filterFlags = getConditionParameter().getFilterFlags();
-		if (getcondI() >= 0) {
-			s = " for condition " + getcondI();
+		if (getConditionIndex() >= 0) {
+			s = " for condition " + getConditionIndex() + 1;
 		} else if (getConditionParameters().size() > 1) {
 			s = " for all conditions";
 		}

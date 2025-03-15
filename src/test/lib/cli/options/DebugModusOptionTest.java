@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.JACUSA;
 import jacusa.method.call.CallMethod;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.DebugModusOption;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
@@ -17,7 +17,7 @@ import lib.util.AbstractTool;
  */
 class DebugModusOptionTest
 extends AbstractGeneralParameterProvider
-implements ACOptionTest<Boolean> {
+implements OptionTest<Boolean> {
 
 	@SuppressWarnings("unused")
 	private AbstractTool tool;
@@ -39,7 +39,7 @@ implements ACOptionTest<Boolean> {
 	}
 	
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new DebugModusOption(getGeneralParamter(), method);
 	}
 	

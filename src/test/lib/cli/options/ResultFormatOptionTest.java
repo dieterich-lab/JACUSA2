@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.io.format.BED6resultFormat;
 import jacusa.io.format.call.VCFcallFormat;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.ResultFormatOption;
 import lib.cli.parameter.GeneralParameter;
 import lib.io.ResultFormat;
@@ -27,7 +27,7 @@ import test.utlis.TestUtils;
  */
 class ResultFormatOptionTest 
 extends AbstractGeneralParameterProvider
-implements ACOptionTest<Character> {
+implements OptionTest<Character> {
 	
 	@Test
 	@DisplayName("Test ResultFormatOption fails on wrong input")
@@ -75,7 +75,7 @@ implements ACOptionTest<Character> {
 	}
 
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		final GeneralParameter parameter = getGeneralParamter();
 		return new ResultFormatOption(parameter, getResultFormats(parameter));
 	}

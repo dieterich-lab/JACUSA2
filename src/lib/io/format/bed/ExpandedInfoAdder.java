@@ -59,10 +59,11 @@ public class ExpandedInfoAdder implements InfoAdder {
 		sb.append(parallelData.getCombPooledData().getAutoRefBase());
 		
 		// add result info
-		for (final String value : result.getResultInfo(valueIndex).getValues()) {
+		/* FIXME
+		 * for (final String value : result.getResultInfo(valueIndex).getValues()) {
 			sb.append(InputOutput.FIELD_SEP);
 			sb.append(value);
-		}
+		}*/
 	}
 
 	protected void setup() {

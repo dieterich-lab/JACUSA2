@@ -5,6 +5,7 @@ import lib.data.count.PileupCount;
 import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
+import lib.util.ExtendedInfo;
 
 /**
  * This is a dummy statistic... 
@@ -20,10 +21,11 @@ class CoverageStatistic extends AbstractStat {
 	public Result calculate(final ParallelData parallelData) {
 		final PileupCount pileupCount = parallelData.getCombPooledData().getPileupCount();
 		final int coverage = pileupCount.getBCC().getCoverage();
-		return new OneStatResult(coverage, parallelData);
+		final ExtendedInfo info = new ExtendedInfo(parallelData.getReplicates());
+		return new OneStatResult(coverage, parallelData, info);
 	}
 
 	@Override
-	protected void processAfterCalculate(final Result statResult) {}
+	protected void postProcess(final Result statResult) {}
 	
 }

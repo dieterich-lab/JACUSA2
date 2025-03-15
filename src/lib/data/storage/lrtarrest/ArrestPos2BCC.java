@@ -234,7 +234,7 @@ implements Serializable, Data<ArrestPos2BCC> {
 		return sb.toString();
 	}
 
-	// FIXME add new field cBcc
+	// FIXME add new field cBcc - what does it mean?
 	public static class Parser implements lib.util.Parser<ArrestPos2BCC> {
 		
 		public static final char POS_SEP = ',';

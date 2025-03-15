@@ -20,7 +20,7 @@ extends AbstractWorker {
 	
 	@Override
 	protected Result process(final ParallelData parallelData) {
-		Result result = stat.filter(parallelData); 
+		Result result = stat.process(parallelData); 
 		if (result == null) {
 			return null;
 		}

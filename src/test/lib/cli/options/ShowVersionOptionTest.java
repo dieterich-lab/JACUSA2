@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.VersionInfo;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.ShowVersionOption;
 import lib.util.AbstractTool;
 
@@ -17,7 +17,7 @@ import lib.util.AbstractTool;
  * Tests @see lib.cli.options.ShowVersionOption#process(org.apache.commons.cli.CommandLine)
  */
 class ShowVersionOptionTest 
-implements ACOptionTest<String> {
+implements OptionTest<String> {
 
 	private ByteArrayOutputStream myOut;
 	@SuppressWarnings("unused")
@@ -50,7 +50,7 @@ implements ACOptionTest<String> {
 	}
 	
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new ShowVersionOption();
 	}
 	

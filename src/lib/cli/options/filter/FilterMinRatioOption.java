@@ -3,10 +3,10 @@ package lib.cli.options.filter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.filter.has.HasFilterMinRatio;
 
-public class FilterMinRatioOption extends AbstractACOption {
+public class FilterMinRatioOption extends AbstractOption {
 
 	private final HasFilterMinRatio hasFilterMinRatio;
 	

@@ -17,7 +17,7 @@ import lib.util.LibraryType;
 
 public class ConditionParameter {
 	
-	private int condI;
+	private final int conditionIndex;
 	
 	private LibraryType libraryType;
 	
@@ -39,23 +39,23 @@ public class ConditionParameter {
 	// path to BAM files
 	private String[] recordFilenames;
 	
-	public ConditionParameter(final int condI) {
-		this.condI = condI; 
-		libraryType = LibraryType.UNSTRANDED;
+	public ConditionParameter(final int conditionIndex) {
+		this.conditionIndex 	= conditionIndex; 
+		libraryType 			= LibraryType.UNSTRANDED;
 
-		maxDepth 		= -1;
+		maxDepth 				= -1;
 		
-		minBASQ			= Byte.parseByte("20");
-		minMAPQ 		= 20;
+		minBASQ					= Byte.parseByte("20");
+		minMAPQ 				= 20;
 		
-		minCoverage 	= 5;
+		minCoverage 			= 5;
 		
-		filterFlags 	= 0;
-		retainFlags	 	= 0;
+		filterFlags 			= 0;
+		retainFlags	 			= 0;
 		
-		samTagFilters 	= new ArrayList<>();
+		samTagFilters 			= new ArrayList<>();
 		
-		recordFilenames = new String[0];
+		recordFilenames 		= new String[0];
 	}
 	
 	/**
@@ -213,9 +213,9 @@ public class ConditionParameter {
 		return false;
 	}
 
-	// 1-based
-	public int getcondI() {
-		return condI;
+	// 0-based
+	public int getConditionIndex() {
+		return conditionIndex;
 	}
 	
 	public LibraryType getLibraryType() {

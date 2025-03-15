@@ -24,7 +24,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.util.LibraryType;
@@ -102,24 +102,24 @@ class nConditionLibraryTypeOptionTest {
 						LibraryType.RF_FIRSTSTRAND,
 						LibraryType.FR_SECONDSTRAND));
 		
-		for (int condI = 1; condI <= conditions; ++condI) {
-			final ConditionParameter conditionParameter = new ConditionParameter(condI);
+		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
+			final ConditionParameter conditionParameter = new ConditionParameter(conditionIndex);
 			conditionParameters.add(conditionParameter);
 			testInstances.add(new nConditionLibraryTypeOption(
 					getAvailableLibType(), conditionParameter, generalParameter));
 			testInstances.add(new nConditionLibraryTypeOption(availableLibType, conditionParameters, generalParameter));
-			if (libraryTypes.get(condI - 1) == null) {
+			if (libraryTypes.get(conditionIndex - 1) == null) {
 				expected.add(conditionParameter.getLibraryType());
 			} else {
-				expected.add(libraryTypes.get(condI - 1));
+				expected.add(libraryTypes.get(conditionIndex));
 				if (sb.length() > 0) {
 					sb.append(' ');
 				}
 				sb.append('-');
 				sb.append(nConditionLibraryTypeOption.OPT);
-				sb.append((condI));
+				sb.append((conditionIndex + 1));
 				sb.append(' ');
-				sb.append(libraryTypes.get(condI - 1));
+				sb.append(libraryTypes.get(conditionIndex ));
 			}
 		}
 		
@@ -264,7 +264,7 @@ class nConditionLibraryTypeOptionTest {
 	
 	private Options getOptions(final List<nConditionLibraryTypeOption> acOptions) {
 		final Options options = new Options();
-		for (final AbstractACOption acOption : acOptions) {
+		for (final AbstractOption acOption : acOptions) {
 			options.addOption(acOption.getOption(false));
 		}
 		return options;

@@ -5,7 +5,7 @@ import lib.estimate.MinkaParameter;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.FastEstimationResult;
 import lib.stat.nominal.NominalData;
-import lib.util.Info;
+import lib.util.ExtendedInfo;
 import test.lib.stat.dirmult.NominalDataArgumentConverter;
 import test.utlis.DoubleArrayArgumentConverter;
 
@@ -47,15 +47,16 @@ class MinkaEstimateDirMultAlphaTest {
 			@ConvertWith(DoubleArrayArgumentConverter.class) double[] expectedAlpha, 
 			double expectedLL) {
 		
-		final EstimationContainer estContainer = 
+		final EstimationContainer estimationContainer = 
 				new FastEstimationResult("TEST", nominalData, minkaParameter.getMaxIterations());  
-		estContainer.add(initAlpha, Double.NaN);
-		testInstance.maximizeLogLikelihood(estContainer, new Info(), false);
+		estimationContainer.add(initAlpha, Double.NaN);
+		final ExtendedInfo resultInfo = new ExtendedInfo(null); // FIXME one replicate
+		testInstance.maximizeLogLikelihood(estimationContainer, resultInfo, false);
 		
-		final double[] actualAlpha = estContainer.getAlpha();
+		final double[] actualAlpha = estimationContainer.getAlpha();
 		assertArrayEquals(expectedAlpha, actualAlpha, DELTA_ALPHA);
 		
-		final double calculatedLL = estContainer.getLogLikelihood();
+		final double calculatedLL = estimationContainer.getLogLikelihood();
 		assertEquals(expectedLL, calculatedLL, DELTA_LL);
 	}
 	

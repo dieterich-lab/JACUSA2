@@ -32,7 +32,7 @@ public class DefaultEstimationContainer implements EstimationContainer {
 	}
 	
 	@Override
-	public String getId() {
+	public String getID() {
 		return id;
 	}
 	

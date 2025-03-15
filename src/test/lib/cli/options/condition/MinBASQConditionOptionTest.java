@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.condition.AbstractConditionACOption;
+import lib.cli.options.condition.AbstractConditionOption;
 import lib.cli.options.condition.MinBASQConditionOption;
 import lib.cli.parameter.ConditionParameter;
 import lib.phred2prob.Phred2Prob;
@@ -22,7 +22,7 @@ class MinBASQConditionOptionTest extends AbstractConditionACOptionTest<Byte> {
 	void testProcessGeneralFail() throws Exception {
 		final List<ConditionParameter> conditionParameters 	=
 				createConditionParameters(2); 
-		final AbstractConditionACOption testInstance 		= 
+		final AbstractConditionOption testInstance 		= 
 				createGeneralTestInstance(conditionParameters);
 		
 		// < 0
@@ -78,13 +78,13 @@ class MinBASQConditionOptionTest extends AbstractConditionACOptionTest<Byte> {
 	
 	@Override
 	protected
-	AbstractConditionACOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
+	AbstractConditionOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
 		return new MinBASQConditionOption(conditionParameters);
 	}
 	
 	@Override
 	protected
-	AbstractConditionACOption createIndividualTestInstance(ConditionParameter conditionParameter) {
+	AbstractConditionOption createIndividualTestInstance(ConditionParameter conditionParameter) {
 		return new MinBASQConditionOption(conditionParameter);
 	}
 	

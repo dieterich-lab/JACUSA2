@@ -12,7 +12,7 @@ import lib.stat.dirmult.EstimateDirMult;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.EstimationContainerProvider;
 import lib.stat.estimation.provider.pileup.RobustEstimationPileupProvider;
-import lib.util.Info;
+import lib.util.ExtendedInfo;
 import lib.util.Util;
 import lib.worker.AbstractWorker;
 
@@ -41,14 +41,14 @@ extends AbstractWorker {
 
 	@Override
 	protected Result process(final ParallelData parallelData) {
-		final Result result = stat.filter(parallelData);
+		final Result result = stat.process(parallelData);
 		
 		if (validator.isValid(parallelData)) {
 			// store variant call result in info field
-			final Info resultInfo = result.getResultInfo();
-			final EstimationContainer[] estContainers = estContainerProv.convert(parallelData);
-			final double score = dirMult.getScore(estContainers);
-			resultInfo.add(INFO_VARIANT_SCORE, Util.format(score));
+			final ExtendedInfo resultInfo = result.getResultInfo();
+			final EstimationContainer[] estimationContainers = estContainerProv.convert(parallelData);
+			final double score = dirMult.getScore(estimationContainers, resultInfo);
+			resultInfo.addSite(INFO_VARIANT_SCORE, Util.format(score));
 		}
 		
 		return result;

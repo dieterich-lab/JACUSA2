@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import lib.cli.options.condition.AbstractConditionACOption;
+import lib.cli.options.condition.AbstractConditionOption;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.util.LibraryType;
@@ -18,7 +18,7 @@ import org.apache.commons.cli.Option;
  * SE and PE:
  * UNSTRANDED, RF_FIRSTSTRAND, and FR_SECONDSTRAND - 
  */
-public class nConditionLibraryTypeOption extends AbstractConditionACOption {
+public class nConditionLibraryTypeOption extends AbstractConditionOption {
 
 	public static final String OPT 		= "P";
 	public static final String LONG_OPT = "lib-type";
@@ -49,10 +49,10 @@ public class nConditionLibraryTypeOption extends AbstractConditionACOption {
 	@Override
 	public Option getOption(final boolean printExtendedHelp) {
 		String desc = "Choose the library type";
-		if (generalParameter.getConditionsSize() >= 1 && getcondI() == -1) {
+		if (generalParameter.getConditionsSize() >= 1 && getConditionIndex() == -1) {
 			desc += " for all conditions";
 		} else {
-			desc += " for condition " + getcondI();
+			desc += " for condition " + getConditionIndex() + 1;
 		}
 		desc += ":\n" + getAvailableValues(availableLibTypes) + 
 				"default: " + LibraryType.UNSTRANDED;

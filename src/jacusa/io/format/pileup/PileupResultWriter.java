@@ -48,8 +48,8 @@ public class PileupResultWriter extends AbstractResultFileWriter {
 		sb.append(parallelData.getCoordinate().getStrand().character());
 		
 		// add pileup data
-		for (int condI = 0; condI < parallelData.getConditions(); condI++) {
-			addPileupData(sb, parallelData.getData(condI));
+		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
+			addPileupData(sb, parallelData.getData(conditionIndex));
 		}
 
 		return sb.toString();		

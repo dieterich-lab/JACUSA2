@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.BedCoordinatesOption;
 
 /**
@@ -14,7 +14,7 @@ import lib.cli.options.BedCoordinatesOption;
  */
 class BedCoordinatesOptionTest 
 extends AbstractGeneralParameterProvider
-implements ACOptionTest<String> {
+implements OptionTest<String> {
 	
 	// TODO add tests that this is a BED file
 	@Test
@@ -38,7 +38,7 @@ implements ACOptionTest<String> {
 	}
 	
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new BedCoordinatesOption(getGeneralParamter()); 
 	}
 	

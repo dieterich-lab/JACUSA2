@@ -6,7 +6,7 @@ import org.apache.commons.cli.Option;
 /**
  * Represents an CLI option that can added to parameterize a method.
  */
-public abstract class AbstractACOption {
+public abstract class AbstractOption {
 	
 	// will be shown to the user as an option: -opt
 	private String opt; 
@@ -15,7 +15,7 @@ public abstract class AbstractACOption {
 	// psst, this should be a hidden flag...
 	private boolean hide;
 	
-	public AbstractACOption(final String opt, final String longOpt) {
+	public AbstractOption(final String opt, final String longOpt) {
 		this.opt 		= opt;
 		this.longOpt 	= longOpt;
 	}

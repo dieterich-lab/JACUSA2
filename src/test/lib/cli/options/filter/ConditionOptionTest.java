@@ -8,20 +8,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.filter.ConditionOption;
-import lib.cli.options.filter.has.HasCondition;
-import test.lib.cli.options.ACOptionTest;
+import lib.cli.options.filter.has.HasConditionIndex;
+import test.lib.cli.options.OptionTest;
 
 /**
  * Tests @see lib.cli.options.filter.ConditionOption#process(org.apache.commons.cli.CommandLine)
  */
-class ConditionOptionTest 
-implements ACOptionTest<Integer> {
+class ConditionOptionTest implements OptionTest<Integer> {
 	
 	private final int conditionSize;
 	
-	private HasCondition hasCondition;
+	private HasConditionIndex hasCondition;
 	
 	public ConditionOptionTest() {
 		conditionSize = 4;
@@ -44,13 +43,13 @@ implements ACOptionTest<Integer> {
 	}
 	
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new ConditionOption(hasCondition, conditionSize);
 	}
 	
 	@Override
 	public Integer getActualValue() {
-		return hasCondition.getCondition();
+		return hasCondition.getConditionIndex();
 	}
 	
 	@Override
@@ -65,22 +64,22 @@ implements ACOptionTest<Integer> {
 				condition - 1);
 	}
 
-	private class DefaultHasCondition implements HasCondition {
+	private class DefaultHasCondition implements HasConditionIndex {
 		
-		private int condition;
+		private int conditionIndex;
 		
-		public DefaultHasCondition(final int condition) {
-			this.condition = condition;
+		public DefaultHasCondition(final int conditionIndex) {
+			this.conditionIndex = conditionIndex;
 		}
 		
 		@Override
-		public int getCondition() {
-			return condition;
+		public int getConditionIndex() {
+			return conditionIndex;
 		}
 		
 		@Override
-		public void setCondition(int condition) {
-			this.condition = condition;
+		public void setConditionIndex(int condition) {
+			this.conditionIndex = condition;
 		}
 		
 	}

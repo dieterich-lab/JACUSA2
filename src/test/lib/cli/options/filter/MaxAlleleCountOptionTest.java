@@ -8,16 +8,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.filter.MaxAlleleCountOption;
 import lib.cli.options.filter.has.HasMaxAlleleCount;
 import lib.util.Base;
-import test.lib.cli.options.ACOptionTest;
+import test.lib.cli.options.OptionTest;
 
 /**
  * Tests @see lib.cli.options.filter.MaxAlleleCountOption#process(org.apache.commons.cli.CommandLine)
  */
-class MaxAlleleCountOptionTest implements ACOptionTest<Integer> {
+class MaxAlleleCountOptionTest implements OptionTest<Integer> {
 
 	private HasMaxAlleleCount hasMaxAlleleCount;
 	
@@ -51,7 +51,7 @@ class MaxAlleleCountOptionTest implements ACOptionTest<Integer> {
 	}
 
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new MaxAlleleCountOption(hasMaxAlleleCount);
 	}
 

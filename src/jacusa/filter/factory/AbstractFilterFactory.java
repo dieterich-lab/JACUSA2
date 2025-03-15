@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.commons.cli.Option;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.util.CLIUtil;
 
 /**
@@ -16,7 +16,7 @@ public abstract class AbstractFilterFactory implements FilterFactory {
 
 	private final Option option;
 	// holds any potential options for this filter factory
-	private final List<AbstractACOption> acOptions;
+	private final List<AbstractOption> acOptions;
 	
 	public AbstractFilterFactory(final Option option) {
 		this.option = option;
@@ -29,7 +29,7 @@ public abstract class AbstractFilterFactory implements FilterFactory {
 	}
 
 	@Override
-	public List<AbstractACOption> getACOption() {
+	public List<AbstractOption> getACOption() {
 		return acOptions;
 	}
 	

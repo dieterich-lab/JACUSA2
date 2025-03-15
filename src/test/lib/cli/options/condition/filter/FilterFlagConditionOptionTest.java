@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.condition.AbstractConditionACOption;
+import lib.cli.options.condition.AbstractConditionOption;
 import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.parameter.ConditionParameter;
 import test.lib.cli.options.condition.AbstractConditionACOptionTest;
@@ -30,7 +30,7 @@ public class FilterFlagConditionOptionTest extends AbstractConditionACOptionTest
 	void testProcessGeneralFail() throws Exception {
 		final List<ConditionParameter> conditionParameters 	= 
 				createConditionParameters(2); 
-		final AbstractConditionACOption testInstance 		= 
+		final AbstractConditionOption testInstance 		= 
 				createGeneralTestInstance(conditionParameters);
 
 		// < 0
@@ -56,12 +56,12 @@ public class FilterFlagConditionOptionTest extends AbstractConditionACOptionTest
 	}
 	
 	@Override
-	protected AbstractConditionACOption createIndividualTestInstance(ConditionParameter conditionParameter) {
+	protected AbstractConditionOption createIndividualTestInstance(ConditionParameter conditionParameter) {
 		return new FilterFlagConditionOption(conditionParameter);
 	}
 
 	@Override
-	protected AbstractConditionACOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
+	protected AbstractConditionOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
 		return new FilterFlagConditionOption(conditionParameters);
 	}
 	

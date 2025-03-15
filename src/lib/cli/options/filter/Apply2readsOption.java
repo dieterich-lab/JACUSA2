@@ -7,7 +7,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.filter.has.HasApply2reads;
 import lib.io.InputOutput;
 
@@ -17,7 +17,7 @@ import lib.io.InputOutput;
  * This is useful in the context of artefact filtering for rt-arrest and lrt-arrest
  * methods. 
  */
-public class Apply2readsOption extends AbstractACOption {
+public class Apply2readsOption extends AbstractOption {
 
 	private final HasApply2reads hasApply2reads;
 	

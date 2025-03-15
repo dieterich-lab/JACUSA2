@@ -8,17 +8,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
 import htsjdk.samtools.SAMException;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.filter.FileNameOption;
 import lib.cli.options.filter.has.HasFileName;
-import test.lib.cli.options.ACOptionTest;
+import test.lib.cli.options.OptionTest;
 
 /**
  * Tests @see lib.cli.options.filter.FileNameOption#process(org.apache.commons.cli.CommandLine)
  */
 // TODO add test for codec
 public class FileNameOptionTest 
-implements ACOptionTest<String> {
+implements OptionTest<String> {
 
 	// TODO remove
 	public static final String PATH = "src/test/jacusa/filter/factory/excludesitefilterfactory/";
@@ -50,7 +50,7 @@ implements ACOptionTest<String> {
 	}
 
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new FileNameOption(hasFileName);
 	}
 	

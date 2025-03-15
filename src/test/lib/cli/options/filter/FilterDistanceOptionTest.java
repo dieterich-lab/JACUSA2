@@ -8,16 +8,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.filter.factory.basecall.AbstractBCCfilterFactory;
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.filter.FilterDistanceOption;
 import lib.cli.options.filter.has.HasFilterDistance;
-import test.lib.cli.options.ACOptionTest;
+import test.lib.cli.options.OptionTest;
 
 /**
  * Tests @see lib.cli.options.filter.FilterDistanceOption#process(org.apache.commons.cli.CommandLine)o  
  */
 class FilterDistanceOptionTest
-implements ACOptionTest<Integer> {
+implements OptionTest<Integer> {
 
 	private TestHasFilterDistance hasFilterDistance;
 	
@@ -48,7 +48,7 @@ implements ACOptionTest<Integer> {
 	}
 	
 	@Override
-	public AbstractACOption createTestInstance() {
+	public AbstractOption createTestInstance() {
 		return new FilterDistanceOption(hasFilterDistance);
 	}
 	

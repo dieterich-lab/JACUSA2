@@ -3,10 +3,10 @@ package lib.cli.options.filter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-import lib.cli.options.AbstractACOption;
+import lib.cli.options.AbstractOption;
 import lib.cli.options.filter.has.HasHomopolymerLength;
 
-public class HomopolymerLengthOption extends AbstractACOption {
+public class HomopolymerLengthOption extends AbstractOption {
 
 	private final HasHomopolymerLength hasHomopolymerLength;
 	

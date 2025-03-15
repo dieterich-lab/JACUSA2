@@ -9,6 +9,7 @@ import lib.stat.AbstractStat;
 import lib.stat.dirmult.EstimateDirMult;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.arrest.AbstractRTarrestEstimationCountProvider;
+import lib.util.ExtendedInfo;
 import lib.util.Util;
 
 public class RTarrestStat extends AbstractStat {
@@ -36,11 +37,11 @@ public class RTarrestStat extends AbstractStat {
 	}
 
 	@Override
-	protected void processAfterCalculate(final Result statResult) {
+	protected void postProcess(final Result result) {
 		if (dirMultPrm.isShowAlpha()) {
-			dirMult.addShowAlpha();
+			dirMult.addShowAlpha(result.getResultInfo());
 		}
-		dirMult.addStatResultInfo(statResult.getResultInfo());
+		dirMult.addStatResultInfo(result.getResultInfo());
 	}
 	
 	private double getPValue(final double lrt) {
@@ -49,17 +50,18 @@ public class RTarrestStat extends AbstractStat {
 	
 	@Override
 	public Result calculate(ParallelData parallelData) {
-		final EstimationContainer[] estContainers = estContainerProv.convert(parallelData);
-		final double lrt 	= dirMult.getLRT(estContainers);
+		final EstimationContainer[] estimationContainers = estContainerProv.convert(parallelData);
+		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates()); 
+		final double lrt 	= dirMult.getLRT(estimationContainers, resultInfo);
 		final double pvalue = getPValue(lrt);
-		final Result result = new OneStatResult(pvalue, parallelData);
-		result.getResultInfo().add(ARREST_SCORE, Util.format(lrt));
+		final Result result = new OneStatResult(pvalue, parallelData, resultInfo);
+		result.getResultInfo().addSite(ARREST_SCORE, Util.format(lrt));
 		return result;
 	}
 	
 	@Override
 	public boolean filter(final Result statResult) {
-		final double statValue = statResult.getStat();
+		final double statValue = statResult.getScore();
 
 		if (Double.isNaN(threshold)) {
 			return false;

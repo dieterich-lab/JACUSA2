@@ -25,20 +25,20 @@ public class RobustRTarrestEstimationCountProvider extends AbstractRTarrestEstim
 			return orginalCounts;
 		}
 		
-		int keepcondI 		= -1;
-		int changecondI 	= -1;
+		int keepConditionIndex 		= -1;
+		int changeConditionIndex 	= -1;
 		
 		// determine which condition has the variant base
 		if (both1 && ! both2) { // condition1
-			keepcondI 		= 0;
-			changecondI 	= 1;
+			keepConditionIndex 		= 0;
+			changeConditionIndex 	= 1;
 		} else if (both2 && ! both1) { // condition2
-			keepcondI 		= 1;
-			changecondI 	= 0;
+			keepConditionIndex 		= 1;
+			changeConditionIndex 	= 0;
 		}
 		
-		if (keepcondI >= 0 && 
-				changecondI >= 0) {
+		if (keepConditionIndex >= 0 && 
+				changeConditionIndex >= 0) {
 			READ_INDEX exclusiveIndex = READ_INDEX.THROUGH;
 			if (count1.through > 0 && count2.through > 0) {
 				exclusiveIndex = READ_INDEX.ARREST;
@@ -46,10 +46,10 @@ public class RobustRTarrestEstimationCountProvider extends AbstractRTarrestEstim
 
 			// container for adjusted parallelPileup
 			final List<List<Count>> modifiedCounts = Arrays.asList(null, null);
-			modifiedCounts.set(keepcondI, orginalCounts.get(keepcondI));
+			modifiedCounts.set(keepConditionIndex, orginalCounts.get(keepConditionIndex));
 			modifiedCounts.set(
-					changecondI, 
-					flat(orginalCounts.get(keepcondI), exclusiveIndex));
+					changeConditionIndex, 
+					flat(orginalCounts.get(keepConditionIndex), exclusiveIndex));
 			return modifiedCounts;
 		}
 		

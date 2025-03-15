@@ -155,7 +155,7 @@ public class MapBaseCallQualityCount implements BaseCallQualityCount {
 
 	@Override
 	public String toString() {
-		return toString(this); // TODO check
+		return toString(this);
 	}
 
 	@Override

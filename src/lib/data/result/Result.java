@@ -13,7 +13,7 @@ import lib.data.DefaultDataContainer;
 import lib.data.ParallelData;
 import lib.data.has.HasParallelData;
 import lib.util.Base;
-import lib.util.Info;
+import lib.util.ExtendedInfo;
 import lib.util.LibraryType;
 import lib.util.Parser;
 import lib.util.coordinate.Coordinate;
@@ -25,20 +25,21 @@ public interface Result extends HasParallelData, Serializable {
 	
 	public static int TOTAL = -1;
 	
-	Info getResultInfo();
-	Info getResultInfo(int valueIndex);
+	ExtendedInfo getResultInfo();
+	ExtendedInfo getResultInfo(int valueIndex);
 	
-	Info getFilterInfo();
-	Info getFilterInfo(int valueIndex);
+	ExtendedInfo getFilterInfo();
+	ExtendedInfo getFilterInfo(int valueIndex);
 
+	@Deprecated
 	void setFiltered(boolean isFiltered);
 	boolean isFiltered();
 
 	SortedSet<Integer> getValuesIndex();
 	int getValueSize();
 	
-	double getStat();
-	double getStat(int valueIndex);
+	double getScore();
+	double getScore(int valueIndex);
 	
 public static class ResultBuilder implements lib.util.Builder<Result> {
 		
@@ -63,9 +64,8 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 			
 			final int conditions = libraryTypes.size();
 			builders = new ArrayList<>(conditions);
-			for (int condI = 0; condI < conditions; ++condI) {
-				final List<DataContainer.AbstractBuilder> replicates = 
-						new ArrayList<>();
+			for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
+				final List<DataContainer.AbstractBuilder> replicates = new ArrayList<>();
 				builders.add(replicates);
 			}
 		}
@@ -106,16 +106,17 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 			final ParallelData.Builder pdBuilder = 
 					new ParallelData.Builder(getConditions(), replicates);
 
-			for (int condition = 0; condition < getConditions(); ++condition) {
-				for (int replicate = 0; replicate < replicates.get(condition); ++replicate) {
+			for (int conditionIndex = 0; conditionIndex < getConditions(); ++conditionIndex) {
+				for (int replicateIndex = 0; replicateIndex < replicates.get(conditionIndex); ++replicateIndex) {
 					final DataContainer dataContainer = 
-							builders.get(condition).get(replicate).build();
-					pdBuilder.withReplicate(condition, replicate, dataContainer);
+							builders.get(conditionIndex).get(replicateIndex).build();
+					pdBuilder.withReplicate(conditionIndex, replicateIndex, dataContainer);
 				}
 			}
 			
-			final ParallelData parallelData = pdBuilder.build();  
-			return new OneStatResult(Double.NaN, parallelData);
+			final ParallelData parallelData = pdBuilder.build();
+			final ExtendedInfo info = new ExtendedInfo(parallelData.getReplicates());
+			return new OneStatResult(Double.NaN, parallelData, info);
 		}
 		
 	}

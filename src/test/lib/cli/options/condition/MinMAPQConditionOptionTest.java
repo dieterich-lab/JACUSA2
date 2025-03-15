@@ -7,8 +7,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.condition.AbstractConditionACOption;
-import lib.cli.options.condition.MinMAPQConditionOption;
+import lib.cli.options.condition.AbstractConditionOption;
+import lib.cli.options.condition.MinMAPQconditionOption;
 import lib.cli.parameter.ConditionParameter;
 
 /**
@@ -29,7 +29,7 @@ class MinMAPQConditionOptionTest extends AbstractConditionACOptionTest<Integer> 
 	public void testProcessGeneralFail() throws Exception {
 		final List<ConditionParameter> conditionParameters 	= 
 				createConditionParameters(2); 
-		final AbstractConditionACOption testInstance 		= 
+		final AbstractConditionOption testInstance 		= 
 				createGeneralTestInstance(conditionParameters);
 
 		// < 1
@@ -59,14 +59,14 @@ class MinMAPQConditionOptionTest extends AbstractConditionACOptionTest<Integer> 
 	
 	@Override
 	protected
-	AbstractConditionACOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
-		return new MinMAPQConditionOption(conditionParameters);
+	AbstractConditionOption createGeneralTestInstance(List<ConditionParameter> conditionParameters) {
+		return new MinMAPQconditionOption(conditionParameters);
 	}
 	
 	@Override
 	protected
-	AbstractConditionACOption createIndividualTestInstance(ConditionParameter conditionParameter) {
-		return new MinMAPQConditionOption(conditionParameter);
+	AbstractConditionOption createIndividualTestInstance(ConditionParameter conditionParameter) {
+		return new MinMAPQconditionOption(conditionParameter);
 	}
 	
 	@Override

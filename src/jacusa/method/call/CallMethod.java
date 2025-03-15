@@ -17,9 +17,9 @@ import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import jacusa.io.format.BED6extendedResultFormat;
 import jacusa.io.format.BED6resultFormat;
 import jacusa.io.format.call.VCFcallFormat;
-import jacusa.io.format.extensions.DeletionRatio;
-import jacusa.io.format.extensions.InsertionRatio;
-import jacusa.io.format.extensions.ParallelDataToString;
+import jacusa.io.format.modifyresult.AddDeletionRatio;
+import jacusa.io.format.modifyresult.AddInsertionRatio;
+import jacusa.io.format.modifyresult.ModifyResult;
 import jacusa.worker.CallWorker;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ import lib.cli.options.WindowSizeOption;
 import lib.cli.options.condition.MaxDepthConditionOption;
 import lib.cli.options.condition.MinBASQConditionOption;
 import lib.cli.options.condition.MinCoverageConditionOption;
-import lib.cli.options.condition.MinMAPQConditionOption;
+import lib.cli.options.condition.MinMAPQconditionOption;
 import lib.cli.options.condition.filter.FilterFlagConditionOption;
 import lib.cli.options.condition.filter.FilterNHsamTagConditionOption;
 import lib.cli.options.condition.filter.FilterNMsamTagConditionOption;
@@ -136,7 +136,7 @@ public class CallMethod extends AbstractMethod {
 	@Override
 	protected void initConditionACOptions() {
 		// for all conditions
-		addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters()));
+		addACOption(new MinMAPQconditionOption(getParameter().getConditionParameters()));
 		addACOption(new MinBASQConditionOption(getParameter().getConditionParameters()));
 		addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters()));
 		addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters()));
@@ -156,19 +156,19 @@ public class CallMethod extends AbstractMethod {
 		
 		// only add contions specific options when there are more than 1 conditions
 		if (getParameter().getConditionsSize() > 1) {
-			for (int condI = 0; condI < getParameter().getConditionsSize(); ++condI) {
-				addACOption(new MinMAPQConditionOption(getParameter().getConditionParameters().get(condI)));
-				addACOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(condI)));
-				addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(condI)));
-				addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters().get(condI)));
-				addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(condI)));
+			for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
+				addACOption(new MinMAPQconditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 				
-				addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(condI)));
-				addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(condI)));
+				addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 				
 				addACOption(new nConditionLibraryTypeOption(
 						availableLibType,
-						getParameter().getConditionParameters().get(condI),
+						getParameter().getConditionParameters().get(conditionIndex),
 						getParameter()));
 			}
 		}
@@ -227,10 +227,10 @@ public class CallMethod extends AbstractMethod {
 		resultFormat = new BED6extendedResultFormat(
 				getName(),
 				getParameter(),
-				new HashSet<ParallelDataToString>(
+				new HashSet<ModifyResult>(
 						Arrays.asList(
-								new InsertionRatio(),
-								new DeletionRatio())));
+								new AddInsertionRatio(),
+								new AddDeletionRatio())));
 		resultFormats.put(resultFormat.getID(), resultFormat);
 
 		resultFormat = new VCFcallFormat(getParameter());

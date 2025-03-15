@@ -2,14 +2,14 @@ package lib.cli.options.condition.filter;
 
 import java.util.List;
 
-import lib.cli.options.condition.AbstractConditionACOption;
+import lib.cli.options.condition.AbstractConditionOption;
 import lib.cli.options.condition.filter.samtag.MaxValueSamTagFilter;
 import lib.cli.parameter.ConditionParameter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-abstract class AbstractFilterSamTagConditionOption extends AbstractConditionACOption {
+abstract class AbstractFilterSamTagConditionOption extends AbstractConditionOption {
 
 	private static final String LONG_OPT = "filter";
 	private String tag;
@@ -28,8 +28,8 @@ abstract class AbstractFilterSamTagConditionOption extends AbstractConditionACOp
 	public Option getOption(final boolean printExtendedHelp) {
 
 		String s = "Max " + tag + "-VALUE for SAM tag " + tag;
-		if (getcondI() >= 0) {
-			s += " for condition " + getcondI();
+		if (getConditionIndex() >= 0) {
+			s += " for condition " + getConditionIndex() + 1;
 		} else {
 			s += " for all conditions";
 		}

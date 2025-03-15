@@ -5,7 +5,7 @@ import lib.cli.parameter.GeneralParameter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class ShowInsertionStartCountOption extends AbstractACOption {
+public class ShowInsertionStartCountOption extends AbstractOption {
 
 	private final GeneralParameter parameter;
 	

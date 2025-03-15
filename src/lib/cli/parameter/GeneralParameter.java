@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import jacusa.cli.parameters.HasConditionParameter;
@@ -40,10 +42,7 @@ implements HasConditionParameter {
 
 	private String filteredFilename;
 	
-	private boolean showDeletionCount;
-	private boolean showInsertionCount;
-	private boolean showInsertionStartCount;
-	private boolean showAllSites;
+	private final Map<ShowOptions, Boolean> showMap;
 	
 	// debug flag
 	private boolean debug;
@@ -57,12 +56,20 @@ implements HasConditionParameter {
 		inputBedFilename	= "";
 		conditionParameters	= new ArrayList<>(2);
 
-		filterConf		= new FilterConfig();
+		filterConf			= new FilterConfig();
 		
 		filteredFilename	= null;
 		
-		showDeletionCount	= false;
-		showAllSites = false;
+		showMap 			= new HashMap<ShowOptions, Boolean>(8);
+		showMap.put(ShowOptions.DELETION_COUNT, false);
+		showMap.put(ShowOptions.INSERTION_COUNT, false); // TODO
+		showMap.put(ShowOptions.INSERTION_START_COUNT, false); // TODO
+		showMap.put(ShowOptions.NON_REFERENCE_COUNT, false);
+		showMap.put(ShowOptions.DELETION_RATIO, false);
+		showMap.put(ShowOptions.INSERTION_RATIO, false);
+		showMap.put(ShowOptions.NON_REFERENCE_RATIO, false);
+		showMap.put(ShowOptions.SHOW_ALL_SITES, false);
+		showMap.put(ShowOptions.MODIFICATION_COUNT, false);
 		
 		debug				= false;
 	}
@@ -70,13 +77,13 @@ implements HasConditionParameter {
 	public GeneralParameter(final int conditionSize) {
 		this();
 		
-		for (int condI = 1; condI <= conditionSize; condI++) {
-			conditionParameters.add(new ConditionParameter(condI));
+		for (int conditionIndex = 0; conditionIndex < conditionSize; conditionIndex++) {
+			conditionParameters.add(new ConditionParameter(conditionIndex));
 		}
 	}
 	
-	public ConditionParameter createConditionParameter(final int condI) {
-		return new ConditionParameter(condI);
+	public ConditionParameter createConditionParameter(final int conditionIndex) {
+		return new ConditionParameter(conditionIndex);
 	}
 	
 	public ResultFormat getResultFormat() {
@@ -114,8 +121,8 @@ implements HasConditionParameter {
 	}
 	
 	@Override
-	public ConditionParameter getConditionParameter(int condI) {
-		return conditionParameters.get(condI);
+	public ConditionParameter getConditionParameter(int conditionIndex) {
+		return conditionParameters.get(conditionIndex);
 	}
 	
 	@Override
@@ -124,8 +131,8 @@ implements HasConditionParameter {
 	}
 	
 	@Override
-	public int getReplicates(int condI) {
-		return getConditionParameter(condI).getRecordFilenames().length;
+	public int getReplicates(int conditionIndex) {
+		return getConditionParameter(conditionIndex).getRecordFilenames().length;
 	}
 	
 	/**
@@ -199,58 +206,65 @@ implements HasConditionParameter {
 		this.debug = debug;
 	}
 
+	private boolean show(final ShowOptions showOption) {
+		return showMap.getOrDefault(showOption, false);
+	}
+	
+	private void show(final ShowOptions showOption, final boolean flag) {
+		showMap.put(showOption, flag);
+	}
 	
 	/**
 	 * @return the showDeletionCount
 	 */
 	public boolean showDeletionCount() {
-		return showDeletionCount;
+		return show(ShowOptions.DELETION_COUNT);
 	}
 	
 	public boolean showInsertionCount() {
-		return showInsertionCount;
+		return show(ShowOptions.INSERTION_COUNT);
 	}
 	
 	public boolean showInsertionStartCount() {
-		return showInsertionStartCount;
+		return show(ShowOptions.INSERTION_START_COUNT);
 	}
 
 	/**
 	 * @param showDeletionCount the showDeletionCount to set
 	 */
 	public void showDeletionCount(boolean showDeletionCount) {
-		this.showDeletionCount = showDeletionCount;
+		show(ShowOptions.DELETION_COUNT, showDeletionCount);
 	}
 	
 	/**
 	 * @param showInsertionCount the showInsertionCount to set
 	 */
 	public void showInsertionCount(boolean showInsertionCount) throws Exception {
-		if (showInsertionStartCount && showInsertionCount) {
+		if (showInsertionStartCount() && showInsertionCount) {
 			throw new Exception("Cannot set both to true");
 		}
-		this.showInsertionCount = showInsertionCount;
+		show(ShowOptions.INSERTION_COUNT, showInsertionCount);
 	}
 	
 	public void showInsertionStartsCount(boolean showInsertionStartCount) throws Exception {
-		if (this.showInsertionCount && showInsertionStartCount) {
+		if (showInsertionCount() && showInsertionStartCount) {
 			throw new Exception("Cannot set both to true");
 		}
-		this.showInsertionStartCount = showInsertionStartCount;
+		show(ShowOptions.INSERTION_START_COUNT, showInsertionStartCount);
 	}
 	
 	/**
-	 * @return the showDeletionCount
+	 * @return TODO add comments
 	 */
 	public boolean showAllSites() {
-		return showAllSites;
+		return show(ShowOptions.SHOW_ALL_SITES);
 	}
 
 	/**
-	 * @param showInsertionCount the showInsertionCount to set
+	 * @param TODO add comments
 	 */
 	public void showAllSites(boolean showAllSites) {
-		this.showAllSites = showAllSites;
+		show(ShowOptions.SHOW_ALL_SITES, showAllSites);
 	}
 
 	/**
@@ -297,6 +311,7 @@ implements HasConditionParameter {
 		return refFile;
 	}
 	
+	@Deprecated
 	public void resetReferenceFile() {
 		if (refFile != null) {
 			try {
@@ -316,4 +331,16 @@ implements HasConditionParameter {
 		this.filteredFilename = filteredFilename;
 	}
 	
+}
+
+enum ShowOptions {
+	DELETION_COUNT,
+	INSERTION_COUNT,
+	INSERTION_START_COUNT,
+	NON_REFERENCE_COUNT,
+	DELETION_RATIO,
+	INSERTION_RATIO,
+	NON_REFERENCE_RATIO,
+	SHOW_ALL_SITES,
+	MODIFICATION_COUNT,	
 }

@@ -3,15 +3,15 @@ package lib.cli.options.filter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-import lib.cli.options.AbstractACOption;
-import lib.cli.options.filter.has.HasCondition;
+import lib.cli.options.AbstractOption;
+import lib.cli.options.filter.has.HasConditionIndex;
 
-public class ConditionOption extends AbstractACOption {
+public class ConditionOption extends AbstractOption {
 
-	private final HasCondition hasCondition;
+	private final HasConditionIndex hasCondition;
 	private final int conditionSize;
 	
-	public ConditionOption(final HasCondition hasCondition, final int conditionSize) {
+	public ConditionOption(final HasConditionIndex hasCondition, final int conditionSize) {
 		super(null, "condition");
 		this.hasCondition 	= hasCondition;
 		this.conditionSize 	= conditionSize;
@@ -22,11 +22,10 @@ public class ConditionOption extends AbstractACOption {
 	 */
 	@Override
 	public void process(CommandLine line) throws Exception {
-		final int condition = Integer.parseInt(line.getOptionValue(getLongOpt()));
-		// make sure condI is within provided conditions
-		if (condition >= 1 && condition <= conditionSize) {
-			// convert to [0, conditionSize)
-			hasCondition.setCondition(condition - 1); 
+		final int conditionIndex = Integer.parseInt(line.getOptionValue(getLongOpt()));
+		// make sure conditionIndex is within provided conditions
+		if (conditionIndex >= 0 && conditionIndex < conditionSize) {
+			hasCondition.setConditionIndex(conditionIndex); 
 		} else {
 			throw new IllegalArgumentException("Invalid argument: " + getLongOpt());
 		}

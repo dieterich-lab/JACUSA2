@@ -28,11 +28,11 @@ public abstract class INDELestimationCountProvider implements EstimationContaine
 		final EstimationContainer[] estimationContainers = 
 				new EstimationContainer[conditions + 1];
 		
-		for (int condI = 0; condI < conditions; ++condI) {
+		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
 			final NominalData nominalData 			= 
-					createData(parallelData.getData(condI)); 
-			estimationContainers[condI] 	= 
-					createContainer(Integer.toString(condI + 1), nominalData, maxIterations);
+					createData(parallelData.getData(conditionIndex)); 
+			estimationContainers[conditionIndex] 	= 
+					createContainer(Integer.toString(conditionIndex + 1), nominalData, maxIterations);
 		}
 
 		// conditions pooled
@@ -45,15 +45,16 @@ public abstract class INDELestimationCountProvider implements EstimationContaine
 		return new DefaultEstimationContainer(id, nominalData, maxIterations);
 	}
 	
+	// TODO check
 	public NominalData createData(final List<DataContainer> dataContainers) {
 		final int catergories = 2;
 		final double[][] dataMatrix  = new double[dataContainers.size()][catergories]; // -> 2 because BetaBin
-		for (int replicateI = 0; replicateI < dataContainers.size(); replicateI++) {
-			final DataContainer container 	= dataContainers.get(replicateI);
+		for (int replicateIndex = 0; replicateIndex < dataContainers.size(); replicateIndex++) {
+			final DataContainer container 	= dataContainers.get(replicateIndex);
 			final int count 				= getCount(container).getValue();
-			final int coverageCount 		= container.getPileupCount().getReads(); // TODOcontainer.getBaseCallCount().getValue();
-			dataMatrix[replicateI][PLUS_INDEX] 	= count + pseudoCount;
-			dataMatrix[replicateI][MINUS_INDEX]	= coverageCount - count + pseudoCount;
+			final int coverageCount 		= container.getPileupCount().getReads(); // TODO container.getBaseCallCount().getValue();
+			dataMatrix[replicateIndex][PLUS_INDEX] 	= count + pseudoCount;
+			dataMatrix[replicateIndex][MINUS_INDEX]	= coverageCount - count + pseudoCount;
 		}
 		return NominalData.build(catergories, dataMatrix);
 	}

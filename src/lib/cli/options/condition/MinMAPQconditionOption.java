@@ -7,16 +7,16 @@ import lib.cli.parameter.ConditionParameter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class MinMAPQConditionOption extends AbstractConditionACOption {
+public class MinMAPQconditionOption extends AbstractConditionOption {
 
 	private static final String OPT = "m";
 	private static final String LONG_OPT = "min-mapq";
 	
-	public MinMAPQConditionOption(final List<ConditionParameter> conditions) {
+	public MinMAPQconditionOption(final List<ConditionParameter> conditions) {
 		super(OPT, LONG_OPT, conditions);
 	}
 	
-	public MinMAPQConditionOption(final ConditionParameter condition) {
+	public MinMAPQconditionOption(final ConditionParameter condition) {
 		super(OPT, LONG_OPT, condition);
 	}
 	
@@ -25,8 +25,8 @@ public class MinMAPQConditionOption extends AbstractConditionACOption {
 		String s = "";
 
 		int minMapq = -1;
-		if (getcondI() >= 0) {
-			s = " for condition " + getcondI();
+		if (getConditionIndex() >= 0) {
+			s = " for condition " + getConditionIndex() + 1;
 			minMapq = getConditionParameter().getMinMAPQ();
 		} else if (getConditionParameters().size() > 1) {
 			s = " for all conditions";

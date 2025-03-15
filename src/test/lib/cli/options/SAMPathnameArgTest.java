@@ -23,14 +23,14 @@ class SAMPathnameArgTest {
 	
 	@BeforeEach
 	void beforeEach() {
-		final int condI 	= 2;
-		conditionParameter 			= new ConditionParameter(condI);
-		testInstance 				= new SAMPathnameArg(condI, conditionParameter);
+		final int conditionIndex 	= 1;
+		conditionParameter 			= new ConditionParameter(conditionIndex);
+		testInstance 				= new SAMPathnameArg(conditionIndex, conditionParameter);
 	}
 
 	private String toFilename(int i) {
 		return new StringBuilder()
-				.append(ACOptionTest.PATH).append("SAMPathnameArgTest")
+				.append(OptionTest.PATH).append("SAMPathnameArgTest")
 				.append("_File").append(i).append(".bam").toString();
 	}
 	

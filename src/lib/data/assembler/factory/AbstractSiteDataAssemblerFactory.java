@@ -35,12 +35,12 @@ extends AbstractDataAssemblerFactory {
 			final FilterContainer filterContainer,
 			final SharedStorage sharedStorage, 
 			final ConditionParameter conditionParameter, 
-			final int replicateI) {
+			final int replicateIndex) {
 
 		final CacheContainer cacheContainer = createContainer(
 				parameter, filterContainer, sharedStorage, conditionParameter);
 		return new SiteDataAssembler(
-				replicateI, 
+				replicateIndex, 
 				getBuilderFactory(), 
 				conditionParameter, 
 				cacheContainer);

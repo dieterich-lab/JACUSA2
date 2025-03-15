@@ -11,11 +11,12 @@ import lib.stat.AbstractStat;
 import lib.stat.dirmult.EstimateDirMult;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.arrest.LRTarrestEstimationCountProvider;
+import lib.util.ExtendedInfo;
 import lib.util.Util;
 
 public class LRTarrestStat extends AbstractStat {
 
-	private final LRTarrestEstimationCountProvider estContainerProv;
+	private final LRTarrestEstimationCountProvider estimationContainerProvider;
 	private final LRTarrestBetaBinParameter dirMultPrm;
 
 	private final double threshold;
@@ -29,19 +30,20 @@ public class LRTarrestStat extends AbstractStat {
 			final LRTarrestBetaBinParameter dirMultPrm) {
 
 		this.threshold		= threshold;
-		this.estContainerProv 	= estCountProv;
+		this.estimationContainerProvider 	= estCountProv;
 		this.dirMultPrm 	= dirMultPrm;
 		
 		dirMult	= new EstimateDirMult(dirMultPrm.getMinkaEstimateParameter());
 		dist 	= new ChiSquaredDistribution(1);
 	}
 
+	// FIXME add valueIndex
 	@Override
-	protected void processAfterCalculate(final Result statResult) {
+	protected void postProcess(final Result result) {
 		if (dirMultPrm.isShowAlpha()) {
-			dirMult.addShowAlpha();
+			dirMult.addShowAlpha(result.getResultInfo());
 		}
-		dirMult.addStatResultInfo(statResult.getResultInfo());
+		dirMult.addStatResultInfo(result.getResultInfo());
 	}
 	
 	private double getPValue(final double lrt) {
@@ -50,8 +52,9 @@ public class LRTarrestStat extends AbstractStat {
 	
 	@Override
 	public Result calculate(ParallelData parallelData) {
-		final EstimationContainer[] estContainers = estContainerProv.convert(parallelData);
-		final double lrt 	= dirMult.getLRT(estContainers);
+		final EstimationContainer[] estContainers = estimationContainerProvider.convert(parallelData);
+		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
+		final double lrt 	= dirMult.getLRT(estContainers, resultInfo);
 		final double pvalue = getPValue(lrt);
 		
 		final List<Integer> arrestPositions = parallelData.getCombPooledData()
@@ -60,7 +63,7 @@ public class LRTarrestStat extends AbstractStat {
 		for (final int arrestPos : arrestPositions) {
 			if (arrestPos == parallelData.getCoordinate().get1Position()) {
 				final int newValueIndex = multiStatResult.addStat(pvalue);
-				multiStatResult.getResultInfo(newValueIndex).add(RTarrestStat.ARREST_SCORE, Util.format(lrt));				
+				multiStatResult.getResultInfo(newValueIndex).addSite(RTarrestStat.ARREST_SCORE, Util.format(lrt));				
 			} else {
 				multiStatResult.addStat(Double.NaN);
 			}
@@ -70,7 +73,7 @@ public class LRTarrestStat extends AbstractStat {
 	
 	@Override
 	public boolean filter(final Result statResult) {
-		final double statValue = statResult.getStat();
+		final double statValue = statResult.getScore();
 
 		if (Double.isNaN(threshold)) {
 			return false;

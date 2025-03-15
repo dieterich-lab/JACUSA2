@@ -48,9 +48,9 @@ public abstract class AbstractRTarrestEstimationCountProvider implements Estimat
 		final int conditions = parallelData.getConditions();
 		final EstimationContainer[] estSamples = new EstimationContainer[conditions + 1];
 		
-		for (int condI = 0; condI < conditions; ++condI) {
-			final NominalData nominalData 	= createData(counts.get(condI)); 
-			estSamples[condI] 		= createContainer(Integer.toString(condI + 1), nominalData, maxIterations);
+		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
+			final NominalData nominalData 	= createData(counts.get(conditionIndex)); 
+			estSamples[conditionIndex] 		= createContainer(Integer.toString(conditionIndex + 1), nominalData, maxIterations);
 		}
 
 		// conditions pooled
@@ -70,12 +70,12 @@ public abstract class AbstractRTarrestEstimationCountProvider implements Estimat
 	public NominalData createData(final List<Count> counts) {
 		final int catergories = 2;
 		final double[][] dataMatrix  = new double[counts.size()][catergories]; // -> 2 because BetaBin
-		for (int replicateI = 0; replicateI < counts.size(); replicateI++) {
-			final Count count = counts.get(replicateI);
+		for (int replicateIndex = 0; replicateIndex < counts.size(); replicateIndex++) {
+			final Count count = counts.get(replicateIndex);
 			final int readArrestCount 	= count.arrest;
 			final int readThroughCount 	= count.through;
-			dataMatrix[replicateI][READ_ARREST_INDEX] 	= readArrestCount + pseudoCount;
-			dataMatrix[replicateI][READ_THROUGH_INDEX] 	= readThroughCount + pseudoCount;
+			dataMatrix[replicateIndex][READ_ARREST_INDEX] 	= readArrestCount + pseudoCount;
+			dataMatrix[replicateIndex][READ_THROUGH_INDEX] 	= readThroughCount + pseudoCount;
 			
 		}
 		return NominalData.build(catergories, dataMatrix);
@@ -85,9 +85,9 @@ public abstract class AbstractRTarrestEstimationCountProvider implements Estimat
 	protected List<List<Count>> getCounts(final ParallelData parallelData) {
 		final int conditions = parallelData.getConditions();
 		final List<List<Count>> originalCounts = new ArrayList<>(conditions);
-		for (int condI = 0; condI < conditions; ++condI) {
-			final List<Count> tmpDataContainers = new ArrayList<>(parallelData.getData(condI).size());
-			for (final DataContainer container : parallelData.getData(condI)) {
+		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
+			final List<Count> tmpDataContainers = new ArrayList<>(parallelData.getData(conditionIndex).size());
+			for (final DataContainer container : parallelData.getData(conditionIndex)) {
 				Count count = new Count(
 						container.getArrestBaseCallCount().getCoverage(),
 						container.getThroughBaseCallCount().getCoverage());

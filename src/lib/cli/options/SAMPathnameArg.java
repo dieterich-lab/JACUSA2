@@ -11,12 +11,12 @@ public class SAMPathnameArg {
 
 	public static final char SEP = ',';
 
-	private int condI;
-	private ConditionParameter condition;
+	private final int conditionIndex; // 0-indexed [0, n)
+	private final ConditionParameter conditionParameter;
 	
-	public SAMPathnameArg(final int condI, ConditionParameter conditionParameter) {
-		this.condI = condI;
-		this.condition = conditionParameter;
+	public SAMPathnameArg(final int condIndex, ConditionParameter conditionParameter) {
+		this.conditionIndex = condIndex;
+		this.conditionParameter = conditionParameter;
 	}
 
 	/**
@@ -34,11 +34,11 @@ public class SAMPathnameArg {
 	    		throw new FileNotFoundException("Index for BAM file" + recordFilename + " is not accessible!");
 	    	}
     	}
-		condition.setRecordFilenames(recordFilenames);
+		conditionParameter.setRecordFilenames(recordFilenames);
 	}
 
-	public int getcondI() {
-		return condI;
+	public int getConditionIndex() {
+		return conditionIndex;
 	}
 	
 }
