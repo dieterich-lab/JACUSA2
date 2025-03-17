@@ -14,7 +14,7 @@ import lib.util.Util;
 
 public class GenericStat extends AbstractStat {
 
-	private final INDELestimationCountProvider estContainerProv;
+	private final INDELestimationCountProvider estimationContainerProvider;
 	private final EstimateDirMult dirMult;
 	private final ChiSquaredDistribution dist;
 	
@@ -28,12 +28,12 @@ public class GenericStat extends AbstractStat {
 			final String pvalueKey) {
 		super();
 
-		this.estContainerProv 	= countSampleProvider;
-		this.dirMult			= new EstimateDirMult(minkaParameter);
-		this.dist				= new ChiSquaredDistribution(1);
+		this.estimationContainerProvider 	= countSampleProvider;
+		this.dirMult						= new EstimateDirMult(minkaParameter);
+		this.dist							= new ChiSquaredDistribution(1);
 		
-		this.scoreKey			= scoreKey;
-		this.pvalueKey			= pvalueKey;
+		this.scoreKey	= scoreKey;
+		this.pvalueKey	= pvalueKey;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class GenericStat extends AbstractStat {
 	
 	@Override
 	public Result calculate(ParallelData parallelData) {
-		final EstimationContainer[] estimationContainers = estContainerProv.convert(parallelData);
+		final EstimationContainer[] estimationContainers = estimationContainerProvider.convert(parallelData);
 		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
 		final double lrt 	= dirMult.getLRT(estimationContainers, resultInfo);
 		final Result result = new OneStatResult(lrt, parallelData, resultInfo);
@@ -52,11 +52,11 @@ public class GenericStat extends AbstractStat {
 	}
 
 	@Override
-	protected void postProcess(final Result result) {
-		final double lrt = result.getScore();
+	protected void postProcess(final Result result, final int valueIndex) {
+		final double lrt = result.getScore(valueIndex);
 		final double pvalue = 1 - dist.cumulativeProbability(result.getScore());
 	
-		final ExtendedInfo resultInfo = result.getResultInfo();
+		final ExtendedInfo resultInfo = result.getResultInfo(valueIndex);
 		resultInfo.addSite(scoreKey, Util.format(lrt));
 		resultInfo.addSite(pvalueKey, Util.format(pvalue));
 	}

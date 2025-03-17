@@ -37,11 +37,11 @@ public class RTarrestStat extends AbstractStat {
 	}
 
 	@Override
-	protected void postProcess(final Result result) {
+	protected void postProcess(final Result result, final int valueIndex) {
 		if (dirMultPrm.isShowAlpha()) {
-			dirMult.addShowAlpha(result.getResultInfo());
+			dirMult.addAlphaValues(result.getResultInfo(valueIndex));
 		}
-		dirMult.addStatResultInfo(result.getResultInfo());
+		dirMult.addStatResultInfo(result.getResultInfo(valueIndex));
 	}
 	
 	private double getPValue(final double lrt) {

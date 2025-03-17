@@ -3,9 +3,9 @@ package lib.stat.estimation.provider;
 import lib.data.DataContainer;
 import lib.data.IntegerData;
 
-public class DeletionEstCountProvider extends INDELestimationCountProvider {
+public class DeletionCountProvider extends INDELestimationCountProvider {
 
-	public DeletionEstCountProvider(final int maxIterations) {
+	public DeletionCountProvider(final int maxIterations) {
 		super(maxIterations);
 	}
 	

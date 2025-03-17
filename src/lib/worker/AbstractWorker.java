@@ -23,8 +23,8 @@ import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.estimate.MinkaParameter;
 import lib.io.copytmp.CopyTmpResult;
 import lib.stat.GenericStat;
-import lib.stat.estimation.provider.DeletionEstCountProvider;
-import lib.stat.estimation.provider.InsertionEstCountProvider;
+import lib.stat.estimation.provider.DeletionCountProvider;
+import lib.stat.estimation.provider.InsertionCountProvider;
 import lib.util.coordinate.CoordinateController;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
@@ -46,7 +46,7 @@ implements Iterator<ParallelData> {
 	private final ThreadIdContainer threadIdContainer;
 	private final CopyTmpResult copyTmpResult;
 	
-	private final ConditionContainer condContainer;
+	private final ConditionContainer conditionContainer;
 	private CoordinateController coordControl;
 
 	private final ParallelDataValidator parallelDataValidator;
@@ -65,12 +65,12 @@ implements Iterator<ParallelData> {
 
 		copyTmpResult = getParameter().getResultFormat().createCopyTmp(threadId, method.getWorkerDispatcherInstance());
 		
-		condContainer 		= new ConditionContainer(getParameter());
-		coordControl 	= new CoordinateController(getParameter().getActiveWindowSize(), condContainer);
+		conditionContainer 	= new ConditionContainer(getParameter());
+		coordControl 		= new CoordinateController(getParameter().getActiveWindowSize(), conditionContainer);
 
 		final ReferenceProvider referenceProvider 	= createReferenceProvider(coordControl);
 		final SharedStorage sharedStorage 			= new ComplexSharedStorage(referenceProvider);
-		condContainer.initReplicateContainer(sharedStorage, getParameter(), method);
+		conditionContainer.initReplicateContainer(sharedStorage, getParameter(), method);
 
 		parallelDataValidator = new CombinedParallelDataValidator(method.createParallelDataValidators());
 
@@ -78,21 +78,21 @@ implements Iterator<ParallelData> {
 		status 		= STATUS.INIT;
 		setName(AbstractTool.getLogger().getTool().getName() + " Worker " + threadId);
 		
-		genericStats = new ArrayList<GenericStat>(2);
+		genericStats = new ArrayList<GenericStat>(6);
 		if (getParameter().showDeletionCount() ||
 				getParameter().showInsertionCount() ||
 				getParameter().showInsertionStartCount()) {
-			final MinkaParameter minkaPrm = new MinkaParameter();
+			final MinkaParameter minkaParameter = new MinkaParameter();
 			if (getParameter().showDeletionCount()) {
-				final DeletionEstCountProvider delCountProv = 
-						new DeletionEstCountProvider(minkaPrm.getMaxIterations());
-				genericStats.add(new GenericStat(minkaPrm, delCountProv, "deletion_score", "deletion_pvalue"));
+				final DeletionCountProvider delCountProvider = 
+						new DeletionCountProvider(minkaParameter.getMaxIterations());
+				genericStats.add(new GenericStat(minkaParameter, delCountProvider, "deletion_score", "deletion_pvalue"));
 			}
 			if (getParameter().showInsertionCount() ||
 					getParameter().showInsertionStartCount()) {
-				final InsertionEstCountProvider insCountProv = 
-						new InsertionEstCountProvider(minkaPrm.getMaxIterations());
-				genericStats.add(new GenericStat(minkaPrm, insCountProv, "insertion_score", "insertion_pvalue"));
+				final InsertionCountProvider insCountProvider = 
+						new InsertionCountProvider(minkaParameter.getMaxIterations());
+				genericStats.add(new GenericStat(minkaParameter, insCountProvider, "insertion_score", "insertion_pvalue"));
 			}
 		}
 	}
@@ -130,7 +130,7 @@ implements Iterator<ParallelData> {
 	protected boolean filter(final Result result) {
 		boolean isFiltered = false;
 		// apply each filter
-		for (final Filter filter : condContainer.getFilterContainer().getFilters()) {
+		for (final Filter filter : conditionContainer.getFilterContainer().getFilters()) {
 			if (filter.applyFilter(result)) {
 				isFiltered = true;
 			}
@@ -148,7 +148,7 @@ implements Iterator<ParallelData> {
 						.getCurrentCoordinate().copy();
 				
 				final ParallelData.Builder parallelDataBuilder = new ParallelData.Builder(
-								condContainer.getConditionSize(), condContainer.getReplicateSizes());
+								conditionContainer.getConditionSize(), conditionContainer.getReplicateSizes());
 				parallelData = createParallelData(parallelDataBuilder, coord);
 				if (parallelData != null && parallelDataValidator.isValid(parallelData)) {
 					comparisons++;
@@ -159,7 +159,7 @@ implements Iterator<ParallelData> {
 			
 			if (coordControl.hasNext()) {
 				final Coordinate activeWinCoord = coordControl.next();
-				condContainer.updateActiveWinCoord(activeWinCoord);
+				conditionContainer.updateActiveWinCoord(activeWinCoord);
 			} else {
 				return false;
 			}
@@ -218,7 +218,7 @@ implements Iterator<ParallelData> {
 				reservedWindowCoordinate.getEnd());
 		
 		coordControl.updateReserved(reservedWindowCoordinate);
-		condContainer.updateWindowCoordinates(coordControl.next());
+		conditionContainer.updateWindowCoordinates(coordControl.next());
 	}
 
 	protected void processInit() {
@@ -305,7 +305,7 @@ implements Iterator<ParallelData> {
 	}
 
 	protected ConditionContainer getConditionContainer() {
-		return condContainer;
+		return conditionContainer;
 	}
 	
 	public ThreadIdContainer getThreadIdContainer() {

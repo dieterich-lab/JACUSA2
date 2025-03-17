@@ -105,7 +105,7 @@ public class EstimateDirMult {
 		return estimationContainers[estimationContainers.length - 1];
 	}
 
-	public void addShowAlpha(final ExtendedInfo info) {
+	public void addAlphaValues(final ExtendedInfo info) {
 		for (final EstimationContainer estimationContainer : estimationContainers) {
 			final String id 			= estimationContainer.getID();
 			final int iteration			= estimationContainer.getIteration();
@@ -115,16 +115,12 @@ public class EstimateDirMult {
 			
 			info.addSite("initAlpha" + id, Util.format(initAlpha[0]));			
 			for (int i = 1; i < initAlpha.length; ++i) {
-				info.addSite("initAlpha" + id, ":");
 				info.addSite("initAlpha" + id, Util.format(initAlpha[i]));
 			}
-			
 			info.addSite("alpha" + id, Util.format(alpha[0]));			
 			for (int i = 1; i < alpha.length; ++i) {
-				info.addSite("alpha" + id, ":");
 				info.addSite("alpha" + id, Util.format(alpha[i]));
 			}
-		
 			info.addSite("iteration" + id, Integer.toString(iteration));
 			info.addSite("logLikelihood" + id, Double.toString(logLikelihood));
 		}

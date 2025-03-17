@@ -9,8 +9,8 @@ import lib.data.result.Result;
 import lib.estimate.MinkaParameter;
 import lib.stat.AbstractStat;
 import lib.stat.GenericStat;
-import lib.stat.estimation.provider.DeletionEstCountProvider;
-import lib.stat.estimation.provider.InsertionEstCountProvider;
+import lib.stat.estimation.provider.DeletionCountProvider;
+import lib.stat.estimation.provider.InsertionCountProvider;
 import lib.worker.AbstractWorker;
 
 public class PileupWorker
@@ -30,14 +30,14 @@ extends AbstractWorker {
 				getParameter().showInsertionStartCount()) {
 			final MinkaParameter minkaPrm = new MinkaParameter();
 			if (getParameter().showDeletionCount()) {
-				final DeletionEstCountProvider delCountProv = 
-						new DeletionEstCountProvider(minkaPrm.getMaxIterations());
+				final DeletionCountProvider delCountProv = 
+						new DeletionCountProvider(minkaPrm.getMaxIterations());
 				genericStats.add(new GenericStat(minkaPrm, delCountProv, "deletion_score", "deletion_pvalue"));
 			}
 			if (getParameter().showInsertionCount() ||
 					getParameter().showInsertionStartCount()) {
-				final InsertionEstCountProvider insCountProv = 
-						new InsertionEstCountProvider(minkaPrm.getMaxIterations());
+				final InsertionCountProvider insCountProv = 
+						new InsertionCountProvider(minkaPrm.getMaxIterations());
 				genericStats.add(new GenericStat(minkaPrm, insCountProv, "insertion_score", "insertion_pvalue"));
 			}
 		}

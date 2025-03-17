@@ -24,8 +24,10 @@ class CoverageStatistic extends AbstractStat {
 		final ExtendedInfo info = new ExtendedInfo(parallelData.getReplicates());
 		return new OneStatResult(coverage, parallelData, info);
 	}
-
+	
 	@Override
-	protected void postProcess(final Result statResult) {}
+	protected void postProcess(Result result, int valueIndex) {
+		// not needed
+	}
 	
 }

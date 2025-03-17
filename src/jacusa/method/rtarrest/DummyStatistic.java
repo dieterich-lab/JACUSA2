@@ -29,7 +29,7 @@ class DummyStatistic extends AbstractStat {
 	}
 
 	@Override
-	protected void postProcess(final Result statResult) {
+	protected void postProcess(final Result statResult, final int valueIndex) {
 		// not needed
 	}
 	

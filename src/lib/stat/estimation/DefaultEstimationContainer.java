@@ -109,11 +109,11 @@ public class DefaultEstimationContainer implements EstimationContainer {
 		sb.append('\n');
 		
 		sb.append("Initial Alpha: ");
-		sb.append(Util.printAlpha(getAlpha(0)));
+		sb.append(Util.join(getAlpha(0), '\n'));
 		sb.append('\n');
 		
 		sb.append("Final Alpha: ");
-		sb.append(Util.printAlpha(getAlpha()));
+		sb.append(Util.join(getAlpha(), '\n'));
 		sb.append('\n');
 		
 		sb.append("logLikelihood: ");

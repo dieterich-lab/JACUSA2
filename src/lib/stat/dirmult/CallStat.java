@@ -14,28 +14,27 @@ class CallStat extends AbstractStat {
 
 	private final double threshold;
 	private final EstimationContainerProvider estimationContainerProvider;
-	private final DirMultParameter dirMultPrm;
+	private final DirMultParameter dirMultParameter;
 
 	private final EstimateDirMult dirMult;
 
 	CallStat(final double threshold, final EstimationContainerProvider estimationContainerProvider,
 			final DirMultParameter dirMultPrm) {
-		super(dirMultPrm.getSubsampleRuns(), dirMultPrm.getDownsampleRuns(), dirMultPrm.getRandomSampleRuns(), dirMultPrm.getDownsampleFraction());
+		super();
 		
 		this.threshold 						= threshold;
 		this.estimationContainerProvider 	= estimationContainerProvider;
-		this.dirMultPrm 					= dirMultPrm;
+		this.dirMultParameter 					= dirMultPrm;
 
 		dirMult 							= new EstimateDirMult(dirMultPrm.getMinkaEstimateParameter());
 	}
 
-	// TODO which value ?
 	@Override
-	protected void postProcess(final Result result) {
-		if (dirMultPrm.isShowAlpha()) {
-			dirMult.addShowAlpha(result.getResultInfo());
+	protected void postProcess(final Result result, final int valueIndex) {
+		if (dirMultParameter.isShowAlpha()) {
+			dirMult.addAlphaValues(result.getResultInfo(valueIndex));
 		}
-		dirMult.addStatResultInfo(result.getResultInfo());
+		dirMult.addStatResultInfo(result.getResultInfo(valueIndex));
 	}
 
 	@Override
@@ -43,7 +42,7 @@ class CallStat extends AbstractStat {
 		final EstimationContainer[] estimationContainers = estimationContainerProvider.convert(parallelData);
 		double stat;
 		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
-		if (dirMultPrm.isCalcPValue()) {
+		if (dirMultParameter.isCalcPValue()) {
 			stat = dirMult.getLRT(estimationContainers, resultInfo);
 			// TODO degrees of freedom
 			final ChiSquaredDistribution dist = new ChiSquaredDistribution(3);
@@ -63,17 +62,12 @@ class CallStat extends AbstractStat {
 		}
 
 		// if p-value interpret threshold as upper bound
-		if (dirMultPrm.isCalcPValue()) {
+		if (dirMultParameter.isCalcPValue()) {
 			return threshold < statValue;
 		}
 
 		// if log-likelihood ratio interpret threshold as lower bound
 		return statValue < threshold;
 	}
-
-	@Override
-	public int getSubsampleRuns() {
-		return dirMultPrm.getSubsampleRuns();
-	} 
 	
 }
