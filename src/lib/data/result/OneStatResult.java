@@ -65,7 +65,7 @@ public class OneStatResult implements Result {
 	}
 	
 	@Override
-	public SortedSet<Integer> getValuesIndex() {
+	public SortedSet<Integer> getValueIndexes() {
 		return valueIndex;
 	}
 	

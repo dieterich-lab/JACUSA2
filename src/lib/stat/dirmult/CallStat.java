@@ -5,6 +5,7 @@ import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 import lib.data.ParallelData;
 import lib.data.result.OneStatResult;
 import lib.data.result.Result;
+import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.stat.AbstractStat;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.EstimationContainerProvider;
@@ -16,25 +17,27 @@ class CallStat extends AbstractStat {
 	private final EstimationContainerProvider estimationContainerProvider;
 	private final DirMultParameter dirMultParameter;
 
-	private final EstimateDirMult dirMult;
+	private final MinkaEstimateDirMultAlpha estimateDirMultAlpha;
 
-	CallStat(final double threshold, final EstimationContainerProvider estimationContainerProvider,
-			final DirMultParameter dirMultPrm) {
+	CallStat(final double threshold,
+			final EstimationContainerProvider estimationContainerProvider,
+			final DirMultParameter dirMultParameter) {
 		super();
 		
 		this.threshold 						= threshold;
 		this.estimationContainerProvider 	= estimationContainerProvider;
-		this.dirMultParameter 					= dirMultPrm;
+		this.dirMultParameter 				= dirMultParameter;
 
-		dirMult 							= new EstimateDirMult(dirMultPrm.getMinkaEstimateParameter());
+		estimateDirMultAlpha 				= new MinkaEstimateDirMultAlpha(dirMultParameter.getMinkaEstimateParameter());
 	}
 
+	// TODO remove
 	@Override
 	protected void postProcess(final Result result, final int valueIndex) {
-		if (dirMultParameter.isShowAlpha()) {
-			dirMult.addAlphaValues(result.getResultInfo(valueIndex));
+		if (dirMultParameter.showAlpha()) {
+			estimateDirMultAlpha.addAlphaValues(result.getResultInfo(valueIndex));
 		}
-		dirMult.addStatResultInfo(result.getResultInfo(valueIndex));
+		estimateDirMultAlpha.addStatResultInfo(result.getResultInfo(valueIndex));
 	}
 
 	@Override
@@ -42,13 +45,13 @@ class CallStat extends AbstractStat {
 		final EstimationContainer[] estimationContainers = estimationContainerProvider.convert(parallelData);
 		double stat;
 		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
-		if (dirMultParameter.isCalcPValue()) {
-			stat = dirMult.getLRT(estimationContainers, resultInfo);
+		if (dirMultParameter.calcPValue()) {
+			stat = estimateDirMultAlpha.getLRT(estimationContainers, resultInfo);
 			// TODO degrees of freedom
 			final ChiSquaredDistribution dist = new ChiSquaredDistribution(3);
 			stat = 1 - dist.cumulativeProbability(stat);
 		} else {
-			stat = dirMult.getScore(estimationContainers, resultInfo);
+			stat = estimateDirMultAlpha.getScore(estimationContainers, resultInfo);
 		}
 		return new OneStatResult(stat, parallelData, resultInfo);
 	}
@@ -62,7 +65,7 @@ class CallStat extends AbstractStat {
 		}
 
 		// if p-value interpret threshold as upper bound
-		if (dirMultParameter.isCalcPValue()) {
+		if (dirMultParameter.calcPValue()) {
 			return threshold < statValue;
 		}
 

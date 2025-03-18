@@ -9,15 +9,16 @@ public interface DirMultParameter {
 
 	public static final double ESTIMATED_ERROR = 0.01;
 	
-	boolean isShowAlpha();
+	boolean showAlpha();
 	void setShowAlpha(boolean showAlpha);
 
-	boolean isCalcPValue();
+	boolean calcPValue();
 	void setCalcPValue(boolean calcPValue);
 
 	MinkaParameter getMinkaEstimateParameter();
 	void setMinkaParameter(MinkaParameter estimateAlpha);
 	
+	/* TODO where to put this
 	int getSubsampleRuns();
 	void setSubampleRuns(int subsampleRuns);
 
@@ -29,6 +30,7 @@ public interface DirMultParameter {
 	
 	int getRandomSampleRuns();
 	void setRandomSampleRuns(int downsampleRuns);
+	*/
 	
 	int getLimit();
 	void setLimit(int limit);

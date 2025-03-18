@@ -2,7 +2,7 @@ package lib.util.position;
 
 import lib.record.AlignedPosition;
 import lib.record.Record;
-import lib.record.Record.CigarDetail;
+import lib.record.Record.AlignedPositionCigarElement;
 import lib.util.coordinate.CoordinateTranslator;
 
 class InsertedPosition extends AbstractPosition {
@@ -17,9 +17,9 @@ class InsertedPosition extends AbstractPosition {
 			final CoordinateTranslator translator) {
 
 		super(
-				alignPos.getRefPos(), 
-				alignPos.getReadPos(), 
-				translator.ref2winPos(alignPos.getRefPos()), 
+				alignPos.getRefPosition(), 
+				alignPos.getReadPosition(), 
+				translator.ref2winPos(alignPos.getRefPosition()), 
 				record);
 	}
 	
@@ -69,13 +69,13 @@ class InsertedPosition extends AbstractPosition {
 		}
 		
 		private Builder(
-				final CigarDetail cigarDetail, final Record record, 
+				final AlignedPositionCigarElement cigarDetail, final Record record, 
 				final CoordinateTranslator translator) {
 			
 			super(
-					cigarDetail.getPosition().getRefPos(), 
-					cigarDetail.getPosition().getReadPos(),
-					translator.ref2winPos(cigarDetail.getPosition().getRefPos()),
+					cigarDetail.getPosition().getRefPosition(), 
+					cigarDetail.getPosition().getReadPosition(),
+					translator.ref2winPos(cigarDetail.getPosition().getRefPosition()),
 					record);
 		}
 		

@@ -36,7 +36,7 @@ public interface Filter {
 		// contained sites
 		boolean filter = filter(parallelData);
 		if (filter) {
-			for (final int valueIndex : result.getValuesIndex()) {
+			for (final int valueIndex : result.getValueIndexes()) {
 				markResult(valueIndex, result);
 			}
 		}

@@ -46,8 +46,8 @@ public class MismatchPosProvider implements PositionProvider {
 	public boolean hasNext() {
 		while (nextPos == null && misMatchPosIt.hasNext()) {
 			final AlignedPosition tmpMisMatchPos = misMatchPosIt.next();
-			final int refPos 	= tmpMisMatchPos.getRefPos();
-			final int readPos 	= tmpMisMatchPos.getReadPos();
+			final int refPos 	= tmpMisMatchPos.getRefPosition();
+			final int readPos 	= tmpMisMatchPos.getReadPosition();
 			final int winPos 	= translator.ref2winPos(refPos);
 			final Position misMatchPos 	= new UnmodifiablePosition(refPos, readPos, winPos, record);
 			final Base refBase 			= record

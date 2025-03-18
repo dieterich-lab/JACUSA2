@@ -38,7 +38,6 @@ public class AlignedPosition implements Copyable<AlignedPosition>{
 		}
 	}
 
-	// FIXME remove this method
 	public AlignedPosition advance(final int offset) {
 		refPos 				+= offset;
 		nonSkippedMatches 	+= offset;
@@ -46,11 +45,11 @@ public class AlignedPosition implements Copyable<AlignedPosition>{
 		return this;
 	}
 	
-	public int getReadPos() {
+	public int getReadPosition() {
 		return readPos;
 	}
 	
-	public int getRefPos() {
+	public int getRefPosition() {
 		return refPos;
 	}
 

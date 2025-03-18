@@ -34,14 +34,14 @@ extends AbstractStatFactory {
 		switch (conditions) {
 		case 1:
 			dirMultPileupCountProvider = new InSilicoEstimationPileupProvider(
-					dirMultPrm.isCalcPValue(),
+					dirMultPrm.calcPValue(),
 					dirMultPrm.getMinkaEstimateParameter().getMaxIterations(),
 					dirMultPrm.getEstimatedError());
 			break;
 			
 		case 2:
 			dirMultPileupCountProvider = new DefaultEstimationPileupProvider(
-					dirMultPrm.isCalcPValue(),
+					dirMultPrm.calcPValue(),
 					dirMultPrm.getMinkaEstimateParameter().getMaxIterations(),
 					dirMultPrm.getEstimatedError()); 
 			break;

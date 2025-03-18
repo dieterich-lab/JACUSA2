@@ -2,13 +2,13 @@ package lib.util.position;
 
 import lib.record.AlignedPosition;
 import lib.record.Record;
-import lib.record.Record.CigarDetail;
+import lib.record.Record.AlignedPositionCigarElement;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
  * TODO add documentation
  */
-class DeletionPosProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
+class DeletionPositionProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
 	
 	// position of the deletion
 	private final DeletedPosition pos;
@@ -17,19 +17,19 @@ class DeletionPosProviderBuilder implements lib.util.Builder<IntervalPosProvider
 	
 	private CoordinateTranslator translator;
 	
-	DeletionPosProviderBuilder(
+	DeletionPositionProviderBuilder(
 			final int delI, final Record record, 
 			final CoordinateTranslator translator) {
 		
 		// extract corresponding cigar element 
 		final int cigarElementI 	= record.getDeletion().get(delI);
-		final CigarDetail cigarElement = record
+		final AlignedPositionCigarElement cigarElement = record
 				.getCigarDetail().get(cigarElementI);
 		
 		// prepare to create Position
 		final AlignedPosition alignedPos 	= cigarElement.getPosition(); 
-		final int refPos 					= alignedPos.getRefPos();
-		final int readPos 					= alignedPos.getReadPos();
+		final int refPos 					= alignedPos.getRefPosition();
+		final int readPos 					= alignedPos.getReadPosition();
 		final int winPos					= translator.ref2winPos(refPos);
 		
 		pos 	= new DeletedPosition(refPos, readPos, winPos, record);
@@ -39,7 +39,7 @@ class DeletionPosProviderBuilder implements lib.util.Builder<IntervalPosProvider
 	}
 
 	// make sure to run this last
-	public DeletionPosProviderBuilder adjustWindowPos() {
+	public DeletionPositionProviderBuilder adjustWindowPos() {
 		length = PositionProvider.adjustWindowPos(pos, length, translator);
 		return this;
 	} 

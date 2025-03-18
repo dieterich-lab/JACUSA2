@@ -19,17 +19,17 @@ abstract class AbstractEstimationContainerProvider
 implements EstimationContainerProvider {
 
 	private final boolean calcPValue; 
-	private final int maxIters;
-	private final double estError;
+	private final int maxIterations;
+	private final double estimatedError;
 	
 	AbstractEstimationContainerProvider(
 			final boolean calcPValue,
-			final int maxIters, 
-			final double estError) {
+			final int maxIterations, 
+			final double estimatedError) {
 
 		this.calcPValue		= calcPValue;
-		this.maxIters 	= maxIters;
-		this.estError	= estError;
+		this.maxIterations 	= maxIterations;
+		this.estimatedError	= estimatedError;
 	}
 
 	protected abstract List<List<PileupCount>> process(ParallelData parallelData);
@@ -52,7 +52,7 @@ implements EstimationContainerProvider {
 		final EstimationContainer[] estContainers = new EstimationContainer[conditions + 1];
 		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
 			final NominalData nominalData 	= createData(bases, pileupCounts.get(conditionIndex)); 
-			estContainers[conditionIndex] 	= createContainer(Integer.toString(conditionIndex + 1), nominalData, maxIters);
+			estContainers[conditionIndex] 	= createContainer(Integer.toString(conditionIndex + 1), nominalData, maxIterations);
 		}
 
 		// conditions pooled
@@ -61,7 +61,7 @@ implements EstimationContainerProvider {
 				pileupCounts.stream()
 					.flatMap(List::stream)
 					.collect(Collectors.toList()) ); 
-		estContainers[conditions] 		= new DefaultEstimationContainer("P", nominalData, maxIters);
+		estContainers[conditions] 		= new DefaultEstimationContainer("P", nominalData, maxIterations);
 		return estContainers;
 	}
 
@@ -118,7 +118,7 @@ implements EstimationContainerProvider {
 				pileupVector[index] += colSumCount[index];
 				for (final Base base2 : bases) {
 					if (base != base2) {
-						double combinedError = (colMeanError[base2.getIndex()] + estError) * colSumCount[index] / 
+						double combinedError = (colMeanError[base2.getIndex()] + estimatedError) * colSumCount[index] / 
 								(double)(bases.length - 1);
 						pileupVector[base2.getIndex()] += combinedError;
 					}

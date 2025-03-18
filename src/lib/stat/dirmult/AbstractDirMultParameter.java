@@ -11,10 +11,12 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	private boolean calcPValue;
 	private MinkaParameter minkaParameter;
 	
+	/* TODO remove
 	private int subsampleRuns = 0;
 	private int downsampleRuns = 0;
 	private int randomSampleRuns = 0;
 	private double downsampleFraction = 0.0;
+	*/
 	
 	private int limit = 0;
 	
@@ -29,7 +31,7 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	}
 
 	@Override
-	public boolean isShowAlpha() {
+	public boolean showAlpha() {
 		return showAlpha;
 	}
 
@@ -39,7 +41,7 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	}
 
 	@Override
-	public boolean isCalcPValue() {
+	public boolean calcPValue() {
 		return calcPValue;
 	}
 
@@ -64,6 +66,7 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 		return limit;
 	}
 	
+	/* TODO remove
 	@Override
 	public int getSubsampleRuns() {
 		return subsampleRuns;
@@ -83,12 +86,14 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	public int getRandomSampleRuns() {
 		return randomSampleRuns;
 	}
+	*/
 	
 	@Override
 	public void setLimit(int limit) {
 		this.limit = limit;
 	}
 	
+	/* TODO remove
 	@Override
 	public void setSubampleRuns(int runs) {
 		this.subsampleRuns = runs;
@@ -108,5 +113,6 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	public void setRandomSampleRuns(final int randomSampleRuns) {
 		this.randomSampleRuns = randomSampleRuns;
 	}
+	*/ 
 	
 }

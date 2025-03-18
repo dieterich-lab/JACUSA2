@@ -5,10 +5,10 @@ import lib.data.ParallelData;
 import lib.data.result.Result;
 import lib.data.validator.paralleldata.ExtendedVariantSiteValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
+import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.estimate.MinkaParameter;
 import lib.stat.AbstractStat;
 import lib.stat.dirmult.DirMultParameter;
-import lib.stat.dirmult.EstimateDirMult;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.EstimationContainerProvider;
 import lib.stat.estimation.provider.pileup.RobustEstimationPileupProvider;
@@ -24,19 +24,21 @@ extends AbstractWorker {
 	private ParallelDataValidator validator;
 	
 	private final AbstractStat stat;
-	private final EstimationContainerProvider estContainerProv;
-	private final EstimateDirMult dirMult;
+	private final EstimationContainerProvider estimationContainerProvider;
+	private final MinkaEstimateDirMultAlpha estimateDirMultAlpha;
 	
 	public LRTarrestWorker(final LRTarrestMethod method, final int threadId) {
 		super(method, threadId);
-		stat = method.getParameter().getStatParameter()
+		stat = method
+				.getParameter()
+				.getStatParameter()
 				.newInstance(method.getParameter().getConditionsSize());
 		
 		validator = new ExtendedVariantSiteValidator(method.getTotalBaseCallCountFetcher());
 		final MinkaParameter minkaParameter = new MinkaParameter();
-		estContainerProv = new RobustEstimationPileupProvider(
+		estimationContainerProvider = new RobustEstimationPileupProvider(
 				false, minkaParameter.getMaxIterations(), DirMultParameter.ESTIMATED_ERROR);
-		dirMult	= new EstimateDirMult(minkaParameter);
+		estimateDirMultAlpha = new MinkaEstimateDirMultAlpha(minkaParameter);
 	}
 
 	@Override
@@ -46,8 +48,8 @@ extends AbstractWorker {
 		if (validator.isValid(parallelData)) {
 			// store variant call result in info field
 			final ExtendedInfo resultInfo = result.getResultInfo();
-			final EstimationContainer[] estimationContainers = estContainerProv.convert(parallelData);
-			final double score = dirMult.getScore(estimationContainers, resultInfo);
+			final EstimationContainer[] estimationContainers = estimationContainerProvider.convert(parallelData);
+			final double score = estimateDirMultAlpha.getScore(estimationContainers, resultInfo);
 			resultInfo.addSite(INFO_VARIANT_SCORE, Util.format(score));
 		}
 		

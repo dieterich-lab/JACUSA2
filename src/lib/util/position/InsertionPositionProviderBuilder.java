@@ -2,7 +2,7 @@ package lib.util.position;
 
 import lib.record.AlignedPosition;
 import lib.record.Record;
-import lib.record.Record.CigarDetail;
+import lib.record.Record.AlignedPositionCigarElement;
 import lib.util.coordinate.CoordinateTranslator;
 
 // FIXME count only the start position
@@ -28,13 +28,13 @@ class InsertionPositionProviderBuilder implements lib.util.Builder<IntervalPosPr
 		
 		// extract corresponding cigar element 
 		final int cigarElementI 	= record.getInsertion().get(insI);
-		final CigarDetail cigarElement = record
+		final AlignedPositionCigarElement cigarElement = record
 				.getCigarDetail().get(cigarElementI);
 		
 		// prepare to create Position
 		final AlignedPosition alignedPos 	= cigarElement.getPosition(); 
-		final int refPos 					= alignedPos.getRefPos();
-		final int readPos 					= alignedPos.getReadPos();
+		final int refPos 					= alignedPos.getRefPosition();
+		final int readPos 					= alignedPos.getReadPosition();
 		final int winPos					= translator.ref2winPos(refPos);
 		
 		pos 	= new InsertedPosition(refPos, readPos, winPos, record);

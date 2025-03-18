@@ -13,7 +13,7 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMException;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMTag;
-import lib.record.Record.CigarDetail;
+import lib.record.Record.AlignedPositionCigarElement;
 import lib.util.Base;
 import lib.util.Util;
 
@@ -30,9 +30,9 @@ public class MDRecordRefProvider implements RecordRefProvider {
 	private final List<AlignedPosition> mismatchPoss;
 	private final Map<Integer, Byte> refPos2base;
 
-	private final Iterator<CigarDetail> cigarElementIt;
-	private CigarDetail curCigarElement;
-	private int curMatchedBases;
+	private final Iterator<AlignedPositionCigarElement> cigarElementIt;
+	private AlignedPositionCigarElement currentCigarElement;
+	private int currentMatchedBases;
 	
 	public MDRecordRefProvider(final Record record) {
 		this.record = record;
@@ -42,8 +42,8 @@ public class MDRecordRefProvider implements RecordRefProvider {
 		refPos2base 		= new HashMap<>(Util.noRehashCapacity(n));
 
 		cigarElementIt 	= record.getCigarDetail().iterator();
-		curCigarElement	= cigarElementIt.next();
-		curMatchedBases = 0;		
+		currentCigarElement	= cigarElementIt.next();
+		currentMatchedBases = 0;		
 		process(record);
 	}
 	
@@ -74,7 +74,7 @@ public class MDRecordRefProvider implements RecordRefProvider {
                 // It's a single nucleotide, meaning a mismatch
             	final byte base = (byte)matchGroup.charAt(0);
             	final AlignedPosition position = getCurrentPosition();
-            	int refPos = position.getRefPos();
+            	int refPos = position.getRefPosition();
             	refPos2base.put(refPos, base);
         		mismatchPoss.add(position.copy());
         		advance(1);
@@ -82,7 +82,7 @@ public class MDRecordRefProvider implements RecordRefProvider {
                 // It's a deletion, starting with a caret
 
             	final AlignedPosition position = getCurrentPosition();
-            	int refPos = position.getRefPos();
+            	int refPos = position.getRefPosition();
             	
                 // i = 1 -> don't include caret
             	for (int i = 1; i < matchGroup.length(); ++i) {
@@ -99,28 +99,28 @@ public class MDRecordRefProvider implements RecordRefProvider {
 	}
 		
 	private void advance(final int matches) {
-		curMatchedBases += matches;
+		currentMatchedBases += matches;
 		
 		while (cigarElementIt.hasNext()) {
 			final int matchedBases = getMatchedBases();
-			if (matchedBases <= curMatchedBases && curMatchedBases < matchedBases + curCigarElement.getNonSkippedMatches()) {
-				if (curCigarElement.getCigarElement().getOperator() == CigarOperator.N) {
-					curCigarElement = cigarElementIt.next();
+			if (matchedBases <= currentMatchedBases && currentMatchedBases < matchedBases + currentCigarElement.getNonSkippedMatches()) {
+				if (currentCigarElement.getCigarElement().getOperator() == CigarOperator.N) {
+					currentCigarElement = cigarElementIt.next();
 				}
 				return;
 			} else {
-				curCigarElement = cigarElementIt.next();
+				currentCigarElement = cigarElementIt.next();
 			}
 		}
 	}
 	
 	private AlignedPosition getCurrentPosition() {
-		final int offset = curMatchedBases - getMatchedBases();
-		return curCigarElement.getPosition().copy().advance(offset);
+		final int offset = currentMatchedBases - getMatchedBases();
+		return currentCigarElement.getPosition().copy().advance(offset);
 	}
 	
 	private int getMatchedBases() {
-		return curCigarElement.getPosition().getNonSkippedMatches();
+		return currentCigarElement.getPosition().getNonSkippedMatches();
 	}
 	
 }

@@ -3,7 +3,6 @@ package lib.stat.estimation.provider;
 import java.util.List;
 
 import lib.data.DataContainer;
-import lib.data.IntegerData;
 import lib.data.ParallelData;
 import lib.stat.estimation.DefaultEstimationContainer;
 import lib.stat.estimation.EstimationContainer;
@@ -15,7 +14,7 @@ public abstract class INDELestimationCountProvider implements EstimationContaine
 	public static final int MINUS_INDEX	= 1;
 	
 	private final int maxIterations;
-	private final double pseudoCount;
+	private final double pseudoCount; // TODO other pseudoCount
 
 	public INDELestimationCountProvider(final int maxIterations) {
 		this.maxIterations 	= maxIterations;
@@ -51,7 +50,7 @@ public abstract class INDELestimationCountProvider implements EstimationContaine
 		final double[][] dataMatrix  = new double[dataContainers.size()][catergories]; // -> 2 because BetaBin
 		for (int replicateIndex = 0; replicateIndex < dataContainers.size(); replicateIndex++) {
 			final DataContainer container 	= dataContainers.get(replicateIndex);
-			final int count 				= getCount(container).getValue();
+			final int count 				= getCount(container);
 			final int coverageCount 		= container.getPileupCount().getReads(); // TODO container.getBaseCallCount().getValue();
 			dataMatrix[replicateIndex][PLUS_INDEX] 	= count + pseudoCount;
 			dataMatrix[replicateIndex][MINUS_INDEX]	= coverageCount - count + pseudoCount;
@@ -59,5 +58,7 @@ public abstract class INDELestimationCountProvider implements EstimationContaine
 		return NominalData.build(catergories, dataMatrix);
 	}
 	
-	abstract IntegerData getCount(DataContainer container);
+	abstract int getCount(DataContainer container);
+	
+	
 }

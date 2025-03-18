@@ -57,6 +57,7 @@ public class SamplePileupCount {
 		}
 	}
 	
+	// TODO howto sample modications
 	public PileupCount sample(final int targetReads) {
 		final Map<Base, Map<Byte, Integer>> newBaseCallQuals = 
 				new HashMap<Base, Map<Byte,Integer>>(pileupCount.getBCC().getAlleles().size());

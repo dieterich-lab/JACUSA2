@@ -3,7 +3,7 @@ package lib.data.storage.processor;
 import lib.data.storage.Storage;
 import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.AllDeletionsPositionProvider;
+import lib.util.position.AllDeletionPositionProvider;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 
@@ -13,14 +13,13 @@ import lib.util.position.PositionProvider;
 public class DeletionRecordProcessor implements GeneralRecordProcessor {
 
 	private final CoordinateTranslator translator;
-	
 	private final Storage delStorage;
 	
 	public DeletionRecordProcessor(
-			final CoordinateTranslator translator,
+			final CoordinateTranslator coordinateTranslator,
 			final Storage delStorage) {
 		
-		this.translator	= translator;
+		this.translator	= coordinateTranslator;
 		this.delStorage	= delStorage;
 	}
 
@@ -32,8 +31,7 @@ public class DeletionRecordProcessor implements GeneralRecordProcessor {
 	@Override // TODO adjust deletion at every position
 	public void process(final Record record) {
 		// store deletions
-		final PositionProvider delPosProvider = 
-				new AllDeletionsPositionProvider(record, translator);
+		final PositionProvider delPosProvider = new AllDeletionPositionProvider(record, translator);
 		while (delPosProvider.hasNext()) {
 			final Position pos = delPosProvider.next();
 			delStorage.increment(pos);

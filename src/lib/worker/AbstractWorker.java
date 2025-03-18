@@ -127,6 +127,7 @@ implements Iterator<ParallelData> {
 		return new FileReferenceProvider(referencefile, coordinateController);
 	}
 	
+	// FIXME for each result
 	protected boolean filter(final Result result) {
 		boolean isFiltered = false;
 		// apply each filter

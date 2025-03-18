@@ -16,9 +16,9 @@ public class MatchPosition extends AbstractPosition {
 			final Record record,
 			final CoordinateTranslator translator) {
 		super(
-				alignPos.getRefPos(), 
-				alignPos.getReadPos(), 
-				translator.ref2winPos(alignPos.getRefPos()), 
+				alignPos.getRefPosition(), 
+				alignPos.getReadPosition(), 
+				translator.ref2winPos(alignPos.getRefPosition()), 
 				record);
 	}
 	

@@ -17,7 +17,7 @@ public class CoordinateController {
 	private final int activeWinSize;
 	private CoordinateAdvancer coordAdvancer;
 
-	private CoordinateTranslator coordTrans;
+	private CoordinateTranslator coordTranslator;
 	
 	private Coordinate reserved;
 	private WindowedCoordinateStaticProvider provider;
@@ -26,7 +26,7 @@ public class CoordinateController {
 	private CoordinateController(final int activeWindowSize) {
 		this.active = null;
 		this.activeWinSize = activeWindowSize;
-		coordTrans = new DynamicCoordinateTranslator(this);
+		coordTranslator = new DynamicCoordinateTranslator(this);
 	}
 	
 	public CoordinateController(final int activeWindowSize, final CoordinateAdvancer coordinateAdvancer) {
@@ -75,7 +75,7 @@ public class CoordinateController {
 		return active;
 	}
 
-	// don't use only for JUNIT TODO remove
+	// don't use only for JUNIT
 	public void helperSetActive(final Coordinate active) {
 		this.active = active;
 		updateCoordinateAdvancer(active);
@@ -131,7 +131,7 @@ public class CoordinateController {
 	}
 
 	public CoordinateTranslator getCoordinateTranslator() {
-		return coordTrans;
+		return coordTranslator;
 	}
 
 	public WindowPositionGuard convert(int refPos, int length) {

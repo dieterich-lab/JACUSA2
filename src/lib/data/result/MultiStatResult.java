@@ -47,8 +47,9 @@ public class MultiStatResult implements Result {
 		this.parallelData = result.getParellelData();
 	}
 	
+	// TODO is this needed?
 	private void copyStat(final Result src, final Map<Integer, Double> dest) {
-		for (final int valueIndex : src.getValuesIndex()) {
+		for (final int valueIndex : src.getValueIndexes()) {
 			if (dest.containsKey(valueIndex)) {
 				throw new IllegalStateException("Duplicate keys are not allowed!");
 			}
@@ -59,7 +60,7 @@ public class MultiStatResult implements Result {
 	private void copyInfo(final Map<Integer, ExtendedInfo> filterInfos, final Map<Integer, ExtendedInfo> resultInfos, 
 			final Result result) {
 		
-		for (final int valueIndex : result.getValuesIndex()) {
+		for (final int valueIndex : result.getValueIndexes()) {
 			copyInfoHelper(valueIndex, filterInfos, result.getFilterInfo(valueIndex));
 			copyInfoHelper(valueIndex, resultInfos, result.getResultInfo(valueIndex));
 		}
@@ -102,7 +103,7 @@ public class MultiStatResult implements Result {
 	}
 	
 	@Override
-	public SortedSet<Integer> getValuesIndex() {
+	public SortedSet<Integer> getValueIndexes() {
 		return new TreeSet<>(value2stat.keySet());
 	}
 	

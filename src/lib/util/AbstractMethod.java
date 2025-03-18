@@ -72,7 +72,7 @@ public abstract class AbstractMethod {
 		return dataAssemblerFactory;
 	}
 	
-	public void initACOptions() {
+	public void initOptions() {
 		getACOptions().clear();
 		
 		initGlobalACOptions();
@@ -118,7 +118,7 @@ public abstract class AbstractMethod {
 	}
 
 	/**
-	 * TODO
+	 * TODO add comment
 	 * @return
 	 */
 	public List<AbstractOption> getACOptions() {
@@ -126,7 +126,7 @@ public abstract class AbstractMethod {
 	}
 
 	/**
-	 * TODO
+	 * TODO add comment
 	 * @param options
 	 */
 	public void printUsage(final boolean printExtendedHelp) {
@@ -167,7 +167,7 @@ public abstract class AbstractMethod {
 	}
 	
 	/**
-	 * TODO
+	 * TODO add comment
 	 * @throws Exception
 	 */
 	public void initCoordinateProvider() throws Exception {

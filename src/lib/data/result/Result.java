@@ -23,7 +23,7 @@ import lib.util.coordinate.Coordinate;
  */
 public interface Result extends HasParallelData, Serializable {
 	
-	public static int TOTAL = -1;
+	public static int TOTAL = -1; // FIXME use this to refer to main result
 	
 	ExtendedInfo getResultInfo();
 	ExtendedInfo getResultInfo(int valueIndex);
@@ -31,11 +31,10 @@ public interface Result extends HasParallelData, Serializable {
 	ExtendedInfo getFilterInfo();
 	ExtendedInfo getFilterInfo(int valueIndex);
 
-	@Deprecated
 	void setFiltered(boolean isFiltered);
 	boolean isFiltered();
 
-	SortedSet<Integer> getValuesIndex();
+	SortedSet<Integer> getValueIndexes();
 	int getValueSize();
 	
 	double getScore();

@@ -54,13 +54,13 @@ public class CLI {
 		// parse arguments
 		final CommandLineParser parser = new DefaultParser();
 		try {
-			final CommandLine line = parser.parse(options, args);
-			if (line.hasOption(showVersion.getOpt())) {
-				showVersion.process(line);
+			final CommandLine cmdLine = parser.parse(options, args);
+			if (cmdLine.hasOption(showVersion.getOpt())) {
+				showVersion.process(cmdLine);
 				System.exit(0);
 			}
-			if (line.hasOption(showHelp.getOpt())) {
-				showHelp.process(line);
+			if (cmdLine.hasOption(showHelp.getOpt())) {
+				showHelp.process(cmdLine);
 				printToolUsage();
 				System.exit(0);
 			}
@@ -77,10 +77,10 @@ public class CLI {
 		// parse arguments
 		final CommandLineParser parser = new DefaultParser();
 		try {
-			CommandLine line = parser.parse(options, args, false);
-			if (line.hasOption(showHelp.getOpt())) {
-				showHelp.process(line);
-				method.initACOptions();
+			CommandLine cmdLine = parser.parse(options, args, false);
+			if (cmdLine.hasOption(showHelp.getOpt())) {
+				showHelp.process(cmdLine);
+				method.initOptions();
 				printMethodFactoryUsage();
 				System.exit(0);
 			}
@@ -124,7 +124,7 @@ public class CLI {
 				final AbstractMethod tmpMethod = tmpMethodFactory.createMethod();
 				final String methodName = tmpMethod.getName();
 				methodNames.add(methodName);
-				tmpMethod.initACOptions();
+				tmpMethod.initOptions();
 
 				final List<AbstractOption> acOptions = tmpMethod.getACOptions();
 				for (final AbstractOption acOption : acOptions) {
@@ -251,7 +251,7 @@ public class CLI {
 		final AbstractMethod.AbstractFactory methodFactory = getMethodFactory(args[0].toLowerCase());
 		method = methodFactory.createMethod();
 		if (args.length == 1) {
-			method.initACOptions();
+			method.initOptions();
 			method.printUsage(printExtendedHelp);
 			System.exit(0);
 		}
@@ -351,7 +351,7 @@ public class CLI {
 	private void processMethodFactoryACOptions(final boolean printExtendedHelp, final boolean includeHidden,
 			final List<AbstractOption> acOptions, final Options options) {
 		// init method factory (populate: parameters)
-		method.initACOptions();
+		method.initOptions();
 		
 		acOptions.addAll(method.getACOptions());
 		for (AbstractOption acOption : acOptions) {

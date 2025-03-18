@@ -16,7 +16,7 @@ public class Record {
 	private final SamReader mateReader;
 	private Record mate;
 	
-	private final List<CigarDetail> cigarDetail;
+	private final List<AlignedPositionCigarElement> cigarDetail;
 
 	// indices to cigarDetail
 	private final List<Integer> skipped;
@@ -107,13 +107,13 @@ public class Record {
 				break;
 			}
 		
-			cigarDetail.add(new CigarDetail(position.copy(), cigarElement));
+			cigarDetail.add(new AlignedPositionCigarElement(position.copy(), cigarElement));
 			index = cigarDetail.size();
 			position.advance(cigarElement);
 		}
 	}
 
-	public List<CigarDetail> getCigarDetail() {
+	public List<AlignedPositionCigarElement> getCigarDetail() {
 		return cigarDetail;
 	}
 	
@@ -144,7 +144,7 @@ public class Record {
 			return 0;
 		}
 		
-		final CigarDetail upstream = cigarDetail.get(index - 1);
+		final AlignedPositionCigarElement upstream = cigarDetail.get(index - 1);
 		if (! upstream.getCigarElement().getOperator().isAlignment()) {
 			return 0;
 		}
@@ -157,7 +157,7 @@ public class Record {
 			return 0;
 		}
 		
-		final CigarDetail downstream = cigarDetail.get(index + 1);
+		final AlignedPositionCigarElement downstream = cigarDetail.get(index + 1);
 		if (! downstream.getCigarElement().getOperator().isAlignment()) {
 			return 0;
 		}
@@ -166,12 +166,12 @@ public class Record {
 	}
 	
 	// TODO change name
-	public class CigarDetail {
+	public class AlignedPositionCigarElement {
 		
 		private AlignedPosition position;
 		private CigarElement cigarElement;
 		
-		public CigarDetail(final AlignedPosition position, final CigarElement cigarElement) {
+		public AlignedPositionCigarElement(final AlignedPosition position, final CigarElement cigarElement) {
 			this.position 		= position;
 			this.cigarElement 	= cigarElement;
 		}
@@ -201,8 +201,8 @@ public class Record {
 		public String toString() {
 			return new StringBuilder()
 					.append(cigarElement.getOperator()).append(' ')
-					.append(position.getRefPos()).append(' ')
-					.append(position.getReadPos()).append(' ')
+					.append(position.getRefPosition()).append(' ')
+					.append(position.getReadPosition()).append(' ')
 					.append(position.getNonSkippedMatches()).append(' ')
 					.toString();
 		}

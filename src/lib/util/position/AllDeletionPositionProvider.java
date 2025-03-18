@@ -9,20 +9,21 @@ import lib.util.coordinate.CoordinateTranslator;
 /**
  * TODO add documentation
  */
-public class AllDeletionsPositionProvider implements PositionProvider {
+public class AllDeletionPositionProvider implements PositionProvider {
 
 	private final CombinedPositionProvider positionProvider;
 		
-	public AllDeletionsPositionProvider(
-			final Record record, final CoordinateTranslator translator) {
+	public AllDeletionPositionProvider(
+			final Record record,
+			final CoordinateTranslator translator) {
 
-		final List<Integer> cigarDetailIs = record.getDeletion();
-		final int deletions = cigarDetailIs.size();
+		final List<Integer> cigarDetailIndexes = record.getDeletion();
+		final int deletions = cigarDetailIndexes.size();
 		final List<PositionProvider> positionProviders = new ArrayList<>(deletions);
 		
 		for (int index = 0; index < deletions; ++index) {
 			positionProviders.add(
-					new DeletionPosProviderBuilder(index, record, translator)
+					new DeletionPositionProviderBuilder(index, record, translator)
 					.adjustWindowPos()
 					.build());
 		}
