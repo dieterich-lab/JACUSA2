@@ -283,6 +283,12 @@ implements HasConditionParameter {
 		return filteredFilename;
 	}
 	
+	public boolean showINDELcounts() {
+		return showDeletionCount() ||
+				showInsertionCount() ||
+				showInsertionStartCount();
+	}
+	
 	public String getReferenceFilename() {
 		return refFilename;
 	}

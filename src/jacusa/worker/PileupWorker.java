@@ -8,44 +8,44 @@ import lib.data.ParallelData;
 import lib.data.result.Result;
 import lib.estimate.MinkaParameter;
 import lib.stat.AbstractStat;
-import lib.stat.GenericStat;
-import lib.stat.estimation.provider.DeletionCountProvider;
-import lib.stat.estimation.provider.InsertionCountProvider;
+import lib.stat.INDELstat;
+import lib.stat.estimation.provider.DeletionEstimateProvider;
+import lib.stat.estimation.provider.InsertionEstimateProvider;
 import lib.worker.AbstractWorker;
 
 public class PileupWorker
 extends AbstractWorker {
 	
 	private final AbstractStat stat;
-	private final List<GenericStat> genericStats;
+	private final List<INDELstat> genericStats;
 	
 	public PileupWorker(final PileupMethod method, final int threadId) {
 		super(method, threadId);
 		stat = method.getParameter().getStatParameter()
 				.newInstance(method.getParameter().getConditionsSize());
 
-		genericStats = new ArrayList<GenericStat>(2);
+		genericStats = new ArrayList<INDELstat>(2);
 		if (getParameter().showDeletionCount() ||
 				getParameter().showInsertionCount() ||
 				getParameter().showInsertionStartCount()) {
 			final MinkaParameter minkaPrm = new MinkaParameter();
 			if (getParameter().showDeletionCount()) {
-				final DeletionCountProvider delCountProv = 
-						new DeletionCountProvider(minkaPrm.getMaxIterations());
-				genericStats.add(new GenericStat(minkaPrm, delCountProv, "deletion_score", "deletion_pvalue"));
+				final DeletionEstimateProvider delCountProv = 
+						new DeletionEstimateProvider(minkaPrm.getMaxIterations());
+				genericStats.add(new INDELstat(minkaPrm, delCountProv, "deletion_score", "deletion_pvalue"));
 			}
 			if (getParameter().showInsertionCount() ||
 					getParameter().showInsertionStartCount()) {
-				final InsertionCountProvider insCountProv = 
-						new InsertionCountProvider(minkaPrm.getMaxIterations());
-				genericStats.add(new GenericStat(minkaPrm, insCountProv, "insertion_score", "insertion_pvalue"));
+				final InsertionEstimateProvider insCountProv = 
+						new InsertionEstimateProvider(minkaPrm.getMaxIterations());
+				genericStats.add(new INDELstat(minkaPrm, insCountProv, "insertion_score", "insertion_pvalue"));
 			}
 		}
 	}
 	
 	@Override
 	protected Result process(final ParallelData parallelData) {
-		Result result = stat.process(parallelData); 
+		Result result = stat.process(parallelData, null); 
 		if (result == null) {
 			return null;
 		}

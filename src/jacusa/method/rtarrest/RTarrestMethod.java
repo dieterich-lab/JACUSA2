@@ -89,67 +89,67 @@ extends AbstractMethod {
 				Arrays.asList(arrestBccFetcher, throughBccFetcher));
 	}
 
-	protected void initGlobalACOptions() {
-		addACOption(new StatFactoryOption(
+	protected void initGlobalOptions() {
+		addOption(new StatFactoryOption(
 				getParameter().getStatParameter(), getStats()));
 		
 		// result format option only if there is a choice
 		if (getResultFormats().size() > 1 ) {
-			addACOption(new ResultFormatOption(
+			addOption(new ResultFormatOption(
 					getParameter(), getResultFormats()));
 		}
 		
-		addACOption(new FilterModusOption(getParameter()));
-		addACOption(new FilterConfigOption(getParameter(), getFilterFactories()));
+		addOption(new FilterModusOption(getParameter()));
+		addOption(new FilterConfigOption(getParameter(), getFilterFactories()));
 		
-		addACOption(new StatFilterOption(getParameter().getStatParameter()));
+		addOption(new StatFilterOption(getParameter().getStatParameter()));
 
-		addACOption(new ReferenceFastaFilenameOption(getParameter()));
-		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
+		addOption(new ReferenceFastaFilenameOption(getParameter()));
+		addOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 
-		addACOption(new MaxThreadOption(getParameter()));
-		addACOption(new WindowSizeOption(getParameter()));
-		addACOption(new ThreadWindowSizeOption(getParameter()));
+		addOption(new MaxThreadOption(getParameter()));
+		addOption(new WindowSizeOption(getParameter()));
+		addOption(new ThreadWindowSizeOption(getParameter()));
 
-		addACOption(new ShowDeletionCountOption(getParameter()));
-		addACOption(new ShowInsertionCountOption(getParameter()));
-		addACOption(new ShowInsertionStartCountOption(getParameter()));
+		addOption(new ShowDeletionCountOption(getParameter()));
+		addOption(new ShowInsertionCountOption(getParameter()));
+		addOption(new ShowInsertionStartCountOption(getParameter()));
 		
-		addACOption(new BedCoordinatesOption(getParameter()));
-		addACOption(new ResultFileOption(getParameter()));
+		addOption(new BedCoordinatesOption(getParameter()));
+		addOption(new ResultFileOption(getParameter()));
 		
-		addACOption(new DebugModusOption(getParameter(), this));
+		addOption(new DebugModusOption(getParameter(), this));
 	}
 
-	protected void initConditionACOptions() {
+	protected void initConditionOptions() {
 		// for all conditions
-		addACOption(new MinMAPQconditionOption(getParameter().getConditionParameters()));
-		addACOption(new MinBASQConditionOption(getParameter().getConditionParameters()));
-		addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters()));
-		addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters()));
+		addOption(new MinMAPQconditionOption(getParameter().getConditionParameters()));
+		addOption(new MinBASQConditionOption(getParameter().getConditionParameters()));
+		addOption(new MinCoverageConditionOption(getParameter().getConditionParameters()));
+		addOption(new FilterFlagConditionOption(getParameter().getConditionParameters()));
 		
-		addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
-		addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
+		addOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
+		addOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
 		
 		final Set<LibraryType> availableLibType = new HashSet<>(
 				Arrays.asList(
 						LibraryType.RF_FIRSTSTRAND,
 						LibraryType.FR_SECONDSTRAND));
 		
-		addACOption(new nConditionLibraryTypeOption(
+		addOption(new nConditionLibraryTypeOption(
 				availableLibType, getParameter().getConditionParameters(), getParameter()));
 		
 		// condition specific
 		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-			addACOption(new MinMAPQconditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addOption(new MinMAPQconditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			addOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addACOption(new nConditionLibraryTypeOption(
+			addOption(new nConditionLibraryTypeOption(
 					availableLibType, 
 					getParameter().getConditionParameters().get(conditionIndex),
 					getParameter()));

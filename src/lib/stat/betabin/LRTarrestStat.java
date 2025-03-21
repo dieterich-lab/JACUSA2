@@ -35,26 +35,18 @@ public class LRTarrestStat extends AbstractStat {
 		estimateDirMultAlpha	= new MinkaEstimateDirMultAlpha(dirMultPrm.getMinkaEstimateParameter());
 		chiSquaredDistribution 	= new ChiSquaredDistribution(1);
 	}
-
-	// FIXME add valueIndex
-	@Override
-	protected void postProcess(final Result result, final int valueIndex) {
-		if (dirMultPrm.showAlpha()) {
-			estimateDirMultAlpha.addAlphaValues(result.getResultInfo(valueIndex));
-		}
-		estimateDirMultAlpha.addStatResultInfo(result.getResultInfo(valueIndex));
-	}
 	
 	private double getPValue(final double lrt) {
 		return 1 - chiSquaredDistribution.cumulativeProbability(lrt);
 	} 
 	
 	@Override
-	public Result calculate(ParallelData parallelData) {
-		final EstimationContainer[] estContainers = estimationContainerProvider.convert(parallelData);
-		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
-		final double lrt 	= estimateDirMultAlpha.getLRT(estContainers, resultInfo);
+	public Result process(ParallelData parallelData, ExtendedInfo info) {
+		final EstimationContainer estimationContainer = estimationContainerProvider.convert(parallelData);
+		
+		final double lrt 	= estimateDirMultAlpha.getLRT(estimationContainer);
 		final double pvalue = getPValue(lrt);
+		// FIXME final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
 		
 		final List<Integer> arrestPositions = parallelData.getCombPooledData()
 				.getArrestPos2BCC().getPositions();
@@ -67,10 +59,20 @@ public class LRTarrestStat extends AbstractStat {
 				multiStatResult.addStat(Double.NaN);
 			}
 		}
+		
+		if (filter(multiStatResult)) {
+			return null;
+		}
+		
+		// TODO iterate over results
+		if (dirMultPrm.showAlpha()) {
+			estimateDirMultAlpha.addAlphaValues(estimationContainer, multiStatResult.getResultInfo());
+		}
+		estimateDirMultAlpha.addStatResultInfo(estimationContainer, multiStatResult.getResultInfo());
+		
 		return multiStatResult;
 	}
 	
-	@Override
 	public boolean filter(final Result statResult) {
 		final double statValue = statResult.getScore();
 

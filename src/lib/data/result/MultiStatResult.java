@@ -26,6 +26,7 @@ public class MultiStatResult implements Result {
 	private final Map<Integer, ExtendedInfo> filterInfo;
 	private final Map<Integer, ExtendedInfo> resultInfo;
 	
+	// FIXME value2stat - how many partitions
 	public MultiStatResult(final ParallelData parallelData) {
 		value2stat 			= new TreeMap<>();
 		markedFiltered 		= false;

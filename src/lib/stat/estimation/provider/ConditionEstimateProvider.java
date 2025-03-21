@@ -3,8 +3,8 @@ package lib.stat.estimation.provider;
 import lib.data.ParallelData;
 import lib.stat.estimation.EstimationContainer;
 
-public interface EstimationContainerProvider {
+public interface ConditionEstimateProvider {
 
-	EstimationContainer[] convert(ParallelData parallelData);
+	EstimationContainer convert(ParallelData parallelData);
 
 }

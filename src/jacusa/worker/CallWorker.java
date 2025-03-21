@@ -1,9 +1,15 @@
 package jacusa.worker;
 
+import java.util.List;
+
 import jacusa.method.call.CallMethod;
 import lib.data.ParallelData;
 import lib.data.result.Result;
-import lib.stat.AbstractStat;
+import lib.stat.INDELstat;
+import lib.stat.dirmult.CallStat;
+import lib.stat.sampling.SubSampleStat;
+import lib.util.ExtendedInfo;
+
 import lib.worker.AbstractWorker;
 
 
@@ -12,36 +18,41 @@ import lib.worker.AbstractWorker;
  */
 public class CallWorker extends AbstractWorker {
 
-	private final AbstractStat stat;
+	private final CallStat callStat;
+	private final List<INDELstat> indelStats;
+	private final SubSampleStat subSampleStat;
 	
-	public CallWorker(final CallMethod method, final int threadId) {
+	public CallWorker(
+			final CallMethod method, 
+			final int threadId, 
+			final CallStat callStat, 
+			final List<INDELstat> indelStats, 
+			final SubSampleStat subSampleStat) {
 		super(method, threadId);
-		stat = method
-				.getParameter()
-				.getStatParameter()
-				.newInstance(method.getParameter().getConditionsSize());
+		
+		this.callStat 		= callStat;
+		this.indelStats 	= indelStats;
+		this.subSampleStat 	= subSampleStat;
 	}
-
 	
 	@Override
 	protected Result process(final ParallelData parallelData) {
-		Result result = stat.process(parallelData); 
-		if (result == null) {
+		final ExtendedInfo info = new ExtendedInfo(parallelData.getReplicates());
+		final Result callResult = callStat.process(parallelData, info);
+		
+		if (callResult == null) {
 			return null;
 		}
 		
-		processGenericStats(result);
-
-		// TODO move to stat
-		// subsample
-		// final int subsampleRuns = stat.getSubsampleRuns();
-		/* 
-		if (subsampleRuns > 0 ) {
-			subsample(subsampleRuns, result);
+		for (final INDELstat indelStat : indelStats) {
+			indelStat.process(parallelData, info);
 		}
-		*/
-
-		return result;
+		
+		if (subSampleStat != null) {
+			subSampleStat.subSample(callResult, callStat, indelStats);
+		}
+		
+		return callResult;
 	}
 
 }

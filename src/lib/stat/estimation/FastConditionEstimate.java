@@ -1,12 +1,15 @@
 package lib.stat.estimation;
 
+import java.util.Arrays;
+
 import lib.stat.nominal.NominalData;
 import lib.util.Util;
 
-public class FastEstimationResult implements EstimationContainer {
 
-	private String id;
-	private NominalData nominalData;
+public class FastConditionEstimate implements ConditionEstimate{
+
+	private final String id;
+	private final NominalData nominalData;
 	private final int maxIterations;
 
 	private double[] initAlpha;
@@ -17,7 +20,7 @@ public class FastEstimationResult implements EstimationContainer {
 	
 	private int iteration;
 
-	public FastEstimationResult(final String id, final NominalData nominalData, final int maxIterations) {
+	public FastConditionEstimate(final String id, final NominalData nominalData, final int maxIterations) {
 		this.id				= id;
 		this.nominalData	= nominalData;
 		this.maxIterations 	= maxIterations;
@@ -26,6 +29,25 @@ public class FastEstimationResult implements EstimationContainer {
 		numericallyStable 	= true;
 		
 		iteration 			= -1;
+	}
+	
+	public FastConditionEstimate(final ConditionEstimate conditionEstimate) {
+		this.id 			= conditionEstimate.getID();
+		this.nominalData 	= conditionEstimate.getNominalData();
+		this.maxIterations 	= conditionEstimate.getMaxIterations();
+		
+		if (conditionEstimate.getIteration() >= 0) {
+			final double[] initAlpha = conditionEstimate.getAlpha(0); 
+			this.initAlpha 			= Arrays.copyOf(initAlpha, initAlpha.length);
+
+			final double[] alpha 	= conditionEstimate.getAlpha(conditionEstimate.getMaxIterations()); 
+			this.alpha 				= Arrays.copyOf(alpha, alpha.length);
+
+			this.logLikelihood 		= conditionEstimate.getLogLikelihood(conditionEstimate.getMaxIterations());
+			this.numericallyStable 	= conditionEstimate.isNumericallyStable();
+			
+			this.iteration 			= conditionEstimate.getIteration(); 
+		}
 	}
 	
 	@Override
@@ -95,15 +117,8 @@ public class FastEstimationResult implements EstimationContainer {
 			this.initAlpha 	= alpha;
 		} else {
 			this.alpha 		= alpha;
-			
 		}
 		this.logLikelihood 	= logLikelihood;
-	}
-	
-	@Override
-	public void update(final String id, final NominalData nominalData) {
-		this.id				= id;
-		this.nominalData	= nominalData;
 	}
 
 	@Override
@@ -121,11 +136,11 @@ public class FastEstimationResult implements EstimationContainer {
 		sb.append('\n');
 		
 		sb.append("Initial Alpha: ");
-		sb.append(Util.join(getAlpha(0), '\t'));
+		sb.append(Util.join(getAlpha(0), '\n'));
 		sb.append('\n');
 		
 		sb.append("Final Alpha: ");
-		sb.append(Util.join(getAlpha(), '\t'));
+		sb.append(Util.join(getAlpha(), '\n'));
 		sb.append('\n');
 		
 		sb.append("logLikelihood: ");

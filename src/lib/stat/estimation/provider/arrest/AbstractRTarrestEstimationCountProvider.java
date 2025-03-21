@@ -6,12 +6,13 @@ import java.util.stream.Collectors;
 
 import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.stat.estimation.DefaultEstimationContainer;
+import lib.stat.estimation.ConditionEstimate;
+import lib.stat.estimation.DefaultConditionEstimate;
 import lib.stat.estimation.EstimationContainer;
-import lib.stat.estimation.provider.EstimationContainerProvider;
+import lib.stat.estimation.provider.ConditionEstimateProvider;
 import lib.stat.nominal.NominalData;
 
-public abstract class AbstractRTarrestEstimationCountProvider implements EstimationContainerProvider {
+public abstract class AbstractRTarrestEstimationCountProvider implements ConditionEstimateProvider {
 
 	public static final int READ_ARREST_INDEX	= 0;
 	public static final int READ_THROUGH_INDEX	= 1;
@@ -42,15 +43,17 @@ public abstract class AbstractRTarrestEstimationCountProvider implements Estimat
 	protected abstract List<List<Count>> process(ParallelData parallelData);
 
 	@Override
-	public EstimationContainer[] convert(ParallelData parallelData) {
+	public EstimationContainer convert(ParallelData parallelData) {
 		final List<List<Count>> counts = process(parallelData);
 
-		final int conditions = parallelData.getConditions();
-		final EstimationContainer[] estSamples = new EstimationContainer[conditions + 1];
+		final ConditionEstimate[] conditionEstimates = new ConditionEstimate[parallelData.getConditions()];
 		
-		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
-			final NominalData nominalData 	= createData(counts.get(conditionIndex)); 
-			estSamples[conditionIndex] 		= createContainer(Integer.toString(conditionIndex + 1), nominalData, maxIterations);
+		for (int conditionIndex = 0; conditionIndex < conditionEstimates.length; ++conditionIndex) {
+			final NominalData nominalData 		= createData(counts.get(conditionIndex)); 
+			conditionEstimates[conditionIndex] 	= createContainer(
+					Integer.toString(conditionIndex + 1),
+					nominalData,
+					maxIterations);
 		}
 
 		// conditions pooled
@@ -59,12 +62,11 @@ public abstract class AbstractRTarrestEstimationCountProvider implements Estimat
 					.flatMap(List::stream)
 					.collect(Collectors.toList()));
 
-		estSamples[conditions] = new DefaultEstimationContainer("P", nominalData, maxIterations);
-		return estSamples;
+		return new EstimationContainer(conditionEstimates, new DefaultConditionEstimate("P", nominalData, maxIterations));
 	}
 
-	private EstimationContainer createContainer(final String id, final NominalData nominalData, final int maxIterations) {
-		return new DefaultEstimationContainer(id, nominalData, maxIterations);
+	private ConditionEstimate createContainer(final String id, final NominalData nominalData, final int maxIterations) {
+		return new DefaultConditionEstimate(id, nominalData, maxIterations);
 	}
 
 	public NominalData createData(final List<Count> counts) {

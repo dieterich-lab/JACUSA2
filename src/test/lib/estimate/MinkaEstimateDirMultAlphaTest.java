@@ -2,8 +2,8 @@ package test.lib.estimate;
 
 import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.estimate.MinkaParameter;
-import lib.stat.estimation.EstimationContainer;
-import lib.stat.estimation.FastEstimationResult;
+import lib.stat.estimation.ConditionEstimate;
+import lib.stat.estimation.DefaultConditionEstimate;
 import lib.stat.nominal.NominalData;
 import lib.util.ExtendedInfo;
 import test.lib.stat.dirmult.NominalDataArgumentConverter;
@@ -47,8 +47,8 @@ class MinkaEstimateDirMultAlphaTest {
 			@ConvertWith(DoubleArrayArgumentConverter.class) double[] expectedAlpha, 
 			double expectedLL) {
 		
-		final EstimationContainer estimationContainer = 
-				new FastEstimationResult("TEST", nominalData, minkaParameter.getMaxIterations());  
+		final ConditionEstimate estimationContainer = 
+				new DefaultConditionEstimate("TEST", nominalData, minkaParameter.getMaxIterations());  
 		estimationContainer.add(initAlpha, Double.NaN);
 		final ExtendedInfo resultInfo = new ExtendedInfo(null); // FIXME one replicate
 		testInstance.maximizeLogLikelihood(estimationContainer, resultInfo, false);

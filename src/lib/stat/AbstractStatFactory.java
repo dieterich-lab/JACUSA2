@@ -51,7 +51,6 @@ public abstract class AbstractStatFactory {
 	 * @return
 	 */
 	public String getDesc() {
-		// HACK
 		Option tmp = (Option)option.clone();
 		CLIUtil.adjustOption(tmp, getOptions(), tmp.getOpt().length());
 		return tmp.getDescription();

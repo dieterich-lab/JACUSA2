@@ -18,10 +18,10 @@ public interface DirMultParameter {
 	MinkaParameter getMinkaEstimateParameter();
 	void setMinkaParameter(MinkaParameter estimateAlpha);
 	
-	/* TODO where to put this
 	int getSubsampleRuns();
 	void setSubampleRuns(int subsampleRuns);
 
+	/* TODO where to put this
 	int getDownsampleRuns();
 	void setDownsampleRuns(int downsampleRuns);
 	
@@ -30,8 +30,8 @@ public interface DirMultParameter {
 	
 	int getRandomSampleRuns();
 	void setRandomSampleRuns(int downsampleRuns);
-	*/
 	
 	int getLimit();
 	void setLimit(int limit);
+	*/
 }

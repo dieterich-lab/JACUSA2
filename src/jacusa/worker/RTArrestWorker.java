@@ -20,13 +20,10 @@ extends AbstractWorker {
 	
 	@Override
 	protected Result process(final ParallelData parallelData) {
-		Result result = stat.process(parallelData); 
+		Result result = stat.process(parallelData, null); 
 		if (result == null) {
 			return null;
 		}
-		
-		// FIXME
-		processGenericStats(result);
 		
 		return result;
 	}

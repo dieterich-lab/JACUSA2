@@ -9,14 +9,15 @@ import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 import lib.phred2prob.Phred2Prob;
-import lib.stat.estimation.DefaultEstimationContainer;
+import lib.stat.estimation.ConditionEstimate;
+import lib.stat.estimation.DefaultConditionEstimate;
 import lib.stat.estimation.EstimationContainer;
-import lib.stat.estimation.provider.EstimationContainerProvider;
+import lib.stat.estimation.provider.ConditionEstimateProvider;
 import lib.stat.nominal.NominalData;
 import lib.util.Base;
 
 abstract class AbstractEstimationContainerProvider 
-implements EstimationContainerProvider {
+implements ConditionEstimateProvider {
 
 	private final boolean calcPValue; 
 	private final int maxIterations;
@@ -44,15 +45,17 @@ implements EstimationContainerProvider {
 	}
 	
 	@Override
-	public EstimationContainer[] convert(final ParallelData parallelData) {
+	public EstimationContainer convert(final ParallelData parallelData) {
 		final List<List<PileupCount>> pileupCounts = process(parallelData);
 
-		final Base[] bases 		= getBases(parallelData);
-		final int conditions 	= pileupCounts.size();
-		final EstimationContainer[] estContainers = new EstimationContainer[conditions + 1];
-		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
-			final NominalData nominalData 	= createData(bases, pileupCounts.get(conditionIndex)); 
-			estContainers[conditionIndex] 	= createContainer(Integer.toString(conditionIndex + 1), nominalData, maxIterations);
+		final Base[] bases = getBases(parallelData);
+		final ConditionEstimate[] conditionEstimates = new ConditionEstimate[pileupCounts.size()];
+		for (int conditionIndex = 0; conditionIndex < conditionEstimates.length; ++conditionIndex) {
+			final NominalData nominalData 		= createData(bases, pileupCounts.get(conditionIndex)); 
+			conditionEstimates[conditionIndex] 	= createContainer(
+					Integer.toString(conditionIndex + 1),
+					nominalData,
+					maxIterations);
 		}
 
 		// conditions pooled
@@ -61,12 +64,13 @@ implements EstimationContainerProvider {
 				pileupCounts.stream()
 					.flatMap(List::stream)
 					.collect(Collectors.toList()) ); 
-		estContainers[conditions] 		= new DefaultEstimationContainer("P", nominalData, maxIterations);
-		return estContainers;
+		return new EstimationContainer(
+				conditionEstimates,
+				new DefaultConditionEstimate("P", nominalData, maxIterations));
 	}
 
-	private EstimationContainer createContainer(final String id, final NominalData nominalData, final int maxIterations) {
-		return new DefaultEstimationContainer(id, nominalData, maxIterations);
+	private ConditionEstimate createContainer(final String id, final NominalData nominalData, final int maxIterations) {
+		return new DefaultConditionEstimate(id, nominalData, maxIterations);
 	}
 	
 	private NominalData createData(final Base[] bases, final List<PileupCount> pileupCounts) {

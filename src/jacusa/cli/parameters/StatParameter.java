@@ -11,23 +11,18 @@ public class StatParameter {
 
 	// chosen statisticCalculator
 	private AbstractStatFactory factory;
+	
 	private double threshold;
 	
-	public StatParameter(
-			final AbstractStatFactory factory, final double threshold) {
-		
-		this.factory 	= factory;
-		this.threshold 	= threshold;
-	}
-
-	/**
-	 * Default constructor
-	 */
 	public StatParameter() {
-		// Double.Nan implies no filtering
 		threshold = Double.NaN;
 	}
 
+	public StatParameter(final AbstractStatFactory factory, final double threshold) {
+		this.factory 	= factory;
+		this.threshold	= threshold;
+	}
+	
 	/**
 	 * Returns an double that is used to filter the test-statistic.
 	 * 
@@ -53,8 +48,9 @@ public class StatParameter {
 	 * @param conditions the number of conditions to be used
 	 * @return an instance of AbstractStatisticCalculator 
 	 */
+	// TODO refactor should not be necessary to have parameters
 	public AbstractStat newInstance(final int conditions) {
-		return factory.newInstance(threshold, conditions);
+		return factory.newInstance(getThreshold(), conditions);
 	}
 
 	/**

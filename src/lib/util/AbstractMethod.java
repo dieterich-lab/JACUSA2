@@ -73,14 +73,14 @@ public abstract class AbstractMethod {
 	}
 	
 	public void initOptions() {
-		getACOptions().clear();
+		getOptions().clear();
 		
-		initGlobalACOptions();
-		initConditionACOptions();
+		initGlobalOptions();
+		initConditionOptions();
 	}
 	
-	protected abstract void initConditionACOptions();
-	protected abstract void initGlobalACOptions();
+	protected abstract void initConditionOptions();
+	protected abstract void initGlobalOptions();
 	
 	// check state after parameters have been set
 	public final boolean checkState() {
@@ -92,7 +92,7 @@ public abstract class AbstractMethod {
 		return true;
 	}
 	
-	protected void addACOption(AbstractOption newACOption) {
+	protected void addOption(AbstractOption newACOption) {
 		checkDuplicate(newACOption);
 		acOptions.add(newACOption);
 	}
@@ -121,7 +121,7 @@ public abstract class AbstractMethod {
 	 * TODO add comment
 	 * @return
 	 */
-	public List<AbstractOption> getACOptions() {
+	public List<AbstractOption> getOptions() {
 		return acOptions;
 	}
 
@@ -156,7 +156,7 @@ public abstract class AbstractMethod {
 	}
 	
 	protected Options getOptions(final boolean printExtendedHelp) {
-		final List<AbstractOption> tmpAcOptions = getACOptions();
+		final List<AbstractOption> tmpAcOptions = getOptions();
 		final Options options = new Options();
 		for (final AbstractOption acOption : tmpAcOptions) {
 			if (! acOption.isHidden()) {

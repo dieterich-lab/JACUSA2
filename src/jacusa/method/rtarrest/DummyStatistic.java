@@ -18,19 +18,9 @@ class DummyStatistic extends AbstractStat {
 	}
 
 	@Override
-	protected boolean filter(final Result statResult) {
-		return false;
-	}
-
-	@Override
-	public Result calculate(final ParallelData parallelData) {
+	public Result process(final ParallelData parallelData, ExtendedInfo info) {
 		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
 		return new OneStatResult(defaultValue, parallelData, resultInfo);
-	}
-
-	@Override
-	protected void postProcess(final Result statResult, final int valueIndex) {
-		// not needed
 	}
 	
 }

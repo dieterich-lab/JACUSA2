@@ -4,12 +4,13 @@ import java.util.List;
 
 import lib.data.DataContainer;
 import lib.data.ParallelData;
-import lib.stat.estimation.DefaultEstimationContainer;
+import lib.stat.estimation.ConditionEstimate;
+import lib.stat.estimation.DefaultConditionEstimate;
 import lib.stat.estimation.EstimationContainer;
-import lib.stat.estimation.provider.EstimationContainerProvider;
+import lib.stat.estimation.provider.ConditionEstimateProvider;
 import lib.stat.nominal.NominalData;
 
-public class LRTarrestEstimationCountProvider implements EstimationContainerProvider {
+public class LRTarrestEstimationCountProvider implements ConditionEstimateProvider {
 
 	public static final int READ_ARREST_INDEX	= 0;
 	public static final int READ_THROUGH_INDEX	= 1;
@@ -23,23 +24,26 @@ public class LRTarrestEstimationCountProvider implements EstimationContainerProv
 	}
 	
 	@Override
-	public EstimationContainer[] convert(ParallelData parallelData) {
-		final int conditions = parallelData.getConditions();
-		final EstimationContainer[] estContainers = new EstimationContainer[conditions + 1];
-		
-		for (int conditionIndex = 0; conditionIndex < conditions; ++conditionIndex) {
-			final NominalData nominalData 	= createData(parallelData.getData(conditionIndex)); 
-			estContainers[conditionIndex] 	= createContainer(Integer.toString(conditionIndex + 1), nominalData, maxIterations);
+	public EstimationContainer convert(ParallelData parallelData) {
+		final ConditionEstimate[] conditionEstimates = new ConditionEstimate[parallelData.getConditions()];
+
+		for (int conditionIndex = 0; conditionIndex < conditionEstimates.length; ++conditionIndex) {
+			final NominalData nominalData 		= createData(parallelData.getData(conditionIndex)); 
+			conditionEstimates[conditionIndex] 	= createContainer(
+					Integer.toString(conditionIndex + 1),
+					nominalData,
+					maxIterations);
 		}
 
 		// conditions pooled
 		final NominalData nominalData = createData(parallelData.getCombinedData());
-		estContainers[conditions] = new DefaultEstimationContainer("P", nominalData, maxIterations);
-		return estContainers;
+		return new EstimationContainer(
+				conditionEstimates,
+				new DefaultConditionEstimate("P", nominalData, maxIterations));
 	}
 
-	private EstimationContainer createContainer(final String id, final NominalData nominalData, final int maxIterations) {
-		return new DefaultEstimationContainer(id, nominalData, maxIterations);
+	private ConditionEstimate createContainer(final String id, final NominalData nominalData, final int maxIterations) {
+		return new DefaultConditionEstimate(id, nominalData, maxIterations);
 	}
 	
 	public NominalData createData(final List<DataContainer> dataContainers) {

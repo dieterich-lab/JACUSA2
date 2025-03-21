@@ -35,39 +35,39 @@ public class RTarrestStat extends AbstractStat {
 		estimateDirMultAlpha	= new MinkaEstimateDirMultAlpha(dirMultParameter.getMinkaEstimateParameter());
 		dist 	= new ChiSquaredDistribution(1);
 	}
-
-	@Override
-	protected void postProcess(final Result result, final int valueIndex) {
-		if (dirMultPrarameter.showAlpha()) {
-			estimateDirMultAlpha.addAlphaValues(result.getResultInfo(valueIndex));
-		}
-		estimateDirMultAlpha.addStatResultInfo(result.getResultInfo(valueIndex));
-	}
 	
 	private double getPValue(final double lrt) {
 		return 1 - dist.cumulativeProbability(lrt);
 	} 
 	
 	@Override
-	public Result calculate(ParallelData parallelData) {
-		final EstimationContainer[] estimationContainers = estimationContainerProvider.convert(parallelData);
-		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates()); 
-		final double lrt 	= estimateDirMultAlpha.getLRT(estimationContainers, resultInfo);
+	public Result process(ParallelData parallelData, ExtendedInfo info) {
+		final EstimationContainer estimationContainer = estimationContainerProvider.convert(parallelData);
+		final double lrt 	= estimateDirMultAlpha.getLRT(estimationContainer);
 		final double pvalue = getPValue(lrt);
+		if (! filter(pvalue)) {
+			return null;
+		}
+		
+		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
+		resultInfo.addSite(ARREST_SCORE, Util.format(lrt));
+		
+		if (dirMultPrarameter.showAlpha()) {
+			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo);
+		}
+		estimateDirMultAlpha.addStatResultInfo(estimationContainer, resultInfo);
+		
 		final Result result = new OneStatResult(pvalue, parallelData, resultInfo);
-		result.getResultInfo().addSite(ARREST_SCORE, Util.format(lrt));
+
 		return result;
 	}
 	
-	@Override
-	public boolean filter(final Result statResult) {
-		final double statValue = statResult.getScore();
-
+	public boolean filter(final double pvalue) {
 		if (Double.isNaN(threshold)) {
 			return false;
 		}
 
-		return threshold > statValue;
+		return threshold > pvalue;
 	}
 	
 }

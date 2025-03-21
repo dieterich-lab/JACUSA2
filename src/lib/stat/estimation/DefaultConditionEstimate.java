@@ -3,11 +3,10 @@ package lib.stat.estimation;
 import lib.stat.nominal.NominalData;
 import lib.util.Util;
 
-public class DefaultEstimationContainer implements EstimationContainer {
+public class DefaultConditionEstimate implements ConditionEstimate {
 
-	private String id;
-	private NominalData nominalData;
-	private final int maxIterations;
+	private final String id;
+	private final NominalData nominalData;
 	
 	private double[][] alpha;
 	private double[] logLikelihood;
@@ -15,14 +14,13 @@ public class DefaultEstimationContainer implements EstimationContainer {
 	
 	private int iteration;
 
-	public DefaultEstimationContainer(
+	public DefaultConditionEstimate(
 			final String id, 
 			final NominalData dirMultData, 
 			final int maxIterations) {
 		
 		this.id				= id;
 		this.nominalData	= dirMultData;
-		this.maxIterations 	= maxIterations;
 
 		alpha 				= new double[maxIterations + 1][];
 		logLikelihood 		= new double[maxIterations + 1];
@@ -68,7 +66,7 @@ public class DefaultEstimationContainer implements EstimationContainer {
 
 	@Override
 	public int getMaxIterations() {
-		return maxIterations;
+		return logLikelihood.length + 1;
 	}
 
 	@Override
@@ -89,12 +87,6 @@ public class DefaultEstimationContainer implements EstimationContainer {
 	}
 	
 	@Override
-	public void update(final String id, final NominalData nominalData) {
-		this.id				= id;
-		this.nominalData	= nominalData;
-	}
-
-	@Override
 	public void clear() {
 		numericallyStable 	= true;
 		iteration 			= -1;		
@@ -111,6 +103,8 @@ public class DefaultEstimationContainer implements EstimationContainer {
 		sb.append("Initial Alpha: ");
 		sb.append(Util.join(getAlpha(0), '\n'));
 		sb.append('\n');
+		
+		// TODO add intermediate values
 		
 		sb.append("Final Alpha: ");
 		sb.append(Util.join(getAlpha(), '\n'));

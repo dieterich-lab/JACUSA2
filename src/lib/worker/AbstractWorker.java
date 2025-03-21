@@ -1,6 +1,5 @@
 package lib.worker;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -20,11 +19,7 @@ import lib.data.storage.container.SharedStorage;
 import lib.data.storage.container.SimpleMDReferenceProvider;
 import lib.data.validator.paralleldata.CombinedParallelDataValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
-import lib.estimate.MinkaParameter;
 import lib.io.copytmp.CopyTmpResult;
-import lib.stat.GenericStat;
-import lib.stat.estimation.provider.DeletionCountProvider;
-import lib.stat.estimation.provider.InsertionCountProvider;
 import lib.util.coordinate.CoordinateController;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
@@ -56,8 +51,7 @@ implements Iterator<ParallelData> {
 	
 	private ParallelData parallelData;
 	
-	protected final List<GenericStat> genericStats;
-	
+	// FIXME remove method -> add WorkerDispatcher, and GeneralParameter
 	public AbstractWorker(final AbstractMethod method, final int threadId) {
 		this.method = method;
 		
@@ -77,38 +71,6 @@ implements Iterator<ParallelData> {
 		comparisons = 0;
 		status 		= STATUS.INIT;
 		setName(AbstractTool.getLogger().getTool().getName() + " Worker " + threadId);
-		
-		genericStats = new ArrayList<GenericStat>(6);
-		if (getParameter().showDeletionCount() ||
-				getParameter().showInsertionCount() ||
-				getParameter().showInsertionStartCount()) {
-			final MinkaParameter minkaParameter = new MinkaParameter();
-			if (getParameter().showDeletionCount()) {
-				final DeletionCountProvider delCountProvider = 
-						new DeletionCountProvider(minkaParameter.getMaxIterations());
-				genericStats.add(new GenericStat(minkaParameter, delCountProvider, "deletion_score", "deletion_pvalue"));
-			}
-			if (getParameter().showInsertionCount() ||
-					getParameter().showInsertionStartCount()) {
-				final InsertionCountProvider insCountProvider = 
-						new InsertionCountProvider(minkaParameter.getMaxIterations());
-				genericStats.add(new GenericStat(minkaParameter, insCountProvider, "insertion_score", "insertion_pvalue"));
-			}
-		}
-	}
-
-	protected double[] processGenericStats(final Result result) {
-		final double[] stats = new double[genericStats.size()];
-		
-		for (int i = 0; i < genericStats.size(); ++i) {
-			final GenericStat genericStat = genericStats.get(i);
-			final Result genericStatResult = genericStat.process(result.getParellelData());
-			// TODO multiple values - why is it copied between multiple values
-			// FIXME result.getResultInfo().addAll(genericStatResult.getResultInfo());
-			stats[i] = genericStatResult.getScore();
-		}
-		
-		return stats;
 	}
 	
 	private ReferenceProvider createReferenceProvider(final CoordinateController coordinateController) {

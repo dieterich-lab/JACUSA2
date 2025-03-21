@@ -12,22 +12,10 @@ import lib.util.ExtendedInfo;
  */
 class CoverageStatistic extends AbstractStat {
 	
-	@Override
-	protected boolean filter(final Result statResult) {
-		return false;
-	}
-
-	@Override
-	public Result calculate(final ParallelData parallelData) {
+	public Result process(final ParallelData parallelData, ExtendedInfo info) {
 		final PileupCount pileupCount = parallelData.getCombPooledData().getPileupCount();
 		final int coverage = pileupCount.getBCC().getCoverage();
-		final ExtendedInfo info = new ExtendedInfo(parallelData.getReplicates());
 		return new OneStatResult(coverage, parallelData, info);
 	}
-	
-	@Override
-	protected void postProcess(Result result, int valueIndex) {
-		// not needed
-	}
-	
+
 }

@@ -6,7 +6,7 @@ import org.apache.commons.cli.Options;
 
 import lib.io.ResultFormat;
 import lib.stat.AbstractStatFactory;
-import lib.stat.estimation.provider.EstimationContainerProvider;
+import lib.stat.estimation.provider.ConditionEstimateProvider;
 import lib.stat.estimation.provider.pileup.DefaultEstimationPileupProvider;
 import lib.stat.estimation.provider.pileup.InSilicoEstimationPileupProvider;
 
@@ -30,17 +30,17 @@ extends AbstractStatFactory {
 
 	@Override
 	public CallStat newInstance(double threshold, final int conditions) {
-		EstimationContainerProvider dirMultPileupCountProvider;
+		ConditionEstimateProvider pileupCountProvider;
 		switch (conditions) {
 		case 1:
-			dirMultPileupCountProvider = new InSilicoEstimationPileupProvider(
+			pileupCountProvider = new InSilicoEstimationPileupProvider(
 					dirMultPrm.calcPValue(),
 					dirMultPrm.getMinkaEstimateParameter().getMaxIterations(),
 					dirMultPrm.getEstimatedError());
 			break;
 			
 		case 2:
-			dirMultPileupCountProvider = new DefaultEstimationPileupProvider(
+			pileupCountProvider = new DefaultEstimationPileupProvider(
 					dirMultPrm.calcPValue(),
 					dirMultPrm.getMinkaEstimateParameter().getMaxIterations(),
 					dirMultPrm.getEstimatedError()); 
@@ -49,7 +49,7 @@ extends AbstractStatFactory {
 		default:
 			throw new IllegalStateException("Number of conditions not supported: " + conditions);
 		}
-		return new CallStat(threshold, dirMultPileupCountProvider, dirMultPrm);
+		return new CallStat(threshold, pileupCountProvider, dirMultPrm);
 	}
 
 	@Override

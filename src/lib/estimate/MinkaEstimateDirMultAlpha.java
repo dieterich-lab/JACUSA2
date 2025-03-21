@@ -2,6 +2,7 @@ package lib.estimate;
 
 import java.util.Arrays;
 
+import lib.stat.estimation.ConditionEstimate;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.initalpha.AbstractAlphaInit;
 import lib.stat.nominal.NominalData;
@@ -32,7 +33,7 @@ public class MinkaEstimateDirMultAlpha {
 	 * 
 	 * Tested in test.lib.estimate.MinkaEstimateDirMultAlphaTest
 	 */
-	public boolean maximizeLogLikelihood(final EstimationContainer estimationContainer, final ExtendedInfo estimateInfo, final boolean backtrack) {
+	public boolean maximizeLogLikelihood(final ConditionEstimate estimationContainer, final ExtendedInfo estimateInfo, final boolean backtrack) {
 		final NominalData nominalData 	= estimationContainer.getNominalData();
 		final int categories 			= nominalData.getCategories();  
 		
@@ -204,23 +205,13 @@ public class MinkaEstimateDirMultAlpha {
 		return null;
 	}
 
-	public void addStatResultInfo(final EstimationContainer[] estimationContainers, final ExtendedInfo info) {
-		if (! isNumericallyStable(estimationContainers)) {
+	public void addStatResultInfo(final EstimationContainer estimationContainer, final ExtendedInfo info) {
+		if (! estimationContainer.isNumericallyStable()) {
 			info.addSite("NumericallyInstable");
 		}
 	}
 	
-	public boolean isNumericallyStable(final EstimationContainer[] estContainers) {
-		for (final EstimationContainer estContainer : estContainers) {
-			if (! estContainer.isNumericallyStable()) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-	
-	public boolean estimate(final EstimationContainer estimationContainer, final AbstractAlphaInit alphaInit, final ExtendedInfo info, final boolean backtrack) {
+	public boolean estimate(final ConditionEstimate estimationContainer, final AbstractAlphaInit alphaInit, final ExtendedInfo info, final boolean backtrack) {
 		// perform an initial guess of alpha
 		final double[] initAlpha 	= alphaInit.init(estimationContainer.getNominalData());
 		final double logLikelihood 	= getLogLikelihood(initAlpha, estimationContainer.getNominalData());
@@ -240,14 +231,14 @@ public class MinkaEstimateDirMultAlpha {
 	
 	// TODO move upwards
 	public boolean estimate(
-			final EstimationContainer[] conditionEstimationContainers,
-			final EstimationContainer pooledEstimationContainer,
+			final ConditionEstimate[] conditionEstimationContainers,
+			final ConditionEstimate pooledEstimationContainer,
 			final ExtendedInfo info) {
 		
 		
 
 		boolean flag = true;
-		for (final EstimationContainer estimationContainer : conditionEstimationContainers) {
+		for (final ConditionEstimate estimationContainer : conditionEstimationContainers) {
 			try {
 				if (! estimate(estimationContainer, minkaParameters.getAlphaInit(), info, false)) {
 					flag = false;
@@ -264,7 +255,7 @@ public class MinkaEstimateDirMultAlpha {
 		
 		flag = true;
 		// estimate alpha(s), capture info(s), and store log-likelihood
-		for (final EstimationContainer estimationContainer : conditionEstimationContainers) {
+		for (final ConditionEstimate estimationContainer : conditionEstimationContainers) {
 			flag &= estimate(estimationContainer, minkaParameters.getFallbackAlphaInit(), info, true);
 		}
 		return flag;
@@ -286,25 +277,54 @@ public class MinkaEstimateDirMultAlpha {
 	}
 	*/
 	
-	public void addAlphaValues(final EstimationContainer[] estimationContainers, final ExtendedInfo info) {
-		for (final EstimationContainer estimationContainer : estimationContainers) {
-			final String id 			= estimationContainer.getID();
-			final int iteration			= estimationContainer.getIteration();
-			final double[] initAlpha 	= estimationContainer.getAlpha(0);
-			final double[] alpha 		= estimationContainer.getAlpha(iteration);
-			final double logLikelihood	= estimationContainer.getLogLikelihood(iteration);
-			
-			info.addSite("initAlpha" + id, Util.format(initAlpha[0]));			
-			for (int i = 1; i < initAlpha.length; ++i) {
-				info.addSite("initAlpha" + id, Util.format(initAlpha[i]));
-			}
-			info.addSite("alpha" + id, Util.format(alpha[0]));			
-			for (int i = 1; i < alpha.length; ++i) {
-				info.addSite("alpha" + id, Util.format(alpha[i]));
-			}
-			info.addSite("iteration" + id, Integer.toString(iteration));
-			info.addSite("logLikelihood" + id, Double.toString(logLikelihood));
+	public void addAlphaValues(final EstimationContainer estimationContainer, final ExtendedInfo info) {
+		for (final ConditionEstimate conditionEstimate : estimationContainer.getConditionEstimates()) {
+			addAlphaValues(conditionEstimate, info);
 		}
+		addAlphaValues(estimationContainer.getPooledEstimate(), info);
+	}
+	
+	private void addAlphaValues(final ConditionEstimate conditionEstimate, final ExtendedInfo info) {
+		final String id 			= conditionEstimate.getID();
+		final int iteration			= conditionEstimate.getIteration();
+		final double[] initAlpha 	= conditionEstimate.getAlpha(0);
+		final double[] alpha 		= conditionEstimate.getAlpha(iteration);
+		final double logLikelihood	= conditionEstimate.getLogLikelihood(iteration);
+		
+		info.addSite("initAlpha" + id, Util.format(initAlpha[0]));			
+		for (int i = 1; i < initAlpha.length; ++i) {
+			info.addSite("initAlpha" + id, Util.format(initAlpha[i]));
+		}
+		info.addSite("alpha" + id, Util.format(alpha[0]));			
+		for (int i = 1; i < alpha.length; ++i) {
+			info.addSite("alpha" + id, Util.format(alpha[i]));
+		}
+		info.addSite("iteration" + id, Integer.toString(iteration));
+		info.addSite("logLikelihood" + id, Double.toString(logLikelihood));
+	}
+	
+
+	// TODO move somewhere else
+	public double getScore(
+			final EstimationContainer estimateContainer) {
+		return sumLogLikeliood(estimateContainer.getConditionEstimates()) - estimateContainer.getPooledEstimate().getLogLikelihood();
+	}
+	
+	// TODO move somewhere else
+	public double getLRT(final EstimationContainer estimateContainer) {
+		return - 2 * (
+				estimateContainer.getPooledEstimate().getLogLikelihood() -
+				sumLogLikeliood(estimateContainer.getConditionEstimates()));
+	}
+	
+	// TODO move somewhere else
+	public double sumLogLikeliood(final ConditionEstimate[] estimationContainers) {
+		double logLikelihood = 0.0;
+		for (final ConditionEstimate estimationContainer : estimationContainers) {
+			logLikelihood += estimationContainer.getLogLikelihood();
+		}
+		
+		return logLikelihood;
 	}
 	
 }

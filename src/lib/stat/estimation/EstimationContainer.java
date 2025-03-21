@@ -1,33 +1,47 @@
 package lib.stat.estimation;
 
-import lib.stat.nominal.NominalData;
+public class EstimationContainer {
 
-/**
- * TODO add documentation
- */
-public interface EstimationContainer {
+	private ConditionEstimate[] conditionEstimates;
+	private ConditionEstimate pooledConditionEstimate;
 	
-	String getID();
+	public EstimationContainer(
+			final ConditionEstimate[] conditionEstimates,
+			final ConditionEstimate pooledConditionEstimate) {
+		this.conditionEstimates 		= conditionEstimates;
+		this.pooledConditionEstimate 	= pooledConditionEstimate;
+	}
 	
-	double[] getAlpha(int iteration);
-	double[] getAlpha();
+	public ConditionEstimate[] getConditionEstimates() {
+		return conditionEstimates;
+	}
 	
-	double getLogLikelihood();
-	double getLogLikelihood(int iteration);
+	public ConditionEstimate getConditionEstimate(final int conditionIndex) {
+		return conditionEstimates[conditionIndex];
+	}
 	
-	boolean isNumericallyStable();
-	void setNumericallyUnstable();
+	public ConditionEstimate getPooledEstimate() {
+		return pooledConditionEstimate;
+	}
+
+	public boolean isNumericallyStable() {
+		for (final ConditionEstimate conditionEstimate : conditionEstimates) {
+			if (! conditionEstimate.isNumericallyStable()) {
+				return false;
+			}
+		}
+
+		return pooledConditionEstimate.isNumericallyStable();
+	}
 	
-	int getMaxIterations();
-	int getIteration();
-	
-	NominalData getNominalData();
-	
-	void add(double[] alpha, double likelihood);
-	
-	String toString();
-	
-	void clear();
-	void update(String id, NominalData nominalData);
+	public void updateCondition(final int conditionIndex, final ConditionEstimate conditionEstimate) {
+		if (conditionEstimates[conditionIndex].getIteration() == 0) {
+			conditionEstimates[conditionIndex] = conditionEstimate;
+		}
+		final int otherConditionIndex = (conditionEstimates.length + 1) - (conditionIndex + 1);
+		conditionEstimates[otherConditionIndex].clear();
+
+		pooledConditionEstimate.clear();
+	}
 	
 }

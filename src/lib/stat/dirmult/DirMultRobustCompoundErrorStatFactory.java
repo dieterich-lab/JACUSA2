@@ -7,7 +7,7 @@ import org.apache.commons.cli.Options;
 import lib.io.ResultFormat;
 import lib.stat.AbstractStat;
 import lib.stat.AbstractStatFactory;
-import lib.stat.estimation.provider.EstimationContainerProvider;
+import lib.stat.estimation.provider.ConditionEstimateProvider;
 import lib.stat.estimation.provider.pileup.InSilicoEstimationPileupProvider;
 import lib.stat.estimation.provider.pileup.RobustEstimationPileupProvider;
 
@@ -29,7 +29,7 @@ extends AbstractStatFactory {
 
 	@Override
 	public AbstractStat newInstance(double threshold, final int conditions) {
-		EstimationContainerProvider dirMultPileupCountProvider;
+		ConditionEstimateProvider dirMultPileupCountProvider;
 		switch (conditions) {
 		case 1:
 			dirMultPileupCountProvider = new InSilicoEstimationPileupProvider(

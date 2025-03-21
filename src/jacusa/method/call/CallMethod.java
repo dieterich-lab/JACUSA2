@@ -1,6 +1,5 @@
 package jacusa.method.call;
 
-
 import jacusa.cli.options.StatFactoryOption;
 import jacusa.cli.options.StatFilterOption;
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
@@ -69,10 +68,17 @@ import lib.data.filter.BooleanFilteredData;
 import lib.data.filter.BooleanData;
 import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
+import lib.estimate.MinkaParameter;
 import lib.data.validator.paralleldata.NonHomozygousSite;
 import lib.io.ResultFormat;
 import lib.stat.AbstractStatFactory;
+import lib.stat.INDELstat;
+import lib.stat.dirmult.CallStat;
+import lib.stat.dirmult.DirMultParameter;
 import lib.stat.dirmult.DirMultRobustCompoundErrorStatFactory;
+import lib.stat.estimation.provider.DeletionEstimateProvider;
+import lib.stat.estimation.provider.InsertionEstimateProvider;
+import lib.stat.sampling.SubSampleStat;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 import lib.util.LibraryType;
@@ -96,54 +102,54 @@ public class CallMethod extends AbstractMethod {
 		return bccFetcher;
 	}
 	
-	protected void initGlobalACOptions() {
-		addACOption(
+	protected void initGlobalOptions() {
+		addOption(
 				new StatFactoryOption(
 						getParameter().getStatParameter(), 
 						getStatistics()));
 
 		// result format option only if there is a choice
 		if (getResultFormats().size() > 1 ) {
-			addACOption(
+			addOption(
 					new ResultFormatOption(
 							getParameter(), 
 							getResultFormats()));
 		}
 		
-		addACOption(new ShowAllSitesOption(getParameter()));
-		addACOption(new FilterModusOption(getParameter()));
-		addACOption(new FilterConfigOption(getParameter(), getFilterFactories()));
+		addOption(new ShowAllSitesOption(getParameter()));
+		addOption(new FilterModusOption(getParameter()));
+		addOption(new FilterConfigOption(getParameter(), getFilterFactories()));
 		
-		addACOption(new StatFilterOption(getParameter().getStatParameter()));
+		addOption(new StatFilterOption(getParameter().getStatParameter()));
 
-		addACOption(new ReferenceFastaFilenameOption(getParameter()));
-		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
+		addOption(new ReferenceFastaFilenameOption(getParameter()));
+		addOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 		
-		addACOption(new MaxThreadOption(getParameter()));
-		addACOption(new WindowSizeOption(getParameter()));
-		addACOption(new ThreadWindowSizeOption(getParameter()));
+		addOption(new MaxThreadOption(getParameter()));
+		addOption(new WindowSizeOption(getParameter()));
+		addOption(new ThreadWindowSizeOption(getParameter()));
 
-		addACOption(new ShowDeletionCountOption(getParameter()));
-		addACOption(new ShowInsertionCountOption(getParameter()));
-		addACOption(new ShowInsertionStartCountOption(getParameter()));
+		addOption(new ShowDeletionCountOption(getParameter()));
+		addOption(new ShowInsertionCountOption(getParameter()));
+		addOption(new ShowInsertionStartCountOption(getParameter()));
 		
-		addACOption(new BedCoordinatesOption(getParameter()));
-		addACOption(new ResultFileOption(getParameter()));
+		addOption(new BedCoordinatesOption(getParameter()));
+		addOption(new ResultFileOption(getParameter()));
 		
-		addACOption(new DebugModusOption(getParameter(), this));
+		addOption(new DebugModusOption(getParameter(), this));
 	}
 	
 	@Override
-	protected void initConditionACOptions() {
+	protected void initConditionOptions() {
 		// for all conditions
-		addACOption(new MinMAPQconditionOption(getParameter().getConditionParameters()));
-		addACOption(new MinBASQConditionOption(getParameter().getConditionParameters()));
-		addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters()));
-		addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters()));
-		addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters()));
+		addOption(new MinMAPQconditionOption(getParameter().getConditionParameters()));
+		addOption(new MinBASQConditionOption(getParameter().getConditionParameters()));
+		addOption(new MinCoverageConditionOption(getParameter().getConditionParameters()));
+		addOption(new MaxDepthConditionOption(getParameter().getConditionParameters()));
+		addOption(new FilterFlagConditionOption(getParameter().getConditionParameters()));
 		
-		addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
-		addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
+		addOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
+		addOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
 
 		final Set<LibraryType> availableLibType = new HashSet<>(
 				Arrays.asList(
@@ -151,22 +157,22 @@ public class CallMethod extends AbstractMethod {
 						LibraryType.RF_FIRSTSTRAND,
 						LibraryType.FR_SECONDSTRAND));
 		
-		addACOption(new nConditionLibraryTypeOption(
+		addOption(new nConditionLibraryTypeOption(
 				availableLibType, getParameter().getConditionParameters(), getParameter()));
 		
 		// only add contions specific options when there are more than 1 conditions
 		if (getParameter().getConditionsSize() > 1) {
 			for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-				addACOption(new MinMAPQconditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new MaxDepthConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addOption(new MinMAPQconditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addOption(new MaxDepthConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 				
-				addACOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-				addACOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+				addOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 				
-				addACOption(new nConditionLibraryTypeOption(
+				addOption(new nConditionLibraryTypeOption(
 						availableLibType,
 						getParameter().getConditionParameters().get(conditionIndex),
 						getParameter()));
@@ -265,7 +271,42 @@ public class CallMethod extends AbstractMethod {
 
 	@Override
 	public CallWorker createWorker(final int threadId) {
-		return new CallWorker(this, threadId);
+		final double threshold = getParameter().getStatParameter().getThreshold();
+		CallStat callStat = (CallStat)getParameter()
+				.getStatParameter()
+				.getFactory().newInstance(threshold, threadId);
+		
+		final DirMultParameter dirMultParameter = callStat.getDirMultParameter();
+		final MinkaParameter minkaParameter = dirMultParameter.getMinkaEstimateParameter();
+		
+		final List<INDELstat> indelStats = new ArrayList<INDELstat>();
+		if (getParameter().showINDELcounts()) {
+			if (getParameter().showDeletionCount()) {
+				indelStats.add(
+						new INDELstat(
+								minkaParameter,
+								new DeletionEstimateProvider(minkaParameter.getMaxIterations()),
+								"deletion_score",
+								"deletion_pvalue"));
+			}
+			if (getParameter().showInsertionCount() ||
+					getParameter().showInsertionStartCount()) {
+				indelStats.add(
+						new INDELstat(
+								minkaParameter,
+								new InsertionEstimateProvider(minkaParameter.getMaxIterations()),
+								"insertion_score",
+								"insertion_pvalue"));
+			}
+		}
+		
+		SubSampleStat subSampleStat;
+		final int runs = 10;
+		if (runs > 0) {
+			subSampleStat = new SubSampleStat(runs);
+		}
+
+		return new CallWorker(this, threadId, callStat, indelStats, subSampleStat);
 	}
 
 	/*

@@ -8,58 +8,74 @@ import lib.data.result.Result;
 import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.stat.AbstractStat;
 import lib.stat.estimation.EstimationContainer;
-import lib.stat.estimation.provider.EstimationContainerProvider;
+import lib.stat.estimation.provider.ConditionEstimateProvider;
 import lib.util.ExtendedInfo;
 
-class CallStat extends AbstractStat {
+public class CallStat extends AbstractStat {
 
 	private final double threshold;
-	private final EstimationContainerProvider estimationContainerProvider;
+	private final ConditionEstimateProvider estimationContainerProvider;
 	private final DirMultParameter dirMultParameter;
-
 	private final MinkaEstimateDirMultAlpha estimateDirMultAlpha;
 
-	CallStat(final double threshold,
-			final EstimationContainerProvider estimationContainerProvider,
+	private EstimationContainer estimationContainer;
+	
+	public CallStat(
+			final double threshold,
+			final ConditionEstimateProvider estimationContainerProvider,
 			final DirMultParameter dirMultParameter) {
 		super();
-		
 		this.threshold 						= threshold;
 		this.estimationContainerProvider 	= estimationContainerProvider;
 		this.dirMultParameter 				= dirMultParameter;
-
 		estimateDirMultAlpha 				= new MinkaEstimateDirMultAlpha(dirMultParameter.getMinkaEstimateParameter());
 	}
 
-	// TODO remove
-	@Override
-	protected void postProcess(final Result result, final int valueIndex) {
-		if (dirMultParameter.showAlpha()) {
-			estimateDirMultAlpha.addAlphaValues(result.getResultInfo(valueIndex));
-		}
-		estimateDirMultAlpha.addStatResultInfo(result.getResultInfo(valueIndex));
+	public EstimationContainer getEstimationContainer() {
+		return estimationContainer;
 	}
 
-	@Override
-	public Result calculate(ParallelData parallelData) {
-		final EstimationContainer[] estimationContainers = estimationContainerProvider.convert(parallelData);
+	public DirMultParameter getDirMultParameter() {
+		return dirMultParameter;
+	}
+	
+	public MinkaEstimateDirMultAlpha getMinka() {
+		return estimateDirMultAlpha;
+	}
+	
+	public double getStat(final EstimationContainer estimationContainer) {
 		double stat;
-		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
 		if (dirMultParameter.calcPValue()) {
-			stat = estimateDirMultAlpha.getLRT(estimationContainers, resultInfo);
+			stat = estimateDirMultAlpha.getLRT(estimationContainer);
 			// TODO degrees of freedom
 			final ChiSquaredDistribution dist = new ChiSquaredDistribution(3);
 			stat = 1 - dist.cumulativeProbability(stat);
 		} else {
-			stat = estimateDirMultAlpha.getScore(estimationContainers, resultInfo);
+			stat = estimateDirMultAlpha.getScore(estimationContainer);
 		}
+		
+		return stat;
+	}
+	
+	@Override
+	public Result process(ParallelData parallelData, ExtendedInfo info) {
+		estimationContainer = estimationContainerProvider.convert(parallelData);
+		double stat = getStat(estimationContainer);
+
+		if (filter(stat)) {
+			return null;
+		}
+		
+		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
+		if (dirMultParameter.showAlpha()) {
+			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo);
+		}
+		estimateDirMultAlpha.addStatResultInfo(estimationContainer, resultInfo);
+		
 		return new OneStatResult(stat, parallelData, resultInfo);
 	}
 
-	@Override
-	public boolean filter(final Result statResult) {
-		final double statValue = statResult.getScore();
-
+	public boolean filter(final double statValue) {
 		if (Double.isNaN(threshold)) {
 			return false;
 		}

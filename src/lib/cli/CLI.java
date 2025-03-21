@@ -126,9 +126,9 @@ public class CLI {
 				methodNames.add(methodName);
 				tmpMethod.initOptions();
 
-				final List<AbstractOption> acOptions = tmpMethod.getACOptions();
-				for (final AbstractOption acOption : acOptions) {
-					final String opt = acOption.getOpt();
+				final List<AbstractOption> options = tmpMethod.getOptions();
+				for (final AbstractOption Option : options) {
+					final String opt = Option.getOpt();
 					if (! opt2method2acOption.containsKey(opt)) {
 						opt2method2acOption.put(opt, new HashMap<String, List<AbstractOption>>());
 					}
@@ -137,7 +137,7 @@ public class CLI {
 						method2acOption.put(methodName, new ArrayList<AbstractOption>());
 					}
 					final List<AbstractOption> tmpAcOptions = method2acOption.get(methodName);
-					tmpAcOptions.add(acOption);
+					tmpAcOptions.add(Option);
 				}
 			}
 		}
@@ -277,7 +277,7 @@ public class CLI {
 			throw new IllegalArgumentException("Illegal number of conditions");
 		}
 		method = tmpMethodFactory.createMethod();
-		processMethodFactoryACOptions(printExtendedHelp, true, acOptions, options);
+		processMethodFactoryOptions(printExtendedHelp, true, acOptions, options);
 		try {
 			line = parser.parse(options, processedArgs);
 		} catch (ParseException e) {
@@ -348,12 +348,12 @@ public class CLI {
 		method.printUsage(printExtendedHelp);
 	}
 
-	private void processMethodFactoryACOptions(final boolean printExtendedHelp, final boolean includeHidden,
+	private void processMethodFactoryOptions(final boolean printExtendedHelp, final boolean includeHidden,
 			final List<AbstractOption> acOptions, final Options options) {
 		// init method factory (populate: parameters)
 		method.initOptions();
 		
-		acOptions.addAll(method.getACOptions());
+		acOptions.addAll(method.getOptions());
 		for (AbstractOption acOption : acOptions) {
 			if (includeHidden || ! acOption.isHidden()) {
 				options.addOption(acOption.getOption(printExtendedHelp));

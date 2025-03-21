@@ -10,7 +10,7 @@ import lib.estimate.MinkaParameter;
 import lib.stat.AbstractStat;
 import lib.stat.dirmult.DirMultParameter;
 import lib.stat.estimation.EstimationContainer;
-import lib.stat.estimation.provider.EstimationContainerProvider;
+import lib.stat.estimation.provider.ConditionEstimateProvider;
 import lib.stat.estimation.provider.pileup.RobustEstimationPileupProvider;
 import lib.util.ExtendedInfo;
 import lib.util.Util;
@@ -24,7 +24,7 @@ extends AbstractWorker {
 	private ParallelDataValidator validator;
 	
 	private final AbstractStat stat;
-	private final EstimationContainerProvider estimationContainerProvider;
+	private final ConditionEstimateProvider estimationContainerProvider;
 	private final MinkaEstimateDirMultAlpha estimateDirMultAlpha;
 	
 	public LRTarrestWorker(final LRTarrestMethod method, final int threadId) {
@@ -43,13 +43,13 @@ extends AbstractWorker {
 
 	@Override
 	protected Result process(final ParallelData parallelData) {
-		final Result result = stat.process(parallelData);
+		final Result result = stat.process(parallelData, null);
 		
 		if (validator.isValid(parallelData)) {
 			// store variant call result in info field
 			final ExtendedInfo resultInfo = result.getResultInfo();
-			final EstimationContainer[] estimationContainers = estimationContainerProvider.convert(parallelData);
-			final double score = estimateDirMultAlpha.getScore(estimationContainers, resultInfo);
+			final EstimationContainer estimationContainer = estimationContainerProvider.convert(parallelData);
+			final double score = estimateDirMultAlpha.getScore(estimationContainer);
 			resultInfo.addSite(INFO_VARIANT_SCORE, Util.format(score));
 		}
 		
