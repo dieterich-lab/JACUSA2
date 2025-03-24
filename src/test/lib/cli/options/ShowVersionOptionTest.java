@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.VersionInfo;
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.ShowVersionOption;
 import lib.util.AbstractTool;
 
@@ -50,7 +50,7 @@ implements OptionTest<String> {
 	}
 	
 	@Override
-	public AbstractOption createTestInstance() {
+	public AbstractProcessingOption createTestInstance() {
 		return new ShowVersionOption();
 	}
 	

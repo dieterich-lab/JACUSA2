@@ -9,11 +9,12 @@ import java.util.TreeSet;
 
 import lib.data.ParallelData;
 import lib.util.ExtendedInfo;
+import lib.util.FilterInfo;
 
-// FIXME
+// FIXME rework multiple results add ParallelData / DataContainer to 1:n ParallelData / DataContainer/Results
 
 /**
- * TODO add documentation
+ * Represents a structured result Object with multiple stat values and own FilterInfo and ExtendedInfo fields.
  */
 public class MultiStatResult implements Result {
 	
@@ -22,60 +23,16 @@ public class MultiStatResult implements Result {
 	private final SortedMap<Integer, Double> value2stat;
 	private final ParallelData parallelData;
 	
-	private boolean markedFiltered;
-	private final Map<Integer, ExtendedInfo> filterInfo;
-	private final Map<Integer, ExtendedInfo> resultInfo;
+	private boolean markedFiltered; 
+	private final Map<Integer, FilterInfo> filterInfos;
+	private final Map<Integer, ExtendedInfo> resultInfos;
 	
-	// FIXME value2stat - how many partitions
 	public MultiStatResult(final ParallelData parallelData) {
 		value2stat 			= new TreeMap<>();
 		markedFiltered 		= false;
-		filterInfo			= new HashMap<>();
-		resultInfo			= new HashMap<>();
+		filterInfos			= new HashMap<>();
+		resultInfos			= new HashMap<>();
 		this.parallelData	= parallelData;
-	}
-	
-	public MultiStatResult(final Result result) {
-		value2stat = new TreeMap<>();
-		copyStat(result, value2stat);
-		
-		markedFiltered 	= result.isFiltered();
-		final int n		= result.getValueSize();
-		filterInfo 		= new HashMap<>(n);
-		resultInfo 		= new HashMap<>(n);
-		copyInfo(filterInfo, resultInfo, result);
-		
-		this.parallelData = result.getParellelData();
-	}
-	
-	// TODO is this needed?
-	private void copyStat(final Result src, final Map<Integer, Double> dest) {
-		for (final int valueIndex : src.getValueIndexes()) {
-			if (dest.containsKey(valueIndex)) {
-				throw new IllegalStateException("Duplicate keys are not allowed!");
-			}
-			dest.put(valueIndex, src.getScore(valueIndex));
-		}
-	}
-	
-	private void copyInfo(final Map<Integer, ExtendedInfo> filterInfos, final Map<Integer, ExtendedInfo> resultInfos, 
-			final Result result) {
-		
-		for (final int valueIndex : result.getValueIndexes()) {
-			copyInfoHelper(valueIndex, filterInfos, result.getFilterInfo(valueIndex));
-			copyInfoHelper(valueIndex, resultInfos, result.getResultInfo(valueIndex));
-		}
-	}
-	
-	// TODO multiple values - why is it copied between multiple values
-	private void copyInfoHelper(final int valueIndex, final Map<Integer, ExtendedInfo> infos, final ExtendedInfo info) {
-		if (infos.containsKey(valueIndex)) {
-			throw new IllegalStateException("Duplicate keys are not allowed!");
-		}
-		/* FIXME
-		infos.put(valueIndex, new ExtendedInfo());
-		infos.get(valueIndex).addAll(info);
-		*/
 	}
 	
 	@Override
@@ -90,12 +47,12 @@ public class MultiStatResult implements Result {
 	
 	@Override
 	public ExtendedInfo getResultInfo(final int valueIndex) {
-		return resultInfo.get(valueIndex);
+		return resultInfos.get(valueIndex);
 	}
 	
 	@Override
-	public ExtendedInfo getFilterInfo(final int valueIndex) {
-		return filterInfo.get(valueIndex);
+	public FilterInfo getFilterInfo(final int valueIndex) {
+		return filterInfos.get(valueIndex);
 	}
 	
 	@Override
@@ -119,12 +76,12 @@ public class MultiStatResult implements Result {
 	}
 	
 	@Override
-	public ExtendedInfo getFilterInfo() {
-		if (value2stat.size() == 0) {
+	public FilterInfo getFilterInfo() {
+		if (value2stat.isEmpty()) {
 			return null;
 		}
 		final int value = value2stat.firstKey();
-		return filterInfo.get(value);			
+		return filterInfos.get(value);			
 	}
 	
 	@Override
@@ -133,7 +90,7 @@ public class MultiStatResult implements Result {
 			return null;
 		}
 		final int value = value2stat.firstKey();
-		return resultInfo.get(value);
+		return resultInfos.get(value);
 	}
 	
 	@Override
@@ -149,16 +106,16 @@ public class MultiStatResult implements Result {
 		if (value2stat.size() == 0) {
 			return 0;
 		}
+		
 		return value2stat.lastKey() + 1;
 	}
 	
 	public int addStat(final double stat) {
 		final int newValueIndex = getNewValueIndex();
 		value2stat.put(newValueIndex, stat);
-		/* FIXME
-		filterInfo.put(newValueIndex, new ExtendedInfo());
-		resultInfo.put(newValueIndex, new ExtendedInfo());
-		*/
+		filterInfos.put(newValueIndex, new FilterInfo());
+		resultInfos.put(newValueIndex, new ExtendedInfo());
+
 		return newValueIndex;
 	}
 	

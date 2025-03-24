@@ -3,10 +3,10 @@ package lib.cli.options.filter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.filter.has.HasFilterDistance;
 
-public class FilterDistanceOption extends AbstractOption {
+public class FilterDistanceOption extends AbstractProcessingOption {
 
 	private final HasFilterDistance hasFilterDistance;
 	

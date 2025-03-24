@@ -21,7 +21,7 @@ import jacusa.filter.factory.basecall.CombinedFilterFactory;
 import jacusa.filter.factory.basecall.INDELfilterFactory;
 import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.FilterConfigOption;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.DataType;
@@ -99,7 +99,7 @@ implements OptionTest<Set<Character>> {
 	}
 	
 	@Override
-	public AbstractOption createTestInstance() {
+	public AbstractProcessingOption createTestInstance() {
 		return new FilterConfigOption(getGeneralParamter(), getFilterFactories());
 	}
 	

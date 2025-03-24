@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.provider.Arguments;
 
 import lib.cli.CLI;
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.HelpOption;
 
 /**
@@ -31,7 +31,7 @@ implements OptionTest<Boolean> {
 	}
 	
 	@Override
-	public AbstractOption createTestInstance() {
+	public AbstractProcessingOption createTestInstance() {
 		return new HelpOption(cli);
 	}
 

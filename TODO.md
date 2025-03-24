@@ -6,8 +6,8 @@
 [ ] adjust QutRNA to extended output
 [ ] fix TODOs, FIXMEs
 [ ] rerun & test
-[ ] custom contrasts, take arbitrary subsamples -> expanded sample_table
- 
+[ ] custom contrasts, take arbitrary subSamples -> expanded sample_table
+[ ] -I pseudoCount=, ditMult etc.
  
  
 [ ] add the following:

@@ -5,7 +5,7 @@ import lib.cli.parameter.GeneralParameter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class ShowDeletionCountOption extends AbstractOption {
+public class ShowDeletionCountOption extends AbstractProcessingOption {
 
 	private final GeneralParameter parameter;
 	

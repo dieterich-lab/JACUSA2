@@ -46,12 +46,10 @@ class DefaultContainedCoordinateTest {
 		return new FileBasedContainedCoordinate(contig2coordinate);
 	}
 	
-	// TODO throw when coordinate not sorted
-	@Disabled
+	@Disabled // add throw when coordinate not sorted
 	@Test
 	void testIsContainedFails() {
 		testInstance = createTestInstance();
-		
 		testInstance.isContained(new OneCoordinate("1", 2, 2));
 		testInstance.isContained(new OneCoordinate("1", 1, 1));
 	}

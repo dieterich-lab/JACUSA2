@@ -149,9 +149,9 @@ implements ResultWriter  {
 		}
 
 		for (final FilterFactory filterFactory : filterConfig.getFilterFactories()) {
-			final String c = Character.toString(filterFactory.getID());
-			if (result.getFilterInfo(0).containsSite(c)) {
-				vcb.filter(c);
+			final char filterID = filterFactory.getID();
+			if (result.getFilterInfo().contains(filterID)) {
+				vcb.filter(Character.toString(filterID));
 			}
 		}
 

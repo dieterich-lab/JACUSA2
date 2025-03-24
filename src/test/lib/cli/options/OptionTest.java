@@ -17,7 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 
 /**
  * Tests @see lib.cli.options.AbstractACOption
@@ -33,7 +33,7 @@ public interface OptionTest<T> {
 		final CommandLineParser parser = new DefaultParser();
 		final Options options = new Options();
 		
-		final AbstractOption testInstance = createTestInstance();
+		final AbstractProcessingOption testInstance = createTestInstance();
 		options.addOption(testInstance.getOption(false));
 		
 		final CommandLine cmd = parser.parse(options, line.split(" "));
@@ -93,7 +93,7 @@ public interface OptionTest<T> {
 			final Class<E> expectedType, 
 			final String line) throws Exception{
 		
-		final AbstractOption testInstance	= createTestInstance();
+		final AbstractProcessingOption testInstance	= createTestInstance();
 		final Options options				= new Options();
 		options.addOption(testInstance.getOption(false));
 		final CommandLineParser parser		= new DefaultParser();
@@ -122,7 +122,7 @@ public interface OptionTest<T> {
 	
 	abstract Stream<Arguments> testProcess();
 	
-	abstract AbstractOption createTestInstance();
+	abstract AbstractProcessingOption createTestInstance();
 	abstract T getActualValue();
 	
 }

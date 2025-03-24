@@ -11,10 +11,18 @@ import jacusa.filter.factory.basecall.CombinedFilterFactory;
 import jacusa.filter.factory.basecall.INDELfilterFactory;
 import jacusa.filter.factory.basecall.ReadPositionFilterFactory;
 import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
+import jacusa.io.format.BED6extendedResultFormat;
+import jacusa.io.format.modifyresult.AddBCQC;
+import jacusa.io.format.modifyresult.AddDeletionRatio;
+import jacusa.io.format.modifyresult.AddInsertionRatio;
+import jacusa.io.format.modifyresult.AddReadCount;
+import jacusa.io.format.modifyresult.ResultModifier;
+import jacusa.io.format.modifyresult.ResultModifierOption;
 import jacusa.io.format.pileup.BED6pileupResultFormat;
 import jacusa.io.format.pileup.PileupLikeFormat;
 import jacusa.worker.PileupWorker;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,11 +67,15 @@ import lib.data.filter.BooleanFilteredData;
 import lib.data.filter.BooleanData;
 import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
+import lib.estimate.MinkaParameter;
 import lib.io.ResultFormat;
+import lib.stat.AbstractStat;
+import lib.stat.dirmult.ProcessCommandLine;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 import lib.util.LibraryType;
 
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
 
 public class PileupMethod 
@@ -148,18 +160,34 @@ extends AbstractMethod {
 	}
 
 	public Map<Character, ResultFormat> getResultFormats() {
-		final Map<Character, ResultFormat> outputFormats = 
+		final Map<Character, ResultFormat> resultFormats = 
 				new HashMap<>();
 
-		ResultFormat outputFormat = new PileupLikeFormat(getName(), getParameter());
-		outputFormats.put(outputFormat.getID(), outputFormat);
+		ResultFormat resultFormat = new PileupLikeFormat(getName(), getParameter());
+		resultFormats.put(resultFormat.getID(), resultFormat);
 
-		// TODO copy from CallMethod extensions: ParallelDataToString
+		// extended and info expanded output
+				final List<ResultModifier> availableResultModifier = Arrays.asList(
+						new AddReadCount(),
+						new AddBCQC(),
+						new AddInsertionRatio(),
+						new AddDeletionRatio());
+				final List<ResultModifier> selectedResultModifier = new ArrayList<ResultModifier>();
+				resultFormat = new BED6extendedResultFormat(
+						getName(),
+						getParameter(),
+						selectedResultModifier,
+						new ProcessCommandLine(
+								new DefaultParser(),
+								availableResultModifier.stream()
+									.map(resultModifier -> new ResultModifierOption(resultModifier, selectedResultModifier))
+									.collect(Collectors.toList())));
+				resultFormats.put(resultFormat.getID(), resultFormat);
 		
-		outputFormat = new BED6pileupResultFormat(getName(), getParameter());
-		outputFormats.put(outputFormat.getID(), outputFormat);
+		resultFormat = new BED6pileupResultFormat(getName(), getParameter());
+		resultFormats.put(resultFormat.getID(), resultFormat);
 		
-		return outputFormats;
+		return resultFormats;
 	}
 
 	public Map<Character, FilterFactory> getFilterFactories() {
@@ -195,12 +223,12 @@ extends AbstractMethod {
 	}
 	
 	@Override
-	public boolean parseArgs(String[] args) throws Exception {
+	public void parseArgs(String[] args) throws Exception {
 		if (args == null || args.length < 1) {
 			throw new ParseException("BAM File is not provided!");
 		}
 
-		return super.parseArgs(args); 
+		super.parseArgs(args); 
 	}
 
 	@Override
@@ -216,7 +244,13 @@ extends AbstractMethod {
 	
 	@Override
 	public PileupWorker createWorker(final int threadId) {
-		return new PileupWorker(this, threadId);
+		final double threshold = getParameter().getStatParameter().getThreshold();
+		AbstractStat stat = getParameter()
+				.getStatParameter()
+				.getFactory().newInstance(threshold, threadId);
+		
+		final MinkaParameter minkaParameters = new MinkaParameter(); 
+		return new PileupWorker(this, threadId, stat, getINDELstats(minkaParameters));
 	}
 	
 	/*
@@ -243,7 +277,7 @@ extends AbstractMethod {
 	public static class Factory extends AbstractMethod.AbstractFactory {
 	
 		public static final String NAME = "pileup";
-		public static final String DESC = "SAMtools like mpileup - 2 conditions";
+		public static final String DESC = "SAMtools like mpileup - n conditions";
 		
 		public Factory(final int conditions) {
 			super(NAME, DESC, conditions);
@@ -265,10 +299,7 @@ extends AbstractMethod {
 		
 		@Override
 		public Factory createFactory(int conditions) {
-			if (conditions == 2) {
-				return new Factory(conditions);
-			}
-			return null;
+			return new Factory(conditions);
 		}
 		
 	}

@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.JACUSA;
 import jacusa.method.call.CallMethod;
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.DebugModusOption;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
@@ -39,7 +39,7 @@ implements OptionTest<Boolean> {
 	}
 	
 	@Override
-	public AbstractOption createTestInstance() {
+	public AbstractProcessingOption createTestInstance() {
 		return new DebugModusOption(getGeneralParamter(), method);
 	}
 	

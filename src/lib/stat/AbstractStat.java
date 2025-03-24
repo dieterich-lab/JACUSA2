@@ -4,9 +4,6 @@ import lib.data.ParallelData;
 import lib.data.result.Result;
 import lib.util.ExtendedInfo;
 
-/**
- * TODO add documentation
- */
 public abstract class AbstractStat {
 
 	// can be null

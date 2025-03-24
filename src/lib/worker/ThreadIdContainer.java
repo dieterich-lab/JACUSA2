@@ -1,7 +1,7 @@
 package lib.worker;
 
 /**
- * TODO add documentation
+ * This class implements a container that serves to preserve the original order of output between multiple concurrent threads.
  */
 public class ThreadIdContainer {
 

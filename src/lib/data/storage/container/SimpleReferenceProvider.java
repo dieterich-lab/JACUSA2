@@ -9,9 +9,6 @@ import lib.record.Record;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
 
-/**
- * TODO add documentation
- */
 public class SimpleReferenceProvider implements ReferenceProvider {
 
 	private final CoordinateController coordinateController;

@@ -12,7 +12,7 @@ import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.ValidationStringency;
 
 /*
- * FIMXE generics pack,join
+ * 
  */
 public final class Util {
 	
@@ -20,7 +20,6 @@ public final class Util {
 		throw new AssertionError();
 	}
 
-	// FIXME use 
 	public static int noRehashCapacity(final int size) {
 		return (int)(Math.ceil(size / 0.75d)) + 1;
 	}
@@ -50,19 +49,6 @@ public final class Util {
 		return sequenceDictionary;
 	}
 	
-	@Deprecated // use join, double \t
-	public static String printAlpha(final double[] a) {
-		StringBuilder sb = new StringBuilder();
-
-		for (int i = 0; i < a.length; ++i) {
-			if (i > 0) {
-				sb.append('\t');
-			}
-			sb.append(a[i]);
-		}
-		return sb.toString();
-	}
-
 	public static <T> String join(final T[] s, final char sep) {
 		final StringBuilder sb = new StringBuilder();
 
@@ -76,19 +62,9 @@ public final class Util {
 
 		return sb.toString();
 	}
-
+	
 	public static String join(final double[] s, final char sep) {
-		final StringBuilder sb = new StringBuilder();
-
-		if (s.length > 0) {
-			sb.append(s[0]);
-			for (int i = 1; i < s.length; ++i) {
-				sb.append(sep);
-				sb.append(s[i]);
-			}
-		}
-
-		return sb.toString();
+		return join(Arrays.asList(s), sep);
 	}
 	
 	public static <T> String join(final Collection<T> s, final char sep) {

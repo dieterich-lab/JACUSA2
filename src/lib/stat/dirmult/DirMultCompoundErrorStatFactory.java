@@ -1,11 +1,16 @@
 package lib.stat.dirmult;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
+import java.util.Arrays;
 
-import lib.io.ResultFormat;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+
 import lib.stat.AbstractStatFactory;
+import lib.stat.dirmult.options.CalculatePvalueOption;
+import lib.stat.dirmult.options.EpsilonOptions;
+import lib.stat.dirmult.options.MaxIterationsOption;
+import lib.stat.dirmult.options.ShowAlphaOption;
+import lib.stat.dirmult.options.SubsampleRunsOptions;
 import lib.stat.estimation.provider.ConditionEstimateProvider;
 import lib.stat.estimation.provider.pileup.DefaultEstimationPileupProvider;
 import lib.stat.estimation.provider.pileup.InSilicoEstimationPileupProvider;
@@ -16,16 +21,31 @@ extends AbstractStatFactory {
 	private static final String NAME 	= "DirMultCE";
 	public static final String DESC 	= "Compound Error (estimated error {" + DirMultParameter.ESTIMATED_ERROR + "} + phred score)";
 	
-	private final CallDirMultParameter dirMultPrm;
-	private final DirMultCLIprocessing CLIproc;
+	private final CallDirMultParameter dirMultParameter;
 	
-	public DirMultCompoundErrorStatFactory(final ResultFormat resFormat) {
-
+	public DirMultCompoundErrorStatFactory() {
+		this(new CallDirMultParameter());
+	}
+	
+	public DirMultCompoundErrorStatFactory(final CallDirMultParameter dirMultParameter) {
+		this(
+				dirMultParameter,
+				new ProcessCommandLine(
+						new DefaultParser(),
+						Arrays.asList(
+								new EpsilonOptions(dirMultParameter.getMinkaEstimateParameter()),
+								new ShowAlphaOption(dirMultParameter),
+								new MaxIterationsOption(dirMultParameter.getMinkaEstimateParameter()),
+								new SubsampleRunsOptions(dirMultParameter),
+								new CalculatePvalueOption(dirMultParameter))));
+	}
+	
+	public DirMultCompoundErrorStatFactory(final CallDirMultParameter dirMultParameter, final ProcessCommandLine processCommmandLine) {
 		super(Option.builder(NAME)
 				.desc(DESC)
-				.build());
-		dirMultPrm 	= new CallDirMultParameter();
-		CLIproc 	= new CallDirMultCLIProcessing(resFormat, dirMultPrm);
+				.build(),
+				processCommmandLine);
+		this.dirMultParameter = dirMultParameter;
 	}
 
 	@Override
@@ -34,32 +54,22 @@ extends AbstractStatFactory {
 		switch (conditions) {
 		case 1:
 			pileupCountProvider = new InSilicoEstimationPileupProvider(
-					dirMultPrm.calcPValue(),
-					dirMultPrm.getMinkaEstimateParameter().getMaxIterations(),
-					dirMultPrm.getEstimatedError());
+					dirMultParameter.calcPValue(),
+					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
+					dirMultParameter.getEstimatedError());
 			break;
 			
 		case 2:
 			pileupCountProvider = new DefaultEstimationPileupProvider(
-					dirMultPrm.calcPValue(),
-					dirMultPrm.getMinkaEstimateParameter().getMaxIterations(),
-					dirMultPrm.getEstimatedError()); 
+					dirMultParameter.calcPValue(),
+					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
+					dirMultParameter.getEstimatedError()); 
 			break;
 
 		default:
 			throw new IllegalStateException("Number of conditions not supported: " + conditions);
 		}
-		return new CallStat(threshold, pileupCountProvider, dirMultPrm);
-	}
-
-	@Override
-	protected Options getOptions() {
-		return CLIproc.getOptions();
-	}
-	
-	@Override
-	public void processCLI(final CommandLine cmd) {
-		CLIproc.processCLI(cmd);
+		return new CallStat(threshold, pileupCountProvider, dirMultParameter);
 	}
 	
 }

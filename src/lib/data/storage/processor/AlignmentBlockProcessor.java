@@ -9,7 +9,7 @@ import lib.util.position.PositionProvider;
 /**
  * TODO add documentation
  */
-public class AlignmentBlockProcessor implements GeneralRecordProcessor {
+public class AlignmentBlockProcessor implements ExtendedRecordProcessor {
 
 	private final CoordinateTranslator translator;
 	private final PositionProcessor positionProcessor;

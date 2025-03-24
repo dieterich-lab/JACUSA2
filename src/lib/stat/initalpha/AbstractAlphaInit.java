@@ -2,9 +2,6 @@ package lib.stat.initalpha;
 
 import lib.stat.nominal.NominalData;
 
-/**
- * TODO add documentation
- */
 public abstract class AbstractAlphaInit {
 
 	private final String name;

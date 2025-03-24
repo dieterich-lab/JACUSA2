@@ -68,11 +68,14 @@ import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.io.ResultFormat;
 import lib.stat.AbstractStatFactory;
+import lib.stat.betabin.LRTarrestBetaBinParameter;
 import lib.stat.betabin.LRTarrestStatFactory;
+import lib.stat.dirmult.ProcessCommandLine;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 import lib.util.LibraryType;
 
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
 
 public class LRTarrestMethod 
@@ -171,7 +174,16 @@ extends AbstractMethod {
 
 		final List<AbstractStatFactory> tmpFactory = new ArrayList<>(5);
 		tmpFactory.add(new DummyStatisticFactory());
-		tmpFactory.add(new LRTarrestStatFactory());
+		
+		
+		LRTarrestBetaBinParameter lrtArrestBetaBinParameter = new LRTarrestBetaBinParameter();
+		tmpFactory.add(
+				new LRTarrestStatFactory(
+						lrtArrestBetaBinParameter,
+						new ProcessCommandLine(
+								new DefaultParser(),
+								Arrays.asList())
+						));
 
 		for (final AbstractStatFactory factory : tmpFactory) {
 			factories.put(factory.getName(), factory);
@@ -248,12 +260,12 @@ extends AbstractMethod {
 	}
 
 	@Override
-	public boolean parseArgs(String[] args) throws Exception {
+	public void parseArgs(String[] args) throws Exception {
 		if (args == null || args.length != 2) { // need at least two conditions
 			throw new ParseException("BAM File is not provided!");
 		}
 
-		return super.parseArgs(args);
+		super.parseArgs(args);
 	}
 
 	@Override

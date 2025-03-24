@@ -11,9 +11,6 @@ import org.apache.commons.cli.ParseException;
 
 import lib.io.InputOutput;
 
-/**
- * TODO add documentation
- */
 public final class CLIUtil {
 
 	private CLIUtil() {

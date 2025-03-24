@@ -118,7 +118,7 @@ public class JACUSA2codec extends AsciiFeatureCodec<ResultFeature> {
 				.build();
 		
 		final double stat = Double.parseDouble(token[SCORE_INDEX]);
-		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
+		final ExtendedInfo resultInfo = new ExtendedInfo();
 		return new OneStatResult(stat, parallelData, resultInfo); 
 	}
 	

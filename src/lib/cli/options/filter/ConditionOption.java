@@ -3,10 +3,10 @@ package lib.cli.options.filter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.filter.has.HasConditionIndex;
 
-public class ConditionOption extends AbstractOption {
+public class ConditionOption extends AbstractProcessingOption {
 
 	private final HasConditionIndex hasCondition;
 	private final int conditionSize;

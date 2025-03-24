@@ -50,7 +50,7 @@ extends AbstractWorker {
 			final ExtendedInfo resultInfo = result.getResultInfo();
 			final EstimationContainer estimationContainer = estimationContainerProvider.convert(parallelData);
 			final double score = estimateDirMultAlpha.getScore(estimationContainer);
-			resultInfo.addSite(INFO_VARIANT_SCORE, Util.format(score));
+			resultInfo.add(INFO_VARIANT_SCORE, Util.format(score));
 		}
 		
 		return result;

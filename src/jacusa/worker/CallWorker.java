@@ -37,7 +37,7 @@ public class CallWorker extends AbstractWorker {
 	
 	@Override
 	protected Result process(final ParallelData parallelData) {
-		final ExtendedInfo info = new ExtendedInfo(parallelData.getReplicates());
+		final ExtendedInfo info = new ExtendedInfo();
 		final Result callResult = callStat.process(parallelData, info);
 		
 		if (callResult == null) {

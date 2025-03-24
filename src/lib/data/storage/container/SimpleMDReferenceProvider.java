@@ -25,7 +25,7 @@ import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 
 /**
- * TODO add documentation
+ * Provides reference bases by reading and processing the MD field of each record.
  */
 public class SimpleMDReferenceProvider implements ReferenceProvider {
 

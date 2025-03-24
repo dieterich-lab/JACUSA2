@@ -10,7 +10,7 @@ import lib.util.position.PositionProvider;
 /**
  * TODO add documentation
  */
-public class DeletionRecordProcessor implements GeneralRecordProcessor {
+public class DeletionRecordProcessor implements ExtendedRecordProcessor {
 
 	private final CoordinateTranslator translator;
 	private final Storage delStorage;
@@ -31,9 +31,9 @@ public class DeletionRecordProcessor implements GeneralRecordProcessor {
 	@Override // TODO adjust deletion at every position
 	public void process(final Record record) {
 		// store deletions
-		final PositionProvider delPosProvider = new AllDeletionPositionProvider(record, translator);
-		while (delPosProvider.hasNext()) {
-			final Position pos = delPosProvider.next();
+		final PositionProvider delPositionProvider = new AllDeletionPositionProvider(record, translator);
+		while (delPositionProvider.hasNext()) {
+			final Position pos = delPositionProvider.next();
 			delStorage.increment(pos);
 		}
 	}

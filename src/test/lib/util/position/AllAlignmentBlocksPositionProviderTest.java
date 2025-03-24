@@ -37,7 +37,6 @@ class AllAlignmentBlocksPositionProviderTest implements PositionProviderTest {
 		assertEquals(expected, actual);
 	}
 
-	// TODO Qi add more complicated tests, e.g.: INDEL + spliced + partially outside window
 	Stream<Arguments> testIterator() {
 		// Reference Sequence
 		//ACGAACGT

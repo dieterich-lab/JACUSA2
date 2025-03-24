@@ -3,58 +3,52 @@ package jacusa.io.format;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBCC;
+import lib.data.has.HasProcessCommandLine;
 import lib.io.AbstractResultFileFormat;
 import lib.io.BEDlikeResultFileWriter;
 import lib.io.InputOutput;
 import lib.io.BEDlikeResultFileWriter.BEDlikeResultFileWriterBuilder;
 import lib.io.format.bed.DefaultBED6adder;
-import lib.io.format.bed.ExpandedInfoAdder;
+import lib.io.format.bed.ExtendedInfoAdder;
+import lib.stat.dirmult.ProcessCommandLine;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 
-import jacusa.io.format.modifyresult.ModifyResult;
+import jacusa.io.format.modifyresult.ResultModifier;
 
-/*
- * TODO move to method:
- * available.add(new AddInsertionRatioToOutput());
-        available.add(new AddDeletionRatioToOutput());
-        available.add(new AddModificationCountToOutput());
- */
-
-public class BED6extendedResultFormat extends AbstractResultFileFormat {
-
-    //available options for output-format X
-    private Set<ModifyResult> available;
+public class BED6extendedResultFormat
+extends AbstractResultFileFormat 
+implements HasProcessCommandLine {
 
     //options selected in command line for output-format X
-    private Set<ModifyResult> selected;
+    private List<ResultModifier> selectedResultModifier;
 
+    private ProcessCommandLine processingCommandLine; 
+    
     public BED6extendedResultFormat(
             final String methodName,
             final GeneralParameter parameter,
-            final Set<ModifyResult> available){
+            final List<ResultModifier> selected,
+            final ProcessCommandLine processingCommandLine){
         super('X', "BED6-extended result format", methodName, parameter);
 
-        this.available = new HashSet<ModifyResult>(available);
-        this.selected = new HashSet<>(selected.size());
+        this.selectedResultModifier = Collections.unmodifiableList(selected);
     }
 
-    // TODO check
+    @Override
+    public ProcessCommandLine getProcessCommandLine() {
+    	return processingCommandLine;
+    }
+    
+    // TODO mode to - change to 
     //implemented functions of ResultFormat IntF
-    public void processCLI(String line) {
+    /*
+    public void processCLI(String[] args) {
         //splits at ','
         final String[] args = line.split(Character.toString(InputOutput.SEP4));
-
-        //checks which options found in available are selected in command line and copies them to selected
-        for(String arg : args){
-            for(ModifyResult extension : available){
-                if(arg == extension.getID()){
-                    selected.add(extension);
-                }
-            }
-        }
     }
+    */
 
     @Override
 	public BEDlikeResultFileWriter createWriter(final String outputFileName) {
@@ -64,16 +58,12 @@ public class BED6extendedResultFormat extends AbstractResultFileFormat {
 		return new BEDlikeResultFileWriterBuilder(outputFileName, getParameter())
 				.addBED6Adder(new DefaultBED6adder(getMethodName(), "score"))
 				.addDataAdder(new DefaultDataAdder(bccParser))
-				.addInfoAdder(new ExpandedInfoAdder(getParameter()))
+				.addInfoAdder(new ExtendedInfoAdder(getParameter()))
 				.build();
 	}
-    
-    public Set<ModifyResult> getAvailableExtenstions() {
-        return available;
-    }
 
-    public Set<ModifyResult> getSelectedExtensions() {
-        return selected;
+    public List<ResultModifier> getSelectedResultModifier() {
+        return selectedResultModifier;
     }
 
 }

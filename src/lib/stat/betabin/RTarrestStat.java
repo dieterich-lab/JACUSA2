@@ -49,8 +49,8 @@ public class RTarrestStat extends AbstractStat {
 			return null;
 		}
 		
-		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
-		resultInfo.addSite(ARREST_SCORE, Util.format(lrt));
+		final ExtendedInfo resultInfo = new ExtendedInfo();
+		resultInfo.add(ARREST_SCORE, Util.format(lrt));
 		
 		if (dirMultPrarameter.showAlpha()) {
 			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo);

@@ -5,7 +5,7 @@ import lib.cli.parameter.GeneralParameter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class ThreadWindowSizeOption extends AbstractOption {
+public class ThreadWindowSizeOption extends AbstractProcessingOption {
 
 	public static final int NO_WINDOWS = -1;
 	public static final int MIN_WINDOWS = 100;

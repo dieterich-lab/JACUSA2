@@ -6,7 +6,7 @@ import java.util.List;
 import lib.data.DataContainer;
 import lib.data.storage.Cache;
 import lib.data.storage.Storage;
-import lib.data.storage.processor.GeneralRecordProcessor;
+import lib.data.storage.processor.ExtendedRecordProcessor;
 import lib.record.Record;
 import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
@@ -25,7 +25,7 @@ public interface CacheContainer {
 	
 	void populate(DataContainer dataContainer, Coordinate coordinate);
 	
-	List<GeneralRecordProcessor> getRecordProcessors();
+	List<ExtendedRecordProcessor> getRecordProcessors();
 	List<Storage> getStorages();
 	
 	default void clearStorage() {
@@ -40,8 +40,8 @@ public interface CacheContainer {
 		private final LibraryType libraryType;
 		private final SharedStorage sharedStorage;
 
-		private List<GeneralRecordProcessor> recordProcessors1;
-		private List<GeneralRecordProcessor> recordProcessors2;
+		private List<ExtendedRecordProcessor> recordProcessors1;
+		private List<ExtendedRecordProcessor> recordProcessors2;
 		
 		private List<Storage> storages1;
 		private List<Storage> storages2;

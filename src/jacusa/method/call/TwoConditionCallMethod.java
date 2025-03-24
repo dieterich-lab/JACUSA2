@@ -17,12 +17,12 @@ extends CallMethod {
 	}
 
 	@Override
-	public boolean parseArgs(String[] args) throws Exception {
+	public void parseArgs(String[] args) throws Exception {
 		if (args == null || args.length != 2) {
 			throw new ParseException("BAM File is not provided!");
 		}
 
-		return super.parseArgs(args);
+		super.parseArgs(args);
 	}
 
 }

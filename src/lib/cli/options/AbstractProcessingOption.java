@@ -6,7 +6,7 @@ import org.apache.commons.cli.Option;
 /**
  * Represents an CLI option that can added to parameterize a method.
  */
-public abstract class AbstractOption {
+public abstract class AbstractProcessingOption {
 	
 	// will be shown to the user as an option: -opt
 	private String opt; 
@@ -15,18 +15,17 @@ public abstract class AbstractOption {
 	// psst, this should be a hidden flag...
 	private boolean hide;
 	
-	public AbstractOption(final String opt, final String longOpt) {
+	public AbstractProcessingOption(final String opt, final String longOpt) {
 		this.opt 		= opt;
 		this.longOpt 	= longOpt;
 	}
 	
-	
 	/**
 	 * Processes a parsed CommandLine.
-	 * @param line the CommandLine line to be used for processing
+	 * @param cmd the CommandLine line to be used for processing
 	 * @throws Exception
 	 */
-	public abstract void process(CommandLine line) throws Exception;
+	public abstract void process(CommandLine cmd) throws Exception;
 	
 	/**
 	 * Returns an instance of Option that can be used with APACHE commons CLI 

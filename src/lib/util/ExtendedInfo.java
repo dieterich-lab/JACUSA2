@@ -1,13 +1,11 @@
 package lib.util;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
-
-import lib.io.InputOutput;
+import java.util.TreeSet;
 
 /**
  * add documentation
@@ -16,73 +14,33 @@ public class ExtendedInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Map<String, String> siteMap;
-	private final List<Map<String, String>> conditionMap;
-	private final List<List<Map<String, String>>> replicateMap;
+	private static final Set<String> KEYS = new TreeSet<String>();
+	public static final Set<String> REGISTERED_KEYS = Collections.unmodifiableSet(KEYS);
+
+	public static void registerKey(final String key) {
+		KEYS.add(key);
+	}
+
+	private final Map<String, String> map;
 	
-	public ExtendedInfo(final List<Integer> replicateSizes) {
-		siteMap = new TreeMap<>();
-		conditionMap = new ArrayList<Map<String,String>>(replicateSizes.size());
-		replicateMap = new ArrayList<List<Map<String,String>>>(replicateSizes.size());
-		for (int conditionIndex = 0; conditionIndex < replicateSizes.size(); ++conditionIndex) {
-			conditionMap.add(new HashMap<String, String>(2));
-			replicateMap.add(new ArrayList<Map<String,String>>(replicateSizes.get(conditionIndex)));
-			for (int replicateIndex = 0; replicateIndex < replicateSizes.get(conditionIndex); ++replicateIndex) {
-				replicateMap.get(conditionIndex).add(new HashMap<String, String>());
-			}
-		}
+	public ExtendedInfo() {
+		map = new TreeMap<>();
 	}
 
 	public void clear() {
-		siteMap.clear();
-		conditionMap.forEach(map -> map.clear());
-		for (final List<Map<String,String>> replicates : replicateMap) {
-			replicates.forEach(map -> map.clear());
-		}
-	}
-	
-	public void addSite(final String key) {
-		siteMap.put(key, null);
-	}
-	
-	public void addSite(final String key, final String value) {
-		siteMap.put(key, value);
-	}
-	
-	public void addCondition(final int conditionIndex, final String key, final String value) {
-		conditionMap.get(conditionIndex).put(key, value);
-	}
-	
-	public <T> void addReplicate(final int conditionIndex, final int replicateIndex, final String key, final T value) {
-		replicateMap.get(conditionIndex).get(replicateIndex).put(key, value.toString());
+		map.clear();
 	}
 
-	public boolean containsSite(final String key) {
-		return siteMap.containsKey(key);
+	public boolean contains(final String key) {
+		return map.containsKey(key);
 	}
 	
-	public String combine() {
-		final StringBuilder sb = new StringBuilder();
-
-		/* TODO implement
-		for (final String key : map.keySet()) {
-			if (sb.length() > 0) {
-				sb.append(SEP);
-			}
-			sb.append(key);
-			if (map.containsKey(key) && map.get(key) != null) {
-				sb.append('=');
-				sb.append(map.get(key).toString());
-			}
-		}
-		*/
-		
-		final String s = sb.toString();
-		if (s.isEmpty()) {
-			return Character.toString(InputOutput.EMPTY_FIELD);
-		}
-		
-		return s;
+	public void add(final String key, final String value) {
+		map.put(key, value);
+	}
+	
+	public Map<String, String> getRegisteredKeyValues() {
+		return Collections.unmodifiableMap(map);
 	}
 	
 }

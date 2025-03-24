@@ -1,6 +1,6 @@
 package jacusa.io.format.modifyresult;
 
-public abstract class AbstractResultModifier implements ModifyResult {
+public abstract class AbstractResultModifier implements ResultModifier {
 
     private final String id;
     private final String desc;

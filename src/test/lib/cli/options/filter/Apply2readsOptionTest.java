@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import htsjdk.samtools.util.StringUtil;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.filter.Apply2readsOption;
 import lib.cli.options.filter.has.HasApply2reads;
 import lib.io.InputOutput;
@@ -37,7 +37,7 @@ implements OptionTest<Set<RT_READS>> {
 	}
 	
 	@Override
-	public AbstractOption createTestInstance() {
+	public AbstractProcessingOption createTestInstance() {
 		return new Apply2readsOption(hasApply2reads);
 	}
 	

@@ -2,7 +2,7 @@ package jacusa.io.format.modifyresult;
 
 import lib.data.result.Result;
 
-public interface ModifyResult {
+public interface ResultModifier {
 
 	/**
 	 * 

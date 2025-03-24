@@ -20,6 +20,10 @@ public interface ConditionEstimate {
 
 	int getMaxIterations();
 
+	default boolean previousEstimate() {
+		return getIteration() > 0 || ! isNumericallyStable();
+	}
+	
 	int getIteration();
 
 	NominalData getNominalData();

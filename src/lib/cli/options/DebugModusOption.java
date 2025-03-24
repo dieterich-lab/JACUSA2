@@ -6,7 +6,7 @@ import lib.util.AbstractMethod;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
-public class DebugModusOption extends AbstractOption {
+public class DebugModusOption extends AbstractProcessingOption {
 
 	private final GeneralParameter parameter;
 	private final AbstractMethod method;

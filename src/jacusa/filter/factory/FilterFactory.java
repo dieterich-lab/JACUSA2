@@ -12,7 +12,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import jacusa.filter.Filter;
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.parameter.ConditionParameter;
 import lib.data.DataContainer;
 import lib.data.DataContainer.AbstractBuilder;
@@ -54,15 +54,15 @@ public interface FilterFactory {
 	default  Set<Option> processCLI(final CommandLine cmd) throws Exception {
 		final Set<Option> parsed = new HashSet<>();
 
-		final Map<String, AbstractOption> longOpt2acOption = 
-				getACOption().stream()
+		final Map<String, AbstractProcessingOption> longOpt2acOption = 
+				getOption().stream()
 					.collect(Collectors.toMap(
-							AbstractOption::getLongOpt, Function.identity()));
+							AbstractProcessingOption::getLongOpt, Function.identity()));
 		
 		for (final Option option : cmd.getOptions()) {
 			final String longOpt = option.getLongOpt();
 			if (longOpt2acOption.containsKey(longOpt)) {
-				final AbstractOption acOption = longOpt2acOption.get(longOpt);
+				final AbstractProcessingOption acOption = longOpt2acOption.get(longOpt);
 				acOption.process(cmd);
 				parsed.add(option);
 			}
@@ -73,7 +73,7 @@ public interface FilterFactory {
 	
 	default Options getOptions() {
 		final Options options = new Options();
-		for (final AbstractOption acOption : getACOption()) {
+		for (final AbstractProcessingOption acOption : getOption()) {
 			options.addOption(acOption.getOption(false));
 		}
 		
@@ -85,7 +85,7 @@ public interface FilterFactory {
 	 * 
 	 * @return List of AbstractACOptions.
 	 */
-	List<AbstractOption> getACOption();
+	List<AbstractProcessingOption> getOption();
 
 	void addFilteredData(StringBuilder sb, DataContainer filteredData);
 

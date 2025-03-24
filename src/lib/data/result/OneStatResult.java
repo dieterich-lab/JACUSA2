@@ -5,10 +5,8 @@ import java.util.TreeSet;
 
 import lib.data.ParallelData;
 import lib.util.ExtendedInfo;
+import lib.util.FilterInfo;
 
-/**
- * TODO add documentation
- */
 public class OneStatResult implements Result {
 
 	private static final long serialVersionUID = 1L;
@@ -17,7 +15,7 @@ public class OneStatResult implements Result {
 	private final ParallelData parallelData;
 	
 	private boolean markedFiltered;
-	private final ExtendedInfo filterInfo;
+	private final FilterInfo filterInfo;
 	private final ExtendedInfo resultInfo;
 
 	private final SortedSet<Integer> valueIndex;
@@ -27,7 +25,7 @@ public class OneStatResult implements Result {
 		this.parallelData 	= parallelData;
 		
 		markedFiltered 	= false;
-		filterInfo 		= new ExtendedInfo(parallelData.getReplicates());
+		filterInfo 		= new FilterInfo();
 		resultInfo 		= info;
 		
 		valueIndex = new TreeSet<>();
@@ -50,7 +48,7 @@ public class OneStatResult implements Result {
 	}
 
 	@Override
-	public ExtendedInfo getFilterInfo(final int valueIndex) {
+	public FilterInfo getFilterInfo(final int valueIndex) {
 		return filterInfo;
 	}
 
@@ -80,7 +78,7 @@ public class OneStatResult implements Result {
 	}
 
 	@Override
-	public ExtendedInfo getFilterInfo() {
+	public FilterInfo getFilterInfo() {
 		return filterInfo;
 	}
 	

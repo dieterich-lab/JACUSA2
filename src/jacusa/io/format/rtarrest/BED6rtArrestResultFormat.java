@@ -50,12 +50,5 @@ public class BED6rtArrestResultFormat extends AbstractResultFileFormat {
 		builder.addInfoAdder(new DefaultInfoAdder(getParameter()));
 		return builder.build();
 	}
-
-	@Override
-	public void processCLI(String line) throws IllegalArgumentException {
-		if (line != null && line.length() > 0) {
-			throw new IllegalArgumentException("Options are not supported: " + line);
-		}
-	}
 	
 }

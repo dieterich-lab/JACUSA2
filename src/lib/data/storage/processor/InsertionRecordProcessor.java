@@ -10,7 +10,7 @@ import lib.util.position.PositionProvider;
 /**
  * TODO add documentation
  */
-public class InsertionRecordProcessor implements GeneralRecordProcessor {
+public class InsertionRecordProcessor implements ExtendedRecordProcessor {
 
 	private final CoordinateTranslator translator;
 	

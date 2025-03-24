@@ -34,7 +34,7 @@ abstract class AbstractFilter implements Filter {
 	
 	@Override
 	public void markResult(final int valueIndex, final Result result) {
-		result.getFilterInfo(valueIndex).addSite(Character.toString(getID()));
+		result.getFilterInfo(valueIndex).add(getID());
 	}
 
 }

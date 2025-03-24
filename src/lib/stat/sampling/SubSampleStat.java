@@ -86,11 +86,11 @@ public class SubSampleStat {
 			}
 		}
 
-		result.getResultInfo().addSite("score_subsampled", callScoresSb.toString());
+		result.getResultInfo().add("score_subsampled", callScoresSb.toString());
 		for (int indelStatIndex = 0; indelStatIndex < indelStats.size(); indelStatIndex++) {
 			final INDELstat indelStat = indelStats.get(indelStatIndex);
 			final StringBuilder indelScoreSb = indelScoreSbs[indelStatIndex];
-			result.getResultInfo().addSite(indelStat.getScoreKey() + "_subsampled", indelScoreSb.toString());
+			result.getResultInfo().add(indelStat.getScoreKey() + "_subsampled", indelScoreSb.toString());
 		}
 	}
 

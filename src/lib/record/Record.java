@@ -165,7 +165,6 @@ public class Record {
 		return downstream.getCigarElement().getLength();
 	}
 	
-	// TODO change name
 	public class AlignedPositionCigarElement {
 		
 		private AlignedPosition position;

@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 
 public final class CLIUtils {
 
@@ -52,15 +52,15 @@ public final class CLIUtils {
 		}
 	}
 
-	public static Options getOptions(final AbstractOption acOption) {
+	public static Options getOptions(final AbstractProcessingOption acOption) {
 		final Options options = new Options();
 		options.addOption(acOption.getOption(false));
 		return options;
 	}
 	
-	public static Options getOptions(final List<AbstractOption> acOptions) {
+	public static Options getOptions(final List<AbstractProcessingOption> acOptions) {
 		final Options options = new Options();
-		for (final AbstractOption acOption : acOptions) {
+		for (final AbstractProcessingOption acOption : acOptions) {
 			options.addOption(acOption.getOption(false));
 		}
 		return options;

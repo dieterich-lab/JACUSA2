@@ -64,7 +64,7 @@ implements HasHomopolymerLength, HasHomopolymerMethod {
 		length = MIN_HOMOPOLYMER_LENGTH;
 		method = HOMOPOLYMER_METHOD;
 		
-		getACOption().add(new HomopolymerLengthOption(this));
+		getOption().add(new HomopolymerLengthOption(this));
 		// current turned off - needs more optimization 
 		// getACOption().add(new HomopolymerMethodOption(this));
 

@@ -24,7 +24,6 @@ public class CallStat extends AbstractStat {
 			final double threshold,
 			final ConditionEstimateProvider estimationContainerProvider,
 			final DirMultParameter dirMultParameter) {
-		super();
 		this.threshold 						= threshold;
 		this.estimationContainerProvider 	= estimationContainerProvider;
 		this.dirMultParameter 				= dirMultParameter;
@@ -66,7 +65,7 @@ public class CallStat extends AbstractStat {
 			return null;
 		}
 		
-		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
+		final ExtendedInfo resultInfo = new ExtendedInfo();
 		if (dirMultParameter.showAlpha()) {
 			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo);
 		}

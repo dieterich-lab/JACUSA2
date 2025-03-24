@@ -28,7 +28,7 @@ import lib.util.ReplicateContainer;
 import lib.util.coordinate.Coordinate;
 
 /**
- * TODO add documentation
+ * Base class of all workers that perform some method available in JACUSA2
  */
 public abstract class AbstractWorker
 extends Thread
@@ -51,7 +51,6 @@ implements Iterator<ParallelData> {
 	
 	private ParallelData parallelData;
 	
-	// FIXME remove method -> add WorkerDispatcher, and GeneralParameter
 	public AbstractWorker(final AbstractMethod method, final int threadId) {
 		this.method = method;
 		
@@ -98,7 +97,7 @@ implements Iterator<ParallelData> {
 				isFiltered = true;
 			}
 		}
-
+		
 		result.setFiltered(isFiltered);
 		return isFiltered;
 	}

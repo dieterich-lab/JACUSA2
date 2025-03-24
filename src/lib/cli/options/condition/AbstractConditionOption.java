@@ -3,14 +3,14 @@ package lib.cli.options.condition;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.parameter.ConditionParameter;
 
 /**
  * Represents the CLI options that can be provided for each condition, e.g.: 
  * minimal BASQ, minimal coverage, etc. 
  */
-public abstract class AbstractConditionOption extends AbstractOption {
+public abstract class AbstractConditionOption extends AbstractProcessingOption {
 
 	private int conditionIndex;
 	private final List<ConditionParameter> conditionParameters;

@@ -4,7 +4,6 @@ import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,10 +34,10 @@ implements HasConditionParameter {
 
 	protected List<ConditionParameter> conditionParameters;
 
-	private String resFilename;
-	private ResultFormat resFormat;
+	private String resultFilename;
+	private ResultFormat resultFormat;
 	
-	private FilterConfig filterConf;
+	private FilterConfig filterConfig;
 
 	private String filteredFilename;
 	
@@ -54,16 +53,16 @@ implements HasConditionParameter {
 		maxThreads			= 1;
 		
 		inputBedFilename	= "";
-		conditionParameters	= new ArrayList<>(2);
+		conditionParameters	= new ArrayList<>();
 
-		filterConf			= new FilterConfig();
+		filterConfig			= new FilterConfig();
 		
 		filteredFilename	= null;
 		
 		showMap 			= new HashMap<ShowOptions, Boolean>(8);
 		showMap.put(ShowOptions.DELETION_COUNT, false);
-		showMap.put(ShowOptions.INSERTION_COUNT, false); // TODO
-		showMap.put(ShowOptions.INSERTION_START_COUNT, false); // TODO
+		showMap.put(ShowOptions.INSERTION_COUNT, false);
+		showMap.put(ShowOptions.INSERTION_START_COUNT, false);
 		showMap.put(ShowOptions.NON_REFERENCE_COUNT, false);
 		showMap.put(ShowOptions.DELETION_RATIO, false);
 		showMap.put(ShowOptions.INSERTION_RATIO, false);
@@ -87,26 +86,26 @@ implements HasConditionParameter {
 	}
 	
 	public ResultFormat getResultFormat() {
-		return resFormat;
+		return resultFormat;
 	}
 
 	public void setResultFormat(ResultFormat resultFormat) {
-		this.resFormat = resultFormat;
+		this.resultFormat = resultFormat;
 	}
 	
 	/**
 	 * @return the filterConfig
 	 */
 	public FilterConfig getFilterConfig() {
-		return filterConf;
+		return filterConfig;
 	}
 	
 	public void setResultFilename(final String resultFilename) {
-		this.resFilename = resultFilename;
+		this.resultFilename = resultFilename;
 	}
 	
 	public String getResultFilename() {
-		return resFilename;
+		return resultFilename;
 	}
 
 	@Override
@@ -254,21 +253,18 @@ implements HasConditionParameter {
 	}
 	
 	/**
-	 * @return TODO add comments
+	 * @return if sites without a variant should be processed
 	 */
 	public boolean showAllSites() {
 		return show(ShowOptions.SHOW_ALL_SITES);
 	}
 
-	/**
-	 * @param TODO add comments
-	 */
 	public void showAllSites(boolean showAllSites) {
 		show(ShowOptions.SHOW_ALL_SITES, showAllSites);
 	}
 
 	/**
-	 * @return the filteredFilename
+	 * @return the filename where to write filtered sites
 	 */
 	public String getFilteredFilename() {
 		if (filteredFilename == null) {
@@ -315,18 +311,6 @@ implements HasConditionParameter {
 		}
 
 		return refFile;
-	}
-	
-	@Deprecated
-	public void resetReferenceFile() {
-		if (refFile != null) {
-			try {
-				refFile.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			refFile = null;
-		}
 	}
 	
 	/**

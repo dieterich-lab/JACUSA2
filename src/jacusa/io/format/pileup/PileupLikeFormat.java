@@ -26,12 +26,5 @@ public class PileupLikeFormat extends AbstractResultFileFormat {
 	public ResultWriter createWriter(String outputFileName) {
 		return new PileupResultWriter(outputFileName);
 	}
-
-	@Override
-	public void processCLI(String line) throws IllegalArgumentException {
-		if (line != null && line.length() > 0) {
-			throw new IllegalArgumentException("Options are not supported: " + line);
-		}
-	}
 	
 }

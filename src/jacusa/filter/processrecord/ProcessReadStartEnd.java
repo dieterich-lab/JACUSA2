@@ -8,7 +8,7 @@ import java.util.List;
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
 import lib.record.Record;
-import lib.util.position.AlgnBlockPosProviderBuilder;
+import lib.util.position.AlignedBlockPositionProviderBuilder;
 
 /**
  * This class will mark all read start/end position +/- distance up- and downstream 
@@ -34,7 +34,7 @@ public class ProcessReadStartEnd extends AbstractFilterRecordProcessor {
 
 		// read start
 		getPosProcessor().process(
-				new AlgnBlockPosProviderBuilder(
+				new AlignedBlockPositionProviderBuilder(
 						0, 
 						record, 
 						getTranslator())
@@ -44,7 +44,7 @@ public class ProcessReadStartEnd extends AbstractFilterRecordProcessor {
 		
 		// read end
 		getPosProcessor().process(
-				new AlgnBlockPosProviderBuilder(
+				new AlignedBlockPositionProviderBuilder(
 						algnBlocks.size() - 1, 
 						record, 
 						getTranslator())

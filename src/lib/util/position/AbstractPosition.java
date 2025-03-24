@@ -2,9 +2,6 @@ package lib.util.position;
 
 import lib.record.Record;
 
-/**
- * TODO add documentation
- */
 abstract class AbstractPosition implements Position {
 	
 	protected int refPos;

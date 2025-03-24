@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import lib.cli.parameter.GeneralParameter;
+import lib.data.has.HasProcessCommandLine;
 import lib.io.InputOutput;
 import lib.io.ResultFormat;
 
@@ -11,7 +12,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 public class ResultFormatOption 
-extends AbstractOption {
+extends AbstractProcessingOption {
 
 	private final GeneralParameter parameter;
 	private final Map<Character, ResultFormat> resultFormats;
@@ -28,35 +29,36 @@ extends AbstractOption {
 	public Option getOption(final boolean printExtendedHelp) {
 		StringBuilder sb = new StringBuilder();
 
-		boolean required = true;
-		for (char rf_id : resultFormats.keySet()) {
-			ResultFormat resultFormat = resultFormats.get(rf_id);
+		for (final char resultFormatID : resultFormats.keySet()) {
+			final ResultFormat resultFormat = resultFormats.get(resultFormatID);
 			if (parameter.getResultFormat() != null && 
 					resultFormat.getID() == parameter.getResultFormat().getID()) {
 				sb.append("<*>");
-				required = false;
 			} else {
 				sb.append("< >");
 			}
-			sb.append(" " + rf_id);
+			sb.append(" " + resultFormatID);
 			sb.append(": ");
 			sb.append(resultFormat.getDesc());
 			sb.append("\n");
 		}
 		
+		// TODO printExtendedHelp
+		
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
-				.required(required)
+				.required(true)
 				.desc("Choose output format:\n" + sb.toString())
 				.build(); 
 	}
 
 	@Override
-	public void process(final CommandLine cmdLine) throws IllegalArgumentException {
-		final String s = cmdLine.getOptionValue(getOpt());
+	public void process(final CommandLine cmd) throws IllegalArgumentException {
+		final String line = cmd.getOptionValue(getOpt());
 
-		if((s.contains("insertion_ratio") && !cmdLine.hasOption('i')) || (s.contains("deletion_ratio") && !cmdLine.hasOption('D')) || (s.contains("modification_count") && !cmdLine.hasOption('M'))){
+		// TODO put this somewhere else
+		if((line.contains("insertion_ratio") && !cmd.hasOption('i')) || (line.contains("deletion_ratio") && !cmd.hasOption('D')) || (line.contains("modification_count") && !cmd.hasOption('M'))){
 			throw new IllegalArgumentException("put options -i, -D, or -M to calculate insertion-, deletion-ratio, or modification-count");
 		}
 
@@ -66,25 +68,18 @@ extends AbstractOption {
 		}
 		*/ 
 
-		//go through command line input
-		for (int i = 0; i < s.length(); ++i) {
-			final char c = s.charAt(i);
-			if (! resultFormats.containsKey(c)) {
-				//if character is no result format, check if it's a ':'
-				if (c == ':') {
-					//create string with just options after ':' and call processCLI() with it
-					final String[] t = s.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
-					String parsedLine = String.join("", Arrays.copyOfRange(t, 1, t.length));
-					resultFormats.get(t[0].charAt(0)).processCLI(parsedLine);
-					break;
-				} else {
-					//if character is unexpected
-					throw new IllegalArgumentException("Unknown output format: " + c);
-				}
-			}
-			//set result format put into command line (B,V,X)
-			parameter.setResultFormat(resultFormats.get(c));
+		ResultFormat resultFormat = null;
+		
+		if (line.indexOf(Character.toString(InputOutput.WITHIN_FIELD_SEP)) >= 0) {
+			final String[] nameWithArgs = line.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
+			final String[] args = Arrays.copyOfRange(nameWithArgs, 1, nameWithArgs.length);
+			resultFormat = resultFormats.get(nameWithArgs[0].charAt(0));
+			((HasProcessCommandLine)resultFormat).getProcessCommandLine().process(args);
+		} else {
+			resultFormat = resultFormats.get(line.charAt(0));
 		}
+		
+		parameter.setResultFormat(resultFormat);
 	}
 
 }

@@ -61,10 +61,4 @@ public class BED6lrtArrestResultFormat extends AbstractResultFormat {
 		return new SerializeCopyTmpResult(threadId, workerDispatcher.getResultWriter(), this);
 	}
 	
-	@Override
-	public void processCLI(String line) throws IllegalArgumentException {
-		if (line != null && line.length() > 0) {
-			throw new IllegalArgumentException("Options are not supported: " + line);
-		}
-	}
 }

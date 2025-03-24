@@ -5,7 +5,7 @@ import java.util.List;
 import lib.data.DataContainer;
 import lib.data.storage.Cache;
 import lib.data.storage.Storage;
-import lib.data.storage.processor.GeneralRecordProcessor;
+import lib.data.storage.processor.ExtendedRecordProcessor;
 import lib.record.Record;
 import lib.util.coordinate.Coordinate;
 
@@ -13,7 +13,7 @@ public class UnstrandedCacheContainter
 implements CacheContainer {
 
 	private final SharedStorage sharedStorage;
-	private final List<GeneralRecordProcessor> recordProcessors;
+	private final List<ExtendedRecordProcessor> recordProcessors;
 	private final List<Storage> storages;
 	
 	public UnstrandedCacheContainter(
@@ -37,7 +37,7 @@ implements CacheContainer {
 	
 	@Override
 	public void preProcess() {
-		for (final GeneralRecordProcessor processor : recordProcessors) {
+		for (final ExtendedRecordProcessor processor : recordProcessors) {
 			processor.preProcess();
 		}
 	}
@@ -46,14 +46,14 @@ implements CacheContainer {
 	public void process(final Record record) {
 		sharedStorage.addrecord(record);
 
-		for (final GeneralRecordProcessor recordProcessor : recordProcessors) {
+		for (final ExtendedRecordProcessor recordProcessor : recordProcessors) {
 			recordProcessor.process(record);
 		}
 	}
 	
 	@Override
 	public void postProcess() {
-		for (final GeneralRecordProcessor processor : recordProcessors) {
+		for (final ExtendedRecordProcessor processor : recordProcessors) {
 			processor.postProcess();
 		}
 	}
@@ -74,7 +74,7 @@ implements CacheContainer {
 	}
 
 	@Override
-	public List<GeneralRecordProcessor> getRecordProcessors() {
+	public List<ExtendedRecordProcessor> getRecordProcessors() {
 		return recordProcessors;
 	}
 	

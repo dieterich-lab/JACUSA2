@@ -15,7 +15,6 @@ import jacusa.filter.factory.rtarrest.RTarrestMaxAlleleCountFilterFactory;
 import jacusa.io.format.rtarrest.BED6rtArrestResultFormat;
 import jacusa.worker.RTArrestWorker;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -160,9 +159,7 @@ extends AbstractMethod {
 		final Map<String, AbstractStatFactory> factories = 
 				new TreeMap<>();
 
-		final List<AbstractStatFactory> tmpFactory = new ArrayList<>(5);
-		tmpFactory.add(new RTarrestStatFactory());
-		for (final AbstractStatFactory factory : tmpFactory) {
+		for (final AbstractStatFactory factory : Arrays.asList(new RTarrestStatFactory())) {
 			factories.put(factory.getName(), factory);
 		}
 		return factories;
@@ -234,12 +231,12 @@ extends AbstractMethod {
 	}
 
 	@Override
-	public boolean parseArgs(String[] args) throws Exception {
+	public void parseArgs(String[] args) throws Exception {
 		if (args == null || args.length != 2) {
 			throw new ParseException("BAM File is not provided!");
 		}
 
-		return super.parseArgs(args);
+		super.parseArgs(args);
 	}
 
 	@Override

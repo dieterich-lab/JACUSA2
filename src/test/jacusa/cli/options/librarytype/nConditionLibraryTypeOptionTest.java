@@ -24,7 +24,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.util.LibraryType;
@@ -264,7 +264,7 @@ class nConditionLibraryTypeOptionTest {
 	
 	private Options getOptions(final List<nConditionLibraryTypeOption> acOptions) {
 		final Options options = new Options();
-		for (final AbstractOption acOption : acOptions) {
+		for (final AbstractProcessingOption acOption : acOptions) {
 			options.addOption(acOption.getOption(false));
 		}
 		return options;

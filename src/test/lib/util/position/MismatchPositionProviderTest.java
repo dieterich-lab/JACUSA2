@@ -40,13 +40,11 @@ class MismatchPositionProviderTest implements PositionProviderTest {
 		assertEquals(expected, actual);
 	}
 
-	// TODO Qi add more complicated tests, e.g.: INDEL + spliced + partially outside window
 	Stream<Arguments> testIterator() {
 		// Reference Sequence
 		//ACGAACGT
 		//12345678
 		return Stream.of(
-
 				createArguments(
 						1, "2M", new String(), 
 						1, 8, 

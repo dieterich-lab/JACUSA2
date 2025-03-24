@@ -6,14 +6,14 @@ import lib.util.coordinate.CoordinateTranslator;
 /**
  * TODO add documentation
  */
-public class AlgnBlockPosProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
+public class AlignedBlockPositionProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
 	
 	private final MatchPosition pos;
 	private int length;
 
 	private CoordinateTranslator translator;
 
-	public AlgnBlockPosProviderBuilder(
+	public AlignedBlockPositionProviderBuilder(
 			final int algnBlockIndex, final Record record, 
 			final CoordinateTranslator translator) {
 		
@@ -26,13 +26,13 @@ public class AlgnBlockPosProviderBuilder implements lib.util.Builder<IntervalPos
 	}
 
 	// call this once
-	public AlgnBlockPosProviderBuilder tryFirst(final int length) {
+	public AlignedBlockPositionProviderBuilder tryFirst(final int length) {
 		this.length = Math.min(this.length, length);
 		return this;
 	}
 	
 	// call this once
-	public AlgnBlockPosProviderBuilder tryLast(final int length) {
+	public AlignedBlockPositionProviderBuilder tryLast(final int length) {
 		int oldLength = this.length;
 		this.length = Math.min(this.length, length);
 		final int offset = oldLength - this.length;
@@ -41,7 +41,7 @@ public class AlgnBlockPosProviderBuilder implements lib.util.Builder<IntervalPos
 	}
 	
 	// call this once
-	public AlgnBlockPosProviderBuilder ignoreFirst(final int length) {
+	public AlignedBlockPositionProviderBuilder ignoreFirst(final int length) {
 		if (length <= this.length) {
 			this.length = this.length -length;
 			pos.offset(length);
@@ -53,14 +53,14 @@ public class AlgnBlockPosProviderBuilder implements lib.util.Builder<IntervalPos
 	}
 
 	// call this once
-	public AlgnBlockPosProviderBuilder ignoreLast(final int length) {
+	public AlignedBlockPositionProviderBuilder ignoreLast(final int length) {
 		final int offset = this.length - length;
 		this.length = Math.max(0, offset);
 		return this;
 	}
 	
 	// make sure to run this last
-	public AlgnBlockPosProviderBuilder adjustWinPos() {
+	public AlignedBlockPositionProviderBuilder adjustWinPos() {
 		length = PositionProvider.adjustWindowPos(pos, length, translator);
 		return this;
 	} 

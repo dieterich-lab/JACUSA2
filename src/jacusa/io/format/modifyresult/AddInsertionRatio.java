@@ -17,10 +17,9 @@ public class AddInsertionRatio extends AbstractResultModifier {
         	for (final int replicateIndex : parallelData.getReplicates()) {
         		final PileupCount pileupCount = parallelData.getDataContainer(conditionIndex, replicateIndex).getPileupCount(); 
         		final int reads = pileupCount.getReads();
-        		result.getResultInfo().addReplicate(
-        				conditionIndex, replicateIndex,
-        				getID(),
-        				pileupCount.getINDELCount().getInsertionRatio(reads));
+        		result.getResultInfo().add(
+        				getID() + conditionIndex + replicateIndex, 
+        				Double.toString(pileupCount.getINDELCount().getInsertionRatio(reads)));
         	}
         }
     }

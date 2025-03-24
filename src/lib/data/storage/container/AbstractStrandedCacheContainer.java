@@ -6,7 +6,7 @@ import java.util.List;
 import lib.util.coordinate.Coordinate;
 import lib.data.DataContainer;
 import lib.data.storage.Storage;
-import lib.data.storage.processor.GeneralRecordProcessor;
+import lib.data.storage.processor.ExtendedRecordProcessor;
 import lib.record.Record;
 
 /**
@@ -18,7 +18,7 @@ implements CacheContainer {
 	private final CacheContainer forwardContainer; 
 	private final CacheContainer reverseContainer;
 
-	private final List<GeneralRecordProcessor> recordProcessors;
+	private final List<ExtendedRecordProcessor> recordProcessors;
 	private final List<Storage> storages;
 	
 	AbstractStrandedCacheContainer(
@@ -58,7 +58,7 @@ implements CacheContainer {
 	}
 	
 	@Override
-	public List<GeneralRecordProcessor> getRecordProcessors() {
+	public List<ExtendedRecordProcessor> getRecordProcessors() {
 		return recordProcessors;
 	}
 

@@ -1,9 +1,12 @@
 package lib.io.format.bed;
 
+import java.util.Map.Entry;
+
 import lib.cli.parameter.GeneralParameter;
 import lib.data.ParallelData;
 import lib.data.result.Result;
 import lib.io.InputOutput;
+import lib.util.ExtendedInfo;
 
 public class DefaultInfoAdder implements InfoAdder {
 	
@@ -33,7 +36,19 @@ public class DefaultInfoAdder implements InfoAdder {
 
 		// add result info
 		sb.append(InputOutput.FIELD_SEP);
-		sb.append(result.getResultInfo(valueIndex).combine());
+		final ExtendedInfo info = result.getResultInfo(valueIndex);
+		if (info.getRegisteredKeyValues().isEmpty()) {
+			sb.append(InputOutput.EMPTY_FIELD);
+		} else {
+			for (final Entry<String, String> entry : info.getRegisteredKeyValues().entrySet()) {
+				sb.append(entry.getKey());
+				if (entry.getKey() != "NumericallyInstable") { // hack - file format compatibility: treat this a flag not key=value; 
+					sb.append(InputOutput.KEY_VALUE_SEP);
+					sb.append(entry.getValue());
+					sb.append(InputOutput.SEP4);
+				}
+			}
+		}
 		
 		// add filtering info
 		sb.append(InputOutput.FIELD_SEP);

@@ -38,8 +38,8 @@ implements HasFileName, HasFileType {
 	
 	public ExcludeSiteFilterFactory() {
 		super(getOptionBuilder().build());
-		getACOption().add(new FileNameOption(this));
-		getACOption().add(new FileTypeOption(this));
+		getOption().add(new FileNameOption(this));
+		getOption().add(new FileTypeOption(this));
 	}
 
 	/* TODO implement auto

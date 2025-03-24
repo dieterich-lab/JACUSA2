@@ -13,7 +13,7 @@ import lib.util.Util;
 import lib.util.coordinate.Coordinate;
 
 /**
- * TODO add documentation
+ * Provides reference sequence based on a file such as a FASTA file.
  */
 public class FileReferenceProvider implements ReferenceProvider {
 

@@ -2,13 +2,11 @@ package lib.io;
 
 import lib.cli.parameter.GeneralParameter;
 
-/**
- * TODO add comments.
- */
 public abstract class AbstractResultFormat implements ResultFormat {
 
 	// unique (per method) char that identifies a result format
 	private final char c;
+	
 	// description that shown in help on command line 
 	private final String desc;
 

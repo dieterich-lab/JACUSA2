@@ -104,7 +104,12 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 		sb.append(Util.join(getAlpha(0), '\n'));
 		sb.append('\n');
 		
-		// TODO add intermediate values
+		for (int iteration = 1; iteration < getMaxIterations(); ++iteration) {
+			sb.append("Iteartion: ");
+			sb.append(iteration);
+			sb.append(' ');
+			sb.append(Util.join(getAlpha(iteration), '\n'));
+		}
 		
 		sb.append("Final Alpha: ");
 		sb.append(Util.join(getAlpha(), '\n'));

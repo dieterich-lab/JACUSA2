@@ -9,7 +9,7 @@ public class InsertionEstimateProvider extends INDELestimateProvider {
 	}
 	
 	@Override
-	int getCount(DataContainer container) {
+	int getINDELcount(DataContainer container) {
 		return container.getPileupCount().getINDELCount().getInsertionCount();
 	}
 }

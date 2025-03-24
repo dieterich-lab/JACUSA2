@@ -105,8 +105,8 @@ class StatFactoryOptionTest {
 	public static List<AbstractStatFactory> getFactories() {
 		return Arrays.asList(
 				new CoverageStatisticFactory(),
-				new DirMultCompoundErrorStatFactory(null),
-				new DirMultRobustCompoundErrorStatFactory(null),
+				new DirMultCompoundErrorStatFactory(),
+				new DirMultRobustCompoundErrorStatFactory(),
 				new DummyStatisticFactory(),
 				new LRTarrestStatFactory() );
 	}

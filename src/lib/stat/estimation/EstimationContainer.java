@@ -1,15 +1,24 @@
 package lib.stat.estimation;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class EstimationContainer {
 
 	private ConditionEstimate[] conditionEstimates;
 	private ConditionEstimate pooledConditionEstimate;
+	private Set<ConditionEstimate> estimates;
 	
 	public EstimationContainer(
 			final ConditionEstimate[] conditionEstimates,
 			final ConditionEstimate pooledConditionEstimate) {
 		this.conditionEstimates 		= conditionEstimates;
+		estimates 						= new HashSet<ConditionEstimate>();
+		for (final ConditionEstimate conditionEstimate : this.conditionEstimates) {
+			estimates.add(conditionEstimate);
+		}
 		this.pooledConditionEstimate 	= pooledConditionEstimate;
+		estimates.add(pooledConditionEstimate);
 	}
 	
 	public ConditionEstimate[] getConditionEstimates() {
@@ -42,6 +51,10 @@ public class EstimationContainer {
 		conditionEstimates[otherConditionIndex].clear();
 
 		pooledConditionEstimate.clear();
+	}
+
+	public Set<ConditionEstimate> getEstimates() {
+		return estimates;
 	}
 	
 }

@@ -4,9 +4,6 @@ import lib.stat.initalpha.AbstractAlphaInit;
 import lib.stat.initalpha.MeanAlphaInit;
 import lib.stat.initalpha.MinAlphaInit;
 
-/**
- * TODO comments
- */
 public class MinkaParameter {
 
 	private AbstractAlphaInit alphaInit;

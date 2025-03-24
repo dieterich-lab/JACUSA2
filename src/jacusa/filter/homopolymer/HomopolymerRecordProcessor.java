@@ -5,7 +5,7 @@ import java.util.List;
 
 import htsjdk.samtools.AlignmentBlock;
 import jacusa.filter.homopolymer.Homopolymer.HomopolymerBuilder;
-import lib.data.storage.processor.GeneralRecordProcessor;
+import lib.data.storage.processor.ExtendedRecordProcessor;
 import lib.record.Record;
 import lib.util.Base;
 
@@ -17,7 +17,7 @@ import lib.util.Base;
  *  
  * Tested in @see test.jacusa.filter.homopolymer.HomopolymerReadFilterCacheTest
  */
-public class HomopolymerRecordProcessor implements GeneralRecordProcessor {
+public class HomopolymerRecordProcessor implements ExtendedRecordProcessor {
 
 	private final int minLength;
 	

@@ -1,8 +1,6 @@
 package jacusa.method.rtarrest;
 
-import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
 
 import lib.stat.AbstractStatFactory;
 
@@ -21,14 +19,6 @@ extends AbstractStatFactory {
 		super(Option.builder(NAME)
 				.desc(DESC)
 				.build());
-	}
-
-	@Override
-	public void processCLI(CommandLine cmd) {}
-	
-	@Override
-	protected Options getOptions() {
-		return new Options();
 	}
 	
 	@Override

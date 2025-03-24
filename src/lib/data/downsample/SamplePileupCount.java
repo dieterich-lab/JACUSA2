@@ -69,10 +69,10 @@ public class SamplePileupCount {
 			
 			final char c = bases[randomI];
 			switch (c) {
-			case 'I': // FIXME - modifications (Inosin) vs. insertion
+			case 'I':
 				insertions++;
 				break; 
-			case 'D': // FIXME - modifications
+			case 'D':
 				deletions++;
 				break;
 				

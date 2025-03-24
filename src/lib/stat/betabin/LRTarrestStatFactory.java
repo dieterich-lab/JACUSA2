@@ -1,11 +1,17 @@
 package lib.stat.betabin;
 
-import org.apache.commons.cli.CommandLine;
+import java.util.Arrays;
+
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
 
 import lib.stat.AbstractStatFactory;
-import lib.stat.dirmult.DirMultCLIprocessing;
+import lib.stat.dirmult.ProcessCommandLine;
+import lib.stat.dirmult.options.CalculatePvalueOption;
+import lib.stat.dirmult.options.EpsilonOptions;
+import lib.stat.dirmult.options.MaxIterationsOption;
+import lib.stat.dirmult.options.ShowAlphaOption;
+import lib.stat.dirmult.options.SubsampleRunsOptions;
 import lib.stat.estimation.provider.arrest.LRTarrestEstimationCountProvider;
 
 public class LRTarrestStatFactory extends AbstractStatFactory {
@@ -14,15 +20,31 @@ public class LRTarrestStatFactory extends AbstractStatFactory {
 	private static final String DESC = "Minka Newton iteration method";
 	
 	private final LRTarrestBetaBinParameter dirMultParameter;
-	private final DirMultCLIprocessing CLIprocessing;
 	
 	public LRTarrestStatFactory() {
+		this(new LRTarrestBetaBinParameter());
+	}
+	
+	public LRTarrestStatFactory(final LRTarrestBetaBinParameter dirMultParameter) {
+		this(
+				dirMultParameter,
+				new ProcessCommandLine(
+						new DefaultParser(),
+						Arrays.asList(
+								new EpsilonOptions(dirMultParameter.getMinkaEstimateParameter()),
+								new ShowAlphaOption(dirMultParameter),
+								new MaxIterationsOption(dirMultParameter.getMinkaEstimateParameter()),
+								new SubsampleRunsOptions(dirMultParameter),
+								new CalculatePvalueOption(dirMultParameter))));
+	}
+	
+	public LRTarrestStatFactory(final LRTarrestBetaBinParameter dirMultParameter, final ProcessCommandLine processCommandLine) {
 		super(Option.builder(NAME)
 				.desc(DESC)
-				.build());
+				.build(),
+				processCommandLine);
 		
-		dirMultParameter 	= new LRTarrestBetaBinParameter();
-		CLIprocessing 		= new LRTarrestBetaBinCLIProcessing(dirMultParameter);
+		this.dirMultParameter 	= dirMultParameter;
 	}
 
 	@Override
@@ -37,16 +59,6 @@ public class LRTarrestStatFactory extends AbstractStatFactory {
 		}
 		
 		return new LRTarrestStat(threshold, arrestCountProvider, dirMultParameter);
-	}
-
-	@Override
-	protected Options getOptions() {
-		return CLIprocessing.getOptions();
-	}
-	
-	@Override
-	public void processCLI(final CommandLine cmd) {
-		CLIprocessing.processCLI(cmd);
 	}
 
 }

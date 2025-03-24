@@ -1,5 +1,6 @@
 package jacusa.cli.parameters;
 
+import lib.io.InputOutput;
 import lib.stat.AbstractStat;
 import lib.stat.AbstractStatFactory;
 
@@ -48,7 +49,6 @@ public class StatParameter {
 	 * @param conditions the number of conditions to be used
 	 * @return an instance of AbstractStatisticCalculator 
 	 */
-	// TODO refactor should not be necessary to have parameters
 	public AbstractStat newInstance(final int conditions) {
 		return factory.newInstance(getThreshold(), conditions);
 	}
@@ -59,10 +59,12 @@ public class StatParameter {
 	 * @param new factory to be set 
 	 */
 	public void setFactory(
-			final String CLIoption, 
+			final String line, 
 			final AbstractStatFactory factory) {
-		
-		factory.processCLI(CLIoption);
+		final String[] args = line.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
+		if (args.length > 0) {
+			factory.process(args);
+		}
 		this.factory = factory;
 	}
 

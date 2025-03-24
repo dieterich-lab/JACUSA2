@@ -46,7 +46,6 @@ public class LRTarrestStat extends AbstractStat {
 		
 		final double lrt 	= estimateDirMultAlpha.getLRT(estimationContainer);
 		final double pvalue = getPValue(lrt);
-		// FIXME final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
 		
 		final List<Integer> arrestPositions = parallelData.getCombPooledData()
 				.getArrestPos2BCC().getPositions();
@@ -54,7 +53,7 @@ public class LRTarrestStat extends AbstractStat {
 		for (final int arrestPos : arrestPositions) {
 			if (arrestPos == parallelData.getCoordinate().get1Position()) {
 				final int newValueIndex = multiStatResult.addStat(pvalue);
-				multiStatResult.getResultInfo(newValueIndex).addSite(RTarrestStat.ARREST_SCORE, Util.format(lrt));				
+				multiStatResult.getResultInfo(newValueIndex).add(RTarrestStat.ARREST_SCORE, Util.format(lrt));				
 			} else {
 				multiStatResult.addStat(Double.NaN);
 			}
@@ -64,12 +63,17 @@ public class LRTarrestStat extends AbstractStat {
 			return null;
 		}
 		
-		// TODO iterate over results
 		if (dirMultPrm.showAlpha()) {
-			estimateDirMultAlpha.addAlphaValues(estimationContainer, multiStatResult.getResultInfo());
+			for (final int valueIndex : multiStatResult.getValueIndexes()) {
+				estimateDirMultAlpha.addAlphaValues(estimationContainer, multiStatResult.getResultInfo(valueIndex));
+				estimateDirMultAlpha.addStatResultInfo(estimationContainer, multiStatResult.getResultInfo(valueIndex));
+			}
+		} else {
+			for (final int valueIndex : multiStatResult.getValueIndexes()) {
+				estimateDirMultAlpha.addStatResultInfo(estimationContainer, multiStatResult.getResultInfo(valueIndex));
+			}
 		}
-		estimateDirMultAlpha.addStatResultInfo(estimationContainer, multiStatResult.getResultInfo());
-		
+
 		return multiStatResult;
 	}
 	

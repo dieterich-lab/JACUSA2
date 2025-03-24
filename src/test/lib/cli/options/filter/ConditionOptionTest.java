@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.filter.ConditionOption;
 import lib.cli.options.filter.has.HasConditionIndex;
 import test.lib.cli.options.OptionTest;
@@ -43,7 +43,7 @@ class ConditionOptionTest implements OptionTest<Integer> {
 	}
 	
 	@Override
-	public AbstractOption createTestInstance() {
+	public AbstractProcessingOption createTestInstance() {
 		return new ConditionOption(hasCondition, conditionSize);
 	}
 	

@@ -14,22 +14,23 @@ import lib.data.ParallelData;
 import lib.data.has.HasParallelData;
 import lib.util.Base;
 import lib.util.ExtendedInfo;
+import lib.util.FilterInfo;
 import lib.util.LibraryType;
 import lib.util.Parser;
 import lib.util.coordinate.Coordinate;
 
 /**
- * TODO add documentation
+ * Container for results. Multiple scores permitted. 
  */
 public interface Result extends HasParallelData, Serializable {
 	
-	public static int TOTAL = -1; // FIXME use this to refer to main result
+	public static int TOTAL = -1;
 	
 	ExtendedInfo getResultInfo();
 	ExtendedInfo getResultInfo(int valueIndex);
 	
-	ExtendedInfo getFilterInfo();
-	ExtendedInfo getFilterInfo(int valueIndex);
+	FilterInfo getFilterInfo();
+	FilterInfo getFilterInfo(int valueIndex);
 
 	void setFiltered(boolean isFiltered);
 	boolean isFiltered();
@@ -114,7 +115,7 @@ public static class ResultBuilder implements lib.util.Builder<Result> {
 			}
 			
 			final ParallelData parallelData = pdBuilder.build();
-			final ExtendedInfo info = new ExtendedInfo(parallelData.getReplicates());
+			final ExtendedInfo info = new ExtendedInfo();
 			return new OneStatResult(Double.NaN, parallelData, info);
 		}
 		

@@ -48,15 +48,15 @@ public abstract class INDELestimateProvider implements ConditionEstimateProvider
 		final double[][] dataMatrix  = new double[dataContainers.size()][CATEGORIES]; // -> 2 because BetaBin
 		for (int replicateIndex = 0; replicateIndex < dataContainers.size(); replicateIndex++) {
 			final DataContainer container 	= dataContainers.get(replicateIndex);
-			final int count 				= getCount(container);
-			final int coverageCount 		= container.getPileupCount().getReads(); // TODO container.getBaseCallCount().getValue();
+			final int count 				= getINDELcount(container);
+			final int reads 				= container.getPileupCount().getReads();
 			dataMatrix[replicateIndex][PLUS_INDEX] 	= count + pseudoCount;
-			dataMatrix[replicateIndex][MINUS_INDEX]	= coverageCount - count + pseudoCount;
+			dataMatrix[replicateIndex][MINUS_INDEX]	= reads - count + pseudoCount;
 		}
 		return NominalData.build(CATEGORIES, dataMatrix);
 	}
 	
-	abstract int getCount(DataContainer container);
+	abstract int getINDELcount(DataContainer container);
 	
 	
 }

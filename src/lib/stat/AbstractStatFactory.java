@@ -1,26 +1,33 @@
 package lib.stat;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
-import lib.io.InputOutput;
+import lib.data.has.HasProcessCommandLine;
+import lib.stat.dirmult.ProcessCommandLine;
 import lib.util.CLIUtil;
 
 /**
  * TODO add documentation
  */
-public abstract class AbstractStatFactory {
+public abstract class AbstractStatFactory implements HasProcessCommandLine {
 
 	private final Option option;
+	private final ProcessCommandLine processCommandLine;
 	
-	public AbstractStatFactory(final Option option) {
-		this.option = option;
+	public AbstractStatFactory(final Option option, final ProcessCommandLine processComandLine) {
+		this.option 			= option;
+		this.processCommandLine = processComandLine;
 	}
 
+	public AbstractStatFactory(final Option option) {
+		this(option, new ProcessCommandLine());
+	}
+	
+	@Override
+	public ProcessCommandLine getProcessCommandLine() {
+		return processCommandLine;
+	}
+	
 	/**
 	 * Returns a new instance of this StatisticCalculator.
 	 * @param threshold
@@ -28,16 +35,6 @@ public abstract class AbstractStatFactory {
 	 */
 	public abstract AbstractStat newInstance(double threshold, int conditions);
 
-	/**
-	 * Process command lines options.
-	 * 
-	 * @param line
-	 * @return
-	 */
-	protected abstract void processCLI(final CommandLine cmd);
-	
-	protected abstract Options getOptions();
-	
 	/**
 	 * Return the short name of this StatisticCalculator.
 	 * @return
@@ -52,29 +49,14 @@ public abstract class AbstractStatFactory {
 	 */
 	public String getDesc() {
 		Option tmp = (Option)option.clone();
-		CLIUtil.adjustOption(tmp, getOptions(), tmp.getOpt().length());
+		CLIUtil.adjustOption(tmp, getProcessCommandLine().getOptions(), tmp.getOpt().length());
 		return tmp.getDescription();
 	}
 
-	public void processCLI(final String line) {
-		final Options options = getOptions();
-		if (options.getOptions().isEmpty() || line == null || line.isEmpty()) {
-			return;
-		}
-
-		final String[] args = line.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
-		final CommandLineParser parser = new DefaultParser();
-		
-		CommandLine cmd = null;
-		try {
-			cmd = parser.parse(options, args);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return;
-		}
-		processCLI(cmd);
+	public void process(final String[] args) {
+		processCommandLine.process(args);
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (! (obj instanceof AbstractStatFactory)) {

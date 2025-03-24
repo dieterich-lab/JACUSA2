@@ -13,9 +13,6 @@ import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.position.Position;
 
-/**
- * TODO add documentations
- */
 public abstract class AbstractBaseCallCountStorage
 extends AbstractStorage 
 implements WindowCoverage {
@@ -110,6 +107,5 @@ implements WindowCoverage {
 	protected void clearCoverage(int winPos) {
 		coverage[winPos] = 0;
 	}
-		
-	
+
 }

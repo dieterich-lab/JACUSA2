@@ -1,12 +1,17 @@
 package lib.stat.dirmult;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
+import java.util.Arrays;
 
-import lib.io.ResultFormat;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+
 import lib.stat.AbstractStat;
 import lib.stat.AbstractStatFactory;
+import lib.stat.dirmult.options.CalculatePvalueOption;
+import lib.stat.dirmult.options.EpsilonOptions;
+import lib.stat.dirmult.options.MaxIterationsOption;
+import lib.stat.dirmult.options.ShowAlphaOption;
+import lib.stat.dirmult.options.SubsampleRunsOptions;
 import lib.stat.estimation.provider.ConditionEstimateProvider;
 import lib.stat.estimation.provider.pileup.InSilicoEstimationPileupProvider;
 import lib.stat.estimation.provider.pileup.RobustEstimationPileupProvider;
@@ -15,16 +20,32 @@ public class DirMultRobustCompoundErrorStatFactory
 extends AbstractStatFactory {
 
 	private final CallDirMultParameter dirMultParameter;
-	private final DirMultCLIprocessing CLIprocessing;
 	
-	public DirMultRobustCompoundErrorStatFactory(final ResultFormat resultFormat) {
+	public DirMultRobustCompoundErrorStatFactory() {
+		this(new CallDirMultParameter());
+	}
+	
+	public DirMultRobustCompoundErrorStatFactory(final CallDirMultParameter dirMultParameter) {
+		this(
+				dirMultParameter,
+				new ProcessCommandLine(
+						new DefaultParser(),
+						Arrays.asList(
+								new EpsilonOptions(dirMultParameter.getMinkaEstimateParameter()),
+								new ShowAlphaOption(dirMultParameter),
+								new MaxIterationsOption(dirMultParameter.getMinkaEstimateParameter()),
+								new SubsampleRunsOptions(dirMultParameter),
+								new CalculatePvalueOption(dirMultParameter))));
+	}
+	
+	public DirMultRobustCompoundErrorStatFactory(final CallDirMultParameter dirMultParameter, final ProcessCommandLine processCommandLine) {
 		super(Option.builder("DirMult")
 				.desc(DirMultCompoundErrorStatFactory.DESC + "\n"+
 						"Adjusts variant condition")
-				.build());
+				.build(),
+				processCommandLine);
 		
-		dirMultParameter 	= new CallDirMultParameter();
-		CLIprocessing 		= new CallDirMultCLIProcessing(resultFormat, dirMultParameter);
+		this.dirMultParameter 	= dirMultParameter;
 	}
 
 	@Override
@@ -50,16 +71,6 @@ extends AbstractStatFactory {
 		}
 		
 		return new CallStat(threshold, dirMultPileupCountProvider, dirMultParameter);
-	}
-
-	@Override
-	protected Options getOptions() {
-		return CLIprocessing.getOptions();
-	}
-	
-	@Override
-	public void processCLI(final CommandLine cmd) {
-		CLIprocessing.processCLI(cmd);
 	}
 	
 }

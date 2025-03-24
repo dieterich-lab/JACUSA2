@@ -3,12 +3,16 @@ package lib.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.SAMPathnameArg;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.assembler.factory.AbstractDataAssemblerFactory;
 import lib.data.validator.paralleldata.ParallelDataValidator;
+import lib.estimate.MinkaParameter;
+import lib.stat.INDELstat;
+import lib.stat.estimation.provider.DeletionEstimateProvider;
+import lib.stat.estimation.provider.InsertionEstimateProvider;
 import lib.util.coordinate.provider.BedCoordinateProvider;
 import lib.util.coordinate.provider.CoordinateProvider;
 import lib.util.coordinate.provider.SAMCoordinateAdvancedProvider;
@@ -24,7 +28,7 @@ import htsjdk.samtools.SAMSequenceDictionary;
 import htsjdk.samtools.SAMSequenceRecord;
 
 /**
- * TODO add documentation
+ * Base class of all methods available in JACUSA2
  */
 public abstract class AbstractMethod {
 	
@@ -33,7 +37,7 @@ public abstract class AbstractMethod {
 	private final GeneralParameter parameter;
 	private final AbstractDataAssemblerFactory dataAssemblerFactory;
 	
-	private final List<AbstractOption> acOptions;
+	private final List<AbstractProcessingOption> options;
 	
 	private CoordinateProvider coordinateProvider;
 	private WorkerDispatcher workerDispatcher;
@@ -47,7 +51,7 @@ public abstract class AbstractMethod {
 		this.parameter = parameter;
 		this.dataAssemblerFactory = dataAssemblerFactory;
 		
-		acOptions = new ArrayList<>(10);
+		options = new ArrayList<>(10);
 	}
 	
 	public String getName() {
@@ -92,23 +96,23 @@ public abstract class AbstractMethod {
 		return true;
 	}
 	
-	protected void addOption(AbstractOption newACOption) {
-		checkDuplicate(newACOption);
-		acOptions.add(newACOption);
+	protected void addOption(AbstractProcessingOption newOption) {
+		checkDuplicate(newOption);
+		options.add(newOption);
 	}
 	
-	private void checkDuplicate(final AbstractOption newACOption) {
-		for (final AbstractOption ACOption : acOptions) {
+	private void checkDuplicate(final AbstractProcessingOption newOption) {
+		for (final AbstractProcessingOption option : options) {
 			try {
-				if (ACOption.getOpt() != null && 
-						ACOption.getOpt().equals(newACOption.getOpt())) {
-					throw new IllegalArgumentException("Duplicate opt '" + newACOption.getOpt() + 
-							"' for object: " + newACOption.toString() + " and " + ACOption.toString());
+				if (option.getOpt() != null && 
+						option.getOpt().equals(newOption.getOpt())) {
+					throw new IllegalArgumentException("Duplicate opt '" + newOption.getOpt() + 
+							"' for object: " + newOption.toString() + " and " + option.toString());
 				}
-				if (ACOption.getOpt() != null && 
-						ACOption.getLongOpt().equals(newACOption.getLongOpt())) {
-					throw new IllegalArgumentException("Duplicate longOpt '" + newACOption.getLongOpt() + 
-							"' for object" + newACOption.toString() + " and " + ACOption.toString());
+				if (option.getOpt() != null && 
+						option.getLongOpt().equals(newOption.getLongOpt())) {
+					throw new IllegalArgumentException("Duplicate longOpt '" + newOption.getLongOpt() + 
+							"' for object" + newOption.toString() + " and " + option.toString());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -117,18 +121,10 @@ public abstract class AbstractMethod {
 		}
 	}
 
-	/**
-	 * TODO add comment
-	 * @return
-	 */
-	public List<AbstractOption> getOptions() {
-		return acOptions;
+	public List<AbstractProcessingOption> getOptions() {
+		return options;
 	}
 
-	/**
-	 * TODO add comment
-	 * @param options
-	 */
 	public void printUsage(final boolean printExtendedHelp) {
 		final HelpFormatter formatter = new HelpFormatter();
 		formatter.setWidth(200);
@@ -156,9 +152,9 @@ public abstract class AbstractMethod {
 	}
 	
 	protected Options getOptions(final boolean printExtendedHelp) {
-		final List<AbstractOption> tmpAcOptions = getOptions();
+		final List<AbstractProcessingOption> tmpOptions = getOptions();
 		final Options options = new Options();
-		for (final AbstractOption acOption : tmpAcOptions) {
+		for (final AbstractProcessingOption acOption : tmpOptions) {
 			if (! acOption.isHidden()) {
 				options.addOption(acOption.getOption(printExtendedHelp));
 			}
@@ -167,7 +163,7 @@ public abstract class AbstractMethod {
 	}
 	
 	/**
-	 * TODO add comment
+	 * Initializes coordinateProvider. Coordinates can come from SAMSequenceDirectory or from a BED-file 
 	 * @throws Exception
 	 */
 	public void initCoordinateProvider() throws Exception {
@@ -200,34 +196,54 @@ public abstract class AbstractMethod {
 	}
 	
 	/**
-	 * TODO add comment
-	 * @param args
-	 * @return
+	 * Parses args that correspond to paths to BAM filenames. Expected format: BAM11,...BAM1N_1 BAM12,...BAM2N_2.
+	 * 
+	 * @param args array of ","-separated strings that point to BAM filenames
 	 * @throws Exception
 	 */
-	public boolean parseArgs(final String[] args) throws Exception {
+	public void parseArgs(final String[] args) throws Exception {
 		for (int conditionIndex = 0; conditionIndex < args.length; conditionIndex++) {
-			SAMPathnameArg pa = new SAMPathnameArg(conditionIndex + 1, parameter.getConditionParameter(conditionIndex));
-			pa.processArg(args[conditionIndex]);
+			SAMPathnameArg pathnameArg = new SAMPathnameArg(conditionIndex, parameter.getConditionParameter(conditionIndex));
+			pathnameArg.processArg(args[conditionIndex]);
 		}
-		
-		return true;
 	}
 	
-	/**
-	 * TODO add comment
-	 * @return
-	 */
 	public CoordinateProvider getCoordinateProvider() {
 		return coordinateProvider;
 	}
 
+	public List<INDELstat> getINDELstats(final MinkaParameter minkaParameter) {
+		final List<INDELstat> indelStats = new ArrayList<INDELstat>();
+		if (getParameter().showINDELcounts()) {
+			if (getParameter().showDeletionCount()) {
+				indelStats.add(
+						new INDELstat(
+								minkaParameter,
+								new DeletionEstimateProvider(minkaParameter.getMaxIterations()),
+								"deletion_score",
+								"deletion_pvalue"));
+			}
+			if (getParameter().showInsertionCount() ||
+					getParameter().showInsertionStartCount()) {
+				indelStats.add(
+						new INDELstat(
+								minkaParameter,
+								new InsertionEstimateProvider(minkaParameter.getMaxIterations()),
+								"insertion_score",
+								"insertion_pvalue"));
+			}
+		}
+		return indelStats;
+	}
+	
 	public abstract List<ParallelDataValidator> createParallelDataValidators();
 	
 	/**
-	 * TODO add comment
-	 * @param recordFilenames
-	 * @return
+	 * Reads recordFilenames, creates Objects of type SAMSequenceDictionary and checks if all sequence dictionaries are the same.
+	 * If not, throws an Exception.
+	 * 
+	 * @param recordFilenames 2dim array of BAM files; 1st dim: conditions; 2nd dim: filenames
+	 * @return a list of Objects of type SAMSequenceDictionary 
 	 * @throws Exception
 	 */
 	protected List<SAMSequenceRecord> getSAMSequenceRecords(final String[][] recordFilenames) throws Exception {

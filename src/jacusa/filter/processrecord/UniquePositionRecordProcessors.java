@@ -3,14 +3,14 @@ package jacusa.filter.processrecord;
 import java.util.List;
 
 import lib.data.storage.basecall.VisitedReadPositionStorage;
-import lib.data.storage.processor.GeneralRecordProcessor;
+import lib.data.storage.processor.ExtendedRecordProcessor;
 import lib.data.storage.processor.RecordProcessor;
 import lib.record.Record;
 
 /**
  * This class maintains a storage that enables unique processing of each position by positionProcessors.
  */
-public class UniquePositionRecordProcessors implements GeneralRecordProcessor {
+public class UniquePositionRecordProcessors implements ExtendedRecordProcessor {
 
 	private final VisitedReadPositionStorage visitedStorage;
 	private final List<RecordProcessor> recordProcessors;

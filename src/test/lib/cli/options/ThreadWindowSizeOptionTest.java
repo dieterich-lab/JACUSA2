@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.ThreadWindowSizeOption;
 
 /**
@@ -36,7 +36,7 @@ implements OptionTest<Integer> {
 	}
 	
 	@Override
-	public AbstractOption createTestInstance() {
+	public AbstractProcessingOption createTestInstance() {
 		return new ThreadWindowSizeOption(getGeneralParamter());
 	}
 	

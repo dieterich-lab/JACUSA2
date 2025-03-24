@@ -35,10 +35,10 @@ implements HasApply2reads {
 		super(MaxAlleleCountFilterFactory.getOptionBuilder().build());
 		maxAlleleCountFilterFactory = new MaxAlleleCountFilterFactory(bccSwitch);
 		this.bccSwitch = bccSwitch;
-		getACOption().addAll(maxAlleleCountFilterFactory.getACOption());
+		getOption().addAll(maxAlleleCountFilterFactory.getOption());
 		getApply2Reads().add(RT_READS.ARREST);
 		getApply2Reads().add(RT_READS.THROUGH);
-		getACOption().add(new Apply2readsOption(this));
+		getOption().add(new Apply2readsOption(this));
 	}
 
 	@Override

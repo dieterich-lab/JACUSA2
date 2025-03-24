@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.filter.factory.HomopolymerFilterFactory;
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.filter.HomopolymerMethodOption;
 import lib.cli.options.filter.has.HasHomopolymerMethod;
 import lib.cli.options.filter.has.HasHomopolymerMethod.HomopolymerMethod;
@@ -49,7 +49,7 @@ implements OptionTest<HomopolymerMethod> {
 	}
 
 	@Override
-	public AbstractOption createTestInstance() {
+	public AbstractProcessingOption createTestInstance() {
 		return new HomopolymerMethodOption(hasHomopolymerMethod);
 	}
 	

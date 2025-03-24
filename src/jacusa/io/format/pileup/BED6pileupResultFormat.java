@@ -39,10 +39,5 @@ public class BED6pileupResultFormat extends AbstractResultFileFormat {
 				.addInfoAdder(new DefaultInfoAdder(getParameter()))
 				.build();
 	}
-	
-	@Override
-	public void processCLI(String line) throws IllegalArgumentException {
-		// nothing to be done here
-	}
 
 }

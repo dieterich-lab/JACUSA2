@@ -7,7 +7,7 @@ import htsjdk.samtools.AlignmentBlock;
 import lib.record.Record;
 import lib.util.LibraryType;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.AlgnBlockPosProviderBuilder;
+import lib.util.position.AlignedBlockPositionProviderBuilder;
 import lib.util.position.UnmodifiablePosition;
 import lib.util.position.MatchPosition;
 import lib.util.position.Position;
@@ -78,7 +78,7 @@ public interface LocationInterpreter {
 		final List<PositionProvider> positionProviders = new ArrayList<>(size);
 		for (int i = startIndex; i < endIndex; ++i) {
 			positionProviders.add(
-					new AlgnBlockPosProviderBuilder(
+					new AlignedBlockPositionProviderBuilder(
 							i, record, translator)
 					.adjustWinPos()
 					.build()); 

@@ -52,10 +52,6 @@ public class CigarBuilder {
 		return this;
 	}
 	
-//	public CigarBuilder addPadding(final int length) {
-//		throw new NotImplementedException();
-//	}
-	
 	public Cigar build() {
 		if (tmpElement != null) {
 			cigarElements.add(tmpElement);

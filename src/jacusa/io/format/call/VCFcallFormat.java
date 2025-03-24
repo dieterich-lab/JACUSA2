@@ -12,10 +12,7 @@ import lib.util.Util;
 import lib.worker.WorkerDispatcher;
 
 /**
- * TODO add comments.
- *
- * @param <T>
- * @param <R>
+ * Implements the VCF file format.
  */
 public class VCFcallFormat extends AbstractResultFormat {
 
@@ -47,11 +44,5 @@ public class VCFcallFormat extends AbstractResultFormat {
 	public CopyTmpResult createCopyTmp(int threadId, final WorkerDispatcher workerDispatcher) {
 		return new SerializeCopyTmpResult(threadId, workerDispatcher.getResultWriter(), this);
 	}
-	
-	@Override
-	public void processCLI(String line) throws IllegalArgumentException {
-		if (line != null && line.length() > 0) {
-			throw new IllegalArgumentException("Options are not supported: " + line);
-		}
-	}
+
 }

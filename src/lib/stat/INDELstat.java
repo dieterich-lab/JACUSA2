@@ -53,12 +53,12 @@ public class INDELstat extends AbstractStat {
 	@Override
 	public Result process(ParallelData parallelData, ExtendedInfo info) {
 		estimationContainer = estimationContainerProvider.convert(parallelData);
-		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
+		final ExtendedInfo resultInfo = new ExtendedInfo();
 		final double lrt 	= estimateDirMultAlpha.getLRT(estimationContainer);
 		final double pvalue = getPValue(lrt);
 	
-		resultInfo.addSite(scoreKey, Util.format(lrt));
-		resultInfo.addSite(pvalueKey, Util.format(pvalue));
+		resultInfo.add(scoreKey, Util.format(lrt));
+		resultInfo.add(pvalueKey, Util.format(pvalue));
 
 		final Result result = new OneStatResult(lrt, parallelData, resultInfo);
 

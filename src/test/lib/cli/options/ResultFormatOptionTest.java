@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.io.format.BED6resultFormat;
 import jacusa.io.format.call.VCFcallFormat;
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.ResultFormatOption;
 import lib.cli.parameter.GeneralParameter;
 import lib.io.ResultFormat;
@@ -75,7 +75,7 @@ implements OptionTest<Character> {
 	}
 
 	@Override
-	public AbstractOption createTestInstance() {
+	public AbstractProcessingOption createTestInstance() {
 		final GeneralParameter parameter = getGeneralParamter();
 		return new ResultFormatOption(parameter, getResultFormats(parameter));
 	}

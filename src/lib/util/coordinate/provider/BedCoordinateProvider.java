@@ -17,7 +17,7 @@ import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.coordinate.OneCoordinate;
 
 /**
- * TODO add documentation
+ * Provides coordinates based on a BED file.
  */
 public class BedCoordinateProvider implements CoordinateProvider {
 

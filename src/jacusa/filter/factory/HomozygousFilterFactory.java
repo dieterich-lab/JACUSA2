@@ -37,7 +37,7 @@ implements HasConditionIndex {
 		super(getOptionBuilder().build());
 				
 		conditionIndex 				= -1;
-		getACOption().add(new ConditionOption(this, conditionSize));
+		getOption().add(new ConditionOption(this, conditionSize));
 		this.bccFetcher 			= bccFetcher;
 	}
 

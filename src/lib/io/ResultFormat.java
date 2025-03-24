@@ -3,30 +3,24 @@ package lib.io;
 import lib.io.copytmp.CopyTmpResult;
 import lib.worker.WorkerDispatcher;
 
-/**
- * Interface 
- *
- * @param <T>
- * @param <R>
- */
 public interface ResultFormat {
 
 	/**
-	 * TODO add comments.
+	 * Return the unique ID for the file format.
 	 * 
 	 * @return unique char 
 	 */
 	char getID();
 	
 	/**
-	 * TODO add comments.
+	 * Returns a short description of the file format.
 	 * 
 	 * @return string description
 	 */
 	String getDesc();
 
 	/**
-	 * TODO add comments.
+	 * Creates a ResultWriter for this file format.
 	 * 
 	 * @param filename
 	 * @return
@@ -34,13 +28,11 @@ public interface ResultFormat {
 	ResultWriter createWriter(String filename);
 	
 	/**
-	 * TOOD add comments.
+	 * Creates an Object to handle temporary data for each thread. 
 	 * 
 	 * @param threadId
 	 * @return
 	 */
 	CopyTmpResult createCopyTmp(int threadId, WorkerDispatcher workerDispatcher);
-
-	void processCLI(String line) throws IllegalArgumentException;
 	
 }

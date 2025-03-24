@@ -21,7 +21,7 @@ public interface DirMultParameter {
 	int getSubsampleRuns();
 	void setSubampleRuns(int subsampleRuns);
 
-	/* TODO where to put this
+	/* where to put this
 	int getDownsampleRuns();
 	void setDownsampleRuns(int downsampleRuns);
 	

@@ -11,7 +11,7 @@ import org.apache.commons.cli.Option;
 /**
  * CLI option to set input BED file that enables coordinate specific BAM traversal.
  */
-public class BedCoordinatesOption extends AbstractOption {
+public class BedCoordinatesOption extends AbstractProcessingOption {
 
 	private final GeneralParameter parameters;
 	

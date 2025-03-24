@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.io.FileType;
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.filter.FileTypeOption;
 import lib.cli.options.filter.has.HasFileType;
 import test.lib.cli.options.OptionTest;
@@ -44,7 +44,7 @@ public class FileTypeOptionTest implements OptionTest<FileType> {
 	}
 
 	@Override
-	public AbstractOption createTestInstance() {
+	public AbstractProcessingOption createTestInstance() {
 		return new FileTypeOption(hasFileType);
 	}
 	

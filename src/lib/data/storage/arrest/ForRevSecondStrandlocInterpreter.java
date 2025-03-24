@@ -6,7 +6,7 @@ import java.util.List;
 import htsjdk.samtools.SAMRecord;
 import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
-import lib.util.position.AlgnBlockPosProviderBuilder;
+import lib.util.position.AlignedBlockPositionProviderBuilder;
 import lib.util.position.AllAlignmentBlocksPosProvider;
 import lib.util.position.CombinedPositionProvider;
 import lib.util.position.Position;
@@ -91,12 +91,12 @@ implements LocationInterpreter {
 		final List<PositionProvider> positionProviders = new ArrayList<>(size);
 		if (record.getSAMRecord().getReadNegativeStrandFlag()) {
 			positionProviders.addAll(getThroughPositionProvider(0, size - 1, record, translator));
-			positionProviders.add(new AlgnBlockPosProviderBuilder(size - 1, record, translator)
+			positionProviders.add(new AlignedBlockPositionProviderBuilder(size - 1, record, translator)
 					.ignoreLast(1)
 					.adjustWinPos()
 					.build());
 		} else {
-			positionProviders.add(new AlgnBlockPosProviderBuilder(0, record, translator)
+			positionProviders.add(new AlignedBlockPositionProviderBuilder(0, record, translator)
 					.ignoreFirst(1)
 					.adjustWinPos()
 					.build());
@@ -119,12 +119,12 @@ implements LocationInterpreter {
 			final List<PositionProvider> positionProviders = new ArrayList<>(size);
 			if (record.getSAMRecord().getReadNegativeStrandFlag()) {
 				positionProviders.addAll(getThroughPositionProvider(0, size - 1, record, translator));
-				positionProviders.add(new AlgnBlockPosProviderBuilder(size - 1, record, translator)
+				positionProviders.add(new AlignedBlockPositionProviderBuilder(size - 1, record, translator)
 						.ignoreLast(1)
 						.adjustWinPos()
 						.build());
 			} else {
-				positionProviders.add(new AlgnBlockPosProviderBuilder(0, record, translator)
+				positionProviders.add(new AlignedBlockPositionProviderBuilder(0, record, translator)
 						.ignoreFirst(1)
 						.adjustWinPos()
 						.build());

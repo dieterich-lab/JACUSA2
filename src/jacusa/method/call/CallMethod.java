@@ -4,6 +4,7 @@ import jacusa.cli.options.StatFactoryOption;
 import jacusa.cli.options.StatFilterOption;
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
 import jacusa.cli.parameters.CallParameter;
+import jacusa.cli.parameters.StatParameter;
 import jacusa.filter.factory.ExcludeSiteFilterFactory;
 import jacusa.filter.factory.FilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
@@ -16,9 +17,12 @@ import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import jacusa.io.format.BED6extendedResultFormat;
 import jacusa.io.format.BED6resultFormat;
 import jacusa.io.format.call.VCFcallFormat;
+import jacusa.io.format.modifyresult.AddBCQC;
 import jacusa.io.format.modifyresult.AddDeletionRatio;
 import jacusa.io.format.modifyresult.AddInsertionRatio;
-import jacusa.io.format.modifyresult.ModifyResult;
+import jacusa.io.format.modifyresult.AddReadCount;
+import jacusa.io.format.modifyresult.ResultModifier;
+import jacusa.io.format.modifyresult.ResultModifierOption;
 import jacusa.worker.CallWorker;
 
 import java.util.ArrayList;
@@ -76,13 +80,13 @@ import lib.stat.INDELstat;
 import lib.stat.dirmult.CallStat;
 import lib.stat.dirmult.DirMultParameter;
 import lib.stat.dirmult.DirMultRobustCompoundErrorStatFactory;
-import lib.stat.estimation.provider.DeletionEstimateProvider;
-import lib.stat.estimation.provider.InsertionEstimateProvider;
+import lib.stat.dirmult.ProcessCommandLine;
 import lib.stat.sampling.SubSampleStat;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 import lib.util.LibraryType;
 
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
 
 public class CallMethod extends AbstractMethod {
@@ -184,9 +188,7 @@ public class CallMethod extends AbstractMethod {
 		final Map<String, AbstractStatFactory> statistics = 
 				new TreeMap<>();
 
-		AbstractStatFactory statFactory = null;
-		statFactory = new DirMultRobustCompoundErrorStatFactory(
-				getParameter().getResultFormat());
+		AbstractStatFactory statFactory = new DirMultRobustCompoundErrorStatFactory();
 		statistics.put(statFactory.getName(), statFactory);
 
 		return statistics;
@@ -230,13 +232,21 @@ public class CallMethod extends AbstractMethod {
 		resultFormats.put(resultFormat.getID(), resultFormat);
 
 		// extended and info expanded output
+		final List<ResultModifier> availableResultModifier = Arrays.asList(
+				new AddReadCount(),
+				new AddBCQC(),
+				new AddInsertionRatio(),
+				new AddDeletionRatio());
+		final List<ResultModifier> selectedResultModifier = new ArrayList<ResultModifier>();
 		resultFormat = new BED6extendedResultFormat(
 				getName(),
 				getParameter(),
-				new HashSet<ModifyResult>(
-						Arrays.asList(
-								new AddInsertionRatio(),
-								new AddDeletionRatio())));
+				selectedResultModifier,
+				new ProcessCommandLine(
+						new DefaultParser(),
+						availableResultModifier.stream()
+							.map(resultModifier -> new ResultModifierOption(resultModifier, selectedResultModifier))
+							.collect(Collectors.toList())));
 		resultFormats.put(resultFormat.getID(), resultFormat);
 
 		resultFormat = new VCFcallFormat(getParameter());
@@ -251,12 +261,12 @@ public class CallMethod extends AbstractMethod {
 	}
 
 	@Override
-	public boolean parseArgs(String[] args) throws Exception {
+	public void parseArgs(String[] args) throws Exception {
 		if (args == null || args.length < 1) {
 			throw new ParseException("BAM File is not provided!");
 		}
 
-		return super.parseArgs(args);
+		super.parseArgs(args);
 	}
 	
 	@Override
@@ -279,31 +289,11 @@ public class CallMethod extends AbstractMethod {
 		final DirMultParameter dirMultParameter = callStat.getDirMultParameter();
 		final MinkaParameter minkaParameter = dirMultParameter.getMinkaEstimateParameter();
 		
-		final List<INDELstat> indelStats = new ArrayList<INDELstat>();
-		if (getParameter().showINDELcounts()) {
-			if (getParameter().showDeletionCount()) {
-				indelStats.add(
-						new INDELstat(
-								minkaParameter,
-								new DeletionEstimateProvider(minkaParameter.getMaxIterations()),
-								"deletion_score",
-								"deletion_pvalue"));
-			}
-			if (getParameter().showInsertionCount() ||
-					getParameter().showInsertionStartCount()) {
-				indelStats.add(
-						new INDELstat(
-								minkaParameter,
-								new InsertionEstimateProvider(minkaParameter.getMaxIterations()),
-								"insertion_score",
-								"insertion_pvalue"));
-			}
-		}
+		final List<INDELstat> indelStats = getINDELstats(minkaParameter);
 		
-		SubSampleStat subSampleStat;
-		final int runs = 10;
-		if (runs > 0) {
-			subSampleStat = new SubSampleStat(runs);
+		SubSampleStat subSampleStat = null;
+		if (dirMultParameter.getSubsampleRuns() > 0) {
+			subSampleStat = new SubSampleStat(dirMultParameter.getSubsampleRuns());
 		}
 
 		return new CallWorker(this, threadId, callStat, indelStats, subSampleStat);
@@ -384,23 +374,35 @@ public class CallMethod extends AbstractMethod {
 			final CallDataAssemblerFactory dataAssemblerFactory = 
 					new CallDataAssemblerFactory(builderFactory);
 			
+			CallMethod callMethod = null;
 			switch (getConditions()) {
 			case 1:
-				return new OneConditionCallMethod(
+				callMethod = new OneConditionCallMethod(
 						getName(), 
 						parameter, 
 						dataAssemblerFactory);
 
 			case 2:
-				return new TwoConditionCallMethod(
+				callMethod = new TwoConditionCallMethod(
 						getName(), 
 						parameter, 
 						dataAssemblerFactory);
-				
-			default:
+			}
+			if (callMethod == null) {
 				throw new IllegalStateException(
 						"Arguments could not be parsed check call!");
 			}
+			
+			// set default output and statistic
+			// result format
+			parameter.setResultFormat(callMethod.getResultFormats().get(BED6resultFormat.CHAR));
+			// stat
+			parameter.setStatParameter(
+					new StatParameter(
+							callMethod.getStatistics().get("DirMult"),
+							Double.NaN));
+			
+			return callMethod;
 		}
 		
 		@Override

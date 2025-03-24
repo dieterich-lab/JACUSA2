@@ -38,7 +38,7 @@ implements HasMaxAlleleCount {
 	public MaxAlleleCountFilterFactory(final Fetcher<BaseCallCount> bccFetcher) {
 		super(getOptionBuilder().build());
 		maxAlleles = MAX_ALLELES;
-		getACOption().add(new MaxAlleleCountOption(this));
+		getOption().add(new MaxAlleleCountOption(this));
 		this.bccFetcher = bccFetcher;
 	}
 

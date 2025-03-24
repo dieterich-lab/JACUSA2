@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import jacusa.filter.homopolymer.Homopolymer.HomopolymerBuilder;
 import lib.data.storage.container.ReferenceProvider;
-import lib.data.storage.processor.GeneralRecordProcessor;
+import lib.data.storage.processor.ExtendedRecordProcessor;
 import lib.record.Record;
 import lib.util.Base;
 import lib.util.coordinate.Coordinate;
@@ -18,7 +18,7 @@ import lib.util.coordinate.OneCoordinate;
  *  
  * Tested in @see jacusa.filter.homopolymer.HomopolymerReferenceFilterCacheTest
  */
-public class HomopolymerReferenceRecordProcessor implements GeneralRecordProcessor {
+public class HomopolymerReferenceRecordProcessor implements ExtendedRecordProcessor {
 
 	private final int minLength;
 	private final HomopolymerReferenceStorage storage;

@@ -33,6 +33,4 @@ public abstract class AbstractResultFileFormat extends AbstractResultFormat {
 		}
 	}
 
-	abstract public void processCLI(final String line);
-
 }

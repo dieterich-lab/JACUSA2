@@ -10,18 +10,18 @@ import lib.util.position.PositionProvider;
 /**
  * TODO add documentation
  */
-public class CoverageRecordProcessor implements GeneralRecordProcessor {
+public class CoverageRecordProcessor implements ExtendedRecordProcessor {
 
 	private final CoordinateTranslator translator;
 
-	private final Storage covStorage;
+	private final Storage coverageStorage;
 
 	public CoverageRecordProcessor(
 			final CoordinateTranslator translator,
 			final Storage covStorage) {
 		
-		this.translator	= translator;
-		this.covStorage	= covStorage;
+		this.translator			= translator;
+		this.coverageStorage	= covStorage;
 	}
 
 	@Override
@@ -32,11 +32,11 @@ public class CoverageRecordProcessor implements GeneralRecordProcessor {
 	@Override
 	public void process(final Record record) {
 		// store total coverage
-		final PositionProvider covPosProvider = 
+		final PositionProvider coveragePositionProvider = 
 				new ConsumingRefPosProviderBuilder(record, translator).build();
-		while (covPosProvider.hasNext()) {
-			final Position pos = covPosProvider.next();
-			covStorage.increment(pos);
+		while (coveragePositionProvider.hasNext()) {
+			final Position pos = coveragePositionProvider.next();
+			coverageStorage.increment(pos);
 		}
 	}
 

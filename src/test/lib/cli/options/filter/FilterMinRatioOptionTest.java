@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
 import jacusa.filter.factory.basecall.AbstractBCCfilterFactory;
-import lib.cli.options.AbstractOption;
+import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.filter.FilterMinRatioOption;
 import lib.cli.options.filter.has.HasFilterMinRatio;
 import test.lib.cli.options.OptionTest;
@@ -50,7 +50,7 @@ implements OptionTest<Double> {
 	}
 
 	@Override
-	public AbstractOption createTestInstance() {
+	public AbstractProcessingOption createTestInstance() {
 		return new FilterMinRatioOption(hasFilterMinRatio);
 	}
 	

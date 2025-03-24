@@ -14,38 +14,38 @@ import htsjdk.samtools.SAMRecordIterator;
  */
 public class RecordIteratorProvider {
 
-	private final ConditionParameter condPrm;
+	private final ConditionParameter conditionParameter;
 	private SamReader reader;
 	private final String fileName;
 
-	private Coordinate curCord;
-	private RecordIterator recordIt;
+	private Coordinate currentCoordinate;
+	private RecordIterator recordIterator;
 	
 	public RecordIteratorProvider(
-			final ConditionParameter condPrm,
+			final ConditionParameter conditionParameter,
 			final String fileName) {
 
-		this.condPrm = condPrm;
+		this.conditionParameter = conditionParameter;
 		this.reader 			= ConditionParameter.createSamReader(fileName);
 		this.fileName			= fileName;
 	}
 
 	public RecordIterator getIterator(final Coordinate activeWinCoord) {
-		if (recordIt == null) {
-			curCord = activeWinCoord;
+		if (recordIterator == null) {
+			currentCoordinate = activeWinCoord;
 			final SAMRecordIterator samRecordIt = createSAMRecordIterator(activeWinCoord);
-			recordIt = new RecordIterator(condPrm, fileName, samRecordIt);
-		} else if (! curCord.equals(activeWinCoord)) {
-			curCord = activeWinCoord;
+			recordIterator = new RecordIterator(conditionParameter, fileName, samRecordIt);
+		} else if (! currentCoordinate.equals(activeWinCoord)) {
+			currentCoordinate = activeWinCoord;
 			final SAMRecordIterator samRecordIt = createSAMRecordIterator(activeWinCoord);
-			recordIt.updateIterator(samRecordIt);
+			recordIterator.updateIterator(samRecordIt);
 		}
 
-		return recordIt;
+		return recordIterator;
 	}
 
 	public ConditionParameter getConditionParameter() {
-		return condPrm;
+		return conditionParameter;
 	}
 
 	public void close() {

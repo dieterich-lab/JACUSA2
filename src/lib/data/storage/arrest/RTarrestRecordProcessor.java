@@ -2,13 +2,13 @@ package lib.data.storage.arrest;
 
 import lib.data.storage.PositionProcessor;
 import lib.data.storage.container.SharedStorage;
-import lib.data.storage.processor.GeneralRecordProcessor;
+import lib.data.storage.processor.ExtendedRecordProcessor;
 import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.position.Position;
 
 public class RTarrestRecordProcessor 
-implements GeneralRecordProcessor {
+implements ExtendedRecordProcessor {
 
 	private final SharedStorage sharedStorage;
 	

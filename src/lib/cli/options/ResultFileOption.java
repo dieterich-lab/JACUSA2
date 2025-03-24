@@ -10,7 +10,7 @@ import org.apache.commons.cli.Option;
 /**
  * 
  */
-public class ResultFileOption extends AbstractOption {
+public class ResultFileOption extends AbstractProcessingOption {
 
 	private final GeneralParameter parameter;
 	

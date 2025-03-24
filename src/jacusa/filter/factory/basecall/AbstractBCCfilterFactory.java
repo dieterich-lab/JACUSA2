@@ -91,8 +91,8 @@ implements HasFilterDistance, HasFilterMinRatio {
 		filterMinRatio = defaultFilterMinRatio;
 
 		// CLI options
-		getACOption().add(new FilterDistanceOption(this));
-		getACOption().add(new FilterMinRatioOption(this));
+		getOption().add(new FilterDistanceOption(this));
+		getOption().add(new FilterMinRatioOption(this));
 		
 		bccParser = new DefaultBCC.Parser(
 				InputOutput.EMPTY_FIELD, InputOutput.VALUE_SEP);

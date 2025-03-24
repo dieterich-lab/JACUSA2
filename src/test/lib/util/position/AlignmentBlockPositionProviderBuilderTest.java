@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 import lib.util.coordinate.DefaultCoordinateTranslator;
-import lib.util.position.AlgnBlockPosProviderBuilder;
+import lib.util.position.AlignedBlockPositionProviderBuilder;
 import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 import test.utlis.SAMRecordBuilder;
@@ -45,7 +45,7 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 			List<Position> expected,
 			String info) {
 		
-		final AlgnBlockPosProviderBuilder testInstance = createTestInstace(
+		final AlignedBlockPositionProviderBuilder testInstance = createTestInstace(
 				blockIndex, record, translator);
 		testInstance.tryFirst(length);
 		if (adjustWinPos) {
@@ -99,7 +99,7 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 			List<Position> expected,
 			String info) {
 		
-		final AlgnBlockPosProviderBuilder testInstance = createTestInstace(
+		final AlignedBlockPositionProviderBuilder testInstance = createTestInstace(
 				blockIndex, record, translator);
 		testInstance.tryLast(length);
 		if (adjustWinPos) {
@@ -154,7 +154,7 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 			List<Position> expected,
 			String info) {
 		
-		final AlgnBlockPosProviderBuilder testInstance = createTestInstace(
+		final AlignedBlockPositionProviderBuilder testInstance = createTestInstace(
 				blockIndex, record, translator);
 		testInstance.ignoreFirst(length);
 		if (adjustWinPos) {
@@ -207,7 +207,7 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 			List<Position> expected,
 			String info) {
 		
-		final AlgnBlockPosProviderBuilder testInstance = createTestInstace(
+		final AlignedBlockPositionProviderBuilder testInstance = createTestInstace(
 				blockIndex, record, translator);
 		if (adjustWinPos) {
 			testInstance.adjustWinPos();
@@ -263,12 +263,12 @@ class AlignmentBlockPositionProviderBuilderTest implements PositionProviderTest 
 
 	}
 
-	AlgnBlockPosProviderBuilder createTestInstace(
+	AlignedBlockPositionProviderBuilder createTestInstace(
 			final int blockIndex, 
 			final Record record, 
 			final CoordinateTranslator translator) {
 		
-		return new AlgnBlockPosProviderBuilder(blockIndex, record, translator);
+		return new AlignedBlockPositionProviderBuilder(blockIndex, record, translator);
 	}
 
 	Arguments createArguments(

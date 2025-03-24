@@ -34,7 +34,8 @@ public final class InputOutput {
 	}
 
 	/**
-	 * TODO add documentation
+	 * Formats usage info for tool.
+	 * 
 	 * @param sb
 	 * @param str
 	 * @param prefix

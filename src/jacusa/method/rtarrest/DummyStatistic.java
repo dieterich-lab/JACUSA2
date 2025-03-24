@@ -19,7 +19,7 @@ class DummyStatistic extends AbstractStat {
 
 	@Override
 	public Result process(final ParallelData parallelData, ExtendedInfo info) {
-		final ExtendedInfo resultInfo = new ExtendedInfo(parallelData.getReplicates());
+		final ExtendedInfo resultInfo = new ExtendedInfo();
 		return new OneStatResult(defaultValue, parallelData, resultInfo);
 	}
 	

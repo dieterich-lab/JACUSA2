@@ -1,6 +1,8 @@
 package lib.estimate;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import lib.stat.estimation.ConditionEstimate;
 import lib.stat.estimation.EstimationContainer;
@@ -24,8 +26,7 @@ public class MinkaEstimateDirMultAlpha {
 	}
 	
 	/**
-	 * estimate alpha and returns log-lik
-	 * TODO add comments
+	 * Implementation of parameter estimation of a DirichletMultinomial based on Minka algorithm - estimate alpha and returns log-lik
 	 * @param 
 	 * @param estimateInfo
 	 * @param backtrack
@@ -114,13 +115,13 @@ public class MinkaEstimateDirMultAlpha {
 			// check if alpha negative
 			if (! admissible) {
 				if (backtrack) {
-					estimateInfo.addSite("backtrack" + estimationContainer.getID(), Integer.toString(estimationContainer.getIteration()));
+					estimateInfo.add("backtrack" + estimationContainer.getID(), Integer.toString(estimationContainer.getIteration()));
 					alphaNew = backtracking(estimationContainer.getAlpha(), gradient, b_DenominatorSum, Q);
 					if (alphaNew == null) {
 						return false;
 					}
 				} else {
-					estimateInfo.addSite("reset" + estimationContainer.getID(), Integer.toString(estimationContainer.getIteration()));
+					estimateInfo.add("reset" + estimationContainer.getID(), Integer.toString(estimationContainer.getIteration()));
 					return false;
 				}
 				// update value
@@ -131,7 +132,7 @@ public class MinkaEstimateDirMultAlpha {
 
 				// check if converged
 				double delta = Math.abs(estimationContainer.getLogLikelihood() - loglikOld);
-				if (delta  <= minkaParameters.getEpsilon()) {
+				if (delta <= minkaParameters.getEpsilon()) {
 					converged = true;
 				}
 			}
@@ -207,7 +208,7 @@ public class MinkaEstimateDirMultAlpha {
 
 	public void addStatResultInfo(final EstimationContainer estimationContainer, final ExtendedInfo info) {
 		if (! estimationContainer.isNumericallyStable()) {
-			info.addSite("NumericallyInstable");
+			info.add("NumericallyInstable", "true");
 		}
 	}
 	
@@ -229,36 +230,36 @@ public class MinkaEstimateDirMultAlpha {
 		return flag;
 	}
 	
-	// TODO move upwards
-	public boolean estimate(
-			final ConditionEstimate[] conditionEstimationContainers,
-			final ConditionEstimate pooledEstimationContainer,
-			final ExtendedInfo info) {
+	public boolean estimate(final EstimationContainer estimationContainer, final ExtendedInfo info) {
+		final Set<ConditionEstimate> successfullEstimates= new HashSet<ConditionEstimate>();
 		
-		
-
-		boolean flag = true;
-		for (final ConditionEstimate estimationContainer : conditionEstimationContainers) {
+		for (final ConditionEstimate estimation : estimationContainer.getEstimates()) {
 			try {
-				if (! estimate(estimationContainer, minkaParameters.getAlphaInit(), info, false)) {
-					flag = false;
+				if (estimation.previousEstimate() || estimate(estimation, minkaParameters.getAlphaInit(), info, false)) {
+					successfullEstimates.add(estimation);
+				} else {
 					break;
 				}
 			} catch (StackOverflowError e) {
 				// catch numerical instabilities and report
-				estimationContainer.setNumericallyUnstable();
+				estimation.setNumericallyUnstable();
 			}
 		}
-		if (flag) {
-			return flag;
+		if (successfullEstimates.size() == estimationContainer.getEstimates().size()) {
+			return true;
 		}
 		
-		flag = true;
 		// estimate alpha(s), capture info(s), and store log-likelihood
-		for (final ConditionEstimate estimationContainer : conditionEstimationContainers) {
-			flag &= estimate(estimationContainer, minkaParameters.getFallbackAlphaInit(), info, true);
+		for (final ConditionEstimate estimate : estimationContainer.getEstimates()) {
+			if (successfullEstimates.contains(estimate) || estimate.previousEstimate()) {
+				estimate.clear();
+				successfullEstimates.remove(estimate);
+			}
+			if (estimate(estimate, minkaParameters.getFallbackAlphaInit(), info, true)) {
+				successfullEstimates.add(estimate);
+			}
 		}
-		return flag;
+		return successfullEstimates.size() == estimationContainer.getEstimates().size();
 	}
 
 	/*
@@ -291,33 +292,29 @@ public class MinkaEstimateDirMultAlpha {
 		final double[] alpha 		= conditionEstimate.getAlpha(iteration);
 		final double logLikelihood	= conditionEstimate.getLogLikelihood(iteration);
 		
-		info.addSite("initAlpha" + id, Util.format(initAlpha[0]));			
+		info.add("initAlpha" + id, Util.format(initAlpha[0]));			
 		for (int i = 1; i < initAlpha.length; ++i) {
-			info.addSite("initAlpha" + id, Util.format(initAlpha[i]));
+			info.add("initAlpha" + id, Util.format(initAlpha[i]));
 		}
-		info.addSite("alpha" + id, Util.format(alpha[0]));			
+		info.add("alpha" + id, Util.format(alpha[0]));			
 		for (int i = 1; i < alpha.length; ++i) {
-			info.addSite("alpha" + id, Util.format(alpha[i]));
+			info.add("alpha" + id, Util.format(alpha[i]));
 		}
-		info.addSite("iteration" + id, Integer.toString(iteration));
-		info.addSite("logLikelihood" + id, Double.toString(logLikelihood));
+		info.add("iteration" + id, Integer.toString(iteration));
+		info.add("logLikelihood" + id, Double.toString(logLikelihood));
 	}
 	
-
-	// TODO move somewhere else
 	public double getScore(
 			final EstimationContainer estimateContainer) {
 		return sumLogLikeliood(estimateContainer.getConditionEstimates()) - estimateContainer.getPooledEstimate().getLogLikelihood();
 	}
 	
-	// TODO move somewhere else
 	public double getLRT(final EstimationContainer estimateContainer) {
 		return - 2 * (
 				estimateContainer.getPooledEstimate().getLogLikelihood() -
 				sumLogLikeliood(estimateContainer.getConditionEstimates()));
 	}
 	
-	// TODO move somewhere else
 	public double sumLogLikeliood(final ConditionEstimate[] estimationContainers) {
 		double logLikelihood = 0.0;
 		for (final ConditionEstimate estimationContainer : estimationContainers) {

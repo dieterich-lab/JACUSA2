@@ -50,7 +50,7 @@ class MinkaEstimateDirMultAlphaTest {
 		final ConditionEstimate estimationContainer = 
 				new DefaultConditionEstimate("TEST", nominalData, minkaParameter.getMaxIterations());  
 		estimationContainer.add(initAlpha, Double.NaN);
-		final ExtendedInfo resultInfo = new ExtendedInfo(null); // FIXME one replicate
+		final ExtendedInfo resultInfo = new ExtendedInfo(); // FIXME one replicate
 		testInstance.maximizeLogLikelihood(estimationContainer, resultInfo, false);
 		
 		final double[] actualAlpha = estimationContainer.getAlpha();

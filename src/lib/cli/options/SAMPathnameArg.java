@@ -14,8 +14,8 @@ public class SAMPathnameArg {
 	private final int conditionIndex; // 0-indexed [0, n)
 	private final ConditionParameter conditionParameter;
 	
-	public SAMPathnameArg(final int condIndex, ConditionParameter conditionParameter) {
-		this.conditionIndex = condIndex;
+	public SAMPathnameArg(final int conditionIndex, ConditionParameter conditionParameter) {
+		this.conditionIndex = conditionIndex;
 		this.conditionParameter = conditionParameter;
 	}
 
