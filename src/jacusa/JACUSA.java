@@ -45,7 +45,7 @@ public class JACUSA extends AbstractTool {
 						new CallMethod.Factory(2),
 						
 						// pileup
-						new PileupMethod.Factory(2),
+						new PileupMethod.Factory(0), // -> unrestricted number of conditions
 						
 						// reverse transcription read arrest
 						new RTarrestMethod.Factory(),

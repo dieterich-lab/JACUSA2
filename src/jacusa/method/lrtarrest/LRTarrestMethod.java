@@ -173,12 +173,13 @@ extends AbstractMethod {
 				new TreeMap<>();
 
 		final List<AbstractStatFactory> tmpFactory = new ArrayList<>(5);
-		tmpFactory.add(new DummyStatisticFactory());
+		tmpFactory.add(new DummyStatisticFactory(getParameter()));
 		
 		
-		LRTarrestBetaBinParameter lrtArrestBetaBinParameter = new LRTarrestBetaBinParameter();
+		LRTarrestBetaBinParameter lrtArrestBetaBinParameter = new LRTarrestBetaBinParameter(getParameter());
 		tmpFactory.add(
 				new LRTarrestStatFactory(
+						getParameter(),
 						lrtArrestBetaBinParameter,
 						new ProcessCommandLine(
 								new DefaultParser(),

@@ -2,6 +2,7 @@ package jacusa.method.pileup;
 
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
 import jacusa.cli.parameters.PileupParameter;
+import jacusa.cli.parameters.StatParameter;
 import jacusa.filter.factory.ExcludeSiteFilterFactory;
 import jacusa.filter.factory.FilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
@@ -20,6 +21,7 @@ import jacusa.io.format.modifyresult.ResultModifier;
 import jacusa.io.format.modifyresult.ResultModifierOption;
 import jacusa.io.format.pileup.BED6pileupResultFormat;
 import jacusa.io.format.pileup.PileupLikeFormat;
+import jacusa.method.rtarrest.CoverageStatisticFactory;
 import jacusa.worker.PileupWorker;
 
 import java.util.ArrayList;
@@ -291,10 +293,16 @@ extends AbstractMethod {
 			final PileupDataAssemblerFactory dataAssemblerFactory = 
 					new PileupDataAssemblerFactory(builderFactory);
 			
-			return new PileupMethod(
+			final PileupMethod method = new PileupMethod(
 					getName(),
 					parameter,
 					dataAssemblerFactory);
+			
+			// set defaults
+			parameter.setStatParameter(new StatParameter(new CoverageStatisticFactory(parameter), Double.NaN));
+			parameter.setResultFormat(method.getResultFormats().get(BED6pileupResultFormat.CHAR));
+						
+			return method;
 		}
 		
 		@Override

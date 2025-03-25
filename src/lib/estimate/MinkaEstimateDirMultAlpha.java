@@ -261,22 +261,6 @@ public class MinkaEstimateDirMultAlpha {
 		}
 		return successfullEstimates.size() == estimationContainer.getEstimates().size();
 	}
-
-	/*
-	private void estimate(final EstimationContainer[] estimationContainers, final ExtendedInfo info) { 
-		this.estimationContainers 					= estimationContainers;
-	
-		final AbstractAlphaInit defaultAlphaInit 	= minkaParameters.getAlphaInit();
-		final AbstractAlphaInit fallbackAlphaInit 	= minkaParameters.getFallbackAlphaInit();
-	
-		if (! estimate(defaultAlphaInit, info, false)) {
-			for (final EstimationContainer estimationContainer : estimationContainers) {
-				estimationContainer.clear();
-			}
-			estimate(fallbackAlphaInit, info, true);
-		}
-	}
-	*/
 	
 	public void addAlphaValues(final EstimationContainer estimationContainer, final ExtendedInfo info) {
 		for (final ConditionEstimate conditionEstimate : estimationContainer.getConditionEstimates()) {

@@ -1,10 +1,8 @@
 package jacusa.cli.parameters;
 
-import jacusa.io.format.rtarrest.BED6rtArrestResultFormat;
-import jacusa.method.rtarrest.RTarrestMethod;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
-import lib.stat.betabin.RTarrestStatFactory;
+
 
 /**
  * Class defines parameters and default values that are need for Reverse 
@@ -19,13 +17,6 @@ implements HasStatParameter {
 	public RTarrestParameter(final int conditions) {
 		super(conditions);
 		// change default values
-		
-		// related to test-statistic
-		setStatParameter(
-				new StatParameter(new RTarrestStatFactory(), Double.NaN));
-		// default result format
-		setResultFormat(
-				new BED6rtArrestResultFormat(RTarrestMethod.Factory.NAME, this));
 	}
 
 	@Override

@@ -23,7 +23,6 @@ implements HasProcessCommandLine {
 
     //options selected in command line for output-format X
     private List<ResultModifier> selectedResultModifier;
-
     private ProcessCommandLine processingCommandLine; 
     
     public BED6extendedResultFormat(
@@ -34,21 +33,13 @@ implements HasProcessCommandLine {
         super('X', "BED6-extended result format", methodName, parameter);
 
         this.selectedResultModifier = Collections.unmodifiableList(selected);
+        this.processingCommandLine 	= processingCommandLine;
     }
 
     @Override
     public ProcessCommandLine getProcessCommandLine() {
     	return processingCommandLine;
     }
-    
-    // TODO mode to - change to 
-    //implemented functions of ResultFormat IntF
-    /*
-    public void processCLI(String[] args) {
-        //splits at ','
-        final String[] args = line.split(Character.toString(InputOutput.SEP4));
-    }
-    */
 
     @Override
 	public BEDlikeResultFileWriter createWriter(final String outputFileName) {

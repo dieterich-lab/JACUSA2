@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 
+import lib.cli.parameter.GeneralParameter;
 import lib.stat.AbstractStatFactory;
 import lib.stat.dirmult.ProcessCommandLine;
 import lib.stat.dirmult.options.CalculatePvalueOption;
@@ -22,12 +23,15 @@ public class RTarrestStatFactory extends AbstractStatFactory {
 	
 	private final RTarrestBetaBinParameter dirMultParameter;
 	
-	public RTarrestStatFactory() {
-		this(new RTarrestBetaBinParameter());
+	public RTarrestStatFactory(final GeneralParameter parameters) {
+		this(parameters, new RTarrestBetaBinParameter(parameters));
 	}
 	
-	public RTarrestStatFactory(final RTarrestBetaBinParameter dirMultParameter) {
+	public RTarrestStatFactory(
+			final GeneralParameter parameters,
+			final RTarrestBetaBinParameter dirMultParameter) {
 		this(
+				parameters,
 				dirMultParameter,
 				new ProcessCommandLine(
 						new DefaultParser(),
@@ -39,8 +43,12 @@ public class RTarrestStatFactory extends AbstractStatFactory {
 								new CalculatePvalueOption(dirMultParameter))));
 	}
 	
-	public RTarrestStatFactory(final RTarrestBetaBinParameter dirMultParameter, final ProcessCommandLine processCommandLine) {
-		super(Option.builder(NAME)
+	public RTarrestStatFactory(
+			final GeneralParameter parameters,
+			final RTarrestBetaBinParameter dirMultParameter,
+			final ProcessCommandLine processCommandLine) {
+		super(parameters,
+				Option.builder(NAME)
 				.desc(DESC)
 				.build(),
 				processCommandLine);

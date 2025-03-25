@@ -188,7 +188,7 @@ public class CallMethod extends AbstractMethod {
 		final Map<String, AbstractStatFactory> statistics = 
 				new TreeMap<>();
 
-		AbstractStatFactory statFactory = new DirMultRobustCompoundErrorStatFactory();
+		AbstractStatFactory statFactory = new DirMultRobustCompoundErrorStatFactory(getParameter());
 		statistics.put(statFactory.getName(), statFactory);
 
 		return statistics;
@@ -245,7 +245,7 @@ public class CallMethod extends AbstractMethod {
 				new ProcessCommandLine(
 						new DefaultParser(),
 						availableResultModifier.stream()
-							.map(resultModifier -> new ResultModifierOption(resultModifier, selectedResultModifier))
+							.map(resultModifier -> new ResultModifierOption(getParameter(), resultModifier, selectedResultModifier))
 							.collect(Collectors.toList())));
 		resultFormats.put(resultFormat.getID(), resultFormat);
 
@@ -284,7 +284,7 @@ public class CallMethod extends AbstractMethod {
 		final double threshold = getParameter().getStatParameter().getThreshold();
 		CallStat callStat = (CallStat)getParameter()
 				.getStatParameter()
-				.getFactory().newInstance(threshold, threadId);
+				.getFactory().newInstance(threshold, getParameter().getConditionsSize());
 		
 		final DirMultParameter dirMultParameter = callStat.getDirMultParameter();
 		final MinkaParameter minkaParameter = dirMultParameter.getMinkaEstimateParameter();

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 
+import lib.cli.parameter.GeneralParameter;
 import lib.stat.AbstractStat;
 import lib.stat.AbstractStatFactory;
 import lib.stat.dirmult.options.CalculatePvalueOption;
@@ -21,12 +22,15 @@ extends AbstractStatFactory {
 
 	private final CallDirMultParameter dirMultParameter;
 	
-	public DirMultRobustCompoundErrorStatFactory() {
-		this(new CallDirMultParameter());
+	public DirMultRobustCompoundErrorStatFactory(final GeneralParameter parameters) {
+		this(parameters, new CallDirMultParameter(parameters));
 	}
 	
-	public DirMultRobustCompoundErrorStatFactory(final CallDirMultParameter dirMultParameter) {
+	public DirMultRobustCompoundErrorStatFactory(
+			final GeneralParameter parameters,
+			final CallDirMultParameter dirMultParameter) {
 		this(
+				parameters,
 				dirMultParameter,
 				new ProcessCommandLine(
 						new DefaultParser(),
@@ -38,11 +42,14 @@ extends AbstractStatFactory {
 								new CalculatePvalueOption(dirMultParameter))));
 	}
 	
-	public DirMultRobustCompoundErrorStatFactory(final CallDirMultParameter dirMultParameter, final ProcessCommandLine processCommandLine) {
-		super(Option.builder("DirMult")
-				.desc(DirMultCompoundErrorStatFactory.DESC + "\n"+
-						"Adjusts variant condition")
-				.build(),
+	public DirMultRobustCompoundErrorStatFactory(
+			final GeneralParameter parameters,
+			final CallDirMultParameter dirMultParameter,
+			final ProcessCommandLine processCommandLine) {
+		super(parameters,
+				Option.builder("DirMult")
+					.desc(DirMultCompoundErrorStatFactory.DESC + "\n" + "Adjusts variant condition")
+					.build(),
 				processCommandLine);
 		
 		this.dirMultParameter 	= dirMultParameter;

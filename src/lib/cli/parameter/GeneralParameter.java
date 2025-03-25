@@ -5,6 +5,7 @@ import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,8 @@ implements HasConditionParameter {
 	
 	private final Map<ShowOptions, Boolean> showMap;
 	
+	private final List<String> additionalKeys;
+	
 	// debug flag
 	private boolean debug;
 	
@@ -69,6 +72,8 @@ implements HasConditionParameter {
 		showMap.put(ShowOptions.NON_REFERENCE_RATIO, false);
 		showMap.put(ShowOptions.SHOW_ALL_SITES, false);
 		showMap.put(ShowOptions.MODIFICATION_COUNT, false);
+		
+		additionalKeys 		= new ArrayList<String>();
 		
 		debug				= false;
 	}
@@ -233,6 +238,7 @@ implements HasConditionParameter {
 	 */
 	public void showDeletionCount(boolean showDeletionCount) {
 		show(ShowOptions.DELETION_COUNT, showDeletionCount);
+		registerConditionReplictaKeys("deletion"); // FIXME use static STRING
 	}
 	
 	/**
@@ -243,6 +249,7 @@ implements HasConditionParameter {
 			throw new Exception("Cannot set both to true");
 		}
 		show(ShowOptions.INSERTION_COUNT, showInsertionCount);
+		registerConditionReplictaKeys("insertion"); // FIXME use static STRING
 	}
 	
 	public void showInsertionStartsCount(boolean showInsertionStartCount) throws Exception {
@@ -250,6 +257,7 @@ implements HasConditionParameter {
 			throw new Exception("Cannot set both to true");
 		}
 		show(ShowOptions.INSERTION_START_COUNT, showInsertionStartCount);
+		registerConditionReplictaKeys("insertion"); // FIXME use static STRING
 	}
 	
 	/**
@@ -320,7 +328,34 @@ implements HasConditionParameter {
 	public void setFilteredFilename(final String filteredFilename) {
 		this.filteredFilename = filteredFilename;
 	}
+
 	
+	public void registerKey(final String key) {
+		if (additionalKeys.contains(key)) {
+			throw new IllegalArgumentException();
+		}
+		
+		additionalKeys.add(key);
+	}
+
+	public void registerConditionKeys(final String key) {
+		for (int conditionIndex = 0; conditionIndex < getConditionsSize(); conditionIndex++) {
+			additionalKeys.add(key + conditionIndex);
+		}
+	}
+	
+	public void registerConditionReplictaKeys(final String key) {
+		for (int conditionIndex = 0; conditionIndex < getConditionsSize(); conditionIndex++) {
+			for (int replicateIndex = 0; replicateIndex < getReplicates(conditionIndex); replicateIndex++) {
+				additionalKeys.add(key + Integer.toString(conditionIndex) + Integer.toString(replicateIndex));
+			}
+		}
+	}
+	
+	public List<String> getAdditionalKeys() {
+		return Collections.unmodifiableList(additionalKeys);
+	}
+
 }
 
 enum ShowOptions {

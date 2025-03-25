@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 
+import lib.cli.parameter.GeneralParameter;
 import lib.stat.AbstractStatFactory;
 import lib.stat.dirmult.options.CalculatePvalueOption;
 import lib.stat.dirmult.options.EpsilonOptions;
@@ -23,28 +24,35 @@ extends AbstractStatFactory {
 	
 	private final CallDirMultParameter dirMultParameter;
 	
-	public DirMultCompoundErrorStatFactory() {
-		this(new CallDirMultParameter());
+	public DirMultCompoundErrorStatFactory(final GeneralParameter parameters) {
+		this(parameters, new CallDirMultParameter(parameters));
 	}
 	
-	public DirMultCompoundErrorStatFactory(final CallDirMultParameter dirMultParameter) {
+	public DirMultCompoundErrorStatFactory(
+			final GeneralParameter parameter,
+			final CallDirMultParameter dirMultParameter) {
 		this(
+				parameter,
 				dirMultParameter,
 				new ProcessCommandLine(
 						new DefaultParser(),
 						Arrays.asList(
 								new EpsilonOptions(dirMultParameter.getMinkaEstimateParameter()),
-								new ShowAlphaOption(dirMultParameter),
+								new ShowAlphaOption(parameter, dirMultParameter),
 								new MaxIterationsOption(dirMultParameter.getMinkaEstimateParameter()),
-								new SubsampleRunsOptions(dirMultParameter),
-								new CalculatePvalueOption(dirMultParameter))));
+								new SubsampleRunsOptions(parameter,dirMultParameter),
+								new CalculatePvalueOption(parameter,dirMultParameter))));
 	}
 	
-	public DirMultCompoundErrorStatFactory(final CallDirMultParameter dirMultParameter, final ProcessCommandLine processCommmandLine) {
-		super(Option.builder(NAME)
-				.desc(DESC)
-				.build(),
-				processCommmandLine);
+	public DirMultCompoundErrorStatFactory(
+			final GeneralParameter parameters,
+			final CallDirMultParameter dirMultParameter, final ProcessCommandLine processCommmandLine) {
+		super(
+				parameters,
+				Option.builder(NAME)
+					.desc(DESC)
+					.build(),
+					processCommmandLine);
 		this.dirMultParameter = dirMultParameter;
 	}
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.cli.options.AbstractProcessingOption;
-import lib.cli.options.SAMPathnameArg;
+import lib.cli.options.SAMPathnameArgument;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.assembler.factory.AbstractDataAssemblerFactory;
@@ -47,9 +47,9 @@ public abstract class AbstractMethod {
 			final GeneralParameter parameter, 
 			final AbstractDataAssemblerFactory dataAssemblerFactory) {
 		
-		this.name = name;
-		this.parameter = parameter;
-		this.dataAssemblerFactory = dataAssemblerFactory;
+		this.name 					= name;
+		this.parameter 				= parameter;
+		this.dataAssemblerFactory 	= dataAssemblerFactory;
 		
 		options = new ArrayList<>(10);
 	}
@@ -203,8 +203,8 @@ public abstract class AbstractMethod {
 	 */
 	public void parseArgs(final String[] args) throws Exception {
 		for (int conditionIndex = 0; conditionIndex < args.length; conditionIndex++) {
-			SAMPathnameArg pathnameArg = new SAMPathnameArg(conditionIndex, parameter.getConditionParameter(conditionIndex));
-			pathnameArg.processArg(args[conditionIndex]);
+			SAMPathnameArgument pathnameArgument = new SAMPathnameArgument(conditionIndex, parameter.getConditionParameter(conditionIndex));
+			pathnameArgument.processArg(args[conditionIndex]);
 		}
 	}
 	
@@ -281,8 +281,8 @@ public abstract class AbstractMethod {
 		private final int conditions;
 
 		public AbstractFactory(final String name, final String desc, final int conditions) {
-			this.name = name;
-			this.desc = desc;
+			this.name 		= name;
+			this.desc 		= desc;
 			this.conditions = conditions;
 		}
 

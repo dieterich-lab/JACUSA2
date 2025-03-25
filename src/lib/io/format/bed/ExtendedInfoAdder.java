@@ -23,6 +23,11 @@ public class ExtendedInfoAdder implements InfoAdder {
 		// always show reference base
 		sb.append(InputOutput.FIELD_SEP);
 		sb.append("ref");
+		
+		for (final String s : parameter.getAdditionalKeys()) {
+			sb.append(InputOutput.FIELD_SEP);
+			sb.append(s);	
+		}
 	}
 
 	@Override
@@ -42,11 +47,9 @@ public class ExtendedInfoAdder implements InfoAdder {
 		sb.append(parallelData.getCombPooledData().getAutoRefBase());
 
 		final ExtendedInfo info = result.getResultInfo(valueIndex);
-		for (final String key : ExtendedInfo.REGISTERED_KEYS) {
+		for (final String key : parameter.getAdditionalKeys()) {
 			sb.append(InputOutput.FIELD_SEP);
-			sb.append(info.
-					getRegisteredKeyValues().
-					getOrDefault(key, Character.toString(InputOutput.EMPTY_FIELD)));
+			sb.append(info.getMap().getOrDefault(key, Character.toString(InputOutput.EMPTY_FIELD)));
 		}
 	}
 }

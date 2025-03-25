@@ -3,9 +3,7 @@ package lib.util;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * add documentation
@@ -13,13 +11,6 @@ import java.util.TreeSet;
 public class ExtendedInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	private static final Set<String> KEYS = new TreeSet<String>();
-	public static final Set<String> REGISTERED_KEYS = Collections.unmodifiableSet(KEYS);
-
-	public static void registerKey(final String key) {
-		KEYS.add(key);
-	}
 
 	private final Map<String, String> map;
 	
@@ -39,7 +30,7 @@ public class ExtendedInfo implements Serializable {
 		map.put(key, value);
 	}
 	
-	public Map<String, String> getRegisteredKeyValues() {
+	public Map<String, String> getMap() {
 		return Collections.unmodifiableMap(map);
 	}
 	

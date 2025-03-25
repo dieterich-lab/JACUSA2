@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import lib.cli.options.SAMPathnameArg;
+import lib.cli.options.SAMPathnameArgument;
 import lib.cli.parameter.ConditionParameter;
 import lib.io.InputOutput;
 
@@ -19,13 +19,13 @@ import lib.io.InputOutput;
 class SAMPathnameArgTest {
 
 	private ConditionParameter conditionParameter;
-	private SAMPathnameArg testInstance;
+	private SAMPathnameArgument testInstance;
 	
 	@BeforeEach
 	void beforeEach() {
 		final int conditionIndex 	= 1;
 		conditionParameter 			= new ConditionParameter(conditionIndex);
-		testInstance 				= new SAMPathnameArg(conditionIndex, conditionParameter);
+		testInstance 				= new SAMPathnameArgument(conditionIndex, conditionParameter);
 	}
 
 	private String toFilename(int i) {
@@ -41,7 +41,7 @@ class SAMPathnameArgTest {
 				.mapToObj(i -> toFilename(i))
 				.toArray(String[]::new);
 
-		final String arg = String.join(new StringBuilder(1).append(SAMPathnameArg.SEP), 
+		final String arg = String.join(new StringBuilder(1).append(SAMPathnameArgument.SEP), 
 				expected);
 
 		testInstance.processArg(arg);

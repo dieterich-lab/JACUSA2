@@ -17,7 +17,8 @@ extends AbstractProcessingOption {
 	private final GeneralParameter parameter;
 	private final Map<Character, ResultFormat> resultFormats;
 
-	public ResultFormatOption(final GeneralParameter parameter, 
+	public ResultFormatOption(
+			final GeneralParameter parameter, 
 			final Map<Character, ResultFormat> resultFormats) {
 
 		super("f", "output-format");
@@ -48,7 +49,6 @@ extends AbstractProcessingOption {
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
-				.required(true)
 				.desc("Choose output format:\n" + sb.toString())
 				.build(); 
 	}

@@ -18,6 +18,7 @@ import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.HelpOption;
 import lib.cli.options.ShowVersionOption;
 import lib.util.AbstractMethod;
+import lib.util.AbstractMethod.AbstractFactory;
 import lib.util.AbstractTool;
 
 import org.apache.commons.cli.CommandLine;
@@ -119,7 +120,6 @@ public class CLI {
 				if (tmpMethodFactory == null) {
 					continue;
 				}
-
 				
 				final AbstractMethod tmpMethod = tmpMethodFactory.createMethod();
 				final String methodName = tmpMethod.getName();
@@ -266,20 +266,33 @@ public class CLI {
 		final CommandLineParser parser = new DefaultParser();
 		
 		// container for options and parsed line
-		List<AbstractProcessingOption> acOptions = new ArrayList<AbstractProcessingOption>();
+		List<AbstractProcessingOption> processingOptions = new ArrayList<AbstractProcessingOption>();
 		Options options = new Options(); 
 		CommandLine line = null;
 
-		final int conditions = methodFactory.getConditions();
-		final AbstractMethod.AbstractFactory tmpMethodFactory = 
-				methodFactory.createFactory(conditions);
+		// can be Integer.MAX_VALUE -> unrestriced. Number needs to be guessed from command line
+		int conditions = methodFactory.getConditions();
+		if (conditions == 0) {
+			// guess number of conditions
+			conditions = guessConditions(methodFactory, processedArgs);
+		}
+		
+		final AbstractMethod.AbstractFactory tmpMethodFactory = methodFactory.createFactory(conditions);
 		if (tmpMethodFactory == null) {
 			throw new IllegalArgumentException("Illegal number of conditions");
 		}
 		method = tmpMethodFactory.createMethod();
-		processMethodFactoryOptions(printExtendedHelp, true, acOptions, options);
+
+		processMethodFactoryOptions(printExtendedHelp, true, processingOptions, options);
+		String[] fileNameArgs;
 		try {
 			line = parser.parse(options, processedArgs);
+			fileNameArgs = line.getArgList().stream()
+					.filter(arg -> !arg.trim().isEmpty())
+					.collect(Collectors.toList()).toArray(new String[0]);
+			if (fileNameArgs.length != conditions) {
+				throw new IllegalArgumentException("Illegal number of conditions");				
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 			method.printUsage(printExtendedHelp);
@@ -288,11 +301,11 @@ public class CLI {
 		
 		try {
 			// the remainder of line.getArgs should be files 
-			method.parseArgs(line.getArgs());
-			for (AbstractProcessingOption acOption : acOptions) {
-				if (acOption.getOpt() != null && line.hasOption(acOption.getOpt()) ||
-						acOption.getLongOpt() != null && line.hasOption(acOption.getLongOpt())) {
-					acOption.process(line);
+			method.parseArgs(fileNameArgs);
+			for (AbstractProcessingOption processingOption : processingOptions) {
+				if (processingOption.getOpt() != null && line.hasOption(processingOption.getOpt()) ||
+						processingOption.getLongOpt() != null && line.hasOption(processingOption.getLongOpt())) {
+					processingOption.process(line);
 				}
 			}
 		} catch (Exception e) {
@@ -313,6 +326,13 @@ public class CLI {
 		return true;
 	}
 
+	private int guessConditions(final AbstractFactory methodFactory, final String[] args) {
+		final AbstractMethod method = methodFactory.createFactory(0).createMethod();
+		// FIXME
+		int conditions = 4;
+		return conditions;
+	}
+	
 	/**
 	 * 
 	 */
@@ -348,15 +368,18 @@ public class CLI {
 		method.printUsage(printExtendedHelp);
 	}
 
-	private void processMethodFactoryOptions(final boolean printExtendedHelp, final boolean includeHidden,
-			final List<AbstractProcessingOption> acOptions, final Options options) {
+	// TODO check
+	private void processMethodFactoryOptions(
+			final boolean printExtendedHelp,
+			final boolean includeHidden,
+			final List<AbstractProcessingOption> processingOptions, final Options options) {
 		// init method factory (populate: parameters)
 		method.initOptions();
 		
-		acOptions.addAll(method.getOptions());
-		for (AbstractProcessingOption acOption : acOptions) {
-			if (includeHidden || ! acOption.isHidden()) {
-				options.addOption(acOption.getOption(printExtendedHelp));
+		processingOptions.addAll(method.getOptions());
+		for (AbstractProcessingOption processingOption : processingOptions) {
+			if (includeHidden || ! processingOption.isHidden()) {
+				options.addOption(processingOption.getOption(printExtendedHelp));
 			}
 		}
 	}

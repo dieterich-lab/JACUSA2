@@ -4,6 +4,7 @@ import jacusa.cli.options.StatFactoryOption;
 import jacusa.cli.options.StatFilterOption;
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
 import jacusa.cli.parameters.RTarrestParameter;
+import jacusa.cli.parameters.StatParameter;
 import jacusa.filter.factory.ExcludeSiteFilterFactory;
 import jacusa.filter.factory.FilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
@@ -159,7 +160,7 @@ extends AbstractMethod {
 		final Map<String, AbstractStatFactory> factories = 
 				new TreeMap<>();
 
-		for (final AbstractStatFactory factory : Arrays.asList(new RTarrestStatFactory())) {
+		for (final AbstractStatFactory factory : Arrays.asList(new RTarrestStatFactory(getParameter()))) {
 			factories.put(factory.getName(), factory);
 		}
 		return factories;
@@ -304,10 +305,18 @@ extends AbstractMethod {
 			final RTarrestDataAssemblerFactory dataAssemblerFactory = 
 					new RTarrestDataAssemblerFactory(builderFactory);
 			
-			return new RTarrestMethod(
+			// related to test-statistic
+			parameter.setStatParameter(
+					new StatParameter(new RTarrestStatFactory(parameter), Double.NaN));
+			// default result format
+			parameter.setResultFormat(new BED6rtArrestResultFormat(RTarrestMethod.Factory.NAME, parameter));
+			
+			final RTarrestMethod method = new RTarrestMethod(
 					getName(),
 					parameter,
-					dataAssemblerFactory); 
+					dataAssemblerFactory);
+			
+			return method;
 		}
 		
 		@Override

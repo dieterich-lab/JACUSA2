@@ -26,7 +26,7 @@ extends AbstractWorker {
 	protected Result process(final ParallelData parallelData) {
 		final ExtendedInfo info = new ExtendedInfo();
 		
-		final Result result = stat.process(parallelData, null); 
+		final Result result = stat.process(parallelData, info); 
 		if (result == null) {
 			return null;
 		}

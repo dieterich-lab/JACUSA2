@@ -2,6 +2,7 @@ package jacusa.method.rtarrest;
 
 import org.apache.commons.cli.Option;
 
+import lib.cli.parameter.GeneralParameter;
 import lib.stat.AbstractStatFactory;
 
 /**
@@ -15,10 +16,12 @@ extends AbstractStatFactory {
 	private static final String NAME = "Dummy"; 
 	private static final String DESC = "Does not do anything";
 	
-	public DummyStatisticFactory() {
-		super(Option.builder(NAME)
-				.desc(DESC)
-				.build());
+	public DummyStatisticFactory(final GeneralParameter parameters) {
+		super(
+				parameters,
+				Option.builder(NAME)
+					.desc(DESC)
+					.build());
 	}
 	
 	@Override

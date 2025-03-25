@@ -44,6 +44,7 @@ public class CallStat extends AbstractStat {
 	
 	public double getStat(final EstimationContainer estimationContainer) {
 		double stat;
+		
 		if (dirMultParameter.calcPValue()) {
 			stat = estimateDirMultAlpha.getLRT(estimationContainer);
 			// TODO degrees of freedom
@@ -57,15 +58,15 @@ public class CallStat extends AbstractStat {
 	}
 	
 	@Override
-	public Result process(ParallelData parallelData, ExtendedInfo info) {
+	public Result process(ParallelData parallelData, ExtendedInfo resultInfo) {
 		estimationContainer = estimationContainerProvider.convert(parallelData);
+		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer, resultInfo);
+		// TODO
 		double stat = getStat(estimationContainer);
-
 		if (filter(stat)) {
 			return null;
 		}
 		
-		final ExtendedInfo resultInfo = new ExtendedInfo();
 		if (dirMultParameter.showAlpha()) {
 			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo);
 		}

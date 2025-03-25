@@ -4,16 +4,21 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 import lib.cli.options.AbstractProcessingOption;
+import lib.cli.parameter.GeneralParameter;
 import lib.stat.dirmult.DirMultParameter;
 
 public class SubsampleRunsOptions extends AbstractProcessingOption {
 
+	private final GeneralParameter parameter;
 	private final DirMultParameter dirMultParameter;
 	
-	public SubsampleRunsOptions(final DirMultParameter dirMultParameter) {
+	public SubsampleRunsOptions(
+			final GeneralParameter parameter,
+			final DirMultParameter dirMultParameter) {
 		super("subsampleRuns", "subsampleRuns");
 		
-		this.dirMultParameter = dirMultParameter;
+		this.parameter 			= parameter;
+		this.dirMultParameter 	= dirMultParameter;
 	}
 
 	@Override
@@ -23,6 +28,7 @@ public class SubsampleRunsOptions extends AbstractProcessingOption {
 			throw new IllegalArgumentException(getLongOpt() + " must be > 0");
 		}
 		dirMultParameter.setSubampleRuns(subsampleRuns);
+	
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package lib.stat.dirmult;
 
+import lib.cli.parameter.GeneralParameter;
 import lib.estimate.MinkaParameter;
 
 /**
@@ -7,6 +8,7 @@ import lib.estimate.MinkaParameter;
  */
 public abstract class AbstractDirMultParameter implements DirMultParameter {
 	
+	private final GeneralParameter parameters;
 	private boolean showAlpha;
 	private boolean calcPValue;
 	private MinkaParameter minkaParameter;
@@ -14,10 +16,12 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	private int subsampleRuns = 0;
 	
 	public AbstractDirMultParameter(
+			final GeneralParameter parameters,
 			final boolean showAlpha,
 			final boolean calcPValue,
 			final MinkaParameter minkaParameter) {
 
+		this.parameters		= parameters;
 		this.showAlpha 		= showAlpha;
 		this.calcPValue		= calcPValue;
 		this.minkaParameter	= minkaParameter;
@@ -60,6 +64,10 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	@Override
 	public void setSubampleRuns(int runs) {
 		this.subsampleRuns = runs;
+	}
+	
+	public GeneralParameter getParameter() {
+		return parameters;
 	}
 	
 }

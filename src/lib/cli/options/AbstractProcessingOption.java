@@ -15,7 +15,9 @@ public abstract class AbstractProcessingOption {
 	// psst, this should be a hidden flag...
 	private boolean hide;
 	
-	public AbstractProcessingOption(final String opt, final String longOpt) {
+	public AbstractProcessingOption(
+			final String opt,
+			final String longOpt) {
 		this.opt 		= opt;
 		this.longOpt 	= longOpt;
 	}

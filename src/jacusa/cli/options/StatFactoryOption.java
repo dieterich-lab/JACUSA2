@@ -90,7 +90,7 @@ public class StatFactoryOption extends AbstractProcessingOption {
 
 
 	/*
-	 * Process CLI for statFactory: e.g.: prcoess options showAlpha etc. for 
+	 * Process CLI for statFactory: e.g.: process options showAlpha etc. for 
 	 * DirMult.
 	 * 
 	 * Tested in @see test.jacusa.cli.options.StatFactoryOptionTest 

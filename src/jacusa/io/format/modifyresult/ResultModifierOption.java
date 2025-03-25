@@ -6,14 +6,21 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 import lib.cli.options.AbstractProcessingOption;
+import lib.cli.parameter.GeneralParameter;
 
 public class ResultModifierOption extends AbstractProcessingOption{
 
+	private final GeneralParameter parameter;
 	private final ResultModifier resultModifier;
 	private final List<ResultModifier> selected;
 	
-	public ResultModifierOption(final ResultModifier resultModifier, final List<ResultModifier> selected) {
+	public ResultModifierOption(
+			final GeneralParameter parameter,
+			final ResultModifier resultModifier,
+			final List<ResultModifier> selected) {
 		super(resultModifier.getID(), resultModifier.getID());
+
+		this.parameter = parameter;
 		this.resultModifier = resultModifier;
 		this.selected = selected;
 	}
@@ -30,6 +37,7 @@ public class ResultModifierOption extends AbstractProcessingOption{
 	public void process(CommandLine cmd) throws Exception {
 		if (!selected.contains(resultModifier)) {
 			selected.add(resultModifier);
+			resultModifier.registerKeys(parameter);
 		}
 	}
 	

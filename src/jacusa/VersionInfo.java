@@ -12,7 +12,7 @@ public final class VersionInfo {
 
 	// change this manually
 	public static final String[] LIBS	= new String[] {
-			"htsjdk 3.0.5",
+			"htsjdk 4.1.13",
 			"Apache commons-cli 1.4",
 			"Apache commpon-math3 3.6.1"
 	};

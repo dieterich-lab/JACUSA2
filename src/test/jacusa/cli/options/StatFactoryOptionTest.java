@@ -28,6 +28,7 @@ import jacusa.cli.options.StatFactoryOption;
 import jacusa.cli.parameters.StatParameter;
 import jacusa.method.rtarrest.CoverageStatisticFactory;
 import jacusa.method.rtarrest.DummyStatisticFactory;
+import lib.cli.parameter.GeneralParameter;
 import lib.stat.AbstractStatFactory;
 import lib.stat.betabin.LRTarrestStatFactory;
 import lib.stat.dirmult.DirMultCompoundErrorStatFactory;
@@ -86,7 +87,7 @@ class StatFactoryOptionTest {
 		// Double.Nan -> ignore threshold!
 		final StatFactoryOption testInstance = 
 				new StatFactoryOption(
-						new StatParameter(new DummyStatisticFactory(), Double.NaN),  
+						new StatParameter(new DummyStatisticFactory(new GeneralParameter(0)), Double.NaN),  
 						new HashMap<String, AbstractStatFactory>());
 		
 		Options options = new Options();
@@ -103,12 +104,13 @@ class StatFactoryOptionTest {
 
 	// should correspond to all implemented StatFactories
 	public static List<AbstractStatFactory> getFactories() {
+		final GeneralParameter parameters = new GeneralParameter(0);
 		return Arrays.asList(
-				new CoverageStatisticFactory(),
-				new DirMultCompoundErrorStatFactory(),
-				new DirMultRobustCompoundErrorStatFactory(),
-				new DummyStatisticFactory(),
-				new LRTarrestStatFactory() );
+				new CoverageStatisticFactory(parameters),
+				new DirMultCompoundErrorStatFactory(parameters),
+				new DirMultRobustCompoundErrorStatFactory(parameters),
+				new DummyStatisticFactory(parameters),
+				new LRTarrestStatFactory(parameters) );
 	}
 	
 }

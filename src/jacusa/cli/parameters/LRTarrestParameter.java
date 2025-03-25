@@ -24,7 +24,7 @@ implements HasStatParameter {
 		
 		// test-statistic related
 		setStatParameter(new StatParameter(
-				new LRTarrestStatFactory(), Double.NaN));
+				new LRTarrestStatFactory(new GeneralParameter(0)), Double.NaN));
 		// default output format
 		setResultFormat(new BED6lrtArrestResultFormat(
 				LRTarrestMethod.Factory.NAME, this));

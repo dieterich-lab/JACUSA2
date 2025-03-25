@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 
+import lib.cli.parameter.GeneralParameter;
 import lib.stat.AbstractStatFactory;
 import lib.stat.dirmult.ProcessCommandLine;
 import lib.stat.dirmult.options.CalculatePvalueOption;
@@ -21,12 +22,15 @@ public class LRTarrestStatFactory extends AbstractStatFactory {
 	
 	private final LRTarrestBetaBinParameter dirMultParameter;
 	
-	public LRTarrestStatFactory() {
-		this(new LRTarrestBetaBinParameter());
+	public LRTarrestStatFactory(final GeneralParameter parameters) {
+		this(parameters, new LRTarrestBetaBinParameter(parameters));
 	}
 	
-	public LRTarrestStatFactory(final LRTarrestBetaBinParameter dirMultParameter) {
+	public LRTarrestStatFactory(
+			final GeneralParameter parameters,
+			final LRTarrestBetaBinParameter dirMultParameter) {
 		this(
+				parameters,
 				dirMultParameter,
 				new ProcessCommandLine(
 						new DefaultParser(),
@@ -38,11 +42,16 @@ public class LRTarrestStatFactory extends AbstractStatFactory {
 								new CalculatePvalueOption(dirMultParameter))));
 	}
 	
-	public LRTarrestStatFactory(final LRTarrestBetaBinParameter dirMultParameter, final ProcessCommandLine processCommandLine) {
-		super(Option.builder(NAME)
-				.desc(DESC)
-				.build(),
-				processCommandLine);
+	public LRTarrestStatFactory(
+			final GeneralParameter parameters,
+			final LRTarrestBetaBinParameter dirMultParameter,
+			final ProcessCommandLine processCommandLine) {
+		super(
+				parameters,
+				Option.builder(NAME)
+					.desc(DESC)
+					.build(),
+					processCommandLine);
 		
 		this.dirMultParameter 	= dirMultParameter;
 	}
