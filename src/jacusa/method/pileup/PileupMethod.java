@@ -182,7 +182,7 @@ extends AbstractMethod {
 						new ProcessCommandLine(
 								new DefaultParser(),
 								availableResultModifier.stream()
-									.map(resultModifier -> new ResultModifierOption(resultModifier, selectedResultModifier))
+									.map(resultModifier -> new ResultModifierOption(getParameter(), resultModifier, selectedResultModifier))
 									.collect(Collectors.toList())));
 				resultFormats.put(resultFormat.getID(), resultFormat);
 		

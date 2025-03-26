@@ -40,8 +40,8 @@ extends AbstractStatFactory {
 								new EpsilonOptions(dirMultParameter.getMinkaEstimateParameter()),
 								new ShowAlphaOption(parameter, dirMultParameter),
 								new MaxIterationsOption(dirMultParameter.getMinkaEstimateParameter()),
-								new SubsampleRunsOptions(parameter,dirMultParameter),
-								new CalculatePvalueOption(parameter,dirMultParameter))));
+								new SubsampleRunsOptions(parameter, dirMultParameter),
+								new CalculatePvalueOption(parameter, dirMultParameter))));
 	}
 	
 	public DirMultCompoundErrorStatFactory(

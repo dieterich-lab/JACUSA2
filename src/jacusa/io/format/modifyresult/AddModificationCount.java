@@ -1,5 +1,6 @@
 package jacusa.io.format.modifyresult;
 
+import lib.cli.parameter.GeneralParameter;
 import lib.data.result.Result;
 
 
@@ -23,5 +24,10 @@ public class AddModificationCount extends AbstractResultModifier {
         // FIXME return Util.pack(modificationCounts,'|');
     }
 
+    @Override
+    public void registerKeys(GeneralParameter parameter) {
+    	parameter.registerConditionReplictaKeys(getID());
+    }
+    
 }
 

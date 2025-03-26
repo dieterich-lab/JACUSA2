@@ -27,19 +27,19 @@ public class LRTarrestStatFactory extends AbstractStatFactory {
 	}
 	
 	public LRTarrestStatFactory(
-			final GeneralParameter parameters,
+			final GeneralParameter parameter,
 			final LRTarrestBetaBinParameter dirMultParameter) {
 		this(
-				parameters,
+				parameter,
 				dirMultParameter,
 				new ProcessCommandLine(
 						new DefaultParser(),
 						Arrays.asList(
 								new EpsilonOptions(dirMultParameter.getMinkaEstimateParameter()),
-								new ShowAlphaOption(dirMultParameter),
+								new ShowAlphaOption(parameter, dirMultParameter),
 								new MaxIterationsOption(dirMultParameter.getMinkaEstimateParameter()),
-								new SubsampleRunsOptions(dirMultParameter),
-								new CalculatePvalueOption(dirMultParameter))));
+								new SubsampleRunsOptions(parameter, dirMultParameter),
+								new CalculatePvalueOption(parameter, dirMultParameter))));
 	}
 	
 	public LRTarrestStatFactory(

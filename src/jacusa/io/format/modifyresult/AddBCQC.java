@@ -1,5 +1,6 @@
 package jacusa.io.format.modifyresult;
 
+import lib.cli.parameter.GeneralParameter;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 import lib.data.count.basecallquality.BaseCallQualityCount;
@@ -45,4 +46,8 @@ public class AddBCQC extends AbstractResultModifier {
         }
     }
 
+    @Override
+    public void registerKeys(GeneralParameter parameter) {
+    	parameter.registerConditionReplictaKeys(getID());
+    }
 }

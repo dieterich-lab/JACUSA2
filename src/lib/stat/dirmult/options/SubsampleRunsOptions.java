@@ -1,5 +1,8 @@
 package lib.stat.dirmult.options;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
@@ -28,7 +31,14 @@ public class SubsampleRunsOptions extends AbstractProcessingOption {
 			throw new IllegalArgumentException(getLongOpt() + " must be > 0");
 		}
 		dirMultParameter.setSubampleRuns(subsampleRuns);
-	
+		final List<String> keys = new ArrayList<String>();
+		keys.add("score_subsampled");
+		if (parameter.showInsertionCount() || parameter.showInsertionStartCount()) {
+			keys.add("insertion_score_subsampled");
+		}
+		for (final String key : keys) {
+			parameter.registerKey(key);
+		}
 	}
 
 	@Override
