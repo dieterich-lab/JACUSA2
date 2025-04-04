@@ -8,7 +8,7 @@ import lib.record.Record;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public class AllAlignmentBlocksPosProvider implements PositionProvider {
 

@@ -1,6 +1,7 @@
 package test.jacusa.cli.options;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.apache.commons.cli.CommandLine;
@@ -17,7 +18,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import jacusa.cli.options.StatFilterOption;
 import jacusa.cli.parameters.StatParameter;
 import jacusa.method.rtarrest.DummyStatisticFactory;
-import lib.cli.parameter.GeneralParameter;
 import test.utlis.CLIUtils;
 
 /**
@@ -37,7 +37,7 @@ class StatFilterOptionTest {
 	void beforeEach() {
 		parser = new DefaultParser();
 		
-		statParameter = new StatParameter(new DummyStatisticFactory(new GeneralParameter(0)), DEFAULT_VALUE);
+		statParameter = new StatParameter(new DummyStatisticFactory(), DEFAULT_VALUE);
 		testInstance = new StatFilterOption(statParameter);
 	}
 	

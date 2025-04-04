@@ -81,7 +81,7 @@ public class CLI {
 			CommandLine cmdLine = parser.parse(options, args, false);
 			if (cmdLine.hasOption(showHelp.getOpt())) {
 				showHelp.process(cmdLine);
-				method.initOptions();
+				method.registerOptions();
 				printMethodFactoryUsage();
 				System.exit(0);
 			}
@@ -124,7 +124,7 @@ public class CLI {
 				final AbstractMethod tmpMethod = tmpMethodFactory.createMethod();
 				final String methodName = tmpMethod.getName();
 				methodNames.add(methodName);
-				tmpMethod.initOptions();
+				tmpMethod.registerOptions();
 
 				final List<AbstractProcessingOption> options = tmpMethod.getOptions();
 				for (final AbstractProcessingOption Option : options) {
@@ -229,12 +229,27 @@ public class CLI {
 		return s.replaceAll("(_|\\$|\\^|#)", "\\\\$1");
 	}
 	
+	private String[] cleanArgs(final String[] args) {
+		final List<String> argList = new ArrayList<String>();
+		for (final String arg : args) {
+			final String s = arg.trim();
+			if (!s.isEmpty()) {
+				argList.add(s);
+			}
+		}
+		
+		return argList.toArray(new String[0]);
+	
+	}
+	
 	/**
 	 * 
 	 * @param args
 	 * @return
 	 */
 	public boolean processArgs(String[] args) {
+		args = cleanArgs(args);
+		
 		if (args.length == 0) {
 			printToolUsage();
 			System.exit(0);
@@ -251,7 +266,7 @@ public class CLI {
 		final AbstractMethod.AbstractFactory methodFactory = getMethodFactory(args[0].toLowerCase());
 		method = methodFactory.createMethod();
 		if (args.length == 1) {
-			method.initOptions();
+			method.registerOptions();
 			method.printUsage(printExtendedHelp);
 			System.exit(0);
 		}
@@ -287,9 +302,7 @@ public class CLI {
 		String[] fileNameArgs;
 		try {
 			line = parser.parse(options, processedArgs);
-			fileNameArgs = line.getArgList().stream()
-					.filter(arg -> !arg.trim().isEmpty())
-					.collect(Collectors.toList()).toArray(new String[0]);
+			fileNameArgs = line.getArgs();
 			if (fileNameArgs.length != conditions) {
 				throw new IllegalArgumentException("Illegal number of conditions");				
 			}
@@ -327,9 +340,36 @@ public class CLI {
 	}
 
 	private int guessConditions(final AbstractFactory methodFactory, final String[] args) {
-		final AbstractMethod method = methodFactory.createFactory(0).createMethod();
-		// FIXME
-		int conditions = 4;
+		int conditions = 1;
+		final DefaultParser parser = new DefaultParser();
+		while (conditions <= 10) {
+			final List<AbstractProcessingOption> processingOptions = new ArrayList<AbstractProcessingOption>();
+			final Options options = new Options();
+			
+			final AbstractMethod method = methodFactory.createFactory(conditions).createMethod();
+			method.registerFilterFactories();
+			method.registerStatisticFactories();
+			method.registerResultFormats();
+			method.registerOptions();
+			
+			processingOptions.addAll(method.getOptions());
+			for (AbstractProcessingOption processingOption : processingOptions) {
+				options.addOption(processingOption.getOption(printExtendedHelp));
+			}
+			
+			try {
+				final CommandLine cmd = parser.parse(options, args);
+				final List<String> argList = cmd.getArgList();
+				if (conditions == argList.size()) {
+					return conditions;
+				}
+			} catch (Exception e) {
+				break;
+			}
+			
+			++conditions;
+		}
+
 		return conditions;
 	}
 	
@@ -368,13 +408,15 @@ public class CLI {
 		method.printUsage(printExtendedHelp);
 	}
 
-	// TODO check
 	private void processMethodFactoryOptions(
 			final boolean printExtendedHelp,
 			final boolean includeHidden,
 			final List<AbstractProcessingOption> processingOptions, final Options options) {
 		// init method factory (populate: parameters)
-		method.initOptions();
+		method.registerFilterFactories();
+		method.registerStatisticFactories();
+		method.registerResultFormats();
+		method.registerOptions();
 		
 		processingOptions.addAll(method.getOptions());
 		for (AbstractProcessingOption processingOption : processingOptions) {

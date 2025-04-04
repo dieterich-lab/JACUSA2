@@ -1,7 +1,7 @@
 package lib.util;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public interface Builder<T> {
 

@@ -15,7 +15,7 @@ import lib.util.Util;
 import org.apache.commons.math3.special.Gamma;
 
 /**
- * TODO add comments
+ * DOCUMENT
  */
 public class MinkaEstimateDirMultAlpha {
 	

@@ -1,7 +1,7 @@
 package lib.stat.nominal;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 class BiNomialData extends AbstractNominalData {
 

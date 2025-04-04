@@ -14,7 +14,7 @@ import lib.util.coordinate.Coordinate;
 import lib.util.position.Position;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public class LRTarrestBaseCallStorage
 extends AbstractStorage 

@@ -5,7 +5,7 @@ import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.OneCoordinate;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public interface CoordinateAdvancer {
 

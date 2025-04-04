@@ -18,7 +18,7 @@ import lib.util.Base;
 import lib.util.Util;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public class MDRecordRefProvider implements RecordRefProvider {
 

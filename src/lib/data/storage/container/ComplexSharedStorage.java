@@ -6,7 +6,7 @@ import lib.util.coordinate.CoordinateController;
 import lib.util.coordinate.CoordinateController.WindowPositionGuard;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public class ComplexSharedStorage implements SharedStorage {
 

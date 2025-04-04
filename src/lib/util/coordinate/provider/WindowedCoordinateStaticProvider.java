@@ -11,7 +11,7 @@ import lib.util.coordinate.CoordinateUtil.STRAND;
 import lib.util.coordinate.OneCoordinate;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public class WindowedCoordinateStaticProvider implements CoordinateProvider {
 

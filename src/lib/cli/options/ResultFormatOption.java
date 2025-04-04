@@ -44,8 +44,6 @@ extends AbstractProcessingOption {
 			sb.append("\n");
 		}
 		
-		// TODO printExtendedHelp
-		
 		return Option.builder(getOpt())
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
@@ -56,17 +54,6 @@ extends AbstractProcessingOption {
 	@Override
 	public void process(final CommandLine cmd) throws IllegalArgumentException {
 		final String line = cmd.getOptionValue(getOpt());
-
-		// TODO put this somewhere else
-		if((line.contains("insertion_ratio") && !cmd.hasOption('i')) || (line.contains("deletion_ratio") && !cmd.hasOption('D')) || (line.contains("modification_count") && !cmd.hasOption('M'))){
-			throw new IllegalArgumentException("put options -i, -D, or -M to calculate insertion-, deletion-ratio, or modification-count");
-		}
-
-		/* FIXME enforce modification_count triggers reading mods
-		if(s.contains("modification_count")){
-			modificationOutputRequest = true;
-		}
-		*/ 
 
 		ResultFormat resultFormat = null;
 		
@@ -81,5 +68,5 @@ extends AbstractProcessingOption {
 		
 		parameter.setResultFormat(resultFormat);
 	}
-
+	
 }

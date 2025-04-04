@@ -1,7 +1,10 @@
 package lib.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.SAMPathnameArgument;
@@ -10,7 +13,11 @@ import lib.cli.parameter.GeneralParameter;
 import lib.data.assembler.factory.AbstractDataAssemblerFactory;
 import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.estimate.MinkaParameter;
+import lib.io.ResultFormat;
+import lib.stat.AbstractStatFactory;
+import lib.stat.DeletionStat;
 import lib.stat.INDELstat;
+import lib.stat.InsertionStat;
 import lib.stat.estimation.provider.DeletionEstimateProvider;
 import lib.stat.estimation.provider.InsertionEstimateProvider;
 import lib.util.coordinate.provider.BedCoordinateProvider;
@@ -26,6 +33,8 @@ import org.apache.commons.cli.Options;
 import htsjdk.samtools.SAMException;
 import htsjdk.samtools.SAMSequenceDictionary;
 import htsjdk.samtools.SAMSequenceRecord;
+import jacusa.filter.factory.AbstractFilterFactory;
+import jacusa.filter.factory.FilterFactory;
 
 /**
  * Base class of all methods available in JACUSA2
@@ -34,21 +43,22 @@ public abstract class AbstractMethod {
 	
 	private final String name;
 	
-	private final GeneralParameter parameter;
 	private final AbstractDataAssemblerFactory dataAssemblerFactory;
 	
 	private final List<AbstractProcessingOption> options;
+	
+	private final Map<Character, FilterFactory> filterFactories = new HashMap<Character, FilterFactory>();
+	private final Map<String, AbstractStatFactory> statisticFactories = new HashMap<String, AbstractStatFactory>();
+	private final Map<Character, ResultFormat> resultFormats = new HashMap<Character, ResultFormat>();
 	
 	private CoordinateProvider coordinateProvider;
 	private WorkerDispatcher workerDispatcher;
 	
 	protected AbstractMethod(
 			final String name, 
-			final GeneralParameter parameter, 
 			final AbstractDataAssemblerFactory dataAssemblerFactory) {
 		
 		this.name 					= name;
-		this.parameter 				= parameter;
 		this.dataAssemblerFactory 	= dataAssemblerFactory;
 		
 		options = new ArrayList<>(10);
@@ -58,9 +68,7 @@ public abstract class AbstractMethod {
 		return name;
 	}
 	
-	public GeneralParameter getParameter() {
-		return parameter;
-	}
+	public abstract GeneralParameter getParameter();
 	
 	public final WorkerDispatcher getWorkerDispatcherInstance() {
 		if (workerDispatcher == null) {
@@ -76,30 +84,74 @@ public abstract class AbstractMethod {
 		return dataAssemblerFactory;
 	}
 	
-	public void initOptions() {
-		getOptions().clear();
-		
-		initGlobalOptions();
-		initConditionOptions();
+	public void registerOptions() {
+		registerGlobalOptions();
+		registerConditionOptions();
 	}
 	
-	protected abstract void initConditionOptions();
-	protected abstract void initGlobalOptions();
+	protected abstract void registerConditionOptions();
+	protected abstract void registerGlobalOptions();
 	
 	// check state after parameters have been set
-	public final boolean checkState() {
+	public boolean checkState() {
 		if (getParameter().getActiveWindowSize() >= getParameter().getReservedWindowSize()) {
 			AbstractTool.getLogger().addError("THREAD-WINDOW-SIZE must be << WINDOW-SIZE");
 			return false;
 		}
 		
+		// TODO implement more checks, such as dependency between options
+		/* 
+		public boolean checkState() {
+			// TODO put this somewhere else
+			if((line.contains("insertion_ratio") && !cmd.hasOption('i')) || (line.contains("deletion_ratio") && !cmd.hasOption('D')) || (line.contains("modification_count") && !cmd.hasOption('M'))){
+				throw new IllegalArgumentException("put options -i, -D, or -M to calculate insertion-, deletion-ratio, or modification-count");
+			}
+
+			/* FIXME enforce modification_count triggers reading mods
+			if(s.contains("modification_count")){
+				modificationOutputRequest = true;
+			}
+		}
+		*/
+		
 		return true;
 	}
 	
-	protected void addOption(AbstractProcessingOption newOption) {
+	public void registerOption(AbstractProcessingOption newOption) {
 		checkDuplicate(newOption);
 		options.add(newOption);
 	}
+	
+	public void registerFilterFactory(final AbstractFilterFactory filterFactory) {
+		filterFactories.put(filterFactory.getID(), filterFactory);
+	}
+	
+	public abstract void registerFilterFactories();
+	
+	public Map<Character, FilterFactory> getFilterFactories() {
+		return Collections.unmodifiableMap(filterFactories);
+	}
+	
+	public void registerStatisticFactory(final AbstractStatFactory statisticFactory) {
+		statisticFactories.put(statisticFactory.getName(), statisticFactory);
+	}
+
+	public abstract void registerStatisticFactories();
+	
+	public Map<String, AbstractStatFactory> getStatisticFactories() {
+		return Collections.unmodifiableMap(statisticFactories);
+	}
+	
+	public void registerResultFormat(final ResultFormat resultFormat) {
+		resultFormats.put(resultFormat.getID(), resultFormat);
+	}
+	
+	public abstract void registerResultFormats();
+	
+	public Map<Character, ResultFormat> getResultFormats() {
+		return Collections.unmodifiableMap(resultFormats);
+	}
+	
 	
 	private void checkDuplicate(final AbstractProcessingOption newOption) {
 		for (final AbstractProcessingOption option : options) {
@@ -167,15 +219,15 @@ public abstract class AbstractMethod {
 	 * @throws Exception
 	 */
 	public void initCoordinateProvider() throws Exception {
-		final int conditionSize = parameter.getConditionsSize();
+		final int conditionSize = getParameter().getConditionsSize();
 		final String[][] recordFilenames = new String[conditionSize][];
 
 		for (int conditionIndex = 0; conditionIndex < conditionSize; conditionIndex++) {
-			recordFilenames[conditionIndex] = parameter.getConditionParameter(conditionIndex).getRecordFilenames();
+			recordFilenames[conditionIndex] = getParameter().getConditionParameter(conditionIndex).getRecordFilenames();
 		}
 		
 		boolean isStranded = false;
-		for (final ConditionParameter conditionParameter : parameter.getConditionParameters()) {
+		for (final ConditionParameter conditionParameter : getParameter().getConditionParameters()) {
 			if (conditionParameter.getLibraryType() != LibraryType.UNSTRANDED) {
 				isStranded = true;
 				break;
@@ -183,14 +235,14 @@ public abstract class AbstractMethod {
 		}
 		
 		final List<SAMSequenceRecord> sequenceRecords = getSAMSequenceRecords(recordFilenames);
-		if (parameter.getInputBedFilename().isEmpty()) {
-			coordinateProvider = new SAMCoordinateAdvancedProvider(isStranded, sequenceRecords, parameter);
+		if (getParameter().getInputBedFilename().isEmpty()) {
+			coordinateProvider = new SAMCoordinateAdvancedProvider(isStranded, sequenceRecords, getParameter());
 		} else {
-			coordinateProvider = new BedCoordinateProvider(parameter.getInputBedFilename(), isStranded);
+			coordinateProvider = new BedCoordinateProvider(getParameter().getInputBedFilename(), isStranded);
 			// wrap chosen provider
-			if (parameter.getMaxThreads() > 1) {
+			if (getParameter().getMaxThreads() > 1) {
 				coordinateProvider = new WindowedCoordinateStaticProvider(isStranded,
-						coordinateProvider, parameter.getReservedWindowSize());
+						coordinateProvider, getParameter().getReservedWindowSize());
 			}
 		}
 	}
@@ -203,7 +255,7 @@ public abstract class AbstractMethod {
 	 */
 	public void parseArgs(final String[] args) throws Exception {
 		for (int conditionIndex = 0; conditionIndex < args.length; conditionIndex++) {
-			SAMPathnameArgument pathnameArgument = new SAMPathnameArgument(conditionIndex, parameter.getConditionParameter(conditionIndex));
+			SAMPathnameArgument pathnameArgument = new SAMPathnameArgument(conditionIndex, getParameter().getConditionParameter(conditionIndex));
 			pathnameArgument.processArg(args[conditionIndex]);
 		}
 	}
@@ -217,20 +269,16 @@ public abstract class AbstractMethod {
 		if (getParameter().showINDELcounts()) {
 			if (getParameter().showDeletionCount()) {
 				indelStats.add(
-						new INDELstat(
+						new DeletionStat(
 								minkaParameter,
-								new DeletionEstimateProvider(minkaParameter.getMaxIterations()),
-								"deletion_score",
-								"deletion_pvalue"));
+								new DeletionEstimateProvider(minkaParameter.getMaxIterations())));
 			}
 			if (getParameter().showInsertionCount() ||
 					getParameter().showInsertionStartCount()) {
 				indelStats.add(
-						new INDELstat(
+						new InsertionStat(
 								minkaParameter,
-								new InsertionEstimateProvider(minkaParameter.getMaxIterations()),
-								"insertion_score",
-								"insertion_pvalue"));
+								new InsertionEstimateProvider(minkaParameter.getMaxIterations())));
 			}
 		}
 		return indelStats;

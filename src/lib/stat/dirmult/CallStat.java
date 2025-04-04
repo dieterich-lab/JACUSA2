@@ -61,7 +61,9 @@ public class CallStat extends AbstractStat {
 	public Result process(ParallelData parallelData, ExtendedInfo resultInfo) {
 		estimationContainer = estimationContainerProvider.convert(parallelData);
 		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer, resultInfo);
-		// TODO
+		if (!estimationSuccesfull) {
+			resultInfo.add("estimation", "failed");
+		}
 		double stat = getStat(estimationContainer);
 		if (filter(stat)) {
 			return null;

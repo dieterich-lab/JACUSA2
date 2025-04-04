@@ -6,7 +6,7 @@ import java.util.List;
 import lib.worker.AbstractWorker;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public class CopyTmpExecuter {
 

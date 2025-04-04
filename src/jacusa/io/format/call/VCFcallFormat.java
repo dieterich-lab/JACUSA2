@@ -45,4 +45,10 @@ public class VCFcallFormat extends AbstractResultFormat {
 		return new SerializeCopyTmpResult(threadId, workerDispatcher.getResultWriter(), this);
 	}
 
+	public void checkState() {
+	if (getParameter().getResultFormat().getID() == VCFcallFormat.CHAR) {
+		 throw new IllegalStateException("VCF output format does not support showAlpha");
+	 }
+	}
+	
 }

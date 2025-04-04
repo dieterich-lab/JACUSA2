@@ -9,7 +9,7 @@ import lib.util.Copyable;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public interface Coordinate extends Locatable, Serializable, Copyable<Coordinate> {
 

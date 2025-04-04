@@ -11,15 +11,18 @@ public abstract class AbstractResultFormat implements ResultFormat {
 	private final String desc;
 
 	private final String methodName;
+	
 	private final GeneralParameter parameter;
 	
-	public AbstractResultFormat(final char c, final String desc, 
-			final String methodName, final GeneralParameter parameter) {
-		this.c = c;
-		this.desc = desc;
+	public AbstractResultFormat(
+			final char c, final String desc, 
+			final String methodName,
+			final GeneralParameter parameter) {
+		this.c 		= c;
+		this.desc 	= desc;
 		
 		this.methodName = methodName;
-		this.parameter = parameter;
+		this.parameter 	= parameter;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package lib.stat.dirmult;
 
 import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -10,12 +11,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import lib.cli.options.AbstractProcessingOption;
-
-/* TODO
- * if (resultFormat.getID() == VCFcallFormat.CHAR) {
-					throw new IllegalStateException("VCF output format does not support showAlpha");
-				}
- */
 
 public class ProcessCommandLine {
 
@@ -70,4 +65,25 @@ public class ProcessCommandLine {
 		}
 	}
 
+	public class Builder {
+
+		private final List<AbstractProcessingOption> processingOptions = new ArrayList<AbstractProcessingOption>();
+		private final CommandLineParser parser;
+		
+		public Builder(final CommandLineParser parser) {
+			this.parser = parser;
+		}
+		
+		public Builder addProcessingOption(final AbstractProcessingOption processingOption) {
+			processingOptions.add(processingOption);
+			
+			return this;
+		}
+		
+		public ProcessCommandLine build() {
+			return new ProcessCommandLine(parser, processingOptions);
+		}
+		
+	}
+	
 }

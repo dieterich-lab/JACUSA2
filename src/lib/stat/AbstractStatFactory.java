@@ -2,33 +2,28 @@ package lib.stat;
 
 import org.apache.commons.cli.Option;
 
-import lib.cli.parameter.GeneralParameter;
 import lib.data.has.HasProcessCommandLine;
 import lib.stat.dirmult.ProcessCommandLine;
 import lib.util.CLIUtil;
 
+
 /**
- * TODO remove with builder
+ * DOCUMENT
  */
 public abstract class AbstractStatFactory implements HasProcessCommandLine {
 
-	private final GeneralParameter parameters;
 	private final Option option;
 	private final ProcessCommandLine processCommandLine;
 	
 	public AbstractStatFactory(
-			final GeneralParameter parameters,
 			final Option option,
 			final ProcessCommandLine processComandLine) {
-		this.parameters			= parameters;
 		this.option 			= option;
 		this.processCommandLine = processComandLine;
 	}
 
-	public AbstractStatFactory(
-			final GeneralParameter parameters,
-			final Option option) {
-		this(parameters, option, new ProcessCommandLine());
+	public AbstractStatFactory(final Option option) {
+		this(option, new ProcessCommandLine());
 	}
 	
 	@Override
@@ -42,10 +37,6 @@ public abstract class AbstractStatFactory implements HasProcessCommandLine {
 	 * @return
 	 */
 	public abstract AbstractStat newInstance(double threshold, final int conditions);
-
-	public GeneralParameter getParameters() {
-		return parameters;
-	}
 	
 	/**
 	 * Return the short name of this StatisticCalculator.
@@ -63,10 +54,6 @@ public abstract class AbstractStatFactory implements HasProcessCommandLine {
 		Option tmp = (Option)option.clone();
 		CLIUtil.adjustOption(tmp, getProcessCommandLine().getOptions(), tmp.getOpt().length());
 		return tmp.getDescription();
-	}
-
-	public void process(final String[] args) {
-		processCommandLine.process(args);
 	}
 	
 	@Override

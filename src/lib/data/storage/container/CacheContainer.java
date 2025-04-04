@@ -12,7 +12,7 @@ import lib.util.LibraryType;
 import lib.util.coordinate.Coordinate;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public interface CacheContainer {
 

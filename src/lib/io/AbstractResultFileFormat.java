@@ -1,17 +1,19 @@
 package lib.io;
 
 import jacusa.io.copytmp.FileCopyTmpResult;
+
 import jacusa.io.copytmp.FileCopyTmpSplitResult;
 import lib.cli.parameter.GeneralParameter;
 import lib.io.copytmp.CopyTmpResult;
 import lib.worker.WorkerDispatcher;
 
 /**
- * TODO add comments.
+ * DOCUMENT
  */
 public abstract class AbstractResultFileFormat extends AbstractResultFormat {
 
-	public AbstractResultFileFormat(final char c, final String desc, 
+	public AbstractResultFileFormat(
+			final char c, final String desc, 
 			final String methodName, final GeneralParameter parameter) {
 		super(c, desc, methodName, parameter);
 	}

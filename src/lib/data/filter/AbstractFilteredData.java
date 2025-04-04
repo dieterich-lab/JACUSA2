@@ -9,9 +9,7 @@ import java.util.regex.Pattern;
 import lib.data.Data;
 
 /**
- * TODO add documentation
- * @param <F>
- * @param <T>
+ * DOCUMENT
  */
 public abstract class AbstractFilteredData<F extends FilteredDataContainer<F, T>, T extends Data<T>>
 implements FilteredDataContainer<F, T> {

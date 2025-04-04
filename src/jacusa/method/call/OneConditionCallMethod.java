@@ -2,7 +2,6 @@ package jacusa.method.call;
 
 import jacusa.cli.parameters.CallParameter;
 import jacusa.filter.factory.ExcludeSiteFilterFactory;
-import jacusa.filter.factory.FilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.MaxAlleleCountFilterFactory;
 import jacusa.filter.factory.basecall.CombinedFilterFactory;
@@ -13,9 +12,6 @@ import jacusa.filter.factory.basecall.SpliceSiteFilterFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import lib.data.DataType;
 import lib.data.assembler.factory.CallDataAssemblerFactory;
@@ -43,14 +39,13 @@ extends CallMethod {
 		super(name, parameter, dataAssemblerFactory);
 	}
 
-	@Override
-	public Map<Character, FilterFactory> getFilterFactories() {
+	public void registerFilterFactories() {
 		final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredBccData = 
 				new DefaultFilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount>(DataType.F_BCC);
 		final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredBooleanData = 
 				new DefaultFilteredDataFetcher<BooleanFilteredData, BooleanData>(DataType.F_BOOLEAN);
 		
-		return Arrays.asList(
+		Arrays.asList(
 				new ExcludeSiteFilterFactory(),
 				new CombinedFilterFactory(
 						getBaseCallCountFetcher(),
@@ -67,7 +62,7 @@ extends CallMethod {
 				new MaxAlleleCountFilterFactory(getBaseCallCountFetcher()),
 				new HomopolymerFilterFactory(getParameter(), filteredBooleanData))
 				.stream()
-				.collect(Collectors.toMap(FilterFactory::getID, Function.identity()) );
+				.forEach(f -> registerFilterFactory(f));
 	}
 
 	@Override

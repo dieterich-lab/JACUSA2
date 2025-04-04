@@ -8,7 +8,7 @@ import lib.util.coordinate.CoordinateController;
 import lib.util.position.Position;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public interface Storage {
 	

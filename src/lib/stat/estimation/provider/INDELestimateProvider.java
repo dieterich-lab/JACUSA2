@@ -16,7 +16,7 @@ public abstract class INDELestimateProvider implements ConditionEstimateProvider
 	public static final int CATEGORIES 	= 2;
 	
 	private final int maxIterations;
-	private final double pseudoCount; // TODO other pseudoCount
+	private final double pseudoCount; // TODO test other pseudoCount
 
 	public INDELestimateProvider(final int maxIterations) {
 		this.maxIterations 	= maxIterations;

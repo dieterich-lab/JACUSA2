@@ -1,11 +1,12 @@
 package jacusa.method.lrtarrest;
 
 import jacusa.cli.options.StatFactoryOption;
+
 import jacusa.cli.options.StatFilterOption;
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
 import jacusa.cli.parameters.LRTarrestParameter;
+import jacusa.cli.parameters.StatParameter;
 import jacusa.filter.factory.ExcludeSiteFilterFactory;
-import jacusa.filter.factory.FilterFactory;
 import jacusa.filter.factory.HomopolymerFilterFactory;
 import jacusa.filter.factory.basecall.lrtarrest.LRTarrestCombinedFilterFactory;
 import jacusa.filter.factory.basecall.lrtarrest.LRTarrestINDELfilterFactory;
@@ -17,15 +18,9 @@ import jacusa.method.rtarrest.DummyStatisticFactory;
 import jacusa.method.rtarrest.RTarrestMethod.RT_READS;
 import jacusa.worker.LRTarrestWorker;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.TreeMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.Map;
 import java.util.Set;
 
 import lib.cli.options.BedCoordinatesOption;
@@ -66,21 +61,18 @@ import lib.data.validator.paralleldata.ExtendedVariantSiteValidator;
 import lib.data.validator.paralleldata.LRTarrestVariantParallelPileup;
 import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
-import lib.io.ResultFormat;
-import lib.stat.AbstractStatFactory;
-import lib.stat.betabin.LRTarrestBetaBinParameter;
 import lib.stat.betabin.LRTarrestStatFactory;
-import lib.stat.dirmult.ProcessCommandLine;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 import lib.util.LibraryType;
 
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
 
 public class LRTarrestMethod 
 extends AbstractMethod {
 
+	private final LRTarrestParameter parameter;
+	
 	private final Fetcher<ArrestPos2BCC> ap2bccFetcher;
 	private final Fetcher<BaseCallCount> totalBccFetcher;
 	private final Fetcher<BaseCallCount> arrestBccExtractor;
@@ -90,8 +82,9 @@ extends AbstractMethod {
 			final String name,
 			final LRTarrestParameter parameter,
 			final LRTarrestDataAssemblerFactory dataAssemblerFactory) {
+		super(name, dataAssemblerFactory);
+		this.parameter		= parameter;
 		
-		super(name, parameter, dataAssemblerFactory);
 		ap2bccFetcher 		= DataType.AP2BCC.getFetcher();
 		totalBccFetcher 	= new PileupCountBaseCallCountExtractor(DataType.PILEUP_COUNT.getFetcher());
 		arrestBccExtractor 	= new ArrestBaseCallCountExtractor(ap2bccFetcher);
@@ -102,105 +95,85 @@ extends AbstractMethod {
 		return totalBccFetcher;
 	}
 	
-	protected void initGlobalOptions() {
-		addOption(new StatFactoryOption(getParameter().getStatParameter(), getStatistics()));
+	protected void registerGlobalOptions() {
+		registerOption(new StatFactoryOption(getParameter().getStatParameter(), getStatisticFactories()));
 		
-		addOption(new StatFilterOption(getParameter().getStatParameter()));
+		registerOption(new StatFilterOption(getParameter().getStatParameter()));
 		
 		// result format option only if there is a choice		
 		if (getResultFormats().size() > 1 ) {
-			addOption(new ResultFormatOption(
+			registerOption(new ResultFormatOption(
 					getParameter(), getResultFormats()));
 		}
 		
-		addOption(new FilterModusOption(getParameter()));
-		addOption(new FilterConfigOption(getParameter(), getFilterFactories()));
+		registerOption(new FilterModusOption(getParameter()));
+		registerOption(new FilterConfigOption(getParameter(), getFilterFactories()));
 		
-		addOption(new ReferenceFastaFilenameOption(getParameter()));
+		registerOption(new ReferenceFastaFilenameOption(getParameter()));
 
-		addOption(new MaxThreadOption(getParameter()));
-		addOption(new WindowSizeOption(getParameter()));
-		addOption(new ThreadWindowSizeOption(getParameter()));
+		registerOption(new MaxThreadOption(getParameter()));
+		registerOption(new WindowSizeOption(getParameter()));
+		registerOption(new ThreadWindowSizeOption(getParameter()));
 
-		addOption(new BedCoordinatesOption(getParameter()));
-		addOption(new ResultFileOption(getParameter()));
+		registerOption(new BedCoordinatesOption(getParameter()));
+		registerOption(new ResultFileOption(getParameter()));
 		
-		addOption(new DebugModusOption(getParameter(), this));
-		addOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
+		registerOption(new DebugModusOption(getParameter(), this));
+		registerOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 	}
 
-	protected void initConditionOptions() {
+	protected void registerConditionOptions() {
 		// for all conditions
-		addOption(new MinMAPQconditionOption(getParameter().getConditionParameters()));
-		addOption(new MinBASQConditionOption(getParameter().getConditionParameters()));
-		addOption(new MinCoverageConditionOption(getParameter().getConditionParameters()));
-		addOption(new MaxDepthConditionOption(getParameter().getConditionParameters()));
-		addOption(new FilterFlagConditionOption(getParameter().getConditionParameters()));
+		registerOption(new MinMAPQconditionOption(getParameter().getConditionParameters()));
+		registerOption(new MinBASQConditionOption(getParameter().getConditionParameters()));
+		registerOption(new MinCoverageConditionOption(getParameter().getConditionParameters()));
+		registerOption(new MaxDepthConditionOption(getParameter().getConditionParameters()));
+		registerOption(new FilterFlagConditionOption(getParameter().getConditionParameters()));
 		
-		addOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
-		addOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
+		registerOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters()));
+		registerOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters()));
 		
 		final Set<LibraryType> availableLibType = new HashSet<>(
 				Arrays.asList(
 						LibraryType.RF_FIRSTSTRAND,
 						LibraryType.FR_SECONDSTRAND));
 		
-		addOption(new nConditionLibraryTypeOption(
+		registerOption(new nConditionLibraryTypeOption(
 				availableLibType, 
 				getParameter().getConditionParameters(), 
 				getParameter()));
 		
 		// condition specific
 		for (int conditionIndex = 0; conditionIndex < getParameter().getConditionsSize(); ++conditionIndex) {
-			addOption(new MinMAPQconditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addOption(new MaxDepthConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			registerOption(new MinMAPQconditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			registerOption(new MinBASQConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			registerOption(new MinCoverageConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			registerOption(new MaxDepthConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			registerOption(new FilterFlagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
-			addOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			registerOption(new FilterNHsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
+			registerOption(new FilterNMsamTagConditionOption(getParameter().getConditionParameters().get(conditionIndex)));
 			
-			addOption(new nConditionLibraryTypeOption(
+			registerOption(new nConditionLibraryTypeOption(
 					availableLibType, 
 					getParameter().getConditionParameters().get(conditionIndex),
 					getParameter()));
 		}
 	}
 	
-	public Map<String, AbstractStatFactory> getStatistics() {
-		final Map<String, AbstractStatFactory> factories = 
-				new TreeMap<>();
-
-		final List<AbstractStatFactory> tmpFactory = new ArrayList<>(5);
-		tmpFactory.add(new DummyStatisticFactory(getParameter()));
-		
-		
-		LRTarrestBetaBinParameter lrtArrestBetaBinParameter = new LRTarrestBetaBinParameter(getParameter());
-		tmpFactory.add(
-				new LRTarrestStatFactory(
-						getParameter(),
-						lrtArrestBetaBinParameter,
-						new ProcessCommandLine(
-								new DefaultParser(),
-								Arrays.asList())
-						));
-
-		for (final AbstractStatFactory factory : tmpFactory) {
-			factories.put(factory.getName(), factory);
-		}
-		
-		return factories;
+	public void registerStatisticFactories() {
+		registerStatisticFactory(new DummyStatisticFactory());
+		registerStatisticFactory(new LRTarrestStatFactory(getParameter().getLRTarrestBetaBinParameter()));
 	}
 
-	public Map<Character, FilterFactory> getFilterFactories() {
+	public void registerFilterFactories() {
 		final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredBccFetcher = 
 				new DefaultFilteredDataFetcher<>(DataType.F_BCC);
 		
 		final FilteredDataFetcher<BooleanFilteredData, BooleanData> filteredBooleanFetcher =
 				new DefaultFilteredDataFetcher<>(DataType.F_BOOLEAN);
 
-		return Arrays.asList(
+		Arrays.asList(
 				new HomopolymerFilterFactory(getParameter(), filteredBooleanFetcher),
 				new ExcludeSiteFilterFactory(),
 				new RTarrestMaxAlleleCountFilterFactory(
@@ -238,26 +211,19 @@ extends AbstractMethod {
 								throughBccExtractor),
 						filteredBccFetcher))
 				.stream()
-				.collect(Collectors.toMap(FilterFactory::getID, Function.identity()) );
+				.forEach(f -> registerFilterFactory(f));
 	}
 
-	public Map<Character, ResultFormat> getResultFormats() {
-		Map<Character, ResultFormat> name2resultFormat = 
-				new HashMap<>();
-
-		ResultFormat resultFormat = null;
-		
-		resultFormat = new BED6lrtArrestResultFormat(
-				getName(), 
-				getParameter() );
-		name2resultFormat.put(resultFormat.getID(), resultFormat);
-		
-		return name2resultFormat;
+	public void registerResultFormats() {
+		registerResultFormat(
+				new BED6lrtArrestResultFormat(
+						getName(), 
+						getParameter()));
 	}
 
 	@Override
 	public LRTarrestParameter getParameter() {
-		return (LRTarrestParameter) super.getParameter();
+		return parameter;
 	}
 
 	@Override
@@ -328,11 +294,23 @@ extends AbstractMethod {
 			
 			final LRTarrestDataAssemblerFactory dataAssemblerFactory = 
 					new LRTarrestDataAssemblerFactory(builderFactory);
-			
-			return new LRTarrestMethod(
+
+			final LRTarrestMethod method = new LRTarrestMethod(
 					getName(),
 					parameter,
 					dataAssemblerFactory);
+			
+			// test-statistic related
+			parameter.setStatParameter(
+					new StatParameter(
+							method.getStatisticFactories().get(LRTarrestStatFactory.NAME),
+							Double.NaN));
+			
+			// default output format
+			parameter.setResultFormat(
+					method.getResultFormats().get(BED6lrtArrestResultFormat.CHAR));
+			
+			return method;
 		}
 
 		

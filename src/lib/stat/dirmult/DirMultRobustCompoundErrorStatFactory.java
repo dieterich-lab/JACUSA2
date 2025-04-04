@@ -5,7 +5,6 @@ import java.util.Arrays;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 
-import lib.cli.parameter.GeneralParameter;
 import lib.stat.AbstractStat;
 import lib.stat.AbstractStatFactory;
 import lib.stat.dirmult.options.CalculatePvalueOption;
@@ -20,34 +19,33 @@ import lib.stat.estimation.provider.pileup.RobustEstimationPileupProvider;
 public class DirMultRobustCompoundErrorStatFactory
 extends AbstractStatFactory {
 
+	public final static String NAME = "DirMult";
+	
 	private final CallDirMultParameter dirMultParameter;
 	
-	public DirMultRobustCompoundErrorStatFactory(final GeneralParameter parameters) {
-		this(parameters, new CallDirMultParameter(parameters));
+	public DirMultRobustCompoundErrorStatFactory() {
+		this(new CallDirMultParameter());
 	}
 	
 	public DirMultRobustCompoundErrorStatFactory(
-			final GeneralParameter parameter,
 			final CallDirMultParameter dirMultParameter) {
 		this(
-				parameter,
 				dirMultParameter,
 				new ProcessCommandLine(
 						new DefaultParser(),
 						Arrays.asList(
 								new EpsilonOptions(dirMultParameter.getMinkaEstimateParameter()),
-								new ShowAlphaOption(parameter, dirMultParameter),
+								new ShowAlphaOption(dirMultParameter),
 								new MaxIterationsOption(dirMultParameter.getMinkaEstimateParameter()),
-								new SubsampleRunsOptions(parameter, dirMultParameter),
-								new CalculatePvalueOption(parameter, dirMultParameter))));
+								new SubsampleRunsOptions(dirMultParameter),
+								new CalculatePvalueOption(dirMultParameter))));
 	}
 	
 	public DirMultRobustCompoundErrorStatFactory(
-			final GeneralParameter parameters,
 			final CallDirMultParameter dirMultParameter,
 			final ProcessCommandLine processCommandLine) {
-		super(parameters,
-				Option.builder("DirMult")
+		super(
+				Option.builder(NAME)
 					.desc(DirMultCompoundErrorStatFactory.DESC + "\n" + "Adjusts variant condition")
 					.build(),
 				processCommandLine);
@@ -56,7 +54,7 @@ extends AbstractStatFactory {
 	}
 
 	@Override
-	public AbstractStat newInstance(double threshold, final int conditions) {
+	public AbstractStat newInstance(double threshold, int conditions) {
 		ConditionEstimateProvider dirMultPileupCountProvider;
 		switch (conditions) {
 		case 1:

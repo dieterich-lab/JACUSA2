@@ -54,8 +54,10 @@ public class INDELstat extends AbstractStat {
 	public Result process(ParallelData parallelData, ExtendedInfo resultInfo) {
 		estimationContainer = estimationContainerProvider.convert(parallelData);
 		final boolean successfullEstimation = estimateDirMultAlpha.estimate(estimationContainer, resultInfo);
-		
-		// FIXME 
+		if (!successfullEstimation) {
+			// TODO what should happen here?
+		}
+
 		final double lrt 	= estimateDirMultAlpha.getLRT(estimationContainer);
 		final double pvalue = getPValue(lrt);
 	

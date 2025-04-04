@@ -5,7 +5,6 @@ import lib.record.Record;
 import lib.record.Record.AlignedPositionCigarElement;
 import lib.util.coordinate.CoordinateTranslator;
 
-// FIXME count only the start position
 class InsertionPositionProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
 	
 	// position of the insertion

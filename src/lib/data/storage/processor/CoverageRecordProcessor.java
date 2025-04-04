@@ -8,7 +8,7 @@ import lib.util.position.Position;
 import lib.util.position.PositionProvider;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public class CoverageRecordProcessor implements ExtendedRecordProcessor {
 

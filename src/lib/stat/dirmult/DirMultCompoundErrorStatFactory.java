@@ -2,10 +2,10 @@ package lib.stat.dirmult;
 
 import java.util.Arrays;
 
+
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 
-import lib.cli.parameter.GeneralParameter;
 import lib.stat.AbstractStatFactory;
 import lib.stat.dirmult.options.CalculatePvalueOption;
 import lib.stat.dirmult.options.EpsilonOptions;
@@ -24,31 +24,26 @@ extends AbstractStatFactory {
 	
 	private final CallDirMultParameter dirMultParameter;
 	
-	public DirMultCompoundErrorStatFactory(final GeneralParameter parameters) {
-		this(parameters, new CallDirMultParameter(parameters));
+	public DirMultCompoundErrorStatFactory() {
+		this(new CallDirMultParameter());
 	}
 	
-	public DirMultCompoundErrorStatFactory(
-			final GeneralParameter parameter,
-			final CallDirMultParameter dirMultParameter) {
+	public DirMultCompoundErrorStatFactory(final CallDirMultParameter dirMultParameter) {
 		this(
-				parameter,
 				dirMultParameter,
 				new ProcessCommandLine(
 						new DefaultParser(),
 						Arrays.asList(
 								new EpsilonOptions(dirMultParameter.getMinkaEstimateParameter()),
-								new ShowAlphaOption(parameter, dirMultParameter),
+								new ShowAlphaOption(dirMultParameter),
 								new MaxIterationsOption(dirMultParameter.getMinkaEstimateParameter()),
-								new SubsampleRunsOptions(parameter, dirMultParameter),
-								new CalculatePvalueOption(parameter, dirMultParameter))));
+								new SubsampleRunsOptions(dirMultParameter),
+								new CalculatePvalueOption(dirMultParameter))));
 	}
 	
 	public DirMultCompoundErrorStatFactory(
-			final GeneralParameter parameters,
 			final CallDirMultParameter dirMultParameter, final ProcessCommandLine processCommmandLine) {
 		super(
-				parameters,
 				Option.builder(NAME)
 					.desc(DESC)
 					.build(),

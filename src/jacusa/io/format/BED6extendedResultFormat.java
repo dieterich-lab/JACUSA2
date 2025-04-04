@@ -1,6 +1,7 @@
 package jacusa.io.format;
 
 import lib.cli.parameter.GeneralParameter;
+
 import lib.data.count.basecall.BaseCallCount;
 import lib.data.count.basecall.DefaultBCC;
 import lib.data.has.HasProcessCommandLine;
@@ -12,35 +13,49 @@ import lib.io.format.bed.DefaultBED6adder;
 import lib.io.format.bed.ExtendedInfoAdder;
 import lib.stat.dirmult.ProcessCommandLine;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.cli.DefaultParser;
+
+import jacusa.io.format.modifyresult.AddBCQC;
+import jacusa.io.format.modifyresult.AddDeletionRatio;
+import jacusa.io.format.modifyresult.AddInsertionRatio;
+import jacusa.io.format.modifyresult.AddReadCount;
 import jacusa.io.format.modifyresult.ResultModifier;
+import jacusa.io.format.modifyresult.ResultModifierOption;
 
 public class BED6extendedResultFormat
 extends AbstractResultFileFormat 
 implements HasProcessCommandLine {
 
-    //options selected in command line for output-format X
-    private List<ResultModifier> selectedResultModifier;
+	private final List<ResultModifier> DEFAULT = 
+			Collections.unmodifiableList(
+					Arrays.asList(
+							new AddReadCount(),
+							new AddBCQC(),
+							new AddInsertionRatio(),
+							new AddDeletionRatio()));
+	
     private ProcessCommandLine processingCommandLine; 
     
-    public BED6extendedResultFormat(
-            final String methodName,
-            final GeneralParameter parameter,
-            final List<ResultModifier> selected,
-            final ProcessCommandLine processingCommandLine){
+    public BED6extendedResultFormat(final String methodName, final GeneralParameter parameter){
         super('X', "BED6-extended result format", methodName, parameter);
 
-        this.selectedResultModifier = Collections.unmodifiableList(selected);
-        this.processingCommandLine 	= processingCommandLine;
+        this.processingCommandLine 	= new ProcessCommandLine(
+        		new DefaultParser(),
+        		DEFAULT.stream()
+        		.map(rm -> new ResultModifierOption(rm, parameter.getResultModifiers()))
+        		.collect(Collectors.toList()));
     }
-
+   
     @Override
     public ProcessCommandLine getProcessCommandLine() {
     	return processingCommandLine;
     }
-
+    
     @Override
 	public BEDlikeResultFileWriter createWriter(final String outputFileName) {
 		final BaseCallCount.AbstractParser bccParser = 
@@ -52,9 +67,5 @@ implements HasProcessCommandLine {
 				.addInfoAdder(new ExtendedInfoAdder(getParameter()))
 				.build();
 	}
-
-    public List<ResultModifier> getSelectedResultModifier() {
-        return selectedResultModifier;
-    }
-
+    
 }

@@ -8,7 +8,7 @@ import lib.util.coordinate.CoordinateTranslator;
 import java.util.Arrays;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public class CigarDetailPosProviderBuilder implements lib.util.Builder<PositionProvider> {
 	

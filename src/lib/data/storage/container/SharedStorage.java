@@ -4,7 +4,7 @@ import lib.record.Record;
 import lib.util.coordinate.CoordinateController;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public interface SharedStorage {
 

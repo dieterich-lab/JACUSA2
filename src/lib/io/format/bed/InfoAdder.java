@@ -3,7 +3,7 @@ package lib.io.format.bed;
 import lib.data.result.Result;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public interface InfoAdder {
 	

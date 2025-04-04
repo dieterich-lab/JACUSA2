@@ -60,12 +60,12 @@ public class StatParameter {
 	 */
 	public void setFactory(
 			final String line, 
-			final AbstractStatFactory factory) {
+			final AbstractStatFactory statFactory) {
 		final String[] args = line.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
 		if (args.length > 0) {
-			factory.process(args);
+			statFactory.getProcessCommandLine().process(args);
 		}
-		this.factory = factory;
+		this.factory = statFactory;
 	}
 
 	public AbstractStatFactory getFactory() {

@@ -6,7 +6,7 @@ import lib.util.LibraryType;
 import lib.util.position.Position;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public interface BaseCallInterpreter {
 

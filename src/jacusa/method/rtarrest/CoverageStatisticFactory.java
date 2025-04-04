@@ -2,7 +2,6 @@ package jacusa.method.rtarrest;
 
 import org.apache.commons.cli.Option;
 
-import lib.cli.parameter.GeneralParameter;
 import lib.stat.AbstractStatFactory;
 
 /**
@@ -14,9 +13,8 @@ extends AbstractStatFactory {
 	private static final String NAME = "Coverage"; 
 	private static final String DESC = "Calculates the total coverage";
 	
-	public CoverageStatisticFactory(final GeneralParameter parameters) {
+	public CoverageStatisticFactory() {
 		super(
-				parameters,
 				Option.builder(NAME)
 				.desc(DESC)
 				.build());

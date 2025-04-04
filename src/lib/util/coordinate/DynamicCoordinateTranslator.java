@@ -1,7 +1,7 @@
 package lib.util.coordinate;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 class DynamicCoordinateTranslator implements CoordinateTranslator {
 

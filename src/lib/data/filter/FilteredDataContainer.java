@@ -5,7 +5,7 @@ import java.util.Set;
 import lib.data.Data;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  * @param <F>
  * @param <T>
  */

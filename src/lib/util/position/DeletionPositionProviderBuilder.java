@@ -6,7 +6,7 @@ import lib.record.Record.AlignedPositionCigarElement;
 import lib.util.coordinate.CoordinateTranslator;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 class DeletionPositionProviderBuilder implements lib.util.Builder<IntervalPosProvider> {
 	

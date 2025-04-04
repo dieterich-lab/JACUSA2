@@ -3,7 +3,7 @@ package lib.data.storage.processor;
 import lib.record.Record;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public interface RecordProcessor {
 

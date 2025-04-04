@@ -6,7 +6,7 @@ import lib.util.coordinate.Coordinate;
 import lib.util.coordinate.CoordinateController;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public interface ReferenceProvider {
 

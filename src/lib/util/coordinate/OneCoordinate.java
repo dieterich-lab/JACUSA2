@@ -3,7 +3,7 @@ package lib.util.coordinate;
 import lib.util.coordinate.CoordinateUtil.STRAND;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public class OneCoordinate extends AbstractCoordinate {
 	

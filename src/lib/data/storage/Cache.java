@@ -7,7 +7,7 @@ import java.util.List;
 import lib.data.storage.processor.ExtendedRecordProcessor;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public class Cache {
 

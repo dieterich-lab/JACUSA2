@@ -6,7 +6,7 @@ import lib.util.Base;
 import lib.util.Copyable;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public interface Position extends Copyable<Position> {
 

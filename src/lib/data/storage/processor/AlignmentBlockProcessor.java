@@ -7,7 +7,7 @@ import lib.util.position.AllAlignmentBlocksPosProvider;
 import lib.util.position.PositionProvider;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public class AlignmentBlockProcessor implements ExtendedRecordProcessor {
 

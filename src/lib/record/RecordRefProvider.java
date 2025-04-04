@@ -5,7 +5,7 @@ import java.util.List;
 import lib.util.Base;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 public interface RecordRefProvider {
 

@@ -10,7 +10,7 @@ import lib.data.storage.processor.ExtendedRecordProcessor;
 import lib.record.Record;
 
 /**
- * TODO add documentation
+ * DOCUMENT
  */
 abstract class AbstractStrandedCacheContainer 
 implements CacheContainer {

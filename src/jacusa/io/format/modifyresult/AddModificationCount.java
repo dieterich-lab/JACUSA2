@@ -3,11 +3,11 @@ package jacusa.io.format.modifyresult;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.result.Result;
 
-
+// TODO implement
 public class AddModificationCount extends AbstractResultModifier {
 
     public AddModificationCount() {
-    	super("modification_count", "Add modification count to output");
+    	super("modifications", "Add modification count to output");
     }
     
     public void modify(Result result){
