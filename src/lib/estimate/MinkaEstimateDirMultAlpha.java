@@ -55,7 +55,7 @@ public class MinkaEstimateDirMultAlpha {
 		double loglikOld = Double.NEGATIVE_INFINITY;
 		
 		// maximize
-		while (estimationContainer.getIteration() < estimationContainer.getMaxIterations() && ! converged) {
+		while (estimationContainer.getNextIteration() < estimationContainer.getMaxIterations() && ! converged) {
 			// init alpha new
 			double[] alphaNew = new double[categories];
 			Arrays.fill(alphaNew, 0.0);
@@ -115,13 +115,13 @@ public class MinkaEstimateDirMultAlpha {
 			// check if alpha negative
 			if (! admissible) {
 				if (backtrack) {
-					estimateInfo.add("backtrack" + estimationContainer.getID(), Integer.toString(estimationContainer.getIteration()));
+					estimateInfo.add("backtrack" + estimationContainer.getID(), Integer.toString(estimationContainer.getNextIteration()));
 					alphaNew = backtracking(estimationContainer.getAlpha(), gradient, b_DenominatorSum, Q);
 					if (alphaNew == null) {
 						return false;
 					}
 				} else {
-					estimateInfo.add("reset" + estimationContainer.getID(), Integer.toString(estimationContainer.getIteration()));
+					estimateInfo.add("reset" + estimationContainer.getID(), Integer.toString(estimationContainer.getNextIteration()));
 					return false;
 				}
 				// update value
@@ -271,7 +271,7 @@ public class MinkaEstimateDirMultAlpha {
 	
 	private void addAlphaValues(final ConditionEstimate conditionEstimate, final ExtendedInfo info) {
 		final String id 			= conditionEstimate.getID();
-		final int iteration			= conditionEstimate.getIteration();
+		final int iteration			= conditionEstimate.getNextIteration() - 1;
 		final double[] initAlpha 	= conditionEstimate.getAlpha(0);
 		final double[] alpha 		= conditionEstimate.getAlpha(iteration);
 		final double logLikelihood	= conditionEstimate.getLogLikelihood(iteration);

@@ -345,13 +345,8 @@ public class CLI {
 		while (conditions <= 10) {
 			final List<AbstractProcessingOption> processingOptions = new ArrayList<AbstractProcessingOption>();
 			final Options options = new Options();
-			
 			final AbstractMethod method = methodFactory.createFactory(conditions).createMethod();
-			method.registerFilterFactories();
-			method.registerStatisticFactories();
-			method.registerResultFormats();
 			method.registerOptions();
-			
 			processingOptions.addAll(method.getOptions());
 			for (AbstractProcessingOption processingOption : processingOptions) {
 				options.addOption(processingOption.getOption(printExtendedHelp));

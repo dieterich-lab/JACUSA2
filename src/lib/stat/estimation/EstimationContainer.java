@@ -43,13 +43,13 @@ public class EstimationContainer {
 		return pooledConditionEstimate.isNumericallyStable();
 	}
 	
-	public void updateCondition(final int conditionIndex, final ConditionEstimate conditionEstimate) {
-		if (conditionEstimates[conditionIndex].getIteration() == 0) {
-			conditionEstimates[conditionIndex] = conditionEstimate;
-		}
-		final int otherConditionIndex = (conditionEstimates.length + 1) - (conditionIndex + 1);
+	public void updateCondition(
+			final int pickedConditionIndex,
+			final ConditionEstimate conditionEstimate,
+			final int otherConditionIndex) {
+		// conditionEstimates[pickedConditionIndex].getNextIteration() == 0
+		conditionEstimates[pickedConditionIndex] = new FastConditionEstimate(conditionEstimate);
 		conditionEstimates[otherConditionIndex].clear();
-
 		pooledConditionEstimate.clear();
 	}
 

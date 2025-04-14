@@ -50,6 +50,14 @@ public class INDELstat extends AbstractStat {
 		return estimateDirMultAlpha.getLRT(estimationContainer);
 	}
 	
+	// TODO quickfix
+	public double getStat(ParallelData parallelData) {
+		estimationContainer = estimationContainerProvider.convert(parallelData);
+		estimateDirMultAlpha.estimate(estimationContainer, new ExtendedInfo());
+		double stat = estimateDirMultAlpha.getLRT(estimationContainer);
+		return stat;
+	}
+	
 	@Override
 	public Result process(ParallelData parallelData, ExtendedInfo resultInfo) {
 		estimationContainer = estimationContainerProvider.convert(parallelData);

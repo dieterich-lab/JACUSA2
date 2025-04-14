@@ -22,11 +22,11 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 		this.id				= id;
 		this.nominalData	= dirMultData;
 
-		alpha 				= new double[maxIterations + 1][];
-		logLikelihood 		= new double[maxIterations + 1];
+		alpha 				= new double[maxIterations][];
+		logLikelihood 		= new double[maxIterations];
 		numericallyStable 	= true;
 		
-		iteration 			= -1;
+		iteration 			= 0;
 	}
 	
 	@Override
@@ -41,12 +41,12 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 
 	@Override
 	public double[] getAlpha() {
-		return alpha[getIteration()];
+		return alpha[iteration - 1];
 	}
 	
 	@Override
 	public double getLogLikelihood() {
-		return logLikelihood[getIteration()];
+		return logLikelihood[iteration - 1];
 	}
 	
 	@Override
@@ -66,11 +66,11 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 
 	@Override
 	public int getMaxIterations() {
-		return logLikelihood.length + 1;
+		return logLikelihood.length;
 	}
 
 	@Override
-	public int getIteration() {
+	public int getNextIteration() {
 		return iteration;
 	}
 
@@ -81,15 +81,15 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 	
 	@Override
 	public void add(final double[] alpha, final double likelihood) {
-		iteration++;
 		this.alpha[iteration] 			= alpha;
 		this.logLikelihood[iteration] 	= likelihood;
+		iteration++;
 	}
 	
 	@Override
 	public void clear() {
 		numericallyStable 	= true;
-		iteration 			= -1;		
+		iteration 			= 0;		
 	}
 	
 	@Override
@@ -104,7 +104,7 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 		sb.append(Util.join(getAlpha(0), '\n'));
 		sb.append('\n');
 		
-		for (int iteration = 1; iteration < getMaxIterations(); ++iteration) {
+		for (int i = 0; i < iteration ; ++iteration) {
 			sb.append("Iteartion: ");
 			sb.append(iteration);
 			sb.append(' ');

@@ -11,6 +11,7 @@ import lib.stat.INDELstat;
 import lib.stat.dirmult.CallStat;
 import lib.stat.estimation.ConditionEstimate;
 import lib.stat.estimation.FastConditionEstimate;
+// import lib.util.ExtendedInfo;
 import lib.util.StatUtils;
 
 public class SubSampleStat {
@@ -52,12 +53,15 @@ public class SubSampleStat {
 		final StringBuilder[] indelScoreSbs = new StringBuilder[indelStats.size()];
 
 		// keep estimation of unchanged DirMults
-		final ConditionEstimate callPickedConditionEstimate = new FastConditionEstimate(
+		/*final ConditionEstimate callPickedConditionEstimate = new FastConditionEstimate(
 				callStat.getEstimationContainer().getConditionEstimate(pickedConditionIndex));
+				*/
 		final ConditionEstimate[] indelPickedConditionEstimate = new ConditionEstimate[indelStats.size()];
 		for (int indelStatIndex = 0; indelStatIndex < indelStats.size(); indelStatIndex++) {
 			indelPickedConditionEstimate[indelStatIndex] = new FastConditionEstimate(
 					indelStats.get(otherConditionIndex).getEstimationContainer().getConditionEstimate(pickedConditionIndex));
+			indelScoreSbs[indelStatIndex] = new StringBuilder();
+			
 		}
 			
 		for (int run = 0; run < runs; run++) {
@@ -68,16 +72,25 @@ public class SubSampleStat {
 				final PileupCount sampledPileup = subSampler.sample(targetCoverages[replicateIndex]);
 				data.getPileupCount().setBaseCallQualityCount(sampledPileup.getBaseCallQualityCount());
 				data.getPileupCount().setINDELCount(sampledPileup.getINDELCount());
+				// TODO modification count
 			}
 			
+			/*
 			// inject previous estimation for unchanged condition
-			callStat.getEstimationContainer().updateCondition(otherConditionIndex, callPickedConditionEstimate);
+			callStat.getEstimationContainer().updateCondition(pickedConditionIndex, callPickedConditionEstimate, otherConditionIndex);
+			callStat.getMinka().estimate(callStat.getEstimationContainer(), new ExtendedInfo()); // FIXME
 			callScoresSb.append(callStat.getStat(callStat.getEstimationContainer()));
+			*/
+			callScoresSb.append(callStat.getStat(template));
 			
 			for (int indelStatIndex = 0; indelStatIndex < indelStats.size(); indelStatIndex++) {
 				final INDELstat indelStat = indelStats.get(indelStatIndex);
-				indelStat.getEstimationContainer().updateCondition(otherConditionIndex, indelPickedConditionEstimate[indelStatIndex]);
+				/*
+				indelStat.getEstimationContainer().updateCondition(pickedConditionIndex, indelPickedConditionEstimate[indelStatIndex], otherConditionIndex);
+				indelStat.getMinka().estimate(callStat.getEstimationContainer(), new ExtendedInfo()); // FIXME
 				callScoresSb.append(indelStat.getLRT(indelStat.getEstimationContainer()));
+				*/
+				callScoresSb.append(indelStat.getStat(template));
 				
 				final StringBuilder indelScoreSb = indelScoreSbs[indelStatIndex];
 				final double statValue = indelStat.getLRT(callStat.getEstimationContainer()); 

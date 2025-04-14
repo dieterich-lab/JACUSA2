@@ -28,7 +28,7 @@ public class FastConditionEstimate implements ConditionEstimate{
 		logLikelihood 		= Double.NaN;
 		numericallyStable 	= true;
 		
-		iteration 			= -1;
+		iteration 			= 0;
 	}
 	
 	public FastConditionEstimate(final ConditionEstimate conditionEstimate) {
@@ -36,17 +36,17 @@ public class FastConditionEstimate implements ConditionEstimate{
 		this.nominalData 	= conditionEstimate.getNominalData();
 		this.maxIterations 	= conditionEstimate.getMaxIterations();
 		
-		if (conditionEstimate.getIteration() >= 0) {
+		if (conditionEstimate.getNextIteration() > 0) {
 			final double[] initAlpha = conditionEstimate.getAlpha(0); 
 			this.initAlpha 			= Arrays.copyOf(initAlpha, initAlpha.length);
 
-			final double[] alpha 	= conditionEstimate.getAlpha(conditionEstimate.getMaxIterations()); 
+			final double[] alpha 	= conditionEstimate.getAlpha(); 
 			this.alpha 				= Arrays.copyOf(alpha, alpha.length);
 
-			this.logLikelihood 		= conditionEstimate.getLogLikelihood(conditionEstimate.getMaxIterations());
+			this.logLikelihood 		= conditionEstimate.getLogLikelihood();
 			this.numericallyStable 	= conditionEstimate.isNumericallyStable();
 			
-			this.iteration 			= conditionEstimate.getIteration(); 
+			this.iteration 			= conditionEstimate.getNextIteration(); 
 		}
 	}
 	
@@ -59,7 +59,7 @@ public class FastConditionEstimate implements ConditionEstimate{
 	public double[] getAlpha(final int iteration) {
 		if (iteration == 0) {
 			return initAlpha;			
-		} else if(this.iteration == iteration) {
+		} else if(this.iteration - 1 == iteration) {
 			return alpha;
 		} else {
 			throw new IllegalArgumentException("Does not support random access to iteration");
@@ -68,7 +68,7 @@ public class FastConditionEstimate implements ConditionEstimate{
 
 	@Override
 	public double[] getAlpha() {
-		return getAlpha(iteration);
+		return getAlpha(iteration - 1);
 	}
 	
 	@Override
@@ -78,7 +78,7 @@ public class FastConditionEstimate implements ConditionEstimate{
 	
 	@Override
 	public double getLogLikelihood(final int iteration) {
-		if(this.iteration == iteration) {
+		if(this.iteration == iteration - 1) {
 			return logLikelihood;
 		} else {
 			throw new IllegalArgumentException("Does not support random access to iteration");
@@ -101,7 +101,7 @@ public class FastConditionEstimate implements ConditionEstimate{
 	}
 
 	@Override
-	public int getIteration() {
+	public int getNextIteration() {
 		return iteration;
 	}
 
@@ -124,7 +124,7 @@ public class FastConditionEstimate implements ConditionEstimate{
 	@Override
 	public void clear() {
 		numericallyStable 	= true;
-		iteration 			= -1;		
+		iteration 			= 0;		
 	}
 	
 	@Override

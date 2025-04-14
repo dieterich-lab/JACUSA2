@@ -184,6 +184,7 @@ public class CallMethod extends AbstractMethod {
 						getParameter().getDirMultParameter()));
 	}
 
+	@Override
 	public void registerFilterFactories() {
 		final FilteredDataFetcher<BaseCallCountFilteredData, BaseCallCount> filteredBccData = 
 				new DefaultFilteredDataFetcher<>(DataType.F_BCC);
@@ -215,6 +216,7 @@ public class CallMethod extends AbstractMethod {
 		registerFilterFactory(new HomopolymerFilterFactory(getParameter(), filteredBooleanData));
 	}
 
+	@Override
 	public void registerResultFormats() {
 		// BED like output
 		registerResultFormat(new BED6resultFormat(getName(), getParameter()));
@@ -336,35 +338,41 @@ public class CallMethod extends AbstractMethod {
 			final CallDataAssemblerFactory dataAssemblerFactory = 
 					new CallDataAssemblerFactory(builderFactory);
 			
-			CallMethod callMethod = null;
+			CallMethod method = null;
 			switch (getConditions()) {
 			case 1:
-				callMethod = new OneConditionCallMethod(
+				method = new OneConditionCallMethod(
 						getName(), 
 						parameter, 
 						dataAssemblerFactory);
+				break;
 
 			case 2:
-				callMethod = new TwoConditionCallMethod(
+				method = new TwoConditionCallMethod(
 						getName(), 
 						parameter, 
 						dataAssemblerFactory);
+				break;
 			}
-			if (callMethod == null) {
+			if (method == null) {
 				throw new IllegalStateException(
 						"Arguments could not be parsed check call!");
 			}
 			
+			method.registerFilterFactories();
+			method.registerStatisticFactories();
+			method.registerResultFormats();
+			
 			// set default output and statistic
 			// result format
-			parameter.setResultFormat(callMethod.getResultFormats().get(BED6resultFormat.CHAR));
+			parameter.setResultFormat(method.getResultFormats().get(BED6resultFormat.CHAR));
 			// stat
 			parameter.setStatParameter(
 					new StatParameter(
-							callMethod.getStatisticFactories().get(DirMultRobustCompoundErrorStatFactory.NAME),
+							method.getStatisticFactories().get(DirMultRobustCompoundErrorStatFactory.NAME),
 							Double.NaN));
 			
-			return callMethod;
+			return method;
 		}
 		
 		@Override
