@@ -152,7 +152,6 @@ public abstract class AbstractMethod {
 		return Collections.unmodifiableMap(resultFormats);
 	}
 	
-	
 	private void checkDuplicate(final AbstractProcessingOption newOption) {
 		for (final AbstractProcessingOption option : options) {
 			try {

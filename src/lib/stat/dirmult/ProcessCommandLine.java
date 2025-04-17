@@ -49,7 +49,7 @@ public class ProcessCommandLine {
 		try {
 			final CommandLine cmd  = parser.parse(options, args);
 			for (final AbstractProcessingOption processingOption : processingOptions) {
-				if (cmd.getOptionValue(processingOption.getLongOpt()) != null) {
+				if (cmd.hasOption(processingOption.getLongOpt())) {
 					processingOption.process(cmd);
 				}
 			}
@@ -65,6 +65,14 @@ public class ProcessCommandLine {
 		}
 	}
 
+	public static String[] addDash(final String[] args) {
+		final String[] newArgs = new String[args.length];
+		for (int i = 0; i < args.length; ++i) {
+			newArgs[i] = "--" + args[i];
+		}
+		return newArgs;
+	}
+	
 	public class Builder {
 
 		private final List<AbstractProcessingOption> processingOptions = new ArrayList<AbstractProcessingOption>();

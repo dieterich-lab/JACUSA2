@@ -345,14 +345,14 @@ implements HasConditionParameter {
 	
 	public void registerConditionKeys(final String key) {
 		for (int conditionIndex = 0; conditionIndex < getConditionsSize(); conditionIndex++) {
-			additionalKeys.add(key + conditionIndex);
+			additionalKeys.add(key + (conditionIndex + 1));
 		}
 	}
 	
 	public void registerConditionReplictaKeys(final String key) {
 		for (int conditionIndex = 0; conditionIndex < getConditionsSize(); conditionIndex++) {
 			for (int replicateIndex = 0; replicateIndex < getReplicates(conditionIndex); replicateIndex++) {
-				additionalKeys.add(key + Integer.toString(conditionIndex) + Integer.toString(replicateIndex));
+				additionalKeys.add(key + Integer.toString(conditionIndex + 1) + Integer.toString(replicateIndex + 1));
 			}
 		}
 	}

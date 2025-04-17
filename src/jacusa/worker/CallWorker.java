@@ -2,6 +2,7 @@ package jacusa.worker;
 
 import java.util.List;
 
+import jacusa.io.format.modifyresult.ResultModifier;
 import jacusa.method.call.CallMethod;
 import lib.data.ParallelData;
 import lib.data.result.Result;
@@ -42,6 +43,10 @@ public class CallWorker extends AbstractWorker {
 		
 		if (callResult == null) {
 			return null;
+		}
+		
+		for (final ResultModifier resultModifier: getParameter().getResultModifiers()) {
+			resultModifier.modify(callResult);
 		}
 		
 		for (final INDELstat indelStat : indelStats) {

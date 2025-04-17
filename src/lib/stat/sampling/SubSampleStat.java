@@ -81,6 +81,9 @@ public class SubSampleStat {
 			callStat.getMinka().estimate(callStat.getEstimationContainer(), new ExtendedInfo()); // FIXME
 			callScoresSb.append(callStat.getStat(callStat.getEstimationContainer()));
 			*/
+			if (run > 0) {
+				callScoresSb.append(',');
+			}
 			callScoresSb.append(callStat.getStat(template));
 			
 			for (int indelStatIndex = 0; indelStatIndex < indelStats.size(); indelStatIndex++) {
@@ -94,7 +97,9 @@ public class SubSampleStat {
 				
 				final StringBuilder indelScoreSb = indelScoreSbs[indelStatIndex];
 				final double statValue = indelStat.getLRT(callStat.getEstimationContainer()); 
-				indelScoreSb.append(',');
+				if (run > 0) {
+					indelScoreSb.append(',');
+				}
 				indelScoreSb.append(statValue);
 			}
 		}

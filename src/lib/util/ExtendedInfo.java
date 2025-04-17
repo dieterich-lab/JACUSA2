@@ -26,6 +26,14 @@ public class ExtendedInfo implements Serializable {
 		return map.containsKey(key);
 	}
 	
+	public void add(final String key,
+			int conditionIndex, int replicateIndex,
+			final String value) {
+		++conditionIndex;
+		++replicateIndex;
+		map.put(key + (conditionIndex) + (replicateIndex), value);
+	}
+	
 	public void add(final String key, final String value) {
 		map.put(key, value);
 	}

@@ -1,9 +1,12 @@
 package jacusa.cli.parameters;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 
+import jacusa.io.format.modifyresult.AddDeletionCount;
+import jacusa.io.format.modifyresult.AddInsertionCount;
 import jacusa.io.format.modifyresult.ResultModifier;
 import lib.cli.parameter.GeneralParameter;
 import lib.cli.parameter.HasDeletionParameter;
@@ -70,14 +73,14 @@ implements HasStatParameter, HasInsertionParameter, HasDeletionParameter {
 	public void registerKeys() {
 		// INDEL counts
 		if (showInsertionCount() || showInsertionStartCount()) {
-			registerConditionReplictaKeys("insertions");
 			registerKey(InsertionStat.SCORE);
 			registerKey(InsertionStat.PVALUE);
+			getResultModifiers().add(new AddInsertionCount());
 		}
 		if (showDeletionCount()) {
-			registerConditionReplictaKeys("deletions");
 			registerKey(DeletionStat.SCORE);
 			registerKey(DeletionStat.PVALUE);
+			getResultModifiers().add(new AddDeletionCount());
 		}
 		// resultModifier such as: add insertion_ratio
 		for (final ResultModifier resultModifier : getResultModifiers()) {
@@ -101,16 +104,16 @@ implements HasStatParameter, HasInsertionParameter, HasDeletionParameter {
 				}
 			}
 		}
-		registerKey("estimation");
+		registerKey("score_estimation");
 		
 		// show subsampled scores
 		if (callDirMultParameter.getSubsampleRuns() > 0) {
 			registerKey("score_subsampled");
 			if (showInsertionCount() || showInsertionStartCount()) {
-				registerConditionReplictaKeys("insertion_score_subsampled");
+				registerKey("insertion_score_subsampled");
 			}
 			if (showDeletionCount()) {
-				registerConditionReplictaKeys("insertion_score_subsampled");
+				registerKey("deletion_score_subsampled");
 			}
 		}
 		
