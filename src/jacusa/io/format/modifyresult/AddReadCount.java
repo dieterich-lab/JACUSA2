@@ -15,11 +15,13 @@ public class AddReadCount extends AbstractResultModifier {
     	final ParallelData parallelData = result.getParellelData();
 
         for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
-        	for (final int replicateIndex : parallelData.getReplicates()) {
+        	for (int replicateIndex = 0; replicateIndex < parallelData.getReplicates(conditionIndex); replicateIndex++) {
         		final PileupCount pileupCount = parallelData.getDataContainer(conditionIndex, replicateIndex).getPileupCount(); 
         		final int reads = pileupCount.getReads();
         		result.getResultInfo().add(
-        				getID() + conditionIndex + replicateIndex,
+        				getID(),
+        				conditionIndex,
+        				replicateIndex,
         				Integer.toString(reads));
         	}
         }

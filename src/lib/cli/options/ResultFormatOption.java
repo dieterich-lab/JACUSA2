@@ -7,6 +7,7 @@ import lib.cli.parameter.GeneralParameter;
 import lib.data.has.HasProcessCommandLine;
 import lib.io.InputOutput;
 import lib.io.ResultFormat;
+import lib.stat.dirmult.ProcessCommandLine;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -61,7 +62,7 @@ extends AbstractProcessingOption {
 			final String[] nameWithArgs = line.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
 			final String[] args = Arrays.copyOfRange(nameWithArgs, 1, nameWithArgs.length);
 			resultFormat = resultFormats.get(nameWithArgs[0].charAt(0));
-			((HasProcessCommandLine)resultFormat).getProcessCommandLine().process(args);
+			((HasProcessCommandLine)resultFormat).getProcessCommandLine().process(ProcessCommandLine.addDash(args));
 		} else {
 			resultFormat = resultFormats.get(line.charAt(0));
 		}

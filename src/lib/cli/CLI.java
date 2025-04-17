@@ -330,6 +330,8 @@ public class CLI {
 			System.exit(0);
 		}
 
+		method.getParameter().registerKeys();
+
 		try {
 			method.initCoordinateProvider();
 		} catch (Exception e) {
