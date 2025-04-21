@@ -31,6 +31,7 @@ import lib.cli.options.FilterConfigOption;
 import lib.cli.options.FilterModusOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
 import lib.cli.options.ResultFormatOption;
+import lib.cli.options.SeedOption;
 import lib.cli.options.ShowAllSitesOption;
 import lib.cli.options.ShowDeletionCountOption;
 import lib.cli.options.ShowInsertionCountOption;
@@ -133,6 +134,7 @@ public class CallMethod extends AbstractMethod {
 		registerOption(new BedCoordinatesOption(getParameter()));
 		registerOption(new ResultFileOption(getParameter()));
 		
+		registerOption(new SeedOption(getParameter()));
 		registerOption(new DebugModusOption(getParameter(), this));
 	}
 	
@@ -257,7 +259,7 @@ public class CallMethod extends AbstractMethod {
 		
 		SubSampleStat subSampleStat = null;
 		if (dirMultParameter.getSubsampleRuns() > 0) {
-			subSampleStat = new SubSampleStat(dirMultParameter.getSubsampleRuns());
+			subSampleStat = new SubSampleStat(dirMultParameter.getSubsampleRuns(), getParameter().getSeed());
 		}
 
 		return new CallWorker(this, threadId, callStat, indelStats, subSampleStat);

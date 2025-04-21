@@ -48,6 +48,8 @@ implements HasConditionParameter {
 	private final List<String> additionalKeys;
 	private final List<ResultModifier> resultModifiers;
 	
+	private String seed;
+	
 	// debug flag
 	private boolean debug;
 	
@@ -365,6 +367,14 @@ implements HasConditionParameter {
 		return Collections.unmodifiableList(additionalKeys);
 	}
 
+	public void setSeed(final String seed) {
+		this.seed = seed;
+	}
+	
+	public String getSeed() {
+		return seed;
+	}
+	
 }
 
 enum ShowOptions {

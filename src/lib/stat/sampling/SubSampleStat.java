@@ -17,9 +17,11 @@ import lib.util.StatUtils;
 public class SubSampleStat {
 
 	private final int runs;
+	private final SamplePileupCount subSampler;	
 	
-	public SubSampleStat(final int runs) {
+	public SubSampleStat(final int runs, final String seed) {
 		this.runs = runs;
+		subSampler = new SamplePileupCount(seed);
 	}
 
 	public int getRuns() {
@@ -45,7 +47,7 @@ public class SubSampleStat {
 		}
 		// picked PileupCount
 		final PileupCount pileupCount = parallelData.getPooledData(pickedConditionIndex).getPileupCount();
-		final SamplePileupCount subSampler = new SamplePileupCount(pileupCount);
+		subSampler.setPileupCount(pileupCount);
 		final ParallelData template = parallelData.copy();
 
 		// StringBuilder to add scores
@@ -61,7 +63,6 @@ public class SubSampleStat {
 			indelPickedConditionEstimate[indelStatIndex] = new FastConditionEstimate(
 					indelStats.get(otherConditionIndex).getEstimationContainer().getConditionEstimate(pickedConditionIndex));
 			indelScoreSbs[indelStatIndex] = new StringBuilder();
-			
 		}
 			
 		for (int run = 0; run < runs; run++) {
@@ -93,7 +94,6 @@ public class SubSampleStat {
 				indelStat.getMinka().estimate(callStat.getEstimationContainer(), new ExtendedInfo()); // FIXME
 				callScoresSb.append(indelStat.getLRT(indelStat.getEstimationContainer()));
 				*/
-				callScoresSb.append(indelStat.getStat(template));
 				
 				final StringBuilder indelScoreSb = indelScoreSbs[indelStatIndex];
 				final double statValue = indelStat.getLRT(callStat.getEstimationContainer()); 

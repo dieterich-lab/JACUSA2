@@ -13,24 +13,31 @@ import lib.util.Base;
 
 public class SamplePileupCount {
 
-	private final PileupCount pileupCount;
+	private PileupCount pileupCount;
 
 	private  char[] bases;
 	private byte[] quals;
 	
-	private final Random random;
-	
-	public SamplePileupCount(final PileupCount pileupCount) {
-		this.pileupCount = pileupCount;
-		bases = new char[pileupCount.getReads()];
-		quals = new byte[pileupCount.getReads()];
+	private Random random;
 
-		random = new Random();
-
-		init();
+	public SamplePileupCount(final String seed) {
+		if (seed == null) {
+			random = new Random();
+		} else {
+			random = new Random(Long.parseLong(seed));			
+		}
 	}
-	
-	private void init() {
+
+	public SamplePileupCount() {
+		this(null);
+	}
+
+	public void setPileupCount(final PileupCount pileupCount) {
+		this.pileupCount = pileupCount;
+		final int reads = pileupCount.getReads();
+		bases = new char[reads];
+		quals = new byte[reads];
+		
 		int baseOffset = 0;
 		int qualOffset = 0;
 		
@@ -66,7 +73,6 @@ public class SamplePileupCount {
 		final int reads = pileupCount.getReads();
 		for (int i = 0; i < targetReads; ++i) {
 			final int randomI = random.nextInt(reads);
-			
 			final char c = bases[randomI];
 			switch (c) {
 			case 'I':
@@ -95,5 +101,7 @@ public class SamplePileupCount {
 		final INDELCount indelCount = new INDELCount(insertions, deletions);
 		return new PileupCount(bcqc, indelCount);
 	}
+
+	
 	
 }
