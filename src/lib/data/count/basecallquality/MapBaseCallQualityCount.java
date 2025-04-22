@@ -154,6 +154,11 @@ public class MapBaseCallQualityCount implements BaseCallQualityCount {
 	}
 
 	@Override
+	public String toString() {
+		return toString(this);
+	}
+	
+	@Override
 	public boolean equals(Object obj) {
 		if (! (obj instanceof MapBaseCallQualityCount)) {
 			return false;

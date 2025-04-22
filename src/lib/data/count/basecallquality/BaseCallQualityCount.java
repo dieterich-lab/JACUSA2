@@ -43,7 +43,7 @@ public interface BaseCallQualityCount extends Serializable {
 	BaseCallQualityCount invert();
 	
 	String toString();
-
+	
 	default String toString(final BaseCallQualityCount bcqc) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("Base call qual count:\n");

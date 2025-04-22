@@ -1,5 +1,9 @@
 package jacusa.worker;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import htsjdk.samtools.util.StringUtil;
 import jacusa.method.call.CallMethod;
 import lib.data.DataContainer;
 import lib.data.ParallelData;
@@ -165,7 +169,10 @@ public class CallWorker extends AbstractWorker {
 			
 			final Result sampledResult = stat.calculate(template);
 			statValues[run] = sampledResult.getStat();
-
+			System.out.println(statValues[run]);
+			System.out.println(template.getData(0).get(0).getPileupCount().toString());
+			System.out.println(template.getData(1).get(0).getPileupCount().toString());
+			
 			for (int genericStatI = 0; genericStatI < genericStats.size(); ++genericStatI) {
 				final GenericStat genericStat = genericStats.get(genericStatI);
 				

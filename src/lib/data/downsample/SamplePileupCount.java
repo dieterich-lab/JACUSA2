@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 import lib.data.count.INDELCount;
 import lib.data.count.PileupCount;
@@ -25,8 +27,8 @@ public class SamplePileupCount {
 		bases = new char[pileupCount.getReads()];
 		quals = new byte[pileupCount.getReads()];
 
-		random = new Random();
-
+		random = new Random(Long.parseLong("1234"));
+		
 		init();
 	}
 	
@@ -34,8 +36,10 @@ public class SamplePileupCount {
 		int baseOffset = 0;
 		int qualOffset = 0;
 		
+		Set<Base> alleles = new TreeSet<Base>();
+		alleles.addAll(pileupCount.getBCC().getAlleles());
 		// prepare arrays to sample from
-		for (final Base base : pileupCount.getBCC().getAlleles()) {
+		for (final Base base : alleles) {
 			final int base_count = pileupCount.getBCC().getBaseCall(base);
 			Arrays.fill(bases, baseOffset, baseOffset + base_count, base.getChar());
 			baseOffset += base_count;
