@@ -157,6 +157,7 @@ public class CallWorker extends AbstractWorker {
 		final SamplePileupCount subSampler = new SamplePileupCount(pileupCount);
 		final ParallelData template = parallelData.copy();
 		
+		StringBuilder TMP = new StringBuilder();
 		for (int run = 0; run < subsampleRuns; run++) {
 			template.clearCache();
 			for (int replicateI = 0; replicateI < template.getData(other_cond).size(); replicateI++) {
@@ -165,6 +166,7 @@ public class CallWorker extends AbstractWorker {
 				final PileupCount sampledPileup = subSampler.sample(targetCoverages[replicateI]);
 				data.getPileupCount().setBaseCallQualityCount(sampledPileup.getBaseCallQualityCount());
 				data.getPileupCount().setINDELCount(sampledPileup.getINDELCount());
+				TMP.append("__" + data.getPileupCount().toString().replace('\n', '-').replace(' ', '_'));
 			}
 			
 			final Result sampledResult = stat.calculate(template);
@@ -184,6 +186,7 @@ public class CallWorker extends AbstractWorker {
 				genericStatValues[genericStatI][run] = sampledGenericStat;				
 			}
 		}
+		result.getResultInfo().add("debug", TMP.toString());
 		// write successful sampling
 		result.getResultInfo().add("score_subsampled", Util.join(statValues, ','));
 
