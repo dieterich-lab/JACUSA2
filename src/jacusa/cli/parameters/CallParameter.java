@@ -117,8 +117,6 @@ implements HasStatParameter, HasInsertionParameter, HasDeletionParameter {
 			}
 		}
 		
-		registerKey("debug"); // FIXME
-		
 		// TODO add estimation details for INDELs
 	}
 	

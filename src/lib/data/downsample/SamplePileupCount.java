@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.TreeSet;
 
 import lib.data.count.INDELCount;
@@ -19,6 +18,7 @@ public class SamplePileupCount {
 
 	private  char[] bases;
 	private byte[] quals;
+	// TODO private String[] mods;
 	
 	private Random random;
 
@@ -39,18 +39,18 @@ public class SamplePileupCount {
 		final int reads = pileupCount.getReads();
 		bases = new char[reads];
 		quals = new byte[reads];
+		// TODO mods = new String[reads];
 		
 		int baseOffset = 0;
 		int qualOffset = 0;
 		
-		Set<Base> alleles = new TreeSet<Base>();
-		alleles.addAll(pileupCount.getBCC().getAlleles());
 		// prepare arrays to sample from
-		for (final Base base : alleles) {
+		for (final Base base : new TreeSet<Base>(pileupCount.getBCC().getAlleles())) {
 			final int base_count = pileupCount.getBCC().getBaseCall(base);
 			Arrays.fill(bases, baseOffset, baseOffset + base_count, base.getChar());
+			// TODO add mods here - make sure bases, quals and mods are coupled
 			baseOffset += base_count;
-			for (byte qual : pileupCount.getBaseCallQualityCount().getBaseCallQuality(base)) {
+			for (byte qual : new TreeSet<Byte>(pileupCount.getBaseCallQualityCount().getBaseCallQuality(base))) {
 				final int qual_count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, qual);
 				Arrays.fill(quals, qualOffset, qualOffset + qual_count, qual);
 				qualOffset += qual_count;
@@ -68,7 +68,6 @@ public class SamplePileupCount {
 		}
 	}
 	
-	// TODO howto sample modications
 	public PileupCount sample(final int targetReads) {
 		final Map<Base, Map<Byte, Integer>> newBaseCallQuals = 
 				new HashMap<Base, Map<Byte,Integer>>(pileupCount.getBCC().getAlleles().size());
@@ -89,6 +88,7 @@ public class SamplePileupCount {
 			default:
 				final Base newBase = Base.valueOf(c);
 				final byte newQual = quals[randomI];
+				// TODO final String newMod = mods[randomI];
 				
 				if (!newBaseCallQuals.containsKey(newBase)) {
 					newBaseCallQuals.put(newBase, new HashMap<Byte, Integer>());
@@ -103,6 +103,7 @@ public class SamplePileupCount {
 		}
 		final BaseCallQualityCount bcqc = new MapBaseCallQualityCount(newBaseCallQuals);
 		final INDELCount indelCount = new INDELCount(insertions, deletions);
+		// TODO final ModsCount
 		return new PileupCount(bcqc, indelCount);
 	}
 

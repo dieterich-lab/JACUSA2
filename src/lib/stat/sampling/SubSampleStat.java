@@ -29,7 +29,6 @@ public class SubSampleStat {
 		return runs;
 	}
 	
-	
 	public void subSample(
 			final Result result,
 			final CallStat callStat,
@@ -66,7 +65,6 @@ public class SubSampleStat {
 			indelScoreSbs[indelStatIndex] = new StringBuilder();
 		}
 			
-		StringBuilder TMP = new StringBuilder();
 		for (int run = 0; run < runs; run++) {
 			template.clearCache();
 			for (int replicateIndex = 0; replicateIndex < template.getData(otherConditionIndex).size(); replicateIndex++) {
@@ -76,7 +74,6 @@ public class SubSampleStat {
 				data.getPileupCount().setBaseCallQualityCount(sampledPileup.getBaseCallQualityCount());
 				data.getPileupCount().setINDELCount(sampledPileup.getINDELCount());
 				// TODO modification count
-				TMP.append("__" + data.getPileupCount().toString().replace('\n', '-').replace(' ', '_').replace(';', '|'));
 			}
 			
 			/*
@@ -90,9 +87,6 @@ public class SubSampleStat {
 			}
 			Result score = callStat.process(template, new ExtendedInfo());
 			callScoresSb.append(score.getScore());
-			System.out.println(score.getScore());
-			System.out.println(template.getData(0).get(0).getPileupCount().toString());
-			System.out.println(template.getData(1).get(0).getPileupCount().toString());
 			
 			for (int indelStatIndex = 0; indelStatIndex < indelStats.size(); indelStatIndex++) {
 				final INDELstat indelStat = indelStats.get(indelStatIndex);
@@ -110,7 +104,6 @@ public class SubSampleStat {
 				indelScoreSb.append(indel.getScore());
 			}
 		}
-		result.getResultInfo().add("debug", TMP.toString());
 
 		result.getResultInfo().add("score_subsampled", callScoresSb.toString());
 		for (int indelStatIndex = 0; indelStatIndex < indelStats.size(); indelStatIndex++) {
@@ -119,6 +112,5 @@ public class SubSampleStat {
 			result.getResultInfo().add(indelStat.getScoreKey() + "_subsampled", indelScoreSb.toString());
 		}
 	}
-
 	
 }

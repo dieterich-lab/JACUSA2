@@ -1,8 +1,8 @@
 package lib.data.count.basecall;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import lib.util.Base;
 
@@ -118,7 +118,7 @@ public class ArrayBCC extends AbstractBCC {
 
 	@Override
 	public Set<Base> getAlleles() {
-		final Set<Base> alleles = new HashSet<Base>();
+		final Set<Base> alleles = new TreeSet<Base>();
 
 		for (int baseIndex = 0; baseIndex < baseCalls.length; ++baseIndex) {
 			if (baseCalls[baseIndex] > 0) {

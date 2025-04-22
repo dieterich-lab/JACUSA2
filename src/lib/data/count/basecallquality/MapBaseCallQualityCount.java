@@ -144,7 +144,7 @@ public class MapBaseCallQualityCount implements BaseCallQualityCount {
 
 	@Override
 	public Set<Base> getAlleles() {
-		final Set<Base> alleles = new HashSet<>(2);
+		final Set<Base> alleles = new TreeSet<Base>();
 		for (final Base base : baseCallQuals.keySet()) {
 			if (! getBaseCallQuality(base).isEmpty()) {
 				alleles.add(base);

@@ -1,7 +1,7 @@
 package lib.data.count.basecall;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import lib.util.Base;
 
@@ -60,7 +60,7 @@ public class DefaultBCC extends AbstractBCC {
 
 	@Override
 	public Set<Base> getAlleles() {
-		final Set<Base> alleles = new HashSet<>(3);
+		final Set<Base> alleles = new TreeSet<Base>();
 		for (final Base base : Base.validValues()) {
 			if (getBaseCall(base) > 0) {
 				alleles.add(base);
