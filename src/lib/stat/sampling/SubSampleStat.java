@@ -85,7 +85,11 @@ public class SubSampleStat {
 			if (run > 0) {
 				callScoresSb.append(',');
 			}
-			callScoresSb.append(callStat.getStat(template));
+			double stat = callStat.getStat(template);
+			callScoresSb.append(stat);
+			System.out.println(stat);
+			System.out.println(template.getData(0).get(0).getPileupCount().toString());
+			System.out.println(template.getData(1).get(0).getPileupCount().toString());
 			
 			for (int indelStatIndex = 0; indelStatIndex < indelStats.size(); indelStatIndex++) {
 				final INDELstat indelStat = indelStats.get(indelStatIndex);

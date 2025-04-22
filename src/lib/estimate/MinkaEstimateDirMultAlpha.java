@@ -235,7 +235,7 @@ public class MinkaEstimateDirMultAlpha {
 		
 		for (final ConditionEstimate estimation : estimationContainer.getEstimates()) {
 			try {
-				if (estimation.previousEstimate() || estimate(estimation, minkaParameters.getAlphaInit(), info, false)) {
+				if (estimate(estimation, minkaParameters.getAlphaInit(), info, false)) { // estimation.previousEstimate() || 
 					successfullEstimates.add(estimation);
 				} else {
 					break;
@@ -251,7 +251,7 @@ public class MinkaEstimateDirMultAlpha {
 		
 		// estimate alpha(s), capture info(s), and store log-likelihood
 		for (final ConditionEstimate estimate : estimationContainer.getEstimates()) {
-			if (successfullEstimates.contains(estimate) || estimate.previousEstimate()) {
+			if (successfullEstimates.contains(estimate)) { // || estimate.previousEstimate()
 				estimate.clear();
 				successfullEstimates.remove(estimate);
 			}

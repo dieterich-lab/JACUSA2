@@ -61,6 +61,7 @@ public class CallStat extends AbstractStat {
 	public double getStat(ParallelData parallelData) {
 		estimationContainer = estimationContainerProvider.convert(parallelData);
 		estimateDirMultAlpha.estimate(estimationContainer, new ExtendedInfo());
+		
 		double stat = estimateDirMultAlpha.getScore(estimationContainer);
 		return stat;
 	}
