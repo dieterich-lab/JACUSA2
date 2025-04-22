@@ -100,7 +100,7 @@ public class SubSampleStat {
 				*/
 				
 				final StringBuilder indelScoreSb = indelScoreSbs[indelStatIndex];
-				final double statValue = indelStat.getLRT(callStat.getEstimationContainer()); 
+				final double statValue = indelStat.getLRT(indelStat.getEstimationContainer()); 
 				if (run > 0) {
 					indelScoreSb.append(',');
 				}
