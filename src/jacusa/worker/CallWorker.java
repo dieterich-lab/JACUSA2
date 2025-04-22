@@ -166,7 +166,7 @@ public class CallWorker extends AbstractWorker {
 				final PileupCount sampledPileup = subSampler.sample(targetCoverages[replicateI]);
 				data.getPileupCount().setBaseCallQualityCount(sampledPileup.getBaseCallQualityCount());
 				data.getPileupCount().setINDELCount(sampledPileup.getINDELCount());
-				TMP.append("__" + data.getPileupCount().toString().replace('\n', '-').replace(' ', '_'));
+				TMP.append("__" + data.getPileupCount().toString().replace('\n', '-').replace(' ', '_').replace(';', '|'));
 			}
 			
 			final Result sampledResult = stat.calculate(template);
