@@ -11,6 +11,7 @@ import lib.stat.INDELstat;
 import lib.stat.dirmult.CallStat;
 import lib.stat.estimation.ConditionEstimate;
 import lib.stat.estimation.FastConditionEstimate;
+import lib.util.ExtendedInfo;
 // import lib.util.ExtendedInfo;
 import lib.util.StatUtils;
 
@@ -65,6 +66,7 @@ public class SubSampleStat {
 			indelScoreSbs[indelStatIndex] = new StringBuilder();
 		}
 			
+		StringBuilder TMP = new StringBuilder();
 		for (int run = 0; run < runs; run++) {
 			template.clearCache();
 			for (int replicateIndex = 0; replicateIndex < template.getData(otherConditionIndex).size(); replicateIndex++) {
@@ -74,6 +76,7 @@ public class SubSampleStat {
 				data.getPileupCount().setBaseCallQualityCount(sampledPileup.getBaseCallQualityCount());
 				data.getPileupCount().setINDELCount(sampledPileup.getINDELCount());
 				// TODO modification count
+				TMP.append("__" + data.getPileupCount().toString().replace('\n', '_'));
 			}
 			
 			/*
@@ -85,9 +88,9 @@ public class SubSampleStat {
 			if (run > 0) {
 				callScoresSb.append(',');
 			}
-			double stat = callStat.getStat(template);
-			callScoresSb.append(stat);
-			System.out.println(stat);
+			Result score = callStat.process(template, new ExtendedInfo());
+			callScoresSb.append(score.getScore());
+			System.out.println(score.getScore());
 			System.out.println(template.getData(0).get(0).getPileupCount().toString());
 			System.out.println(template.getData(1).get(0).getPileupCount().toString());
 			
@@ -100,13 +103,14 @@ public class SubSampleStat {
 				*/
 				
 				final StringBuilder indelScoreSb = indelScoreSbs[indelStatIndex];
-				final double statValue = indelStat.getLRT(indelStat.getEstimationContainer()); 
+				final Result indel = indelStat.process(template, new ExtendedInfo()); 
 				if (run > 0) {
 					indelScoreSb.append(',');
 				}
-				indelScoreSb.append(statValue);
+				indelScoreSb.append(indel.getScore());
 			}
 		}
+		result.getResultInfo().add("debug", TMP.toString());
 
 		result.getResultInfo().add("score_subsampled", callScoresSb.toString());
 		for (int indelStatIndex = 0; indelStatIndex < indelStats.size(); indelStatIndex++) {

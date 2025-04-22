@@ -46,6 +46,7 @@ public class INDELstat extends AbstractStat {
 		return estimateDirMultAlpha;
 	}
 	
+	/*
 	public double getLRT(final EstimationContainer estimationContainer) {
 		return estimateDirMultAlpha.getLRT(estimationContainer);
 	}
@@ -57,6 +58,7 @@ public class INDELstat extends AbstractStat {
 		double stat = estimateDirMultAlpha.getLRT(estimationContainer);
 		return stat;
 	}
+	*/
 	
 	@Override
 	public Result process(ParallelData parallelData, ExtendedInfo resultInfo) {

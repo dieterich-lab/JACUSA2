@@ -57,6 +57,7 @@ public class CallStat extends AbstractStat {
 		return stat;
 	}
 	
+	/*
 	// TODO quickfix
 	public double getStat(ParallelData parallelData) {
 		estimationContainer = estimationContainerProvider.convert(parallelData);
@@ -65,6 +66,7 @@ public class CallStat extends AbstractStat {
 		double stat = estimateDirMultAlpha.getScore(estimationContainer);
 		return stat;
 	}
+	*/
 	
 	@Override
 	public Result process(ParallelData parallelData, ExtendedInfo resultInfo) {
@@ -73,7 +75,7 @@ public class CallStat extends AbstractStat {
 		if (!estimationSuccesfull) {
 			resultInfo.add("score_estimation", "failed");
 		}
-		double stat = getStat(estimationContainer);
+		double stat = estimateDirMultAlpha.getScore(estimationContainer);
 		if (filter(stat)) {
 			return null;
 		}
