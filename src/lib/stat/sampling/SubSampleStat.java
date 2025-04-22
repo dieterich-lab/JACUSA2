@@ -76,7 +76,7 @@ public class SubSampleStat {
 				data.getPileupCount().setBaseCallQualityCount(sampledPileup.getBaseCallQualityCount());
 				data.getPileupCount().setINDELCount(sampledPileup.getINDELCount());
 				// TODO modification count
-				TMP.append("__" + data.getPileupCount().toString().replace('\n', '_'));
+				TMP.append("__" + data.getPileupCount().toString().replace('\n', '-').replace(' ', '_').replace(';', '|'));
 			}
 			
 			/*
