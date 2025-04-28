@@ -7,9 +7,11 @@ import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 import lib.data.downsample.SamplePileupCount;
 import lib.data.result.Result;
+import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.stat.INDELstat;
 import lib.stat.dirmult.CallStat;
 import lib.stat.estimation.ConditionEstimate;
+import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.FastConditionEstimate;
 import lib.util.ExtendedInfo;
 // import lib.util.ExtendedInfo;
@@ -55,13 +57,12 @@ public class SubSampleStat {
 		final StringBuilder[] indelScoreSbs = new StringBuilder[indelStats.size()];
 
 		// keep estimation of unchanged DirMults
-		/*final ConditionEstimate callPickedConditionEstimate = new FastConditionEstimate(
+		final ConditionEstimate callPickedConditionEstimate = new FastConditionEstimate(
 				callStat.getEstimationContainer().getConditionEstimate(pickedConditionIndex));
-				*/
 		final ConditionEstimate[] indelPickedConditionEstimate = new ConditionEstimate[indelStats.size()];
 		for (int indelStatIndex = 0; indelStatIndex < indelStats.size(); indelStatIndex++) {
 			indelPickedConditionEstimate[indelStatIndex] = new FastConditionEstimate(
-					indelStats.get(otherConditionIndex).getEstimationContainer().getConditionEstimate(pickedConditionIndex));
+					indelStats.get(indelStatIndex).getEstimationContainer().getConditionEstimate(pickedConditionIndex));
 			indelScoreSbs[indelStatIndex] = new StringBuilder();
 		}
 			
@@ -76,12 +77,8 @@ public class SubSampleStat {
 				// TODO modification count
 			}
 			
-			/*
-			// inject previous estimation for unchanged condition
-			callStat.getEstimationContainer().updateCondition(pickedConditionIndex, callPickedConditionEstimate, otherConditionIndex);
-			callStat.getMinka().estimate(callStat.getEstimationContainer(), new ExtendedInfo()); // FIXME
-			callScoresSb.append(callStat.getStat(callStat.getEstimationContainer()));
-			*/
+			
+			
 			if (run > 0) {
 				callScoresSb.append(',');
 			}
@@ -112,5 +109,46 @@ public class SubSampleStat {
 			result.getResultInfo().add(indelStat.getScoreKey() + "_subsampled", indelScoreSb.toString());
 		}
 	}
+	
+	public boolean processCallStat(
+			final CallStat callStat,
+			final int pickedConditionIndex, final ConditionEstimate pickedConditionEstimate, final int otherConditionIndex,
+			final ParallelData sampledData, final ExtendedInfo resultInfo,
+			final StringBuilder sb) {
+		final MinkaEstimateDirMultAlpha estimateDirMultAlpha = callStat.getMinka();
+		final EstimationContainer estimationContainer = callStat.getEstimationContainer();
+
+		// TODO convert
+		
+		// inject previous estimation for unchanged condition
+		estimationContainer.updateCondition(pickedConditionIndex, pickedConditionEstimate, otherConditionIndex);
+		// estimate alpha values
+		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer, resultInfo);
+		
+		return estimationSuccesfull;
+	}
+
+	public boolean processINDELstat(
+			final INDELstat indelStat,
+			final int pickedConditionIndex, final ConditionEstimate pickedConditionEstimate, final int otherConditionIndex) {
+		
+		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer, resultInfo);
+		
+		return estimationSuccesfull;
+	}
+	
+	
+//	// calculate and add stats
+//	sb.append(callStat.getStat(callStat.getEstimationContainer()));
+//	if (callStat.getDirMultParameter().showAlpha()) {
+//		estimateDirMultAlpha.addAlphaValues(estimationContainer, result.getResultInfo());
+//	}
+//
+//
+//	if (!estimationSuccesfull) {
+//		resultInfo.getResultInfo().add("score_subsampled_estimation", "failed");
+//	} else {
+//		resultInfo.getResultInfo().add("score_subsampled_estimation", "");
+//	}
 	
 }

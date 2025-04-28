@@ -18,7 +18,7 @@ public class SamplePileupCount {
 
 	private  char[] bases;
 	private byte[] quals;
-	// TODO private String[] mods;
+	// private Map<Integer, Mod> mods;
 	
 	private Random random;
 
@@ -39,7 +39,7 @@ public class SamplePileupCount {
 		final int reads = pileupCount.getReads();
 		bases = new char[reads];
 		quals = new byte[reads];
-		// TODO mods = new String[reads];
+		// mods = new HashMap<Integer, ModCount>()
 		
 		int baseOffset = 0;
 		int qualOffset = 0;
@@ -48,7 +48,6 @@ public class SamplePileupCount {
 		for (final Base base : new TreeSet<Base>(pileupCount.getBCC().getAlleles())) {
 			final int base_count = pileupCount.getBCC().getBaseCall(base);
 			Arrays.fill(bases, baseOffset, baseOffset + base_count, base.getChar());
-			// TODO add mods here - make sure bases, quals and mods are coupled
 			baseOffset += base_count;
 			for (byte qual : new TreeSet<Byte>(pileupCount.getBaseCallQualityCount().getBaseCallQuality(base))) {
 				final int qual_count = pileupCount.getBaseCallQualityCount().getBaseCallQuality(base, qual);

@@ -1,6 +1,7 @@
 package lib.estimate;
 
 import java.util.Arrays;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,7 +11,6 @@ import lib.stat.initalpha.AbstractAlphaInit;
 import lib.stat.nominal.NominalData;
 import lib.util.ExtendedInfo;
 import lib.util.MathUtil;
-import lib.util.Util;
 
 import org.apache.commons.math3.special.Gamma;
 
@@ -264,30 +264,12 @@ public class MinkaEstimateDirMultAlpha {
 	
 	public void addAlphaValues(final EstimationContainer estimationContainer, final ExtendedInfo info) {
 		for (final ConditionEstimate conditionEstimate : estimationContainer.getConditionEstimates()) {
-			addAlphaValues(conditionEstimate, info);
+			Utils.addAlphaValues(conditionEstimate, info);
 		}
-		addAlphaValues(estimationContainer.getPooledEstimate(), info);
+		Utils.addAlphaValues(estimationContainer.getPooledEstimate(), info);
 	}
 	
-	private void addAlphaValues(final ConditionEstimate conditionEstimate, final ExtendedInfo info) {
-		final String id 			= conditionEstimate.getID();
-		final int iteration			= conditionEstimate.getNextIteration() - 1;
-		final double[] initAlpha 	= conditionEstimate.getAlpha(0);
-		final double[] alpha 		= conditionEstimate.getAlpha(iteration);
-		final double logLikelihood	= conditionEstimate.getLogLikelihood(iteration);
 		
-		info.add("initAlpha" + id, Util.format(initAlpha[0]));			
-		for (int i = 1; i < initAlpha.length; ++i) {
-			info.add("initAlpha" + id, Util.format(initAlpha[i]));
-		}
-		info.add("alpha" + id, Util.format(alpha[0]));			
-		for (int i = 1; i < alpha.length; ++i) {
-			info.add("alpha" + id, Util.format(alpha[i]));
-		}
-		info.add("iteration" + id, Integer.toString(iteration));
-		info.add("logLikelihood" + id, Double.toString(logLikelihood));
-	}
-	
 	public double getScore(
 			final EstimationContainer estimateContainer) {
 		return sumLogLikeliood(estimateContainer.getConditionEstimates()) - estimateContainer.getPooledEstimate().getLogLikelihood();

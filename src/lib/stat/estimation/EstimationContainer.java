@@ -47,7 +47,6 @@ public class EstimationContainer {
 			final int pickedConditionIndex,
 			final ConditionEstimate conditionEstimate,
 			final int otherConditionIndex) {
-		// conditionEstimates[pickedConditionIndex].getNextIteration() == 0
 		conditionEstimates[pickedConditionIndex] = new FastConditionEstimate(conditionEstimate);
 		conditionEstimates[otherConditionIndex].clear();
 		pooledConditionEstimate.clear();

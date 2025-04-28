@@ -88,6 +88,27 @@ public class CallStat extends AbstractStat {
 		return new OneStatResult(stat, parallelData, resultInfo);
 	}
 
+	
+	
+	public Result process(ParallelData parallelData, ExtendedInfo resultInfo, String prefix, final int run) {
+		estimationContainer = estimationContainerProvider.convert(parallelData);
+		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer, resultInfo);
+		if (!estimationSuccesfull) {
+			resultInfo.add("score_estimation", "failed");
+		}
+		double stat = estimateDirMultAlpha.getScore(estimationContainer);
+		if (filter(stat)) {
+			return null;
+		}
+		
+		if (dirMultParameter.showAlpha()) {
+			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo);
+		}
+		estimateDirMultAlpha.addStatResultInfo(estimationContainer, resultInfo);
+		
+		return new OneStatResult(stat, parallelData, resultInfo);
+	}
+	
 	public boolean filter(final double statValue) {
 		if (Double.isNaN(threshold)) {
 			return false;
