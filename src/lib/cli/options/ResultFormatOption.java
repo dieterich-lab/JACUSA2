@@ -49,7 +49,7 @@ extends AbstractProcessingOption {
 				.argName(getLongOpt().toUpperCase())
 				.hasArg(true)
 				.desc("Choose output format:\n" + sb.toString())
-				.build(); 
+				.build();
 	}
 
 	@Override

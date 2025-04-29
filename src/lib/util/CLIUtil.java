@@ -17,6 +17,7 @@ public final class CLIUtil {
 		throw new AssertionError();
 	}
 
+	@Deprecated
 	public static CommandLine processCLI(String line, final Options options) throws ParseException {
 		final String[] args = line.split("\\s+");
 		final CommandLineParser parser = new DefaultParser();
@@ -24,7 +25,7 @@ public final class CLIUtil {
 		return parser.parse(options, args);
 	}
 
-	public static void adjustOption(final org.apache.commons.cli.Option option, final Options options, final int padding) {
+	public static void adjustOption(final Option option, final Options options, final int padding) {
 		adjustOption(option, options, padding, 70);
 	}
 	
@@ -37,11 +38,11 @@ public final class CLIUtil {
 		InputOutput.formatStr(sb, option.getDescription(), "|" + new String(space), width);
 		
 		int max = 3;
-		for (final org.apache.commons.cli.Option o : options.getOptions()) {
+		for (final Option o : options.getOptions()) {
 			max = Math.max(max, o.getLongOpt().length());
 		}
 		
-		for (final org.apache.commons.cli.Option o : options.getOptions()) {
+		for (final Option o : options.getOptions()) {
 			sb.append("| :");
 			sb.append(o.getLongOpt());
 	
@@ -61,5 +62,40 @@ public final class CLIUtil {
 		}
 		option.setDescription(sb.toString());
 	}
+	
+	public static String adjustOptionDescriptions(final Options options, final int padding, final String prefix) {
+		final StringBuilder sb = new StringBuilder();
+	
+		// add option description and wrap
+		char[] space = new char[padding];
+		Arrays.fill(space, ' ');
+		
+		int max = 3;
+		for (final Option o : options.getOptions()) {
+			max = Math.max(max, o.getLongOpt().length());
+		}
+		
+		for (final Option o : options.getOptions()) {
+			sb.append("| " + prefix);
+			sb.append(o.getLongOpt());
+	
+			space = new char[max - o.getLongOpt().length() + 1];
+			Arrays.fill(space, ' ');
+			sb.append(space);
+			
+			space = new char[max + 4];
+			Arrays.fill(space, ' ');
+			space[0] = '|';
+			
+			String s = o.getDescription();
+			if (o.isRequired()) {
+				s += " (Required)";
+			}
+			InputOutput.formatStr(sb, s, new String(space), 70);
+		}
+		
+		return sb.toString();
+	}
+	
 
 }

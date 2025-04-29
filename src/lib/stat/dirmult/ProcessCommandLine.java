@@ -7,13 +7,17 @@ import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import lib.cli.options.AbstractProcessingOption;
+import lib.util.CLIUtil;
 
 public class ProcessCommandLine {
 
+	public static final String REMOVE = "___REMOVE___";
+	
 	private final CommandLineParser parser;
 	private final List<AbstractProcessingOption> processingOptions;
 	private final Options options = new Options();
@@ -38,6 +42,23 @@ public class ProcessCommandLine {
 	// dont't change - enforce
 	public Options getOptions() {
 		return options;
+	}
+	
+	public Options getNestedOptions() {
+		final Options newOptions = new Options();
+		for (final Option option : options.getOptions()) {
+			
+			
+			// add magic string to identify main option
+			// create main option
+			Option newOption = Option.builder(option.getLongOpt())
+					.desc(descriptions)
+					.build();
+			
+			newOptions.addOption(newOption);
+		}
+		
+		return newOptions;
 	}
 	
 	// final String[] args = line.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));

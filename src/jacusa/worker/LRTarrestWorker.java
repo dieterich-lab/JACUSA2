@@ -8,7 +8,7 @@ import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.estimate.MinkaParameter;
 import lib.stat.AbstractStat;
-import lib.stat.dirmult.DirMultParameter;
+import lib.stat.dirmult.EstimationParameter;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.ConditionEstimateProvider;
 import lib.stat.estimation.provider.pileup.RobustEstimationPileupProvider;
@@ -37,7 +37,7 @@ extends AbstractWorker {
 		validator = new ExtendedVariantSiteValidator(method.getTotalBaseCallCountFetcher());
 		final MinkaParameter minkaParameter = new MinkaParameter();
 		estimationContainerProvider = new RobustEstimationPileupProvider(
-				false, minkaParameter.getMaxIterations(), DirMultParameter.ESTIMATED_ERROR);
+				false, minkaParameter.getMaxIterations(), EstimationParameter.ESTIMATED_ERROR);
 		estimateDirMultAlpha = new MinkaEstimateDirMultAlpha(minkaParameter);
 	}
 

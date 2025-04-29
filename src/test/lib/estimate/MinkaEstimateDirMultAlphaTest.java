@@ -1,11 +1,11 @@
 package test.lib.estimate;
 
 import lib.estimate.MinkaEstimateDirMultAlpha;
+
 import lib.estimate.MinkaParameter;
 import lib.stat.estimation.ConditionEstimate;
 import lib.stat.estimation.DefaultConditionEstimate;
 import lib.stat.nominal.NominalData;
-import lib.util.ExtendedInfo;
 import test.lib.stat.dirmult.NominalDataArgumentConverter;
 import test.utlis.DoubleArrayArgumentConverter;
 
@@ -50,8 +50,7 @@ class MinkaEstimateDirMultAlphaTest {
 		final ConditionEstimate estimationContainer = 
 				new DefaultConditionEstimate("TEST", nominalData, minkaParameter.getMaxIterations());  
 		estimationContainer.add(initAlpha, Double.NaN);
-		final ExtendedInfo resultInfo = new ExtendedInfo();
-		testInstance.maximizeLogLikelihood(estimationContainer, resultInfo, false);
+		testInstance.maximizeLogLikelihood(estimationContainer, false);
 		
 		final double[] actualAlpha = estimationContainer.getAlpha();
 		assertArrayEquals(expectedAlpha, actualAlpha, DELTA_ALPHA);

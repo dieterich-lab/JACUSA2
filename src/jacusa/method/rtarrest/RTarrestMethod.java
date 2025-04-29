@@ -2,7 +2,7 @@ package jacusa.method.rtarrest;
 
 import jacusa.cli.options.StatFactoryOption;
 
-import jacusa.cli.options.StatFilterOption;
+import jacusa.cli.options.ThresholdFilterOption;
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
 import jacusa.cli.parameters.RTarrestParameter;
 import jacusa.cli.parameters.StatParameter;
@@ -58,10 +58,15 @@ import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.data.validator.paralleldata.RTarrestParallelPileup;
 import lib.stat.betabin.RTarrestStatFactory;
+import lib.stat.dirmult.ProcessCommandLine;
+import lib.stat.dirmult.options.EpsilonOptions;
+import lib.stat.dirmult.options.MaxIterationsOption;
+import lib.stat.dirmult.options.ShowAlphaOption;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 import lib.util.LibraryType;
 
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
 
 public class RTarrestMethod 
@@ -100,7 +105,7 @@ extends AbstractMethod {
 		registerOption(new FilterModusOption(getParameter()));
 		registerOption(new FilterConfigOption(getParameter(), getFilterFactories()));
 		
-		registerOption(new StatFilterOption(getParameter().getStatParameter()));
+		registerOption(new ThresholdFilterOption(getParameter().getStatParameter()));
 
 		registerOption(new ReferenceFastaFilenameOption(getParameter()));
 		registerOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
@@ -109,9 +114,24 @@ extends AbstractMethod {
 		registerOption(new WindowSizeOption(getParameter()));
 		registerOption(new ThreadWindowSizeOption(getParameter()));
 
-		registerOption(new ShowDeletionCountOption(getParameter()));
-		registerOption(new ShowInsertionCountOption(getParameter()));
-		registerOption(new ShowInsertionStartCountOption(getParameter()));
+		registerOption(new ShowDeletionCountOption(getParameter(),
+				new ProcessCommandLine(new DefaultParser(),
+						Arrays.asList(
+								new EpsilonOptions(getParameter().getDeletionEstimationParameter().getMinkaParameter()),
+								new ShowAlphaOption(getParameter().getDeletionEstimationParameter()),
+								new MaxIterationsOption(getParameter().getDeletionEstimationParameter().getMinkaParameter())))));
+		registerOption(new ShowInsertionCountOption(getParameter(),
+				new ProcessCommandLine(new DefaultParser(),
+						Arrays.asList(
+								new EpsilonOptions(getParameter().getInsertionEstimationParameter().getMinkaParameter()),
+								new ShowAlphaOption(getParameter().getInsertionEstimationParameter()),
+								new MaxIterationsOption(getParameter().getInsertionEstimationParameter().getMinkaParameter())))));				
+		registerOption(new ShowInsertionStartCountOption(getParameter(),
+				new ProcessCommandLine(new DefaultParser(),
+						Arrays.asList(
+								new EpsilonOptions(getParameter().getInsertionEstimationParameter().getMinkaParameter()),
+								new ShowAlphaOption(getParameter().getInsertionEstimationParameter()),
+								new MaxIterationsOption(getParameter().getInsertionEstimationParameter().getMinkaParameter())))));
 		
 		registerOption(new BedCoordinatesOption(getParameter()));
 		registerOption(new ResultFileOption(getParameter()));

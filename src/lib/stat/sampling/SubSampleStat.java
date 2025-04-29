@@ -2,20 +2,19 @@ package lib.stat.sampling;
 
 import java.util.List;
 
+
 import lib.data.DataContainer;
 import lib.data.ParallelData;
 import lib.data.count.PileupCount;
 import lib.data.downsample.SamplePileupCount;
 import lib.data.result.Result;
-import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.stat.INDELstat;
 import lib.stat.dirmult.CallStat;
 import lib.stat.estimation.ConditionEstimate;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.FastConditionEstimate;
-import lib.util.ExtendedInfo;
-// import lib.util.ExtendedInfo;
 import lib.util.StatUtils;
+import lib.util.Util;
 
 public class SubSampleStat {
 
@@ -42,113 +41,131 @@ public class SubSampleStat {
 		final int pickedConditionIndex = conditionIndexes[0];
 		final int otherConditionIndex = conditionIndexes[1];
 		
-		// coverages
+		// determine target coverage for the other condition
 		final int[] targetCoverages = new int[parallelData.getData(otherConditionIndex).size()];
 		for (int replicateIndex = 0; replicateIndex < parallelData.getData(otherConditionIndex).size(); replicateIndex++) {
 			targetCoverages[replicateIndex] = parallelData.getData(otherConditionIndex).get(replicateIndex).getPileupCount().getReads();
 		}
-		// picked PileupCount
+		
+		// Summarise picked pileup - merge replicates
 		final PileupCount pileupCount = parallelData.getPooledData(pickedConditionIndex).getPileupCount();
 		subSampler.setPileupCount(pileupCount);
 		final ParallelData template = parallelData.copy();
 
-		// StringBuilder to add scores
-		final StringBuilder callScoresSb = new StringBuilder();
-		final StringBuilder[] indelScoreSbs = new StringBuilder[indelStats.size()];
-
-		// keep estimation of unchanged DirMults
-		final ConditionEstimate callPickedConditionEstimate = new FastConditionEstimate(
-				callStat.getEstimationContainer().getConditionEstimate(pickedConditionIndex));
-		final ConditionEstimate[] indelPickedConditionEstimate = new ConditionEstimate[indelStats.size()];
+		// Container for scores
+		final StringBuilder[] scoreSb = new StringBuilder[1 + indelStats.size()]; // call + indels
+		// init container for call scores
+		scoreSb[0] = new StringBuilder();
+		
+		// container for estimates
+		final ConditionEstimate[] conditionEstimates = new FastConditionEstimate[1 + indelStats.size()]; // call + indels
+		// keep estimation of unchanged DirMults of call ...
+		conditionEstimates[0] = new FastConditionEstimate(
+				callStat
+				.getEstimationContainer()
+				.getConditionEstimate(pickedConditionIndex));
+		// ... and indels
 		for (int indelStatIndex = 0; indelStatIndex < indelStats.size(); indelStatIndex++) {
-			indelPickedConditionEstimate[indelStatIndex] = new FastConditionEstimate(
-					indelStats.get(indelStatIndex).getEstimationContainer().getConditionEstimate(pickedConditionIndex));
-			indelScoreSbs[indelStatIndex] = new StringBuilder();
+			conditionEstimates[1 + indelStatIndex] = new FastConditionEstimate(
+					indelStats
+					.get(indelStatIndex)
+					.getEstimationContainer()
+					.getConditionEstimate(pickedConditionIndex));
+			// Container for scores
+			scoreSb[1 + indelStatIndex] = new StringBuilder();
 		}
-			
+		
+		// subsample
 		for (int run = 0; run < runs; run++) {
+			// clear parallel data
 			template.clearCache();
 			for (int replicateIndex = 0; replicateIndex < template.getData(otherConditionIndex).size(); replicateIndex++) {
 				final DataContainer data = template.getDataContainer(otherConditionIndex, replicateIndex);
 				data.getPileupCount().clear();
+				
+				// sample pileup ...
 				final PileupCount sampledPileup = subSampler.sample(targetCoverages[replicateIndex]);
 				data.getPileupCount().setBaseCallQualityCount(sampledPileup.getBaseCallQualityCount());
 				data.getPileupCount().setINDELCount(sampledPileup.getINDELCount());
 				// TODO modification count
 			}
 			
-			
+			final EstimationContainer callEstimationContainer = callStat.getConditionEstimateProvider().convert(template);
+			// inject previous estimation for unchanged condition
+			callEstimationContainer.updateCondition(pickedConditionIndex, conditionEstimates[0], otherConditionIndex);
+			// estimate alpha values
+			String callEstimationResult = "1";
+			if (! callStat.getMinka().estimate(callEstimationContainer)) {
+				callEstimationResult = "0";
+			}
 			
 			if (run > 0) {
-				callScoresSb.append(',');
+				scoreSb[0].append(',');
+				result.getResultInfo().append("score_subsampled_estimation", ",");
+				for (final ConditionEstimate conditionEstimate : callEstimationContainer.getEstimates()) {
+					result.getResultInfo().append("score_subsampled_backtrack" + conditionEstimate.getID(), "|");
+					result.getResultInfo().append("score_subsampled_reset" + conditionEstimate.getID(), "|");
+					// TODO show alphas
+				}
 			}
-			Result score = callStat.process(template, new ExtendedInfo());
-			callScoresSb.append(score.getScore());
-			
+			result.getResultInfo().add("subsampled_score_estimation", callEstimationResult);
+			for (final ConditionEstimate conditionEstimate : callEstimationContainer.getEstimates()) {
+				result.getResultInfo().append(
+						"score_subsampled_backtrack" + conditionEstimate.getID(),
+						Util.join(conditionEstimate.getBacktracks(), ','));
+				result.getResultInfo().append(
+						"score_subsampled_reset" + conditionEstimate.getID(),
+						Util.join(conditionEstimate.getResets(), ','));
+				// TODO show alphas
+			}
+			// add subsampled scores
+			final double callScore = callStat.getStat(callEstimationContainer);
+			scoreSb[0].append(callScore);
+
 			for (int indelStatIndex = 0; indelStatIndex < indelStats.size(); indelStatIndex++) {
 				final INDELstat indelStat = indelStats.get(indelStatIndex);
-				/*
-				indelStat.getEstimationContainer().updateCondition(pickedConditionIndex, indelPickedConditionEstimate[indelStatIndex], otherConditionIndex);
-				indelStat.getMinka().estimate(callStat.getEstimationContainer(), new ExtendedInfo()); // FIXME
-				callScoresSb.append(indelStat.getLRT(indelStat.getEstimationContainer()));
-				*/
-				
-				final StringBuilder indelScoreSb = indelScoreSbs[indelStatIndex];
-				final Result indel = indelStat.process(template, new ExtendedInfo()); 
-				if (run > 0) {
-					indelScoreSb.append(',');
+				final EstimationContainer indelEstimationContainer = indelStat.getEstimationContainerProvider().convert(template);
+				// inject previous estimation for unchanged condition
+				indelEstimationContainer.updateCondition(pickedConditionIndex, conditionEstimates[1 + indelStatIndex], otherConditionIndex);
+				// estimate alpha values
+				String indelEstimationResult = "1";
+				if (! indelStat.getMinka().estimate(indelEstimationContainer)) {
+					indelEstimationResult = "0";
 				}
-				indelScoreSb.append(indel.getScore());
+				
+				if (run > 0) {
+					scoreSb[1 + indelStatIndex].append(',');
+					result.getResultInfo().append(indelStat.getScoreKey() + "_subsampled_estimation", ",");
+					for (final ConditionEstimate conditionEstimate : indelEstimationContainer.getEstimates()) {
+						result.getResultInfo().append(indelStat.getScoreKey() + "_score_subsampled_backtrack" + conditionEstimate.getID(), "|");
+						result.getResultInfo().append(indelStat.getScoreKey() + "_score_subsampled_reset" + conditionEstimate.getID(), "|");
+						// TODO show alphas
+					}
+				}
+				result.getResultInfo().add(indelStat.getScoreKey() +"_score_estimation", indelEstimationResult);
+				for (final ConditionEstimate conditionEstimate : indelEstimationContainer.getEstimates()) {
+					result.getResultInfo().append(
+							indelStat.getScoreKey() + "_score_subsampled_backtrack" + conditionEstimate.getID(),
+							Util.join(conditionEstimate.getBacktracks(), ','));
+					result.getResultInfo().append(
+							indelStat.getScoreKey() + "_score_subsampled_reset" + conditionEstimate.getID(),
+							Util.join(conditionEstimate.getResets(), ','));
+					// TODO show alphas
+				}
+				// add subsampled scores
+				final double indelScore = indelStat.getMinka().getLRT(indelEstimationContainer);
+				scoreSb[1 + indelStatIndex].append(indelScore);
 			}
 		}
 
-		result.getResultInfo().add("score_subsampled", callScoresSb.toString());
+		// write scores to Info
+		result.getResultInfo().add("score_subsampled", scoreSb[0].toString());
 		for (int indelStatIndex = 0; indelStatIndex < indelStats.size(); indelStatIndex++) {
 			final INDELstat indelStat = indelStats.get(indelStatIndex);
-			final StringBuilder indelScoreSb = indelScoreSbs[indelStatIndex];
-			result.getResultInfo().add(indelStat.getScoreKey() + "_subsampled", indelScoreSb.toString());
+			result.getResultInfo().add(
+					indelStat.getScoreKey() + "_subsampled",
+					scoreSb[1 + indelStatIndex].toString());
 		}
 	}
-	
-	public boolean processCallStat(
-			final CallStat callStat,
-			final int pickedConditionIndex, final ConditionEstimate pickedConditionEstimate, final int otherConditionIndex,
-			final ParallelData sampledData, final ExtendedInfo resultInfo,
-			final StringBuilder sb) {
-		final MinkaEstimateDirMultAlpha estimateDirMultAlpha = callStat.getMinka();
-		final EstimationContainer estimationContainer = callStat.getEstimationContainer();
-
-		// TODO convert
-		
-		// inject previous estimation for unchanged condition
-		estimationContainer.updateCondition(pickedConditionIndex, pickedConditionEstimate, otherConditionIndex);
-		// estimate alpha values
-		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer, resultInfo);
-		
-		return estimationSuccesfull;
-	}
-
-	public boolean processINDELstat(
-			final INDELstat indelStat,
-			final int pickedConditionIndex, final ConditionEstimate pickedConditionEstimate, final int otherConditionIndex) {
-		
-		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer, resultInfo);
-		
-		return estimationSuccesfull;
-	}
-	
-	
-//	// calculate and add stats
-//	sb.append(callStat.getStat(callStat.getEstimationContainer()));
-//	if (callStat.getDirMultParameter().showAlpha()) {
-//		estimateDirMultAlpha.addAlphaValues(estimationContainer, result.getResultInfo());
-//	}
-//
-//
-//	if (!estimationSuccesfull) {
-//		resultInfo.getResultInfo().add("score_subsampled_estimation", "failed");
-//	} else {
-//		resultInfo.getResultInfo().add("score_subsampled_estimation", "");
-//	}
 	
 }

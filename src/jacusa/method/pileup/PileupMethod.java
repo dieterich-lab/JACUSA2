@@ -60,6 +60,7 @@ import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
 import lib.estimate.MinkaParameter;
 import lib.stat.AbstractStat;
+import lib.stat.dirmult.ProcessCommandLine;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 import lib.util.LibraryType;
@@ -98,9 +99,9 @@ extends AbstractMethod {
 		registerOption(new WindowSizeOption(getParameter()));
 		registerOption(new ThreadWindowSizeOption(getParameter()));
 		
-		registerOption(new ShowDeletionCountOption(getParameter()));
-		registerOption(new ShowInsertionCountOption(getParameter()));
-		registerOption(new ShowInsertionStartCountOption(getParameter()));
+		registerOption(new ShowDeletionCountOption(getParameter(), new ProcessCommandLine()));
+		registerOption(new ShowInsertionCountOption(getParameter(), new ProcessCommandLine()));				
+		registerOption(new ShowInsertionStartCountOption(getParameter(), new ProcessCommandLine()));
 		
 		registerOption(new BedCoordinatesOption(getParameter()));
 		registerOption(new ResultFileOption(getParameter()));

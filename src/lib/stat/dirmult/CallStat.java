@@ -15,7 +15,7 @@ public class CallStat extends AbstractStat {
 
 	private final double threshold;
 	private final ConditionEstimateProvider estimationContainerProvider;
-	private final DirMultParameter dirMultParameter;
+	private final EstimationParameter dirMultParameter;
 	private final MinkaEstimateDirMultAlpha estimateDirMultAlpha;
 
 	private EstimationContainer estimationContainer;
@@ -23,18 +23,18 @@ public class CallStat extends AbstractStat {
 	public CallStat(
 			final double threshold,
 			final ConditionEstimateProvider estimationContainerProvider,
-			final DirMultParameter dirMultParameter) {
+			final EstimationParameter dirMultParameter) {
 		this.threshold 						= threshold;
 		this.estimationContainerProvider 	= estimationContainerProvider;
 		this.dirMultParameter 				= dirMultParameter;
-		estimateDirMultAlpha 				= new MinkaEstimateDirMultAlpha(dirMultParameter.getMinkaEstimateParameter());
+		estimateDirMultAlpha 				= new MinkaEstimateDirMultAlpha(dirMultParameter.getMinkaParameter());
 	}
 
 	public EstimationContainer getEstimationContainer() {
 		return estimationContainer;
 	}
 
-	public DirMultParameter getDirMultParameter() {
+	public EstimationParameter getDirMultParameter() {
 		return dirMultParameter;
 	}
 	
@@ -57,56 +57,32 @@ public class CallStat extends AbstractStat {
 		return stat;
 	}
 	
-	/*
-	// TODO quickfix
-	public double getStat(ParallelData parallelData) {
-		estimationContainer = estimationContainerProvider.convert(parallelData);
-		estimateDirMultAlpha.estimate(estimationContainer, new ExtendedInfo());
-		
-		double stat = estimateDirMultAlpha.getScore(estimationContainer);
-		return stat;
-	}
-	*/
-	
 	@Override
 	public Result process(ParallelData parallelData, ExtendedInfo resultInfo) {
 		estimationContainer = estimationContainerProvider.convert(parallelData);
-		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer, resultInfo);
-		if (!estimationSuccesfull) {
-			resultInfo.add("score_estimation", "failed");
-		}
+		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer);
+		
 		double stat = estimateDirMultAlpha.getScore(estimationContainer);
 		if (filter(stat)) {
 			return null;
 		}
 		
+		if (!estimationSuccesfull) {
+			resultInfo.add("score_estimation", "0");
+		} else {
+			resultInfo.add("score_estimation", "1");
+		}
+		estimateDirMultAlpha.addEstimationInfo(estimationContainer, resultInfo, "");
 		if (dirMultParameter.showAlpha()) {
-			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo);
+			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo, "");
 		}
 		estimateDirMultAlpha.addStatResultInfo(estimationContainer, resultInfo);
 		
 		return new OneStatResult(stat, parallelData, resultInfo);
 	}
-
 	
-	
-	public Result process(ParallelData parallelData, ExtendedInfo resultInfo, String prefix, final int run) {
-		estimationContainer = estimationContainerProvider.convert(parallelData);
-		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer, resultInfo);
-		if (!estimationSuccesfull) {
-			resultInfo.add("score_estimation", "failed");
-		}
-		double stat = estimateDirMultAlpha.getScore(estimationContainer);
-		if (filter(stat)) {
-			return null;
-		}
-		
-		if (dirMultParameter.showAlpha()) {
-			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo);
-		}
-		estimateDirMultAlpha.addStatResultInfo(estimationContainer, resultInfo);
-		
-		return new OneStatResult(stat, parallelData, resultInfo);
+	public ConditionEstimateProvider getConditionEstimateProvider() {
+		return estimationContainerProvider;
 	}
 	
 	public boolean filter(final double statValue) {

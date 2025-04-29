@@ -10,14 +10,14 @@ import org.apache.commons.cli.Option;
  * Enables the user to choose a threshold by command line
  * Currently, only the chosen threshold needs to be >= 0.
  */
-public class StatFilterOption  extends AbstractProcessingOption {
+public class ThresholdFilterOption  extends AbstractProcessingOption {
 	
 	public static final String OPT 		= "T";
 	public static final String LONG_OPT = "threshold";
 	
 	private StatParameter statParameter;
 	
-	public StatFilterOption(StatParameter statParameter) {
+	public ThresholdFilterOption(StatParameter statParameter) {
 		super(OPT, LONG_OPT);
 		this.statParameter = statParameter;
 	}

@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import lib.cli.options.AbstractProcessingOption;
 import lib.cli.options.ShowDeletionCountOption;
+import lib.stat.dirmult.ProcessCommandLine;
 
 public class ShowDeletionCountOptionTest 
 extends AbstractGeneralParameterProvider
@@ -20,7 +21,7 @@ implements OptionTest<Boolean> {
 	
 	@Override
 	public AbstractProcessingOption createTestInstance() {
-		return new ShowDeletionCountOption(getGeneralParamter());
+		return new ShowDeletionCountOption(getGeneralParamter(), new ProcessCommandLine());
 	}
 	
 	@Override

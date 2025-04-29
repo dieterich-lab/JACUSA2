@@ -5,7 +5,7 @@ import lib.estimate.MinkaParameter;
 /**
  * DOCUMENT
  */
-public abstract class AbstractDirMultParameter implements DirMultParameter {
+public abstract class AbstractEstimationParameter implements EstimationParameter {
 	
 	private boolean showAlpha;
 	private boolean calcPValue;
@@ -13,7 +13,7 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	
 	private int subsampleRuns = 0;
 	
-	public AbstractDirMultParameter(
+	public AbstractEstimationParameter(
 			final boolean showAlpha,
 			final boolean calcPValue,
 			final MinkaParameter minkaParameter) {
@@ -44,7 +44,7 @@ public abstract class AbstractDirMultParameter implements DirMultParameter {
 	}
 	
 	@Override
-	public MinkaParameter getMinkaEstimateParameter() {
+	public MinkaParameter getMinkaParameter() {
 		return minkaParameter;
 	}
 

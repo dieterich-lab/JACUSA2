@@ -1,10 +1,10 @@
 package lib.cli.parameter;
 
-import lib.stat.dirmult.DirMultParameter;
+import lib.stat.dirmult.EstimationParameter;
 
 public interface HasInsertionParameter {
 
-	DirMultParameter getInsertionParameter();
-	void setInsertionParameter(DirMultParameter dirMultParameter);
+	EstimationParameter getInsertionEstimationParameter();
+	void setInsertionParameter(EstimationParameter dirMultParameter);
 	
 }

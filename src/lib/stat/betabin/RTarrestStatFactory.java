@@ -32,9 +32,9 @@ public class RTarrestStatFactory extends AbstractStatFactory {
 				new ProcessCommandLine(
 						new DefaultParser(),
 						Arrays.asList(
-								new EpsilonOptions(dirMultParameter.getMinkaEstimateParameter()),
+								new EpsilonOptions(dirMultParameter.getMinkaParameter()),
 								new ShowAlphaOption(dirMultParameter),
-								new MaxIterationsOption(dirMultParameter.getMinkaEstimateParameter()),
+								new MaxIterationsOption(dirMultParameter.getMinkaParameter()),
 								new SubsampleRunsOptions(dirMultParameter),
 								new CalculatePvalueOption(dirMultParameter))));
 	}
@@ -60,7 +60,7 @@ public class RTarrestStatFactory extends AbstractStatFactory {
 		return new RTarrestStat(
 				threshold, 
 				new RobustRTarrestEstimationCountProvider(
-						dirMultParameter.getMinkaEstimateParameter().getMaxIterations()),
+						dirMultParameter.getMinkaParameter().getMaxIterations()),
 						dirMultParameter);
 	}
 	

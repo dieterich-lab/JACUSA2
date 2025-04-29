@@ -46,26 +46,18 @@ public class INDELstat extends AbstractStat {
 		return estimateDirMultAlpha;
 	}
 	
-	/*
-	public double getLRT(final EstimationContainer estimationContainer) {
-		return estimateDirMultAlpha.getLRT(estimationContainer);
+	public INDELestimateProvider getEstimationContainerProvider() {
+		return estimationContainerProvider;
 	}
-	
-	// TODO quickfix
-	public double getStat(ParallelData parallelData) {
-		estimationContainer = estimationContainerProvider.convert(parallelData);
-		estimateDirMultAlpha.estimate(estimationContainer, new ExtendedInfo());
-		double stat = estimateDirMultAlpha.getLRT(estimationContainer);
-		return stat;
-	}
-	*/
 	
 	@Override
 	public Result process(ParallelData parallelData, ExtendedInfo resultInfo) {
 		estimationContainer = estimationContainerProvider.convert(parallelData);
-		final boolean successfullEstimation = estimateDirMultAlpha.estimate(estimationContainer, resultInfo);
-		if (!successfullEstimation) {
-			// TODO what should happen here?
+		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer);
+		if (!estimationSuccesfull) {
+			resultInfo.add(getScoreKey() + "_score_estimation", "0");
+		} else {
+			resultInfo.add(getScoreKey() + "_score_estimation", "1");
 		}
 
 		final double lrt 	= estimateDirMultAlpha.getLRT(estimationContainer);

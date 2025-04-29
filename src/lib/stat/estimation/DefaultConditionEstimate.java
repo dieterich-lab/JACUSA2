@@ -1,5 +1,8 @@
 package lib.stat.estimation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lib.stat.nominal.NominalData;
 import lib.util.Util;
 
@@ -11,6 +14,9 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 	private double[][] alpha;
 	private double[] logLikelihood;
 	private boolean numericallyStable;
+	
+	private final List<Integer> backtracks;
+	private final List<Integer> resets;
 	
 	private int iteration;
 
@@ -25,6 +31,9 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 		alpha 				= new double[maxIterations][];
 		logLikelihood 		= new double[maxIterations];
 		numericallyStable 	= true;
+		
+		backtracks 			= new ArrayList<Integer>();
+		resets 				= new ArrayList<Integer>();
 		
 		iteration 			= 0;
 	}
@@ -80,6 +89,16 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 	}
 	
 	@Override
+	public void addBacktrack() {
+		backtracks.add(iteration);
+	}
+	
+	@Override
+	public void addReset() {
+		resets.add(iteration);
+	}
+	
+	@Override
 	public void add(final double[] alpha, final double likelihood) {
 		this.alpha[iteration] 			= alpha;
 		this.logLikelihood[iteration] 	= likelihood;
@@ -89,7 +108,18 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 	@Override
 	public void clear() {
 		numericallyStable 	= true;
-		iteration 			= 0;		
+		iteration 			= 0;
+		
+		backtracks.clear();
+		resets.clear();
+	}
+	
+	public List<Integer> getBacktracks() {
+		return backtracks;
+	}
+	
+	public List<Integer> getResets() {
+		return resets;
 	}
 	
 	@Override

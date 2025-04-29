@@ -1,20 +1,15 @@
 package jacusa.cli.parameters;
 
-import java.util.ArrayList;
-
-import java.util.Arrays;
-import java.util.List;
-
-import jacusa.io.format.modifyresult.AddDeletionCount;
-import jacusa.io.format.modifyresult.AddInsertionCount;
-import jacusa.io.format.modifyresult.ResultModifier;
 import lib.cli.parameter.GeneralParameter;
 import lib.cli.parameter.HasDeletionParameter;
 import lib.cli.parameter.HasInsertionParameter;
-import lib.stat.DeletionStat;
-import lib.stat.InsertionStat;
-import lib.stat.dirmult.CallDirMultParameter;
-import lib.stat.dirmult.DirMultParameter;
+import lib.stat.dirmult.CallEstimationParameter;
+import lib.stat.dirmult.DefaultEstimationParameter;
+import lib.stat.dirmult.EstimationParameter;
+
+/**
+ * FIXME old format
+ */
 
 /**
  * Parameters specific to call method(s).
@@ -25,14 +20,15 @@ implements HasStatParameter, HasInsertionParameter, HasDeletionParameter {
 	
 	private StatParameter statParameter;
 	
-	private final CallDirMultParameter callDirMultParameter;
-	private DirMultParameter insertionDirMultParameter;
-	private DirMultParameter deletionDirMultParameter;
+	private final CallEstimationParameter callEstimationParameter;
+	private EstimationParameter insertionEstimationParameter;
+	private EstimationParameter deletionEstimationParameter;
 	
 	public CallParameter(final int conditionSize) {
 		super(conditionSize);
-		 
-		this.callDirMultParameter 	= new CallDirMultParameter();
+		callEstimationParameter 			= new CallEstimationParameter();
+		insertionEstimationParameter	= new DefaultEstimationParameter();
+		deletionEstimationParameter		= new DefaultEstimationParameter();
 	}
 	
 	@Override
@@ -45,79 +41,45 @@ implements HasStatParameter, HasInsertionParameter, HasDeletionParameter {
 		this.statParameter = statParameter;
 	}
 	
-	public CallDirMultParameter getDirMultParameter() {
-		return callDirMultParameter;
+	public CallEstimationParameter getCallEstimationarameter() {
+		return callEstimationParameter;
 	}
 	
 	@Override
-	public DirMultParameter getDeletionParameter() {
-		return deletionDirMultParameter;
+	public EstimationParameter getDeletionEstimationParameter() {
+		return deletionEstimationParameter;
 	}
 	
 	@Override
-	public DirMultParameter getInsertionParameter() {
-		return insertionDirMultParameter;
+	public EstimationParameter getInsertionEstimationParameter() {
+		return insertionEstimationParameter;
 	}
 
 	@Override
-	public void setDeletionParameter(DirMultParameter dirMultParameter) {
-		this.deletionDirMultParameter = dirMultParameter;
+	public void setDeletionParameter(EstimationParameter dirMultParameter) {
+		this.deletionEstimationParameter = dirMultParameter;
 	}
 	
 	@Override
-	public void setInsertionParameter(DirMultParameter dirMultParameter) {
-		this.insertionDirMultParameter = dirMultParameter;
+	public void setInsertionParameter(EstimationParameter dirMultParameter) {
+		this.insertionEstimationParameter = dirMultParameter;
 	}
 
 	@Override
 	public void registerKeys() {
-		// INDEL counts
+		addCallKeys(callEstimationParameter.calcPValue(), callEstimationParameter.showAlpha(), callEstimationParameter.getSubsampleRuns());
+		
 		if (showInsertionCount() || showInsertionStartCount()) {
-			registerKey(InsertionStat.SCORE);
-			registerKey(InsertionStat.PVALUE);
-			getResultModifiers().add(new AddInsertionCount());
+			addInsertionKeys(insertionEstimationParameter.showAlpha(), callEstimationParameter.getSubsampleRuns());
 		}
+		
 		if (showDeletionCount()) {
-			registerKey(DeletionStat.SCORE);
-			registerKey(DeletionStat.PVALUE);
-			getResultModifiers().add(new AddDeletionCount());
-		}
-		// resultModifier such as: add insertion_ratio
-		for (final ResultModifier resultModifier : getResultModifiers()) {
-			resultModifier.registerKeys(this);
-		}
-			
-		// estimate call score
-		registerKey("NumericallyInstable");
-		if (callDirMultParameter.calcPValue()) {
-			registerKey("pvalue");
-		}
-		if (callDirMultParameter.showAlpha()) {
-			List<String> ids = new ArrayList<String>();
-			for (int conditionIndex = 0; conditionIndex < getConditionsSize(); conditionIndex++) {
-			    ids.add(Integer.toString(conditionIndex + 1));
-			}
-			ids.add("P");
-			for (String key : Arrays.asList("initAlpha", "alpha", "iteration", "logLikelihood", "reset", "backtrack")) {
-				for (final String id : ids) {
-					registerKey(key + id);
-				}
-			}
-		}
-		registerKey("score_estimation");
-		
-		// show subsampled scores
-		if (callDirMultParameter.getSubsampleRuns() > 0) {
-			registerKey("score_subsampled");
-			if (showInsertionCount() || showInsertionStartCount()) {
-				registerKey("insertion_score_subsampled");
-			}
-			if (showDeletionCount()) {
-				registerKey("deletion_score_subsampled");
-			}
+			addDeletionKeys(deletionEstimationParameter.showAlpha(), callEstimationParameter.getSubsampleRuns());
 		}
 		
-		// TODO add estimation details for INDELs
+		super.registerKeys();
 	}
+	
+	
 	
 }

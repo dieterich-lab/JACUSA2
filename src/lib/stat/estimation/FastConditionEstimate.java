@@ -1,6 +1,8 @@
 package lib.stat.estimation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import lib.stat.nominal.NominalData;
 import lib.util.Util;
@@ -18,6 +20,9 @@ public class FastConditionEstimate implements ConditionEstimate{
 	private double logLikelihood;
 	private boolean numericallyStable;
 	
+	private final List<Integer> backtracks;
+	private final List<Integer> resets;
+	
 	private int iteration;
 
 	public FastConditionEstimate(final String id, final NominalData nominalData, final int maxIterations) {
@@ -27,6 +32,9 @@ public class FastConditionEstimate implements ConditionEstimate{
 
 		logLikelihood 		= Double.NaN;
 		numericallyStable 	= true;
+		
+		backtracks			= new ArrayList<Integer>();
+		resets 				= new ArrayList<Integer>();
 		
 		iteration 			= 0;
 	}
@@ -45,8 +53,14 @@ public class FastConditionEstimate implements ConditionEstimate{
 
 			this.logLikelihood 		= conditionEstimate.getLogLikelihood();
 			this.numericallyStable 	= conditionEstimate.isNumericallyStable();
+
+			this.backtracks			= new ArrayList<Integer>(conditionEstimate.getBacktracks());
+			this.resets 			= new ArrayList<Integer>(conditionEstimate.getResets());
 			
 			this.iteration 			= conditionEstimate.getNextIteration(); 
+		} else {
+			backtracks			= new ArrayList<Integer>();
+			resets 				= new ArrayList<Integer>();
 		}
 	}
 	
@@ -125,6 +139,26 @@ public class FastConditionEstimate implements ConditionEstimate{
 	public void clear() {
 		numericallyStable 	= true;
 		iteration 			= 0;		
+	}
+	
+	@Override
+	public void addBacktrack() {
+		backtracks.add(iteration);
+	}
+	
+	@Override
+	public void addReset() {
+		resets.add(iteration);
+	}
+	
+	@Override
+	public List<Integer> getResets() {
+		return resets;
+	}
+	
+	@Override
+	public List<Integer> getBacktracks() {
+		return backtracks;
 	}
 	
 	@Override

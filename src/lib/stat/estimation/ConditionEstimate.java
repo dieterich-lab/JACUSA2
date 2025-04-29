@@ -1,5 +1,7 @@
 package lib.stat.estimation;
 
+import java.util.List;
+
 import lib.stat.nominal.NominalData;
 
 public interface ConditionEstimate {
@@ -30,6 +32,12 @@ public interface ConditionEstimate {
 
 	void add(double[] alpha, double likelihood);
 
+	void addBacktrack();
+	List<Integer> getBacktracks();
+	
+	void addReset();
+	List<Integer> getResets();
+	
 	void clear();
 
 	String toString();

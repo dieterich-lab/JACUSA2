@@ -32,7 +32,7 @@ public class RTarrestStat extends AbstractStat {
 		this.estimationContainerProvider 	= estimationContainerProvider;
 		this.dirMultPrarameter 				= dirMultParameter;
 		
-		estimateDirMultAlpha	= new MinkaEstimateDirMultAlpha(dirMultParameter.getMinkaEstimateParameter());
+		estimateDirMultAlpha	= new MinkaEstimateDirMultAlpha(dirMultParameter.getMinkaParameter());
 		dist 	= new ChiSquaredDistribution(1);
 	}
 	
@@ -53,7 +53,7 @@ public class RTarrestStat extends AbstractStat {
 		resultInfo.add(ARREST_SCORE, Util.format(lrt));
 		
 		if (dirMultPrarameter.showAlpha()) {
-			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo);
+			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo, "");
 		}
 		estimateDirMultAlpha.addStatResultInfo(estimationContainer, resultInfo);
 		

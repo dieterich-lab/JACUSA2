@@ -5,14 +5,14 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 import lib.cli.options.AbstractProcessingOption;
-import lib.stat.dirmult.DirMultParameter;
+import lib.stat.dirmult.EstimationParameter;
 
 public class CalculatePvalueOption extends AbstractProcessingOption {
 
-	private final DirMultParameter dirMultParameter;
+	private final EstimationParameter dirMultParameter;
 	
 	public CalculatePvalueOption(
-			final DirMultParameter dirMultParameter) {
+			final EstimationParameter dirMultParameter) {
 		super("calcPvalue", "calcPvalue");
 		
 		this.dirMultParameter 	= dirMultParameter;

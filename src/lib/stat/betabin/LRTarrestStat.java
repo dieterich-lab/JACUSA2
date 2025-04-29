@@ -32,7 +32,7 @@ public class LRTarrestStat extends AbstractStat {
 		this.estimationContainerProvider 	= estCountProv;
 		this.dirMultPrm 					= dirMultPrm;
 		
-		estimateDirMultAlpha	= new MinkaEstimateDirMultAlpha(dirMultPrm.getMinkaEstimateParameter());
+		estimateDirMultAlpha	= new MinkaEstimateDirMultAlpha(dirMultPrm.getMinkaParameter());
 		chiSquaredDistribution 	= new ChiSquaredDistribution(1);
 	}
 	
@@ -65,7 +65,7 @@ public class LRTarrestStat extends AbstractStat {
 		
 		if (dirMultPrm.showAlpha()) {
 			for (final int valueIndex : multiStatResult.getValueIndexes()) {
-				estimateDirMultAlpha.addAlphaValues(estimationContainer, multiStatResult.getResultInfo(valueIndex));
+				estimateDirMultAlpha.addAlphaValues(estimationContainer, multiStatResult.getResultInfo(valueIndex), "");
 				estimateDirMultAlpha.addStatResultInfo(estimationContainer, multiStatResult.getResultInfo(valueIndex));
 			}
 		} else {

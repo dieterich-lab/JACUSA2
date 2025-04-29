@@ -2,7 +2,7 @@ package jacusa.method.lrtarrest;
 
 import jacusa.cli.options.StatFactoryOption;
 
-import jacusa.cli.options.StatFilterOption;
+import jacusa.cli.options.ThresholdFilterOption;
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
 import jacusa.cli.parameters.LRTarrestParameter;
 import jacusa.cli.parameters.StatParameter;
@@ -98,7 +98,7 @@ extends AbstractMethod {
 	protected void registerGlobalOptions() {
 		registerOption(new StatFactoryOption(getParameter().getStatParameter(), getStatisticFactories()));
 		
-		registerOption(new StatFilterOption(getParameter().getStatParameter()));
+		registerOption(new ThresholdFilterOption(getParameter().getStatParameter()));
 		
 		// result format option only if there is a choice		
 		if (getResultFormats().size() > 1 ) {

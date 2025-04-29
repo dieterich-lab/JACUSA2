@@ -24,9 +24,5 @@ final public class Utils {
 		info.add("prefix + iteration" + id, Integer.toString(iteration));
 		info.add("prefix + logLikelihood" + id, Double.toString(logLikelihood));
 	}
-
-	static public void addAlphaValues(final ConditionEstimate conditionEstimate, final ExtendedInfo info) {
-		addAlphaValues(conditionEstimate, info, ""); 
-	}
 	
 }

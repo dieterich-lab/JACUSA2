@@ -1,16 +1,13 @@
 package jacusa.cli.parameters;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import jacusa.io.format.modifyresult.ResultModifier;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
-import lib.stat.DeletionStat;
-import lib.stat.InsertionStat;
+import lib.cli.parameter.HasDeletionParameter;
+import lib.cli.parameter.HasInsertionParameter;
 import lib.stat.betabin.RTarrestBetaBinParameter;
 import lib.stat.betabin.RTarrestStat;
+import lib.stat.dirmult.EstimationParameter;
 
 
 /**
@@ -19,10 +16,12 @@ import lib.stat.betabin.RTarrestStat;
  */
 public class RTarrestParameter
 extends GeneralParameter 
-implements HasStatParameter {
+implements HasStatParameter, HasInsertionParameter, HasDeletionParameter {
 
 	private StatParameter statParameter;
 	private RTarrestBetaBinParameter betaBinParameter;
+	private EstimationParameter insertionEstimationParameter;
+	private EstimationParameter deletionEstimationParameter;
 	
 	public RTarrestParameter(final int conditions) {
 		super(conditions);
@@ -43,6 +42,26 @@ implements HasStatParameter {
 		return p;
 	}
 
+	@Override
+	public void setDeletionParameter(EstimationParameter estimationParameter) {
+		this.deletionEstimationParameter = estimationParameter;
+	}
+	
+	@Override
+	public void setInsertionParameter(EstimationParameter estimationParameter) {
+		this.insertionEstimationParameter = estimationParameter;
+	}
+	
+	@Override
+	public EstimationParameter getDeletionEstimationParameter() {
+		return deletionEstimationParameter;
+	}
+	
+	@Override
+	public EstimationParameter getInsertionEstimationParameter() {
+		return insertionEstimationParameter;
+	}
+	
 	public RTarrestBetaBinParameter getBetaBinParameter() {
 		return betaBinParameter;
 	}
@@ -61,54 +80,20 @@ implements HasStatParameter {
 	@Override
 	public void registerKeys() {
 		registerKey(RTarrestStat.ARREST_SCORE);
+		// TODO estimation
 		
-		// INDEL counts
 		if (showInsertionCount() || showInsertionStartCount()) {
-			registerConditionReplictaKeys("insertions");
-			registerKey(InsertionStat.SCORE);
-			registerKey(InsertionStat.PVALUE);
+			addInsertionKeys(insertionEstimationParameter.showAlpha(), betaBinParameter.getSubsampleRuns());
 		}
+		
 		if (showDeletionCount()) {
-			registerConditionReplictaKeys("deletions");
-			registerKey(DeletionStat.SCORE);
-			registerKey(DeletionStat.PVALUE);
+			addDeletionKeys(deletionEstimationParameter.showAlpha(), betaBinParameter.getSubsampleRuns());
 		}
+		
 		// resultModifier such as: add insertion_ratio
 		for (final ResultModifier resultModifier : getResultModifiers()) {
 			resultModifier.registerKeys(this);
 		}
-			
-		// estimate call score
-		registerKey("NumericallyInstable");
-		if (betaBinParameter.calcPValue()) {
-			registerKey("pvalue");
-		}
-		if (betaBinParameter.showAlpha()) {
-			List<String> ids = new ArrayList<String>();
-			for (int conditionIndex = 0; conditionIndex < getConditionsSize(); conditionIndex++) {
-			    ids.add(Integer.toString(conditionIndex + 1));
-			}
-			ids.add("P");
-			for (String key : Arrays.asList("initAlpha", "alpha", "iteration", "logLikelihood", "reset", "backtrack")) {
-				for (final String id : ids) {
-					registerKey(key + id);
-				}
-			}
-		}
-		registerKey("estimation");
-		
-		// show subsampled scores
-		if (betaBinParameter.getSubsampleRuns() > 0) {
-			registerKey("score_subsampled");
-			if (showInsertionCount() || showInsertionStartCount()) {
-				registerConditionReplictaKeys("insertion_score_subsampled");
-			}
-			if (showDeletionCount()) {
-				registerConditionReplictaKeys("insertion_score_subsampled");
-			}
-		}
-		
-		// TODO add estimation details for INDELs
 	}
 	
 }

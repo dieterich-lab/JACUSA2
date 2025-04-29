@@ -15,13 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import jacusa.cli.options.StatFilterOption;
+import jacusa.cli.options.ThresholdFilterOption;
 import jacusa.cli.parameters.StatParameter;
 import jacusa.method.rtarrest.DummyStatisticFactory;
 import test.utlis.CLIUtils;
 
 /**
- * Tests @see {@link jacusa.cli.options.StatFilterOption#process(org.apache.commons.cli.CommandLine)
+ * Tests @see {@link jacusa.cli.options.ThresholdFilterOption#process(org.apache.commons.cli.CommandLine)
  */
 
 class StatFilterOptionTest {
@@ -31,14 +31,14 @@ class StatFilterOptionTest {
 	private CommandLineParser parser;
 	
 	private StatParameter statParameter;
-	private StatFilterOption testInstance;
+	private ThresholdFilterOption testInstance;
 
 	@BeforeEach
 	void beforeEach() {
 		parser = new DefaultParser();
 		
 		statParameter = new StatParameter(new DummyStatisticFactory(), DEFAULT_VALUE);
-		testInstance = new StatFilterOption(statParameter);
+		testInstance = new ThresholdFilterOption(statParameter);
 	}
 	
 	@ParameterizedTest(name = "Expected threshold {0}")
@@ -47,7 +47,7 @@ class StatFilterOptionTest {
 		final Options options = CLIUtils.getOptions(testInstance);
 		final CommandLine line = parser.parse(
 				options, 
-				new String[] { "-" + StatFilterOption.OPT, Double.toString(expected) } );
+				new String[] { "-" + ThresholdFilterOption.OPT, Double.toString(expected) } );
 		testInstance.process(line);
 		final double actual = statParameter.getThreshold();
 		assertEquals(expected, actual);
@@ -61,7 +61,7 @@ class StatFilterOptionTest {
 				() -> {
 					final CommandLine line = parser.parse(
 							options, 
-							new String[] { "-" + StatFilterOption.OPT } );
+							new String[] { "-" + ThresholdFilterOption.OPT } );
 					testInstance.process(line);
 				});
 	}
@@ -74,7 +74,7 @@ class StatFilterOptionTest {
 				() -> {
 					final CommandLine line = parser.parse(
 							options, 
-							new String[] { "-" + StatFilterOption.OPT, "WRONG" } );
+							new String[] { "-" + ThresholdFilterOption.OPT, "WRONG" } );
 					testInstance.process(line);
 				});
 	}
@@ -87,7 +87,7 @@ class StatFilterOptionTest {
 				() -> {
 					final CommandLine line = parser.parse(
 							options, 
-							new String[] { "-" + StatFilterOption.OPT, Double.toString(-0.1) } );
+							new String[] { "-" + ThresholdFilterOption.OPT, Double.toString(-0.1) } );
 					testInstance.process(line);
 				});
 	}

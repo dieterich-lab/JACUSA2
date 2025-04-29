@@ -21,28 +21,28 @@ extends AbstractStatFactory {
 
 	public final static String NAME = "DirMult";
 	
-	private final CallDirMultParameter dirMultParameter;
+	private final CallEstimationParameter dirMultParameter;
 	
 	public DirMultRobustCompoundErrorStatFactory() {
-		this(new CallDirMultParameter());
+		this(new CallEstimationParameter());
 	}
 	
 	public DirMultRobustCompoundErrorStatFactory(
-			final CallDirMultParameter dirMultParameter) {
+			final CallEstimationParameter dirMultParameter) {
 		this(
 				dirMultParameter,
 				new ProcessCommandLine(
 						new DefaultParser(),
 						Arrays.asList(
-								new EpsilonOptions(dirMultParameter.getMinkaEstimateParameter()),
+								new EpsilonOptions(dirMultParameter.getMinkaParameter()),
 								new ShowAlphaOption(dirMultParameter),
-								new MaxIterationsOption(dirMultParameter.getMinkaEstimateParameter()),
+								new MaxIterationsOption(dirMultParameter.getMinkaParameter()),
 								new SubsampleRunsOptions(dirMultParameter),
 								new CalculatePvalueOption(dirMultParameter))));
 	}
 	
 	public DirMultRobustCompoundErrorStatFactory(
-			final CallDirMultParameter dirMultParameter,
+			final CallEstimationParameter dirMultParameter,
 			final ProcessCommandLine processCommandLine) {
 		super(
 				Option.builder(NAME)
@@ -60,14 +60,14 @@ extends AbstractStatFactory {
 		case 1:
 			dirMultPileupCountProvider = new InSilicoEstimationPileupProvider(
 					dirMultParameter.calcPValue(),
-					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
+					dirMultParameter.getMinkaParameter().getMaxIterations(),
 					dirMultParameter.getEstimatedError());
 			break;
 			
 		case 2:
 			dirMultPileupCountProvider = new RobustEstimationPileupProvider(
 					dirMultParameter.calcPValue(),
-					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
+					dirMultParameter.getMinkaParameter().getMaxIterations(),
 					dirMultParameter.getEstimatedError()); 
 			break;
 

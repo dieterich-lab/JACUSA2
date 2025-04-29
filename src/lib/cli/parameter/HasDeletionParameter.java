@@ -1,10 +1,10 @@
 package lib.cli.parameter;
 
-import lib.stat.dirmult.DirMultParameter;
+import lib.stat.dirmult.EstimationParameter;
 
 public interface HasDeletionParameter {
 
-	DirMultParameter getDeletionParameter();
-	void setDeletionParameter(DirMultParameter dirMultParameter);
+	EstimationParameter getDeletionEstimationParameter();
+	void setDeletionParameter(EstimationParameter dirMultParameter);
 	
 }

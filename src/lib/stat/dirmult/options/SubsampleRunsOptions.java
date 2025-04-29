@@ -4,14 +4,14 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
 import lib.cli.options.AbstractProcessingOption;
-import lib.stat.dirmult.DirMultParameter;
+import lib.stat.dirmult.EstimationParameter;
 
 public class SubsampleRunsOptions extends AbstractProcessingOption {
 
-	private final DirMultParameter dirMultParameter;
+	private final EstimationParameter dirMultParameter;
 	
 	public SubsampleRunsOptions(
-			final DirMultParameter dirMultParameter) {
+			final EstimationParameter dirMultParameter) {
 		super("subsampleRuns", "subsampleRuns");
 		
 		this.dirMultParameter 	= dirMultParameter;

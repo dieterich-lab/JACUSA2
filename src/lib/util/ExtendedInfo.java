@@ -38,6 +38,10 @@ public class ExtendedInfo implements Serializable {
 		map.put(key, value);
 	}
 	
+	public void append(final String key, final String value) {
+		map.put(key, map.getOrDefault(key, "") + value);
+	}
+	
 	public Map<String, String> getMap() {
 		return Collections.unmodifiableMap(map);
 	}

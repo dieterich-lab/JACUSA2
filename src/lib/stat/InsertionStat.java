@@ -5,8 +5,9 @@ import lib.stat.estimation.provider.INDELestimateProvider;
 
 public class InsertionStat extends INDELstat {
 
-	public static final String SCORE = "insertion_score";
-	public static final String PVALUE = "insertion_pvalue";
+	public static final String PREFIX = "insertion_";
+	public static final String SCORE = PREFIX + "score";
+	public static final String PVALUE = PREFIX + "pvalue";
 	
 	public InsertionStat(
 			final MinkaParameter minkaParameter,

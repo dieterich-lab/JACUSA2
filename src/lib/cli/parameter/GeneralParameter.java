@@ -5,6 +5,7 @@ import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +14,12 @@ import java.util.stream.IntStream;
 
 import jacusa.cli.parameters.HasConditionParameter;
 import jacusa.filter.FilterConfig;
+import jacusa.io.format.modifyresult.AddDeletionCount;
+import jacusa.io.format.modifyresult.AddInsertionCount;
 import jacusa.io.format.modifyresult.ResultModifier;
 import lib.io.ResultFormat;
+import lib.stat.DeletionStat;
+import lib.stat.InsertionStat;
 import lib.util.AbstractTool;
 
 public class GeneralParameter
@@ -343,6 +348,11 @@ implements HasConditionParameter {
 		// FIXME don't like the architecture
 		// TODO implement in RTarrest
 		// TODO implement in LRTarrest
+		
+		// resultModifier such as: add insertion_ratio
+		for (final ResultModifier resultModifier : getResultModifiers()) {
+			resultModifier.registerKeys(this);
+		}
 	}
 	
 	public void registerConditionKeys(final String key) {
@@ -375,8 +385,69 @@ implements HasConditionParameter {
 		return seed;
 	}
 	
+	public void addCallKeys(final boolean showcalcPValue, final boolean showAlpha, final int subsampleRuns) {
+		registerKey("score_numerically_instable");
+		if (showcalcPValue) {
+			registerKey("score_pvalue");
+		}
+		if (showAlpha) {
+			addEstimationInfo("score");
+		}
+		if (subsampleRuns > 0) {
+			registerKey("score_subsampled");
+		}
+	}
+	
+	public void addInsertionKeys(final boolean showAlpha, final int subsampleRuns) {
+		registerKey(InsertionStat.SCORE);
+		registerKey(InsertionStat.PVALUE);
+		registerKey(InsertionStat.SCORE + "_estimation");
+		getResultModifiers().add(new AddInsertionCount());
+		registerKey(InsertionStat.SCORE + "_numerically_instable");
+		if (showAlpha) {
+			addEstimationInfo(InsertionStat.PREFIX);
+		}
+		if (subsampleRuns > 0) {
+			registerKey(InsertionStat.SCORE + "_subsampled");
+		}
+	}
+	
+	public void addDeletionKeys(final boolean showAlpha, final int subsampleRuns) {
+		registerKey(DeletionStat.SCORE);
+		registerKey(DeletionStat.PVALUE);
+		registerKey(DeletionStat.SCORE + "_estimation");
+		getResultModifiers().add(new AddDeletionCount());
+		registerKey(DeletionStat.SCORE + "_numerically_instable");
+		if (showAlpha) {
+			addEstimationInfo(DeletionStat.PREFIX);
+		}
+		if (subsampleRuns > 0) {
+			registerKey(DeletionStat.SCORE + "_subsampled");
+		}
+	}
+	
+	public void addEstimationInfo(final String prefix) {
+		final List<String> ids = new ArrayList<String>();
+		for (int conditionIndex = 0; conditionIndex < getConditionsSize(); conditionIndex++) {
+		    ids.add(Integer.toString(conditionIndex + 1));
+		}
+		ids.add("P");
+		final List<String> keys = Arrays.asList(
+				"init_alpha", "alpha",
+				"iteration",
+				"log_likelihood",
+				"reset", "backtrack");
+		for (String key : keys) { 
+			for (final String id : ids) {
+				registerKey(prefix + key + id);
+			}
+		}
+		registerKey(prefix + "estimation");
+	}
+	
 }
 
+// TODO remove
 enum ShowOptions {
 	DELETION_COUNT,
 	INSERTION_COUNT,

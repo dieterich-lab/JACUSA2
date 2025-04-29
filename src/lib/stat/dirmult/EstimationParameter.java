@@ -5,7 +5,7 @@ import lib.estimate.MinkaParameter;
 /**
  * DOCUMENT
  */
-public interface DirMultParameter {
+public interface EstimationParameter {
 
 	public static final double ESTIMATED_ERROR = 0.01;
 	
@@ -15,9 +15,10 @@ public interface DirMultParameter {
 	boolean calcPValue();
 	void setCalcPValue(boolean calcPValue);
 
-	MinkaParameter getMinkaEstimateParameter();
+	MinkaParameter getMinkaParameter();
 	void setMinkaParameter(MinkaParameter estimateAlpha);
 	
+	// TODO move somewhere
 	int getSubsampleRuns();
 	void setSubampleRuns(int subsampleRuns);
 

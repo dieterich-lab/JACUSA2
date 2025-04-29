@@ -20,29 +20,29 @@ public class DirMultCompoundErrorStatFactory
 extends AbstractStatFactory {
 
 	private static final String NAME 	= "DirMultCE";
-	public static final String DESC 	= "Compound Error (estimated error {" + DirMultParameter.ESTIMATED_ERROR + "} + phred score)";
+	public static final String DESC 	= "Compound Error (estimated error {" + EstimationParameter.ESTIMATED_ERROR + "} + phred score)";
 	
-	private final CallDirMultParameter dirMultParameter;
+	private final CallEstimationParameter dirMultParameter;
 	
 	public DirMultCompoundErrorStatFactory() {
-		this(new CallDirMultParameter());
+		this(new CallEstimationParameter());
 	}
 	
-	public DirMultCompoundErrorStatFactory(final CallDirMultParameter dirMultParameter) {
+	public DirMultCompoundErrorStatFactory(final CallEstimationParameter dirMultParameter) {
 		this(
 				dirMultParameter,
 				new ProcessCommandLine(
 						new DefaultParser(),
 						Arrays.asList(
-								new EpsilonOptions(dirMultParameter.getMinkaEstimateParameter()),
+								new EpsilonOptions(dirMultParameter.getMinkaParameter()),
 								new ShowAlphaOption(dirMultParameter),
-								new MaxIterationsOption(dirMultParameter.getMinkaEstimateParameter()),
+								new MaxIterationsOption(dirMultParameter.getMinkaParameter()),
 								new SubsampleRunsOptions(dirMultParameter),
 								new CalculatePvalueOption(dirMultParameter))));
 	}
 	
 	public DirMultCompoundErrorStatFactory(
-			final CallDirMultParameter dirMultParameter, final ProcessCommandLine processCommmandLine) {
+			final CallEstimationParameter dirMultParameter, final ProcessCommandLine processCommmandLine) {
 		super(
 				Option.builder(NAME)
 					.desc(DESC)
@@ -58,14 +58,14 @@ extends AbstractStatFactory {
 		case 1:
 			pileupCountProvider = new InSilicoEstimationPileupProvider(
 					dirMultParameter.calcPValue(),
-					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
+					dirMultParameter.getMinkaParameter().getMaxIterations(),
 					dirMultParameter.getEstimatedError());
 			break;
 			
 		case 2:
 			pileupCountProvider = new DefaultEstimationPileupProvider(
 					dirMultParameter.calcPValue(),
-					dirMultParameter.getMinkaEstimateParameter().getMaxIterations(),
+					dirMultParameter.getMinkaParameter().getMaxIterations(),
 					dirMultParameter.getEstimatedError()); 
 			break;
 

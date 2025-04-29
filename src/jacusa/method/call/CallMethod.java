@@ -2,7 +2,7 @@ package jacusa.method.call;
 
 import jacusa.cli.options.StatFactoryOption;
 
-import jacusa.cli.options.StatFilterOption;
+import jacusa.cli.options.ThresholdFilterOption;
 import jacusa.cli.options.librarytype.nConditionLibraryTypeOption;
 import jacusa.cli.parameters.CallParameter;
 import jacusa.cli.parameters.StatParameter;
@@ -66,13 +66,18 @@ import lib.estimate.MinkaParameter;
 import lib.data.validator.paralleldata.NonHomozygousSite;
 import lib.stat.INDELstat;
 import lib.stat.dirmult.CallStat;
-import lib.stat.dirmult.DirMultParameter;
+import lib.stat.dirmult.EstimationParameter;
 import lib.stat.dirmult.DirMultRobustCompoundErrorStatFactory;
+import lib.stat.dirmult.ProcessCommandLine;
+import lib.stat.dirmult.options.EpsilonOptions;
+import lib.stat.dirmult.options.MaxIterationsOption;
+import lib.stat.dirmult.options.ShowAlphaOption;
 import lib.stat.sampling.SubSampleStat;
 import lib.util.AbstractMethod;
 import lib.util.AbstractTool;
 import lib.util.LibraryType;
 
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
 
 public class CallMethod extends AbstractMethod {
@@ -118,7 +123,7 @@ public class CallMethod extends AbstractMethod {
 		registerOption(new FilterModusOption(getParameter()));
 		registerOption(new FilterConfigOption(getParameter(), getFilterFactories()));
 		
-		registerOption(new StatFilterOption(getParameter().getStatParameter()));
+		registerOption(new ThresholdFilterOption(getParameter().getStatParameter()));
 
 		registerOption(new ReferenceFastaFilenameOption(getParameter()));
 		registerOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
@@ -127,9 +132,24 @@ public class CallMethod extends AbstractMethod {
 		registerOption(new WindowSizeOption(getParameter()));
 		registerOption(new ThreadWindowSizeOption(getParameter()));
 
-		registerOption(new ShowDeletionCountOption(getParameter()));
-		registerOption(new ShowInsertionCountOption(getParameter()));
-		registerOption(new ShowInsertionStartCountOption(getParameter()));
+		registerOption(new ShowDeletionCountOption(getParameter(),
+				new ProcessCommandLine(new DefaultParser(),
+						Arrays.asList(
+								new EpsilonOptions(getParameter().getDeletionEstimationParameter().getMinkaParameter()),
+								new ShowAlphaOption(getParameter().getDeletionEstimationParameter()),
+								new MaxIterationsOption(getParameter().getDeletionEstimationParameter().getMinkaParameter())))));
+		registerOption(new ShowInsertionCountOption(getParameter(),
+				new ProcessCommandLine(new DefaultParser(),
+						Arrays.asList(
+								new EpsilonOptions(getParameter().getInsertionEstimationParameter().getMinkaParameter()),
+								new ShowAlphaOption(getParameter().getInsertionEstimationParameter()),
+								new MaxIterationsOption(getParameter().getInsertionEstimationParameter().getMinkaParameter())))));				
+		registerOption(new ShowInsertionStartCountOption(getParameter(),
+				new ProcessCommandLine(new DefaultParser(),
+						Arrays.asList(
+								new EpsilonOptions(getParameter().getInsertionEstimationParameter().getMinkaParameter()),
+								new ShowAlphaOption(getParameter().getInsertionEstimationParameter()),
+								new MaxIterationsOption(getParameter().getInsertionEstimationParameter().getMinkaParameter())))));				
 		
 		registerOption(new BedCoordinatesOption(getParameter()));
 		registerOption(new ResultFileOption(getParameter()));
@@ -183,7 +203,7 @@ public class CallMethod extends AbstractMethod {
 	public void registerStatisticFactories() {
 		registerStatisticFactory(
 				new DirMultRobustCompoundErrorStatFactory(
-						getParameter().getDirMultParameter()));
+						getParameter().getCallEstimationarameter()));
 	}
 
 	@Override
@@ -252,8 +272,8 @@ public class CallMethod extends AbstractMethod {
 				.getStatParameter()
 				.getFactory().newInstance(threshold, getParameter().getConditionsSize());
 		
-		final DirMultParameter dirMultParameter = callStat.getDirMultParameter();
-		final MinkaParameter minkaParameter = dirMultParameter.getMinkaEstimateParameter();
+		final EstimationParameter dirMultParameter = callStat.getDirMultParameter();
+		final MinkaParameter minkaParameter = dirMultParameter.getMinkaParameter();
 		
 		final List<INDELstat> indelStats = getINDELstats(minkaParameter);
 		

@@ -32,9 +32,9 @@ public class LRTarrestStatFactory extends AbstractStatFactory {
 				new ProcessCommandLine(
 						new DefaultParser(),
 						Arrays.asList(
-								new EpsilonOptions(dirMultParameter.getMinkaEstimateParameter()),
+								new EpsilonOptions(dirMultParameter.getMinkaParameter()),
 								new ShowAlphaOption(dirMultParameter),
-								new MaxIterationsOption(dirMultParameter.getMinkaEstimateParameter()),
+								new MaxIterationsOption(dirMultParameter.getMinkaParameter()),
 								new SubsampleRunsOptions(dirMultParameter),
 								new CalculatePvalueOption(dirMultParameter))));
 	}
@@ -58,7 +58,7 @@ public class LRTarrestStatFactory extends AbstractStatFactory {
 		}
 		
 		final LRTarrestEstimationCountProvider arrestCountProvider = 
-				new LRTarrestEstimationCountProvider(dirMultParameter.getMinkaEstimateParameter().getMaxIterations());
+				new LRTarrestEstimationCountProvider(dirMultParameter.getMinkaParameter().getMaxIterations());
 		return new LRTarrestStat(threshold, arrestCountProvider, dirMultParameter);
 	}
 
