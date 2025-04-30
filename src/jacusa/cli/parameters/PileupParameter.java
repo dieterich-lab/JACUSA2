@@ -1,20 +1,48 @@
 package jacusa.cli.parameters;
 
 import lib.cli.parameter.GeneralParameter;
+import lib.cli.parameter.HasDeletionParameter;
+import lib.cli.parameter.HasInsertionParameter;
+import lib.stat.dirmult.DefaultEstimationParameter;
+import lib.stat.dirmult.EstimationParameter;
 
 /**
  * Class defines parameters and default values that are need for pileup method.
  */
 public class PileupParameter extends GeneralParameter 
-implements HasStatParameter {
+implements HasStatParameter, HasInsertionParameter, HasDeletionParameter {
 
 	private StatParameter statParameter;
+	private EstimationParameter insertionEstimationParameter;
+	private EstimationParameter deletionEstimationParameter;
 	
 	public PileupParameter(final int conditions) {
 		super(conditions);
-		// change default values
+		
+		insertionEstimationParameter	= new DefaultEstimationParameter();
+		deletionEstimationParameter		= new DefaultEstimationParameter();
 	}
 
+	@Override
+	public EstimationParameter getDeletionEstimationParameter() {
+		return deletionEstimationParameter;
+	}
+	
+	@Override
+	public EstimationParameter getInsertionEstimationParameter() {
+		return insertionEstimationParameter;
+	}
+
+	@Override
+	public void setDeletionParameter(EstimationParameter dirMultParameter) {
+		this.deletionEstimationParameter = dirMultParameter;
+	}
+	
+	@Override
+	public void setInsertionParameter(EstimationParameter dirMultParameter) {
+		this.insertionEstimationParameter = dirMultParameter;
+	}
+	
 	@Override
 	public StatParameter getStatParameter() {
 		return statParameter;

@@ -62,7 +62,6 @@ import lib.data.filter.BooleanFilteredData;
 import lib.data.filter.BooleanData;
 import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
-import lib.estimate.MinkaParameter;
 import lib.data.validator.paralleldata.NonHomozygousSite;
 import lib.stat.INDELstat;
 import lib.stat.dirmult.CallStat;
@@ -273,10 +272,7 @@ public class CallMethod extends AbstractMethod {
 				.getFactory().newInstance(threshold, getParameter().getConditionsSize());
 		
 		final EstimationParameter dirMultParameter = callStat.getDirMultParameter();
-		final MinkaParameter minkaParameter = dirMultParameter.getMinkaParameter();
-		
-		final List<INDELstat> indelStats = getINDELstats(minkaParameter);
-		
+		final List<INDELstat> indelStats = getINDELstats(getParameter().getInsertionEstimationParameter(), getParameter().getInsertionEstimationParameter());
 		SubSampleStat subSampleStat = null;
 		if (dirMultParameter.getSubsampleRuns() > 0) {
 			subSampleStat = new SubSampleStat(dirMultParameter.getSubsampleRuns(), getParameter().getSeed());

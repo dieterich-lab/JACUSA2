@@ -1,6 +1,6 @@
 package lib.stat;
 
-import lib.estimate.MinkaParameter;
+import lib.stat.dirmult.EstimationParameter;
 import lib.stat.estimation.provider.INDELestimateProvider;
 
 public class InsertionStat extends INDELstat {
@@ -10,9 +10,9 @@ public class InsertionStat extends INDELstat {
 	public static final String PVALUE = PREFIX + "pvalue";
 	
 	public InsertionStat(
-			final MinkaParameter minkaParameter,
+			final EstimationParameter estimationParameter,
 			final INDELestimateProvider indelEstimateProvider) {
-		super(minkaParameter, indelEstimateProvider, SCORE, PVALUE);
+		super(estimationParameter, indelEstimateProvider, PREFIX);
 	}
 	
 }

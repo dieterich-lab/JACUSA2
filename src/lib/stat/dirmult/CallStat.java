@@ -15,7 +15,7 @@ public class CallStat extends AbstractStat {
 
 	private final double threshold;
 	private final ConditionEstimateProvider estimationContainerProvider;
-	private final EstimationParameter dirMultParameter;
+	private final EstimationParameter estimationParameter;
 	private final MinkaEstimateDirMultAlpha estimateDirMultAlpha;
 
 	private EstimationContainer estimationContainer;
@@ -23,11 +23,11 @@ public class CallStat extends AbstractStat {
 	public CallStat(
 			final double threshold,
 			final ConditionEstimateProvider estimationContainerProvider,
-			final EstimationParameter dirMultParameter) {
+			final EstimationParameter estimationParameter) {
 		this.threshold 						= threshold;
 		this.estimationContainerProvider 	= estimationContainerProvider;
-		this.dirMultParameter 				= dirMultParameter;
-		estimateDirMultAlpha 				= new MinkaEstimateDirMultAlpha(dirMultParameter.getMinkaParameter());
+		this.estimationParameter 			= estimationParameter;
+		estimateDirMultAlpha 				= new MinkaEstimateDirMultAlpha(estimationParameter.getMinkaParameter());
 	}
 
 	public EstimationContainer getEstimationContainer() {
@@ -35,7 +35,7 @@ public class CallStat extends AbstractStat {
 	}
 
 	public EstimationParameter getDirMultParameter() {
-		return dirMultParameter;
+		return estimationParameter;
 	}
 	
 	public MinkaEstimateDirMultAlpha getMinka() {
@@ -45,7 +45,7 @@ public class CallStat extends AbstractStat {
 	public double getStat(final EstimationContainer estimationContainer) {
 		double stat;
 		
-		if (dirMultParameter.calcPValue()) {
+		if (estimationParameter.calcPValue()) {
 			stat = estimateDirMultAlpha.getLRT(estimationContainer);
 			// TODO degrees of freedom
 			final ChiSquaredDistribution dist = new ChiSquaredDistribution(3);
@@ -60,23 +60,20 @@ public class CallStat extends AbstractStat {
 	@Override
 	public Result process(ParallelData parallelData, ExtendedInfo resultInfo) {
 		estimationContainer = estimationContainerProvider.convert(parallelData);
-		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer);
+		estimateDirMultAlpha.estimate(estimationContainer);
 		
 		double stat = estimateDirMultAlpha.getScore(estimationContainer);
 		if (filter(stat)) {
 			return null;
 		}
 		
-		if (!estimationSuccesfull) {
-			resultInfo.add("score_estimation", "0");
-		} else {
-			resultInfo.add("score_estimation", "1");
-		}
 		estimateDirMultAlpha.addEstimationInfo(estimationContainer, resultInfo, "");
-		if (dirMultParameter.showAlpha()) {
+		if (estimationParameter.showAlpha()) {
 			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo, "");
 		}
-		estimateDirMultAlpha.addStatResultInfo(estimationContainer, resultInfo);
+		if (estimationContainer.isNumericallyStable()) {
+			resultInfo.add("numerically_instable", "true");
+		}
 		
 		return new OneStatResult(stat, parallelData, resultInfo);
 	}
@@ -91,7 +88,7 @@ public class CallStat extends AbstractStat {
 		}
 
 		// if p-value interpret threshold as upper bound
-		if (dirMultParameter.calcPValue()) {
+		if (estimationParameter.calcPValue()) {
 			return threshold < statValue;
 		}
 

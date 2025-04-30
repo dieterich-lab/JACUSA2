@@ -18,6 +18,9 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 	private final List<Integer> backtracks;
 	private final List<Integer> resets;
 	
+	private boolean successfull;
+	private boolean failed;
+	
 	private int iteration;
 
 	public DefaultConditionEstimate(
@@ -34,6 +37,9 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 		
 		backtracks 			= new ArrayList<Integer>();
 		resets 				= new ArrayList<Integer>();
+
+		successfull			= false;
+		failed				= false;
 		
 		iteration 			= 0;
 	}
@@ -51,6 +57,26 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 	@Override
 	public double[] getAlpha() {
 		return alpha[iteration - 1];
+	}
+	
+	@Override
+	public boolean failed() {
+		return failed;
+	}
+	
+	@Override
+	public boolean successfull() {
+		return successfull;
+	}
+	
+	public void setFailed() {
+		failed = true;
+		successfull = false;
+	}
+	
+	public void setSuccessfull() {
+		failed = false;
+		successfull = true;
 	}
 	
 	@Override
@@ -77,7 +103,7 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 	public int getMaxIterations() {
 		return logLikelihood.length;
 	}
-
+	
 	@Override
 	public int getNextIteration() {
 		return iteration;
@@ -112,6 +138,8 @@ public class DefaultConditionEstimate implements ConditionEstimate {
 		
 		backtracks.clear();
 		resets.clear();
+		successfull 		= false;
+		failed 				= false;
 	}
 	
 	public List<Integer> getBacktracks() {

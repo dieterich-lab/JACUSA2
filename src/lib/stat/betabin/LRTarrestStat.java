@@ -66,11 +66,11 @@ public class LRTarrestStat extends AbstractStat {
 		if (dirMultPrm.showAlpha()) {
 			for (final int valueIndex : multiStatResult.getValueIndexes()) {
 				estimateDirMultAlpha.addAlphaValues(estimationContainer, multiStatResult.getResultInfo(valueIndex), "");
-				estimateDirMultAlpha.addStatResultInfo(estimationContainer, multiStatResult.getResultInfo(valueIndex));
+				multiStatResult.getResultInfo(valueIndex).add("numerically_instable", "true");
 			}
 		} else {
 			for (final int valueIndex : multiStatResult.getValueIndexes()) {
-				estimateDirMultAlpha.addStatResultInfo(estimationContainer, multiStatResult.getResultInfo(valueIndex));
+				multiStatResult.getResultInfo(valueIndex).add("numerically_instable", "true");
 			}
 		}
 

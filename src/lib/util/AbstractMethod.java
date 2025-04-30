@@ -12,12 +12,12 @@ import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.data.assembler.factory.AbstractDataAssemblerFactory;
 import lib.data.validator.paralleldata.ParallelDataValidator;
-import lib.estimate.MinkaParameter;
 import lib.io.ResultFormat;
 import lib.stat.AbstractStatFactory;
 import lib.stat.DeletionStat;
 import lib.stat.INDELstat;
 import lib.stat.InsertionStat;
+import lib.stat.dirmult.EstimationParameter;
 import lib.stat.estimation.provider.DeletionEstimateProvider;
 import lib.stat.estimation.provider.InsertionEstimateProvider;
 import lib.util.coordinate.provider.BedCoordinateProvider;
@@ -263,21 +263,21 @@ public abstract class AbstractMethod {
 		return coordinateProvider;
 	}
 
-	public List<INDELstat> getINDELstats(final MinkaParameter minkaParameter) {
+	public List<INDELstat> getINDELstats(final EstimationParameter insertionEstimationParameter, final EstimationParameter deletionEstimationParameter) {
 		final List<INDELstat> indelStats = new ArrayList<INDELstat>();
 		if (getParameter().showINDELcounts()) {
 			if (getParameter().showDeletionCount()) {
 				indelStats.add(
 						new DeletionStat(
-								minkaParameter,
-								new DeletionEstimateProvider(minkaParameter.getMaxIterations())));
+								insertionEstimationParameter,
+								new DeletionEstimateProvider(insertionEstimationParameter.getMinkaParameter().getMaxIterations())));
 			}
 			if (getParameter().showInsertionCount() ||
 					getParameter().showInsertionStartCount()) {
 				indelStats.add(
 						new InsertionStat(
-								minkaParameter,
-								new InsertionEstimateProvider(minkaParameter.getMaxIterations())));
+								deletionEstimationParameter,
+								new InsertionEstimateProvider(deletionEstimationParameter.getMinkaParameter().getMaxIterations())));
 			}
 		}
 		return indelStats;

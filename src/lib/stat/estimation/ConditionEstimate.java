@@ -25,6 +25,11 @@ public interface ConditionEstimate {
 	default boolean previousEstimate() {
 		return getNextIteration() > 0 || ! isNumericallyStable();
 	}
+
+	boolean successfull();
+	void setSuccessfull();
+	boolean failed();
+	void setFailed();
 	
 	int getNextIteration();
 

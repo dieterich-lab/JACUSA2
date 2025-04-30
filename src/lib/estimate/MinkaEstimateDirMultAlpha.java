@@ -116,14 +116,11 @@ public class MinkaEstimateDirMultAlpha {
 			// check if alpha negative
 			if (! admissible) {
 				if (backtrack) {
-					// TODO remove estimateInfo.add("backtrack" + conditionEstimate.getID(), Integer.toString(conditionEstimate.getNextIteration()));
-					conditionEstimate.addBacktrack();
 					alphaNew = backtracking(conditionEstimate.getAlpha(), gradient, b_DenominatorSum, Q);
 					if (alphaNew == null) {
 						return false;
 					}
 				} else {
-					// TODO removeestimateInfo.add("reset" + conditionEstimate.getID(), Integer.toString(conditionEstimate.getNextIteration()));
 					conditionEstimate.addReset();
 					return false;
 				}
@@ -205,11 +202,13 @@ public class MinkaEstimateDirMultAlpha {
 		return null;
 	}
 
+	/*
 	public void addStatResultInfo(final EstimationContainer estimationContainer, final ExtendedInfo info) {
 		if (! estimationContainer.isNumericallyStable()) {
 			info.add("NumericallyInstable", "true");
 		}
 	}
+	*/
 	
 	public boolean estimate(final ConditionEstimate estimationContainer, final AbstractAlphaInit alphaInit, final boolean backtrack) {
 		// perform an initial guess of alpha
@@ -234,9 +233,11 @@ public class MinkaEstimateDirMultAlpha {
 		
 		for (final ConditionEstimate estimation : estimationContainer.getEstimates()) {
 			try {
-				if (estimate(estimation, minkaParameters.getAlphaInit(), false)) { 
+				if (estimate(estimation, minkaParameters.getAlphaInit(), false)) {
+					estimation.setSuccessfull();
 					successfullEstimates.add(estimation);
 				} else {
+					estimation.setFailed();
 					break;
 				}
 			} catch (StackOverflowError e) {
@@ -249,34 +250,64 @@ public class MinkaEstimateDirMultAlpha {
 		}
 		
 		// estimate alpha(s), capture info(s), and store log-likelihood
-		for (final ConditionEstimate estimate : estimationContainer.getEstimates()) {
-			if (successfullEstimates.contains(estimate)) { // || estimate.previousEstimate()
-				estimate.clear();
-				successfullEstimates.remove(estimate);
+		for (final ConditionEstimate estimation : estimationContainer.getEstimates()) {
+			if (successfullEstimates.contains(estimation)) { // || estimate.previousEstimate()
+				estimation.clear();
+				successfullEstimates.remove(estimation);
 			}
-			if (estimate(estimate, minkaParameters.getFallbackAlphaInit(), true)) {
-				successfullEstimates.add(estimate);
+			if (estimate(estimation, minkaParameters.getFallbackAlphaInit(), true)) {
+				successfullEstimates.add(estimation);
+				estimation.setSuccessfull();
+			} else {
+				estimation.setFailed();
 			}
 		}
 		return successfullEstimates.size() == estimationContainer.getEstimates().size();
 	}
 	
-	public void addEstimationInfo(final EstimationContainer estimationContainer, final ExtendedInfo info, final String prefix) {
-		for (final ConditionEstimate conditionEstimate : estimationContainer.getConditionEstimates()) {
+	public void addEstimationInfo(final EstimationContainer estimationContainer, final ExtendedInfo info, String prefix) {
+		prefix += "alpha_estimation";
+		for (final ConditionEstimate conditionEstimate : estimationContainer.getEstimates()) {
+			final StringBuilder sb = new StringBuilder();
+			sb.append(conditionEstimate.getID() + "=");
 			if (conditionEstimate.getBacktracks().size() > 0) {
-				info.add(prefix + "backtrack" + conditionEstimate.getID(), Util.join(conditionEstimate.getBacktracks(), ','));
+				sb.append("B:" + Util.join(conditionEstimate.getBacktracks(), ',') + ",");
 			}
 			if (conditionEstimate.getResets().size() > 0) {
-				info.add(prefix + "reset" + conditionEstimate.getID(), Util.join(conditionEstimate.getResets(), ','));
+				sb.append("R:" + Util.join(conditionEstimate.getBacktracks(), ',') + ",");
 			}
+			String key = "E";
+			if (conditionEstimate.successfull()) {
+				key = "T";
+			}
+			if (conditionEstimate.failed()) {
+				key = "F";
+			}
+			sb.append(key + ":" + conditionEstimate.getNextIteration());
+			info.append(prefix, sb.toString(), ";");
 		}
 	}
 	
+	// TODO howto format
 	public void addAlphaValues(final EstimationContainer estimationContainer, final ExtendedInfo info, final String prefix) {
-		for (final ConditionEstimate conditionEstimate : estimationContainer.getConditionEstimates()) {
-			Utils.addAlphaValues(conditionEstimate, info, prefix);
+		for (final ConditionEstimate conditionEstimate : estimationContainer.getEstimates()) {
+			final String id 			= conditionEstimate.getID();
+			final int iteration			= conditionEstimate.getNextIteration() - 1;
+			final double[] initAlpha 	= conditionEstimate.getAlpha(0);
+			final double[] alpha 		= conditionEstimate.getAlpha(iteration);
+			final double logLikelihood	= conditionEstimate.getLogLikelihood(iteration);
+			
+			info.add(prefix + "init_alpha" + id, Util.format(initAlpha[0]));
+			for (int i = 1; i < initAlpha.length; ++i) {
+				info.append(prefix + "init_alpha" + id, Util.format(initAlpha[i]), ",");
+			}
+			info.add(prefix + "alpha" + id, Util.format(alpha[0]));			
+			for (int i = 1; i < alpha.length; ++i) {
+				info.append(prefix + "alpha" + id, Util.format(alpha[i]), ",");
+			}
+			info.add(prefix + "iteration" + id, Integer.toString(iteration));
+			info.add(prefix + "log_likelihood" + id, Double.toString(logLikelihood));
 		}
-		Utils.addAlphaValues(estimationContainer.getPooledEstimate(), info, prefix);
 	}
 		
 	public double getScore(

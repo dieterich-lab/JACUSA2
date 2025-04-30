@@ -1,7 +1,6 @@
 package lib.stat.dirmult;
 
 import java.util.ArrayList;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import lib.cli.options.AbstractProcessingOption;
-import lib.util.CLIUtil;
+import lib.io.InputOutput;
 
 public class ProcessCommandLine {
 
@@ -44,24 +43,34 @@ public class ProcessCommandLine {
 		return options;
 	}
 	
-	public Options getNestedOptions() {
-		final Options newOptions = new Options();
-		for (final Option option : options.getOptions()) {
-			
-			
-			// add magic string to identify main option
-			// create main option
-			Option newOption = Option.builder(option.getLongOpt())
-					.desc(descriptions)
-					.build();
-			
-			newOptions.addOption(newOption);
+	public String renderNestedOptions() {
+		final StringBuilder sb = new StringBuilder();
+		
+		int max = 3;
+		for (final Option o : options.getOptions()) {
+			max = Math.max(max, o.getLongOpt().length());
 		}
 		
-		return newOptions;
+		for (final Option option : options.getOptions()) {
+			sb.append("| :" + option.getLongOpt());
+			final int size = max - option.getLongOpt().length() + 1;
+			if (size > 0) {
+				sb.append(" ".repeat(size));
+			}
+			String s = option.getDescription();
+			if (option.isRequired()) {
+				s += " (Required)";
+			}
+			InputOutput.formatStr(sb, s, "|   " + " ".repeat(max), 80);
+		}
+		
+		return sb.toString();
 	}
 	
-	// final String[] args = line.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
+	public void processNested(final String[] args) {
+		process(addDash(args));
+	}
+	
 	public void process(final String[] args) {
 		if (options.getOptions().isEmpty() || args == null || args.length == 0 || parser == null) {
 			return;

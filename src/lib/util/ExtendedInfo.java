@@ -42,6 +42,14 @@ public class ExtendedInfo implements Serializable {
 		map.put(key, map.getOrDefault(key, "") + value);
 	}
 	
+	public void append(final String key, final String value, final String sep) {
+		if (map.containsKey(key)) {
+			map.put(key, map.get(key) + sep + value);
+		} else {
+			add(key, value);
+		}
+	}
+	
 	public Map<String, String> getMap() {
 		return Collections.unmodifiableMap(map);
 	}

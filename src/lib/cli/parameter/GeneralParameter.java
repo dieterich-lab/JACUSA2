@@ -386,24 +386,25 @@ implements HasConditionParameter {
 	}
 	
 	public void addCallKeys(final boolean showcalcPValue, final boolean showAlpha, final int subsampleRuns) {
-		registerKey("score_numerically_instable");
+		// FIXME registerKey("score_numerically_instable");
 		if (showcalcPValue) {
 			registerKey("score_pvalue");
 		}
 		if (showAlpha) {
-			addEstimationInfo("score");
+			addEstimationInfo("");
 		}
 		if (subsampleRuns > 0) {
 			registerKey("score_subsampled");
 		}
+		registerKey("alpha_estimation");
 	}
 	
 	public void addInsertionKeys(final boolean showAlpha, final int subsampleRuns) {
 		registerKey(InsertionStat.SCORE);
 		registerKey(InsertionStat.PVALUE);
-		registerKey(InsertionStat.SCORE + "_estimation");
 		getResultModifiers().add(new AddInsertionCount());
 		registerKey(InsertionStat.SCORE + "_numerically_instable");
+		registerKey(InsertionStat.PREFIX + "alpha_estimation");
 		if (showAlpha) {
 			addEstimationInfo(InsertionStat.PREFIX);
 		}
@@ -415,9 +416,9 @@ implements HasConditionParameter {
 	public void addDeletionKeys(final boolean showAlpha, final int subsampleRuns) {
 		registerKey(DeletionStat.SCORE);
 		registerKey(DeletionStat.PVALUE);
-		registerKey(DeletionStat.SCORE + "_estimation");
 		getResultModifiers().add(new AddDeletionCount());
 		registerKey(DeletionStat.SCORE + "_numerically_instable");
+		registerKey(DeletionStat.PREFIX + "alpha_estimation");
 		if (showAlpha) {
 			addEstimationInfo(DeletionStat.PREFIX);
 		}
@@ -435,14 +436,12 @@ implements HasConditionParameter {
 		final List<String> keys = Arrays.asList(
 				"init_alpha", "alpha",
 				"iteration",
-				"log_likelihood",
-				"reset", "backtrack");
+				"log_likelihood");
 		for (String key : keys) { 
 			for (final String id : ids) {
 				registerKey(prefix + key + id);
 			}
 		}
-		registerKey(prefix + "estimation");
 	}
 	
 }

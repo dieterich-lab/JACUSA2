@@ -1,19 +1,19 @@
 package lib.stat.estimation;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EstimationContainer {
 
 	private ConditionEstimate[] conditionEstimates;
 	private ConditionEstimate pooledConditionEstimate;
-	private Set<ConditionEstimate> estimates;
+	private List<ConditionEstimate> estimates;
 	
 	public EstimationContainer(
 			final ConditionEstimate[] conditionEstimates,
 			final ConditionEstimate pooledConditionEstimate) {
 		this.conditionEstimates 		= conditionEstimates;
-		estimates 						= new HashSet<ConditionEstimate>();
+		estimates 						= new ArrayList<ConditionEstimate>();
 		for (final ConditionEstimate conditionEstimate : this.conditionEstimates) {
 			estimates.add(conditionEstimate);
 		}
@@ -52,7 +52,7 @@ public class EstimationContainer {
 		pooledConditionEstimate.clear();
 	}
 
-	public Set<ConditionEstimate> getEstimates() {
+	public List<ConditionEstimate> getEstimates() {
 		return estimates;
 	}
 	

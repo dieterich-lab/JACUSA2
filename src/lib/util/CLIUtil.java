@@ -11,6 +11,7 @@ import org.apache.commons.cli.ParseException;
 
 import lib.io.InputOutput;
 
+@Deprecated
 public final class CLIUtil {
 
 	private CLIUtil() {

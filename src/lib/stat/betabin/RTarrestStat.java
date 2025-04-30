@@ -55,7 +55,9 @@ public class RTarrestStat extends AbstractStat {
 		if (dirMultPrarameter.showAlpha()) {
 			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo, "");
 		}
-		estimateDirMultAlpha.addStatResultInfo(estimationContainer, resultInfo);
+		if (estimationContainer.isNumericallyStable()) {
+			info.add("numerically_instable", "true");
+		}
 		
 		final Result result = new OneStatResult(pvalue, parallelData, resultInfo);
 

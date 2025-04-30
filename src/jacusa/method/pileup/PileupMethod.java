@@ -58,7 +58,6 @@ import lib.data.filter.BooleanFilteredData;
 import lib.data.filter.BooleanData;
 import lib.data.validator.paralleldata.MinCoverageValidator;
 import lib.data.validator.paralleldata.ParallelDataValidator;
-import lib.estimate.MinkaParameter;
 import lib.stat.AbstractStat;
 import lib.stat.dirmult.ProcessCommandLine;
 import lib.util.AbstractMethod;
@@ -223,8 +222,7 @@ extends AbstractMethod {
 				.getStatParameter()
 				.getFactory().newInstance(threshold, threadId);
 		
-		final MinkaParameter minkaParameters = new MinkaParameter(); 
-		return new PileupWorker(this, threadId, stat, getINDELstats(minkaParameters));
+		return new PileupWorker(this, threadId, stat, getINDELstats(getParameter().getInsertionEstimationParameter(), getParameter().getDeletionEstimationParameter()));
 	}
 	
 	/*

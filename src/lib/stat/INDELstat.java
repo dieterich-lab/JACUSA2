@@ -6,7 +6,7 @@ import lib.data.ParallelData;
 import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.estimate.MinkaEstimateDirMultAlpha;
-import lib.estimate.MinkaParameter;
+import lib.stat.dirmult.EstimationParameter;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.INDELestimateProvider;
 import lib.util.ExtendedInfo;
@@ -14,28 +14,27 @@ import lib.util.Util;
 
 public class INDELstat extends AbstractStat {
 
+	private final EstimationParameter estimationParameter;
 	private final INDELestimateProvider estimationContainerProvider;
-	private final MinkaEstimateDirMultAlpha estimateDirMultAlpha;
+	private final MinkaEstimateDirMultAlpha minka;
 	private final ChiSquaredDistribution chiSquaredDistribution;
 	
-	private final String scoreKey;
-	private final String pvalueKey;
+	private final String prefix;
 
 	private EstimationContainer estimationContainer;
 	
 	public INDELstat(
-			final MinkaParameter minkaParameter,
+			final EstimationParameter estimationParameter,
 			final INDELestimateProvider indelEstimateProvider,
-			final String scoreKey,
-			final String pvalueKey) {
+			final String prefix) {
 		super();
 
+		this.estimationParameter			= estimationParameter;
 		this.estimationContainerProvider 	= indelEstimateProvider;
-		this.estimateDirMultAlpha			= new MinkaEstimateDirMultAlpha(minkaParameter);
+		this.minka							= new MinkaEstimateDirMultAlpha(estimationParameter.getMinkaParameter());
 		this.chiSquaredDistribution			= new ChiSquaredDistribution(1);
 		
-		this.scoreKey	= scoreKey;
-		this.pvalueKey	= pvalueKey;
+		this.prefix	= prefix;
 	}
 	
 	public EstimationContainer getEstimationContainer() {
@@ -43,7 +42,7 @@ public class INDELstat extends AbstractStat {
 	}
 
 	public MinkaEstimateDirMultAlpha getMinka() {
-		return estimateDirMultAlpha;
+		return minka;
 	}
 	
 	public INDELestimateProvider getEstimationContainerProvider() {
@@ -53,21 +52,25 @@ public class INDELstat extends AbstractStat {
 	@Override
 	public Result process(ParallelData parallelData, ExtendedInfo resultInfo) {
 		estimationContainer = estimationContainerProvider.convert(parallelData);
-		final boolean estimationSuccesfull = estimateDirMultAlpha.estimate(estimationContainer);
-		if (!estimationSuccesfull) {
-			resultInfo.add(getScoreKey() + "_score_estimation", "0");
-		} else {
-			resultInfo.add(getScoreKey() + "_score_estimation", "1");
+		minka.estimate(estimationContainer);
+		minka.addEstimationInfo(estimationContainer, resultInfo, prefix);
+		if (estimationContainer.isNumericallyStable()) {
+			resultInfo.add(prefix + "_numerically_instable", "true");
 		}
-
-		final double lrt 	= estimateDirMultAlpha.getLRT(estimationContainer);
+		
+		if (estimationParameter.showAlpha()) {
+			minka.addAlphaValues(estimationContainer, resultInfo, prefix);
+		}
+		
+		final double lrt 	= minka.getLRT(estimationContainer);
 		final double pvalue = getPValue(lrt);
 	
-		resultInfo.add(scoreKey, Util.format(lrt));
-		resultInfo.add(pvalueKey, Util.format(pvalue));
+		resultInfo.add(prefix + "score", Util.format(lrt));
+		resultInfo.add(prefix + "pvalue", Util.format(pvalue));
 
 		final Result result = new OneStatResult(lrt, parallelData, resultInfo);
-
+		
+		
 		return result;
 	}
 	
@@ -75,8 +78,8 @@ public class INDELstat extends AbstractStat {
 		return 1 - chiSquaredDistribution.cumulativeProbability(lrt);
 	}
 	
-	public String getScoreKey() {
-		return scoreKey;
+	public String getPrefix() {
+		return prefix;
 	}
 	
 }

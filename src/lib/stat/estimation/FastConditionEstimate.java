@@ -23,6 +23,9 @@ public class FastConditionEstimate implements ConditionEstimate{
 	private final List<Integer> backtracks;
 	private final List<Integer> resets;
 	
+	private boolean successfull;
+	private boolean failed;
+	
 	private int iteration;
 
 	public FastConditionEstimate(final String id, final NominalData nominalData, final int maxIterations) {
@@ -36,6 +39,9 @@ public class FastConditionEstimate implements ConditionEstimate{
 		backtracks			= new ArrayList<Integer>();
 		resets 				= new ArrayList<Integer>();
 		
+		successfull			= true;
+		failed				= true;
+		
 		iteration 			= 0;
 	}
 	
@@ -43,6 +49,9 @@ public class FastConditionEstimate implements ConditionEstimate{
 		this.id 			= conditionEstimate.getID();
 		this.nominalData 	= conditionEstimate.getNominalData();
 		this.maxIterations 	= conditionEstimate.getMaxIterations();
+		
+		this.successfull 	= conditionEstimate.successfull();
+		this.failed 		= conditionEstimate.failed();
 		
 		if (conditionEstimate.getNextIteration() > 0) {
 			final double[] initAlpha = conditionEstimate.getAlpha(0); 
@@ -62,6 +71,26 @@ public class FastConditionEstimate implements ConditionEstimate{
 			backtracks			= new ArrayList<Integer>();
 			resets 				= new ArrayList<Integer>();
 		}
+	}
+	
+	@Override
+	public boolean failed() {
+		return failed;
+	}
+	
+	@Override
+	public boolean successfull() {
+		return successfull;
+	}
+	
+	public void setFailed() {
+		failed = true;
+		successfull = false;
+	}
+	
+	public void setSuccessfull() {
+		failed = false;
+		successfull = true;
 	}
 	
 	@Override
@@ -138,7 +167,10 @@ public class FastConditionEstimate implements ConditionEstimate{
 	@Override
 	public void clear() {
 		numericallyStable 	= true;
-		iteration 			= 0;		
+		iteration 			= 0;
+
+		successfull 		= false;
+		failed 				= false;	
 	}
 	
 	@Override
