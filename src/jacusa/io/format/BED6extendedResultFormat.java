@@ -23,6 +23,7 @@ import org.apache.commons.cli.DefaultParser;
 import jacusa.io.format.modifyresult.AddBCQC;
 import jacusa.io.format.modifyresult.AddDeletionRatio;
 import jacusa.io.format.modifyresult.AddInsertionRatio;
+import jacusa.io.format.modifyresult.AddNonReferenceRatio;
 import jacusa.io.format.modifyresult.AddReadCount;
 import jacusa.io.format.modifyresult.ResultModifier;
 import jacusa.io.format.modifyresult.ResultModifierOption;
@@ -37,6 +38,7 @@ implements HasProcessCommandLine {
 							new AddReadCount(),
 							new AddBCQC(),
 							new AddInsertionRatio(),
+							new AddNonReferenceRatio(),
 							new AddDeletionRatio()));
 	
     private ProcessCommandLine processingCommandLine; 
