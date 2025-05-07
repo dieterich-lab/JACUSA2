@@ -346,8 +346,6 @@ implements HasConditionParameter {
 
 	public void registerKeys() {
 		// FIXME don't like the architecture
-		// TODO implement in RTarrest
-		// TODO implement in LRTarrest
 		
 		// resultModifier such as: add insertion_ratio
 		for (final ResultModifier resultModifier : getResultModifiers()) {
@@ -386,7 +384,7 @@ implements HasConditionParameter {
 	}
 	
 	public void addCallKeys(final boolean showcalcPValue, final boolean showAlpha, final int subsampleRuns) {
-		// FIXME registerKey("score_numerically_instable");
+		registerKey("numerically_instable");
 		if (showcalcPValue) {
 			registerKey("score_pvalue");
 		}
@@ -446,7 +444,6 @@ implements HasConditionParameter {
 	
 }
 
-// TODO remove
 enum ShowOptions {
 	DELETION_COUNT,
 	INSERTION_COUNT,

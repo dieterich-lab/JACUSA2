@@ -288,7 +288,6 @@ public class MinkaEstimateDirMultAlpha {
 		}
 	}
 	
-	// TODO howto format
 	public void addAlphaValues(final EstimationContainer estimationContainer, final ExtendedInfo info, final String prefix) {
 		for (final ConditionEstimate conditionEstimate : estimationContainer.getEstimates()) {
 			final String id 			= conditionEstimate.getID();

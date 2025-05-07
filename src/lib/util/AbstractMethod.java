@@ -107,7 +107,7 @@ public abstract class AbstractMethod {
 				throw new IllegalArgumentException("put options -i, -D, or -M to calculate insertion-, deletion-ratio, or modification-count");
 			}
 
-			/* FIXME enforce modification_count triggers reading mods
+			// FIXME enforce modification_count triggers reading mods
 			if(s.contains("modification_count")){
 				modificationOutputRequest = true;
 			}

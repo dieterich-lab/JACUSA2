@@ -102,17 +102,7 @@ public class SubSampleStat {
 				scoreSb[0].append(',');
 			}
 			result.getResultInfo().add("subsampled_score_estimation", callEstimationResult);
-			/*for (final ConditionEstimate conditionEstimate : callEstimationContainer.getEstimates()) {
-				 FIXME
-				result.getResultInfo().append(
-						"score_subsampled_backtrack" + conditionEstimate.getID(),
-						Util.join(conditionEstimate.getBacktracks(), ','));
-				result.getResultInfo().append(
-						"score_subsampled_reset" + conditionEstimate.getID(),
-						Util.join(conditionEstimate.getResets(), ','));
-				// TODO show alphas
-				
-			}*/
+			
 			// add subsampled scores
 			final double callScore = callStat.getStat(callEstimationContainer);
 			scoreSb[0].append(callScore);
@@ -130,28 +120,8 @@ public class SubSampleStat {
 				
 				if (run > 0) {
 					scoreSb[1 + indelStatIndex].append(',');
-					/*
-					result.getResultInfo().append(indelStat.getScoreKey() + "_subsampled_estimation", ",");
-					for (final ConditionEstimate conditionEstimate : indelEstimationContainer.getEstimates()) {
-						result.getResultInfo().append(indelStat.getScoreKey() + "_score_subsampled_backtrack" + conditionEstimate.getID(), "|");
-						result.getResultInfo().append(indelStat.getScoreKey() + "_score_subsampled_reset" + conditionEstimate.getID(), "|");
-						// TODO show alphas
-					}
-					*/
 				}
 				result.getResultInfo().add(indelStat.getPrefix() +"score_estimation", indelEstimationResult);
-				/* FIXME
-				for (final ConditionEstimate conditionEstimate : indelEstimationContainer.getEstimates()) {
-					
-					result.getResultInfo().append(
-							indelStat.getScoreKey() + "_score_subsampled_backtrack" + conditionEstimate.getID(),
-							Util.join(conditionEstimate.getBacktracks(), ','));
-					result.getResultInfo().append(
-							indelStat.getScoreKey() + "_score_subsampled_reset" + conditionEstimate.getID(),
-							Util.join(conditionEstimate.getResets(), ','));
-					// TODO show alphas
-				}
-				*/
 				// add subsampled scores
 				final double indelScore = indelStat.getMinka().getLRT(indelEstimationContainer);
 				scoreSb[1 + indelStatIndex].append(indelScore);

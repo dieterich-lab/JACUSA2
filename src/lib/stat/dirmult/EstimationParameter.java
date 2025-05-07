@@ -18,21 +18,7 @@ public interface EstimationParameter {
 	MinkaParameter getMinkaParameter();
 	void setMinkaParameter(MinkaParameter estimateAlpha);
 	
-	// TODO move somewhere
 	int getSubsampleRuns();
 	void setSubampleRuns(int subsampleRuns);
 
-	/* where to put this
-	int getDownsampleRuns();
-	void setDownsampleRuns(int downsampleRuns);
-	
-	double getDownsampleFraction();
-	void setDownsampleFraction(double downsampleFraction);
-	
-	int getRandomSampleRuns();
-	void setRandomSampleRuns(int downsampleRuns);
-	
-	int getLimit();
-	void setLimit(int limit);
-	*/
 }

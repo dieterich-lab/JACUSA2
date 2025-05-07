@@ -16,7 +16,7 @@ public abstract class INDELestimateProvider implements ConditionEstimateProvider
 	public static final int CATEGORIES 	= 2;
 	
 	private final int maxIterations;
-	private final double pseudoCount; // TODO test other pseudoCount
+	private final double pseudoCount;
 
 	public INDELestimateProvider(final int maxIterations) {
 		this.maxIterations 	= maxIterations;
@@ -43,7 +43,6 @@ public abstract class INDELestimateProvider implements ConditionEstimateProvider
 		return new DefaultConditionEstimate(id, nominalData, maxIterations);
 	}
 	
-	// TODO check
 	public NominalData createData(final List<DataContainer> dataContainers) {
 		final double[][] dataMatrix  = new double[dataContainers.size()][CATEGORIES]; // -> 2 because BetaBin
 		for (int replicateIndex = 0; replicateIndex < dataContainers.size(); replicateIndex++) {
@@ -57,6 +56,5 @@ public abstract class INDELestimateProvider implements ConditionEstimateProvider
 	}
 	
 	abstract int getINDELcount(DataContainer container);
-	
 	
 }

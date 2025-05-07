@@ -37,7 +37,7 @@ public abstract class AbstractConditionOption extends AbstractProcessingOption {
 	}
 	
 	public ConditionParameter getConditionParameter() {
-		return conditionParameters.get(0); // FIXME - test
+		return conditionParameters.get(0);
 	}
 
 	public int getConditionIndex() {

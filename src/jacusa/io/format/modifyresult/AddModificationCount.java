@@ -11,9 +11,7 @@ public class AddModificationCount extends AbstractResultModifier {
     }
     
     public void modify(Result result){
-
-    	/* TODO implement
-    	 * final ParallelData parallelData = result.getParellelData();
+    	/* final ParallelData parallelData = result.getParellelData();
         List<String> modificationCounts = new ArrayList<>();
         for (DataContainer combined : parallelData.getCombinedData()){
             modificationCounts.add(modCountToString(combined.getPileupCount().getModCount().getModCount()));
@@ -21,7 +19,7 @@ public class AddModificationCount extends AbstractResultModifier {
         */
 
         //output: modification_count=[ref1-mod1:count,mod2:count;ref2-mod1:count|ref1-mod1:count;ref2-mod1:count]
-        // FIXME return Util.pack(modificationCounts,'|');
+        //return Util.pack(modificationCounts,'|');
     }
 
     @Override
@@ -30,4 +28,3 @@ public class AddModificationCount extends AbstractResultModifier {
     }
     
 }
-

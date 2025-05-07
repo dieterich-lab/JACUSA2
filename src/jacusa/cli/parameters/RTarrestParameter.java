@@ -1,6 +1,5 @@
 package jacusa.cli.parameters;
 
-import jacusa.io.format.modifyresult.ResultModifier;
 import lib.cli.parameter.ConditionParameter;
 import lib.cli.parameter.GeneralParameter;
 import lib.cli.parameter.HasDeletionParameter;
@@ -80,7 +79,8 @@ implements HasStatParameter, HasInsertionParameter, HasDeletionParameter {
 	@Override
 	public void registerKeys() {
 		registerKey(RTarrestStat.ARREST_SCORE);
-		// TODO estimation
+		// TODO test pvalue vs score
+		addCallKeys(betaBinParameter.showAlpha(), betaBinParameter.showAlpha(), betaBinParameter.getSubsampleRuns());
 		
 		if (showInsertionCount() || showInsertionStartCount()) {
 			addInsertionKeys(insertionEstimationParameter.showAlpha(), betaBinParameter.getSubsampleRuns());
@@ -90,10 +90,7 @@ implements HasStatParameter, HasInsertionParameter, HasDeletionParameter {
 			addDeletionKeys(deletionEstimationParameter.showAlpha(), betaBinParameter.getSubsampleRuns());
 		}
 		
-		// resultModifier such as: add insertion_ratio
-		for (final ResultModifier resultModifier : getResultModifiers()) {
-			resultModifier.registerKeys(this);
-		}
+		super.registerKeys();
 	}
 	
 }

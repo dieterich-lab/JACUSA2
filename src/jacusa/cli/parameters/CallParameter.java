@@ -8,10 +8,6 @@ import lib.stat.dirmult.DefaultEstimationParameter;
 import lib.stat.dirmult.EstimationParameter;
 
 /**
- * FIXME old format
- */
-
-/**
  * Parameters specific to call method(s).
  */
 public class CallParameter
@@ -79,7 +75,5 @@ implements HasStatParameter, HasInsertionParameter, HasDeletionParameter {
 		
 		super.registerKeys();
 	}
-	
-	
-	
+
 }
