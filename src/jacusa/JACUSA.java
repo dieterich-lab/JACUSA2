@@ -1,7 +1,6 @@
 package jacusa;
 
 import jacusa.method.call.CallMethod;
-import jacusa.method.lrtarrest.LRTarrestMethod;
 import jacusa.method.pileup.PileupMethod;
 import jacusa.method.rtarrest.RTarrestMethod;
 
@@ -48,10 +47,11 @@ public class JACUSA extends AbstractTool {
 						new PileupMethod.Factory(0), // -> unrestricted number of conditions
 						
 						// reverse transcription read arrest
-						new RTarrestMethod.Factory(),
+						new RTarrestMethod.Factory() )
 						
 						// linked reverse transcription read arrest
-						new LRTarrestMethod.Factory()) ); 
+						// TODO remove for release new LRTarrestMethod.Factory())
+				); 
 	}
 
 	// print message after tool finishes computation

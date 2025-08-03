@@ -15,14 +15,29 @@ public class AddNonReferenceRatio extends AbstractResultModifier {
     public void modify(Result result){
     	final ParallelData parallelData = result.getParellelData();
     	final Base refBase = parallelData.getCombPooledData().getAutoRefBase();
+    	if (refBase == Base.N) {
+    		for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
+            	for (int replicateIndex = 0; replicateIndex < parallelData.getReplicates(conditionIndex); replicateIndex++) {
+            		result.getResultInfo().add(
+            				getID(), 
+            				conditionIndex,
+            				replicateIndex,
+            				Double.toString(-1.0));
+            	}
+            }
+
+    		return;
+    	}
+    	
         for (int conditionIndex = 0; conditionIndex < parallelData.getConditions(); conditionIndex++) {
         	for (int replicateIndex = 0; replicateIndex < parallelData.getReplicates(conditionIndex); replicateIndex++) {
         		final PileupCount pileupCount = parallelData.getDataContainer(conditionIndex, replicateIndex).getPileupCount();
+        		final double nonRefRatio = pileupCount.getBCC().getNonRefRatio(refBase);
         		result.getResultInfo().add(
         				getID(), 
         				conditionIndex,
         				replicateIndex,
-        				Double.toString(pileupCount.getBCC().getNonRefRatio(refBase)));
+        				Double.toString(nonRefRatio));
         	}
         }
     }
