@@ -165,20 +165,6 @@ to support downstream analysis of JACUSA2 output.
 Additonally, some artefact filters have been removed from JACUSA1 in favour of the rewritten R helper package.
 The old version of JACUSAhelper has been declared deprecated and won't be maintained anymore.
 
-# Build from source
-
-Java 1.8 and Maven 3.0+ are required to compile JACUSA2.
-JACUSA2 JAR will be available in `target/JACUSA2-*.jar`.
-
-```
-# get src
-git clone git@github.com:dieterich-lab/JACUSA2.git
-
-# build JACUSA2
-cd JACUSA2
-mvn clean install
-```
-
 ## Changelog
 * JACUCA1 to JACUSA2
     * General
