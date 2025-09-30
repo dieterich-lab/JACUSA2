@@ -7,6 +7,7 @@ import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.stat.AbstractStat;
+import lib.stat.estimation.ConditionEstimate;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.ConditionEstimateProvider;
 import lib.util.ExtendedInfo;
@@ -71,9 +72,13 @@ public class CallStat extends AbstractStat {
 		if (estimationParameter.showAlpha()) {
 			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo, "");
 		}
-		if (estimationContainer.isNumericallyStable()) {
-			resultInfo.add("numerically_instable", "true");
+		/* TODO remove
+		for (final ConditionEstimate conditionEstimate : estimationContainer.getConditionEstimates()) {
+			resultInfo.add(
+					"numerically_instable" + conditionEstimate.getID(),
+					Boolean.toString(!estimationContainer.getConditionEstimate(0).isNumericallyStable()));
 		}
+		*/
 		
 		return new OneStatResult(stat, parallelData, resultInfo);
 	}

@@ -109,16 +109,13 @@ public class StatFactoryOption extends AbstractProcessingOption {
 			throw new IllegalArgumentException("Unknown statistic or wrong option: " + statName);
 		}
 		
-		final int beginIndex = statOptions.indexOf(Character.toString(InputOutput.WITHIN_FIELD_SEP));
-		String statFactoryCLI = "";
-		// if there are options, make regular options for DefaultParser by adding "--"
-		if (beginIndex > -1) {
-			statFactoryCLI = statOptions.substring(beginIndex).replaceAll(
-					Character.toString(InputOutput.WITHIN_FIELD_SEP), "--"); 
+		final String[] args = new String[t.length - 1];
+		for (int i = 1; i < t.length; ++i) {
+			args[i - 1] = "--" + t[i];
 		}
 		
 		// update statistic factory and set command line options
-		statParameter.setFactory(statFactoryCLI, name2factory.get(statName));
+		statParameter.setFactory(args, name2factory.get(statName));
 	}
 
 }

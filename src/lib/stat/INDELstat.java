@@ -7,6 +7,7 @@ import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.stat.dirmult.EstimationParameter;
+import lib.stat.estimation.ConditionEstimate;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.INDELestimateProvider;
 import lib.util.ExtendedInfo;
@@ -54,9 +55,14 @@ public class INDELstat extends AbstractStat {
 		estimationContainer = estimationContainerProvider.convert(parallelData);
 		minka.estimate(estimationContainer);
 		minka.addEstimationInfo(estimationContainer, resultInfo, prefix);
-		if (estimationContainer.isNumericallyStable()) {
-			resultInfo.add(prefix + "_numerically_instable", "true");
+		
+		/* TODO remove
+		for (final ConditionEstimate conditionEstimate : estimationContainer.getConditionEstimates()) {
+			resultInfo.add(
+					prefix + "_numerically_instable" + conditionEstimate.getID(),
+					Boolean.toString(!estimationContainer.getConditionEstimate(0).isNumericallyStable()));
 		}
+		*/
 		
 		if (estimationParameter.showAlpha()) {
 			minka.addAlphaValues(estimationContainer, resultInfo, prefix);

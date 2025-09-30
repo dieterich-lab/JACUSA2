@@ -354,8 +354,15 @@ implements HasConditionParameter {
 	}
 	
 	public void registerConditionKeys(final String key) {
+		registerConditionKeys(key);
+	}
+	
+	public void registerConditionKeys(final String key, final boolean include_pooled) {
 		for (int conditionIndex = 0; conditionIndex < getConditionsSize(); conditionIndex++) {
 			additionalKeys.add(key + (conditionIndex + 1));
+		}
+		if (include_pooled) {
+			additionalKeys.add(key + "P");
 		}
 	}
 	
@@ -384,7 +391,7 @@ implements HasConditionParameter {
 	}
 	
 	public void addCallKeys(final boolean showcalcPValue, final boolean showAlpha, final int subsampleRuns) {
-		registerKey("numerically_instable");
+		// TODO remove registerConditionKeys("numerically_instable", true);
 		if (showcalcPValue) {
 			registerKey("score_pvalue");
 		}
@@ -394,15 +401,15 @@ implements HasConditionParameter {
 		if (subsampleRuns > 0) {
 			registerKey("score_subsampled");
 		}
-		registerKey("alpha_estimation");
+		registerConditionKeys("alpha_estimation", true);
 	}
 	
 	public void addInsertionKeys(final boolean showAlpha, final int subsampleRuns) {
 		registerKey(InsertionStat.SCORE);
 		registerKey(InsertionStat.PVALUE);
 		getResultModifiers().add(new AddInsertionCount());
-		registerKey(InsertionStat.SCORE + "_numerically_instable");
-		registerKey(InsertionStat.PREFIX + "alpha_estimation");
+		// TODO remove registerConditionKeys(InsertionStat.SCORE + "_numerically_instable", true);
+		registerConditionKeys(InsertionStat.PREFIX + "alpha_estimation", true);
 		if (showAlpha) {
 			addEstimationInfo(InsertionStat.PREFIX);
 		}
@@ -415,8 +422,8 @@ implements HasConditionParameter {
 		registerKey(DeletionStat.SCORE);
 		registerKey(DeletionStat.PVALUE);
 		getResultModifiers().add(new AddDeletionCount());
-		registerKey(DeletionStat.SCORE + "_numerically_instable");
-		registerKey(DeletionStat.PREFIX + "alpha_estimation");
+		// TODO remove 		registerConditionKeys(DeletionStat.SCORE + "_numerically_instable", true);
+		registerConditionKeys(DeletionStat.PREFIX + "alpha_estimation", true);
 		if (showAlpha) {
 			addEstimationInfo(DeletionStat.PREFIX);
 		}
@@ -426,19 +433,11 @@ implements HasConditionParameter {
 	}
 	
 	public void addEstimationInfo(final String prefix) {
-		final List<String> ids = new ArrayList<String>();
-		for (int conditionIndex = 0; conditionIndex < getConditionsSize(); conditionIndex++) {
-		    ids.add(Integer.toString(conditionIndex + 1));
-		}
-		ids.add("P");
 		final List<String> keys = Arrays.asList(
 				"init_alpha", "alpha",
-				"iteration",
 				"log_likelihood");
 		for (String key : keys) { 
-			for (final String id : ids) {
-				registerKey(prefix + key + id);
-			}
+			registerConditionKeys(prefix + key, true);
 		}
 	}
 	

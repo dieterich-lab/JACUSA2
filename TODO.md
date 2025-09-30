@@ -1,12 +1,12 @@
-[ ] adjust core data types
-[ ] adjust worker
-[ ] fix TODOs, FIXMEs
-[ ] test against existing runs
+[x] adjust core data types
+[x] adjust worker
+[x] fix TODOs, FIXMEs
+[x] test against existing runs
 ------------------------------
-[ ] adjust QutRNA to extended output
-[ ] fix TODOs, FIXMEs
-[ ] rerun & test
-[ ] custom contrasts, take arbitrary subSamples -> expanded sample_table
+[x] adjust QutRNA to extended output
+[x] fix TODOs, FIXMEs
+[x] rerun & test
+[x] custom contrasts, take arbitrary subSamples -> expanded sample_table
 [ ] -I pseudoCount=, ditMult etc.
  
  

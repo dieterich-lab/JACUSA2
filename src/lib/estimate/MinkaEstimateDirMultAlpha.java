@@ -19,33 +19,35 @@ import org.apache.commons.math3.special.Gamma;
  * DOCUMENT
  */
 public class MinkaEstimateDirMultAlpha {
-	
+
 	private final MinkaParameter minkaParameters;
-	
+
 	public MinkaEstimateDirMultAlpha(final MinkaParameter minkaParameter) {
 		this.minkaParameters = minkaParameter;
 	}
-		
+
 	/**
-	 * Implementation of parameter estimation of a DirichletMultinomial based on Minka algorithm - estimate alpha and returns log-lik
-	 * @param 
+	 * Implementation of parameter estimation of a DirichletMultinomial based on
+	 * Minka algorithm - estimate alpha and returns log-lik
+	 * 
+	 * @param
 	 * @param estimateInfo
 	 * @param backtrack
 	 * @return
 	 * 
-	 * Tested in test.lib.estimate.MinkaEstimateDirMultAlphaTest
+	 *         Tested in test.lib.estimate.MinkaEstimateDirMultAlphaTest
 	 */
 	public boolean maximizeLogLikelihood(final ConditionEstimate conditionEstimate, final boolean backtrack) {
-		final NominalData nominalData 	= conditionEstimate.getNominalData();
-		final int categories 			= nominalData.getCategories();  
-		
-		final double[] localSums 		= getRowWiseSums(nominalData);
-		
-		boolean converged 				= false;
+		final NominalData nominalData = conditionEstimate.getNominalData();
+		final int categories = nominalData.getCategories();
+
+		final double[] localSums = getRowWiseSums(nominalData);
+
+		boolean converged = false;
 
 		// container see Minka
-		double[] gradient 	= new double[categories];
-		double[] Q 			= new double[categories];
+		double[] gradient = new double[categories];
+		double[] Q = new double[categories];
 		double b;
 		double z;
 		// holds pre-computed value
@@ -54,17 +56,17 @@ public class MinkaEstimateDirMultAlpha {
 		double trigammaSummedAlphaOld;
 		// log-likelihood
 		double loglikOld = Double.NEGATIVE_INFINITY;
-		
+
 		// maximize
-		while (conditionEstimate.getNextIteration() < conditionEstimate.getMaxIterations() && ! converged) {
+		while (conditionEstimate.getNextIteration() < conditionEstimate.getMaxIterations() && !converged) {
 			// init alpha new
 			double[] alphaNew = new double[categories];
 			Arrays.fill(alphaNew, 0.0);
-			
+
 			// pre-compute
-			summedAlphaOld 			= MathUtil.sum(conditionEstimate.getAlpha());
-			digammaSummedAlphaOld 	= Gamma.digamma(summedAlphaOld);
-			trigammaSummedAlphaOld 	= Gamma.trigamma(summedAlphaOld);
+			summedAlphaOld = MathUtil.sum(conditionEstimate.getAlpha());
+			digammaSummedAlphaOld = Gamma.digamma(summedAlphaOld);
+			trigammaSummedAlphaOld = Gamma.trigamma(summedAlphaOld);
 
 			// reset
 			b = 0.0;
@@ -78,12 +80,14 @@ public class MinkaEstimateDirMultAlpha {
 					// calculate gradient
 					gradient[i] += digammaSummedAlphaOld;
 					gradient[i] -= Gamma.digamma(localSums[replicateIndex] + summedAlphaOld);
-					// 
-					gradient[i] += Gamma.digamma(nominalData.getReplicate(replicateIndex)[i] + conditionEstimate.getAlpha()[i]);
+					//
+					gradient[i] += Gamma
+							.digamma(nominalData.getReplicate(replicateIndex)[i] + conditionEstimate.getAlpha()[i]);
 					gradient[i] -= Gamma.digamma(conditionEstimate.getAlpha()[i]);
 
 					// calculate Q
-					Q[i] += Gamma.trigamma(nominalData.getReplicate(replicateIndex)[i] + conditionEstimate.getAlpha()[i]);
+					Q[i] += Gamma
+							.trigamma(nominalData.getReplicate(replicateIndex)[i] + conditionEstimate.getAlpha()[i]);
 					Q[i] -= Gamma.trigamma(conditionEstimate.getAlpha()[i]);
 				}
 
@@ -102,9 +106,9 @@ public class MinkaEstimateDirMultAlpha {
 			b = b / (1.0 / z + b_DenominatorSum);
 
 			loglikOld = getLogLikelihood(conditionEstimate.getAlpha(), nominalData);
-			
+
 			// try update alphaNew
-			boolean admissible = true; 		
+			boolean admissible = true;
 			for (int i = 0; i < categories; ++i) {
 				alphaNew[i] = conditionEstimate.getAlpha()[i] - (gradient[i] - b) / Q[i];
 
@@ -114,7 +118,7 @@ public class MinkaEstimateDirMultAlpha {
 			}
 
 			// check if alpha negative
-			if (! admissible) {
+			if (!admissible) {
 				if (backtrack) {
 					alphaNew = backtracking(conditionEstimate.getAlpha(), gradient, b_DenominatorSum, Q);
 					if (alphaNew == null) {
@@ -140,11 +144,11 @@ public class MinkaEstimateDirMultAlpha {
 
 		return true;
 	}
-	
+
 	private double[] getRowWiseSums(final NominalData dirMultData) {
 		return dirMultData.getRowWiseSums();
 	}
-	
+
 	// calculate likelihood
 	/**
 	 * 
@@ -152,12 +156,12 @@ public class MinkaEstimateDirMultAlpha {
 	 * @param dirMultData
 	 * @return
 	 * 
-	 * Tested in test.lib.estimate.MinkaEstimateDirMultAlphaTest
+	 *         Tested in test.lib.estimate.MinkaEstimateDirMultAlphaTest
 	 */
 	public double getLogLikelihood(final double[] alpha, final NominalData dirMultData) {
-		double logLikelihood 		= 0.0;
-		final double alphaSum 		= MathUtil.sum(alpha);
-		final double[] replicates 	= getRowWiseSums(dirMultData);
+		double logLikelihood = 0.0;
+		final double alphaSum = MathUtil.sum(alpha);
+		final double[] replicates = getRowWiseSums(dirMultData);
 
 		for (int replicateIndex = 0; replicateIndex < replicates.length; replicateIndex++) {
 			logLikelihood += Gamma.logGamma(alphaSum);
@@ -171,13 +175,9 @@ public class MinkaEstimateDirMultAlpha {
 		return logLikelihood;
 	}
 
-	protected double[] backtracking(
-			final double[] alpha, 
-			final double[] gradient, 
-			final double b, 
-			final double[] Q) {
+	protected double[] backtracking(final double[] alpha, final double[] gradient, final double b, final double[] Q) {
 		double[] alphaNew = new double[alpha.length];
-		
+
 		// try smaller newton steps
 		double lamba = 1.0;
 		// decrease by
@@ -203,34 +203,33 @@ public class MinkaEstimateDirMultAlpha {
 	}
 
 	/*
-	public void addStatResultInfo(final EstimationContainer estimationContainer, final ExtendedInfo info) {
-		if (! estimationContainer.isNumericallyStable()) {
-			info.add("NumericallyInstable", "true");
-		}
-	}
-	*/
-	
-	public boolean estimate(final ConditionEstimate estimationContainer, final AbstractAlphaInit alphaInit, final boolean backtrack) {
+	 * public void addStatResultInfo(final EstimationContainer estimationContainer,
+	 * final ExtendedInfo info) { if (! estimationContainer.isNumericallyStable()) {
+	 * info.add("NumericallyInstable", "true"); } }
+	 */
+
+	public boolean estimate(final ConditionEstimate estimationContainer, final AbstractAlphaInit alphaInit,
+			final boolean backtrack) {
 		// perform an initial guess of alpha
-		final double[] initAlpha 	= alphaInit.init(estimationContainer.getNominalData());
-		final double logLikelihood 	= getLogLikelihood(initAlpha, estimationContainer.getNominalData());
+		final double[] initAlpha = alphaInit.init(estimationContainer.getNominalData());
+		final double logLikelihood = getLogLikelihood(initAlpha, estimationContainer.getNominalData());
 		estimationContainer.add(initAlpha, logLikelihood);
-		
+
 		boolean flag = false;
 		try {
-				// estimate alpha(s), capture and info(s), and store log-likelihood
-				flag = maximizeLogLikelihood(estimationContainer, backtrack);
+			// estimate alpha(s), capture and info(s), and store log-likelihood
+			flag = maximizeLogLikelihood(estimationContainer, backtrack);
 		} catch (StackOverflowError e) {
 			// catch numerical instabilities and report
 			estimationContainer.setNumericallyUnstable();
 		}
-		
+
 		return flag;
 	}
-	
+
 	public boolean estimate(final EstimationContainer estimationContainer) {
-		final Set<ConditionEstimate> successfullEstimates= new HashSet<ConditionEstimate>();
-		
+		final Set<ConditionEstimate> successfullEstimates = new HashSet<ConditionEstimate>();
+
 		for (final ConditionEstimate estimation : estimationContainer.getEstimates()) {
 			try {
 				if (estimate(estimation, minkaParameters.getAlphaInit(), false)) {
@@ -248,7 +247,7 @@ public class MinkaEstimateDirMultAlpha {
 		if (successfullEstimates.size() == estimationContainer.getEstimates().size()) {
 			return true;
 		}
-		
+
 		// estimate alpha(s), capture info(s), and store log-likelihood
 		for (final ConditionEstimate estimation : estimationContainer.getEstimates()) {
 			if (successfullEstimates.contains(estimation)) { // || estimate.previousEstimate()
@@ -264,17 +263,17 @@ public class MinkaEstimateDirMultAlpha {
 		}
 		return successfullEstimates.size() == estimationContainer.getEstimates().size();
 	}
-	
-	public void addEstimationInfo(final EstimationContainer estimationContainer, final ExtendedInfo info, String prefix) {
+
+	public void addEstimationInfo(final EstimationContainer estimationContainer, final ExtendedInfo info,
+			String prefix) {
 		prefix += "alpha_estimation";
 		for (final ConditionEstimate conditionEstimate : estimationContainer.getEstimates()) {
 			final StringBuilder sb = new StringBuilder();
-			sb.append(conditionEstimate.getID() + "=");
 			if (conditionEstimate.getBacktracks().size() > 0) {
-				sb.append("B:" + Util.join(conditionEstimate.getBacktracks(), ',') + ",");
+				sb.append("B:" + Util.join(conditionEstimate.getBacktracks(), ',') + ";");
 			}
 			if (conditionEstimate.getResets().size() > 0) {
-				sb.append("R:" + Util.join(conditionEstimate.getBacktracks(), ',') + ",");
+				sb.append("R:" + Util.join(conditionEstimate.getResets(), ',') + ";");
 			}
 			String key = "E";
 			if (conditionEstimate.successfull()) {
@@ -284,49 +283,55 @@ public class MinkaEstimateDirMultAlpha {
 				key = "F";
 			}
 			sb.append(key + ":" + conditionEstimate.getNextIteration());
-			info.append(prefix, sb.toString(), ";");
+			sb.append("=");
+			if (estimationContainer.isNumericallyStable()) {
+				sb.append("stable");	
+			} else {
+				sb.append("instable");
+			}
+			
+			info.append(prefix + conditionEstimate.getID(), sb.toString());
 		}
 	}
-	
-	public void addAlphaValues(final EstimationContainer estimationContainer, final ExtendedInfo info, final String prefix) {
+
+	public void addAlphaValues(final EstimationContainer estimationContainer, final ExtendedInfo info,
+			final String prefix) {
 		for (final ConditionEstimate conditionEstimate : estimationContainer.getEstimates()) {
-			final String id 			= conditionEstimate.getID();
-			final int iteration			= conditionEstimate.getNextIteration() - 1;
-			final double[] initAlpha 	= conditionEstimate.getAlpha(0);
-			final double[] alpha 		= conditionEstimate.getAlpha(iteration);
-			final double logLikelihood	= conditionEstimate.getLogLikelihood(iteration);
-			
+			final String id = conditionEstimate.getID();
+			final int iteration = conditionEstimate.getNextIteration() - 1;
+			final double[] initAlpha = conditionEstimate.getAlpha(0);
+			final double[] alpha = conditionEstimate.getAlpha(iteration);
+			final double logLikelihood = conditionEstimate.getLogLikelihood(iteration);
+
 			info.add(prefix + "init_alpha" + id, Util.format(initAlpha[0]));
 			for (int i = 1; i < initAlpha.length; ++i) {
 				info.append(prefix + "init_alpha" + id, Util.format(initAlpha[i]), ",");
 			}
-			info.add(prefix + "alpha" + id, Util.format(alpha[0]));			
+			info.add(prefix + "alpha" + id, Util.format(alpha[0]));
 			for (int i = 1; i < alpha.length; ++i) {
 				info.append(prefix + "alpha" + id, Util.format(alpha[i]), ",");
 			}
-			info.add(prefix + "iteration" + id, Integer.toString(iteration));
 			info.add(prefix + "log_likelihood" + id, Double.toString(logLikelihood));
 		}
 	}
-		
-	public double getScore(
-			final EstimationContainer estimateContainer) {
-		return sumLogLikeliood(estimateContainer.getConditionEstimates()) - estimateContainer.getPooledEstimate().getLogLikelihood();
+
+	public double getScore(final EstimationContainer estimateContainer) {
+		return sumLogLikeliood(estimateContainer.getConditionEstimates())
+				- estimateContainer.getPooledEstimate().getLogLikelihood();
 	}
-	
+
 	public double getLRT(final EstimationContainer estimateContainer) {
-		return - 2 * (
-				estimateContainer.getPooledEstimate().getLogLikelihood() -
-				sumLogLikeliood(estimateContainer.getConditionEstimates()));
+		return -2 * (estimateContainer.getPooledEstimate().getLogLikelihood()
+				- sumLogLikeliood(estimateContainer.getConditionEstimates()));
 	}
-	
+
 	public double sumLogLikeliood(final ConditionEstimate[] estimationContainers) {
 		double logLikelihood = 0.0;
 		for (final ConditionEstimate estimationContainer : estimationContainers) {
 			logLikelihood += estimationContainer.getLogLikelihood();
 		}
-		
+
 		return logLikelihood;
 	}
-	
+
 }

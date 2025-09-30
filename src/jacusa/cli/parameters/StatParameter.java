@@ -1,6 +1,5 @@
 package jacusa.cli.parameters;
 
-import lib.io.InputOutput;
 import lib.stat.AbstractStat;
 import lib.stat.AbstractStatFactory;
 
@@ -59,9 +58,8 @@ public class StatParameter {
 	 * @param new factory to be set 
 	 */
 	public void setFactory(
-			final String line, 
+			final String[] args, 
 			final AbstractStatFactory statFactory) {
-		final String[] args = line.split(Character.toString(InputOutput.WITHIN_FIELD_SEP));
 		if (args.length > 0) {
 			statFactory.getProcessCommandLine().process(args);
 		}
