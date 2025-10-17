@@ -318,6 +318,10 @@ extends AbstractMethod {
 					parameter,
 					dataAssemblerFactory);
 			
+			method.registerFilterFactories();
+			method.registerStatisticFactories();
+			method.registerResultFormats();
+			
 			// related to test-statistic
 			parameter.setStatParameter(
 					new StatParameter(

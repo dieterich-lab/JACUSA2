@@ -6,6 +6,7 @@ import lib.cli.parameter.HasDeletionParameter;
 import lib.cli.parameter.HasInsertionParameter;
 import lib.stat.betabin.RTarrestBetaBinParameter;
 import lib.stat.betabin.RTarrestStat;
+import lib.stat.dirmult.DefaultEstimationParameter;
 import lib.stat.dirmult.EstimationParameter;
 
 
@@ -26,7 +27,9 @@ implements HasStatParameter, HasInsertionParameter, HasDeletionParameter {
 		super(conditions);
 		// change default values
 		
-		betaBinParameter = new RTarrestBetaBinParameter();
+		betaBinParameter 				= new RTarrestBetaBinParameter();
+		insertionEstimationParameter	= new DefaultEstimationParameter();
+		deletionEstimationParameter		= new DefaultEstimationParameter();
 	}
 
 	@Override

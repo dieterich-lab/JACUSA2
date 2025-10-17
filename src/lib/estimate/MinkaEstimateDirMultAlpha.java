@@ -283,13 +283,13 @@ public class MinkaEstimateDirMultAlpha {
 				key = "F";
 			}
 			sb.append(key + ":" + conditionEstimate.getNextIteration());
-			sb.append("=");
+			sb.append(">");
 			if (estimationContainer.isNumericallyStable()) {
-				sb.append("stable");	
+				sb.append("stable");
 			} else {
 				sb.append("instable");
 			}
-			
+
 			info.append(prefix + conditionEstimate.getID(), sb.toString());
 		}
 	}

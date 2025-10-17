@@ -33,7 +33,7 @@ public class RTarrestStat extends AbstractStat {
 		this.dirMultPrarameter 				= dirMultParameter;
 		
 		estimateDirMultAlpha	= new MinkaEstimateDirMultAlpha(dirMultParameter.getMinkaParameter());
-		dist 	= new ChiSquaredDistribution(1);
+		dist 					= new ChiSquaredDistribution(1);
 	}
 	
 	private double getPValue(final double lrt) {
@@ -41,27 +41,24 @@ public class RTarrestStat extends AbstractStat {
 	} 
 	
 	@Override
-	public Result process(ParallelData parallelData, ExtendedInfo info) {
+	public Result process(ParallelData parallelData, ExtendedInfo resultInfo) {
 		final EstimationContainer estimationContainer = estimationContainerProvider.convert(parallelData);
+		estimateDirMultAlpha.estimate(estimationContainer);
+		
 		final double lrt 	= estimateDirMultAlpha.getLRT(estimationContainer);
 		final double pvalue = getPValue(lrt);
-		if (! filter(pvalue)) {
+		if (filter(pvalue)) {
 			return null;
 		}
 		
-		final ExtendedInfo resultInfo = new ExtendedInfo();
 		resultInfo.add(ARREST_SCORE, Util.format(lrt));
 		
+		estimateDirMultAlpha.addEstimationInfo(estimationContainer, resultInfo, "");
 		if (dirMultPrarameter.showAlpha()) {
 			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo, "");
 		}
-		if (estimationContainer.isNumericallyStable()) {
-			info.add("numerically_instable", "true");
-		}
 		
-		final Result result = new OneStatResult(pvalue, parallelData, resultInfo);
-
-		return result;
+		return new OneStatResult(pvalue, parallelData, resultInfo);
 	}
 	
 	public boolean filter(final double pvalue) {
@@ -69,7 +66,7 @@ public class RTarrestStat extends AbstractStat {
 			return false;
 		}
 
-		return threshold > pvalue;
+		return threshold < pvalue;
 	}
 	
 }

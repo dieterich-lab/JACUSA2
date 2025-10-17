@@ -22,6 +22,7 @@ implements HasStatParameter, HasInsertionParameter, HasDeletionParameter {
 	
 	public CallParameter(final int conditionSize) {
 		super(conditionSize);
+		
 		callEstimationParameter 		= new CallEstimationParameter();
 		insertionEstimationParameter	= new DefaultEstimationParameter();
 		deletionEstimationParameter		= new DefaultEstimationParameter();

@@ -37,17 +37,20 @@ public class DefaultInfoAdder implements InfoAdder {
 		// add result info
 		sb.append(InputOutput.FIELD_SEP);
 		final ExtendedInfo info = result.getResultInfo(valueIndex);
+
+		if (info.NumericallyInstable) {
+			sb.append("NumericallyInstable");
+			sb.append(InputOutput.SEP4);
+		}
 		
 		if (info.getMap().isEmpty()) {
 			sb.append(InputOutput.EMPTY_FIELD);
 		} else {
 			for (final Entry<String, String> entry : info.getMap().entrySet()) {
 				sb.append(entry.getKey());
-				if (entry.getKey() != "NumericallyInstable") { // hack - file format compatibility: treat this a flag not key=value; 
-					sb.append(InputOutput.KEY_VALUE_SEP);
-					sb.append(entry.getValue());
-					sb.append(InputOutput.SEP4);
-				}
+				sb.append(InputOutput.KEY_VALUE_SEP);
+				sb.append(entry.getValue());
+				sb.append(InputOutput.SEP4);
 			}
 		}
 		

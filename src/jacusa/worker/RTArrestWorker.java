@@ -5,6 +5,7 @@ import lib.data.ParallelData;
 
 import lib.data.result.Result;
 import lib.stat.AbstractStat;
+import lib.util.ExtendedInfo;
 import lib.worker.AbstractWorker;
 
 public class RTArrestWorker
@@ -20,7 +21,8 @@ extends AbstractWorker {
 	
 	@Override
 	protected Result process(final ParallelData parallelData) {
-		Result result = stat.process(parallelData, null); 
+		final ExtendedInfo info = new ExtendedInfo();
+		Result result = stat.process(parallelData, info); 
 		if (result == null) {
 			return null;
 		}

@@ -14,12 +14,19 @@ public class ExtendedInfo implements Serializable {
 
 	private final Map<String, String> map;
 	
+	// hack
+	public boolean NumericallyInstable; 
+	
 	public ExtendedInfo() {
 		map = new TreeMap<>();
+		
+		NumericallyInstable = false;
 	}
 
 	public void clear() {
 		map.clear();
+		
+		NumericallyInstable = false;
 	}
 
 	public boolean contains(final String key) {

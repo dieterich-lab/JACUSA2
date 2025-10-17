@@ -7,7 +7,6 @@ import lib.data.result.OneStatResult;
 import lib.data.result.Result;
 import lib.estimate.MinkaEstimateDirMultAlpha;
 import lib.stat.dirmult.EstimationParameter;
-import lib.stat.estimation.ConditionEstimate;
 import lib.stat.estimation.EstimationContainer;
 import lib.stat.estimation.provider.INDELestimateProvider;
 import lib.util.ExtendedInfo;

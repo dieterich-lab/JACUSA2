@@ -156,10 +156,7 @@ extends AbstractMethod {
 	
 	public void registerResultFormats() {
 		registerResultFormat(new PileupLikeFormat(getName(), getParameter()));
-
-		// extended and info expanded output
 		registerResultFormat(new BED6extendedResultFormat(getName(), getParameter()));
-
 		registerResultFormat(new BED6pileupResultFormat(getName(), getParameter()));
 	}
 
@@ -267,6 +264,10 @@ extends AbstractMethod {
 					getName(),
 					parameter,
 					dataAssemblerFactory);
+			
+			method.registerFilterFactories();
+			method.registerStatisticFactories();
+			method.registerResultFormats();
 			
 			// set defaults move to parameter
 			parameter.setStatParameter(new StatParameter(new CoverageStatisticFactory(), Double.NaN));
