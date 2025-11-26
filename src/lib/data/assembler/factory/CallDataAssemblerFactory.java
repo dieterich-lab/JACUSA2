@@ -63,7 +63,8 @@ extends AbstractSiteDataAssemblerFactory {
 		addDeletionCache(parameter, sharedStorage, cache);
 		addInsertionCache(parameter, sharedStorage, cache);
 
-		stratifyByBaseSub(parameter, sharedStorage,  conditionParameter, cache);
+		// TODO 
+		// stratifyByBaseSub(parameter, sharedStorage,  conditionParameter, cache);
 
 		return cache;
 	}

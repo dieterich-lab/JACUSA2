@@ -7,7 +7,6 @@ import lib.data.IntegerData;
 import lib.data.ParallelData;
 import lib.stat.estimation.DefaultEstimationContainer;
 import lib.stat.estimation.EstimationContainer;
-import lib.stat.estimation.provider.EstimationContainerProvider;
 import lib.stat.nominal.NominalData;
 
 public abstract class INDELestimationCountProvider implements EstimationContainerProvider {
