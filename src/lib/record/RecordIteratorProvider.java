@@ -17,6 +17,7 @@ public class RecordIteratorProvider {
 	private final ConditionParameter conditionParameter;
 	private SamReader reader;
 	private final String fileName;
+	private byte enforceBASQ;
 
 	private Coordinate currentCoordinate;
 	private RecordIterator recordIterator;
@@ -24,19 +25,35 @@ public class RecordIteratorProvider {
 	public RecordIteratorProvider(
 			final ConditionParameter conditionParameter,
 			final String fileName) {
+		this(condPrm, fileName, (byte)-1);
+	}
+	
+	public RecordIteratorProvider(
+			final ConditionParameter condPrm,
+			final String fileName, 
+			final byte enforceBASQ) {
 
 		this.conditionParameter = conditionParameter;
 		this.reader 			= ConditionParameter.createSamReader(fileName);
 		this.fileName			= fileName;
+		this.enforceBASQ 	= enforceBASQ;
 	}
 
+	private RecordIterator createRecordIterator(final SAMRecordIterator samRecordIt) {
+		if (enforceBASQ >= 0) {
+			return new EnforceBASQRecordIterator(condPrm, fileName, enforceBASQ, samRecordIt);
+		}
+		
+		return new DefaultRecordIterator(condPrm, fileName, samRecordIt);
+	}
+	
 	public RecordIterator getIterator(final Coordinate activeWinCoord) {
 		if (recordIterator == null) {
 			currentCoordinate = activeWinCoord;
 			final SAMRecordIterator samRecordIt = createSAMRecordIterator(activeWinCoord);
-			recordIterator = new RecordIterator(conditionParameter, fileName, samRecordIt);
-		} else if (! currentCoordinate.equals(activeWinCoord)) {
-			currentCoordinate = activeWinCoord;
+			recordIt = createRecordIterator(samRecordIt);
+		} else if (! curCord.equals(activeWinCoord)) {
+			curCord = activeWinCoord;
 			final SAMRecordIterator samRecordIt = createSAMRecordIterator(activeWinCoord);
 			recordIterator.updateIterator(samRecordIt);
 		}

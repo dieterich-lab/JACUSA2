@@ -33,6 +33,8 @@ public class ConditionParameter {
 	private int filterFlags;
 	private int retainFlags;
 
+	private boolean onlyPrimaryAlignments;
+	
 	// filter based on SAM tags
 	private List<MaxValueSamTagFilter> samTagFilters;
 	
@@ -53,7 +55,8 @@ public class ConditionParameter {
 		filterFlags 			= 0;
 		retainFlags	 			= 0;
 		
-		samTagFilters 			= new ArrayList<>();
+		onlyPrimaryAlignments = true;
+		samTagFilters 	= new ArrayList<>();
 		
 		recordFilenames 		= new String[0];
 	}
@@ -65,6 +68,10 @@ public class ConditionParameter {
 		return maxDepth;
 	}
 
+	void setOnlyPrimaryAlignments(final boolean onlyPrimaryAlignments) {
+		this.onlyPrimaryAlignments = onlyPrimaryAlignments;
+	}
+	
 	/**
 	 * @param maxDepth the maxDepth to set
 	 */
@@ -185,7 +192,7 @@ public class ConditionParameter {
 		final List<SAMValidationError> errors = samRecord.isValid();
 
 		if (! samRecord.getReadUnmappedFlag()
-				&& ! samRecord.isSecondaryOrSupplementary() // ignore non-primary alignments CHECK
+				&& (!onlyPrimaryAlignments || onlyPrimaryAlignments && ! samRecord.getNotPrimaryAlignmentFlag())
 				&& (mapq < 0 || mapq >= getMinMAPQ()) // filter by mapping quality
 				&& (getFilterFlags() == 0 || (getFilterFlags() > 0 && ((samRecord.getFlags() & getFilterFlags()) == 0)))
 				&& (getRetainFlags() == 0 || (getRetainFlags() > 0 && ((samRecord.getFlags() & getRetainFlags()) > 0)))

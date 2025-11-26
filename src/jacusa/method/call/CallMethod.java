@@ -27,6 +27,7 @@ import java.util.Set;
 
 import lib.cli.options.BedCoordinatesOption;
 import lib.cli.options.DebugModusOption;
+import lib.cli.options.EnforceBASQOption;
 import lib.cli.options.FilterConfigOption;
 import lib.cli.options.FilterModusOption;
 import lib.cli.options.ReferenceFastaFilenameOption;
@@ -124,8 +125,9 @@ public class CallMethod extends AbstractMethod {
 		
 		registerOption(new ThresholdFilterOption(getParameter().getStatParameter()));
 
-		registerOption(new ReferenceFastaFilenameOption(getParameter()));
-		registerOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
+		addACOption(new EnforceBASQOption(getParameter()));
+		addACOption(new ReferenceFastaFilenameOption(getParameter()));
+		addACOption(new HelpOption(AbstractTool.getLogger().getTool().getCLI()));
 		
 		registerOption(new MaxThreadOption(getParameter()));
 		registerOption(new WindowSizeOption(getParameter()));

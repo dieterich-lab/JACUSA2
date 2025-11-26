@@ -33,6 +33,8 @@ implements HasConditionParameter {
 
 	private int maxThreads;
 
+	private byte enforcedBASQ;
+	
 	private String refFilename;
 	private IndexedFastaSequenceFile refFile;
 		
@@ -63,6 +65,7 @@ implements HasConditionParameter {
 		reservedWinSize	= 10 * activeWinSize;
 
 		maxThreads			= 1;
+		enforcedBASQ		= -1;
 		
 		inputBedFilename	= "";
 		conditionParameters	= new ArrayList<>();
@@ -94,6 +97,14 @@ implements HasConditionParameter {
 		for (int conditionIndex = 0; conditionIndex < conditionSize; conditionIndex++) {
 			conditionParameters.add(new ConditionParameter(conditionIndex));
 		}
+	}
+	
+	public void enforceBASQ(final byte basq) {
+		enforcedBASQ = basq;
+	}
+	
+	public byte getEnforcedBASQ() {
+		return enforcedBASQ;
 	}
 	
 	public ConditionParameter createConditionParameter(final int conditionIndex) {

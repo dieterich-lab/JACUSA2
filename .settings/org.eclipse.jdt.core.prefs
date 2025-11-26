@@ -13,6 +13,7 @@ org.eclipse.jdt.core.compiler.annotation.nullanalysis=disabled
 org.eclipse.jdt.core.compiler.annotation.owning=org.eclipse.jdt.annotation.Owning
 org.eclipse.jdt.core.compiler.annotation.resourceanalysis=disabled
 org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=enabled
+<<<<<<< HEAD
 org.eclipse.jdt.core.compiler.codegen.methodParameters=do not generate
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=17
 org.eclipse.jdt.core.compiler.codegen.unusedLocal=preserve
@@ -23,7 +24,10 @@ org.eclipse.jdt.core.compiler.debug.sourceFile=generate
 org.eclipse.jdt.core.compiler.problem.APILeak=warning
 org.eclipse.jdt.core.compiler.problem.annotatedTypeArgumentToUnannotated=info
 org.eclipse.jdt.core.compiler.problem.annotationSuperInterface=warning
+=======
+>>>>>>> refs/heads/master
 org.eclipse.jdt.core.compiler.problem.assertIdentifier=error
+<<<<<<< HEAD
 org.eclipse.jdt.core.compiler.problem.autoboxing=ignore
 org.eclipse.jdt.core.compiler.problem.comparingIdentical=warning
 org.eclipse.jdt.core.compiler.problem.deadCode=warning
@@ -33,6 +37,8 @@ org.eclipse.jdt.core.compiler.problem.deprecationWhenOverridingDeprecatedMethod=
 org.eclipse.jdt.core.compiler.problem.discouragedReference=warning
 org.eclipse.jdt.core.compiler.problem.emptyStatement=ignore
 org.eclipse.jdt.core.compiler.problem.enablePreviewFeatures=disabled
+=======
+>>>>>>> refs/heads/master
 org.eclipse.jdt.core.compiler.problem.enumIdentifier=error
 org.eclipse.jdt.core.compiler.problem.explicitlyClosedAutoCloseable=ignore
 org.eclipse.jdt.core.compiler.problem.fallthroughCase=ignore
@@ -41,6 +47,7 @@ org.eclipse.jdt.core.compiler.problem.fieldHiding=ignore
 org.eclipse.jdt.core.compiler.problem.finalParameterBound=warning
 org.eclipse.jdt.core.compiler.problem.finallyBlockNotCompletingNormally=warning
 org.eclipse.jdt.core.compiler.problem.forbiddenReference=warning
+<<<<<<< HEAD
 org.eclipse.jdt.core.compiler.problem.hiddenCatchBlock=warning
 org.eclipse.jdt.core.compiler.problem.includeNullInfoFromAsserts=disabled
 org.eclipse.jdt.core.compiler.problem.incompatibleNonInheritedInterfaceMethod=warning
@@ -121,3 +128,5 @@ org.eclipse.jdt.core.compiler.problem.unusedWarningToken=warning
 org.eclipse.jdt.core.compiler.problem.varargsArgumentNeedCast=warning
 org.eclipse.jdt.core.compiler.release=disabled
 org.eclipse.jdt.core.compiler.source=17
+=======
+>>>>>>> refs/heads/master
