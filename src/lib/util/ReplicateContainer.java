@@ -22,6 +22,7 @@ public class ReplicateContainer {
 	
 	private final List<RecordIteratorProvider> itProvs;
 	private final List<DataAssembler> dataAssemblers;
+	private final GeneralParameter parameter;
 	
 	public ReplicateContainer(
 			final GeneralParameter parameter,
@@ -31,6 +32,7 @@ public class ReplicateContainer {
 			final AbstractMethod method) {
 
 		this.condPrm = conditionParameter;
+		this.parameter = parameter;
 
 		itProvs = createRecordIteratorProviders(conditionParameter);
 		dataAssemblers = createDataAssemblers(
@@ -104,9 +106,9 @@ public class ReplicateContainer {
 	
 	private List<RecordIteratorProvider> createRecordIteratorProviders(
 			final ConditionParameter conditionParameter) {
-
+		
 		return Stream.of(conditionParameter.getRecordFilenames())
-				.map(f -> new RecordIteratorProvider(conditionParameter, f))
+				.map(f -> new RecordIteratorProvider(conditionParameter, f, parameter.getEnforcedBASQ()))
 				.collect(Collectors.toList());
 	}
 
