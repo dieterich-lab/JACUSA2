@@ -81,14 +81,6 @@ public class DefaultRecordIterator implements RecordIterator {
 		return null;
 	}
 	
-//	public Record getNext() {
-//		if (hasNext()) {
-//			return buffer[bufferPosition];
-//		}
-//
-//		return null;
-//	}
-	
 	// clear buffer
 	private void reset() {
 		bufferSize = 0;

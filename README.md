@@ -130,7 +130,7 @@ JACUSA2 supports two modes of sample setups for variant calling:
 
 ### call-1
 The method *call-1* identifies variants against the reference sequence.
-BAM files with a properly populated "MD"-field are required - check [JACUSA2 - Required input](#required-input) and [SAM Tags specification](https://samtools.github.io/hts-specs/SAMtags.pdf).
+BAM files with a correctly populated "MD" field are required - check [JACUSA2 - Required input](#required-input) and [SAM Tags specification](https://samtools.github.io/hts-specs/SAMtags.pdf).
 
 ```
 $ java -jar jacusa2.jar call-1 results_call1.out alignments.bam
@@ -170,4 +170,3 @@ There is also a new version of [JACUSA2helper](https://github.com/dieterich-lab/
 to support downstream analysis of JACUSA2 output.
 Additionally, some artefact filters have been removed from JACUSA1 in favour of the rewritten R helper package.
 The old version of JACUSAhelper has been declared deprecated and won't be maintained anymore.
-
