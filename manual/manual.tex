@@ -1,6 +1,7 @@
 \documentclass[10pt,a4paper,final]{article} 
 \usepackage[utf8]{inputenc}
 \usepackage[obeyDraft]{todonotes}
+% \usepackage{todonotes}
 \usepackage{amssymb}
 \usepackage{multirow}
 \usepackage{footnote}
@@ -9,6 +10,7 @@
 \usepackage{xspace}
 \usepackage{array}
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}
 \usepackage{microtype}
 \makesavenoteenv{tabular}
 \makesavenoteenv{table}
@@ -16,7 +18,7 @@
 %---------------------------------------------------------------------------------------------------
 \title{JACUSA2 manual}
 \author{Michael Piechotta \\ michael.piechotta@gmail.com}
-\date{28th, June, 2021} 
+\date{\today} 
 %---------------------------------------------------------------------------------------------------
 \begin{document}
 \newcommand{\call}[1]{\textit{call-#1}\xspace}
@@ -26,7 +28,7 @@
 %---------------------------------------------------------------------------------------------------
 \maketitle
 \tableofcontents
-\listoftodos
+% \listoftodos
 %---------------------------------------------------------------------------------------------------
 \newpage
 %---------------------------------------------------------------------------------------------------
@@ -60,7 +62,8 @@ JACUSA\textbf{2}helper\footnote{Check: \url{https://github.com/dieterich-lab/JAC
 
 Another new feature, are optional data that can be added to the output of some methods.
 Such optional data are INDEL counts and associated differential statistics and tagging reads with base substitutions. 
-A user can provide base substitution(s) to partition reads into two sets (TODO4CD: what is a typical experiment for this?) 
+A user can provide base substitution(s) to partition reads into two sets 
+% (TODO4CD: what is a typical experiment for this?) 
 (see Section \ref{sec:read_tagging}). 
 
 In JACUSA, a site consists of contig, position (start and stop), and strand information.
@@ -116,7 +119,8 @@ Also check \url{https://github.com/dieterich-lab/JACUSA2helper} for updates.
 % --------------------------------------------------------------------------------------------------
 \subsection{Installation and requirements}
 JACUSA2 does not need any configuration but requires a correctly configured Java environment.
-We developed and tested JACUSA2 with Java v1.8.
+We developed and tested JACUSA2  with Java 17. 
+If you encounter Java-related problems, consider switching to Java 17.
 % --------------------------------------------------------------------------------------------------
 \subsection{Migrating from JACUSA1 to JACUSA2}\label{sec:migration}
 There are several important changes to the command line interface:
@@ -195,8 +199,9 @@ Table \ref{tbl:call_data} for details about contents of available data check lin
 \end{table}
 % --------------------------------------------------------------------------------------------------
 \subsubsection{Reverse transcriptase arrest events}\label{sec:zhou2018_data}
-We have downloaded primary sequencing data from \cite{Zhou2018} and mapped raw reads according to
-(TODO4CD: How was this done?).
+We have downloaded primary sequencing data from \cite{Zhou2018}.
+% and mapped raw reads according to
+% (TODO4CD: How was this done?).
 From the resulting read sets, we retained only uniquely mapping reads to 18S and 28S rRNAs with 
 mapping quality $\ge 20$.
 \cite{Zhou2018} map RNA modification of pseudouridine ($\Psi$) by chemically modifying
@@ -225,7 +230,7 @@ Make sure that ``<reference.fasta>'' is the reference sequence that has been use
 The ``MD'' field contains mismatch information that allows to perform variant calling without 
 providing the reference sequence.
 
-Check the manual of SAMtools/BCFtools\footnote{Check: \url{http://samtools.sourceforge.net/}} or
+Check the manual of SAMtools/BCFtools\footnote{Check: \url{https://www.htslib.org/}} or
 picard tools\footnote{Check: \url{http://broadinstitute.github.io/picard/}} for how to use the respective 
 tool to convert your alignment files to valid JACUSA2 input BAM.
 %---------------------------------------------------------------------------------------------------
@@ -235,7 +240,7 @@ In the following, commands for SAMtools\footnote{Check: \url{http://www.htslib.o
 To sort and index your raw BAM files, perform the following sequence of commands:
 \begin{description}
   \item[SAM $\rightarrow$ BAM] \begin{verbatim} samtools view -Sb mapping.sam > mapping.bam \end{verbatim} 
-  \item[sort BAM] \begin{verbatim} samtools sort mapping.bam mapping.sorted \end{verbatim} 
+  \item[sort BAM] \begin{verbatim} samtools sort -o mapping.sorted.bam mapping.bam \end{verbatim} 
   \item[index BAM] \begin{verbatim} samtools index mapping.sorted.bam \end{verbatim}
 \end{description}
 
@@ -487,7 +492,7 @@ java -jar JACUSA2.jar
 In order to identify RNA editing sites by comparing gDNA and \emph{stranded} RNA-Seq use:
 \begin{description} 
   \item[first strand sequenced] ``-P1 UNSTRANDED -P2 RF-FIRSTSTRAND''
-  \item[second strand sequenced] ``-P2 UNSTRANDED -P2 FR-SECONDSTRAND''.
+  \item[second strand sequenced] ``-P1 UNSTRANDED -P2 FR-SECONDSTRAND''
 \end{description}
 When your RNA-Seq is unstranded use: ``-P UNSTRANDED'' and infer the correct orientation from annnotation.
 This sets the library type ``UNSTRANDED'' to all conditions.
@@ -504,14 +509,14 @@ case: ``-a H:condition=1'' will require gDNA.bam to be homozygous.
 
 Use the following command line to identify RNA-RNA differences:
 \begin{verbatim}
-java -jar call-2 -r JACUSA2.out -s cDNA_1.bam cDNA_2.bam
+java -jar JACUSA2.jar call-2 -r JACUSA2.out -s cDNA_1.bam cDNA_2.bam
 \end{verbatim}
 \textbf{WARNING:} If you want to identify RNA-RNA differences make sure NOT to use the filter ``-a
 H[\ldots]''! Otherwise, potential valid variants will be filtered out. If you happen to have a list
 of known polymorphic sites in a file ``snps.\{vcf|bed|JACUSA2 output\}'', add the exclude site filter (E)
 to the previous statemet:
 \begin{verbatim}
-java -jar call-2 -a E:file=snps.vcf:type=VCF -r JACUSA2.out -s \
+java -jar JACUSA2.jar call-2 -a E:file=snps.vcf:type=VCF -r JACUSA2.out -s \
   cDNA_1.bam cDNA_2.bam
 \end{verbatim}
 Polymorphic site defined in ``snps.vcf'' will be marked (see Section \ref{sec:separate_output} for details.)
@@ -519,7 +524,7 @@ Polymorphic site defined in ``snps.vcf'' will be marked (see Section \ref{sec:se
 \subsubsection{call-1}\label{sec:call_1}
 Single sample (call-1) allows to call variants against a reference. 
 Internally, an \textit{in silico} sample is created from information that is provided by the ``MD'' field 
-in BAM files or by providing a <reference.fasta> via command line: ``-f reference.fasta''.
+in BAM files or by providing a <reference.fasta> via command line: ``-R reference.fasta''.
 
 The number of base columns depends on the number of BAM files. In basesIJ: $I$
 corresponds to sample and $J$ to the respective replicate. Numbers indicate the base count of the
@@ -528,7 +533,7 @@ following base vector: $(A, C, G, T)$
 Sites that have a $>$ alleles are considered candidate variant sites and for this sites a test-score will be computed.
 %---------------------------------------------------------------------------------------------------
 \subsubsection{call-2}\label{sec:call_2}
-%\todo[author=michael]{nicely combine call-1, call2}
+% \todo[author=michael]{nicely combine call-1, call2}
 %---------------------------------------------------------------------------------------------------
 \subsubsection{\call{*} output format}\label{sec:call_format}
 Column (5) is the test-statistic of the likelihood ratio test for comparing two conditions $I$ and $II$. 
@@ -810,7 +815,7 @@ a value of ``tag=A2G''.
   \begin{tabular}{ll}
     \textbf{Library}          & \textbf{Source} \\
     \hline
-    htsjdk 2.12.0             & \url{https://github.com/samtools/htsjdk} \\
+    htsjdk 4.1.3              & \url{https://github.com/samtools/htsjdk} \\
     Apache:                   & \\
     \quad commons-cli 1.4     & \url{https://commons.apache.org/proper/commons-cli} \\
     \quad commons-math3 3.6.1 & \url{https://commons.apache.org/proper/commons-math}\\
