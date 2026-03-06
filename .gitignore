@@ -11,6 +11,16 @@ git_helper.sh
 /jar-in-jar-loader.zip
 .Rhistory
 *.csv
-/manual/
 /.gradle/
 /target/
+
+# manual: ignore latex intermediate files
+## first ignore everything in the manual directory
+manual/**
+## then re-include the source files
+!manual/*.tex
+!manual/*.bib
+!manual/CLI/
+!manual/figures/
+## and the pdf manual
+!manual/*.pdf
