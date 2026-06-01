@@ -274,7 +274,7 @@ public class CallMethod extends AbstractMethod {
 				.getFactory().newInstance(threshold, getParameter().getConditionsSize());
 		
 		final EstimationParameter dirMultParameter = callStat.getDirMultParameter();
-		final List<INDELstat> indelStats = getINDELstats(getParameter().getInsertionEstimationParameter(), getParameter().getInsertionEstimationParameter());
+		final List<INDELstat> indelStats = getINDELstats(getParameter().getInsertionEstimationParameter(), getParameter().getDeletionEstimationParameter());
 		SubSampleStat subSampleStat = null;
 		if (dirMultParameter.getSubsampleRuns() > 0) {
 			subSampleStat = new SubSampleStat(dirMultParameter.getSubsampleRuns(), getParameter().getSeed());
