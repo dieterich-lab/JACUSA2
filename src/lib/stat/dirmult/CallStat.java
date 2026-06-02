@@ -71,7 +71,7 @@ public class CallStat extends AbstractStat {
 		if (estimationParameter.showAlpha()) {
 			estimateDirMultAlpha.addAlphaValues(estimationContainer, resultInfo, "");
 		}
-		if (estimationContainer.isNumericallyStable()) {
+		if (!estimationContainer.isNumericallyStable()) {
 			resultInfo.NumericallyInstable = true;
 		}
 		
